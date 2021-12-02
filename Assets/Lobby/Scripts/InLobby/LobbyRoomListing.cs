@@ -11,49 +11,41 @@ namespace Lobby.Scripts.InLobby
     /// <summary>
     /// Shows list of (open/closed) rooms and buttons for creating a new room or joining existing one.
     /// </summary>
-    public class PaneRoomListing : MonoBehaviour
+    public class LobbyRoomListing : MonoBehaviour
     {
-        [SerializeField] private Button templateButton;
-        [SerializeField] private Transform buttonParent;
+        [SerializeField] private Button _templateButton;
+        [SerializeField] private Transform _buttonParent;
+        [SerializeField] private PhotonRoomList _photonRoomList;
 
-        private PhotonRoomList photonRoomList;
-
-        private void Start()
+        private void Awake()
         {
-            templateButton.onClick.AddListener(createRoomForMe);
+            _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
+            _templateButton.onClick.AddListener(CreateRoomForMe);
         }
 
         private void OnEnable()
         {
-            photonRoomList = FindObjectOfType<PhotonRoomList>();
-            if (photonRoomList != null)
+            if (PhotonNetwork.InLobby)
             {
-                if (PhotonNetwork.InLobby)
-                {
-                    updateStatus();
-                }
-                photonRoomList.roomsUpdated += updateStatus;
+                UpdateStatus();
             }
+            _photonRoomList.roomsUpdated += UpdateStatus;
         }
 
         private void OnDisable()
         {
-            if (photonRoomList != null)
-            {
-                photonRoomList.roomsUpdated -= updateStatus;
-                photonRoomList = null;
-            }
-            deleteExtraButtons(buttonParent);
+            _photonRoomList.roomsUpdated -= UpdateStatus;
+            DeleteExtraButtons(_buttonParent);
         }
 
-        private void updateStatus()
+        private void UpdateStatus()
         {
             if (!PhotonNetwork.InLobby)
             {
-                deleteExtraButtons(buttonParent);
+                DeleteExtraButtons(_buttonParent);
                 return;
             }
-            var rooms = photonRoomList.currentRooms.ToList();
+            var rooms = _photonRoomList.currentRooms.ToList();
             rooms.Sort((a, b) =>
             {
                 // First open rooms by name, then closed (aka playing) rooms by name
@@ -62,47 +54,47 @@ namespace Lobby.Scripts.InLobby
                     ? 0
                     : string.Compare(a.Name, b.Name, StringComparison.Ordinal);
             });
-            Debug.Log($"updateStatus enter {PhotonNetwork.NetworkClientState} buttons: {buttonParent.childCount} rooms: {rooms.Count}");
+            Debug.Log($"updateStatus enter {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
 
             // Synchronize button count with room count.
-            while (buttonParent.childCount < rooms.Count)
+            while (_buttonParent.childCount < rooms.Count)
             {
-                addButton(buttonParent, templateButton);
+                AddButton(_buttonParent, _templateButton);
             }
             // Update button captions
             for (var i = 0; i < rooms.Count; ++i)
             {
                 var room = rooms[i];
-                var buttonObject = buttonParent.GetChild(i).gameObject;
+                var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
                 var button = buttonObject.GetComponent<Button>();
-                update(button, room);
+                UpdateButton(button, room);
             }
             // Hide extra lines
-            if (buttonParent.childCount > rooms.Count)
+            if (_buttonParent.childCount > rooms.Count)
             {
-                for (var i = rooms.Count; i < buttonParent.childCount; ++i)
+                for (var i = rooms.Count; i < _buttonParent.childCount; ++i)
                 {
-                    var buttonObject = buttonParent.GetChild(i).gameObject;
+                    var buttonObject = _buttonParent.GetChild(i).gameObject;
                     if (buttonObject.activeSelf)
                     {
                         buttonObject.SetActive(false);
                     }
                 }
             }
-            Debug.Log($"updateStatus exit {PhotonNetwork.NetworkClientState} buttons: {buttonParent.childCount} rooms: {rooms.Count}");
+            Debug.Log($"updateStatus exit {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
         }
 
-        private static void createRoomForMe()
+        private static void CreateRoomForMe()
         {
             Debug.Log("createRoomForMe");
             PhotonLobby.createRoom($"Room{DateTime.Now.Second:00}");
         }
 
-        private void joinRoom(string roomName)
+        private void JoinRoom(string roomName)
         {
             Debug.Log($"joinRoom '{roomName}'");
-            var rooms = photonRoomList.currentRooms.ToList();
+            var rooms = _photonRoomList.currentRooms.ToList();
             foreach (var roomInfo in rooms)
             {
                 if (roomInfo.Name == roomName && !roomInfo.RemovedFromList && roomInfo.IsOpen)
@@ -112,14 +104,14 @@ namespace Lobby.Scripts.InLobby
             }
         }
 
-        private static void addButton(Transform parent, Button template)
+        private static void AddButton(Transform parent, Button template)
         {
             var templateParent = template.gameObject;
             var instance = Instantiate(templateParent, parent);
             instance.SetActive(true);
         }
 
-        private void update(Button button, RoomInfo room)
+        private void UpdateButton(Button button, RoomInfo room)
         {
             var roomText = $"{room.Name}";
             if (roomText.Length > 21)
@@ -142,11 +134,11 @@ namespace Lobby.Scripts.InLobby
             button.onClick.RemoveAllListeners();
             if (room.IsOpen)
             {
-                button.onClick.AddListener(() => joinRoom(room.Name));
+                button.onClick.AddListener(() => JoinRoom(room.Name));
             }
         }
 
-        private static void deleteExtraButtons(Transform parent)
+        private static void DeleteExtraButtons(Transform parent)
         {
             var childCount = parent.childCount;
             for (var i = childCount - 1; i >= 0; --i)

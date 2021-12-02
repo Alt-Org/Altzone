@@ -22,8 +22,8 @@ namespace Lobby.Scripts.InRoom
         private const int PlayerPosition3 = PhotonBattle.PlayerPosition3;
         private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
 
-        [SerializeField] private Transform contentRoot;
-        [SerializeField] private Text textTemplate;
+        [SerializeField] private Text _textTemplate;
+        [SerializeField] private Transform _contentRoot;
 
         private void OnEnable()
         {
@@ -37,7 +37,7 @@ namespace Lobby.Scripts.InRoom
         private void OnDisable()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
-            DeleteExtraLines(contentRoot);
+            DeleteExtraLines(_contentRoot);
         }
 
         private void UpdateStatus()
@@ -45,32 +45,32 @@ namespace Lobby.Scripts.InRoom
             // Use PaneRoomListing.updateStatus() style to manage dynamic text lines - IMHO is has better implementation!
             if (!PhotonNetwork.InRoom)
             {
-                DeleteExtraLines(contentRoot);
+                DeleteExtraLines(_contentRoot);
                 return;
             }
             var players = PhotonNetwork.CurrentRoom.GetPlayersByNickName().ToList();
-            Debug.Log($"updateStatus {PhotonNetwork.NetworkClientState} lines: {contentRoot.childCount} players: {players.Count}");
+            Debug.Log($"updateStatus {PhotonNetwork.NetworkClientState} lines: {_contentRoot.childCount} players: {players.Count}");
 
             // Synchronize line count with player count.
-            while (contentRoot.childCount < players.Count)
+            while (_contentRoot.childCount < players.Count)
             {
-                addTextLine(contentRoot, textTemplate);
+                AddTextLine(_contentRoot, _textTemplate);
             }
             // Update text lines
             for (var i = 0; i < players.Count; ++i)
             {
                 var player = players[i];
-                var lineObject = contentRoot.GetChild(i).gameObject;
+                var lineObject = _contentRoot.GetChild(i).gameObject;
                 lineObject.SetActive(true);
                 var line = lineObject.GetComponent<Text>();
                 UpdatePlayerLine(line, player);
             }
             // Hide extra lines
-            if (contentRoot.childCount > players.Count)
+            if (_contentRoot.childCount > players.Count)
             {
-                for (var i = players.Count; i < contentRoot.childCount; ++i)
+                for (var i = players.Count; i < _contentRoot.childCount; ++i)
                 {
-                    var lineObject = contentRoot.GetChild(i).gameObject;
+                    var lineObject = _contentRoot.GetChild(i).gameObject;
                     if (lineObject.activeSelf)
                     {
                         lineObject.SetActive(false);
@@ -79,7 +79,7 @@ namespace Lobby.Scripts.InRoom
             }
         }
 
-        private void addTextLine(Transform parent, Text template)
+        private void AddTextLine(Transform parent, Text template)
         {
             var templateParent = template.gameObject;
             var instance = Instantiate(templateParent, parent);

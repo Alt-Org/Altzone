@@ -1,10 +1,11 @@
+using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Lobby.Scripts.InRoom
 {
@@ -59,6 +60,7 @@ namespace Lobby.Scripts.InRoom
 
         private void OnEnable()
         {
+            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
             _buttonPlayerP1.interactable = false;
             _buttonPlayerP2.interactable = false;
             _buttonPlayerP3.interactable = false;
@@ -66,10 +68,19 @@ namespace Lobby.Scripts.InRoom
             _buttonGuest.interactable = false;
             _buttonSpectator.interactable = false;
             _buttonStartPlay.interactable = false;
-            if (!PhotonNetwork.InRoom)
-            {
-                return;
-            }
+
+            PhotonNetwork.AddCallbackTarget(this);
+            StartCoroutine(InitialStatus());
+        }
+
+        private void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
+        }
+
+        private IEnumerator InitialStatus()
+        {
+            yield return new WaitUntil(() => PhotonNetwork.InRoom);
             // Reset player custom properties for new game
             var player = PhotonNetwork.LocalPlayer;
             player.CustomProperties.Clear();
@@ -92,12 +103,6 @@ namespace Lobby.Scripts.InRoom
                 });
             }
             UpdateStatus();
-            PhotonNetwork.AddCallbackTarget(this);
-        }
-
-        private void OnDisable()
-        {
-            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         private void UpdateStatus()

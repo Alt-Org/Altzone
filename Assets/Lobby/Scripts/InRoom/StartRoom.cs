@@ -2,16 +2,13 @@ using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
-namespace Lobby.Scripts
+namespace Lobby.Scripts.InRoom
 {
     /// <summary>
     /// Helper class to switch UI to room view from lobby view.
     /// </summary>
     public class StartRoom: MonoBehaviour
     {
-        [SerializeField] private GameObject inLobby;
-        [SerializeField] private GameObject inRoom;
-
         private void Update()
         {
             if (PhotonWrapper.InRoom)
@@ -23,8 +20,6 @@ namespace Lobby.Scripts
                     // Make player name unique within this room if it was not!
                     PhotonNetwork.NickName = uniquePlayerName;
                 }
-                inLobby.SetActive(false);
-                inRoom.SetActive(true);
                 enabled = false;
             }
         }

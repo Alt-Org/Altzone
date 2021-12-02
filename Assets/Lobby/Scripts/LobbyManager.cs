@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Lobby.Scripts
@@ -31,8 +31,8 @@ namespace Lobby.Scripts
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
         private const int StartPlayingEvent = PhotonBattle.StartPlayingEvent;
 
-        [SerializeField] private UnitySceneName gameScene;
-        [SerializeField] private UnitySceneName cancelScene;
+        [SerializeField] private WindowDef _lobbyWindow;
+        [SerializeField] private WindowDef _gameWindow;
 
         public override void OnEnable()
         {
@@ -58,29 +58,20 @@ namespace Lobby.Scripts
             }
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyUp(KeyCode.Escape))
-            {
-                Debug.Log($"Escape {PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.NickName}");
-                SceneManager.LoadScene(cancelScene.sceneName);
-            }
-        }
-
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
             Debug.Log($"onEvent {data}");
             if (data.PlayerPosition == StartPlayingEvent)
             {
-                StartCoroutine(StartTheGameplay(gameScene.sceneName));
+                StartCoroutine(StartTheGameplay(_gameWindow));
                 return;
             }
             SetPlayer(PhotonNetwork.LocalPlayer, data.PlayerPosition);
         }
 
-        private static IEnumerator StartTheGameplay(string levelName)
+        private static IEnumerator StartTheGameplay(WindowDef gameWindow)
         {
-            Debug.Log($"startTheGameplay {levelName}");
+            Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonNetwork.IsMasterClient)
             {
                 throw new UnityException("only master client can start the game");
@@ -103,7 +94,7 @@ namespace Lobby.Scripts
                 PhotonNetwork.CloseConnection(player);
                 yield return null;
             }
-            PhotonNetwork.LoadLevel(levelName);
+            WindowManager.Get().ShowWindow(gameWindow);
         }
 
         private static void SetPlayer(Player player, int playerPosition)
@@ -132,11 +123,11 @@ namespace Lobby.Scripts
 
         public override void OnLeftRoom() // IMatchmakingCallbacks
         {
-            // Goto menu if we left (in)voluntarily any room
-            // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             Debug.Log($"OnLeftRoom {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-            Debug.Log($"LoadScene {cancelScene.sceneName}");
-            SceneManager.LoadScene(cancelScene.sceneName);
+            // Goto lobby if we left (in)voluntarily any room
+            // - typically master client kicked us off before starting a new game as we did not qualify to participate.
+            // - can not use GoBack() because we do not know the reason for player leaving the room.
+            WindowManager.Get().ShowWindow(_lobbyWindow);
         }
 
         public class PlayerPosEvent
@@ -145,7 +136,7 @@ namespace Lobby.Scripts
 
             public PlayerPosEvent(int playerPosition)
             {
-                this.PlayerPosition = playerPosition;
+                PlayerPosition = playerPosition;
             }
 
             public override string ToString()

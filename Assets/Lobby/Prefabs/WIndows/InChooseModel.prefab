@@ -4299,8 +4299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8a18b935f039847ba2c72237b3125d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view: {fileID: 1628367323}
-  currentCharacterId: 0
+  _view: {fileID: 1628367323}
 --- !u!1 &4457822891492625461
 GameObject:
   m_ObjectHideFlags: 0
@@ -5360,6 +5359,7 @@ GameObject:
   - component: {fileID: 4457822892520421368}
   - component: {fileID: 4457822892520421371}
   - component: {fileID: 4457822892520421370}
+  - component: {fileID: 3482009531654332832}
   m_Layer: 5
   m_Name: continueButton
   m_TagString: Untagged
@@ -5478,6 +5478,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3482009531654332832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4457822892520421372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33659b0b1c0242c3b28bc17acb0079e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4457822892523970171
 GameObject:
   m_ObjectHideFlags: 0
@@ -5845,7 +5857,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4457822892699310031}
   m_Layer: 0
-  m_Name: InChooseModel-window
+  m_Name: InChooseModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
