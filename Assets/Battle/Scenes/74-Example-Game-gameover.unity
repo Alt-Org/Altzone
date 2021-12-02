@@ -690,12 +690,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 543acb88a76a4df5ba9faabcdd92ec6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainScene:
-    sceneName: 70-Example-Lobby
-  waitForGracefulExit: 3
-  team0: {fileID: 207037293}
-  team1: {fileID: 1153401090}
-  scores: []
+  _team0: {fileID: 207037293}
+  _team1: {fileID: 1153401090}
+  _scores: []
 --- !u!4 &991472593
 Transform:
   m_ObjectHideFlags: 0
@@ -7751,7 +7748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01fc2f98fef0e664d9275ea569ef0cd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetAspectRatio: {x: 9, y: 16}
+  _targetAspectRatio: {x: 9, y: 16}
 --- !u!1 &7506620771263270646
 GameObject:
   m_ObjectHideFlags: 0

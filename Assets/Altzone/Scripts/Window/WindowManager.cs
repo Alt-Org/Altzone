@@ -207,11 +207,6 @@ namespace Altzone.Scripts.Window
             var windowName = windowDef.name;
             Debug.Log($"CreateWindow [{windowName}] {windowDef} count {_currentWindows.Count}");
             var prefab = windowDef.WindowPrefab;
-            if (prefab == null)
-            {
-                // Prevent NRE but show nothing!
-                prefab = new GameObject(windowName);
-            }
             var isSceneObject = prefab.scene.handle != 0;
             if (!isSceneObject)
             {

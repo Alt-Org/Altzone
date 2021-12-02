@@ -1,5 +1,5 @@
 using Altzone.Scripts.Window.ScriptableObjects;
-using UnityEngine;
+using Photon.Pun;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Window
             if (scene.IsNetworkScene)
             {
                 Debug.Log($"LoadScene NETWORK {scene.SceneName}");
-                throw new UnityException("NOT IMPLEMENTED");
+                PhotonNetwork.LoadLevel(scene.SceneName);
             }
             else
             {
