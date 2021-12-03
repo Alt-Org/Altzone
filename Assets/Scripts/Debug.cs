@@ -14,15 +14,8 @@ public static class Debug
     // StackFrame: https://stackoverflow.com/questions/21884142/difference-between-declaringtype-and-reflectedtype
     // Method: https://stackoverflow.com/questions/2483023/how-to-test-if-a-type-is-anonymous
 
-#if UNITY_EDITOR
-// no warnings when in Editor
-#elif FORCE_LOG || DEVELOPMENT_BUILD
-#if DEVELOPMENT_BUILD
-#warning NOTE: Compiling development build
-#endif
 #if FORCE_LOG
-#warning NOTE: Compiling WITH debug logging
-#endif
+#warning NOTE: Compiling WITH debug logging FORCE_LOG
 #endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -51,7 +44,7 @@ public static class Debug
     /// <summary>
     /// Adds log line filter.
     /// </summary>
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void AddLogLineAllowedFilter(Func<MethodBase, bool> filter)
     {
         _logLineAllowedFilter += filter;
@@ -67,7 +60,7 @@ public static class Debug
     /// </remarks>
     /// <param name="colorName">Unity color name</param>
     /// <param name="logLineContentFilter">log writer filter</param>
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void SetColorForClassName(string colorName, ref Func<string, string> logLineContentFilter)
     {
         string RemoveColorFromLogLine(string line)
@@ -93,7 +86,7 @@ public static class Debug
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void Log(string message)
     {
         var frame = new StackFrame(1);
@@ -108,7 +101,7 @@ public static class Debug
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogFormat(string format, params object[] args)
     {
         var frame = new StackFrame(1);
@@ -123,7 +116,7 @@ public static class Debug
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogWarning(string message, Object context = null)
     {
         UnityEngine.Debug.LogWarning(message, context);

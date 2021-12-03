@@ -63,13 +63,13 @@ namespace Prg.Scripts.Common.Util
             }
 
             Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
-#if FORCE_LOG || DEVELOPMENT_BUILD || UNITY_EDITOR
+#if FORCE_LOG || UNITY_EDITOR
 #else
             UnityEngine.Debug.LogWarning($"<b>NOTE!</b> Application logging is totally disabled on platform: {Application.platform}");
 #endif
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+        [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
         private static void CreateLogWriter()
         {
             string FilterPhotonLogMessage(string message)

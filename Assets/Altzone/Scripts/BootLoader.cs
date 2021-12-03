@@ -23,11 +23,11 @@ namespace Altzone.Scripts
             var loggerConfig = resourceLoader.LoadAsset<LoggerConfig>(nameof(LoggerConfig));
             LoggerConfig.createLoggerConfig(loggerConfig);
 
-            SetDevelopmentStatus();
+            SetEditorStatus();
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-        private static void SetDevelopmentStatus()
+        [Conditional("UNITY_EDITOR")]
+        private static void SetEditorStatus()
         {
             // This is just for debugging to get strings (numbers) formatted consistently
             // - everything that goes to UI should go through Localizer using player's locale preferences

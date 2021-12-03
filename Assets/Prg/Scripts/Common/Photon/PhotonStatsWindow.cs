@@ -14,7 +14,7 @@ namespace Prg.Scripts.Common.Photon
         public bool Visible;
         public KeyCode controlKey = KeyCode.F2;
 
-#if UNITY_EDITOR || FORCE_LOG || DEVELOPMENT_BUILD
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         private int WindowId;
         private Rect WindowRect;
         private string WindowTitle;

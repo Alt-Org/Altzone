@@ -12,11 +12,11 @@ namespace Prg.Scripts.Common.PubSub
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeOnLoad()
         {
-            InstallListeners();
+            SetEditorStatus();
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-        private static void InstallListeners()
+        [Conditional("UNITY_EDITOR")]
+        private static void SetEditorStatus()
         {
             void CheckHandlerCount()
             {

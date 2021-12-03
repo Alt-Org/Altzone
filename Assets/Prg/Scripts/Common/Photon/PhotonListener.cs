@@ -53,11 +53,11 @@ namespace Prg.Scripts.Common.Photon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeOnLoad()
         {
-            Create();
+            SetEditorStatus();
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
-        private static void Create()
+        [Conditional("UNITY_EDITOR")]
+        private static void SetEditorStatus()
         {
             UnityExtensions.CreateGameObjectAndComponent<PhotonListener>(nameof(PhotonListener), true);
         }
