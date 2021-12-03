@@ -87,13 +87,20 @@ namespace Battle.Scripts.Room
         {
             var playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             _playerActors = FindObjectsOfType<PlayerActor>().ToList();
-            var wait = new WaitForSeconds(0.1f);
+            var wait = new WaitForSeconds(0.2f);
             // Wait for players so that everybody can know (find) each other if required!
-            while (_playerActors.Count != playerCount && PhotonNetwork.InRoom)
+            var logLine = string.Empty;
+            while (_playerActors.Count < playerCount && PhotonNetwork.InRoom)
             {
-                Debug.Log($"setupAllPlayers playerCount={playerCount} playerActors={_playerActors.Count} wait");
+                var line = $"setupAllPlayers playerCount={playerCount} playerActors={_playerActors.Count} wait {Time.unscaledTime:F0}";
+                if (line != logLine)
+                {
+                    logLine = line;
+                    Debug.Log(logLine);
+                }
                 yield return wait;
                 _playerActors = FindObjectsOfType<PlayerActor>().ToList();
+                playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             }
             // All player have been instantiated in the scene, wait until they are in known state
             for (; PhotonNetwork.InRoom;)

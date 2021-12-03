@@ -121,6 +121,12 @@ namespace Lobby.Scripts
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
         }
 
+        public override void OnJoinedRoom()
+        {
+            // PhotonNetwork.CloseConnection needs to to work across all clients!
+            PhotonNetwork.EnableCloseConnection = true;
+        }
+
         public override void OnLeftRoom() // IMatchmakingCallbacks
         {
             Debug.Log($"OnLeftRoom {PhotonNetwork.LocalPlayer.GetDebugLabel()}");

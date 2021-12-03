@@ -18,14 +18,15 @@ namespace Battle.Scripts.Player
         {
             var sceneConfig = SceneConfig.Get();
             var player = PhotonNetwork.LocalPlayer;
+            Debug.Log($"OnEnable {player.GetDebugLabel()}");
             Assert.IsTrue(PhotonBattle.IsRealPlayer(player), "PhotonBattle.IsRealPlayer(player)");
+
             var playerPos = PhotonBattle.GetPlayerPos(player);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             var defence = playerDataCache.CharacterModel.MainDefence;
             var playerPrefab = GetPlayerPrefab(defence);
 
-            Debug.Log($"Instantiate pos={playerPos} prefab={playerPrefab.name} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-
+            Debug.Log($"Instantiate pos={playerPos} prefab={playerPrefab.name}");
             var playerStartPos = sceneConfig.playerStartPos;
             var playerIndex = PhotonBattle.GetPlayerIndex(playerPos);
             var instantiationPosition = playerStartPos[playerIndex].position;
