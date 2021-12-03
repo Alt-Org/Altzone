@@ -115,7 +115,8 @@ namespace Battle.Scripts.SlingShot
             }
             else
             {
-                followB = SceneConfig.Get().ballAnchors[_teamNumber];
+                var teamIndex = PhotonBattle.GetTeamIndex(_teamNumber);
+                followB = SceneConfig.Get().ballAnchors[teamIndex];
                 followBOwnerId = notPhotonOwner;
             }
             ballControl.ghostBall();
