@@ -13,14 +13,14 @@ namespace Editor.Prg.Util
         [MenuItem("Window/ALT-Zone/Util/List Used layers in Scene")]
         private static void _ListUsedLayers()
         {
-            UnityEngine.Debug.Log("*");
+            Debug.Log("*");
             ListObjectsInLayer(GetSceneObjects());
         }
 
         [MenuItem("Window/ALT-Zone/Util/List Used tags in Scene")]
         private static void _ListUsedTags()
         {
-            UnityEngine.Debug.Log("*");
+            Debug.Log("*");
             ListObjectsWithTag(GetSceneObjects());
         }
 
@@ -47,7 +47,7 @@ namespace Editor.Prg.Util
             {
                 var layerName = LayerMask.LayerToName(usedLayer);
                 var objectList = layerObjects[usedLayer];
-                UnityEngine.Debug.Log($"Layer {usedLayer:D2} : {layerName,-16} is used in {objectList.Count} GameObject(s)");
+                Debug.Log($"Layer {usedLayer:D2} : {layerName,-16} is used in {objectList.Count} GameObject(s)");
             }
         }
 
@@ -73,7 +73,7 @@ namespace Editor.Prg.Util
             foreach (var usedTag in usedTags)
             {
                 var objectList = taggedObjects[usedTag];
-                UnityEngine.Debug.Log($"Tag {usedTag,-16} is used in {objectList.Count} GameObject(s)");
+                Debug.Log($"Tag {usedTag,-16} is used in {objectList.Count} GameObject(s)");
             }
         }
 

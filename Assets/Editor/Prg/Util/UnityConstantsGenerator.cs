@@ -12,9 +12,9 @@ namespace Editor.Prg.Util
         [MenuItem("Window/ALT-Zone/Util/Generate UnityConstants.cs")]
         public static void Generate()
         {
-            UnityEngine.Debug.Log("*");
+            Debug.Log("*");
             var path = InternalGenerate();
-            UnityEngine.Debug.Log($"Wrote {path}");
+            Debug.Log($"Wrote {path}");
         }
 
         private static string InternalGenerate()

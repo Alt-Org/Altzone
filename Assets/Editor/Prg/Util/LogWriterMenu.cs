@@ -94,19 +94,19 @@ namespace Editor.Prg.Util
                 var defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
                 if (defineSymbols.Contains(defineSymbol))
                 {
-                    UnityEngine.Debug.Log($"Found already {defineSymbol} on: {target} in group: {@group}");
+                    Debug.Log($"Found already {defineSymbol} on: {target} in group: {@group}");
                     continue;
                 }
                 defineSymbols.Add(defineSymbol);
                 try
                 {
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(@group, string.Join(";", defineSymbols.ToArray()));
-                    UnityEngine.Debug.Log($"Add {defineSymbol} to: {target} in group: {@group}");
+                    Debug.Log($"Add {defineSymbol} to: {target} in group: {@group}");
                     count += 1;
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.Log($"Could not set Photon {defineSymbol} define for build target: {target} group: {@group}: {e}");
+                    Debug.Log($"Could not set Photon {defineSymbol} define for build target: {target} group: {@group}: {e}");
                 }
             }
             return count;
@@ -125,19 +125,19 @@ namespace Editor.Prg.Util
                 var defineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
                 if (!defineSymbols.Contains(defineSymbol))
                 {
-                    UnityEngine.Debug.Log($"Not Found {defineSymbol} on: {target} in group: {@group}");
+                    Debug.Log($"Not Found {defineSymbol} on: {target} in group: {@group}");
                     continue;
                 }
                 defineSymbols.Remove(defineSymbol);
                 try
                 {
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(@group, string.Join(";", defineSymbols.ToArray()));
-                    UnityEngine.Debug.Log($"Remove {defineSymbol} from: {target} in group: {@group}");
+                    Debug.Log($"Remove {defineSymbol} from: {target} in group: {@group}");
                     count += 1;
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.Log($"Could not remove Photon {defineSymbol} define for build target: {target} group: {@group}: {e}");
+                    Debug.Log($"Could not remove Photon {defineSymbol} define for build target: {target} group: {@group}: {e}");
                 }
             }
             return count;

@@ -10,11 +10,11 @@ namespace Editor.Prg.Util
         [MenuItem("Window/ALT-Zone/Util/Check Dependencies")]
         private static void _CheckDependencies()
         {
-            UnityEngine.Debug.Log("*");
+            Debug.Log("*");
             var activeObject = Selection.activeObject;
             if (activeObject == null)
             {
-                UnityEngine.Debug.Log("Nothing is selected");
+                Debug.Log("Nothing is selected");
                 return;
             }
             var selectedGuids = Selection.assetGUIDs;
@@ -31,10 +31,10 @@ namespace Editor.Prg.Util
                         continue;
                     }
                 }
-                UnityEngine.Debug.Log($"Selected object is not supported asset: {path}");
+                Debug.Log($"Selected object is not supported asset: {path}");
                 return;
             }
-            UnityEngine.Debug.Log($"Search dependencies for {selectedGuids.Length} assets (in scenes, prefabs, ScriptableObjects)");
+            Debug.Log($"Search dependencies for {selectedGuids.Length} assets (in scenes, prefabs, ScriptableObjects)");
             const string assetRoot = "Assets";
             var foundCount = new int[selectedGuids.Length];
             Array.Clear(foundCount, 0, foundCount.Length);
@@ -46,16 +46,16 @@ namespace Editor.Prg.Util
                 string[] foundAssets = AssetDatabase.FindAssets(assetFilter, new[] { assetRoot });
                 var searchCount = checkForGuidInAssets(selectedGuids, ref foundCount, foundAssets);
                 totalCount += searchCount;
-                UnityEngine.Debug.Log($"search {assetFilter}:{foundAssets.Length} found={searchCount}");
+                Debug.Log($"search {assetFilter}:{foundAssets.Length} found={searchCount}");
             }
-            UnityEngine.Debug.Log(">");
+            Debug.Log(">");
             var noDepCount = 0;
             for (var i = 0; i < selectedGuids.Length; ++i)
             {
                 if (foundCount[i] == 0)
                 {
                     var path = AssetDatabase.GUIDToAssetPath(selectedGuids[i]);
-                    UnityEngine.Debug.Log($"{path} has NO dependencies in this search");
+                    Debug.Log($"{path} has NO dependencies in this search");
                     noDepCount += 1;
                 }
             }
@@ -63,7 +63,7 @@ namespace Editor.Prg.Util
             {
                 if (noDepCount > 0)
                 {
-                    UnityEngine.Debug.Log(">");
+                    Debug.Log(">");
                 }
                 for (var i = 0; i < selectedGuids.Length; ++i)
                 {
@@ -72,7 +72,7 @@ namespace Editor.Prg.Util
                     var message = depCount > 0
                         ? $"has <b>{depCount} dependencies</b>"
                         : $"does not have <i>any dependencies</i> and <b>can be safely deleted</b>";
-                    UnityEngine.Debug.Log($"{path} {message}");
+                    Debug.Log($"{path} {message}");
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace Editor.Prg.Util
                     if (assetContent.Contains(guid))
                     {
                         var source = AssetDatabase.GUIDToAssetPath(guid);
-                        UnityEngine.Debug.Log($"{source} found in {path}");
+                        Debug.Log($"{source} found in {path}");
                         foundCount[guidIndex] += 1;
                         count += 1;
                     }

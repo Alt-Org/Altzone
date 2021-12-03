@@ -26,7 +26,7 @@ namespace Altzone.Scripts
             SetDevelopmentStatus();
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
         private static void SetDevelopmentStatus()
         {
             // This is just for debugging to get strings (numbers) formatted consistently

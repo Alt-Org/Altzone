@@ -15,7 +15,7 @@ namespace Prg.Scripts.Common.PubSub
             InstallListeners();
         }
 
-        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+        [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
         private static void InstallListeners()
         {
             void CheckHandlerCount()
@@ -25,9 +25,9 @@ namespace Prg.Scripts.Common.PubSub
                 {
                     foreach (var h in Hub.handlers)
                     {
-                        UnityEngine.Debug.Log($"handler {h}");
+                        Debug.Log($"handler {h}");
                     }
-                    UnityEngine.Debug.LogWarning($"PubSubExtensions.HandlerCount is {handlerCount}");
+                    Debug.LogWarning($"PubSubExtensions.HandlerCount is {handlerCount}");
                 }
             }
 

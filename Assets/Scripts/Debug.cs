@@ -51,7 +51,7 @@ public static class Debug
     /// <summary>
     /// Adds log line filter.
     /// </summary>
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void AddLogLineAllowedFilter(Func<MethodBase, bool> filter)
     {
         _logLineAllowedFilter += filter;
@@ -67,7 +67,7 @@ public static class Debug
     /// </remarks>
     /// <param name="colorName">Unity color name</param>
     /// <param name="logLineContentFilter">log writer filter</param>
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void SetColorForClassName(string colorName, ref Func<string, string> logLineContentFilter)
     {
         string RemoveColorFromLogLine(string line)
@@ -93,7 +93,7 @@ public static class Debug
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void Log(string message)
     {
         var frame = new StackFrame(1);
@@ -104,11 +104,11 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.Log($"{GETPrefix(method)}{message}");
+            UnityEngine.Debug.Log($"{GetPrefix(method)}{message}");
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogFormat(string format, params object[] args)
     {
         var frame = new StackFrame(1);
@@ -119,23 +119,27 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.LogFormat($"{GETPrefix(method)}{format}", args);
+            UnityEngine.Debug.LogFormat($"{GetPrefix(method)}{format}", args);
         }
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
+    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
     public static void LogWarning(string message, Object context = null)
     {
         UnityEngine.Debug.LogWarning(message, context);
     }
 
-    [Conditional("FORCE_LOG"), Conditional("DEVELOPMENT_BUILD")]
     public static void LogError(string message, Object context = null)
     {
         UnityEngine.Debug.LogError(message, context);
     }
 
-    private static string GETPrefix(MemberInfo method)
+    public static void LogException(Exception exception)
+    {
+        UnityEngine.Debug.LogException(exception);
+    }
+
+    private static string GetPrefix(MemberInfo method)
     {
         var className = method.ReflectedType?.Name ?? nameof(Debug);
         if (className.StartsWith("<"))
@@ -165,11 +169,13 @@ public static class Debug
                 if (result is bool isAllowed && isAllowed)
                 {
                     CachedMethods.Add(method, true);
+                    //UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
                     return true;
                 }
             }
             // Nobody accepted so it is rejected.
             CachedMethods.Add(method, false);
+            //UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
             return false;
         }
         return true;

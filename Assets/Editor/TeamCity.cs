@@ -57,7 +57,7 @@ namespace Editor
             var symbolsName = $"{OutputBaseFilename}-{Application.version}-v{PlayerSettings.Android.bundleVersionCode}.symbols";
             var script = MyCmdLineScripts.AndroidPostProcessScript.Replace("<<altzone_symbols_name>>", symbolsName);
             File.WriteAllText(scriptName, script);
-            UnityEngine.Debug.Log($"PostProcess script '{scriptName}' written");
+            Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
         //[MenuItem("Window/ALT-Zone/Build/Test/WebGL Build Post Processing")]
@@ -91,7 +91,7 @@ namespace Editor
 
             const string scriptName = "m_BuildScript_PostProcess.bat";
             File.WriteAllText(scriptName, MyCmdLineScripts.WebGLPostProcessScript);
-            UnityEngine.Debug.Log($"PostProcess script '{scriptName}' written");
+            Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
         [MenuItem("Window/ALT-Zone/Build/Create Build Script")]
@@ -106,12 +106,12 @@ namespace Editor
                 .Replace("<<unity_name>>", unityName)
                 .Replace("<<method_name>>", methodName);
             File.WriteAllText(scriptName, script);
-            UnityEngine.Debug.Log($"Build script '{scriptName}' written");
+            Debug.Log($"Build script '{scriptName}' written");
             var buildTargetName = CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
             var driverScript = $"{scriptName} {buildTargetName} && pause";
             File.WriteAllText(driverName, driverScript);
-            UnityEngine.Debug.Log($"Build script driver '{driverName}' written");
+            Debug.Log($"Build script driver '{driverName}' written");
         }
 
         internal static void Build()
@@ -189,7 +189,7 @@ namespace Editor
                 {
                     // Show all logged messages together without call stack for convenience!
                     LogMessages.Add($"{LogPrefix} {LogSeparator}");
-                    UnityEngine.Debug.Log($"{LogPrefix} LOG_MESSAGES:\r\n{string.Join("\r\n", LogMessages)}");
+                    Debug.Log($"{LogPrefix} LOG_MESSAGES:\r\n{string.Join("\r\n", LogMessages)}");
                 }
             }
             // We must exit outside try-finally block as it seems that EditorApplication.Exit does not allow C# to unwind call stack properly
@@ -337,7 +337,7 @@ namespace Editor
 
         private static void Log(string message)
         {
-            UnityEngine.Debug.Log($"{LogPrefix} {message}");
+            Debug.Log($"{LogPrefix} {message}");
             LogMessages.Add(message);
         }
 
