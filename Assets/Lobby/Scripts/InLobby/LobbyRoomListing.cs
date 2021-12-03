@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
@@ -11,8 +13,9 @@ namespace Lobby.Scripts.InLobby
     /// <summary>
     /// Shows list of (open/closed) rooms and buttons for creating a new room or joining existing one.
     /// </summary>
-    public class LobbyRoomListing : MonoBehaviour
+    public class LobbyRoomListing : MonoBehaviourPunCallbacks
     {
+        [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private Button _templateButton;
         [SerializeField] private Transform _buttonParent;
         [SerializeField] private PhotonRoomList _photonRoomList;
@@ -23,8 +26,9 @@ namespace Lobby.Scripts.InLobby
             _templateButton.onClick.AddListener(CreateRoomForMe);
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
             if (PhotonNetwork.InLobby)
             {
                 UpdateStatus();
@@ -32,10 +36,11 @@ namespace Lobby.Scripts.InLobby
             _photonRoomList.roomsUpdated += UpdateStatus;
         }
 
-        private void OnDisable()
+        public override void OnDisable()
         {
             _photonRoomList.roomsUpdated -= UpdateStatus;
             DeleteExtraButtons(_buttonParent);
+            base.OnDisable();
         }
 
         private void UpdateStatus()
@@ -104,6 +109,19 @@ namespace Lobby.Scripts.InLobby
             }
         }
 
+        public override void OnJoinedRoom()
+        {
+            var room = PhotonNetwork.CurrentRoom;
+            var player = PhotonNetwork.LocalPlayer;
+            if (!room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "", out var uniquePlayerName))
+            {
+                // Make player name unique within this room if it was not!
+                PhotonNetwork.NickName = uniquePlayerName;
+            }
+            Debug.Log($"OnJoinedRoom '{room.Name}' as '{PhotonNetwork.NickName}'");
+            WindowManager.Get().ShowWindow(_roomWindow);
+        }
+
         private static void AddButton(Transform parent, Button template)
         {
             var templateParent = template.gameObject;
@@ -129,9 +147,10 @@ namespace Lobby.Scripts.InLobby
                 roomText = $"<color=brown>{roomText}</color>";
             }
             var text = button.GetComponentInChildren<Text>();
-            Debug.Log($"update '{text.text}' -> '{roomText}'");
+            Debug.Log($"update '{text.text}' -> '{roomText}' for {room.GetDebugLabel()}");
             text.text = roomText;
             button.onClick.RemoveAllListeners();
+            button.interactable = room.IsOpen;
             if (room.IsOpen)
             {
                 button.onClick.AddListener(() => JoinRoom(room.Name));
