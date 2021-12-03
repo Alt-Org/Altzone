@@ -1,5 +1,4 @@
 ﻿using Altzone.Scripts.Config;
-using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
