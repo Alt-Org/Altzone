@@ -39,8 +39,8 @@ namespace Battle.Scripts.Player
             }
             if (_isLocal)
             {
-                Debug.Log($"LocalTeamNumber={LocalTeamNumber} pos={_playerPos}");
                 LocalTeamNumber = _teamNumber;
+                Debug.Log($"LocalTeamNumber={LocalTeamNumber} pos={_playerPos}");
             }
             Debug.Log($"Awake {player.NickName} pos={_playerPos} team={_teamNumber}");
 
