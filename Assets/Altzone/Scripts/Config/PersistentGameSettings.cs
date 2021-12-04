@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Config
     /// <remarks>
     /// Create these in <c>Resources</c> folder with name "PersistentGameSettings" so they can be loaded when needed first time.
     /// </remarks>
-    [CreateAssetMenu(menuName = "ALT-Zone/PersistentGameSettings")]
+    [CreateAssetMenu(menuName = "ALT-Zone/PersistentGameSettings", fileName = "PersistentGameSettings")]
     public class PersistentGameSettings : ScriptableObject
     {
         [Header("Game Features")] public GameFeatures _features;
