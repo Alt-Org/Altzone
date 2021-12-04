@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -21,25 +22,49 @@ public static class Debug
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void RuntimeInitializeOnLoadMethod()
     {
+        // UnityEngine.Debug.Log($"SubsystemRegistration cache {CachedMethods.Count}");
         // Reset static fields even when Domain Reloading is disabled.
         _isClassNameColor = false;
         _classNameColor = null;
         _classNameColorFilter = null;
-        CachedMethods.Clear();
         _logLineAllowedFilter = null;
+        CachedMethods.Clear();
+        SetEditorStatus();
+    }
+
+    [Conditional("UNITY_EDITOR")]
+    private static void SetEditorStatus()
+    {
+#if UNITY_EDITOR
+        void LogPlayModeState(PlayModeStateChange state)
+        {
+            // UnityEngine.Debug.Log($"PlayModeStateChange {state}");
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                _logLineAllowedFilter = null;
+                CachedMethods.Clear();
+            }
+        }
+
+        if (!_isEditorHook)
+        {
+            _isEditorHook = true;
+            EditorApplication.playModeStateChanged += LogPlayModeState;
+        }
+#endif
     }
 
     private static string _classNameColorFilter;
     private static string _classNameColor;
     private static bool _isClassNameColor;
-
-    // Cache methods if method lookup is expensive.
-    private static readonly Dictionary<MethodBase, bool> CachedMethods = new Dictionary<MethodBase, bool>();
+    private static bool _isEditorHook;
 
     /// <summary>
     /// Filters log lines based on method name or other method properties.
     /// </summary>
     private static Func<MethodBase, bool> _logLineAllowedFilter;
+
+    private static readonly Dictionary<MethodBase, bool> CachedMethods = new Dictionary<MethodBase, bool>();
 
     /// <summary>
     /// Adds log line filter.
@@ -162,13 +187,13 @@ public static class Debug
                 if (result is bool isAllowed && isAllowed)
                 {
                     CachedMethods.Add(method, true);
-                    //UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+                    // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
                     return true;
                 }
             }
             // Nobody accepted so it is rejected.
             CachedMethods.Add(method, false);
-            //UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+            // UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
             return false;
         }
         return true;
