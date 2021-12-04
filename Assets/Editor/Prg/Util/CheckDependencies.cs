@@ -7,7 +7,7 @@ namespace Editor.Prg.Util
 {
     public static class CheckDependencies
     {
-        [MenuItem("Window/ALT-Zone/Util/Check Dependencies")]
+        [MenuItem("Window/ALT-Zone/Check Dependencies")]
         private static void _CheckDependencies()
         {
             Debug.Log("*");
@@ -19,13 +19,25 @@ namespace Editor.Prg.Util
             }
             var selectedGuids = Selection.assetGUIDs;
             // Keep extensions lowercase!
-            var validExtensions = new[] { ".cs", ".prefab", ".physicMaterial", ".physicsmaterial2d", ".mat" };
+            var validExtensions = new[]
+            {
+                ".asset",
+                ".cs",
+                ".gif",
+                ".mat",
+                ".otf",
+                ".physicMaterial",
+                ".physicsmaterial2d",
+                ".png",
+                ".prefab",
+                ".ttf"
+            };
             foreach (var guid in selectedGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 if (AssetDatabase.Contains(activeObject))
                 {
-                    var extension = Path.HasExtension(path) ? Path.GetExtension(path).ToLower() : "";
+                    var extension = Path.HasExtension(path) ? Path.GetExtension(path).ToLower() : string.Empty;
                     if (validExtensions.Contains(extension))
                     {
                         continue;
@@ -44,7 +56,7 @@ namespace Editor.Prg.Util
             foreach (var assetFilter in assetFilters)
             {
                 string[] foundAssets = AssetDatabase.FindAssets(assetFilter, new[] { assetRoot });
-                var searchCount = checkForGuidInAssets(selectedGuids, ref foundCount, foundAssets);
+                var searchCount = CheckForGuidInAssets(selectedGuids, ref foundCount, foundAssets);
                 totalCount += searchCount;
                 Debug.Log($"search {assetFilter}:{foundAssets.Length} found={searchCount}");
             }
@@ -55,7 +67,7 @@ namespace Editor.Prg.Util
                 if (foundCount[i] == 0)
                 {
                     var path = AssetDatabase.GUIDToAssetPath(selectedGuids[i]);
-                    Debug.Log($"{path} has NO dependencies in this search");
+                    Debug.Log($"{path} has <b>{RichText.Yellow("NO dependencies")}</b> in this search");
                     noDepCount += 1;
                 }
             }
@@ -77,7 +89,7 @@ namespace Editor.Prg.Util
             }
         }
 
-        private static int checkForGuidInAssets(string[] selectedGuids, ref int[] foundCount, string[] assetGuids)
+        private static int CheckForGuidInAssets(string[] selectedGuids, ref int[] foundCount, string[] assetGuids)
         {
             var count = 0;
             foreach (var assetGuid in assetGuids)
