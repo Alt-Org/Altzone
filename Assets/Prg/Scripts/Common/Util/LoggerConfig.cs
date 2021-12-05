@@ -34,7 +34,7 @@ namespace Prg.Scripts.Common.Util
                 CreateLogWriter();
             }
             // Log color
-            var trimmed = string.IsNullOrEmpty(config.colorForClassName) ? "" : config.colorForClassName.Trim();
+            var trimmed = string.IsNullOrEmpty(config.colorForClassName) ? string.Empty : config.colorForClassName.Trim();
             if (trimmed.Length > 0)
             {
                 Debug.SetColorForClassName(trimmed, ref LogWriter.LogLineContentFilter);

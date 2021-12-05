@@ -17,7 +17,7 @@ namespace Prg.Scripts.Common.Photon
 
         public override string ToString()
         {
-            return appSettings != null ? appSettings.ToStringFull() : "";
+            return appSettings != null ? appSettings.ToStringFull() : string.Empty;
         }
     }
 }

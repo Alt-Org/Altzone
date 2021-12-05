@@ -65,10 +65,10 @@ namespace Prg.Scripts.Common.Photon
             {
                 var room = PhotonNetwork.CurrentRoom;
                 label = $"{PhotonNetwork.LocalPlayer.NickName} | {room.Name}" +
-                        $"{(room.IsVisible ? "" : ",hidden")}" +
-                        $"{(room.IsOpen ? "" : ",closed")} " +
+                        $"{(room.IsVisible ? string.Empty : ",hidden")}" +
+                        $"{(room.IsOpen ? string.Empty : ",closed")} " +
                         $"{(room.PlayerCount == 1 ? "1 player" : $"{room.PlayerCount} players")}" +
-                        $"{(room.MaxPlayers == 0 ? "" : $" (max {room.MaxPlayers})")}";
+                        $"{(room.MaxPlayers == 0 ? string.Empty : $" (max {room.MaxPlayers})")}";
             }
             else if (PhotonNetwork.InLobby)
             {
@@ -173,7 +173,7 @@ namespace Prg.Scripts.Common.Photon
 
             public void reset()
             {
-                status = "";
+                status = string.Empty;
                 samplingStart = 0;
                 samplingDuration = 0;
                 sampleIndexCur = 0;

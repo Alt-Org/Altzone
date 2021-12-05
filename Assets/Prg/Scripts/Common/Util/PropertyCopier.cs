@@ -3,7 +3,7 @@ using System.Reflection;
 namespace Prg.Scripts.Common.Util
 {
     /// <summary>
-    /// Utility class to copy properties and fields by name and type between two instances that can be related or unrelated.
+    /// Utility class to copy properties and fields by name and type between two instances that can be related or unrelated using <c>Reflection</c>.
     /// </summary>
     /// <typeparam name="TSource">The source type</typeparam>
     /// <typeparam name="TTarget">The target type</typeparam>

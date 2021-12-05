@@ -97,7 +97,7 @@ namespace Prg.Scripts.Common.Photon
         {
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
-            var methodName = method != null && method.ReflectedType != null ? method.Name : "";
+            var methodName = method != null && method.ReflectedType != null ? method.Name : string.Empty;
             _logMessage($"{methodName} {message}");
         }
 

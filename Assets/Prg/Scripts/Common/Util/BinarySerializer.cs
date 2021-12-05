@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 namespace Prg.Scripts.Common.Util
 {
     /// <summary>
-    /// Utility class to read and write objects to stream.
+    /// Utility class to read and write objects to stream using <c>Reflection</c>.
     /// </summary>
     /// <remarks>
     /// Only non-static public fields are processed!
@@ -54,8 +54,11 @@ namespace Prg.Scripts.Common.Util
         }
 
         /// <summary>
-        /// Deserializes an object instance from stream.
+        /// Deserializes an object instance from stream using <c>Reflection</c>.
         /// </summary>
+        /// <remarks>
+        /// Only non-static public fields are processed!
+        /// </remarks>
         public static Tuple<T,int> Deserialize<T>(BinaryReader reader) where T : class, new()
         {
             var instance = new T();

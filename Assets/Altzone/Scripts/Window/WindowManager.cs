@@ -58,6 +58,7 @@ namespace Altzone.Scripts.Window
         private GameObject _windowsParent;
         private WindowDef _pendingWindow;
         private Func<GoBackAction> _goBackOnceHandler;
+        private int _showWindowLevel;
 
         private void Awake()
         {
@@ -155,23 +156,31 @@ namespace Altzone.Scripts.Window
 
         void IWindowManager.ShowWindow(WindowDef windowDef)
         {
-            Debug.Log($"LoadWindow {windowDef} count {_currentWindows.Count}");
+            Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
+            _showWindowLevel += 1;
+            Debug.Log($"LoadWindow {windowDef} count {_currentWindows.Count} level {_showWindowLevel}");
             Assert.IsNotNull(windowDef, "windowDef != null");
             if (windowDef.NeedsSceneLoad)
             {
                 _pendingWindow = windowDef;
                 InvalidateWindows(_currentWindows);
                 SceneLoader.LoadScene(windowDef);
+                Debug.Log($"LoadWindow {windowDef} exit");
+                _showWindowLevel -= 1;
                 return;
             }
             if (_pendingWindow != null && !_pendingWindow.Equals(windowDef))
             {
                 Debug.Log($"LoadWindow IGNORE {windowDef} PENDING {_pendingWindow}");
+                Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
+                _showWindowLevel -= 1;
                 return;
             }
             if (IsVisible(windowDef))
             {
                 Debug.Log($"LoadWindow ALREADY IsVisible {windowDef}");
+                Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
+                _showWindowLevel -= 1;
                 return;
             }
             var currentWindow = _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
@@ -194,6 +203,8 @@ namespace Altzone.Scripts.Window
             }
             _currentWindows.Insert(0, currentWindow);
             Show(currentWindow);
+            Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
+            _showWindowLevel -= 1;
         }
 
         void IWindowManager.PopCurrentWindow()
@@ -215,7 +226,7 @@ namespace Altzone.Scripts.Window
                 {
                     prefab.transform.SetParent(_windowsParent.transform);
                 }
-                prefab.name = prefab.name.Replace("(Clone)", "");
+                prefab.name = prefab.name.Replace("(Clone)", string.Empty);
             }
             var currentWindow = new MyWindow(windowDef, prefab);
             _knownWindows.Add(currentWindow);

@@ -190,10 +190,10 @@ namespace Prg.Scripts.Common.Photon
             PhotonNetwork.SerializationRate = 30;
             Debug.Log(
                 $"ConnectUsingSettings {PhotonNetwork.NetworkClientState} scene={SceneManager.GetActiveScene().name} player={playerName}" +
-                $" {(appSettings != null ? appSettings.ToStringFull() : "")}");
+                $" {(appSettings != null ? appSettings.ToStringFull() : string.Empty)}");
             PhotonNetwork.AutomaticallySyncScene = isAutomaticallySyncScene;
             PhotonNetwork.NickName = playerName;
-            PhotonNetwork.GameVersion = "";
+            PhotonNetwork.GameVersion = string.Empty;
             var started = appSettings != null
                 ? PhotonNetwork.ConnectUsingSettings(appSettings)
                 : PhotonNetwork.ConnectUsingSettings();

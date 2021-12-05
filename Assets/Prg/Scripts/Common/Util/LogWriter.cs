@@ -114,7 +114,7 @@ namespace Prg.Scripts.Common.Util
             _instance.WriteLogInternal(message);
         }
 
-        private static string _prevLogString = "";
+        private static string _prevLogString = string.Empty;
         private static int _prevLogLineCount;
 
         /* Threaded callback for listening Unity logging */
@@ -202,7 +202,7 @@ namespace Prg.Scripts.Common.Util
                 }
             }
             var platform = Application.platform.ToString().ToLower();
-            var prefix = platform.Contains("editor") ? "editor" : platform.Replace("player", "");
+            var prefix = platform.Contains("editor") ? "editor" : platform.Replace("player", string.Empty);
             var baseName = Application.productName.ToLower();
             return $"{prefix}_{baseName}_{LogFileSuffix}";
         }
