@@ -153,12 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af4852ec47f46e9bebd7b5b026cf52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPos: 0
-  teamIndex: 0
-  isLocal: 0
-  oppositeTeamIndex: 0
-  teamMatePos: 0
-  isAwake: 0
+  _playerPos: 0
+  _teamNumber: 0
+  _isLocal: 0
+  _oppositeTeamNumber: 0
+  _teamMatePos: 0
+  _isAwake: 0
 --- !u!114 &3604737390977094345
 MonoBehaviour:
   m_ObjectHideFlags: 0
