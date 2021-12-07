@@ -3,7 +3,7 @@ using Prg.Scripts.Common.Util;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Prg
+namespace Editor.Prg.Editors
 {
     [CustomEditor(typeof(StringProperty))]
     public class StringPropertyEditor : UnityEditor.Editor

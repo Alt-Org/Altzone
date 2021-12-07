@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Editor.Prg
+namespace Editor.Prg.Editors
 {
     /// <summary>
     /// <c>CultureInfo</c> for custom editor code for sorting strings.

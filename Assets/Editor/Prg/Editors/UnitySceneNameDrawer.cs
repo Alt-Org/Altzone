@@ -1,11 +1,11 @@
-using Prg.Scripts.Common.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Prg.Scripts.Common.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Prg
+namespace Editor.Prg.Editors
 {
     [CustomPropertyDrawer(typeof(UnitySceneName), true)]
     public class UnitySceneNameDrawer : PropertyDrawer

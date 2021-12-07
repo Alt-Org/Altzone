@@ -2,7 +2,7 @@ using Prg.Scripts.Common.Unity;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Prg
+namespace Editor.Prg.Editors
 {
     /// <summary>
     /// Property drawer for <c>LayerSelector</c> attribute.

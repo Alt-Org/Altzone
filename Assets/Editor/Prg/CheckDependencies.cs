@@ -3,11 +3,13 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 
-namespace Editor.Prg.Util
+namespace Editor.Prg
 {
     public static class CheckDependencies
     {
-        [MenuItem("Window/ALT-Zone/Check Dependencies")]
+        private const string MenuRoot = "Window/ALT-Zone/Dependencies/";
+
+        [MenuItem(MenuRoot + "Check Dependencies", false, 10)]
         private static void _CheckDependencies()
         {
             Debug.Log("*");
@@ -67,7 +69,7 @@ namespace Editor.Prg.Util
                 if (foundCount[i] == 0)
                 {
                     var path = AssetDatabase.GUIDToAssetPath(selectedGuids[i]);
-                    Debug.Log($"{path} has <b>{RichText.Yellow("NO dependencies")}</b> in this search");
+                    Debug.Log($"{path} has <b>{RichText.Brown("NO dependencies")}</b> in this search");
                     noDepCount += 1;
                 }
             }
