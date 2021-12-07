@@ -7,6 +7,10 @@ namespace Altzone.Scripts.Window
     /// <summary>
     /// Interface for simple <c>WindowManager</c>.
     /// </summary>
+    /// <remarks>
+    /// Some methods are not reentrant and must be synchronized externally!<br />
+    /// At least <c>ShowWindow</c> and <c>Unwind</c> can not be called while somebody (else) is executing them.
+    /// </remarks>
     public interface IWindowManager
     {
         /// <summary>
@@ -19,6 +23,14 @@ namespace Altzone.Scripts.Window
         /// Go back in window chain following bread crumbs.
         /// </summary>
         void GoBack();
+
+        /// <summary>
+        /// Unwind windows stack until given window is next to topmost window in window chain.
+        /// </summary>
+        /// <remarks>
+        /// If window is not found, it is inserted there.
+        /// </remarks>
+        void Unwind(WindowDef windowDef);
 
         /// <summary>
         /// Shows given window.

@@ -156,6 +156,46 @@ namespace Altzone.Scripts.Window
             ((IWindowManager)this).ShowWindow(currentWindow._windowDef);
         }
 
+        void IWindowManager.Unwind(WindowDef windowDef)
+        {
+            Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
+            _showWindowLevel += 1;
+            Debug.Log($"Unwind {windowDef} count {_currentWindows.Count} level {_showWindowLevel}");
+            Assert.IsNotNull(windowDef, "windowDef != null");
+
+            // Unwind
+            while (_currentWindows.Count > 1)
+            {
+                var stackWindow = _currentWindows[1];
+                if (stackWindow._windowDef.Equals(windowDef))
+                {
+                    break;
+                }
+                Debug.Log($"Unwind RemoveAt {stackWindow} count {_currentWindows.Count}");
+                _currentWindows.RemoveAt(1);
+            }
+            // Add if required - note that window prefab will not be instantiated now!
+            var insertionIndex = 0;
+            if (_currentWindows.Count == 1)
+            {
+                var stackWindow = _currentWindows[0];
+                insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+            }
+            else if (_currentWindows.Count > 1)
+            {
+                var stackWindow = _currentWindows[1];
+                insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+            }
+            if (insertionIndex >= 0)
+            {
+                var currentWindow = new MyWindow(windowDef, null);
+                Debug.Log($"Unwind Insert {currentWindow} count {_currentWindows.Count} index {insertionIndex}");
+                _currentWindows.Insert(insertionIndex, currentWindow);
+            }
+            Debug.Log($"Unwind {windowDef} exit level {_showWindowLevel}");
+            _showWindowLevel -= 1;
+        }
+
         void IWindowManager.ShowWindow(WindowDef windowDef)
         {
             Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
@@ -203,6 +243,12 @@ namespace Altzone.Scripts.Window
                     Hide(previousWindow);
                 }
             }
+            if (!currentWindow.IsValid)
+            {
+                var windowName = windowDef.name;
+                Debug.Log($"CreateWindowPrefab [{windowName}] {windowDef}");
+                currentWindow._window = CreateWindowPrefab(currentWindow._windowDef);
+            }
             _currentWindows.Insert(0, currentWindow);
             Show(currentWindow);
             Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
@@ -219,6 +265,14 @@ namespace Altzone.Scripts.Window
         {
             var windowName = windowDef.name;
             Debug.Log($"CreateWindow [{windowName}] {windowDef} count {_currentWindows.Count}");
+            var prefab = CreateWindowPrefab(windowDef);
+            var currentWindow = new MyWindow(windowDef, prefab);
+            _knownWindows.Add(currentWindow);
+            return currentWindow;
+        }
+
+        private GameObject CreateWindowPrefab(WindowDef windowDef)
+        {
             var prefab = windowDef.WindowPrefab;
             var isSceneObject = prefab.scene.handle != 0;
             if (!isSceneObject)
@@ -230,9 +284,7 @@ namespace Altzone.Scripts.Window
                 }
                 prefab.name = prefab.name.Replace("(Clone)", string.Empty);
             }
-            var currentWindow = new MyWindow(windowDef, prefab);
-            _knownWindows.Add(currentWindow);
-            return currentWindow;
+            return prefab;
         }
 
         private void PopAndHide()
