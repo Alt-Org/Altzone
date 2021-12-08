@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Window
         [Header("Settings"), SerializeField] private WindowDef _naviTarget;
         [Tooltip(Tooltip), SerializeField] private bool _isCurrentPopOutWindow;
 
-        private void Awake()
+        private void Start()
         {
             Assert.IsNotNull(_naviTarget, "_naviTarget != null");
             var button = GetComponent<Button>();

@@ -200,7 +200,7 @@ public static class PhotonExtensions
     {
         if (player == null)
         {
-            return "";
+            return string.Empty;
         }
         var status = $"{player.ActorNumber}";
         if (player.IsMasterClient)
@@ -223,7 +223,7 @@ public static class PhotonExtensions
     public static string GetDebugLabel(this RoomInfo room) // Works for Room too!
     {
         // Replacement for room.ToString()
-        return $"{room}{(room.RemovedFromList ? " removed." : "")} {room.CustomProperties.AsSorted()}";
+        return $"{room}{(room.RemovedFromList ? " removed." : string.Empty)} {room.CustomProperties.AsSorted()}";
     }
 
     private static string AsSorted(this Hashtable dictionary)
