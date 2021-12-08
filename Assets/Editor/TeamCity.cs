@@ -39,8 +39,7 @@ namespace Editor
             .Select(x => x.path)
             .ToArray();
 
-        [MenuItem("Window/ALT-Zone/Build/Test Android Build Config")]
-        private static void check_Android_Build()
+        internal static void CheckAndroidBuild()
         {
             // We assume that local keystore and password folder is one level up from current working directory
             // - that should be UNITY project folder
@@ -94,8 +93,7 @@ namespace Editor
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
-        [MenuItem("Window/ALT-Zone/Build/Create Build Script")]
-        private static void create_Build_Script()
+        internal static void CreateBuildScript()
         {
             const string scriptName = "m_BuildScript.bat";
             var sep1 = Path.AltDirectorySeparatorChar.ToString();
@@ -391,7 +389,7 @@ namespace Editor
             {
                 var projectPath = "./";
                 var buildTarget = BuildTarget.StandaloneWindows64;
-                var keystore = "";
+                var keystore = string.Empty;
                 var isDevelopmentBuild = false;
                 var isAndroidFull = false;
                 for (var i = 0; i < args.Length; ++i)

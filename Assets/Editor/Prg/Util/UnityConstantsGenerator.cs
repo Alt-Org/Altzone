@@ -22,7 +22,7 @@ namespace Editor.Prg.Util
             string MakeSafeForCode(string name)
             {
                 // Code style might not allow underscores so we just remove everything suspicious
-                var str = Regex.Replace(name, "[^a-zA-Z0-9_]", "", RegexOptions.Compiled);
+                var str = Regex.Replace(name, "[^a-zA-Z0-9_]", string.Empty, RegexOptions.Compiled);
                 Assert.IsTrue(str.Length > 0);
                 return str;
             }

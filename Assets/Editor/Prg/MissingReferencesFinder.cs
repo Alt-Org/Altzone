@@ -74,7 +74,7 @@ namespace Editor.Prg
                     // Missing components will be null, we can't find their type, etc.
                     if (!component)
                     {
-                        UnityEngine.Debug.LogErrorFormat(go, "Missing Component ? in GameObject: {0}", GetFullPath(go));
+                        Debug.LogWarning($"Missing Component ? in GameObject: {GetFullPath(go)}", go);
                         continue;
                     }
                     var so = new SerializedObject(component);
@@ -116,7 +116,7 @@ namespace Editor.Prg
         private static void ShowError(string context, GameObject go, string componentName, string propertyName)
         {
             const string errorTemplate = "Missing Ref in: [{3}]{0}. Component: {1}, Property: {2}";
-            Debug.LogError(string.Format(errorTemplate, GetFullPath(go), componentName, propertyName, context), go);
+            Debug.LogWarning(string.Format(errorTemplate, GetFullPath(go), componentName, propertyName, context), go);
         }
 
         private static string GetFullPath(GameObject go)

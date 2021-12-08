@@ -12,26 +12,26 @@ namespace Editor.Prg.Util
         [MenuItem("Window/ALT-Zone/Util/Show Version Info")]
         private static void ShowVersionInfo()
         {
-            void printProperty(SerializedObject anObject, string propName)
+            void PrintProperty(SerializedObject anObject, string propName)
             {
-                var _serializedProp = anObject.FindProperty(propName);
-                var propValue = "";
-                switch (_serializedProp.propertyType)
+                var serializedProp = anObject.FindProperty(propName);
+                string propValue;
+                switch (serializedProp.propertyType)
                 {
                     case SerializedPropertyType.String:
-                        propValue = _serializedProp.stringValue;
+                        propValue = serializedProp.stringValue;
                         break;
                     case SerializedPropertyType.Integer:
-                        propValue = _serializedProp.intValue.ToString();
+                        propValue = serializedProp.intValue.ToString();
                         break;
                     case SerializedPropertyType.Float:
-                        propValue = _serializedProp.floatValue.ToString(CultureInfo.InvariantCulture);
+                        propValue = serializedProp.floatValue.ToString(CultureInfo.InvariantCulture);
                         break;
                     default:
-                        propValue = "<unsopported property type>";
+                        propValue = "<unsupported property type>";
                         break;
                 }
-                Debug.Log($"{_serializedProp.displayName}={propValue} [{_serializedProp.propertyType}]");
+                Debug.Log($"{serializedProp.displayName}={propValue} [{serializedProp.propertyType}]");
             }
 
             // Find out what kind of (type of) object you have:
@@ -46,9 +46,9 @@ namespace Editor.Prg.Util
             Debug.Log("asset=" + asset);
 
             var serializedObject = new SerializedObject(asset);
-            printProperty(serializedObject, "productName");
-            printProperty(serializedObject, "bundleVersion");
-            printProperty(serializedObject, "AndroidBundleVersionCode");
+            PrintProperty(serializedObject, "productName");
+            PrintProperty(serializedObject, "bundleVersion");
+            PrintProperty(serializedObject, "AndroidBundleVersionCode");
         }
     }
 }

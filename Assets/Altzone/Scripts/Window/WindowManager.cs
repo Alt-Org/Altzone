@@ -156,43 +156,53 @@ namespace Altzone.Scripts.Window
             ((IWindowManager)this).ShowWindow(currentWindow._windowDef);
         }
 
-        void IWindowManager.Unwind(WindowDef windowDef)
+        void IWindowManager.Unwind(WindowDef unwindWindowDef)
         {
+            void DoUnwind(WindowDef windowDef)
+            {
+                while (_currentWindows.Count > 1)
+                {
+                    var stackWindow = _currentWindows[1];
+                    if (stackWindow._windowDef.Equals(windowDef))
+                    {
+                        break;
+                    }
+                    Debug.Log($"Unwind RemoveAt {stackWindow} count {_currentWindows.Count}");
+                    _currentWindows.RemoveAt(1);
+                }
+                // Add if required - note that window prefab will not be instantiated now!
+                var insertionIndex = 0;
+                if (_currentWindows.Count == 1)
+                {
+                    var stackWindow = _currentWindows[0];
+                    insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+                }
+                else if (_currentWindows.Count > 1)
+                {
+                    var stackWindow = _currentWindows[1];
+                    insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+                }
+                if (insertionIndex >= 0)
+                {
+                    var currentWindow = new MyWindow(windowDef, null);
+                    Debug.Log($"Unwind Insert {currentWindow} count {_currentWindows.Count} index {insertionIndex}");
+                    _currentWindows.Insert(insertionIndex, currentWindow);
+                }
+            }
+
             Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
             _showWindowLevel += 1;
-            Debug.Log($"Unwind {windowDef} count {_currentWindows.Count} level {_showWindowLevel}");
-            Assert.IsNotNull(windowDef, "windowDef != null");
+            Debug.Log($"Unwind {unwindWindowDef} count {_currentWindows.Count} level {_showWindowLevel}");
 
-            // Unwind
-            while (_currentWindows.Count > 1)
+            if (unwindWindowDef != null)
             {
-                var stackWindow = _currentWindows[1];
-                if (stackWindow._windowDef.Equals(windowDef))
-                {
-                    break;
-                }
-                Debug.Log($"Unwind RemoveAt {stackWindow} count {_currentWindows.Count}");
-                _currentWindows.RemoveAt(1);
+                DoUnwind(unwindWindowDef);
             }
-            // Add if required - note that window prefab will not be instantiated now!
-            var insertionIndex = 0;
-            if (_currentWindows.Count == 1)
+            else
             {
-                var stackWindow = _currentWindows[0];
-                insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+                _currentWindows.Clear();
             }
-            else if (_currentWindows.Count > 1)
-            {
-                var stackWindow = _currentWindows[1];
-                insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
-            }
-            if (insertionIndex >= 0)
-            {
-                var currentWindow = new MyWindow(windowDef, null);
-                Debug.Log($"Unwind Insert {currentWindow} count {_currentWindows.Count} index {insertionIndex}");
-                _currentWindows.Insert(insertionIndex, currentWindow);
-            }
-            Debug.Log($"Unwind {windowDef} exit level {_showWindowLevel}");
+            Debug.Log($"Unwind {unwindWindowDef} exit count {_currentWindows.Count} level {_showWindowLevel}");
             _showWindowLevel -= 1;
         }
 

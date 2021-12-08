@@ -2,9 +2,16 @@
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Editor.Prg
 {
+    /// <summary>
+    /// Utility script to check dependencies of selected objects in UNITY <c>Editor</c> based on their <c>GUID</c>.
+    /// </summary>
+    /// <remarks>
+    /// List of supported object types (in selection) is limited to some "well known" types used in UNITY.
+    /// </remarks>
     public static class CheckDependencies
     {
         private const string MenuRoot = "Window/ALT-Zone/Dependencies/";
@@ -32,6 +39,7 @@ namespace Editor.Prg
                 ".physicsmaterial2d",
                 ".png",
                 ".prefab",
+                ".psd",
                 ".ttf"
             };
             foreach (var guid in selectedGuids)
@@ -48,7 +56,7 @@ namespace Editor.Prg
                 Debug.Log($"Selected object is not supported asset: {path}");
                 return;
             }
-            Debug.Log($"Search dependencies for {selectedGuids.Length} assets (in scenes, prefabs, ScriptableObjects)");
+            Debug.Log($"Search dependencies for {selectedGuids.Length} assets in {string.Join(", ", validExtensions)}");
             const string assetRoot = "Assets";
             var foundCount = new int[selectedGuids.Length];
             Array.Clear(foundCount, 0, foundCount.Length);
@@ -104,7 +112,8 @@ namespace Editor.Prg
                     if (assetContent.Contains(guid))
                     {
                         var source = AssetDatabase.GUIDToAssetPath(guid);
-                        Debug.Log($"{source} found in {path}");
+                        var go = AssetDatabase.LoadAssetAtPath (path, typeof(GameObject)) as GameObject;
+                        Debug.LogWarning($"{source} found in {path}", go);
                         foundCount[guidIndex] += 1;
                         count += 1;
                     }
