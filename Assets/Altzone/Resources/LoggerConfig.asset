@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf76c67bdba3d79488064bc73ab3316c, type: 3}
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
-  isLogToFile: 0
-  colorForClassName: White
-  loggerRules: '.*PhotonListener.*=1
+  _isLogToFile: 0
+  _colorForClassName: 
+  _loggerRules: '.*PhotonListener.*=1
 
     ^Altzone.*=0
 
@@ -22,12 +22,10 @@ MonoBehaviour:
 
     ^Editor.*=0
 
-    ^Examples.*=0
-
     ^Lobby.*=0
+
+    ^MainMenu.*=0
 
     ^Prg.*=0
 
-    ^Raid.*=0
-
-    .*=1'
+    ^Scripts.*=0'

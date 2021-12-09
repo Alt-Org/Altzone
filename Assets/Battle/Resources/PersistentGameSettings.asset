@@ -13,34 +13,34 @@ MonoBehaviour:
   m_Name: PersistentGameSettings
   m_EditorClassIdentifier: 
   _features:
-    isRotateGameCamera: 1
-    isLocalPLayerOnTeamBlue: 1
-    isSPawnMiniBall: 0
-    isSinglePlayerShieldOn: 1
+    _isRotateGameCamera: 1
+    _isLocalPLayerOnTeamBlue: 1
+    _isSPawnMiniBall: 0
+    _isSinglePlayerShieldOn: 1
   _variables:
-    roomStartDelay: 3
-    ballMoveSpeedMultiplier: 1
-    ballLerpSmoothingFactor: 4
-    ballTeleportDistance: 1
-    minSlingShotDistance: 3
-    maxSlingShotDistance: 9
-    ballRestartDelay: 3
-    playerMoveSpeedMultiplier: 1
-    playerSqrMinRotationDistance: 5
-    playerSqrMaxRotationDistance: 5
-    shieldDistanceMultiplier: 1
+    _roomStartDelay: 3
+    _ballMoveSpeedMultiplier: 1
+    _ballLerpSmoothingFactor: 4
+    _ballTeleportDistance: 1
+    _minSlingShotDistance: 3
+    _maxSlingShotDistance: 9
+    _ballRestartDelay: 3
+    _playerMoveSpeedMultiplier: 1
+    _playerSqrMinRotationDistance: 5
+    _playerSqrMaxRotationDistance: 5
+    _shieldDistanceMultiplier: 1
   _prefabs:
-    playerForDes: {fileID: 626154037994138417, guid: 15cab2234cc49ef448d4e8057a198fa3,
+    _playerForDes: {fileID: 626154037994138417, guid: 15cab2234cc49ef448d4e8057a198fa3,
       type: 3}
-    playerForDef: {fileID: 626154037994138417, guid: 7140c4913f4d2f54794ae10968276765,
+    _playerForDef: {fileID: 626154037994138417, guid: 7140c4913f4d2f54794ae10968276765,
       type: 3}
-    playerForInt: {fileID: 626154037994138417, guid: 71ee33dd865c5b24594d268bdf1bc893,
+    _playerForInt: {fileID: 626154037994138417, guid: 71ee33dd865c5b24594d268bdf1bc893,
       type: 3}
-    playerForPro: {fileID: 626154037994138417, guid: cfdb81e4dbce5874ab9aa0d8320c839f,
+    _playerForPro: {fileID: 626154037994138417, guid: cfdb81e4dbce5874ab9aa0d8320c839f,
       type: 3}
-    playerForRet: {fileID: 626154037994138417, guid: 17700df4bd8607349857edd708f9b5cd,
+    _playerForRet: {fileID: 626154037994138417, guid: 17700df4bd8607349857edd708f9b5cd,
       type: 3}
-    playerForEgo: {fileID: 626154037994138417, guid: d7ddcaa9bb81d554a98d7e948838b85d,
+    _playerForEgo: {fileID: 626154037994138417, guid: d7ddcaa9bb81d554a98d7e948838b85d,
       type: 3}
-    playerForCon: {fileID: 626154037994138417, guid: aaf10c03909866b40acadf3d84cab765,
+    _playerForCon: {fileID: 626154037994138417, guid: aaf10c03909866b40acadf3d84cab765,
       type: 3}
