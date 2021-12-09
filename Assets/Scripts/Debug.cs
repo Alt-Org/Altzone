@@ -22,12 +22,10 @@ public static class Debug
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void RuntimeInitializeOnLoadMethod()
     {
-        // UnityEngine.Debug.Log($"SubsystemRegistration cache {CachedMethods.Count}");
+        UnityEngine.Debug.Log($"SubsystemRegistration cache {CachedMethods.Count}");
         // Reset static fields even when Domain Reloading is disabled.
-        _isClassNameColor = false;
-        _classNameColor = null;
-        _classNameColorFilter = null;
         _logLineAllowedFilter = null;
+        RemoveTagsForClassName();
         CachedMethods.Clear();
         SetEditorStatus();
     }
@@ -54,9 +52,9 @@ public static class Debug
 #endif
     }
 
-    private static string _classNameColorFilter;
-    private static string _classNameColor;
-    private static bool _isClassNameColor;
+    private static bool _isClassNamePrefix;
+    private static string _prefixTag;
+    private static string _suffixTag;
     private static bool _isEditorHook;
 
     /// <summary>
@@ -76,39 +74,26 @@ public static class Debug
     }
 
     /// <summary>
-    /// Sets color for class name field in debug log line.
+    /// Sets tag markers for class name field in debug log line.
     /// </summary>
     /// <remarks>
     /// See: https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html
     /// and
     /// https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html#ColorNames
     /// </remarks>
-    /// <param name="colorName">Unity color name</param>
-    /// <param name="logLineContentFilter">log writer filter</param>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-    public static void SetColorForClassName(string colorName, ref Func<string, string> logLineContentFilter)
+    public static void SetTagsForClassName(string prefixTag, string suffixTag)
     {
-        string RemoveColorFromLogLine(string line)
-        {
-            // getPrefix will add color to be removed here:
-            // [<color={classNameColor}>{className}</color>]
-            return line.Replace(_classNameColorFilter, "[").Replace("</color>]", "]");
-        }
+        _isClassNamePrefix = true;
+        _prefixTag = prefixTag;
+        _suffixTag = suffixTag;
+    }
 
-        if (string.IsNullOrWhiteSpace(colorName))
-        {
-            _isClassNameColor = false;
-            _classNameColor = null;
-            _classNameColorFilter = null;
-            logLineContentFilter -= RemoveColorFromLogLine;
-        }
-        else
-        {
-            _isClassNameColor = true;
-            _classNameColor = colorName;
-            _classNameColorFilter = $"[<color={_classNameColor}>";
-            logLineContentFilter += RemoveColorFromLogLine;
-        }
+    public static void RemoveTagsForClassName()
+    {
+        _isClassNamePrefix = false;
+        _prefixTag = null;
+        _suffixTag = null;
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
@@ -165,9 +150,8 @@ public static class Debug
             // For anonymous types we try its parent type.
             className = method.ReflectedType?.DeclaringType?.Name ?? nameof(Debug);
         }
-        // removeColorFromLogLine will remove this if logged to file
-        return _isClassNameColor
-            ? $"[<color={_classNameColor}>{className}</color>] "
+        return _isClassNamePrefix
+            ? $"{_prefixTag}{className}{_suffixTag} "
             : $"[{className}] ";
     }
 

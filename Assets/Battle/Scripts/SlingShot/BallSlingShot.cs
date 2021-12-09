@@ -46,8 +46,8 @@ namespace Battle.Scripts.SlingShot
         {
             Debug.Log("Awake");
             var variables = RuntimeGameConfig.Get().Variables;
-            sqrMinSlingShotDistance = variables.minSlingShotDistance * variables.minSlingShotDistance;
-            sqrMaxSlingShotDistance = variables.maxSlingShotDistance * variables.maxSlingShotDistance;
+            sqrMinSlingShotDistance = variables._minSlingShotDistance * variables._minSlingShotDistance;
+            sqrMaxSlingShotDistance = variables._maxSlingShotDistance * variables._maxSlingShotDistance;
             photonEventDispatcher = PhotonEventDispatcher.Get();
             photonEventDispatcher.registerEventListener(msgHideSlingShot, data => { onHideSlingShot(); });
         }
@@ -122,7 +122,7 @@ namespace Battle.Scripts.SlingShot
             Debug.Log($"startBall team={teamNumber} sqrMagnitude={_sqrMagnitude} attackForce={_attackForce}");
             var startPosition = b;
             var direction = deltaVector.normalized;
-            var multiplier = RuntimeGameConfig.Get().Variables.ballMoveSpeedMultiplier;
+            var multiplier = RuntimeGameConfig.Get().Variables._ballMoveSpeedMultiplier;
             var speed = deltaVector.magnitude * multiplier;
             startTheBall(ballControl, startPosition, teamNumber, direction, speed);
             sendHideSlingShot();

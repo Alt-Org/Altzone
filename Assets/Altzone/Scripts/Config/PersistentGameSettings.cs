@@ -12,6 +12,7 @@ namespace Altzone.Scripts.Config
     public class PersistentGameSettings : ScriptableObject
     {
         [Header("Game Features")] public GameFeatures _features;
+        [Header("Game Constraints")] public GameConstraints _constraints;
         [Header("Game Variables")] public GameVariables _variables;
         [Header("Game Prefabs")] public GamePrefabs _prefabs;
     }

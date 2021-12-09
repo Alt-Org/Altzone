@@ -38,7 +38,7 @@ namespace Battle.Scripts.Test
         {
             Debug.Log($"OnEnable: {PhotonNetwork.NetworkClientState} time={Time.time:0.00}");
             // Timer start running from here!
-            secondsRemaining = variables.roomStartDelay;
+            secondsRemaining = variables._roomStartDelay;
             sendRoomTimerProgress();
             roomCountdownTime = Time.time + 1.0f;
         }
@@ -59,7 +59,7 @@ namespace Battle.Scripts.Test
         private void handleRoomTimerProgress(object payload)
         {
             secondsRemaining = (int)payload;
-            this.Publish(new CountdownEvent(variables.roomStartDelay, secondsRemaining));
+            this.Publish(new CountdownEvent(variables._roomStartDelay, secondsRemaining));
             if (secondsRemaining <= 0)
             {
                 startRoom();

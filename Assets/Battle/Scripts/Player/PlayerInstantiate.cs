@@ -40,19 +40,19 @@ namespace Battle.Scripts.Player
             switch (defence)
             {
                 case Defence.Desensitisation:
-                    return prefabs.playerForDes;
+                    return prefabs._playerForDes;
                 case Defence.Deflection:
-                    return prefabs.playerForDef;
+                    return prefabs._playerForDef;
                 case Defence.Introjection:
-                    return prefabs.playerForInt;
+                    return prefabs._playerForInt;
                 case Defence.Projection:
-                    return prefabs.playerForPro;
+                    return prefabs._playerForPro;
                 case Defence.Retroflection:
-                    return prefabs.playerForRet;
+                    return prefabs._playerForRet;
                 case Defence.Egotism:
-                    return prefabs.playerForEgo;
+                    return prefabs._playerForEgo;
                 case Defence.Confluence:
-                    return prefabs.playerForCon;
+                    return prefabs._playerForCon;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
             }

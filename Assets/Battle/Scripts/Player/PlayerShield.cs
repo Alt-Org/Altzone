@@ -44,7 +44,7 @@ namespace Battle.Scripts.Player
             _transform = GetComponent<Transform>();
             var player = _photonView.Owner;
             var model = PhotonBattle.GetPlayerCharacterModel(player);
-            var multiplier = RuntimeGameConfig.Get().Variables.shieldDistanceMultiplier;
+            var multiplier = RuntimeGameConfig.Get().Variables._shieldDistanceMultiplier;
             sqrShieldDistance = model.Defence * multiplier * 2f;
             upperShield.SetActive(false);
             lowerShield.SetActive(false);
@@ -74,7 +74,7 @@ namespace Battle.Scripts.Player
             if (teamMate == null)
             {
                 var features = RuntimeGameConfig.Get().Features;
-                if (features.isSinglePlayerShieldOn)
+                if (features._isSinglePlayerShieldOn)
                 {
                     _otherTransform = _transform; // measure distance to ourself: shield will be always on!
                     Debug.Log($"OnEnable {name} shield is always ON");

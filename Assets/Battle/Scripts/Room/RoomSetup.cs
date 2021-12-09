@@ -64,12 +64,12 @@ namespace Battle.Scripts.Room
             }
             var sceneConfig = SceneConfig.Get();
             var features = RuntimeGameConfig.Get().Features;
-            if (features.isRotateGameCamera)
+            if (features._isRotateGameCamera)
             {
                 // Rotate game camera
                 sceneConfig.rotateGameCamera(upsideDown: true);
             }
-            if (features.isLocalPLayerOnTeamBlue)
+            if (features._isLocalPLayerOnTeamBlue)
             {
                 // Rotate background
                 sceneConfig.rotateBackground(upsideDown: true);

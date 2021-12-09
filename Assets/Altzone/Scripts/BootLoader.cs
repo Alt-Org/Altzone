@@ -21,7 +21,7 @@ namespace Altzone.Scripts
             var resourceLoader = ResourceLoader.Get(folderConfig.primaryConfigFolder, localDevConfig.developmentConfigFolder);
 
             var loggerConfig = resourceLoader.LoadAsset<LoggerConfig>(nameof(LoggerConfig));
-            LoggerConfig.createLoggerConfig(loggerConfig);
+            LoggerConfig.CreateLoggerConfig(loggerConfig);
 
             SetEditorStatus();
         }

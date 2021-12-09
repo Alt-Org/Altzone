@@ -229,7 +229,7 @@ namespace Battle.Scripts.Ball
                 var curPos = _rigidbody.position;
                 var deltaX = Mathf.Abs(curPos.x - networkPosition.x);
                 var deltaY = Mathf.Abs(curPos.y - networkPosition.y);
-                if (deltaX > variables.ballTeleportDistance || deltaY > variables.ballTeleportDistance)
+                if (deltaX > variables._ballTeleportDistance || deltaY > variables._ballTeleportDistance)
                 {
                     _rigidbody.position = networkPosition;
                 }
@@ -263,7 +263,7 @@ namespace Battle.Scripts.Ball
             }
             if (targetVelocity != _rigidbody.velocity)
             {
-                _rigidbody.velocity = Vector2.Lerp(_velocity, targetVelocity, deltaTime * variables.ballLerpSmoothingFactor);
+                _rigidbody.velocity = Vector2.Lerp(_velocity, targetVelocity, deltaTime * variables._ballLerpSmoothingFactor);
             }
         }
 

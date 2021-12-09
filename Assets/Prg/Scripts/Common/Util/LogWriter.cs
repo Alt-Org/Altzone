@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Util
@@ -10,16 +11,18 @@ namespace Prg.Scripts.Common.Util
     /// </summary>
     public class LogWriter : MonoBehaviour
     {
-        /// <summary>
-        /// Be nice and follow UNITY lifecycle but can loose some last log message on <c>OnApplicationQuit</c>.
-        /// </summary>
-        private static bool _isNiceCleanup;
+        private const string LogFileSuffix = "game.log";
 
-        public static Func<string, string> LogLineContentFilter;
+        public static void AddLogLineContentFilter(Func<string, string> filter)
+        {
+            _logLineContentFilter += filter;
+        }
 
-        private static readonly UTF8Encoding FileEncoding = new UTF8Encoding(false, false);
+        private static Func<string, string> _logLineContentFilter;
+
         private static LogWriter _instance;
         private static readonly object Lock = new object();
+        private static readonly UTF8Encoding FileEncoding = new UTF8Encoding(false, false);
 
         [Header("Live Data"), SerializeField] private string _fileName;
         private StreamWriter _file;
@@ -65,24 +68,28 @@ namespace Prg.Scripts.Common.Util
                 {
                     _fileName = _fileName.Replace(Path.AltDirectorySeparatorChar.ToString(), Path.DirectorySeparatorChar.ToString());
                 }
-                Debug.LogFormat("Logfile {0}", _fileName);
-                // Capture UNITY Console Logs in separate thread.
+                UnityEngine.Debug.Log($"LogWriter Open file {_fileName}");
                 Application.logMessageReceivedThreaded += UnityLogCallback;
             }
             catch (Exception x)
             {
                 _file = null;
-                UnityEngine.Debug.LogFormat("unable to create log file '{0}'", _fileName);
+                UnityEngine.Debug.LogWarning($"unable to create log file '{_fileName}'");
                 UnityEngine.Debug.LogException(x);
             }
         }
 
-        public void OnApplicationQuit()
+        private void OnDestroy()
         {
-            if (_isNiceCleanup)
+            // OnApplicationQuit() comes before OnDestroy() so we are interested to listen it.
+
+            Application.logMessageReceivedThreaded -= UnityLogCallback;
+            UnityEngine.Debug.Log($"LogWriter OnDestroy Close file {_fileName}");
+            _instance = null;
+            _logLineContentFilter = null;
+            if (_file != null)
             {
-                Application.logMessageReceivedThreaded -= UnityLogCallback;
-                Close();
+                _file.Close();
             }
         }
 
@@ -91,22 +98,8 @@ namespace Prg.Scripts.Common.Util
             if (_file != null)
             {
                 _file.WriteLine(message);
-                Flush();
+                _file.Flush();
             }
-        }
-
-        private void Close()
-        {
-            if (_file != null)
-            {
-                _file.Close();
-                _file = null;
-            }
-        }
-
-        private void Flush()
-        {
-            _file?.Flush();
         }
 
         private static void WriteLog(string message)
@@ -117,10 +110,18 @@ namespace Prg.Scripts.Common.Util
         private static string _prevLogString = string.Empty;
         private static int _prevLogLineCount;
 
-        /* Threaded callback for listening Unity logging */
 
+        /// <summary>
+        /// Callback to listen UNITY Debug messages and write them to a file.
+        /// </summary>
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
         {
+#if UNITY_EDITOR
+            if (!EditorApplication.isPlaying)
+            {
+                return;
+            }
+#endif
             lock (Lock)
             {
                 if (logString == _prevLogString && type != LogType.Error)
@@ -138,10 +139,10 @@ namespace Prg.Scripts.Common.Util
                     _prevLogLineCount = 0;
                 }
                 _prevLogString = logString;
-                if (LogLineContentFilter != null)
+                if (_logLineContentFilter != null)
                 {
                     // As we can modify the input parameter on the fly we must call each delegate separately with correct input.
-                    var invocationList = LogLineContentFilter.GetInvocationList();
+                    var invocationList = _logLineContentFilter.GetInvocationList();
                     foreach (var callback in invocationList)
                     {
                         logString = callback.DynamicInvoke(logString) as string;
@@ -172,13 +173,6 @@ namespace Prg.Scripts.Common.Util
             }
         }
 
-        private const string LogFileSuffix = "game.log";
-
-        public static void BeNice()
-        {
-            _isNiceCleanup = true;
-        }
-
         public static string GetLogName()
         {
             if (!Application.platform.ToString().ToLower().EndsWith("editor"))
@@ -206,5 +200,5 @@ namespace Prg.Scripts.Common.Util
             var baseName = Application.productName.ToLower();
             return $"{prefix}_{baseName}_{LogFileSuffix}";
         }
-   }
+    }
 }

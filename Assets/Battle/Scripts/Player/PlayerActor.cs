@@ -80,7 +80,7 @@ namespace Battle.Scripts.Player
             _photonView = PhotonView.Get(this);
             var player = _photonView.Owner;
             var model = PhotonBattle.GetPlayerCharacterModel(player);
-            var multiplier = RuntimeGameConfig.Get().Variables.playerMoveSpeedMultiplier;
+            var multiplier = RuntimeGameConfig.Get().Variables._playerMoveSpeedMultiplier;
             _Speed = model.Speed * multiplier;
 
             // Re-parent and set name

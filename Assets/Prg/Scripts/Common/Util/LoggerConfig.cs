@@ -22,22 +22,36 @@ namespace Prg.Scripts.Common.Util
             public Regex Regex;
         }
 
-        [Header("Settings")] public bool isLogToFile;
-        public string colorForClassName;
+        [Header("Settings")] public bool _isLogToFile;
+        public string _colorForClassName;
 
-        [Header("Class Filter"), TextArea(5, 20)] public string loggerRules;
+        [Header("Class Filter"), TextArea(5, 20)] public string _loggerRules;
 
-        public static void createLoggerConfig(LoggerConfig config)
+        private static string _prefixTag;
+        private static string _suffixTag;
+
+        public static void CreateLoggerConfig(LoggerConfig config)
         {
-            if (config.isLogToFile)
+            string FilterClassNameLogMessage(string message)
+            {
+                return message.Replace(_prefixTag, "[").Replace(_suffixTag, "]");
+            }
+
+            if (config._isLogToFile)
             {
                 CreateLogWriter();
             }
             // Log color
-            var trimmed = string.IsNullOrEmpty(config.colorForClassName) ? string.Empty : config.colorForClassName.Trim();
+            var trimmed = string.IsNullOrEmpty(config._colorForClassName) ? string.Empty : config._colorForClassName.Trim();
             if (trimmed.Length > 0)
             {
-                Debug.SetColorForClassName(trimmed, ref LogWriter.LogLineContentFilter);
+                // This is a bit complicated because:
+                // - Debug knows what to log and adds color to logged content that goes to UnityEngine console logger
+                // - LogWriter receives it and needs to remove those parts that are only for console logging, like colors.
+                _prefixTag = $"[<color={config._colorForClassName}>";
+                _suffixTag = "</color>]";
+                Debug.SetTagsForClassName(_prefixTag, _suffixTag);
+                LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
             }
             var filterList = config.BuildFilter();
             if (filterList.Count == 0)
@@ -86,7 +100,7 @@ namespace Prg.Scripts.Common.Util
             }
 
             UnityExtensions.CreateGameObjectAndComponent<LogWriter>(nameof(LogWriter), true);
-            LogWriter.LogLineContentFilter += FilterPhotonLogMessage;
+            LogWriter.AddLogLineContentFilter(FilterPhotonLogMessage);
         }
 
         private List<RegExpFilter> BuildFilter()
@@ -95,7 +109,7 @@ namespace Prg.Scripts.Common.Util
             // - lines can start and end with "'" if content has something that needs to be "protected" during JSON parsing
             // - JSON multiline separator is LF "\n"
             var list = new List<RegExpFilter>();
-            var lines = loggerRules;
+            var lines = _loggerRules ?? string.Empty;
             if (lines.StartsWith("'") && lines.EndsWith("'"))
             {
                 lines = lines.Substring(1, lines.Length - 2);
