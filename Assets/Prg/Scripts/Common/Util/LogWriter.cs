@@ -116,7 +116,9 @@ namespace Prg.Scripts.Common.Util
         /// </summary>
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && false
+            // Works on UNITY 2019.4.32 but not 28 this project uses :-(
+            // get_isPlaying can only be called from the main thread.
             if (!EditorApplication.isPlaying)
             {
                 return;
