@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Window;
-using Altzone.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity.Window;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;

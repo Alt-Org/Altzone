@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Back button for <c>WindowManager</c>.

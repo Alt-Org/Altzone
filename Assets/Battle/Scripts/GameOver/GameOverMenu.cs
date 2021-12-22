@@ -1,11 +1,11 @@
 using System.Collections;
-using Altzone.Scripts.Window;
-using Altzone.Scripts.Window.ScriptableObjects;
 using Battle.Scripts.Room;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Unity;
+using Prg.Scripts.Common.Unity.Window;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;

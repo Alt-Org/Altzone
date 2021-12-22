@@ -1,8 +1,7 @@
-﻿using Prg.Scripts.Common.Unity;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Altzone.Scripts.Window.ScriptableObjects
+namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
 {
     /// <summary>
     /// Scene definition for <c>WindowManager</c> and <c>SceneLoader</c>.<br />

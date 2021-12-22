@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Tracks Escape key press so that is must pressed down and released exactly once (on the same level)
@@ -19,14 +19,14 @@ namespace Altzone.Scripts.Window
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
             {
                 _activeScenePathDown = SceneManager.GetActiveScene().path;
                 _isEscapePressedDown = true;
                 _isEscapePressedUp = false;
                 return;
             }
-            if (Input.GetKeyUp(KeyCode.Escape))
+            if (UnityEngine.Input.GetKeyUp(KeyCode.Escape))
             {
                 _activeScenePathUp = SceneManager.GetActiveScene().path;
                 _isEscapePressedUp = true;

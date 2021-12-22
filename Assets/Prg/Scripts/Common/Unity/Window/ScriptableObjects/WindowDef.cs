@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Altzone.Scripts.Window.ScriptableObjects
+namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
 {
     /// <summary>
     /// Window definition for <c>WindowManager</c>.<br />

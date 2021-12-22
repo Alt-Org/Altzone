@@ -1,8 +1,8 @@
 using System;
-using Altzone.Scripts.Window.ScriptableObjects;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Interface for simple <c>WindowManager</c>.

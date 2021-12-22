@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using Altzone.Scripts.Window.ScriptableObjects;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Initial window loader for any level that uses <c>WindowManager</c>.

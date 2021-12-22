@@ -1,9 +1,9 @@
-﻿using Altzone.Scripts.Window.ScriptableObjects;
+﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Default navigation button for <c>WindowManager</c>.

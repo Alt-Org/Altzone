@@ -1,9 +1,9 @@
-using Altzone.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-namespace Altzone.Scripts.Window
+namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
     /// Simple scene loader for <c>WindowManager</c>.
