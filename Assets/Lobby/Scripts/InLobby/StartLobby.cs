@@ -23,18 +23,18 @@ namespace Lobby.Scripts.InLobby
             }
             if (PhotonWrapper.InRoom)
             {
-                PhotonLobby.leaveRoom();
+                PhotonLobby.LeaveRoom();
                 return;
             }
             if (PhotonWrapper.CanJoinLobby)
             {
-                PhotonLobby.joinLobby();
+                PhotonLobby.JoinLobby();
                 return;
             }
             if (PhotonWrapper.CanConnect)
             {
                 var playerData = RuntimeGameConfig.Get().PlayerDataCache;
-                PhotonLobby.connect(playerData.PlayerName);
+                PhotonLobby.Connect(playerData.PlayerName);
             }
         }
     }

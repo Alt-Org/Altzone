@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;

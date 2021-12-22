@@ -47,7 +47,7 @@ namespace Battle.Scripts.Room
                 }
                 else
                 {
-                    PhotonLobby.connect(playerData.PlayerName);
+                    PhotonLobby.Connect(playerData.PlayerName);
                 }
                 return;
             }
@@ -66,7 +66,7 @@ namespace Battle.Scripts.Room
             if (PhotonNetwork.IsMasterClient)
             {
                 // Mark room "closed"
-                PhotonLobby.closeRoom(keepVisible: true);
+                PhotonLobby.CloseRoom(keepVisible: true);
             }
             // Create walls
             var gameArena = SceneConfig.Get().gameArena;
@@ -80,14 +80,14 @@ namespace Battle.Scripts.Room
             if (!_isOfflineMode)
             {
                 Debug.Log($"joinLobby: {PhotonNetwork.NetworkClientState}");
-                PhotonLobby.joinLobby();
+                PhotonLobby.JoinLobby();
             }
         }
 
         public override void OnJoinedLobby()
         {
             Debug.Log($"createRoom: {PhotonNetwork.NetworkClientState}");
-            PhotonLobby.createRoom("testing");
+            PhotonLobby.CreateRoom("testing");
         }
 
         public override void OnJoinedRoom()

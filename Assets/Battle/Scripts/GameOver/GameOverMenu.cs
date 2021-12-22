@@ -48,7 +48,7 @@ namespace Battle.Scripts.GameOver
             }
             _team0.text = _scores[0]._wallCollisionCount > 0 ? $"Team {_scores[0]._teamNumber}\r\n{_scores[0]._wallCollisionCount}" : "No\r\nscore";
             _team1.text = _scores[1]._wallCollisionCount > 0 ? $"Team {_scores[1]._teamNumber}\r\n{_scores[1]._wallCollisionCount}" : "No\r\nscore";
-            PhotonLobby.leaveRoom();
+            PhotonLobby.LeaveRoom();
             yield return null;
             WindowManager.Get().Unwind(_mainMenuWindow);
         }

@@ -93,7 +93,7 @@ namespace Lobby.Scripts.InLobby
         private static void CreateRoomForMe()
         {
             Debug.Log("createRoomForMe");
-            PhotonLobby.createRoom($"Room{DateTime.Now.Second:00}");
+            PhotonLobby.CreateRoom($"Room{DateTime.Now.Second:00}");
         }
 
         private void JoinRoom(string roomName)
@@ -104,7 +104,7 @@ namespace Lobby.Scripts.InLobby
             {
                 if (roomInfo.Name == roomName && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
-                    PhotonLobby.joinRoom(roomInfo);
+                    PhotonLobby.JoinRoom(roomInfo);
                 }
             }
         }

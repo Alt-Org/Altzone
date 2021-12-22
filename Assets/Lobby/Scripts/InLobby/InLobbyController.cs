@@ -13,7 +13,7 @@ namespace Lobby.Scripts.InLobby
         private void Awake()
         {
             Debug.Log("Awake");
-            _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.gameVersion}";
+            _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
             _view.LobbyText = string.Empty;
 
             _view.CharacterButton.onClick.AddListener(CharacterButton);

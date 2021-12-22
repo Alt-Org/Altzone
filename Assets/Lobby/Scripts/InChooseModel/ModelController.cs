@@ -19,7 +19,7 @@ namespace Lobby.Scripts.InChooseModel
         private void Start()
         {
             Debug.Log("Start");
-            _view.titleText.text = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.gameVersion}";
+            _view.titleText.text = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var player = RuntimeGameConfig.Get().PlayerDataCache;
             _view.playerName.text = player.PlayerName;
             _view.hideCharacter();

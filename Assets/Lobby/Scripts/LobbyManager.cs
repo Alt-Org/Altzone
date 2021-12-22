@@ -50,11 +50,11 @@ namespace Lobby.Scripts
         {
             if (PhotonNetwork.InRoom)
             {
-                PhotonLobby.leaveRoom();
+                PhotonLobby.LeaveRoom();
             }
             else if (PhotonNetwork.InLobby)
             {
-                PhotonLobby.leaveLobby();
+                PhotonLobby.LeaveLobby();
             }
         }
 
