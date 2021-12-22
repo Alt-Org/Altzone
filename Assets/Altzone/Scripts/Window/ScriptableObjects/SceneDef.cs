@@ -1,5 +1,6 @@
 ﻿using Prg.Scripts.Common.Unity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Altzone.Scripts.Window.ScriptableObjects
 {
@@ -15,6 +16,11 @@ namespace Altzone.Scripts.Window.ScriptableObjects
 
         public string SceneName => _sceneName.sceneName;
         public bool IsNetworkScene => _isNetworkScene;
+
+        public bool NeedsSceneLoad()
+        {
+            return SceneName != SceneManager.GetActiveScene().name;
+        }
 
         public override string ToString()
         {

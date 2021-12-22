@@ -58,6 +58,7 @@ namespace Editor.Prg
             }
             Debug.Log($"Search dependencies for {selectedGuids.Length} assets in {string.Join(", ", validExtensions)}");
             const string assetRoot = "Assets";
+            var searchFolders = new[] { assetRoot };
             var foundCount = new int[selectedGuids.Length];
             Array.Clear(foundCount, 0, foundCount.Length);
 
@@ -65,7 +66,7 @@ namespace Editor.Prg
             var totalCount = 0;
             foreach (var assetFilter in assetFilters)
             {
-                string[] foundAssets = AssetDatabase.FindAssets(assetFilter, new[] { assetRoot });
+                var foundAssets = AssetDatabase.FindAssets(assetFilter, searchFolders);
                 var searchCount = CheckForGuidInAssets(selectedGuids, ref foundCount, foundAssets);
                 totalCount += searchCount;
                 Debug.Log($"search {assetFilter}:{foundAssets.Length} found={searchCount}");

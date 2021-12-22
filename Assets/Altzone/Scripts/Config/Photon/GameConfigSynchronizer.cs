@@ -7,7 +7,7 @@ using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Config
+namespace Altzone.Scripts.Config.Photon
 {
     [Flags] public enum What
     {

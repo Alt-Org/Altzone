@@ -40,12 +40,20 @@ namespace Altzone.Scripts.Window
             }
         }
 
-        public static IWindowManager Get() => FindObjectOfType<WindowManager>();
+        public static IWindowManager Get()
+        {
+            var windowManager = FindObjectOfType<WindowManager>();
+            if (windowManager == null)
+            {
+                return new NoOpWindowManager();
+            }
+            return windowManager;
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            var windowManager = Get();
+            var windowManager = FindObjectOfType<WindowManager>();
             if (windowManager == null)
             {
                 UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
@@ -88,9 +96,9 @@ namespace Altzone.Scripts.Window
 #endif
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log($"sceneLoaded {scene.name} ({scene.buildIndex}) pending {_pendingWindow}");
             if (_pendingWindow != null)
             {
+                Debug.Log($"sceneLoaded {scene.name} ({scene.buildIndex}) pending {_pendingWindow}");
                 ((IWindowManager)this).ShowWindow(_pendingWindow);
                 _pendingWindow = null;
             }
@@ -118,6 +126,13 @@ namespace Altzone.Scripts.Window
         {
             _goBackOnceHandler += handler;
         }
+
+        void IWindowManager.UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
+        {
+            _goBackOnceHandler -= handler;
+        }
+
+        int IWindowManager.WindowCount => _currentWindows.Count;
 
         void IWindowManager.GoBack()
         {
@@ -190,7 +205,7 @@ namespace Altzone.Scripts.Window
                 }
             }
 
-            Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
+            Assert.IsTrue(_showWindowLevel == 0, "_showWindowLevel == 0");
             _showWindowLevel += 1;
             Debug.Log($"Unwind {unwindWindowDef} count {_currentWindows.Count} level {_showWindowLevel}");
 
@@ -208,7 +223,7 @@ namespace Altzone.Scripts.Window
 
         void IWindowManager.ShowWindow(WindowDef windowDef)
         {
-            Assert.IsTrue(_showWindowLevel == 0,  "_showWindowLevel == 0");
+            Assert.IsTrue(_showWindowLevel == 0, "_showWindowLevel == 0");
             _showWindowLevel += 1;
             Debug.Log($"LoadWindow {windowDef} count {_currentWindows.Count} level {_showWindowLevel}");
             Assert.IsNotNull(windowDef, "windowDef != null");
@@ -287,11 +302,9 @@ namespace Altzone.Scripts.Window
             var isSceneObject = prefab.scene.handle != 0;
             if (!isSceneObject)
             {
-                prefab = Instantiate(prefab);
-                if (_windowsParent != null)
-                {
-                    prefab.transform.SetParent(_windowsParent.transform);
-                }
+                prefab = _windowsParent == null
+                    ? Instantiate(prefab)
+                    : Instantiate(prefab, _windowsParent.transform);
                 prefab.name = prefab.name.Replace("(Clone)", string.Empty);
             }
             return prefab;
@@ -355,6 +368,52 @@ namespace Altzone.Scripts.Window
             }
             Debug.Log($"InvokeCallbacks : {goBackResult}");
             return goBackResult;
+        }
+
+        /// <summary>
+        /// No-op implementation when actual implementation is not available.
+        /// </summary>
+        /// <remarks>
+        /// This can happen during app exit.
+        /// </remarks>
+        private class NoOpWindowManager : IWindowManager
+        {
+            public void RegisterGoBackHandlerOnce(Func<GoBackAction> handler)
+            {
+                // NOP
+            }
+
+            public void UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
+            {
+                // NOP
+            }
+
+            public int WindowCount => 0;
+
+            public void GoBack()
+            {
+                // NOP
+            }
+
+            public void Unwind(WindowDef windowDef)
+            {
+                // NOP
+            }
+
+            public void ShowWindow(WindowDef windowDef)
+            {
+                // NOP
+            }
+
+            public void PopCurrentWindow()
+            {
+                // NOP
+            }
+
+            public void SetWindowsParent(GameObject windowsParent)
+            {
+                // NOP
+            }
         }
     }
 }

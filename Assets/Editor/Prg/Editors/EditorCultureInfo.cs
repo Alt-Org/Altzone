@@ -8,8 +8,8 @@ namespace Editor.Prg.Editors
     /// </summary>
     public static class EditorCultureInfo
     {
-        public static readonly CultureInfo forSorting = new CultureInfo("fi-FI");
+        private static readonly CultureInfo ForSorting = new CultureInfo("fi-FI");
 
-        public static StringComparer sortComparer => StringComparer.Create(forSorting, ignoreCase: false);
+        public static StringComparer SortComparer => StringComparer.Create(ForSorting, ignoreCase: false);
     }
 }

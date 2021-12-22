@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
+using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
@@ -103,153 +101,6 @@ namespace Altzone.Scripts.Config
     }
 
     /// <summary>
-    /// Player data cache.
-    /// </summary>
-    /// <remarks>
-    /// Common location for player related data that is persisted elsewhere.<br />
-    /// As this class is visible in UNITY Editor it can not be <c>abstract</c> as it should be!
-    /// </remarks>
-    [Serializable]
-    public class PlayerDataCache
-    {
-        [SerializeField] protected string _playerName;
-
-        /// <summary>
-        /// Player name.
-        /// </summary>
-        /// <remarks>
-        /// This should be validated and sanitized before accepting a new value.
-        /// </remarks>
-        public string PlayerName
-        {
-            get => _playerName;
-            set
-            {
-                _playerName = value ?? string.Empty;
-                Save();
-            }
-        }
-
-        [SerializeField] protected int _characterModelId;
-
-        /// <summary>
-        /// Player character model id.
-        /// </summary>
-        public int CharacterModelId
-        {
-            get => _characterModelId;
-            set
-            {
-                _characterModelId = value;
-                Save();
-            }
-        }
-
-        /// <summary>
-        /// Player character model.
-        /// </summary>
-        /// <remarks>
-        /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
-        /// </remarks>
-        public CharacterModel CharacterModel =>
-            Storefront.Get().GetCharacterModel(_characterModelId) ??
-            new CharacterModel(-1, "Ö", Defence.Desensitisation, 0, 0, 0, 0);
-
-        [SerializeField] protected string _playerHandle;
-
-        /// <summary>
-        /// Unique string to identify this player across devices and systems.
-        /// </summary>
-        /// <remarks>
-        /// When new player is detected this should be given and persisted in all external systems in order to identify this player unambiguously.
-        /// </remarks>
-        public string PlayerHandle
-        {
-            get => _playerHandle;
-            set
-            {
-                _playerHandle = value ?? string.Empty;
-                Save();
-            }
-        }
-
-        [SerializeField] protected SystemLanguage _language;
-
-        /// <summary>
-        /// Player's UNITY language.
-        /// </summary>
-        public SystemLanguage Language
-        {
-            get => _language;
-            set
-            {
-                _language = value;
-                Save();
-            }
-        }
-
-        public bool HasLanguageCode => _language != SystemLanguage.Unknown;
-
-        [SerializeField] protected bool _isTosAccepted;
-
-        /// <summary>
-        /// Is Terms Of Service accepted?
-        /// </summary>
-        public bool IsTosAccepted
-        {
-            get => _isTosAccepted;
-            set
-            {
-                _isTosAccepted = value;
-                Save();
-            }
-        }
-
-        /// <summary>
-        /// Player is considered to be valid when it has non-empty name, valid language code and ToS accepted.
-        /// </summary>
-        public bool IsValid => !string.IsNullOrEmpty(PlayerName) && HasLanguageCode && IsTosAccepted;
-
-        /// <summary>
-        /// Protected <c>Save</c> method to handle single property change.
-        /// </summary>
-        protected virtual void Save()
-        {
-            // Placeholder for actual implementation in derived class.
-        }
-
-        /// <summary>
-        /// Public <c>BatchSave</c> method to save several properties at once.
-        /// </summary>
-        /// <param name="saveSettings">The action to save all properties in one go.</param>
-        public virtual void BatchSave(Action saveSettings)
-        {
-            // Placeholder for actual implementation in derived class.
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        public void DebugResetPlayer()
-        {
-            // Actually can not delete - just invalidate everything!
-            BatchSave(() =>
-            {
-                PlayerName = string.Empty;
-                CharacterModelId = -1;
-                Language = SystemLanguage.Unknown;
-                IsTosAccepted = false;
-            });
-        }
-
-        public override string ToString()
-        {
-            // This is required for actual implementation to detect changes in our changeable properties!
-            return
-                $"Name:{PlayerName}, ModelId:{CharacterModelId}, Lang {Language}, ToS {(IsTosAccepted ? 1 : 0)}, " +
-                $"Valid {(IsValid ? 1 : 0)}, Guid:{PlayerHandle}";
-        }
-    }
-
-    /// <summary>
     /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
     /// </summary>
     /// <remarks>
@@ -257,6 +108,8 @@ namespace Altzone.Scripts.Config
     /// </remarks>
     public class RuntimeGameConfig : MonoBehaviour
     {
+        internal const string IsFirsTimePlayingKey = "PlayerData.IsFirsTimePlaying";
+
         public static RuntimeGameConfig Get()
         {
             var instance = FindObjectOfType<RuntimeGameConfig>();
@@ -267,6 +120,10 @@ namespace Altzone.Scripts.Config
             }
             return instance;
         }
+
+        public static bool IsFirsTimePlaying => PlayerPrefs.GetInt(IsFirsTimePlayingKey, 1) == 1;
+
+        public static void RemoveIsFirsTimePlayingStatus() => PlayerPrefs.SetInt(IsFirsTimePlayingKey, 0);
 
 #if UNITY_EDITOR
         public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache();
@@ -325,79 +182,6 @@ namespace Altzone.Scripts.Config
         private static PlayerDataCache LoadPlayerDataCache()
         {
             return new PlayerDataCacheLocal();
-        }
-
-        private class PlayerDataCacheLocal : PlayerDataCache
-        {
-            private const string PlayerNameKey = "PlayerData.PlayerName";
-            private const string PlayerHandleKey = "PlayerData.PlayerHandle";
-            private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
-            private const string LanguageCodeKey = "PlayerData.LanguageCode";
-            private const string TermsOfServiceKey = "PlayerData.TermsOfService";
-
-            private bool _isBatchSave;
-
-            public PlayerDataCacheLocal()
-            {
-                _playerName = PlayerPrefs.GetString(PlayerNameKey, string.Empty);
-                _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, -1);
-                _playerHandle = PlayerPrefs.GetString(PlayerHandleKey, string.Empty);
-                if (string.IsNullOrWhiteSpace(PlayerHandle))
-                {
-                    _playerHandle = CreatePlayerHandle();
-                    PlayerPrefs.SetString(PlayerHandleKey, PlayerHandle);
-                    // Writes all modified preferences to disk.
-                    PlayerPrefs.Save();
-                }
-                _language = (SystemLanguage)PlayerPrefs.GetInt(LanguageCodeKey, (int)SystemLanguage.Unknown);
-                _isTosAccepted = PlayerPrefs.GetInt(TermsOfServiceKey, 0) == 1;
-            }
-
-            private static string CreatePlayerHandle()
-            {
-                // Create same GUID for same device if possible
-                // - guid can be used to identify third party cloud game services
-                // - we want to keep it constant for single device even this data is wiped e.g. during testing
-                var deviceId = SystemInfo.deviceUniqueIdentifier;
-                if (deviceId == SystemInfo.unsupportedIdentifier)
-                {
-                    return Guid.NewGuid().ToString();
-                }
-                using (var md5 = MD5.Create())
-                {
-                    var hash = md5.ComputeHash(Encoding.Unicode.GetBytes(deviceId));
-                    return new Guid(hash).ToString();
-                }
-            }
-
-            protected override void Save()
-            {
-                InternalSave();
-            }
-
-            public override void BatchSave(Action saveSettings)
-            {
-                _isBatchSave = true;
-                saveSettings?.Invoke();
-                _isBatchSave = false;
-                InternalSave();
-                // Writes all modified preferences to disk.
-                PlayerPrefs.Save();
-            }
-
-            private void InternalSave()
-            {
-                if (_isBatchSave)
-                {
-                    return; // Defer saving until later
-                }
-                // By default Unity writes preferences to disk during OnApplicationQuit().
-                PlayerPrefs.SetString(PlayerNameKey, PlayerName);
-                PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
-                PlayerPrefs.SetString(PlayerHandleKey, PlayerHandle);
-                PlayerPrefs.SetInt(LanguageCodeKey, (int)Language);
-                PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
-            }
         }
     }
 }

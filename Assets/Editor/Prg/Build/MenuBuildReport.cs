@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Prg.Util
+namespace Editor.Prg.Build
 {
     public class MenuBuildReport : MonoBehaviour
     {
@@ -17,7 +17,19 @@ namespace Editor.Prg.Util
             "Assets/Editor",
         };
 
-        [MenuItem("Window/ALT-Zone/Build/Check Build Report")]
+        [MenuItem("Window/ALT-Zone/Build/Create Build Script", false, 1)]
+        private static void CreateBuildScript()
+        {
+            TeamCity.CreateBuildScript();
+        }
+
+        [MenuItem("Window/ALT-Zone/Build/Test Android Build Config", false, 2)]
+        private static void CheckAndroidBuild()
+        {
+            TeamCity.CheckAndroidBuild();
+        }
+
+        [MenuItem("Window/ALT-Zone/Build/Check Build Report", false, 9)]
         private static void WindowReport()
         {
             var buildTargetName = TeamCity.CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
@@ -185,7 +197,7 @@ namespace Editor.Prg.Util
                 if (isFile)
                 {
                     filePath = line;
-                    fileSizeKb = (int) (new FileInfo(filePath).Length / 1024);
+                    fileSizeKb = (int)(new FileInfo(filePath).Length / 1024);
                     return;
                 }
                 var tokens = line.Split(separators1);

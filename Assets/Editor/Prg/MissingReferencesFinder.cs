@@ -57,14 +57,15 @@ namespace Editor.Prg
             var gameObjects = allAssets.Select(a =>
                 AssetDatabase.LoadAssetAtPath(a, typeof(GameObject)) as GameObject).Where(a => a != null).ToArray();
             FindMissingReferences("Project", gameObjects);
+            /*var scriptableObjects = allAssets.Select(a =>
+                AssetDatabase.LoadAssetAtPath(a, typeof(ScriptableObject)) as ScriptableObject).Where(a => a != null).ToArray();
+            FindMissingReferences("Project", scriptableObjects);*/
         }
 
         private static void FindMissingReferences(string context, GameObject[] gameObjects)
         {
-            if (gameObjects == null)
-            {
-                return;
-            }
+            Debug.Log($"FindMissingReferences gameObjects {gameObjects.Length}");
+            var missingCount = 0;
             foreach (var go in gameObjects)
             {
                 var components = go.GetComponents<Component>();
@@ -74,7 +75,7 @@ namespace Editor.Prg
                     // Missing components will be null, we can't find their type, etc.
                     if (!component)
                     {
-                        Debug.LogWarning($"Missing Component ? in GameObject: {GetFullPath(go)}", go);
+                        Debug.LogWarning($"Missing Component ? in GameObject: {go.GetFullPath()}", go);
                         continue;
                     }
                     var so = new SerializedObject(component);
@@ -97,13 +98,34 @@ namespace Editor.Prg
                             if (sp.objectReferenceValue == null
                                 && (sp.objectReferenceInstanceIDValue != 0 || objectReferenceStringValue.StartsWith("Missing")))
                             {
-                                ShowError(context, go, component.GetType().Name, ObjectNames.NicifyVariableName(sp.name));
+                                missingCount += 1;
+                                ShowMissing(context, go, component.GetType().Name, ObjectNames.NicifyVariableName(sp.name));
                             }
                         }
                     }
                 }
             }
+            Debug.Log($"missingCount {missingCount}");
         }
+
+        /*private static void FindMissingReferences(string context, ScriptableObject[] scriptableObjects)
+        {
+            // THis needs more work to be practical!
+            Debug.Log($"FindMissingReferences scriptableObjects {scriptableObjects.Length}");
+            foreach (var scriptableObject in scriptableObjects)
+            {
+                var fields = scriptableObject.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                foreach (var fieldInfo in fields)
+                {
+                    var value = fieldInfo.GetValue(scriptableObject);
+                    if (value == null)
+                    {
+                        //Debug.Log($"scriptableObject {scriptableObject} fields {fields.Length}");
+                        ShowMissing(context, scriptableObject, fieldInfo.Name, fieldInfo.FieldType);
+                    }
+                }
+            }
+        }*/
 
         private static GameObject[] GetSceneObjects()
         {
@@ -113,18 +135,15 @@ namespace Editor.Prg
                              && go.hideFlags == HideFlags.None).ToArray();
         }
 
-        private static void ShowError(string context, GameObject go, string componentName, string propertyName)
+        private static void ShowMissing(string context, GameObject gameObject, string componentName, string propertyName)
         {
-            const string errorTemplate = "Missing Ref in: [{3}]{0}. Component: {1}, Property: {2}";
-            Debug.LogWarning(string.Format(errorTemplate, GetFullPath(go), componentName, propertyName, context), go);
+            Debug.LogWarning(
+                $"Missing Ref in: [{context}]{gameObject.GetFullPath()}. Component: {componentName}, Property: {propertyName}", gameObject);
         }
 
-        private static string GetFullPath(GameObject go)
+        /*private static void ShowMissing(string context, ScriptableObject so, string propertyName, Type propertyType)
         {
-            var parent = go.transform.parent;
-            return parent == null
-                ? go.name
-                : GetFullPath(parent.gameObject) + "/" + go.name;
-        }
+            Debug.LogWarning($"Missing Ref in: [{context}]{so.name}. Property: {propertyName} ({propertyType.Name})");
+        }*/
     }
 }

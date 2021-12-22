@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Util;
@@ -37,9 +37,9 @@ namespace Altzone.Scripts
 
             if (!string.IsNullOrWhiteSpace(LocalDevConfig.Instance.photonVersionPrefix))
             {
-                PhotonLobby._gameVersion = () => $"{LocalDevConfig.Instance.photonVersionPrefix}{Application.version}";
+                PhotonLobby.GetGameVersion = () => $"{LocalDevConfig.Instance.photonVersionPrefix}{Application.version}";
             }
-            UnityEngine.Debug.Log($"Photon {RichText.Brown(PhotonLobby.gameVersion)}");
+            UnityEngine.Debug.Log($"Photon {RichText.Brown(PhotonLobby.GameVersion)}");
         }
     }
 }

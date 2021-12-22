@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Altzone.Scripts.Config
+namespace Altzone.Scripts.Config.ScriptableObjects
 {
     /// <summary>
     /// Local development settings.

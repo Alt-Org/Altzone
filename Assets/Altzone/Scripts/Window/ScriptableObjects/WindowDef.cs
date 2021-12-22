@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Altzone.Scripts.Window.ScriptableObjects
 {
@@ -34,13 +33,7 @@ namespace Altzone.Scripts.Window.ScriptableObjects
 
         private bool _NeedsSceneLoad()
         {
-            if (_scene == null)
-            {
-                return false;
-            }
-            var currentSceneName = SceneManager.GetActiveScene().name;
-            Debug.Log($"_NeedsSceneLoad {currentSceneName} <-> {_scene} : {currentSceneName != _scene.SceneName}");
-            return currentSceneName != _scene.SceneName;
+            return _scene != null && _scene.NeedsSceneLoad();
         }
 
         public override string ToString()

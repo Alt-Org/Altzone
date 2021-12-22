@@ -13,6 +13,7 @@ namespace Editor.Prg.Editors
         {
             "Assets/Photon",
             "Assets/TextMesh Pro",
+            "Assets/Prototype Textures",
         };
 
         public override void OnInspectorGUI()
