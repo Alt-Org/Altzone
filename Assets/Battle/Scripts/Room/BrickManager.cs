@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
@@ -32,7 +33,14 @@ namespace Battle.Scripts.Room
 
         private void Awake()
         {
-            Debug.Log("Awake");
+            var isBricksVisible = RuntimeGameConfig.Get().Features._isBricksVisible;
+            Debug.Log("Awake isBricksVisible {isBricksVisible");
+            if (!isBricksVisible)
+            {
+                upperBricks.SetActive(false);
+                lowerBricks.SetActive(false);
+                return;
+            }
             createBrickMarkersFor(upperBricks.transform);
             createBrickMarkersFor(lowerBricks.transform);
             photonEventDispatcher = PhotonEventDispatcher.Get();

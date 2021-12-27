@@ -32,6 +32,11 @@ namespace Altzone.Scripts.Config
         /// </summary>
         public bool _isSinglePlayerShieldOn;
 
+        /// <summary>
+        /// Is bricks visible.
+        /// </summary>
+        public bool _isBricksVisible;
+
         public void CopyFrom(GameFeatures other)
         {
             PropertyCopier<GameFeatures, GameFeatures>.CopyFields(other, this);
