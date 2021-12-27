@@ -2,6 +2,7 @@
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 namespace Prg.Scripts.Common.Unity.Window
 {
@@ -11,12 +12,14 @@ namespace Prg.Scripts.Common.Unity.Window
     public class DefaultWindow : MonoBehaviour
     {
         [SerializeField] private WindowDef _window;
-        [SerializeField] private GameObject _sceneTestWindow;
+        [SerializeField] private bool _findWindow;
 
         private void OnEnable()
         {
-            SetEditorStatus();
-
+            if (_findWindow)
+            {
+                FindWindow();
+            }
             Debug.Log($"OnEnable {_window}");
             var windowManager = WindowManager.Get();
             windowManager.SetWindowsParent(gameObject);
@@ -24,13 +27,29 @@ namespace Prg.Scripts.Common.Unity.Window
             windowManager.ShowWindow(_window);
         }
 
-        [Conditional("UNITY_EDITOR")]
-        private void SetEditorStatus()
+        /// <summary>
+        /// Create new window for first <c>Canvas</c> in current scene.
+        /// </summary>
+        private void FindWindow()
         {
-            if (_window.WindowPrefab == null)
+            GameObject FindLastCanvas()
             {
-                _window.SetWindowPrefab(_sceneTestWindow);
+                var currentScene = SceneManager.GetActiveScene();
+                var rootGameObjects = currentScene.GetRootGameObjects();
+                var index = rootGameObjects.Length;
+                while (--index >= 0)
+                {
+                    var child = rootGameObjects[index];
+                    if (child.GetComponent<Canvas>() != null)
+                    {
+                        return child;
+                    }
+                }
+                return null;
             }
+
+            _window = ScriptableObject.CreateInstance<WindowDef>();
+            _window.SetWindowPrefab(FindLastCanvas());
         }
     }
 }

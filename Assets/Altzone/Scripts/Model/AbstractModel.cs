@@ -12,11 +12,6 @@
             Id = id;
         }
 
-        public virtual string sortValue()
-        {
-            return Id.ToString();
-        }
-
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}";

@@ -22,11 +22,6 @@
             Defence = defence;
         }
 
-        public override string sortValue()
-        {
-            return MainDefence.ToString();
-        }
-
         public override string ToString()
         {
             return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(MainDefence)}: {MainDefence}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";

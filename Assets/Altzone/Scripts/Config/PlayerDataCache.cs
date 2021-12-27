@@ -63,6 +63,21 @@ namespace Altzone.Scripts.Config
             Storefront.Get().GetCharacterModel(_characterModelId) ??
             new CharacterModel(-1, "Ö", Defence.Desensitisation, 0, 0, 0, 0);
 
+        [SerializeField] protected int _clanId;
+
+        /// <summary>
+        /// Player clan id.
+        /// </summary>
+        public int ClanId
+        {
+            get => _clanId;
+            set
+            {
+                _clanId = value;
+                Save();
+            }
+        }
+
         [SerializeField] protected string _playerGuid;
 
         /// <summary>
@@ -108,6 +123,18 @@ namespace Altzone.Scripts.Config
             }
         }
 
+        public string GetPlayerInfoLabel()
+        {
+            if (ClanId > 0)
+            {
+                var clan = Storefront.Get().GetClanModel(ClanId);
+                if (clan != null)
+                {
+                    return $"{PlayerName}[{clan.Tag}] {CharacterModel.Name}";
+                }
+            }
+            return $"{PlayerName} {CharacterModel.Name}";
+        }
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.
         /// </summary>
@@ -133,6 +160,7 @@ namespace Altzone.Scripts.Config
             {
                 PlayerName = string.Empty;
                 CharacterModelId = -1;
+                ClanId = -1;
                 IsTosAccepted = false;
             });
         }
@@ -141,7 +169,7 @@ namespace Altzone.Scripts.Config
         {
             // This is required for actual implementation to detect changes in our changeable properties!
             return
-                $"Name:{PlayerName}, ModelId:{CharacterModelId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid:{PlayerGuid}";
+                $"Name {PlayerName}, Model {CharacterModelId}, Clan {ClanId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
         }
     }
 
@@ -153,6 +181,7 @@ namespace Altzone.Scripts.Config
         private const string PlayerNameKey = "PlayerData.PlayerName";
         private const string PlayerGuidKey = "PlayerData.PlayerGuid";
         private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
+        private const string ClanIdKey = "PlayerData.ClanId";
         private const string TermsOfServiceKey = "PlayerData.TermsOfService";
 
         private bool _isBatchSave;
@@ -161,6 +190,7 @@ namespace Altzone.Scripts.Config
         {
             _playerName = PlayerPrefs.GetString(PlayerNameKey, string.Empty);
             _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, -1);
+            _clanId = PlayerPrefs.GetInt(ClanIdKey, -1);
             _playerGuid = PlayerPrefs.GetString(PlayerGuidKey, string.Empty);
             if (string.IsNullOrWhiteSpace(PlayerGuid))
             {
@@ -214,6 +244,7 @@ namespace Altzone.Scripts.Config
             // - you can force them to disk using PlayerPrefs.Save().
             PlayerPrefs.SetString(PlayerNameKey, PlayerName);
             PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
+            PlayerPrefs.SetInt(ClanIdKey, ClanId);
             PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
             PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
         }

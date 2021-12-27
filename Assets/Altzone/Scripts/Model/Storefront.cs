@@ -6,6 +6,8 @@ namespace Altzone.Scripts.Model
     {
         CharacterModel GetCharacterModel(int id);
         List<CharacterModel> GetAllCharacterModels();
+        ClanModel GetClanModel(int id);
+        List<ClanModel> GetAllClanModels();
     }
 
     public class Storefront : IStorefront
@@ -38,6 +40,16 @@ namespace Altzone.Scripts.Model
         List<CharacterModel> IStorefront.GetAllCharacterModels()
         {
             return Models.GetAll<CharacterModel>();
+        }
+
+        ClanModel IStorefront.GetClanModel(int id)
+        {
+            return Models.FindById<ClanModel>(id);
+        }
+
+        List<ClanModel> IStorefront.GetAllClanModels()
+        {
+            return Models.GetAll<ClanModel>();
         }
     }
 }

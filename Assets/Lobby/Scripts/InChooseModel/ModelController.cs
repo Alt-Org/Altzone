@@ -45,7 +45,7 @@ namespace Lobby.Scripts.InChooseModel
             });
             _currentCharacterId = player.CharacterModelId;
             var characters = Storefront.Get().GetAllCharacterModels();
-            characters.Sort((a, b) => string.Compare(a.sortValue(), b.sortValue(), StringComparison.Ordinal));
+            characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             for (var i = 0; i < characters.Count; ++i)
             {
                 var character = characters[i];

@@ -66,6 +66,11 @@ namespace Prg.Scripts.Common.Unity.Localization
             _altWords = altWords ?? new Dictionary<string, string>();
         }
 
+        public override string ToString()
+        {
+            return $"{LanguageName} [{Locale}] Words: {_words?.Count}/{_altWords?.Count}";
+        }
+
         #region Localization process in Editor
 
 #if UNITY_EDITOR
@@ -236,8 +241,8 @@ namespace Prg.Scripts.Common.Unity.Localization
 
         public static void SetLanguage(SystemLanguage language)
         {
-            Debug.Log($"SetLanguage {language}");
             _curLanguage = _languages.GetLanguage(language);
+            Debug.Log($"SetLanguage {_curLanguage}");
             PlayerPrefs.SetInt(LanguageCodeKey, (int)language);
         }
 
@@ -253,7 +258,7 @@ namespace Prg.Scripts.Common.Unity.Localization
             }
             else
             {
-                _languages = BinAsset.Load(config.LanguagesBinFile);
+                _languages = BinAsset.Load(config.LanguagesBinFile, false);
             }
             var language = GetLanguage();
             if (!HasLanguage(language))
@@ -571,10 +576,10 @@ namespace Prg.Scripts.Common.Unity.Localization
 #endif
         }
 
-        internal static Languages Load(TextAsset binAsset)
+        internal static Languages Load(TextAsset binAsset, bool isLogging)
         {
             var bytes = binAsset.bytes;
-            Debug.Log($"Load Languages bin {binAsset.name} bytes len {bytes.Length}");
+            if (isLogging) Debug.Log($"Load Languages bin {binAsset.name} bytes len {bytes.Length}");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var languages = new Languages();
@@ -617,10 +622,13 @@ namespace Prg.Scripts.Common.Unity.Localization
                 }
             }
             stopwatch.Stop();
-            Debug.Log($"Load Languages bin {binAsset.name} bytes len {bytes.Length} in {stopwatch.ElapsedMilliseconds} ms");
-            foreach (var language in languages.GetLanguages)
+            if (isLogging)
             {
-                DumpLanguage(language);
+                Debug.Log($"Load Languages bin {binAsset.name} bytes len {bytes.Length} in {stopwatch.ElapsedMilliseconds} ms");
+                foreach (var language in languages.GetLanguages)
+                {
+                    DumpLanguage(language);
+                }
             }
             return languages;
         }
