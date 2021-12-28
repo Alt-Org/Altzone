@@ -3110,6 +3110,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16384
   collisionToBrick: 0
+  _gameOverWindow: {fileID: 11400000, guid: e055d219557124840b82951de93b69fa, type: 2}
   _curTeamNumber: 0
   targetSpeed: 0
   ballCollision: {fileID: 0}
@@ -3578,7 +3579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _window: {fileID: 11400000, guid: 6cdec335aec274a4f86833886a518503, type: 2}
-  _sceneTestWindow: {fileID: 0}
+  _findWindow: 0
 --- !u!4 &1797546996
 Transform:
   m_ObjectHideFlags: 0
