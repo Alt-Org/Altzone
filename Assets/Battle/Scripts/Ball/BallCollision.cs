@@ -52,8 +52,8 @@ namespace Battle.Scripts.Ball
             if (true)
             {
                 var room = PhotonNetwork.CurrentRoom;
-                room.SetCustomProperty("T1", 1);
-                room.SetCustomProperty("T2", 0);
+                room.SetCustomProperty(PhotonBattle.TeamBlueKey, 1);
+                room.SetCustomProperty(PhotonBattle.TeamRedKey, 0);
                 WindowManager.Get().ShowWindow(_gameOverWindow);
             }
         }
