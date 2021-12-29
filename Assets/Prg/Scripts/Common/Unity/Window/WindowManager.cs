@@ -65,7 +65,7 @@ namespace Prg.Scripts.Common.Unity.Window
         private GameObject _windowsParent;
         private WindowDef _pendingWindow;
         private Func<GoBackAction> _goBackOnceHandler;
-        private int _showWindowLevel;
+        private int _executionLevel;
 
         private void Awake()
         {
@@ -172,12 +172,12 @@ namespace Prg.Scripts.Common.Unity.Window
 
         void IWindowManager.Unwind(WindowDef unwindWindowDef)
         {
-            void DoUnwind(WindowDef windowDef)
+            void DoUnwind()
             {
                 while (_currentWindows.Count > 1)
                 {
                     var stackWindow = _currentWindows[1];
-                    if (stackWindow._windowDef.Equals(windowDef))
+                    if (stackWindow._windowDef.Equals(unwindWindowDef))
                     {
                         break;
                     }
@@ -189,100 +189,104 @@ namespace Prg.Scripts.Common.Unity.Window
                 if (_currentWindows.Count == 1)
                 {
                     var stackWindow = _currentWindows[0];
-                    insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+                    insertionIndex = stackWindow._windowDef.Equals(unwindWindowDef) ? -1 : 1;
                 }
                 else if (_currentWindows.Count > 1)
                 {
                     var stackWindow = _currentWindows[1];
-                    insertionIndex = stackWindow._windowDef.Equals(windowDef) ? -1 : 1;
+                    insertionIndex = stackWindow._windowDef.Equals(unwindWindowDef) ? -1 : 1;
                 }
                 if (insertionIndex >= 0)
                 {
-                    var currentWindow = new MyWindow(windowDef, null);
+                    var currentWindow = new MyWindow(unwindWindowDef, null);
                     Debug.Log($"Unwind Insert {currentWindow} count {_currentWindows.Count} index {insertionIndex}");
                     _currentWindows.Insert(insertionIndex, currentWindow);
                 }
             }
 
-            Assert.IsTrue(_showWindowLevel == 0, "_showWindowLevel == 0");
-            _showWindowLevel += 1;
-            Debug.Log($"Unwind {unwindWindowDef} count {_currentWindows.Count} level {_showWindowLevel}");
-
             if (unwindWindowDef != null)
             {
-                DoUnwind(unwindWindowDef);
+                SafeExecution("Unwind", DoUnwind);
             }
             else
             {
                 _currentWindows.Clear();
             }
-            Debug.Log($"Unwind {unwindWindowDef} exit count {_currentWindows.Count} level {_showWindowLevel}");
-            _showWindowLevel -= 1;
         }
 
         void IWindowManager.ShowWindow(WindowDef windowDef)
         {
-            Assert.IsTrue(_showWindowLevel == 0, "_showWindowLevel == 0");
-            _showWindowLevel += 1;
-            Debug.Log($"LoadWindow {windowDef} count {_currentWindows.Count} level {_showWindowLevel}");
-            Assert.IsNotNull(windowDef, "windowDef != null");
-            if (windowDef.NeedsSceneLoad)
+            void DoShowWindow()
             {
-                _pendingWindow = windowDef;
-                InvalidateWindows(_currentWindows);
-                SceneLoader.LoadScene(windowDef);
-                Debug.Log($"LoadWindow {windowDef} exit");
-                _showWindowLevel -= 1;
-                return;
-            }
-            if (_pendingWindow != null && !_pendingWindow.Equals(windowDef))
-            {
-                Debug.Log($"LoadWindow IGNORE {windowDef} PENDING {_pendingWindow}");
-                Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
-                _showWindowLevel -= 1;
-                return;
-            }
-            if (IsVisible(windowDef))
-            {
-                Debug.Log($"LoadWindow ALREADY IsVisible {windowDef}");
-                Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
-                _showWindowLevel -= 1;
-                return;
-            }
-            var currentWindow = _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
-            if (currentWindow == null)
-            {
-                currentWindow = CreateWindow(windowDef);
-            }
-            if (_currentWindows.Count > 0)
-            {
-                var previousWindow = _currentWindows[0];
-                Assert.IsFalse(currentWindow._windowDef.Equals(previousWindow._windowDef));
-                if (previousWindow._windowDef.IsPopOutWindow)
+                Assert.IsNotNull(windowDef, "windowDef != null");
+                if (windowDef.NeedsSceneLoad)
                 {
-                    PopAndHide();
+                    _pendingWindow = windowDef;
+                    InvalidateWindows(_currentWindows);
+                    SceneLoader.LoadScene(windowDef);
+                    Debug.Log($"LoadWindow {windowDef} exit");
+                    return;
                 }
-                else
+                if (_pendingWindow != null && !_pendingWindow.Equals(windowDef))
                 {
-                    Hide(previousWindow);
+                    Debug.Log($"LoadWindow IGNORE {windowDef} PENDING {_pendingWindow}");
+                    return;
                 }
+                if (IsVisible(windowDef))
+                {
+                    Debug.Log($"LoadWindow ALREADY IsVisible {windowDef}");
+                    return;
+                }
+                var currentWindow = _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
+                if (currentWindow == null)
+                {
+                    currentWindow = CreateWindow(windowDef);
+                }
+                if (_currentWindows.Count > 0)
+                {
+                    var previousWindow = _currentWindows[0];
+                    Assert.IsFalse(currentWindow._windowDef.Equals(previousWindow._windowDef));
+                    if (previousWindow._windowDef.IsPopOutWindow)
+                    {
+                        PopAndHide();
+                    }
+                    else
+                    {
+                        Hide(previousWindow);
+                    }
+                }
+                if (!currentWindow.IsValid)
+                {
+                    var windowName = windowDef.name;
+                    Debug.Log($"CreateWindowPrefab [{windowName}] {windowDef}");
+                    currentWindow._window = CreateWindowPrefab(currentWindow._windowDef);
+                }
+                _currentWindows.Insert(0, currentWindow);
+                Show(currentWindow);
             }
-            if (!currentWindow.IsValid)
-            {
-                var windowName = windowDef.name;
-                Debug.Log($"CreateWindowPrefab [{windowName}] {windowDef}");
-                currentWindow._window = CreateWindowPrefab(currentWindow._windowDef);
-            }
-            _currentWindows.Insert(0, currentWindow);
-            Show(currentWindow);
-            Debug.Log($"LoadWindow {windowDef} exit level {_showWindowLevel}");
-            _showWindowLevel -= 1;
-        }
+            SafeExecution("Unwind", DoShowWindow);
+      }
 
         void IWindowManager.PopCurrentWindow()
         {
-            Debug.Log($"PopCurrentWindow count {_currentWindows.Count}");
-            PopAndHide();
+            if (_currentWindows.Count == 0)
+            {
+                return;
+            }
+            SafeExecution("PopCurrentWindow", PopAndHide);
+        }
+
+        private void SafeExecution(string actionName, Action action)
+        {
+            Assert.IsTrue(_executionLevel == 0, "_executionLevel == 0");
+            _executionLevel += 1;
+            Debug.Log($"SafeExecution {actionName} start count {_currentWindows.Count}");
+
+            action();
+
+            Debug.Log($"SafeExecution {actionName} exit count {_currentWindows.Count}");
+            _executionLevel -= 1;
+            Assert.IsTrue(_executionLevel == 0, "_executionLevel == 0");
         }
 
         private MyWindow CreateWindow(WindowDef windowDef)

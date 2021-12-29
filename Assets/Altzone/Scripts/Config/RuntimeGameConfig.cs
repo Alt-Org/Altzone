@@ -65,6 +65,8 @@ namespace Altzone.Scripts.Config
     public class GameVariables
     {
         [Header("Battle"), Min(1)] public int _roomStartDelay;
+        public int _headScoreToWin;
+        public int _wallScoreToWin;
 
         [Header("Ball")] public float _ballMoveSpeedMultiplier;
         public float _ballLerpSmoothingFactor;

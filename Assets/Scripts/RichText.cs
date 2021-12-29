@@ -13,6 +13,11 @@ public static class RichText
         return $"<color=red>{text}</color>";
     }
 
+    public static string Blue(string text)
+    {
+        return $"<color=blue>{text}</color>";
+    }
+
     public static string Magenta(string text)
     {
         return $"<color=magenta>{text}</color>";

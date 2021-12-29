@@ -17,7 +17,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private WindowManager.GoBackAction DoRedirect()
         {
-            var windowManager= WindowManager.Get();
+            var windowManager = WindowManager.Get();
             windowManager.PopCurrentWindow();
             windowManager.ShowWindow(_redirectWindow);
             return WindowManager.GoBackAction.Abort;
