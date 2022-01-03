@@ -2,8 +2,6 @@ using System;
 using Altzone.Scripts.Battle;
 using Battle.Scripts.interfaces;
 using Battle.Scripts.Scene;
-using Photon.Pun;
-using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 
@@ -49,13 +47,6 @@ namespace Battle.Scripts.Ball
             }
             Debug.Log($"OnCollisionEnter2D {other.gameObject.name}");
             ((IBallCollisionSource)this).onCollision2D?.Invoke(other);
-            if (true)
-            {
-                var room = PhotonNetwork.CurrentRoom;
-                room.SetCustomProperty(PhotonBattle.TeamBlueScoreKey, 1);
-                room.SetCustomProperty(PhotonBattle.TeamRedScoreKey, 0);
-                WindowManager.Get().ShowWindow(_gameOverWindow);
-            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
