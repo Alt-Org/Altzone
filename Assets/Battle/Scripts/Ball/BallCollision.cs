@@ -14,7 +14,6 @@ namespace Battle.Scripts.Ball
     {
         [Header("Live Data"), SerializeField] private bool isUpper;
         [SerializeField] private bool isLower;
-        [SerializeField] private WindowDef _gameOverWindow;
 
         private Collider2D upperTeam;
         private Collider2D lowerTeam;
@@ -28,11 +27,6 @@ namespace Battle.Scripts.Ball
             var sceneConfig = SceneConfig.Get();
             upperTeam = sceneConfig.upperTeamCollider;
             lowerTeam = sceneConfig.lowerTeamCollider;
-        }
-
-        public void SetGameOVerWindow(WindowDef gameOverWindow)
-        {
-            _gameOverWindow = gameOverWindow;
         }
 
         private void OnCollisionEnter2D(Collision2D other)

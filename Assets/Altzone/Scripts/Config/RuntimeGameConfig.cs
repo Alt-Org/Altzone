@@ -18,9 +18,9 @@ namespace Altzone.Scripts.Config
         public bool _isRotateGameCamera;
 
         /// <summary>
-        /// Is local player team color always "blue" team color.
+        /// Is local player team color always "blue" team side.
         /// </summary>
-        public bool _isLocalPLayerOnTeamBlue;
+        public bool _isRotateGamePlayArea;
 
         /// <summary>
         /// Spawn mini ball aka diamonds.

@@ -69,7 +69,7 @@ namespace Battle.Scripts.Room
                 // Rotate game camera
                 sceneConfig.rotateGameCamera(upsideDown: true);
             }
-            if (features._isLocalPLayerOnTeamBlue)
+            if (features._isRotateGamePlayArea)
             {
                 // Rotate background
                 sceneConfig.rotateBackground(upsideDown: true);

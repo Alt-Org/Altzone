@@ -258,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f7562cefb342f0894cf29a366bab0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameOverWindow: {fileID: 11400000, guid: e055d219557124840b82951de93b69fa, type: 2}
   _scores: []
 --- !u!1 &14502045
 GameObject:
@@ -3110,7 +3111,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16384
   collisionToBrick: 0
-  _gameOverWindow: {fileID: 11400000, guid: e055d219557124840b82951de93b69fa, type: 2}
   _curTeamNumber: 0
   targetSpeed: 0
   ballCollision: {fileID: 0}

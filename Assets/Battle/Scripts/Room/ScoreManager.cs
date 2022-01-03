@@ -1,9 +1,13 @@
 using System;
+using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Player;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity.Window;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityConstants;
 using UnityEngine;
 
@@ -60,6 +64,8 @@ namespace Battle.Scripts.Room
     public class ScoreManager : MonoBehaviour
     {
         private const int MsgSetTeamScore = PhotonEventDispatcher.eventCodeBase + 6;
+
+        [SerializeField] private WindowDef _gameOverWindow;
 
         private static ScoreManager Get()
         {
@@ -143,6 +149,36 @@ namespace Battle.Scripts.Room
             var score = _scores[teamIndex];
             score._headCollisionCount = scoreNew._headCollisionCount;
             score._wallCollisionCount = scoreNew._wallCollisionCount;
+            // Check for winning condition
+            if (!PhotonNetwork.InRoom)
+            {
+                return;
+            }
+            var variables = RuntimeGameConfig.Get().Variables;
+            foreach (var teamScore in _scores)
+            {
+                if (teamScore._headCollisionCount >= variables._headScoreToWin
+                || teamScore._wallCollisionCount >= variables._wallScoreToWin)
+                {
+                    var room = PhotonNetwork.CurrentRoom;
+                    var scoreKey = teamScore._teamNumber == PhotonBattle.TeamBlueValue
+                        ? PhotonBattle.TeamBlueScoreKey
+                        : PhotonBattle.TeamRedScoreKey;
+                    room.SetCustomProperty(scoreKey, 1);
+                    scoreKey = teamScore._teamNumber != PhotonBattle.TeamBlueValue
+                        ? PhotonBattle.TeamBlueScoreKey
+                        : PhotonBattle.TeamRedScoreKey;
+                    room.SetCustomProperty(scoreKey, 0);
+                    StartCoroutine(LoadGameOverWindow(_gameOverWindow));
+                    break;
+                }
+            }
+        }
+
+        private static IEnumerator LoadGameOverWindow(WindowDef window)
+        {
+            yield return null;
+            WindowManager.Get().ShowWindow(window);
         }
 
         private void _addHeadScore(int teamIndex)

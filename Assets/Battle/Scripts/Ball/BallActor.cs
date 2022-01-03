@@ -40,7 +40,6 @@ namespace Battle.Scripts.Ball
         [SerializeField] private int collisionToWall;
         [SerializeField] private LayerMask collisionToBrickMask;
         [SerializeField] private int collisionToBrick;
-        [SerializeField] private WindowDef _gameOverWindow;
 
         [Header("Live Data"), SerializeField] private int _curTeamNumber;
         [SerializeField] private float targetSpeed;
@@ -74,7 +73,6 @@ namespace Battle.Scripts.Ball
             targetSpeed = 0;
             ballCollision = gameObject.AddComponent<BallCollision>();
             ballCollision.enabled = false;
-            ballCollision.SetGameOVerWindow(_gameOverWindow);
             ((IBallCollisionSource)ballCollision).onCurrentTeamChanged = onCurrentTeamChanged;
             ((IBallCollisionSource)ballCollision).onCollision2D = onBallCollision;
             ballHeadShot = GetComponent<BallHeadShot>(); // Disables itself automatically

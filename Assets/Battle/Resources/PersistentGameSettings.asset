@@ -14,11 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _features:
     _isRotateGameCamera: 1
-    _isLocalPLayerOnTeamBlue: 1
+    _isRotateGamePlayArea: 1
     _isSPawnMiniBall: 0
     _isSinglePlayerShieldOn: 1
+    _isBricksVisible: 0
+  _constraints:
+    _minPlayerNameLength: 2
+    _maxPlayerNameLength: 16
   _variables:
     _roomStartDelay: 3
+    _headScoreToWin: 2
+    _wallScoreToWin: 4
     _ballMoveSpeedMultiplier: 1
     _ballLerpSmoothingFactor: 4
     _ballTeleportDistance: 1
