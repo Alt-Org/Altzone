@@ -15,8 +15,10 @@ namespace Altzone.Scripts.Battle
         public const string PlayerPositionKey = "pp";
         public const string PlayerClanKey = "pc";
         public const string PlayerMainSkillKey = "mk";
-        public const string TeamBlueKey = "tb";
-        public const string TeamRedKey = "tr";
+        public const string TeamBlueNameKey = "tb";
+        public const string TeamRedNameKey = "tr";
+        public const string TeamBlueScoreKey = "t1";
+        public const string TeamRedScoreKey = "t2";
 
         //  Red team number 2
         //  - Player numbers 3 and 4

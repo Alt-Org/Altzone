@@ -105,19 +105,19 @@ namespace Battle.Scripts.Room
         private void SendTeamNames()
         {
             var room = PhotonNetwork.CurrentRoom;
-            string teamRedName;
-            string teamBlueName;
+            string homeTeamName;
+            string visitorTeamName;
             if (PlayerActivator.HomeTeamNumber == PhotonBattle.TeamBlueValue)
             {
-                teamRedName = room.GetCustomProperty<string>(PhotonBattle.TeamRedKey);
-                teamBlueName = room.GetCustomProperty<string>(PhotonBattle.TeamBlueKey);
+                homeTeamName = room.GetCustomProperty<string>(PhotonBattle.TeamBlueNameKey);
+                visitorTeamName = room.GetCustomProperty<string>(PhotonBattle.TeamRedNameKey);
             }
             else
             {
-                teamRedName = room.GetCustomProperty<string>(PhotonBattle.TeamBlueKey);
-                teamBlueName = room.GetCustomProperty<string>(PhotonBattle.TeamRedKey);
+                homeTeamName = room.GetCustomProperty<string>(PhotonBattle.TeamRedNameKey);
+                visitorTeamName = room.GetCustomProperty<string>(PhotonBattle.TeamBlueNameKey);
             }
-            this.Publish(new TeamNameEvent(teamRedName, teamBlueName));
+            this.Publish(new TeamNameEvent(homeTeamName, visitorTeamName));
         }
 
         private void SendSetTeamScore(TeamScore score)
@@ -189,13 +189,13 @@ namespace Battle.Scripts.Room
 
         internal class TeamNameEvent
         {
-            public readonly string TeamRedName;
-            public readonly string TeamBlueName;
+            public readonly string HomeTeamName;
+            public readonly string VisitorTeamName;
 
-            public TeamNameEvent(string teamRedName, string teamBlueName)
+            public TeamNameEvent(string homeTeamName, string visitorTeamName)
             {
-                TeamRedName = teamRedName;
-                TeamBlueName = teamBlueName;
+                HomeTeamName = homeTeamName;
+                VisitorTeamName = visitorTeamName;
             }
         }
 

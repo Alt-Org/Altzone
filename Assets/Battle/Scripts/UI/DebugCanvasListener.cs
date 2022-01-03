@@ -65,8 +65,8 @@ namespace Battle.Scripts.UI
 
         private void OnTeamNameEvent(ScoreManager.TeamNameEvent data)
         {
-            _teamNameVisitor = data.TeamRedName;
-            _teamNameHome = data.TeamBlueName;
+            _teamNameHome = data.HomeTeamName;
+            _teamNameVisitor = data.VisitorTeamName;
             _teamColorHome = "yellow";
             _teamColorVisitor = "white";
         }

@@ -25,8 +25,8 @@ namespace Lobby.Scripts.InRoom
         private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueKey = PhotonBattle.TeamBlueKey;
-        private const string TeamRedKey = PhotonBattle.TeamRedKey;
+        private const string TeamBlueKey = PhotonBattle.TeamBlueNameKey;
+        private const string TeamRedKey = PhotonBattle.TeamRedNameKey;
         private const int TeamBlueValue = PhotonBattle.TeamBlueValue;
         private const int TeamRedValue = PhotonBattle.TeamRedValue;
 
