@@ -1,4 +1,5 @@
-﻿using Battle.Scripts.Player;
+﻿using Altzone.Scripts.Battle;
+using Battle.Scripts.Player;
 using Battle.Scripts.Room;
 using Battle.Scripts.Test;
 using Prg.Scripts.Common.PubSub;
@@ -12,7 +13,7 @@ namespace Battle.Scripts.UI
     /// </summary>
     public class DebugCanvasListener : MonoBehaviour
     {
-        private const string ScoreFormat = "<color={4}>{0}({1})</color> h={2} w={3}";
+        private const string ScoreFormat = "{0}({1}) h={2} w={3}";
 
         public GameObject roomStartPanel;
         public Text titleText;
@@ -21,10 +22,8 @@ namespace Battle.Scripts.UI
         public Text rightText;
         public CountdownText countdown;
 
-        private string _teamNameHome;
-        private string _teamNameVisitor;
-        private string _teamColorHome;
-        private string _teamColorVisitor;
+        private string _teamBlueName;
+        private string _teamRedName;
 
         private void OnEnable()
         {
@@ -65,24 +64,17 @@ namespace Battle.Scripts.UI
 
         private void OnTeamNameEvent(ScoreManager.TeamNameEvent data)
         {
-            _teamNameHome = data.HomeTeamName;
-            _teamNameVisitor = data.VisitorTeamName;
-            _teamColorHome = "yellow";
-            _teamColorVisitor = "white";
+            _teamBlueName = data.TeamBlueName;
+            _teamRedName = data.TeamRedName;
         }
 
         private void OnTeamScoreEvent(ScoreManager.TeamScoreEvent data)
         {
-            Debug.Log($"OnTeamScoreEvent {data} local {PlayerActivator.LocalTeamNumber} home {PlayerActivator.HomeTeamNumber}");
             var score = data.Score;
-            // Local or remote player - left or right side
-            var isLocalTeam = score._teamNumber == PlayerActivator.LocalTeamNumber;
-            // Master client team - team name and color
-            var isHomeTeam = score._teamNumber == PlayerActivator.HomeTeamNumber;
-            var teamName = isHomeTeam ? _teamNameHome : _teamNameVisitor;
-            var teamColor = isHomeTeam ? _teamColorHome : _teamColorVisitor;
-            var text = isLocalTeam ? leftText : rightText;
-            text.text = string.Format(ScoreFormat, teamName, score._teamNumber, score._headCollisionCount, score._wallCollisionCount, teamColor);
+            var isBlueTeam = score._teamNumber == PhotonBattle.TeamBlueValue;
+            var teamName = isBlueTeam ? _teamBlueName : _teamRedName;
+            var text = isBlueTeam ? leftText : rightText;
+            text.text = string.Format(ScoreFormat, teamName, score._teamNumber, score._headCollisionCount, score._wallCollisionCount);
         }
     }
 }

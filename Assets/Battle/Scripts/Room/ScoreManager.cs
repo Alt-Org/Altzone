@@ -189,13 +189,13 @@ namespace Battle.Scripts.Room
 
         internal class TeamNameEvent
         {
-            public readonly string HomeTeamName;
-            public readonly string VisitorTeamName;
+            public readonly string TeamBlueName;
+            public readonly string TeamRedName;
 
-            public TeamNameEvent(string homeTeamName, string visitorTeamName)
+            public TeamNameEvent(string teamBlueName, string teamRedName)
             {
-                HomeTeamName = homeTeamName;
-                VisitorTeamName = visitorTeamName;
+                TeamBlueName = teamBlueName;
+                TeamRedName = teamRedName;
             }
         }
 

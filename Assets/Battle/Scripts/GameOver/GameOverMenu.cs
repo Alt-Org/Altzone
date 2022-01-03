@@ -37,7 +37,6 @@ namespace Battle.Scripts.GameOver
             var redName = room.GetCustomProperty(PhotonBattle.TeamRedNameKey, string.Empty);
             var redScore = room.GetCustomProperty(PhotonBattle.TeamRedScoreKey, 0);
 
-            // We do no know which one was home team :-(
             _team0.text = $"{blueName} {blueScore}";
             _team1.text = $"{redName} {redScore}";
             PhotonLobby.LeaveRoom();
