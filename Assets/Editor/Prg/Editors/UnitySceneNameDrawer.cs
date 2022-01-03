@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Prg.Scripts.Common.Unity;
 using UnityEditor;
@@ -23,7 +24,7 @@ namespace Editor.Prg.Editors
                 var scene = scenes[i];
                 // We use just the level name without path and extension, duplicate level names should not be used
                 var tokens = scene.path.Split('/');
-                var sceneName = tokens[tokens.Length - 1].Split('.')[0];
+                var sceneName = Path.GetFileNameWithoutExtension(tokens[tokens.Length - 1]);
                 var sceneIndex = scene.enabled ? ++usedIndex : -1;
                 sceneList.Add(new Tuple<string, bool, int>(sceneName, scene.enabled, sceneIndex));
             }

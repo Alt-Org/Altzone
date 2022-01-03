@@ -78,7 +78,8 @@ namespace Editor.Prg
                 if (foundCount[i] == 0)
                 {
                     var path = AssetDatabase.GUIDToAssetPath(selectedGuids[i]);
-                    Debug.Log($"{path} has <b>{RichText.Brown("NO dependencies")}</b> in this search");
+                    var asset = AssetDatabase.LoadMainAssetAtPath(path);
+                    Debug.LogWarning($"{path} has <b>{RichText.Brown("NO dependencies")}</b> in this search", asset);
                     noDepCount += 1;
                 }
             }
@@ -95,7 +96,8 @@ namespace Editor.Prg
                     var message = depCount > 0
                         ? $"has <b>{depCount} dependencies</b>"
                         : $"does not have <i>any dependencies</i> and <b>can be safely deleted</b>";
-                    Debug.Log($"{path} {message}");
+                    var asset = AssetDatabase.LoadMainAssetAtPath(path);
+                    Debug.LogWarning($"{path} {message}", asset);
                 }
             }
         }

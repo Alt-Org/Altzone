@@ -15,6 +15,11 @@ namespace Prg.Scripts.Common.Unity.Window
             WindowManager.Get().RegisterGoBackHandlerOnce(DoRedirect);
         }
 
+        private void OnDisable()
+        {
+            WindowManager.Get().UnRegisterGoBackHandlerOnce(DoRedirect);
+        }
+
         private WindowManager.GoBackAction DoRedirect()
         {
             var windowManager = WindowManager.Get();
