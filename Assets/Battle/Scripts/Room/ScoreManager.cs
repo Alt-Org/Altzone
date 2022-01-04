@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Player;
@@ -54,7 +55,7 @@ namespace Battle.Scripts.Room
 
         public override string ToString()
         {
-            return $"team: {_teamNumber}, headCollision: {_headCollisionCount}, wallCollision: {_wallCollisionCount}";
+            return $"team: {_teamNumber}, head: {_headCollisionCount}, wall: {_wallCollisionCount}";
         }
     }
 
@@ -160,19 +161,28 @@ namespace Battle.Scripts.Room
                 if (teamScore._headCollisionCount >= variables._headScoreToWin
                 || teamScore._wallCollisionCount >= variables._wallScoreToWin)
                 {
-                    var room = PhotonNetwork.CurrentRoom;
-                    var scoreKey = teamScore._teamNumber == PhotonBattle.TeamBlueValue
-                        ? PhotonBattle.TeamBlueScoreKey
-                        : PhotonBattle.TeamRedScoreKey;
-                    room.SetCustomProperty(scoreKey, 1);
-                    scoreKey = teamScore._teamNumber != PhotonBattle.TeamBlueValue
-                        ? PhotonBattle.TeamBlueScoreKey
-                        : PhotonBattle.TeamRedScoreKey;
-                    room.SetCustomProperty(scoreKey, 0);
-                    StartCoroutine(LoadGameOverWindow(_gameOverWindow));
+                    var winningTeam = teamScore._teamNumber;
+                    GameOver(winningTeam);
                     break;
                 }
             }
+        }
+
+        private void GameOver(int winningTeam)
+        {
+            var blue = _scores.First(x => x._teamNumber == PhotonBattle.TeamBlueValue);
+            var red = _scores.First(x => x._teamNumber == PhotonBattle.TeamRedValue);
+            Debug.Log($"GameOver win {winningTeam} : {blue} : {red}");
+            var room = PhotonNetwork.CurrentRoom;
+            var props = new ExitGames.Client.Photon.Hashtable
+            {
+                { PhotonBattle.TeamWinKey, winningTeam },
+                { PhotonBattle.TeamBlueScoreKey, blue._headCollisionCount + blue._wallCollisionCount },
+                { PhotonBattle.TeamRedScoreKey, red._headCollisionCount + red._wallCollisionCount },
+            };
+            room.SetCustomProperties(props);
+
+            StartCoroutine(LoadGameOverWindow(_gameOverWindow));
         }
 
         private static IEnumerator LoadGameOverWindow(WindowDef window)
@@ -214,11 +224,11 @@ namespace Battle.Scripts.Room
             {
                 if (gameObject.CompareTag(Tags.BotSide))
                 {
-                    manager._addWallScore(PhotonBattle.GetTeamIndex(PhotonBattle.TeamBlueValue));
+                    manager._addWallScore(PhotonBattle.GetTeamIndex(PhotonBattle.TeamRedValue));
                 }
                 else if (gameObject.CompareTag(Tags.TopSide))
                 {
-                    manager._addWallScore(PhotonBattle.GetTeamIndex(PhotonBattle.TeamRedValue));
+                    manager._addWallScore(PhotonBattle.GetTeamIndex(PhotonBattle.TeamBlueValue));
                 }
             }
         }

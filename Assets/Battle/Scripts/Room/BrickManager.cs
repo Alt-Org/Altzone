@@ -41,6 +41,8 @@ namespace Battle.Scripts.Room
                 lowerBricks.SetActive(false);
                 return;
             }
+            upperBricks.SetActive(true);
+            lowerBricks.SetActive(true);
             createBrickMarkersFor(upperBricks.transform);
             createBrickMarkersFor(lowerBricks.transform);
             photonEventDispatcher = PhotonEventDispatcher.Get();

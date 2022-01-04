@@ -20,6 +20,7 @@ namespace Battle.Scripts.GameOver
         [Header("Scores"), SerializeField] private Text _team0;
         [SerializeField] private Text _team1;
         [SerializeField] private WindowDef _mainMenuWindow;
+        [SerializeField] private float _timeOutDelay;
 
         private IEnumerator Start()
         {
@@ -32,15 +33,37 @@ namespace Battle.Scripts.GameOver
                 yield break;
             }
             var room = PhotonNetwork.CurrentRoom;
-            var blueName = room.GetCustomProperty(PhotonBattle.TeamBlueNameKey, string.Empty);
-            var blueScore = room.GetCustomProperty(PhotonBattle.TeamBlueScoreKey, 0);
-            var redName = room.GetCustomProperty(PhotonBattle.TeamRedNameKey, string.Empty);
-            var redScore = room.GetCustomProperty(PhotonBattle.TeamRedScoreKey, 0);
+            var timeOutTime = _timeOutDelay + Time.time;
+            while (PhotonWrapper.InRoom)
+            {
+                if (Time.time > timeOutTime)
+                {
+                    _team0.text = "???";
+                    _team1.text = "???";
+                    break;
+                }
+                var winnerTeam = room.GetCustomProperty(PhotonBattle.TeamWinKey, -1);
+                if (winnerTeam == -1)
+                {
+                    yield return null;
+                    continue;
+                }
 
-            _team0.text = $"{blueName} {blueScore}";
-            _team1.text = $"{redName} {redScore}";
+                Debug.Log($"GameOver {room.GetDebugLabel()}");
+                var blueName = room.GetCustomProperty(PhotonBattle.TeamBlueNameKey, string.Empty);
+                var blueScore = room.GetCustomProperty(PhotonBattle.TeamBlueScoreKey, 0);
+                var redName = room.GetCustomProperty(PhotonBattle.TeamRedNameKey, string.Empty);
+                var redScore = room.GetCustomProperty(PhotonBattle.TeamRedScoreKey, 0);
+
+                _team0.text = $"{blueName} {blueScore}";
+                _team1.text = $"{redName} {redScore}";
+                break;
+            }
             PhotonLobby.LeaveRoom();
-            yield return null;
+            while (PhotonWrapper.InRoom)
+            {
+                yield return null;
+            }
             WindowManager.Get().Unwind(_mainMenuWindow);
         }
     }

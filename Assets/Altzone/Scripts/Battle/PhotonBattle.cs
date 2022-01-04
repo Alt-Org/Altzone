@@ -17,6 +17,7 @@ namespace Altzone.Scripts.Battle
         public const string PlayerMainSkillKey = "mk";
         public const string TeamBlueNameKey = "tb";
         public const string TeamRedNameKey = "tr";
+        public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
 
