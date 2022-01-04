@@ -173,6 +173,8 @@ namespace Prg.Scripts.Common.Unity.Localization
             Debug.Log($"Save {_debugWords.Count} NEW 'dirty' words to {path}");
             File.WriteAllText(path, text);
         }
+#else
+        internal void SaveIfDirty(){}
 #endif
 
         #endregion
