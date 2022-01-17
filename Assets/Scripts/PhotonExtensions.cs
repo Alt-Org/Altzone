@@ -29,7 +29,7 @@ public static class PhotonExtensions
         return room.Players.Values.OrderBy(x => x.NickName);
     }
 
-    public static bool GetUniquePlayerNameForRoom(this Room room, Player player, string playerName, string separator, out string uniquePlayerName)
+    public static string GetUniquePlayerNameForRoom(this Room room, Player player, string playerName, string separator)
     {
         if (!PhotonNetwork.InRoom)
         {
@@ -37,17 +37,20 @@ public static class PhotonExtensions
         }
         if (room.PlayerCount > 0)
         {
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = $"Player{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
+            }
             foreach (var otherPlayer in PhotonNetwork.PlayerList)
                 if (!otherPlayer.Equals(player) &&
                     string.Equals(otherPlayer.NickName, playerName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     // Assign new name to current player.
-                    uniquePlayerName = $"{playerName}{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
-                    return false;
+                    playerName = $"{playerName}{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
+                    break;
                 }
         }
-        uniquePlayerName = playerName;
-        return true;
+        return playerName;
     }
 
     #endregion

@@ -113,12 +113,8 @@ namespace Lobby.Scripts.InLobby
         {
             var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
-            if (!room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "", out var uniquePlayerName))
-            {
-                // Make player name unique within this room if it was not!
-                PhotonNetwork.NickName = uniquePlayerName;
-            }
-            Debug.Log($"OnJoinedRoom '{room.Name}' as '{PhotonNetwork.NickName}'");
+            PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
+            Debug.Log($"OnJoinedRoom InRoom '{room.Name}' as '{PhotonNetwork.NickName}'");
             WindowManager.Get().ShowWindow(_roomWindow);
         }
 

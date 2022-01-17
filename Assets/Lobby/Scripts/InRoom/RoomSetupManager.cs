@@ -71,7 +71,7 @@ namespace Lobby.Scripts.InRoom
             _buttonStartPlay.interactable = false;
 
             PhotonNetwork.AddCallbackTarget(this);
-            StartCoroutine(InitialStatus());
+            StartCoroutine(OnEnableInRoom());
         }
 
         private void OnDisable()
@@ -79,11 +79,16 @@ namespace Lobby.Scripts.InRoom
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-        private IEnumerator InitialStatus()
+        private IEnumerator OnEnableInRoom()
         {
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
-            // Reset player custom properties for new game
+
+            var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
+            PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
+            Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonNetwork.NickName}'");
+
+            // Reset player custom properties for new game
             player.CustomProperties.Clear();
             // Guest by default
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
@@ -95,7 +100,6 @@ namespace Lobby.Scripts.InRoom
             });
             if (player.IsMasterClient)
             {
-                var room = PhotonNetwork.CurrentRoom;
                 room.SetCustomProperties(new Hashtable
                 {
                     // Master client plays in Team Blue "Alpha"
