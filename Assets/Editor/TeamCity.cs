@@ -181,6 +181,11 @@ namespace Editor
                     }
                 }
             }
+            catch (Exception x)
+            {
+                Log($"Unhandled exception: {x.Message} ({x.GetType().FullName})");
+                throw;
+            }
             finally
             {
                 if (LogMessages.Count > 0)

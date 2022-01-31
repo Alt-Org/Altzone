@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -57,75 +59,91 @@ namespace Editor.Prg
             var gameObjects = allAssets.Select(a =>
                 AssetDatabase.LoadAssetAtPath(a, typeof(GameObject)) as GameObject).Where(a => a != null).ToArray();
             FindMissingReferences("Project", gameObjects);
-            /*var scriptableObjects = allAssets.Select(a =>
-                AssetDatabase.LoadAssetAtPath(a, typeof(ScriptableObject)) as ScriptableObject).Where(a => a != null).ToArray();
-            FindMissingReferences("Project", scriptableObjects);*/
+        }
+
+        /// <summary>
+        /// Finds all missing references to selected objects in the project window.
+        /// </summary>
+        [MenuItem(MenuRoot + "Search in selection", false, 53)]
+        public static void FindMissingReferencesInSelection()
+        {
+            Debug.Log("*");
+            var selectedGuids = Selection.assetGUIDs;
+            Debug.Log($"FindMissingReferences selection {selectedGuids.Length}");
+            var missingCount = 0;
+            foreach (var guid in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var asset = AssetDatabase.LoadMainAssetAtPath(path);
+                if (asset is GameObject gameObject)
+                {
+                    missingCount += FindMissingReferences("Selection", gameObject);
+                }
+            }
+            Debug.Log($"missingCount {missingCount}");
         }
 
         private static void FindMissingReferences(string context, GameObject[] gameObjects)
         {
             Debug.Log($"FindMissingReferences gameObjects {gameObjects.Length}");
             var missingCount = 0;
-            foreach (var go in gameObjects)
+            foreach (var gameObject in gameObjects)
             {
-                var components = go.GetComponents<Component>();
-
-                foreach (var component in components)
-                {
-                    // Missing components will be null, we can't find their type, etc.
-                    if (!component)
-                    {
-                        Debug.LogWarning($"Missing Component ? in GameObject: {go.GetFullPath()}", go);
-                        continue;
-                    }
-                    var so = new SerializedObject(component);
-                    var sp = so.GetIterator();
-                    var objRefValueMethod = typeof(SerializedProperty).GetProperty("objectReferenceStringValue",
-                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
-                    // Iterate over the components' properties.
-                    while (sp.NextVisible(true))
-                    {
-                        if (sp.propertyType == SerializedPropertyType.ObjectReference)
-                        {
-                            var objectReferenceStringValue = string.Empty;
-                            if (objRefValueMethod != null)
-                            {
-                                objectReferenceStringValue =
-                                    (string)objRefValueMethod.GetGetMethod(true).Invoke(sp, new object[] { });
-                            }
-
-                            if (sp.objectReferenceValue == null
-                                && (sp.objectReferenceInstanceIDValue != 0 || objectReferenceStringValue.StartsWith("Missing")))
-                            {
-                                missingCount += 1;
-                                ShowMissing(context, go, component.GetType().Name, ObjectNames.NicifyVariableName(sp.name));
-                            }
-                        }
-                    }
-                }
+                missingCount += FindMissingReferences(context, gameObject);
             }
             Debug.Log($"missingCount {missingCount}");
         }
 
-        /*private static void FindMissingReferences(string context, ScriptableObject[] scriptableObjects)
+        private static int FindMissingReferences(string context, GameObject gameObject)
         {
-            // THis needs more work to be practical!
-            Debug.Log($"FindMissingReferences scriptableObjects {scriptableObjects.Length}");
-            foreach (var scriptableObject in scriptableObjects)
+            var missingCount = 0;
+            var components = gameObject.GetComponents<Component>();
+            foreach (var component in components)
             {
-                var fields = scriptableObject.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                foreach (var fieldInfo in fields)
+                // Missing components will be null, we can't find their type, etc.
+                if (!component)
                 {
-                    var value = fieldInfo.GetValue(scriptableObject);
-                    if (value == null)
+                    Debug.LogWarning($"Missing Component in GameObject: {gameObject.GetFullPath()}", gameObject);
+                    missingCount += 1;
+                    continue;
+                }
+                var so = new SerializedObject(component);
+                var sp = so.GetIterator();
+                var objRefValueMethod = typeof(SerializedProperty).GetProperty("objectReferenceStringValue",
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+                // Iterate over the components' properties.
+                while (sp.NextVisible(true))
+                {
+                    // This should find arrays of object - at least if first item is missing
+                    if (sp.propertyType == SerializedPropertyType.ObjectReference)
                     {
-                        //Debug.Log($"scriptableObject {scriptableObject} fields {fields.Length}");
-                        ShowMissing(context, scriptableObject, fieldInfo.Name, fieldInfo.FieldType);
+                        var objectReferenceStringValue = string.Empty;
+                        if (objRefValueMethod != null)
+                        {
+                            objectReferenceStringValue =
+                                (string)objRefValueMethod.GetGetMethod(true).Invoke(sp, new object[] { });
+                        }
+
+                        if (sp.objectReferenceValue == null
+                            && (sp.objectReferenceInstanceIDValue != 0 || objectReferenceStringValue.StartsWith("Missing")))
+                        {
+                            var propName1 = ObjectNames.NicifyVariableName(sp.name);
+                            var propName2 = sp.propertyPath;
+                            var propName = string.Equals(propName1, propName2, StringComparison.CurrentCultureIgnoreCase)
+                                ? propName1
+                                : $"{propName1} ({propName2})";
+                            ShowMissing(context, gameObject,
+                                component.GetType().Name,
+                                propName,
+                                objectReferenceStringValue);
+                            missingCount += 1;
+                        }
                     }
                 }
             }
-        }*/
+            return missingCount;
+        }
 
         private static GameObject[] GetSceneObjects()
         {
@@ -135,15 +153,25 @@ namespace Editor.Prg
                              && go.hideFlags == HideFlags.None).ToArray();
         }
 
-        private static void ShowMissing(string context, GameObject gameObject, string componentName, string propertyName)
+        private static void ShowMissing(string context, GameObject gameObject, string componentName, string propertyName, string propMessage)
         {
             Debug.LogWarning(
-                $"Missing Ref in: [{context}]{gameObject.GetFullPath()}. Component: {componentName}, Property: {propertyName}", gameObject);
+                $"MISSING: [{context}]{gameObject.GetFullPath()}. COMP: {componentName}, PROP: {propertyName} : {propMessage}", gameObject);
         }
 
-        /*private static void ShowMissing(string context, ScriptableObject so, string propertyName, Type propertyType)
+        private static string GetFullPath(this GameObject gameObject)
         {
-            Debug.LogWarning($"Missing Ref in: [{context}]{so.name}. Property: {propertyName} ({propertyType.Name})");
-        }*/
+            if (gameObject == null)
+            {
+                return string.Empty;
+            }
+            var path = new StringBuilder("\\").Append(gameObject.name);
+            while (gameObject.transform.parent != null)
+            {
+                gameObject = gameObject.transform.parent.gameObject;
+                path.Insert(0, gameObject.name).Insert(0, '\\');
+            }
+            return path.ToString();
+        }
     }
 }

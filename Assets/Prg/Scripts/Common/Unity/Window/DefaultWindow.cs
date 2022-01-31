@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;

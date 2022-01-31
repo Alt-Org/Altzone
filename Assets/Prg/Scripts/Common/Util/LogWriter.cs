@@ -136,10 +136,18 @@ namespace Prg.Scripts.Common.Util
                 if (_logLineContentFilter != null)
                 {
                     // As we can modify the input parameter on the fly we must call each delegate separately with correct input.
+                    // - avoid DynamicInvoke because it can be order of magnitude slower than "function pointer".
                     var invocationList = _logLineContentFilter.GetInvocationList();
-                    foreach (var callback in invocationList)
+                    if (invocationList.Length == 1)
                     {
-                        logString = callback.DynamicInvoke(logString) as string;
+                        logString = _logLineContentFilter(logString);
+                    }
+                    else
+                    {
+                        foreach (var callback in invocationList)
+                        {
+                            logString = callback.DynamicInvoke(logString) as string;
+                        }
                     }
                 }
                 // Reset builder

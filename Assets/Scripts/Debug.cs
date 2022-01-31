@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 /// <summary>
@@ -70,7 +71,8 @@ public static class Debug
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void AddLogLineAllowedFilter(Func<MethodBase, bool> filter)
     {
-        _logLineAllowedFilter += filter;
+        Assert.IsNull(_logLineAllowedFilter);
+        _logLineAllowedFilter = filter;
     }
 
     /// <summary>
@@ -97,17 +99,17 @@ public static class Debug
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-    public static void Log(string message)
+    public static void Log(string message, Object context = null)
     {
         var frame = new StackFrame(1);
         var method = frame.GetMethod();
         if (method == null || method.ReflectedType == null)
         {
-            UnityEngine.Debug.Log(message);
+            UnityEngine.Debug.Log(message, context);
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.Log($"{GetPrefix(method)}{message}");
+            UnityEngine.Debug.Log($"{GetPrefix(method)}{message}", context);
         }
     }
 
@@ -163,17 +165,12 @@ public static class Debug
             {
                 return isMethodAllowed;
             }
-            // Invocation list works like OR and it will use short-circuit evaluation.
-            var invocationList = _logLineAllowedFilter.GetInvocationList();
-            foreach (var callback in invocationList)
+            var isAllowed = _logLineAllowedFilter(method);
+            if (isAllowed)
             {
-                var result = callback.DynamicInvoke(method);
-                if (result is bool isAllowed && isAllowed)
-                {
-                    CachedMethods.Add(method, true);
-                    // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
-                    return true;
-                }
+                CachedMethods.Add(method, true);
+                // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+                return true;
             }
             // Nobody accepted so it is rejected.
             CachedMethods.Add(method, false);

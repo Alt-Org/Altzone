@@ -1,7 +1,9 @@
-using Photon.Pun;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+#if PHOTON_UNITY_NETWORKING
+using Photon.Pun;
+#endif
 
 namespace Prg.Scripts.Common.Unity.Window
 {
@@ -18,7 +20,11 @@ namespace Prg.Scripts.Common.Unity.Window
             if (scene.IsNetworkScene)
             {
                 Debug.Log($"LoadScene NETWORK {scene.SceneName}");
+#if PHOTON_UNITY_NETWORKING
                 PhotonNetwork.LoadLevel(scene.SceneName);
+#else
+                throw new UnityException("PHOTON_UNITY_NETWORKING not available");
+#endif
             }
             else
             {

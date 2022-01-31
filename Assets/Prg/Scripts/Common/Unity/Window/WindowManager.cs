@@ -64,7 +64,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private GameObject _windowsParent;
         private WindowDef _pendingWindow;
-        private Func<GoBackAction> _goBackOnceHandler;
+        private List<Func<GoBackAction>> _goBackOnceHandler;
         private int _executionLevel;
 
         private void Awake()
@@ -123,19 +123,23 @@ namespace Prg.Scripts.Common.Unity.Window
 
         void IWindowManager.RegisterGoBackHandlerOnce(Func<GoBackAction> handler)
         {
-            _goBackOnceHandler += handler;
+            if (_goBackOnceHandler == null)
+            {
+                _goBackOnceHandler = new List<Func<GoBackAction>>();
+            }
+            _goBackOnceHandler.Add(handler);
         }
 
         void IWindowManager.UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
         {
-            _goBackOnceHandler -= handler;
+            _goBackOnceHandler?.Remove(handler);
         }
 
         int IWindowManager.WindowCount => _currentWindows.Count;
 
         void IWindowManager.GoBack()
         {
-            Debug.Log($"GoBack count {_currentWindows.Count} handler {_goBackOnceHandler?.GetInvocationList().Length ?? -1}");
+            Debug.Log($"GoBack count {_currentWindows.Count} handler {_goBackOnceHandler?.Count ?? -1}");
             if (_goBackOnceHandler != null)
             {
                 // Callbacks can register again!
@@ -237,11 +241,9 @@ namespace Prg.Scripts.Common.Unity.Window
                     Debug.Log($"LoadWindow ALREADY IsVisible {windowDef}");
                     return;
                 }
-                var currentWindow = _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
-                if (currentWindow == null)
-                {
-                    currentWindow = CreateWindow(windowDef);
-                }
+                var currentWindow =
+                    _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef))
+                    ?? CreateWindow(windowDef);
                 if (_currentWindows.Count > 0)
                 {
                     var previousWindow = _currentWindows[0];
@@ -356,15 +358,14 @@ namespace Prg.Scripts.Common.Unity.Window
             }
         }
 
-        private static GoBackAction InvokeCallbacks(Func<GoBackAction> func)
+        private static GoBackAction InvokeCallbacks(List<Func<GoBackAction>> callbackList)
         {
             var goBackResult = GoBackAction.Continue;
-            var invocationList = func.GetInvocationList();
-            foreach (var handler in invocationList)
+            foreach (var func in callbackList)
             {
-                var invokeResult = handler.DynamicInvoke();
-                Debug.Log($"invokeResult {handler} = {invokeResult}");
-                if (invokeResult is GoBackAction result && result == GoBackAction.Abort)
+                var result = func();
+                Debug.Log($"invokeResult {func} = {result}");
+                if (result == GoBackAction.Abort)
                 {
                     goBackResult = GoBackAction.Abort;
                 }

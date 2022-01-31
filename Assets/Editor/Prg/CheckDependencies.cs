@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -16,44 +17,56 @@ namespace Editor.Prg
     {
         private const string MenuRoot = "Window/ALT-Zone/Dependencies/";
 
-        [MenuItem(MenuRoot + "Check Dependencies", false, 10)]
+        [MenuItem(MenuRoot + "Check Usages", false, 10)]
         private static void _CheckDependencies()
         {
             Debug.Log("*");
-            var activeObject = Selection.activeObject;
-            if (activeObject == null)
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
             {
                 Debug.Log("Nothing is selected");
                 return;
             }
-            var selectedGuids = Selection.assetGUIDs;
             // Keep extensions lowercase!
             var validExtensions = new[]
             {
+                ".anim",
                 ".asset",
+                ".blend",
+                ".controller",
                 ".cs",
+                ".cubemap",
+                ".flare",
                 ".gif",
                 ".mat",
+                ".mp3",
                 ".otf",
                 ".physicMaterial",
                 ".physicsmaterial2d",
                 ".png",
                 ".prefab",
                 ".psd",
-                ".ttf"
+                ".shader",
+                ".tga",
+                ".tif",
+                ".ttf",
+                ".wav",
             };
+            var hasShaders = false;
             foreach (var guid in selectedGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                if (AssetDatabase.Contains(activeObject))
+                var extension = Path.HasExtension(path) ? Path.GetExtension(path).ToLower() : string.Empty;
+                if (!hasShaders && extension == ".shader")
                 {
-                    var extension = Path.HasExtension(path) ? Path.GetExtension(path).ToLower() : string.Empty;
-                    if (validExtensions.Contains(extension))
-                    {
-                        continue;
-                    }
+                    hasShaders = true;
                 }
-                Debug.Log($"Selected object is not supported asset: {path}");
+                if (validExtensions.Contains(extension))
+                {
+                    continue;
+                }
+                var asset = AssetDatabase.LoadMainAssetAtPath(path);
+                Debug.LogWarning($"Selected object is not supported asset: {path}", asset);
                 return;
             }
             Debug.Log($"Search dependencies for {selectedGuids.Length} assets in {string.Join(", ", validExtensions)}");
@@ -100,6 +113,36 @@ namespace Editor.Prg
                     Debug.LogWarning($"{path} {message}", asset);
                 }
             }
+            if (hasShaders)
+            {
+                Debug.LogWarning($"{RichText.Yellow("Shaders are referenced by name and can not be detected with this script")}");
+            }
+        }
+
+        [MenuItem(MenuRoot + "Sort Selection", false, 11)]
+        private static void _SortSelection()
+        {
+            Debug.Log("*");
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
+            {
+                Debug.Log("Nothing is selected");
+                return;
+            }
+            var list = new List<string>();
+            foreach (var t in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(t);
+                list.Add(path);
+            }
+            list.Sort();
+            foreach (var path in list)
+            {
+                var asset = AssetDatabase.LoadMainAssetAtPath(path);
+                var dirname = Path.GetDirectoryName(path)?.Replace("Assets\\", "");
+                var filename = Path.GetFileName(path);
+                Debug.Log($"{RichText.Yellow(dirname)} {RichText.Brown(filename)}", asset);
+            }
         }
 
         private static int CheckForGuidInAssets(string[] selectedGuids, ref int[] foundCount, string[] assetGuids)
@@ -115,7 +158,7 @@ namespace Editor.Prg
                     if (assetContent.Contains(guid))
                     {
                         var source = AssetDatabase.GUIDToAssetPath(guid);
-                        var go = AssetDatabase.LoadAssetAtPath (path, typeof(GameObject)) as GameObject;
+                        var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
                         Debug.LogWarning($"{source} found in {path}", go);
                         foundCount[guidIndex] += 1;
                         count += 1;

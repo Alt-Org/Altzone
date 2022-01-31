@@ -29,7 +29,8 @@ namespace Editor.Prg.Build
         private static readonly string[] TestFolders =
         {
             ".*/test/.*",
-            ".*/zPlayGound/.*",
+            ".*/zPlayGround/.*",
+            ".*/zzDeleteMe/.*",
         };
 
         [MenuItem("Window/ALT-Zone/Build/Create Build Script", false, 1)]
@@ -45,7 +46,7 @@ namespace Editor.Prg.Build
         }
 
         [MenuItem("Window/ALT-Zone/Build/Check Build Report", false, 9)]
-        private static void WindowReport()
+        private static void CheckBuildReport()
         {
             var logWriter = new LogWriter();
 

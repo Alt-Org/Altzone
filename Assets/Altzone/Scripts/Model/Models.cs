@@ -25,7 +25,6 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"model key already exists: {key}");
             }
-            //-Debug.Log($"Add model: {key}={model}");
             ModelsMap.Add(key, model);
         }
 
@@ -40,7 +39,7 @@ namespace Altzone.Scripts.Model
             if (!(anyModel is T exactModel))
             {
                 throw new UnityException(
-                    $"model type {anyModel.GetType().Name} is different than excepted type  {modelType.Name}for key: {key}");
+                    $"model type {anyModel.GetType().Name} is different than excepted type {modelType.Name}for key: {key}");
             }
             return exactModel;
         }
