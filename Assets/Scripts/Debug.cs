@@ -10,6 +10,7 @@ using Object = UnityEngine.Object;
 /// <summary>
 /// Conditional UnityEngine.Debug wrapper for development.
 /// </summary>
+[DefaultExecutionOrder(-100)]
 public static class Debug
 {
     // See: https://answers.unity.com/questions/126315/debuglog-in-build.html
@@ -23,8 +24,7 @@ public static class Debug
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void RuntimeInitializeOnLoadMethod()
     {
-        UnityEngine.Debug.Log($"SubsystemRegistration cache {CachedMethods.Count}");
-        // Reset static fields even when Domain Reloading is disabled.
+        // Manual reset if UNITY Domain Reloading is disabled.
         _logLineAllowedFilter = null;
         RemoveTagsForClassName();
         CachedMethods.Clear();
@@ -109,7 +109,7 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.Log($"{GetPrefix(method)}{message}", context);
+            UnityEngine.Debug.Log($"{Time.frameCount % 1000} {GetPrefix(method)}{message}", context);
         }
     }
 
@@ -124,7 +124,7 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.LogFormat($"{GetPrefix(method)}{format}", args);
+            UnityEngine.Debug.LogFormat($"{Time.frameCount % 1000} {GetPrefix(method)}{format}", args);
         }
     }
 

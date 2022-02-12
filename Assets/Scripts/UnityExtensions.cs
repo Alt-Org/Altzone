@@ -38,6 +38,19 @@ public static class UnityExtensions
 
     #endregion
 
+    #region Transform
+
+    private static readonly Quaternion NormalRotation = Quaternion.Euler(0f, 0f, 180f);
+    private static readonly Quaternion UpsideDown = Quaternion.Euler(0f, 0f, 180f);
+
+    public static void Rotate(this Transform transform, bool isUpsideDown)
+    {
+        var rotation = isUpsideDown ? UpsideDown : NormalRotation;
+        transform.rotation = rotation;
+    }
+
+    #endregion
+
     #region Button
 
     public static void SetCaption(this Button button, string caption)
@@ -55,6 +68,22 @@ public static class UnityExtensions
             return;
         }
         Assert.IsTrue(false, "button does not have a text component");
+    }
+
+    public static string GetCaption(this Button button)
+    {
+        var text = button.GetComponentInChildren<Text>();
+        if (text != null)
+        {
+            return text.text;
+        }
+        var tmpText = button.GetComponentInChildren<TMP_Text>();
+        if (tmpText != null)
+        {
+            return tmpText.text;
+        }
+        Assert.IsTrue(false, "button does not have a text component");
+        return null;
     }
 
     #endregion

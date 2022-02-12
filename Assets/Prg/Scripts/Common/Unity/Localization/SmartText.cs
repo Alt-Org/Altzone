@@ -9,17 +9,9 @@ namespace Prg.Scripts.Common.Unity.Localization
     /// Class for UI <c>Text</c> component localization.
     /// </summary>
     [RequireComponent(typeof(Text))]
-    public class SmartText : MonoBehaviour
+    public class SmartText : LocalizationKeyName
     {
-        [SerializeField] protected string _localizationKey;
-
         [Header("Live Data"), SerializeField] protected Text _text;
-
-        public string LocalizationKey
-        {
-            get => _localizationKey;
-            set => _localizationKey = value;
-        }
 
         public string ComponentName => GetComponentName();
 

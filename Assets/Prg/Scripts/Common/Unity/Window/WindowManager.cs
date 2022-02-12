@@ -247,6 +247,7 @@ namespace Prg.Scripts.Common.Unity.Window
                 if (_currentWindows.Count > 0)
                 {
                     var previousWindow = _currentWindows[0];
+                    // It seems that currentWindow == previousWindow due to some misconfiguration or missing configuration
                     Assert.IsFalse(currentWindow._windowDef.Equals(previousWindow._windowDef));
                     if (previousWindow._windowDef.IsPopOutWindow)
                     {
@@ -283,9 +284,15 @@ namespace Prg.Scripts.Common.Unity.Window
             Assert.IsTrue(_executionLevel == 0, "_executionLevel == 0");
             _executionLevel += 1;
             Debug.Log($"SafeExecution {actionName} start count {_currentWindows.Count}");
-
-            action();
-
+            try
+            {
+                action();
+            }
+            catch (Exception)
+            {
+                _executionLevel = 0;
+                throw;
+            }
             Debug.Log($"SafeExecution {actionName} exit count {_currentWindows.Count}");
             _executionLevel -= 1;
             Assert.IsTrue(_executionLevel == 0, "_executionLevel == 0");

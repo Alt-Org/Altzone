@@ -52,10 +52,10 @@ namespace Editor.Prg.Logging
             }
         }
 
-        [MenuItem(MenuRoot + "Highlight Settings", false, 12)]
+        [MenuItem(MenuRoot + "Highlight logging settings", false, 12)]
         private static void HighlightSettings()
         {
-            LoggerConfig loggerConfig = (LoggerConfig)Resources.Load(nameof(LoggerConfig), typeof(LoggerConfig));
+            var loggerConfig = (LoggerConfig)Resources.Load(nameof(LoggerConfig), typeof(LoggerConfig));
             Selection.objects = new UnityEngine.Object[] { loggerConfig };
             EditorGUIUtility.PingObject(loggerConfig);
         }
@@ -68,7 +68,7 @@ namespace Editor.Prg.Logging
             Debug.Log($"Editor log {(File.Exists(path) ? "is in" : RichText.Brown("NOT found"))}: {path}");
         }
 
-        [MenuItem(MenuRoot + "Open file in text editor", false, 14)]
+        [MenuItem(MenuRoot + "Open log file in text editor", false, 14)]
         private static void Load()
         {
             Debug.Log("*");

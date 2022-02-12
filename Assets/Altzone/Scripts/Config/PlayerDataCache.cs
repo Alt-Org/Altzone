@@ -123,6 +123,24 @@ namespace Altzone.Scripts.Config
             }
         }
 
+        [SerializeField] protected bool _isDebugFlag;
+
+        /// <summary>
+        /// Debug FLag for debugging and diagnostics purposes.
+        /// </summary>
+        /// <remarks>
+        /// Should be hidden in final product.
+        /// </remarks>
+        public bool IsDebugFlag
+        {
+            get => _isDebugFlag;
+            set
+            {
+                _isDebugFlag = value;
+                Save();
+            }
+        }
+
         public string GetPlayerInfoLabel()
         {
             if (ClanId > 0)
@@ -183,6 +201,7 @@ namespace Altzone.Scripts.Config
         private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
         private const string ClanIdKey = "PlayerData.ClanId";
         private const string TermsOfServiceKey = "PlayerData.TermsOfService";
+        private const string IsDebugFlagKey = "PlayerData.IsDebugFlag";
 
         private bool _isBatchSave;
 
@@ -200,6 +219,7 @@ namespace Altzone.Scripts.Config
                 PlayerPrefs.Save();
             }
             _isTosAccepted = PlayerPrefs.GetInt(TermsOfServiceKey, 0) == 1;
+            _isDebugFlag = PlayerPrefs.GetInt(IsDebugFlagKey, 0) == 1;
         }
 
         private static string CreatePlayerHandle()
@@ -247,6 +267,7 @@ namespace Altzone.Scripts.Config
             PlayerPrefs.SetInt(ClanIdKey, ClanId);
             PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
             PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
+            PlayerPrefs.SetInt(IsDebugFlagKey, IsDebugFlag ? 1 : 0);
         }
     }
 }

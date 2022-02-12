@@ -59,6 +59,13 @@ namespace Editor.Prg.Localization
             Localizer.LocalizerHelper.SaveIfDirty();
         }
 
+        [MenuItem(MenuRoot + "Open In Google Drive", false, 5)]
+        private static void OpenInGoogleDrive()
+        {
+            const string googleDriveUrl = @"https://docs.google.com/spreadsheets/d/1ZwjasMpaXABXZ5N6_ivuSMeXv-764TDmqUSG5ufJmvA/edit#gid=1638234547";
+            Application.OpenURL(googleDriveUrl);
+        }
+
         private static void DoSmartTextAndTextAssetCheck(GameObject gameObject)
         {
             var result = new List<SmartTextContext>();

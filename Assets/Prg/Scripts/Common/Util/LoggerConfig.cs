@@ -41,17 +41,20 @@ namespace Prg.Scripts.Common.Util
             {
                 CreateLogWriter();
             }
-            // Log color
-            var trimmed = string.IsNullOrEmpty(config._colorForClassName) ? string.Empty : config._colorForClassName.Trim();
-            if (trimmed.Length > 0)
+            if (Application.platform.ToString().EndsWith("Editor"))
             {
-                // This is a bit complicated because:
-                // - Debug knows what to log and adds color to logged content that goes to UnityEngine console logger
-                // - LogWriter receives it and needs to remove those parts that are only for console logging, like colors.
-                _prefixTag = $"[<color={config._colorForClassName}>";
-                _suffixTag = "</color>]";
-                Debug.SetTagsForClassName(_prefixTag, _suffixTag);
-                LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
+                // Log color for Editor log.
+                var trimmed = string.IsNullOrEmpty(config._colorForClassName) ? string.Empty : config._colorForClassName.Trim();
+                if (trimmed.Length > 0)
+                {
+                    // This is a bit complicated because:
+                    // - Debug knows what to log and adds color to logged content that goes to UnityEngine console logger
+                    // - LogWriter receives it and needs to remove those parts that are only for console logging, like colors.
+                    _prefixTag = $"[<color={config._colorForClassName}>";
+                    _suffixTag = "</color>]";
+                    Debug.SetTagsForClassName(_prefixTag, _suffixTag);
+                    LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
+                }
             }
             var filterList = config.BuildFilter();
             if (filterList.Count == 0)

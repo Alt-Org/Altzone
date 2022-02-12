@@ -9,6 +9,7 @@ namespace Prg.Scripts.Common.Util
     /// <summary>
     /// Simple file logger that catches all log messages from UNITY and writes them to a file.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class LogWriter : MonoBehaviour
     {
         private const string LogFileSuffix = "game.log";

@@ -24,9 +24,10 @@ namespace Altzone.Scripts
             LoggerConfig.CreateLoggerConfig(loggerConfig);
 
             SetEditorStatus();
+            UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion}");
         }
 
-        [Conditional("UNITY_EDITOR")]
+        [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
         private static void SetEditorStatus()
         {
             // This is just for debugging to get strings (numbers) formatted consistently
@@ -39,7 +40,6 @@ namespace Altzone.Scripts
             {
                 PhotonLobby.GetGameVersion = () => $"{LocalDevConfig.Instance.photonVersionPrefix}{Application.version}";
             }
-            UnityEngine.Debug.Log($"Photon {RichText.Brown(PhotonLobby.GameVersion)}");
         }
     }
 }
