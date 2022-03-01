@@ -40,13 +40,27 @@ public static class UnityExtensions
 
     #region Transform
 
-    private static readonly Quaternion NormalRotation = Quaternion.Euler(0f, 0f, 180f);
+    private static readonly Quaternion NormalRotation = Quaternion.Euler(0f, 0f, 0f);
     private static readonly Quaternion UpsideDown = Quaternion.Euler(0f, 0f, 180f);
 
     public static void Rotate(this Transform transform, bool isUpsideDown)
     {
         var rotation = isUpsideDown ? UpsideDown : NormalRotation;
         transform.rotation = rotation;
+    }
+
+    #endregion
+
+    #region Collision2D
+
+    public static ContactPoint2D GetFirstContactPoint(this Collision2D collision)
+    {
+        if (collision == null || collision.contactCount == 0)
+        {
+            return new ContactPoint2D();
+        }
+        var contactPoint = collision.GetContact(0);
+        return contactPoint;
     }
 
     #endregion

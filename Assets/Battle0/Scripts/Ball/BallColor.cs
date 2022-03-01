@@ -9,7 +9,7 @@ namespace Battle0.Scripts.Ball
 {
     public class BallColor : MonoBehaviour, IBallColor
     {
-        private const int msgSetBallColor = PhotonEventDispatcher.eventCodeBase + 4;
+        private const int msgSetBallColor = PhotonEventDispatcher.EventCodeBase + 4;
 
         private const int neutralColorIndex = 0;
         private const int upperTeamColorIndex = 1;
@@ -90,7 +90,7 @@ namespace Battle0.Scripts.Ball
             if (photonEventDispatcher == null)
             {
                 photonEventDispatcher = PhotonEventDispatcher.Get();
-                photonEventDispatcher.registerEventListener(msgSetBallColor, data => { onSetBallColor(data.CustomData); });
+                photonEventDispatcher.RegisterEventListener(msgSetBallColor, data => { onSetBallColor(data.CustomData); });
                 isNormalMode = true;
                 currentColorIndex = 0;
             }

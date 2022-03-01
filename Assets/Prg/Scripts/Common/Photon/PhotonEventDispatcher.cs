@@ -7,47 +7,54 @@ using UnityEngine;
 namespace Prg.Scripts.Common.Photon
 {
     /// <summary>
-    /// Wrapper and helper for PhotonNetwork.RaiseEvent and receiving events on one place.
+    /// Wrapper and helper for PhotonNetwork.RaiseEvent for sending and receiving events on one place.
     /// </summary>
     /// <remarks>
-    /// We use lazy initialization and <c>DontDestroyOnLoad</c> to stay alive (for ever).
+    /// We use lazy initialization and can not survive level load.
     /// </remarks>
     public class PhotonEventDispatcher : MonoBehaviour, IOnEventCallback
     {
-        public const int eventCodeBase = 10;
-        private const int eventCodeCount = 10;
-        private const int eventCodeMax = eventCodeBase + eventCodeCount - 1;
+        public const int EventCodeBase = 10;
+        private const int EventCodeCount = 10;
+        private const int EventCodeMax = EventCodeBase + EventCodeCount - 1;
 
         /// <summary>
         /// Photon event listeners for event codes between <c>eventCodeBase</c> and <c>eventCodeMax</c> inclusive;
         /// </summary>
-        private readonly Action<EventData>[] listeners = new Action<EventData>[eventCodeCount];
+        private readonly Action<EventData>[] _listeners = new Action<EventData>[EventCodeCount];
 
-        private readonly RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        private readonly RaiseEventOptions _raiseEventOptions = new RaiseEventOptions
         {
             Receivers = ReceiverGroup.All
         };
 
         public static PhotonEventDispatcher Get()
         {
-            if (_Instance == null)
+            if (_instance == null)
             {
-                _Instance = FindObjectOfType<PhotonEventDispatcher>();
-                if (_Instance == null)
+                _instance = FindObjectOfType<PhotonEventDispatcher>();
+                if (_instance == null)
                 {
                     UnityExtensions.CreateGameObjectAndComponent<PhotonEventDispatcher>(nameof(PhotonEventDispatcher), false);
                 }
             }
-            return _Instance;
+            return _instance;
         }
 
-        private static PhotonEventDispatcher _Instance;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void RuntimeInitializeOnLoadMethod()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+
+        private static PhotonEventDispatcher _instance;
 
         private void Awake()
         {
-            if (_Instance == null)
+            if (_instance == null)
             {
-                _Instance = this;
+                _instance = this;
             }
             // https://doc.photonengine.com/en-us/pun/v2/gameplay/optimization
             // Reuse EventData to decrease garbage collection but EventData will be overwritten for every event!
@@ -58,44 +65,44 @@ namespace Prg.Scripts.Common.Photon
         private void OnDestroy()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
-            if (_Instance == this)
+            if (_instance == this)
             {
-                _Instance = null;
+                _instance = null;
             }
         }
 
-        public void registerEventListener(byte eventCode, Action<EventData> callback)
+        public void RegisterEventListener(byte eventCode, Action<EventData> callback)
         {
-            if (eventCode < eventCodeBase || eventCode > eventCodeMax)
+            if (eventCode < EventCodeBase || eventCode > EventCodeMax)
             {
-                throw new UnityException($"invalid event code {eventCode}, valid range is [{eventCodeBase}-{eventCodeMax}]");
+                throw new UnityException($"invalid event code {eventCode}, valid range is [{EventCodeBase}-{EventCodeMax}]");
             }
-            var index = eventCode - eventCodeBase;
-            if (listeners[index] == null)
+            var index = eventCode - EventCodeBase;
+            if (_listeners[index] == null)
             {
-                listeners[index] = callback;
+                _listeners[index] = callback;
             }
             else
             {
-                listeners[index] += callback;
+                _listeners[index] += callback;
             }
         }
 
         public void RaiseEvent(byte eventCode, object data)
         {
-            PhotonNetwork.RaiseEvent(eventCode, data, raiseEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(eventCode, data, _raiseEventOptions, SendOptions.SendReliable);
         }
 
         void IOnEventCallback.OnEvent(EventData photonEvent)
         {
             // https://doc.photonengine.com/en-us/pun/current/gameplay/rpcsandraiseevent#raiseevent
             var eventCode = photonEvent.Code;
-            if (eventCode < eventCodeBase || eventCode > eventCodeMax)
+            if (eventCode < EventCodeBase || eventCode > EventCodeMax)
             {
                 return; // internal events or not our
             }
-            var index = eventCode - eventCodeBase;
-            listeners[index]?.Invoke(photonEvent);
+            var index = eventCode - EventCodeBase;
+            _listeners[index]?.Invoke(photonEvent);
         }
     }
 }

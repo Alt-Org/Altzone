@@ -64,7 +64,7 @@ namespace Battle0.Scripts.Room
     /// </summary>
     public class ScoreManager : MonoBehaviour
     {
-        private const int MsgSetTeamScore = PhotonEventDispatcher.eventCodeBase + 6;
+        private const int MsgSetTeamScore = PhotonEventDispatcher.EventCodeBase + 6;
 
         [SerializeField] private WindowDef _gameOverWindow;
 
@@ -87,7 +87,7 @@ namespace Battle0.Scripts.Room
         {
             _scores = TeamScore.AllocateTeamScores();
             _photonEventDispatcher = PhotonEventDispatcher.Get();
-            _photonEventDispatcher.registerEventListener(MsgSetTeamScore, data => { OnSetTeamScore(data.CustomData); });
+            _photonEventDispatcher.RegisterEventListener(MsgSetTeamScore, data => { OnSetTeamScore(data.CustomData); });
         }
 
         private void OnDestroy()

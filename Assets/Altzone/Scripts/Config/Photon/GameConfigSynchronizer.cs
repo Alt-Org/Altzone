@@ -25,7 +25,7 @@ namespace Altzone.Scripts.Config.Photon
     /// </remarks>
     public class GameConfigSynchronizer : MonoBehaviour
     {
-        private const int MsgSynchronize = PhotonEventDispatcher.eventCodeBase + 0;
+        private const int MsgSynchronize = PhotonEventDispatcher.EventCodeBase + 0;
         private const byte EndByte = 0xFE;
         private const int OverheadBytes = 2;
 
@@ -74,7 +74,7 @@ namespace Altzone.Scripts.Config.Photon
         private void Awake()
         {
             _photonEventDispatcher = PhotonEventDispatcher.Get();
-            _photonEventDispatcher.registerEventListener(MsgSynchronize, data => OnSynchronize(data.CustomData));
+            _photonEventDispatcher.RegisterEventListener(MsgSynchronize, data => OnSynchronize(data.CustomData));
         }
 
         private void OnDestroy()

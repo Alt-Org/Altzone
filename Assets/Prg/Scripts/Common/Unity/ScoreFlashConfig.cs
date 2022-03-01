@@ -7,6 +7,7 @@ namespace Prg.Scripts.Common.Unity
     public class ScoreFlashConfig : ScriptableObject
     {
         public Canvas _canvasPrefab;
+        public bool _isClampToScreen;
         public ScoreFlashPhases _phases;
     }
 

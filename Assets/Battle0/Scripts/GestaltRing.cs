@@ -15,7 +15,7 @@ namespace Battle0.Scripts
     /// </remarks>
     public class GestaltRing : MonoBehaviour
     {
-        private const int photonEventCode = PhotonEventDispatcher.eventCodeBase - 1;
+        private const int photonEventCode = PhotonEventDispatcher.EventCodeBase - 1;
 
         public static GestaltRing Get()
         {
@@ -79,7 +79,7 @@ namespace Battle0.Scripts
             // Start with some random Defence so that we have a valid state.
             curDefence = nextDefence[Random.Range(1, (int)Defence.Confluence)];
             photonEventDispatcher = PhotonEventDispatcher.Get();
-            photonEventDispatcher.registerEventListener(photonEventCode, data =>
+            photonEventDispatcher.RegisterEventListener(photonEventCode, data =>
             {
                 var newDefence = (Defence)Enum.ToObject(typeof(Defence), data.CustomData);
                 Debug.Log($"set Defence {curDefence} <- {newDefence}");

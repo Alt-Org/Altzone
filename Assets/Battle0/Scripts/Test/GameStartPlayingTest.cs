@@ -12,7 +12,7 @@ namespace Battle0.Scripts.Test
     /// </summary>
     public class GameStartPlayingTest : MonoBehaviour
     {
-        private const int photonEventCode = PhotonEventDispatcher.eventCodeBase + 3;
+        private const int photonEventCode = PhotonEventDispatcher.EventCodeBase + 3;
 
         [Header("Live Data"), SerializeField] private int secondsRemaining;
         [SerializeField] private float roomCountdownTime;
@@ -26,7 +26,7 @@ namespace Battle0.Scripts.Test
         {
             variables = RuntimeGameConfig.Get().Variables;
             photonEventDispatcher = PhotonEventDispatcher.Get();
-            photonEventDispatcher.registerEventListener(photonEventCode, data => { handleRoomTimerProgress(data.CustomData); });
+            photonEventDispatcher.RegisterEventListener(photonEventCode, data => { handleRoomTimerProgress(data.CustomData); });
         }
 
         private void Start()

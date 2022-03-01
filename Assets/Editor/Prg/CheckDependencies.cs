@@ -38,6 +38,7 @@ namespace Editor.Prg
                 ".cubemap",
                 ".flare",
                 ".gif",
+                ".inputactions",
                 ".mat",
                 ".mp3",
                 ".otf",

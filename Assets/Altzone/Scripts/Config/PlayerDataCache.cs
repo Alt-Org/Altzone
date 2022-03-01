@@ -9,12 +9,8 @@ using UnityEngine;
 namespace Altzone.Scripts.Config
 {
     /// <summary>
-    /// Player data cache.
+    /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
     /// </summary>
-    /// <remarks>
-    /// Common location for player related data that is persisted elsewhere.<br />
-    /// As this class is visible in UNITY Editor it can not be <c>abstract</c> as it should be!
-    /// </remarks>
     [Serializable]
     public class PlayerDataCache
     {

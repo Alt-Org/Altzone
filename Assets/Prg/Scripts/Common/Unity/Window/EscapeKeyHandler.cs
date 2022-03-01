@@ -1,48 +1,50 @@
 using System;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Assertions;
+using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.Common.Unity.Window
 {
     /// <summary>
-    /// Tracks Escape key press so that is must pressed down and released exactly once (on the same level)
-    /// on behalf of <c>WindowManager</c>.
+    /// Tracks Escape key press (and similar functionality on other devices) on behalf of <c>WindowManager</c>
+    /// using <c>UnityEngine.InputSystem</c> to listen given <c>InputAction</c> for Navigation/Back action.
     /// </summary>
+    /// Actual <c>InputAction</c> is configured in Editor with separate <c>ScriptableObject</c>.
+    /// <remarks>
+    /// </remarks>
     public class EscapeKeyHandler : MonoBehaviour
     {
-        private bool _isEscapePressedDown;
-        private bool _isEscapePressedUp;
-        private string _activeScenePathDown;
-        private string _activeScenePathUp;
+        [SerializeField] private InputActionReference _escapeInputActionRef;
 
         private Action _callback;
 
-        private void Update()
+        private void Awake()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
-            {
-                _activeScenePathDown = SceneManager.GetActiveScene().path;
-                _isEscapePressedDown = true;
-                _isEscapePressedUp = false;
-                return;
-            }
-            if (UnityEngine.Input.GetKeyUp(KeyCode.Escape))
-            {
-                _activeScenePathUp = SceneManager.GetActiveScene().path;
-                _isEscapePressedUp = true;
-                return;
-            }
-            if (_isEscapePressedDown && _isEscapePressedUp)
-            {
-                _isEscapePressedDown = false;
-                _isEscapePressedUp = false;
-                if (_activeScenePathDown != _activeScenePathUp)
-                {
-                    Debug.LogWarning($"ESCAPE SKIPPED down={_activeScenePathDown} up={_activeScenePathUp}");
-                    return;
-                }
-                _callback?.Invoke();
-            }
+            var escapeInputAction = Resources.Load<EscapeInputAction>(nameof(EscapeInputAction));
+            Assert.IsNotNull(escapeInputAction, "escapeInputAction != null");
+            _escapeInputActionRef = escapeInputAction._escapeInputAction;
+            Debug.Log($"Awake escapeInputActionRef {_escapeInputActionRef}");
+        }
+
+        private void OnEnable()
+        {
+            _escapeInputActionRef.action.performed += OnEscapeActionPerformed;
+        }
+
+        private void OnDisable()
+        {
+            _escapeInputActionRef.action.performed -= OnEscapeActionPerformed;
+        }
+
+        private void OnDestroy()
+        {
+            _escapeInputActionRef.action.performed -= OnEscapeActionPerformed;
+        }
+
+        private void OnEscapeActionPerformed(InputAction.CallbackContext ctx)
+        {
+            _callback?.Invoke();
         }
 
         public void SetCallback(Action callback)

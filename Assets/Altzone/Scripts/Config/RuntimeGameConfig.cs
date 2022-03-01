@@ -3,6 +3,7 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Altzone.Scripts.Config
 {
@@ -44,7 +45,7 @@ namespace Altzone.Scripts.Config
     }
 
     /// <summary>
-    /// Game constraints that that control workings of the game.
+    /// Game constraints that that control the workings of the game.
     /// </summary>
     [Serializable]
     public class GameConstraints
@@ -93,7 +94,7 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class GamePrefabs
     {
-        [Header("Battle")] public GameObject _playerForDes;
+        [Header("Battle Player Prefabs")] public GameObject _playerForDes;
         public GameObject _playerForDef;
         public GameObject _playerForInt;
         public GameObject _playerForPro;
@@ -101,10 +102,73 @@ namespace Altzone.Scripts.Config
         public GameObject _playerForEgo;
         public GameObject _playerForCon;
 
+        [Header("Battle Shield Prefabs")] public GameObject _shieldForDes;
+        public GameObject _shieldForDef;
+        public GameObject _shieldForInt;
+        public GameObject _shieldForPro;
+        public GameObject _shieldForRet;
+        public GameObject _shieldForEgo;
+        public GameObject _shieldForCon;
+
         public void CopyFrom(GamePrefabs other)
         {
             PropertyCopier<GamePrefabs, GamePrefabs>.CopyFields(other, this);
         }
+
+        public GameObject GetPlayerPrefab(Defence defence)
+        {
+            switch (defence)
+            {
+                case Defence.Desensitisation:
+                    return _playerForDes;
+                case Defence.Deflection:
+                    return _playerForDef;
+                case Defence.Introjection:
+                    return _playerForInt;
+                case Defence.Projection:
+                    return _playerForPro;
+                case Defence.Retroflection:
+                    return _playerForRet;
+                case Defence.Egotism:
+                    return _playerForEgo;
+                case Defence.Confluence:
+                    return _playerForCon;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
+            }
+        }
+        public GameObject GetShieldPrefab(Defence defence)
+        {
+            switch (defence)
+            {
+                case Defence.Desensitisation:
+                    return _shieldForDes;
+                case Defence.Deflection:
+                    return _shieldForDef;
+                case Defence.Introjection:
+                    return _shieldForInt;
+                case Defence.Projection:
+                    return _shieldForPro;
+                case Defence.Retroflection:
+                    return _shieldForRet;
+                case Defence.Egotism:
+                    return _shieldForEgo;
+                case Defence.Confluence:
+                    return _shieldForCon;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
+            }
+        }
+    }
+
+    /// <summary>
+    /// New Input System Package for Player actions.
+    /// </summary>
+    [Serializable]
+    public class GameInput
+    {
+        [Header("Player Input Actions")] public InputActionReference _clickInputAction;
+        public InputActionReference _moveInputAction;
     }
 
     /// <summary>
@@ -141,31 +205,52 @@ namespace Altzone.Scripts.Config
         [SerializeField] private GameVariables _permanentVariables;
         [SerializeField] private GamePrefabs _permanentPrefabs;
         [SerializeField] private PlayerDataCache _playerDataCache;
+        [SerializeField] private GameInput _gameInput;
 
+        /// <summary>
+        /// Game features that can be toggled on and off.
+        /// </summary>
         public GameFeatures Features
         {
             get => _permanentFeatures;
             set => _permanentFeatures.CopyFrom(value);
         }
 
+        /// <summary>
+        /// Game constraints that that control the workings of the game.
+        /// </summary>
         public GameConstraints GameConstraints
         {
             get => _permanentConstraints;
             set => _permanentConstraints.CopyFrom(value);
         }
 
+        /// <summary>
+        /// Game variables that control game play somehow.
+        /// </summary>
         public GameVariables Variables
         {
             get => _permanentVariables;
             set => _permanentVariables.CopyFrom(value);
         }
 
+        /// <summary>
+        /// Well known prefabs for the game.
+        /// </summary>
         public GamePrefabs Prefabs
         {
             get => _permanentPrefabs;
             private set => _permanentPrefabs.CopyFrom(value);
         }
 
+        /// <summary>
+        /// New Input System Package for Player actions.
+        /// </summary>
+        public GameInput Input => _gameInput;
+
+        /// <summary>
+        /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
+        /// </summary>
         public PlayerDataCache PlayerDataCache => _playerDataCache;
 
         private static void LoadGameConfig(RuntimeGameConfig instance)
@@ -184,6 +269,7 @@ namespace Altzone.Scripts.Config
             instance.Variables = gameSettings._variables;
             instance.Prefabs = gameSettings._prefabs;
             instance._playerDataCache = LoadPlayerDataCache();
+            instance._gameInput = gameSettings._input;
         }
 
         private static PlayerDataCache LoadPlayerDataCache()

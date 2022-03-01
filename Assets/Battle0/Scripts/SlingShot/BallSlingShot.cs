@@ -21,7 +21,7 @@ namespace Battle0.Scripts.SlingShot
     /// </remarks>
     public class BallSlingShot : MonoBehaviourPunCallbacks, IBallSlingShot
     {
-        private const int msgHideSlingShot = PhotonEventDispatcher.eventCodeBase + 2;
+        private const int msgHideSlingShot = PhotonEventDispatcher.EventCodeBase + 2;
 
         [Header("Settings"), SerializeField] private int teamNumber;
         [SerializeField] private SpriteRenderer spriteA;
@@ -49,7 +49,7 @@ namespace Battle0.Scripts.SlingShot
             sqrMinSlingShotDistance = variables._minSlingShotDistance * variables._minSlingShotDistance;
             sqrMaxSlingShotDistance = variables._maxSlingShotDistance * variables._maxSlingShotDistance;
             photonEventDispatcher = PhotonEventDispatcher.Get();
-            photonEventDispatcher.registerEventListener(msgHideSlingShot, data => { onHideSlingShot(); });
+            photonEventDispatcher.RegisterEventListener(msgHideSlingShot, data => { onHideSlingShot(); });
         }
 
         private void sendHideSlingShot()

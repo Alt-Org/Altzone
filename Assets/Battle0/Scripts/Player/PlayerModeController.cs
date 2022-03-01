@@ -11,14 +11,14 @@ namespace Battle0.Scripts.Player
     /// </summary>
     public class PlayerModeController : MonoBehaviour
     {
-        private const int msgSetActiveTeam = PhotonEventDispatcher.eventCodeBase + 1;
+        private const int msgSetActiveTeam = PhotonEventDispatcher.EventCodeBase + 1;
 
         private PhotonEventDispatcher photonEventDispatcher;
 
         private void Awake()
         {
             photonEventDispatcher = PhotonEventDispatcher.Get();
-            photonEventDispatcher.registerEventListener(msgSetActiveTeam, data => { onSetActiveTeam(data.CustomData); });
+            photonEventDispatcher.RegisterEventListener(msgSetActiveTeam, data => { onSetActiveTeam(data.CustomData); });
         }
 
         private void OnEnable()

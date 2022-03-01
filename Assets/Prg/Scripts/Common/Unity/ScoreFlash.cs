@@ -30,34 +30,41 @@ namespace Prg.Scripts.Common.Unity
             return _instance;
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void RuntimeInitializeOnLoadMethod()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+
         public static void Push(string message)
         {
             Get().Push(message, 0f, 0f);
         }
 
-        public static void Push(string message, float x, float y)
+        public static void Push(string message, float worldX, float worldY)
         {
-            Get().Push(message, x, y);
+            Get().Push(message, worldX, worldY);
         }
 
-        public static void Push(string message, Vector2 position)
+        public static void Push(string message, Vector2 worldPosition)
         {
-            Get().Push(message, position.x, position.y);
+            Get().Push(message, worldPosition.x, worldPosition.y);
         }
 
-        public static void Push(string message, Vector3 position)
+        public static void Push(string message, Vector3 worldPosition)
         {
-            Get().Push(message, position.x, position.y);
+            Get().Push(message, worldPosition.x, worldPosition.y);
         }
     }
 
     public interface IScoreFlash
     {
-        void Push(string message, float x, float y);
+        void Push(string message, float worldX, float y);
     }
 
     [Serializable]
-    internal class MessageEntry
+    internal class ScoreFlashItem
     {
         [SerializeField] private GameObject _root;
         [SerializeField] private RectTransform _rectTransform;
@@ -69,7 +76,9 @@ namespace Prg.Scripts.Common.Unity
 
         public int Index { get; private set; }
 
-        public MessageEntry(int index, GameObject root, TMP_Text text)
+        public Vector2 Position => _position;
+
+        public ScoreFlashItem(int index, GameObject root, TMP_Text text)
         {
             Index = index;
             _root = root;
@@ -137,7 +146,7 @@ namespace Prg.Scripts.Common.Unity
             _root.SetActive(false);
         }
 
-        public bool Overlaps(MessageEntry other)
+        public bool Overlaps(ScoreFlashItem other)
         {
             var textRect = GetTextRect();
             var otherRect = other.GetTextRect();
@@ -148,15 +157,20 @@ namespace Prg.Scripts.Common.Unity
 
     internal class ScoreFlasher : MonoBehaviour, IScoreFlash
     {
+        private const float InflateScreenX = -0.20f;
+        private const float InflateScreenY = -0.10f;
+
         [SerializeField] private Camera _camera;
         [SerializeField] private Canvas _canvas;
         [SerializeField] private RectTransform _canvasRectTransform;
 
-        [SerializeField] private MessageEntry[] _entries;
+        [SerializeField] private ScoreFlashItem[] _entries;
         [SerializeField] private Animator[] _animators;
         [SerializeField] private int _curIndex;
         private Coroutine[] _routines;
 
+        private bool _isClampToScreen;
+        private Rect _messageAreaScreen;
         private Action _destroyedCallback;
         private Vector3 _worldPos;
         private Vector3 _screenPos;
@@ -165,19 +179,29 @@ namespace Prg.Scripts.Common.Unity
         public void Setup(ScoreFlashConfig config, Camera screenCamera, Action destroyed)
         {
             _camera = screenCamera;
+            _isClampToScreen = config._isClampToScreen;
+            if (_isClampToScreen)
+            {
+                var width = Screen.width;
+                var height = Screen.height;
+                var screenRect = Rect.MinMaxRect(0, 0, width, height);
+                _messageAreaScreen = screenRect.Inflate(new Vector2(width * InflateScreenX, height * InflateScreenY));
+                Debug.Log($"Setup screenRect {screenRect} -> _messageAreaScreen {_messageAreaScreen}");
+                Debug.Log($"Setup _messageAreaScreen x [{_messageAreaScreen.xMin} .. {_messageAreaScreen.xMax}] y [{_messageAreaScreen.yMin} .. {_messageAreaScreen.yMax}]");
+            }
             _canvas = Instantiate(config._canvasPrefab, Vector3.zero, Quaternion.identity);
             Assert.IsTrue(_canvas.isRootCanvas, "_canvas.isRootCanvas");
             _canvasRectTransform = _canvas.GetComponent<RectTransform>();
 
             var children = _canvas.GetComponentsInChildren<TMP_Text>(true);
             Debug.Log($"Setup children {children.Length}");
-            _entries = new MessageEntry[children.Length];
+            _entries = new ScoreFlashItem[children.Length];
             _animators = new Animator[children.Length];
             _routines = new Coroutine[children.Length];
             for (var i = 0; i < children.Length; ++i)
             {
                 var parent = children[i].gameObject;
-                _entries[i] = new MessageEntry(i, parent, children[i]);
+                _entries[i] = new ScoreFlashItem(i, parent, children[i]);
                 _entries[i].Hide();
                 _animators[i] = new Animator(config._phases);
                 _routines[i] = null;
@@ -222,7 +246,7 @@ namespace Prg.Scripts.Common.Unity
             }
         }
 
-        private MessageEntry Previous(MessageEntry entry)
+        private ScoreFlashItem Previous(ScoreFlashItem entry)
         {
             if (_entries.Length == 1)
             {
@@ -232,7 +256,7 @@ namespace Prg.Scripts.Common.Unity
             return _animators[index].IsWorking ? _entries[index] : null;
         }
 
-        private IEnumerator AnimateText(Animator animator, MessageEntry entry, string text, float x, float y)
+        private IEnumerator AnimateText(Animator animator, ScoreFlashItem entry, string text, float x, float y)
         {
             animator.Reserve(entry);
             yield return null;
@@ -248,20 +272,26 @@ namespace Prg.Scripts.Common.Unity
             _routines[entry.Index] = null;
         }
 
-        private void CheckOverlapping(MessageEntry current)
+        private void CheckOverlapping(ScoreFlashItem current)
         {
             var previous = Previous(current);
+            var first = previous;
             while (previous != null && previous.Overlaps(current))
             {
                 MoveAway(current, previous);
                 current = previous;
                 previous = Previous(current);
+                if (first == previous)
+                {
+                    Debug.LogWarning($"CheckOverlapping overflow: items ({_entries.Length}) array is full");
+                    break;
+                }
             }
         }
 
-        private void MoveAway(MessageEntry current, MessageEntry previous)
+        private void MoveAway(ScoreFlashItem current, ScoreFlashItem previous)
         {
-            Debug.Log($"MoveAway current {current.Index} previous {previous.Index}");
+            Debug.Log($"MoveAway current {current.Index} {current.Position} previous {previous.Index} {previous.Position}");
             var animator = _animators[previous.Index];
             animator.MoveAway();
         }
@@ -271,6 +301,14 @@ namespace Prg.Scripts.Common.Unity
             _worldPos.x = worldX;
             _worldPos.y = worldY;
             _screenPos = _camera.WorldToScreenPoint(_worldPos);
+            if (_isClampToScreen)
+            {
+                var temp = _screenPos;
+                _screenPos.x = Mathf.Clamp(_screenPos.x, _messageAreaScreen.xMin, _messageAreaScreen.xMax);
+                _screenPos.y = Mathf.Clamp(_screenPos.y, _messageAreaScreen.yMin, _messageAreaScreen.yMax);
+                Debug.Log($"Clamp {temp} <- {_screenPos} delta x {Mathf.Abs(temp.x - _screenPos.x)} y {Mathf.Abs(temp.y - _screenPos.y)}");
+            }
+
             var hit = RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _canvasRectTransform, _screenPos, null, out _localPos);
             Assert.IsTrue(hit, "RectTransformUtility.ScreenPointToLocalPointInRectangle was hit");
@@ -287,7 +325,7 @@ namespace Prg.Scripts.Common.Unity
             [SerializeField] private float _elapsedTime;
             [SerializeField] private float _duration;
             [SerializeField] private float _fraction;
-            [SerializeField] private MessageEntry _entry;
+            [SerializeField] private ScoreFlashItem _entry;
 
             private float _fadeOutRotationAngle;
             private float _fadeOutRotationSpeed;
@@ -327,7 +365,7 @@ namespace Prg.Scripts.Common.Unity
                 return false;
             }
 
-            public void Reserve(MessageEntry entry)
+            public void Reserve(ScoreFlashItem entry)
             {
                 _entry = entry;
                 Assert.IsFalse(IsWorking, $"IsWorking index {_entry.Index}");

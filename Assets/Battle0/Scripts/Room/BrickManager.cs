@@ -10,7 +10,7 @@ namespace Battle0.Scripts.Room
     /// </summary>
     public class BrickManager : MonoBehaviour
     {
-        private const int msgDeleteBrick = PhotonEventDispatcher.eventCodeBase + 5;
+        private const int msgDeleteBrick = PhotonEventDispatcher.EventCodeBase + 5;
 
         private static BrickManager Get()
         {
@@ -46,7 +46,7 @@ namespace Battle0.Scripts.Room
             createBrickMarkersFor(upperBricks.transform);
             createBrickMarkersFor(lowerBricks.transform);
             photonEventDispatcher = PhotonEventDispatcher.Get();
-            photonEventDispatcher.registerEventListener(msgDeleteBrick, data => { onDeleteBrick(data.CustomData); });
+            photonEventDispatcher.RegisterEventListener(msgDeleteBrick, data => { onDeleteBrick(data.CustomData); });
         }
 
         private void OnDestroy()
