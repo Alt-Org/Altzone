@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2ce41b7311042719470d4e9089a74c2, type: 3}
+  m_Name: PersistentGameSettings
+  m_EditorClassIdentifier: 
+  _features:
+    _isRotateGameCamera: 1
+    _isRotateGamePlayArea: 1
+    _isSPawnMiniBall: 0
+    _isSinglePlayerShieldOn: 1
+    _isBricksVisible: 0
+  _constraints:
+    _minPlayerNameLength: 2
+    _maxPlayerNameLength: 16
+  _variables:
+    _roomStartDelay: 3
+    _headScoreToWin: 1
+    _wallScoreToWin: 1
+    _ballMoveSpeedMultiplier: 1
+    _ballLerpSmoothingFactor: 4
+    _ballTeleportDistance: 1
+    _minSlingShotDistance: 3
+    _maxSlingShotDistance: 9
+    _ballRestartDelay: 3
+    _playerMoveSpeedMultiplier: 1
+    _playerSqrMinRotationDistance: 5
+    _playerSqrMaxRotationDistance: 5
+    _shieldDistanceMultiplier: 1
+  _prefabs:
+    _playerForDes: {fileID: 946557873978984302, guid: a458db9fe4927f14682ea8a08a7a62dc,
+      type: 3}
+    _playerForDef: {fileID: 946557873978984302, guid: a458db9fe4927f14682ea8a08a7a62dc,
+      type: 3}
+    _playerForInt: {fileID: 946557873978984302, guid: a458db9fe4927f14682ea8a08a7a62dc,
+      type: 3}
+    _playerForPro: {fileID: 5499491152921646210, guid: 9dc28aeae90222f40bec808796e6015b,
+      type: 3}
+    _playerForRet: {fileID: 8607368454165204979, guid: 85da44cc167bfd743bed37d4f121cad7,
+      type: 3}
+    _playerForEgo: {fileID: 8607368454165204979, guid: 85da44cc167bfd743bed37d4f121cad7,
+      type: 3}
+    _playerForCon: {fileID: 6630197877611792696, guid: e05381e0651f8714ab10518df04bec1c,
+      type: 3}
+    _shieldForDes: {fileID: 860947987784571068, guid: 9b8b4f29046405746bb3c648352b9873,
+      type: 3}
+    _shieldForDef: {fileID: 860947987784571068, guid: 9b8b4f29046405746bb3c648352b9873,
+      type: 3}
+    _shieldForInt: {fileID: 860947987784571068, guid: 9b8b4f29046405746bb3c648352b9873,
+      type: 3}
+    _shieldForPro: {fileID: 3820199502424048656, guid: 1fc0b11f46725b246a2f57e033f5fe3b,
+      type: 3}
+    _shieldForRet: {fileID: 8607368454165204979, guid: e3854e0807b17234aa1615d092c4caba,
+      type: 3}
+    _shieldForEgo: {fileID: 8607368454165204979, guid: e3854e0807b17234aa1615d092c4caba,
+      type: 3}
+    _shieldForCon: {fileID: 156700737595684781, guid: b01029031a14e6249bf9f167d5b57e45,
+      type: 3}
+  _input:
+    _clickInputAction: {fileID: 3018464710834141242, guid: 790646cf399ca894589ac6314d128d98,
+      type: 3}
+    _moveInputAction: {fileID: -7747489554431944705, guid: 790646cf399ca894589ac6314d128d98,
+      type: 3}
