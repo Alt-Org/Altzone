@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameUi.Scripts.GameOver
+namespace GameOver.Scripts.GameOver
 {
     public class GameOverView : MonoBehaviour
     {
