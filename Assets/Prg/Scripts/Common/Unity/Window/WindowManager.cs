@@ -248,8 +248,14 @@ namespace Prg.Scripts.Common.Unity.Window
                 {
                     var previousWindow = _currentWindows[0];
                     // It seems that currentWindow can be previousWindow due to some misconfiguration or missing configuration
-                    Assert.IsFalse(currentWindow._windowDef.Equals(previousWindow._windowDef));
-                    if (previousWindow._windowDef.IsPopOutWindow)
+                    if (currentWindow._windowDef.Equals(previousWindow._windowDef))
+                    {
+                        // We must accept this fact - for now - and can not do anything about it (but remove it).
+                        Debug.Log(
+                            $"ShowWindow {windowDef} is already in window stack ({_currentWindows.Count}) - when it possibly should not be");
+                        PopAndHide();
+                    }
+                    else if (previousWindow._windowDef.IsPopOutWindow)
                     {
                         PopAndHide();
                     }
@@ -267,8 +273,9 @@ namespace Prg.Scripts.Common.Unity.Window
                 _currentWindows.Insert(0, currentWindow);
                 Show(currentWindow);
             }
+
             SafeExecution("DoShowWindow", DoShowWindow);
-      }
+        }
 
         void IWindowManager.PopCurrentWindow()
         {

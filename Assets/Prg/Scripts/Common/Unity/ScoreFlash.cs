@@ -238,6 +238,7 @@ namespace Prg.Scripts.Common.Unity
             {
                 Debug.Log($"StopCoroutine {index}");
                 StopCoroutine(routine);
+                _routines[index] = null;
             }
             var animator = _animators[index];
             if (animator.IsWorking)
