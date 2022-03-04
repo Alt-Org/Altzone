@@ -18,9 +18,9 @@ namespace Prg.Scripts.Common.Photon
     public class PhotonListener : MonoBehaviour,
         IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks, IPunOwnershipCallbacks
     {
-        private const int MaxTimeDifferenceMs = 60 * 60 * 1000;
-        private const int MinTimeDifferenceMs = -60 * 60 * 1000;
-        private static int _lastServerTimestamp;
+        private const int MaxServerTimeDifferenceMs = 60 * 60 * 1000;
+        private const int MinServerTimeDifferenceMs = -60 * 60 * 1000;
+        private static int _lastServerTimestampForLog;
 
         private static readonly Dictionary<string, string> PhotonRoomPropNames;
         private static readonly Dictionary<string, string> PhotonPlayerPropNames;
@@ -62,8 +62,14 @@ namespace Prg.Scripts.Common.Photon
             UnityExtensions.CreateGameObjectAndComponent<PhotonListener>(nameof(PhotonListener), true);
         }
 
+        private void Awake()
+        {
+            Debug.Log($"Awake {GetInstanceID()}");
+        }
+
         private void OnEnable()
         {
+            Debug.Log($"OnEnable {GetInstanceID()}");
             if (PhotonNetwork.NetworkingClient != null)
             {
                 PhotonNetwork.AddCallbackTarget(this);
@@ -83,6 +89,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnDisable()
         {
+            Debug.Log($"OnDisable {GetInstanceID()}");
             SceneManager.sceneLoaded -= SceneLoaded;
             SceneManager.sceneUnloaded -= SceneUnloaded;
             PhotonNetwork.RemoveCallbackTarget(this);
@@ -114,10 +121,10 @@ namespace Prg.Scripts.Common.Photon
         private static void _logMessage(string message)
         {
             var c = PhotonNetwork.IsConnectedAndReady ? "r" : PhotonNetwork.IsConnected ? "c" : "-";
-            var deltaTime = PhotonNetwork.ServerTimestamp - _lastServerTimestamp;
-            if (deltaTime > MaxTimeDifferenceMs || deltaTime < MinTimeDifferenceMs)
+            var deltaTime = PhotonNetwork.ServerTimestamp - _lastServerTimestampForLog;
+            if (deltaTime > MaxServerTimeDifferenceMs || deltaTime < MinServerTimeDifferenceMs)
             {
-                _lastServerTimestamp = PhotonNetwork.ServerTimestamp;
+                _lastServerTimestampForLog = PhotonNetwork.ServerTimestamp;
                 deltaTime = 0;
                 c += ">";
             }
