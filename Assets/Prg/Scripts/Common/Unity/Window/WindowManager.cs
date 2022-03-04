@@ -152,7 +152,7 @@ namespace Prg.Scripts.Common.Unity.Window
                     return;
                 }
             }
-            if (_currentWindows.Count == 1)
+            if (_currentWindows.Count <= 1)
             {
                 ExitApplication.ExitGracefully();
                 return;
