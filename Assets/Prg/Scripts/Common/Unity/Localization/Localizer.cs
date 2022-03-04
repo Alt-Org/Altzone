@@ -255,8 +255,12 @@ namespace Prg.Scripts.Common.Unity.Localization
             if (config == null)
             {
                 Debug.LogWarning($"{nameof(LocalizationConfig)} is missing");
+            }
+            var languagesBinFile = config != null ?  config.LanguagesBinFile : null;
+            if (languagesBinFile == null)
+            {
                 _languages = new Languages();
-                _languages.Add(new Language(SystemLanguage.Unknown, "xx"));
+                _languages.Add(new Language(SystemLanguage.Unknown, "en"));
             }
             else
             {
