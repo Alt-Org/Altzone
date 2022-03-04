@@ -62,14 +62,8 @@ namespace Prg.Scripts.Common.Photon
             UnityExtensions.CreateGameObjectAndComponent<PhotonListener>(nameof(PhotonListener), true);
         }
 
-        private void Awake()
-        {
-            Debug.Log($"Awake {GetInstanceID()}");
-        }
-
         private void OnEnable()
         {
-            Debug.Log($"OnEnable {GetInstanceID()}");
             if (PhotonNetwork.NetworkingClient != null)
             {
                 PhotonNetwork.AddCallbackTarget(this);
@@ -89,7 +83,6 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnDisable()
         {
-            Debug.Log($"OnDisable {GetInstanceID()}");
             SceneManager.sceneLoaded -= SceneLoaded;
             SceneManager.sceneUnloaded -= SceneUnloaded;
             PhotonNetwork.RemoveCallbackTarget(this);
