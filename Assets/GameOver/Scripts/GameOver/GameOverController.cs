@@ -19,8 +19,13 @@ namespace GameOver.Scripts.GameOver
             if (!PhotonNetwork.InRoom)
             {
                 _view.WinnerInfo1 = RichText.Yellow("Game was interrupted");
+                _view.ContinueButton.interactable = true;
                 return;
             }
+            // We disable scene sync in order to prevent Photon sending these events to other clients because this room is finished now.
+            // - PhotonLobby should set it again if/when needed.
+            PhotonNetwork.AutomaticallySyncScene = false;
+
             _view.WinnerInfo1 = RichText.Yellow("Checking results");
             if (_timeOutDelay == 0f)
             {
