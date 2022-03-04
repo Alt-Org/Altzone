@@ -12,6 +12,7 @@ namespace GameOver.Scripts.GameOver
 
         [SerializeField] private GameOverView _view;
         [SerializeField] private float _timeOutDelay;
+        [SerializeField] private bool _isDebugKeepRoomOpen;
 
         private void OnEnable()
         {
@@ -80,6 +81,15 @@ namespace GameOver.Scripts.GameOver
                 break;
             }
             _view.ContinueButton.interactable = true;
+            if (_isDebugKeepRoomOpen && Application.platform.ToString().ToLower().EndsWith("editor"))
+            {
+                // Do not leave room in Editor in order to be able see room state for debugging.
+                yield break;
+            }
+            if (PhotonNetwork.InRoom)
+            {
+                PhotonNetwork.LeaveRoom();
+            }
         }
     }
 }
