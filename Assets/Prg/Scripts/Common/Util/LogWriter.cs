@@ -128,7 +128,7 @@ namespace Prg.Scripts.Common.Util
                     return;
                 }
 
-                if (_prevLogLineCount > 0)
+                if (_prevLogLineCount > 1)
                 {
                     WriteLog($"duplicate_lines {_prevLogLineCount}");
                     _prevLogLineCount = 0;
