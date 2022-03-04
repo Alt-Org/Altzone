@@ -81,9 +81,11 @@ crashlytics-build.properties
 **/[Rr]esources/*[Tt]est/
 **/[Rr]esources/*[Tt]est.meta
 
-# This Project local settings files: LocalConfig2.asset
+# This Project local settings files: Local*.asset
 **/[Rr]esources/[Ll]ocal*.asset
 **/[Rr]esources/[Ll]ocal*.asset.meta
+!**/[Rr]esources/LocalizationConfig.asset
+!**/[Rr]esources/LocalizationConfig.asset.meta
 
 # This Project local build config files
 m_Build*
