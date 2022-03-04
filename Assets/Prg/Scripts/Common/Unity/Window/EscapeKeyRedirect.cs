@@ -23,8 +23,15 @@ namespace Prg.Scripts.Common.Unity.Window
         private WindowManager.GoBackAction DoRedirect()
         {
             var windowManager = WindowManager.Get();
+            if (windowManager.WindowCount > 1)
+            {
+                WindowManager.Get().RegisterGoBackHandlerOnce(DoRedirect);
+                return WindowManager.GoBackAction.Continue;
+            }
+            Debug.Log($"DoRedirect start {_redirectWindow} WindowCount {windowManager.WindowCount}");
             windowManager.PopCurrentWindow();
             windowManager.ShowWindow(_redirectWindow);
+            Debug.Log($"DoRedirect done {_redirectWindow}");
             return WindowManager.GoBackAction.Abort;
         }
     }

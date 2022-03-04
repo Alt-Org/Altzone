@@ -44,6 +44,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void OnEscapeActionPerformed(InputAction.CallbackContext ctx)
         {
+            Debug.Log($"OnEscapeActionPerformed {ctx.action}");
             _callback?.Invoke();
         }
 
