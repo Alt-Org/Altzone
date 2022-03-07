@@ -283,10 +283,10 @@ namespace Lobby.Scripts.InRoom
             _interactableSpectator = true;
             _interactableStartPlay = false;
 
-            _captionPlayerP1 = $"Player {PlayerPosition1}";
-            _captionPlayerP2 = $"Player {PlayerPosition2}";
-            _captionPlayerP3 = $"Player {PlayerPosition3}";
-            _captionPlayerP4 = $"Player {PlayerPosition4}";
+            _captionPlayerP1 = $"Free";
+            _captionPlayerP2 = $"Free";
+            _captionPlayerP3 = $"Free";
+            _captionPlayerP4 = $"Free";
             _captionGuest = "Guest";
             _captionSpectator = "Spectator";
         }
