@@ -1,0 +1,1 @@
+This folder contains shared graphic assets for multiple levels
