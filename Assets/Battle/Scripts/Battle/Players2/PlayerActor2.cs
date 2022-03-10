@@ -194,11 +194,11 @@ namespace Battle.Scripts.Battle.Players2
 
         private static ShieldConfig LoadShield(Defence defence, Transform transform)
         {
-            var shieldInstance = RuntimeGameConfig.Get().Prefabs.GetShieldPrefab(defence);
-            var shieldPrefab = shieldInstance.GetComponent<ShieldConfig>();
+            var  shieldPrefab = RuntimeGameConfig.Get().Prefabs.GetShieldPrefab(defence);
             Assert.IsNotNull(shieldPrefab, "shieldPrefab != null");
-            var shieldConfig = Instantiate(shieldPrefab, transform);
-            shieldConfig.name = shieldConfig.name.Replace("(Clone)", string.Empty);
+            var instance = Instantiate(shieldPrefab, transform);
+            instance.name = instance.name.Replace("(Clone)", string.Empty);
+            var shieldConfig = instance.GetComponent<ShieldConfig>();
             return shieldConfig;
         }
 
