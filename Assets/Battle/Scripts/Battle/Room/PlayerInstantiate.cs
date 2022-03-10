@@ -9,6 +9,9 @@ namespace Battle.Scripts.Battle.Room
     /// <summary>
     /// Instantiate local Photon player in correct position.
     /// </summary>
+    /// <remarks>
+    /// Note that this is not actual player prefab but Photon component for it.
+    /// </remarks>
     public class PlayerInstantiate : MonoBehaviour
     {
         private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;

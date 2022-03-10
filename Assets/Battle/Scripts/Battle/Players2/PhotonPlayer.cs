@@ -1,7 +1,9 @@
 using System.Collections;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Photon;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Players2
 {
@@ -15,8 +17,6 @@ namespace Battle.Scripts.Battle.Players2
     [RequireComponent(typeof(PhotonView))]
     public class PhotonPlayer : MonoBehaviour
     {
-        [Header("Settings"), SerializeField] private PlayerActor2 _playerActorPrefab;
-
         private PlayerActor2 _playerActor;
 
         private void OnEnable()
@@ -26,31 +26,43 @@ namespace Battle.Scripts.Battle.Players2
                 return;
             }
             name = name.Replace("(Clone)", string.Empty);
-            Debug.Log($"OnEnable start {name} for {_playerActorPrefab.name}");
-            _playerActor = Instantiate(_playerActorPrefab);
+            var playerPrefab = GetLocalPlayerPrefab();
+            Debug.Log($"OnEnable start {name} for {playerPrefab.name}");
+            var instance = Instantiate(playerPrefab);
+            _playerActor = instance.GetComponent<PlayerActor2>();
+            Assert.IsNotNull(_playerActor, "_playerActor != null");
             var myTransform = GetComponent<Transform>();
             var playerTransform = _playerActor.GetComponent<Transform>();
             playerTransform.position = myTransform.position;
             _playerActor.SetPhotonView(PhotonView.Get(this));
             _playerActor.gameObject.SetActive(true);
-            Debug.Log($"OnEnable done {name} for {_playerActorPrefab.name}");
+            Debug.Log($"OnEnable done {name} for {playerPrefab.name}");
 
-            StartCoroutine(WaitForSystemToStabilize());
+            StartCoroutine(WaitForSystemToStabilize(playerPrefab.name));
         }
 
-        private IEnumerator WaitForSystemToStabilize()
+        private IEnumerator WaitForSystemToStabilize(string playerPrefabName)
         {
             var networkSync = GetComponent<NetworkSync>();
             if (networkSync.enabled)
             {
                 yield return new WaitUntil(() => networkSync.enabled = false);
             }
-            Debug.Log($"OnEnable re-parent {name} for {_playerActorPrefab.name}");
+            Debug.Log($"OnEnable re-parent {name} for {playerPrefabName}");
             // Re-parent us under player so that we can be detached without disturbing the player so much.
             var myTransform = GetComponent<Transform>();
             var playerTransform = _playerActor.GetComponent<Transform>();
             myTransform.parent = playerTransform;
             enabled = false;
+        }
+
+        private static GameObject GetLocalPlayerPrefab()
+        {
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var playerDataCache = runtimeGameConfig.PlayerDataCache;
+            var defence = playerDataCache.CharacterModel.MainDefence;
+            var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(defence);
+            return playerPrefab;
         }
     }
 }
