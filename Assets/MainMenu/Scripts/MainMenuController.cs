@@ -9,8 +9,8 @@ namespace MainMenu.Scripts
 
         private void Awake()
         {
-            var playerData = RuntimeGameConfig.Get().PlayerDataCache;
-            _view.PlayerName = playerData.PlayerName;
+            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            _view.PlayerName = playerDataCache.PlayerName;
         }
     }
 }

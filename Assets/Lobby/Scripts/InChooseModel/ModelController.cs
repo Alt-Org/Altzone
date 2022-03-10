@@ -20,30 +20,30 @@ namespace Lobby.Scripts.InChooseModel
         {
             Debug.Log("Start");
             _view.titleText.text = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
-            var player = RuntimeGameConfig.Get().PlayerDataCache;
-            _view.playerName.text = player.PlayerName;
+            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            _view.playerName.text = playerDataCache.PlayerName;
             _view.hideCharacter();
             _view.continueButton.onClick.AddListener(() =>
             {
                 Debug.Log("continueButton");
                 // Save player settings if changed before continuing!
-                if (_view.playerName.text != player.PlayerName ||
-                    _currentCharacterId != player.CharacterModelId)
+                if (_view.playerName.text != playerDataCache.PlayerName ||
+                    _currentCharacterId != playerDataCache.CharacterModelId)
                 {
                     Debug.Log("player.BatchSave");
-                    player.BatchSave(() =>
+                    playerDataCache.BatchSave(() =>
                     {
-                        player.PlayerName = _view.playerName.text;
-                        player.CharacterModelId = _currentCharacterId;
+                        playerDataCache.PlayerName = _view.playerName.text;
+                        playerDataCache.CharacterModelId = _currentCharacterId;
                     });
                 }
-                if (PhotonNetwork.NickName != player.PlayerName)
+                if (PhotonNetwork.NickName != playerDataCache.PlayerName)
                 {
                     // Fix player name if it has been changed.
-                    PhotonNetwork.NickName = player.PlayerName;
+                    PhotonNetwork.NickName = playerDataCache.PlayerName;
                 }
             });
-            _currentCharacterId = player.CharacterModelId;
+            _currentCharacterId = playerDataCache.CharacterModelId;
             var characters = Storefront.Get().GetAllCharacterModels();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             for (var i = 0; i < characters.Count; ++i)
