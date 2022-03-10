@@ -83,11 +83,7 @@ namespace Battle.Scripts.Battle.Players2
                 ? _playerShieldHead
                 : _playerShieldFoot;
             var model = PhotonBattle.GetPlayerCharacterModel(player);
-            // Keep compiler happy, waiting more shield prefabs to fix this.
-            var defence = model.MainDefence == Defence.Retroflection
-                ? model.MainDefence
-                : Defence.Retroflection;
-            var shieldConfig = LoadShield(defence, _playerShield);
+            var shieldConfig = GetLocalPlayerShield(_playerShield);
             _shield = new PlayerShield2(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
             _shield.Setup(name, isShieldRotated, false, _startPlayMode, 0);
@@ -192,9 +188,12 @@ namespace Battle.Scripts.Battle.Players2
             }
         }
 
-        private static ShieldConfig LoadShield(Defence defence, Transform transform)
+        private static ShieldConfig GetLocalPlayerShield(Transform transform)
         {
-            var  shieldPrefab = RuntimeGameConfig.Get().Prefabs.GetShieldPrefab(defence);
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var playerDataCache = runtimeGameConfig.PlayerDataCache;
+            var defence = playerDataCache.CharacterModel.MainDefence;
+            var  shieldPrefab = runtimeGameConfig.Prefabs.GetShieldPrefab(defence);
             Assert.IsNotNull(shieldPrefab, "shieldPrefab != null");
             var instance = Instantiate(shieldPrefab, transform);
             instance.name = instance.name.Replace("(Clone)", string.Empty);
