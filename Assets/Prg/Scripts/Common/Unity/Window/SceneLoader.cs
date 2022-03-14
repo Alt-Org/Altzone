@@ -22,15 +22,25 @@ namespace Prg.Scripts.Common.Unity.Window
                 Debug.Log($"LoadScene NETWORK {scene.SceneName}");
 #if PHOTON_UNITY_NETWORKING
                 PhotonNetwork.LoadLevel(scene.SceneName);
+                return;
 #else
                 throw new UnityException("PHOTON_UNITY_NETWORKING not available");
 #endif
             }
-            else
+
+            Debug.Log($"LoadScene LOCAL {scene.SceneName}");
+            for (int index = 0; index < SceneManager.sceneCount; ++index)
             {
-                Debug.Log($"LoadScene LOCAL {scene.SceneName}");
-                SceneManager.LoadScene(scene.SceneName);
+                var validScene = SceneManager.GetSceneAt(index);
+                if (validScene.name == scene.SceneName)
+                {
+                    SceneManager.LoadScene(scene.SceneName);
+                    return;
+                }
             }
+            var firstScene = SceneManager.GetSceneAt(0);
+            Debug.LogWarning($"LoadScene LOCAL FALLBACK {firstScene.name}");
+            SceneManager.LoadScene(0);
         }
     }
 }
