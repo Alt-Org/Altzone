@@ -179,7 +179,7 @@ namespace Altzone.Scripts.Config
     /// </remarks>
     public class RuntimeGameConfig : MonoBehaviour
     {
-        internal const string IsFirsTimePlayingKey = "PlayerData.IsFirsTimePlaying";
+        private const string IsFirsTimePlayingKey = "PlayerData.IsFirsTimePlaying";
 
         public static RuntimeGameConfig Get()
         {
