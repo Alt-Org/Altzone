@@ -104,7 +104,13 @@ namespace Battle.Scripts.Battle.Room
 
         public override void OnJoinedRoom()
         {
-            PhotonBattle.SetDebugPlayerProps(PhotonNetwork.LocalPlayer, _debugPlayerPos);
+            var player = PhotonNetwork.LocalPlayer;
+            if (PhotonBattle.IsRealPlayer(player))
+            {
+                // Started for Lobby?
+                return;
+            }
+            PhotonBattle.SetDebugPlayerProps(player, _debugPlayerPos);
         }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
