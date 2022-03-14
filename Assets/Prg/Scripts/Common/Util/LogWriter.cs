@@ -119,7 +119,7 @@ namespace Prg.Scripts.Common.Util
         {
             lock (Lock)
             {
-                if (logString == _prevLogString && type != LogType.Error)
+                if (logString.Equals(_prevLogString, StringComparison.Ordinal) && type != LogType.Error)
                 {
                     // Filter away messages that comes in every frame like:
                     // There are no audio listeners in the scene. Please ensure there is always one audio listener in the scene

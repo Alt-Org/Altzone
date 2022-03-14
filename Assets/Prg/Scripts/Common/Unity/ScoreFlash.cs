@@ -282,7 +282,7 @@ namespace Prg.Scripts.Common.Unity
                 MoveAway(current, previous);
                 current = previous;
                 previous = Previous(current);
-                if (first == previous)
+                if (ReferenceEquals(first, previous))
                 {
                     Debug.LogWarning($"CheckOverlapping overflow: items ({_entries.Length}) array is full");
                     break;

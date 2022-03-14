@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 namespace Prg.Scripts.Common.Util
@@ -20,7 +21,8 @@ namespace Prg.Scripts.Common.Util
             {
                 foreach (var childProperty in childProperties)
                 {
-                    if (parentProperty.Name == childProperty.Name && parentProperty.PropertyType == childProperty.PropertyType)
+                    if (parentProperty.Name.Equals(childProperty.Name, StringComparison.Ordinal)
+                        && parentProperty.PropertyType == childProperty.PropertyType)
                     {
                         childProperty.SetValue(target, parentProperty.GetValue(source));
                         break;
@@ -38,7 +40,7 @@ namespace Prg.Scripts.Common.Util
             {
                 foreach (var childField in childFields)
                 {
-                    if (parentField.Name == childField.Name && parentField.FieldType == childField.FieldType)
+                    if (parentField.Name.Equals(childField.Name, StringComparison.Ordinal) && parentField.FieldType == childField.FieldType)
                     {
                         childField.SetValue(target, parentField.GetValue(source));
                         break;

@@ -191,7 +191,7 @@ namespace Prg.Scripts.Common.Unity.Localization
 
         internal void Add(Language language)
         {
-            Assert.IsTrue(_languages.FindIndex(x => x.Locale == language.Locale) == -1,
+            Assert.IsTrue(_languages.FindIndex(x => x.Locale.Equals(language.Locale, StringComparison.Ordinal)) == -1,
                 "_languages.FindIndex(x => x.Locale == language.Locale) == -1");
             _languages.Add(language);
         }
@@ -367,7 +367,7 @@ namespace Prg.Scripts.Common.Unity.Localization
             {
                 if (_curLanguage != null)
                 {
-                    if (_cachedKeys == null || _curLanguage.Locale != _localeForKeys)
+                    if (_cachedKeys == null || !_curLanguage.Locale.Equals(_localeForKeys, StringComparison.Ordinal))
                     {
                         var set = new HashSet<string>();
                         // AltWords should be "more complete" than Words.
@@ -418,7 +418,7 @@ namespace Prg.Scripts.Common.Unity.Localization
 
         internal static SystemLanguage GetLanguageFor(string locale)
         {
-            var index = Array.FindIndex(SupportedLocales, x => x == locale);
+            var index = Array.FindIndex(SupportedLocales, x => x.Equals(locale, StringComparison.Ordinal));
             Assert.IsTrue(index >= 0);
             return SupportedLanguages[index];
         }
@@ -443,11 +443,11 @@ namespace Prg.Scripts.Common.Unity.Localization
                     // Translation file columns must match our understanding of locale columns!
                     var requiredLocale = SupportedLocales[i];
                     var currentLocale = tokens[i];
-                    Assert.IsTrue(currentLocale == requiredLocale, "currentLocale == requiredLocale");
+                    Assert.IsTrue(currentLocale.Equals(requiredLocale, StringComparison.Ordinal), "currentLocale == requiredLocale");
                     if (i == 1)
                     {
                         // Default locale must be in first locale column.
-                        Assert.IsTrue(currentLocale == DefaultLocale, "currentLocale == _defaultLocale");
+                        Assert.IsTrue(currentLocale.Equals(DefaultLocale, StringComparison.Ordinal), "currentLocale == _defaultLocale");
                     }
                     dictionaries[i] = new Dictionary<string, string>();
                 }

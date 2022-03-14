@@ -94,7 +94,7 @@ namespace Prg.Scripts.Common.PubSub
             var newBinding = new ChannelBinding(client);
             foreach (var currentBinding in clients)
             {
-                if (newBinding.host.channel == currentBinding.host.channel)
+                if (newBinding.host.channel.Equals(currentBinding.host.channel, StringComparison.Ordinal))
                 {
                     currentBinding.introduce(newBinding);
                     newBinding.introduce(currentBinding);
@@ -118,7 +118,7 @@ namespace Prg.Scripts.Common.PubSub
             // Un-introduce old client from remaining (current) clients
             foreach (var currentClient in clients)
             {
-                if (oldBinding.host.channel == currentClient.host.channel)
+                if (oldBinding.host.channel.Equals(currentClient.host.channel, StringComparison.Ordinal))
                 {
                     oldBinding.unIntroduce(currentClient);
                     currentClient.unIntroduce(oldBinding);

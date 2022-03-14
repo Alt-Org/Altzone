@@ -102,7 +102,7 @@ namespace Lobby.Scripts.InLobby
             var rooms = _photonRoomList.currentRooms.ToList();
             foreach (var roomInfo in rooms)
             {
-                if (roomInfo.Name == roomName && !roomInfo.RemovedFromList && roomInfo.IsOpen)
+                if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
                     PhotonLobby.JoinRoom(roomInfo);
                 }
