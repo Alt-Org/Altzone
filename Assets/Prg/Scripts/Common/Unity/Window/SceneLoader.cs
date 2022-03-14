@@ -28,18 +28,21 @@ namespace Prg.Scripts.Common.Unity.Window
 #endif
             }
 
-            Debug.Log($"LoadScene LOCAL {scene.SceneName}");
-            for (int index = 0; index < SceneManager.sceneCount; ++index)
+            var sceneCount = SceneManager.sceneCountInBuildSettings;
+            // scenePath = Assets/UiProto/Scenes/10-uiProto.unity
+            var unitySceneNameMatcher = $"/{scene.SceneName}.unity";
+            for (var index = 0; index < sceneCount; ++index)
             {
-                var validScene = SceneManager.GetSceneAt(index);
-                if (validScene.name == scene.SceneName)
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(index);
+                if (scenePath.EndsWith(unitySceneNameMatcher))
                 {
-                    SceneManager.LoadScene(scene.SceneName);
+                    Debug.Log($"LoadScene LOCAL {scene.SceneName} ({index})");
+                    SceneManager.LoadScene(index);
                     return;
                 }
             }
-            var firstScene = SceneManager.GetSceneAt(0);
-            Debug.LogWarning($"LoadScene LOCAL FALLBACK {firstScene.name}");
+            var firstScenePath = SceneUtility.GetScenePathByBuildIndex(0);
+            Debug.LogWarning($"LoadScene LOCAL FALLBACK {firstScenePath} (0)");
             SceneManager.LoadScene(0);
         }
     }
