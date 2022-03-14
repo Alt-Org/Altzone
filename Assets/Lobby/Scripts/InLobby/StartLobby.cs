@@ -1,4 +1,5 @@
 ﻿using Altzone.Scripts.Config;
+using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Lobby.Scripts.InLobby
     {
         private void OnEnable()
         {
-            PhotonLobby.OfflineMode = false;
+            PhotonNetwork.OfflineMode = false;
         }
 
         private void Update()

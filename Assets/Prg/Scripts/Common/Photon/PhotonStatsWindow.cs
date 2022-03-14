@@ -119,6 +119,18 @@ namespace Prg.Scripts.Common.Photon
             }
             label += $"\r\nPhoton v='{PhotonLobby.GameVersion}'";
             label += $"\r\nSend rate={PhotonNetwork.SendRate} ser rate={PhotonNetwork.SerializationRate}";
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.AutomaticallySyncScene)
+            {
+                label += $"\r\n";
+                if (PhotonNetwork.OfflineMode)
+                {
+                    label += $"OfflineMode ";
+                }
+                if (PhotonNetwork.AutomaticallySyncScene)
+                {
+                    label += $"AutomaticallySyncScene ";
+                }
+            }
             GUILayout.Label(label, guiLabelStyle);
         }
 
@@ -145,7 +157,7 @@ namespace Prg.Scripts.Common.Photon
         {
             return TypeMap.TryGetValue(type, out var name) ? name : type.Name;
         }
-
+#if false
         /// <summary>
         /// Ring buffer for average lag compensation calculation, not exactly exact!
         /// </summary>
@@ -209,6 +221,7 @@ namespace Prg.Scripts.Common.Photon
                 return $"avg lag {sum / sampleCount:0.000} s ({sampleCount}) : {sampleCount / samplingDuration: 0.0} msg/s";
             }
         }
+#endif
 #endif
     }
 }
