@@ -129,7 +129,6 @@ namespace Battle.Scripts.Battle.Players2
                 return;
             }
             _inputClick = ctx.ReadValue<Vector2>() * UnReachableDistance;
-            _isMoving = true;
             _inputPosition = _transform.position;
             _inputPosition.x += _inputClick.x;
             _inputPosition.y += _inputClick.y;
@@ -140,7 +139,7 @@ namespace Battle.Scripts.Battle.Players2
 
         private void StopMove(InputAction.CallbackContext ctx)
         {
-            _isMoving = false;
+            SendMoveToRpc(_inputPosition, 0);
         }
 
         private void DoClick(InputAction.CallbackContext ctx)
