@@ -1,6 +1,5 @@
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Ball;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
@@ -40,7 +39,7 @@ namespace Battle.Scripts.Battle.Players2
 
         private PhotonView _photonView;
         private Transform _transform;
-        private PlayerMovement2 _playerMovement;
+        private IPlayerMovement _playerMovement;
         private IPlayerShield2 _shield;
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
@@ -290,7 +289,7 @@ namespace Battle.Scripts.Battle.Players2
             {
                 case PlayModeNormal:
                     _collider.enabled = true;
-                    _playerMovement.Stopped = false;
+                    _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
                     {
                         _stateSprite.color = Color.blue;
@@ -298,7 +297,7 @@ namespace Battle.Scripts.Battle.Players2
                     break;
                 case PlayModeFrozen:
                     _collider.enabled = true;
-                    _playerMovement.Stopped = true;
+                    _playerMovement.SetStopped();
                     if (_isStateSpriteColorTint)
                     {
                         _stateSprite.color = Color.magenta;
@@ -306,7 +305,7 @@ namespace Battle.Scripts.Battle.Players2
                     break;
                 case PlayModeGhosted:
                     _collider.enabled = false;
-                    _playerMovement.Stopped = false;
+                    _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
                     {
                         _stateSprite.color = Color.grey;

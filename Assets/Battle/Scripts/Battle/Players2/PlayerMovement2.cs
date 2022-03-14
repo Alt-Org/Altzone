@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -8,7 +9,13 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players2
 {
-    internal class PlayerMovement2
+    /// <summary>
+    /// Synchronizes player position and speed over network.
+    /// </summary>
+    /// <remarks>
+    /// <c>Stopped</c> state is managed locally and should never send over network as <c>IPlayerActor</c> manages it.
+    /// </remarks>
+    internal class PlayerMovement2 : IPlayerMovement
     {
         private const byte MsgMoveTo = PhotonEventDispatcher.EventCodeBase + 5;
 
@@ -23,30 +30,16 @@ namespace Battle.Scripts.Battle.Players2
         public float UnReachableDistance { get; set; } = 100;
         public float Speed { get; set; } = 1;
 
-        private bool _stopped;
-
-        public bool Stopped
-        {
-            get => _stopped;
-
-            set
-            {
-                _stopped = value;
-                if (_isMoving)
-                {
-                    SendMoveToRpc(_transform.position, Speed);
-                }
-            }
-        }
-
+        private bool _isStopped;
         private bool _isMoving;
+
         private Vector3 _targetPosition;
         private Vector3 _tempPosition;
 
         private Vector2 _inputClick;
         private Vector3 _inputPosition;
 
-        public string StateString => $"{(_stopped ? "Stop" : _isMoving ? "Move" : "Idle")} {Speed:0.0}";
+        public string StateString => $"{(_isMoving ? "Move" : "Idle")} {Speed:0.0}";
 
         public PlayerMovement2(Transform transform, GameInput gameInput, Camera camera, PhotonView photonView)
         {
@@ -67,7 +60,7 @@ namespace Battle.Scripts.Battle.Players2
             _photonEvent.RegisterEvent(MsgMoveTo, OnMoveToCallback);
         }
 
-        public void Update()
+        void IPlayerMovement.Update()
         {
             if (_isMoving)
             {
@@ -75,11 +68,25 @@ namespace Battle.Scripts.Battle.Players2
             }
         }
 
-        public void OnDestroy()
+        void IPlayerMovement.OnDestroy()
         {
             if (_isLocal)
             {
                 ReleaseInput();
+            }
+        }
+
+        void IPlayerMovement.SetMovementAllowed()
+        {
+            _isStopped = false;
+        }
+
+        void IPlayerMovement.SetStopped()
+        {
+            _isStopped = true;
+            if (_isStopped)
+            {
+                _isMoving = false;
             }
         }
 
@@ -125,7 +132,7 @@ namespace Battle.Scripts.Battle.Players2
 
         private void DoMove(InputAction.CallbackContext ctx)
         {
-            if (Stopped)
+            if (_isStopped)
             {
                 return;
             }
@@ -145,7 +152,7 @@ namespace Battle.Scripts.Battle.Players2
 
         private void DoClick(InputAction.CallbackContext ctx)
         {
-            if (Stopped)
+            if (_isStopped)
             {
                 return;
             }
