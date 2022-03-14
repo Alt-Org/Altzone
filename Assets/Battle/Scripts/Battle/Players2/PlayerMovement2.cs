@@ -39,7 +39,7 @@ namespace Battle.Scripts.Battle.Players2
         private Vector2 _inputClick;
         private Vector3 _inputPosition;
 
-        public string StateString => $"{(_isMoving ? "Move" : "Idle")} {Speed:0.0}";
+        public string StateString => $"{(_isStopped ? "Stop" : _isMoving ? "Move" : "Idle")} {Speed:0.0}";
 
         public PlayerMovement2(Transform transform, GameInput gameInput, Camera camera, PhotonView photonView)
         {
@@ -84,7 +84,7 @@ namespace Battle.Scripts.Battle.Players2
         void IPlayerMovement.SetStopped()
         {
             _isStopped = true;
-            if (_isStopped)
+            if (_isMoving)
             {
                 _isMoving = false;
             }
@@ -147,6 +147,10 @@ namespace Battle.Scripts.Battle.Players2
 
         private void StopMove(InputAction.CallbackContext ctx)
         {
+            if (_isStopped)
+            {
+                return;
+            }
             SendMoveToRpc(_inputPosition, 0);
         }
 
