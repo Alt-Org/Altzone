@@ -6,6 +6,7 @@ using Battle.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
+using Prg.Scripts.Common.Util;
 using UnityConstants;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ namespace Battle.Scripts.Battle.Ball
     /// </summary>
     public class BallManager : MonoBehaviour
     {
+        private static readonly StringCache HeadMessage = new StringCache(new[] { string.Empty, "HEAD1", "HEAD2", "HEAD3", "HEAD4" });
+        private static readonly StringCache HitMessage = new StringCache(new[] { string.Empty, "HIT1", "HIT2", "HIT3", "HIT4" });
+
         [Serializable]
         internal class State
         {
@@ -59,7 +63,7 @@ namespace Battle.Scripts.Battle.Ball
             this.Publish(new ScoreManager.ScoreEvent(scoreType));
             if (_photonView.Owner.IsMasterClient)
             {
-                ScoreFlashNet.Push($"HEAD{playerActor.PlayerPos}", contactPoint.point);
+                ScoreFlashNet.Push(HeadMessage[playerActor.PlayerPos], contactPoint.point);
             }
         }
 
@@ -72,7 +76,7 @@ namespace Battle.Scripts.Battle.Ball
             playerActor.ShieldCollision();
             if (_photonView.Owner.IsMasterClient)
             {
-                ScoreFlashNet.Push($"HIT{playerActor.PlayerPos}", contactPoint.point);
+                ScoreFlashNet.Push(HitMessage[playerActor.PlayerPos], contactPoint.point);
             }
         }
 
