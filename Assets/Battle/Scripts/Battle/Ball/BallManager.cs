@@ -59,19 +59,20 @@ namespace Battle.Scripts.Battle.Ball
             this.Publish(new ScoreManager.ScoreEvent(scoreType));
             if (_photonView.Owner.IsMasterClient)
             {
-                ScoreFlashNet.Push("HEAD", contactPoint.point);
+                ScoreFlashNet.Push($"HEAD{playerActor.PlayerPos}", contactPoint.point);
             }
         }
 
         private void OnShieldCollision(Collision2D collision)
         {
+            var contactPoint = collision.GetFirstContactPoint();
             var other = collision.gameObject;
             Debug.Log($"onShieldCollision {other.GetFullPath()}");
             var playerActor = other.GetComponentInParent<IPlayerActor>();
             playerActor.ShieldCollision();
             if (_photonView.Owner.IsMasterClient)
             {
-                ScoreFlashNet.Push("HIT");
+                ScoreFlashNet.Push($"HIT{playerActor.PlayerPos}", contactPoint.point);
             }
         }
 
