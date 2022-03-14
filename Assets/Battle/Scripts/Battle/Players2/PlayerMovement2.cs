@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Battle.Scripts.Battle.Players2
         private const byte MsgMoveTo = PhotonEventDispatcher.EventCodeBase + 5;
 
         private readonly Transform _transform;
-        private readonly UnityEngine.InputSystem.PlayerInput _playerInput;
+        private readonly GameInput _gameInput;
         private readonly Camera _camera;
         private readonly bool _isLocal;
         private readonly bool _isLimitMouseXY;
@@ -47,10 +48,10 @@ namespace Battle.Scripts.Battle.Players2
 
         public string StateString => $"{(_stopped ? "Stop" : _isMoving ? "Move" : "Idle")} {Speed:0.0}";
 
-        public PlayerMovement2(Transform transform, UnityEngine.InputSystem.PlayerInput playerInput, Camera camera, PhotonView photonView)
+        public PlayerMovement2(Transform transform, GameInput gameInput, Camera camera, PhotonView photonView)
         {
             _transform = transform;
-            _playerInput = playerInput;
+            _gameInput = gameInput;
             _camera = camera;
             _isLocal = photonView.IsMine;
             if (_isLocal)
@@ -103,22 +104,22 @@ namespace Battle.Scripts.Battle.Players2
             // https://gamedevbeginner.com/input-in-unity-made-easy-complete-guide-to-the-new-system/
 
             // WASD or GamePad -> performed is called once per key press
-            var moveAction = _playerInput.actions["Move"];
+            var moveAction = _gameInput._moveInputAction.action;
             moveAction.performed += DoMove;
             moveAction.canceled += StopMove;
 
             // Pointer movement when pressed down -> move to given point even pointer is released.
-            var clickAction = _playerInput.actions["Click"];
+            var clickAction = _gameInput._clickInputAction.action;
             clickAction.performed += DoClick;
         }
 
         private void ReleaseInput()
         {
-            var moveAction = _playerInput.actions["Move"];
+            var moveAction = _gameInput._moveInputAction.action;
             moveAction.performed -= DoMove;
             moveAction.canceled -= StopMove;
 
-            var clickAction = _playerInput.actions["Click"];
+            var clickAction = _gameInput._clickInputAction.action;
             clickAction.performed -= DoClick;
         }
 

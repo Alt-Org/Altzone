@@ -27,7 +27,6 @@ namespace Battle.Scripts.Battle.Players2
         [SerializeField] private Collider2D _collider;
         [SerializeField] private Transform _playerShieldHead;
         [SerializeField] private Transform _playerShieldFoot;
-        [SerializeField] private UnityEngine.InputSystem.PlayerInput _playerInput;
 
         [Header("Play Area"), SerializeField] private Rect _upperPlayArea;
         [SerializeField] private Rect _lowerPlayArea;
@@ -78,6 +77,8 @@ namespace Battle.Scripts.Battle.Players2
                 }
             }
 
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+
             // Shield
             _playerShield = isLower
                 ? _playerShieldHead
@@ -87,7 +88,7 @@ namespace Battle.Scripts.Battle.Players2
             _shield = new PlayerShield2(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
             _shield.Setup(name, isShieldRotated, false, _startPlayMode, 0);
-            var multiplier = RuntimeGameConfig.Get().Variables._shieldDistanceMultiplier;
+            var multiplier = runtimeGameConfig.Variables._shieldDistanceMultiplier;
             _shieldDistance = model.Defence * multiplier;
 
             Debug.Log(
@@ -95,7 +96,8 @@ namespace Battle.Scripts.Battle.Players2
 
             // Player movement
             var playerArea = isYCoordNegative ? _lowerPlayArea : _upperPlayArea;
-            _playerMovement = new PlayerMovement2(_transform, _playerInput, Camera.main, _photonView)
+            var gameInput = runtimeGameConfig.Input;
+            _playerMovement = new PlayerMovement2(_transform, gameInput, Camera.main, _photonView)
             {
                 PlayerArea = playerArea,
                 UnReachableDistance = 100,
