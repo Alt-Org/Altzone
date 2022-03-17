@@ -57,6 +57,8 @@ namespace Battle.Scripts.Battle.Players2
             var prefix = $"{(player.IsLocal ? "L" : "R")}{PlayerPos}:{TeamNumber}";
             name = $"@{prefix}>{player.NickName}";
             SetDebug();
+            var gameCameraInstance = Context.GetGameCamera;
+            Assert.IsNotNull(gameCameraInstance, "gameCameraInstance != null");
             // Must detect player position from actual y coordinate!
             var isYCoordNegative = _transform.position.y < 0;
             var isLower = isYCoordNegative;
@@ -64,8 +66,6 @@ namespace Battle.Scripts.Battle.Players2
             var features = RuntimeGameConfig.Get().Features;
             if (features._isRotateGameCamera)
             {
-                var gameCameraInstance = Context.GetGameCamera;
-                Assert.IsNotNull(gameCameraInstance, "gameCameraInstance != null");
                 isCameraRotated = gameCameraInstance.IsRotated;
                 if (isCameraRotated)
                 {
@@ -102,6 +102,13 @@ namespace Battle.Scripts.Battle.Players2
                 UnReachableDistance = 100,
                 Speed = 10f,
             };
+            // Setup audio listener for the player.
+            gameObject.AddComponent<AudioListener>();
+            var cameraAudioListener = gameCameraInstance.GetComponent<AudioListener>();
+            if (cameraAudioListener != null)
+            {
+                cameraAudioListener.enabled = false;
+            }
             this.Subscribe<BallManager.ActiveTeamEvent>(OnActiveTeamEvent);
 
             Debug.Log($"Awake Done {name} shieldDistance {_shieldDistance} playerArea {playerArea}");
