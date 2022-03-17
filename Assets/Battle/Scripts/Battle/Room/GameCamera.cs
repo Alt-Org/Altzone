@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Room
 {
+    /// <summary>
+    /// Helper for game main camera to find it and change it if required.
+    /// </summary>
     public class GameCamera : MonoBehaviour
     {
         [SerializeField] private Camera _gameCamera;
