@@ -62,6 +62,7 @@ namespace Battle.Scripts.Test
                 _stopBallMoving = false;
                 _ball.StopMoving();
                 _ball.SetColor(BallColor.Ghosted);
+                return;
             }
             if (_hideBall)
             {
