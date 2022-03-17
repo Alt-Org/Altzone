@@ -9,5 +9,14 @@ namespace Battle.Scripts.Battle.Room
         public Camera Camera => _gameCamera;
 
         public bool IsRotated => _gameCamera.transform.rotation.z != 0f;
+
+        public void DisableAudio()
+        {
+            var cameraAudioListener = GetComponent<AudioListener>();
+            if (cameraAudioListener != null)
+            {
+                cameraAudioListener.enabled = false;
+            }
+        }
     }
 }

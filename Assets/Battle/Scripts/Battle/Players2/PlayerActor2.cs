@@ -3,6 +3,7 @@ using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Ball;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
@@ -46,19 +47,20 @@ namespace Battle.Scripts.Battle.Players2
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
-        public string StateString => $"{StateNames[_state._currentMode]} {((PlayerShield2)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
+        public string StateString =>
+            $"{StateNames[_state._currentMode]} {((PlayerShield2)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
 
         private void Awake()
         {
-            Debug.Log($"Awake {_photonView}");
+            Debug.Log($"Awake {_photonView} with prefab {name}");
             var player = _photonView.Owner;
             _transform = GetComponent<Transform>();
             _state.InitState(_transform, player);
             var prefix = $"{(player.IsLocal ? "L" : "R")}{PlayerPos}:{TeamNumber}";
-            name = $"@{prefix}>{player.NickName}";
+            name = $"@{name.Replace("(Clone)", string.Empty)}:{prefix}>{player.NickName}";
             SetDebug();
-            var gameCameraInstance = Context.GetGameCamera;
-            Assert.IsNotNull(gameCameraInstance, "gameCameraInstance != null");
+            var gameCamera = Context.GetGameCamera;
+            Assert.IsNotNull(gameCamera, "gameCameraInstance != null");
             // Must detect player position from actual y coordinate!
             var isYCoordNegative = _transform.position.y < 0;
             var isLower = isYCoordNegative;
@@ -66,7 +68,7 @@ namespace Battle.Scripts.Battle.Players2
             var features = RuntimeGameConfig.Get().Features;
             if (features._isRotateGameCamera)
             {
-                isCameraRotated = gameCameraInstance.IsRotated;
+                isCameraRotated = gameCamera.IsRotated;
                 if (isCameraRotated)
                 {
                     // We are upside down!
@@ -103,15 +105,18 @@ namespace Battle.Scripts.Battle.Players2
                 Speed = 10f,
             };
             // Setup audio listener for the player.
-            gameObject.AddComponent<AudioListener>();
-            var cameraAudioListener = gameCameraInstance.GetComponent<AudioListener>();
-            if (cameraAudioListener != null)
-            {
-                cameraAudioListener.enabled = false;
-            }
+            SetupAudio(this, gameCamera);
+
             this.Subscribe<BallManager.ActiveTeamEvent>(OnActiveTeamEvent);
 
             Debug.Log($"Awake Done {name} shieldDistance {_shieldDistance} playerArea {playerArea}");
+        }
+
+        private static void SetupAudio(PlayerActor2 actor, GameCamera gameCamera)
+        {
+            var audioListener = actor.gameObject.GetOrAddComponent<AudioListener>();
+            audioListener.enabled = true;
+            gameCamera.DisableAudio();
         }
 
         private void SetDebug()
@@ -201,7 +206,7 @@ namespace Battle.Scripts.Battle.Players2
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var playerDataCache = runtimeGameConfig.PlayerDataCache;
             var defence = playerDataCache.CharacterModel.MainDefence;
-            var  shieldPrefab = runtimeGameConfig.Prefabs.GetShieldPrefab(defence);
+            var shieldPrefab = runtimeGameConfig.Prefabs.GetShieldPrefab(defence);
             Assert.IsNotNull(shieldPrefab, "shieldPrefab != null");
             var instance = Instantiate(shieldPrefab, transform);
             instance.name = instance.name.Replace("(Clone)", string.Empty);
