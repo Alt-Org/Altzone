@@ -1,4 +1,6 @@
-﻿using Altzone.Scripts.Config;
+﻿using System.Collections;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using UnityEngine;
 
 namespace MainMenu.Scripts
@@ -11,6 +13,19 @@ namespace MainMenu.Scripts
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             _view.PlayerName = playerDataCache.PlayerName;
+        }
+
+        private IEnumerator Start()
+        {
+            for (;;)
+            {
+                if (GeoLocation.HasData)
+                {
+                    break;
+                }
+                yield return null;
+            }
+            Debug.Log($"GeoLocation {GeoLocation.Data}");
         }
     }
 }
