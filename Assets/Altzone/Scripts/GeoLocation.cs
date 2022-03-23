@@ -8,64 +8,82 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts
 {
     /// <summary>
-    /// Query user's geo location from current IP address using <code>ip-api.com</code> REST API free service.
+    /// Query user's geolocation from current IP address using ip-api.com REST API free service and manage GDPR consent.
     /// </summary>
     /// <remarks>
-    /// See: https://gist.github.com/sandcastle/436ecb49c749942cb52adb2da169a2d4
+    /// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes <br />
+    /// https://gist.github.com/sandcastle/436ecb49c749942cb52adb2da169a2d4 <br />
+    /// https://developers.mopub.com/publishers/unity/gdpr/ <br />
+    /// google: unity3d check gdpr requirement
     /// </remarks>
     public static class GeoLocation
     {
         private const string ApiUrl = "http://ip-api.com/json";
         private const string GeoIpCountryKey = "geoip.country";
         private const string GeoIpCountryCodeKey = "geoip.countryCode";
+        private const string GdprConsentKey = "gdpr.consent";
+
+        public enum GdprConsent
+        {
+            Unknown,
+            Yes,
+            No,
+        }
 
         public class LocationData
         {
             public readonly string Country;
             public readonly string CountryCode;
-            public readonly bool IsGdprCountry;
+            public readonly bool IsGdprApplicable;
+            public readonly GdprConsent GdprConsent;
 
-            public LocationData(string country, string countryCode, bool isGdprCountry)
+            public LocationData(string country, string countryCode, bool isGdprApplicable, GdprConsent gdprConsent)
             {
                 Country = country;
                 CountryCode = countryCode;
-                IsGdprCountry = isGdprCountry;
+                IsGdprApplicable = isGdprApplicable;
+                // (1) If we detect that the user was in the European Economic Area, United Kingdom, or Switzerland,
+                // then we consider that GDPR applies to that user for the lifetime of that application.
+                // (2) We treat non-GDPR-region users as having consent
+                GdprConsent = isGdprApplicable ? gdprConsent : GdprConsent.Yes;
             }
 
             public override string ToString()
             {
-                return $"{Country} ({CountryCode}){(IsGdprCountry ? " is GDPR" : "")}";
+                return $"{Country} ({CountryCode}){(IsGdprApplicable ? " (GDPR)" : "")} consent {GdprConsent}";
             }
         }
 
         public static bool HasData => Data != null;
         public static LocationData Data { get; private set; }
 
-        public static void Load()
+        public static void Load(Action<LocationData> callback)
         {
             var country = PlayerPrefs.GetString(GeoIpCountryKey, string.Empty);
             var countryCode = PlayerPrefs.GetString(GeoIpCountryCodeKey, string.Empty);
             if (string.IsNullOrEmpty(country) || string.IsNullOrEmpty(countryCode))
             {
-                var result = LoadAsync();
+                var result = LoadAsync(callback);
                 // Keep compiler happy as we ignore the result.
                 Assert.IsNotNull(result);
             }
             else
             {
                 var isGdprCountry = _IsGdprCountry(countryCode);
-                Data = new LocationData(country, countryCode, isGdprCountry);
+                var gdprConsent = (GdprConsent)PlayerPrefs.GetInt(GdprConsentKey, (int)GdprConsent.Unknown);
+                Data = new LocationData(country, countryCode, isGdprCountry, gdprConsent);
+                callback?.Invoke(Data);
             }
         }
 
-        private static async Task LoadAsync()
+        private static async Task LoadAsync(Action<LocationData> callback)
         {
             Dictionary<string, string> ParseJson(string json)
             {
                 json = json.Replace('{', ' ').Replace('}', ' ');
                 var lines = json.Split(',');
                 var data = new Dictionary<string, string>();
-                for (var i = 0; i < lines.Length;++i)
+                for (var i = 0; i < lines.Length; ++i)
                 {
                     var line = lines[i];
                     var tokens = line.Trim().Split(':');
@@ -80,26 +98,34 @@ namespace Altzone.Scripts
             }
 
             Data = null;
-            var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
-            if (!result.Success)
+            try
             {
-                Debug.Log($"GET {result.Message}");
-                return;
+                var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
+                if (!result.Success)
+                {
+                    Debug.Log($"GET {result.Message}");
+                    return;
+                }
+                var payload = result.Payload;
+                var response = ParseJson(payload);
+                if (!response.ContainsKey("status")
+                    || !response.TryGetValue("country", out var country)
+                    || !response.TryGetValue("countryCode", out var countryCode))
+                {
+                    Debug.Log($"GET ERROR {payload}");
+                    return;
+                }
+                PlayerPrefs.SetString(GeoIpCountryKey, country);
+                PlayerPrefs.SetString(GeoIpCountryCodeKey, countryCode);
+                var isGdprCountry = _IsGdprCountry(countryCode);
+                PlayerPrefs.SetInt(GdprConsentKey, (int)GdprConsent.Unknown);
+                Data = new LocationData(country, countryCode, isGdprCountry, GdprConsent.Unknown);
+                Debug.Log($"Set GeoLocation {Data}");
             }
-            var payload = result.Payload;
-            var response = ParseJson(payload);
-            if (!response.ContainsKey("status")
-                || !response.TryGetValue("country", out var country)
-                || !response.TryGetValue("countryCode", out var countryCode))
+            finally
             {
-                Debug.Log($"GET ERROR {payload}");
-                return;
+                callback?.Invoke(Data);
             }
-            PlayerPrefs.SetString(GeoIpCountryKey, country);
-            PlayerPrefs.SetString(GeoIpCountryCodeKey, countryCode);
-            var isGdprCountry = _IsGdprCountry(countryCode);
-            Data = new LocationData(country, countryCode, isGdprCountry);
-            Debug.Log($"Set GeoLocation {Data}");
         }
 
         private static bool _IsGdprCountry(string code)
@@ -135,7 +161,14 @@ namespace Altzone.Scripts
                 "Sweden", "SE",
                 "Ireland", "IE",
                 "Latvia", "LV",
-                "Poland", "PL"
+                "Poland", "PL",
+                // European Free Trade Association (EFTA):
+                "Iceland", "IS",
+                "Liechtenstein", "LI",
+                "Norway", "NO",
+                "Switzerland", "CH",
+                // United Kingdom
+                "United Kingdom", "UK"
             };
             return Array.FindIndex(countries, x => x.Equals(code)) > 0;
         }

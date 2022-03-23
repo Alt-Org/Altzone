@@ -24,8 +24,10 @@ namespace Altzone.Scripts
             LoggerConfig.CreateLoggerConfig(loggerConfig);
 
             SetEditorStatus();
-            UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion}");
-            GeoLocation.Load();
+            GeoLocation.Load(data =>
+            {
+                UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data}");
+            });
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]

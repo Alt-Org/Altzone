@@ -17,14 +17,7 @@ namespace MainMenu.Scripts
 
         private IEnumerator Start()
         {
-            for (;;)
-            {
-                if (GeoLocation.HasData)
-                {
-                    break;
-                }
-                yield return null;
-            }
+            yield return new WaitUntil(() => GeoLocation.HasData);
             Debug.Log($"GeoLocation {GeoLocation.Data}");
         }
     }
