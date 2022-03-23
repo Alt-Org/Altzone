@@ -53,7 +53,7 @@ namespace Altzone.Scripts
             }
             else
             {
-                var isGdprCountry = IsGdprCountry(countryCode);
+                var isGdprCountry = _IsGdprCountry(countryCode);
                 Data = new LocationData(country, countryCode, isGdprCountry);
             }
         }
@@ -80,7 +80,7 @@ namespace Altzone.Scripts
             }
 
             Data = null;
-            var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null, null);
+            var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
             if (!result.Success)
             {
                 Debug.Log($"GET {result.Message}");
@@ -88,29 +88,21 @@ namespace Altzone.Scripts
             }
             var payload = result.Payload;
             var response = ParseJson(payload);
-            if (!response.TryGetValue("status", out var status))
-            {
-                Debug.Log($"GET ERROR {payload}");
-                return;
-            }
-            if (!response.TryGetValue("country", out var country))
-            {
-                Debug.Log($"GET ERROR {payload}");
-                return;
-            }
-            if (!response.TryGetValue("countryCode", out var countryCode))
+            if (!response.ContainsKey("status")
+                || !response.TryGetValue("country", out var country)
+                || !response.TryGetValue("countryCode", out var countryCode))
             {
                 Debug.Log($"GET ERROR {payload}");
                 return;
             }
             PlayerPrefs.SetString(GeoIpCountryKey, country);
             PlayerPrefs.SetString(GeoIpCountryCodeKey, countryCode);
-            var isGdprCountry = IsGdprCountry(countryCode);
+            var isGdprCountry = _IsGdprCountry(countryCode);
             Data = new LocationData(country, countryCode, isGdprCountry);
             Debug.Log($"Set GeoLocation {Data}");
         }
 
-        private static bool IsGdprCountry(string code)
+        private static bool _IsGdprCountry(string code)
         {
             // https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes
             // - alphabetical list of countries in their national language for EU and EFTA
