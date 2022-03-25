@@ -19,9 +19,6 @@ namespace Altzone.Scripts
     public static class GeoLocation
     {
         private const string ApiUrl = "http://ip-api.com/json";
-        private const string GeoIpCountryKey = "geoip.country";
-        private const string GeoIpCountryCodeKey = "geoip.countryCode";
-        private const string GdprConsentKey = "gdpr.consent";
 
         public enum GdprConsent
         {
@@ -32,20 +29,96 @@ namespace Altzone.Scripts
 
         public class LocationData
         {
+            private const string GeoIpCountryKey = "geoip.country";
+            private const string GeoIpCountryCodeKey = "geoip.countryCode";
+            private const string GdprConsentKey = "gdpr.consent";
+
             public readonly string Country;
             public readonly string CountryCode;
             public readonly bool IsGdprApplicable;
             public readonly GdprConsent GdprConsent;
 
-            public LocationData(string country, string countryCode, bool isGdprApplicable, GdprConsent gdprConsent)
+            private LocationData(string country, string countryCode, GdprConsent gdprConsent)
             {
                 Country = country;
                 CountryCode = countryCode;
-                IsGdprApplicable = isGdprApplicable;
+                IsGdprApplicable = _IsGdprCountry(countryCode);
                 // (1) If we detect that the user was in the European Economic Area, United Kingdom, or Switzerland,
                 // then we consider that GDPR applies to that user for the lifetime of that application.
                 // (2) We treat non-GDPR-region users as having consent
-                GdprConsent = isGdprApplicable ? gdprConsent : GdprConsent.Yes;
+                GdprConsent = IsGdprApplicable ? gdprConsent : GdprConsent.Yes;
+            }
+
+            public static LocationData CreateAndSave(string country, string countryCode, GdprConsent gdprConsent)
+            {
+                var locationData = new LocationData(country, countryCode, gdprConsent);
+                locationData.Save();
+                return locationData;
+            }
+
+            public static LocationData Load()
+            {
+                var country = PlayerPrefs.GetString(GeoIpCountryKey, string.Empty);
+                var countryCode = PlayerPrefs.GetString(GeoIpCountryCodeKey, string.Empty);
+                if (string.IsNullOrEmpty(country) || string.IsNullOrEmpty(countryCode))
+                {
+                    return null;
+                }
+                var gdprConsent = (GdprConsent)PlayerPrefs.GetInt(GdprConsentKey, (int)GdprConsent.Unknown);
+                var locationData = new LocationData(country, countryCode, gdprConsent);
+                return locationData;
+            }
+
+            private void Save()
+            {
+                PlayerPrefs.SetString(GeoIpCountryKey, Country);
+                PlayerPrefs.SetString(GeoIpCountryCodeKey, CountryCode);
+                PlayerPrefs.SetInt(GdprConsentKey, (int)GdprConsent);
+            }
+
+            private static bool _IsGdprCountry(string code)
+            {
+                // https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes
+                // - alphabetical list of countries in their national language for EU and EFTA
+                // - there are some "EU candidate countries" and "Potential candidates" not listed here
+                var countries = new[]
+                {
+                    "Belgium", "BE",
+                    "Greece", "EL",
+                    "Lithuania", "LT",
+                    "Portugal", "PT",
+                    "Bulgaria", "BG",
+                    "Spain", "ES",
+                    "Luxembourg", "LU",
+                    "Romania", "RO",
+                    "Czechia", "CZ",
+                    "France", "FR",
+                    "Hungary", "HU",
+                    "Slovenia", "SI",
+                    "Denmark", "DK",
+                    "Croatia", "HR",
+                    "Malta", "MT",
+                    "Slovakia", "SK",
+                    "Germany", "DE",
+                    "Italy", "IT",
+                    "Netherlands", "NL",
+                    "Finland", "FI",
+                    "Estonia", "EE",
+                    "Cyprus", "CY",
+                    "Austria", "AT",
+                    "Sweden", "SE",
+                    "Ireland", "IE",
+                    "Latvia", "LV",
+                    "Poland", "PL",
+                    // European Free Trade Association (EFTA):
+                    "Iceland", "IS",
+                    "Liechtenstein", "LI",
+                    "Norway", "NO",
+                    "Switzerland", "CH",
+                    // United Kingdom
+                    "United Kingdom", "UK"
+                };
+                return Array.FindIndex(countries, x => x.Equals(code)) > 0;
             }
 
             public override string ToString()
@@ -59,24 +132,18 @@ namespace Altzone.Scripts
 
         public static void Load(Action<LocationData> callback)
         {
-            var country = PlayerPrefs.GetString(GeoIpCountryKey, string.Empty);
-            var countryCode = PlayerPrefs.GetString(GeoIpCountryCodeKey, string.Empty);
-            if (string.IsNullOrEmpty(country) || string.IsNullOrEmpty(countryCode))
+            Data = LocationData.Load();
+            if (Data != null)
             {
-                var result = LoadAsync(callback);
-                // Keep compiler happy as we ignore the result.
-                Assert.IsNotNull(result);
-            }
-            else
-            {
-                var isGdprCountry = _IsGdprCountry(countryCode);
-                var gdprConsent = (GdprConsent)PlayerPrefs.GetInt(GdprConsentKey, (int)GdprConsent.Unknown);
-                Data = new LocationData(country, countryCode, isGdprCountry, gdprConsent);
                 callback?.Invoke(Data);
+                return;
             }
+            var result = LoadLocationDataAsync(callback);
+            // Keep compiler happy as we ignore the result.
+            Assert.IsNotNull(result);
         }
 
-        private static async Task LoadAsync(Action<LocationData> callback)
+        private static async Task LoadLocationDataAsync(Action<LocationData> callback)
         {
             Dictionary<string, string> ParseJson(string json)
             {
@@ -115,62 +182,13 @@ namespace Altzone.Scripts
                     Debug.Log($"GET ERROR {payload}");
                     return;
                 }
-                PlayerPrefs.SetString(GeoIpCountryKey, country);
-                PlayerPrefs.SetString(GeoIpCountryCodeKey, countryCode);
-                var isGdprCountry = _IsGdprCountry(countryCode);
-                PlayerPrefs.SetInt(GdprConsentKey, (int)GdprConsent.Unknown);
-                Data = new LocationData(country, countryCode, isGdprCountry, GdprConsent.Unknown);
+                Data = LocationData.CreateAndSave(country, countryCode, GdprConsent.Unknown);
                 Debug.Log($"Set GeoLocation {Data}");
             }
             finally
             {
                 callback?.Invoke(Data);
             }
-        }
-
-        private static bool _IsGdprCountry(string code)
-        {
-            // https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes
-            // - alphabetical list of countries in their national language for EU and EFTA
-            // - there are some "EU candidate countries" and "Potential candidates" not listed here
-            var countries = new[]
-            {
-                "Belgium", "BE",
-                "Greece", "EL",
-                "Lithuania", "LT",
-                "Portugal", "PT",
-                "Bulgaria", "BG",
-                "Spain", "ES",
-                "Luxembourg", "LU",
-                "Romania", "RO",
-                "Czechia", "CZ",
-                "France", "FR",
-                "Hungary", "HU",
-                "Slovenia", "SI",
-                "Denmark", "DK",
-                "Croatia", "HR",
-                "Malta", "MT",
-                "Slovakia", "SK",
-                "Germany", "DE",
-                "Italy", "IT",
-                "Netherlands", "NL",
-                "Finland", "FI",
-                "Estonia", "EE",
-                "Cyprus", "CY",
-                "Austria", "AT",
-                "Sweden", "SE",
-                "Ireland", "IE",
-                "Latvia", "LV",
-                "Poland", "PL",
-                // European Free Trade Association (EFTA):
-                "Iceland", "IS",
-                "Liechtenstein", "LI",
-                "Norway", "NO",
-                "Switzerland", "CH",
-                // United Kingdom
-                "United Kingdom", "UK"
-            };
-            return Array.FindIndex(countries, x => x.Equals(code)) > 0;
         }
     }
 }
