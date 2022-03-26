@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -157,21 +156,6 @@ namespace Editor.Prg
         {
             Debug.LogWarning(
                 $"MISSING: [{context}]{gameObject.GetFullPath()}. COMP: {componentName}, PROP: {propertyName} : {propMessage}", gameObject);
-        }
-
-        private static string GetFullPath(this GameObject gameObject)
-        {
-            if (gameObject == null)
-            {
-                return string.Empty;
-            }
-            var path = new StringBuilder("\\").Append(gameObject.name);
-            while (gameObject.transform.parent != null)
-            {
-                gameObject = gameObject.transform.parent.gameObject;
-                path.Insert(0, gameObject.name).Insert(0, '\\');
-            }
-            return path.ToString();
         }
     }
 }

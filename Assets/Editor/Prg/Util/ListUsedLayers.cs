@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -33,7 +32,7 @@ namespace Editor.Prg.Util
                 {
                     continue;
                 }
-                var name = GetFullName(go);
+                var name = go.GetFullPath();
                 if (!layerObjects.TryGetValue(go.layer, out var objectList))
                 {
                     objectList = new List<string>();
@@ -60,7 +59,7 @@ namespace Editor.Prg.Util
                 {
                     continue;
                 }
-                var name = GetFullName(go);
+                var name = go.GetFullPath();
                 if (!taggedObjects.TryGetValue(go.tag, out var objectList))
                 {
                     objectList = new List<string>();
@@ -81,17 +80,6 @@ namespace Editor.Prg.Util
         {
             return Resources.FindObjectsOfTypeAll<GameObject>()
                 .Where(go => go.hideFlags == HideFlags.None);
-        }
-
-        private static string GetFullName(GameObject go)
-        {
-            var name = go.name;
-            while (go.transform.parent != null)
-            {
-                go = go.transform.parent.gameObject;
-                name = go.name + "/" + name;
-            }
-            return name;
         }
     }
 }
