@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle.Factory
     /// Helper class to find all actors and managers in the game in order to hide dependencies to actual <c>MonoBehaviour</c> implementations.
     /// </summary>
     /// <remarks>
-    /// This class is can be sensitive to <c>script execution order</c>!
+    /// This class can be sensitive to <c>script execution order</c>!
     /// </remarks>
     internal static class Context
     {
@@ -30,6 +30,8 @@ namespace Battle.Scripts.Battle.Factory
 
         internal static IPlayerActor FindPlayer(int playerPos) =>
             Object.FindObjectsOfType<PlayerActor>().Cast<IPlayerActor>().FirstOrDefault(x => x.PlayerPos == playerPos);
+
+        internal static PlayerPlayArea GetPlayerPlayArea => Object.FindObjectOfType<PlayerPlayArea>();
 
         internal static IBrickManager GetBrickManager => Object.FindObjectOfType<BrickManager>();
 

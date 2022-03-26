@@ -73,6 +73,23 @@ namespace Altzone.Scripts.Battle
             return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
         }
 
+        public static int GetTeamMemberPlayerPos(int playerPos)
+        {
+            switch (playerPos)
+            {
+                case PlayerPosition1:
+                    return PlayerPosition2;
+                case PlayerPosition2:
+                    return PlayerPosition1;
+                case PlayerPosition3:
+                    return PlayerPosition4;
+                case PlayerPosition4:
+                    return PlayerPosition3;
+                default:
+                    throw new UnityException($"invalid playerPos: {playerPos}");
+            }
+        }
+
         public static string GetLocalPlayerName()
         {
             if (PhotonNetwork.InRoom)

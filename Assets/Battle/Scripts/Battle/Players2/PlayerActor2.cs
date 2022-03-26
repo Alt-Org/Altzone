@@ -28,9 +28,6 @@ namespace Battle.Scripts.Battle.Players2
         [SerializeField] private Transform _playerShieldHead;
         [SerializeField] private Transform _playerShieldFoot;
 
-        [Header("Play Area"), SerializeField] private Rect _upperPlayArea;
-        [SerializeField] private Rect _lowerPlayArea;
-
         [Header("Live Data"), SerializeField] private Transform _playerShield;
         [SerializeField] private float _shieldDistance;
 
@@ -95,8 +92,8 @@ namespace Battle.Scripts.Battle.Players2
             Debug.Log(
                 $"Awake {name} pos {_transform.position} isLower {(isLower ? 1 : 0)} isCameraRotated {(isCameraRotated ? 1 : 0)} isShieldRotated {(isShieldRotated ? 1 : 0)}");
 
-            // Player movement
-            var playerArea = isYCoordNegative ? _lowerPlayArea : _upperPlayArea;
+            // Player movement and play area.
+            var playerArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(PlayerPos);
             var gameInput = runtimeGameConfig.Input;
             _playerMovement = new PlayerMovement2(_transform, gameInput, Camera.main, _photonView)
             {

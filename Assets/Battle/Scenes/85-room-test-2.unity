@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 78196425}
   m_Layer: 0
-  m_Name: GameArena
+  m_Name: GameplayArea
   m_TagString: PalloPeliAlue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,6 +215,7 @@ Transform:
   - {fileID: 370053855}
   - {fileID: 2122656219}
   - {fileID: 721636234}
+  - {fileID: 1523517239}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1124,10 +1125,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 8607368454165204979, guid: cba24c40c25844d4da85815b5853f3fe,
     type: 3}
-  _playerPosition1: {x: -2.5, y: -4}
-  _playerPosition2: {x: 2.5, y: -5}
-  _playerPosition3: {x: 2.5, y: 4}
-  _playerPosition4: {x: -2.5, y: 5}
   _gameBackground: {fileID: 801765301}
 --- !u!4 &577912818
 Transform:
@@ -1589,7 +1586,7 @@ GameObject:
   - component: {fileID: 801765302}
   - component: {fileID: 801765303}
   m_Layer: 0
-  m_Name: GameplayArea
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2133,6 +2130,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1432655192}
   m_CullTransparentMesh: 0
+--- !u!1 &1523517238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1523517239}
+  - component: {fileID: 1523517240}
+  m_Layer: 0
+  m_Name: Players
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1523517239
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523517238}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 78196425}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1523517240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523517238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec195c68f6524842912aec350825a86c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playAreaP1:
+    serializedVersion: 2
+    x: -4.5
+    y: -8
+    width: 9
+    height: 8
+  _playAreaP2:
+    serializedVersion: 2
+    x: -4.5
+    y: -8
+    width: 9
+    height: 8
+  _playAreaP3:
+    serializedVersion: 2
+    x: -4.5
+    y: 0
+    width: 9
+    height: 8
+  _playAreaP4:
+    serializedVersion: 2
+    x: -4.5
+    y: 0
+    width: 9
+    height: 8
+  _deflatePlayArea: {x: 0, y: 1.5}
+  _startPositionP1: {x: -2.5, y: -4}
+  _startPositionP2: {x: 2.5, y: -5}
+  _startPositionP3: {x: 2.5, y: 4}
+  _startPositionP4: {x: -2.5, y: 5}
 --- !u!1 &1572118460
 GameObject:
   m_ObjectHideFlags: 0
