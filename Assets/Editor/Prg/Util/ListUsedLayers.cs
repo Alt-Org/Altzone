@@ -7,20 +7,27 @@ namespace Editor.Prg.Util
 {
     public class ListUsedLayers : MonoBehaviour
     {
-        private const string Untagged = "Untagged";
+        private const string MenuRoot = "Window/ALT-Zone/Util/";
 
-        [MenuItem("Window/ALT-Zone/Util/List Used layers in Scene")]
+        [MenuItem(MenuRoot + "List Used layers in Scene")]
         private static void _ListUsedLayers()
         {
             Debug.Log("*");
             ListObjectsInLayer(GetSceneObjects());
         }
 
-        [MenuItem("Window/ALT-Zone/Util/List Used tags in Scene")]
+        [MenuItem(MenuRoot + "List Used tags in Scene")]
         private static void _ListUsedTags()
         {
             Debug.Log("*");
             ListObjectsWithTag(GetSceneObjects());
+        }
+
+        [MenuItem(MenuRoot + "List GameObjects with layer or tag in Scene")]
+        private static void _ListGameObjectsWithLayerOrTag()
+        {
+            Debug.Log("*");
+            ListGameObjectsWithLayerOrTag(GetSceneObjects());
         }
 
         private static void ListObjectsInLayer(IEnumerable<GameObject> gameObjects)
@@ -55,7 +62,7 @@ namespace Editor.Prg.Util
             var taggedObjects = new Dictionary<string, List<string>>();
             foreach (var go in gameObjects)
             {
-                if (go.CompareTag(Untagged))
+                if (go.CompareTag(UnityConstants.Tags.Untagged))
                 {
                     continue;
                 }
@@ -73,6 +80,29 @@ namespace Editor.Prg.Util
             {
                 var objectList = taggedObjects[usedTag];
                 Debug.Log($"Tag {usedTag,-16} is used in {objectList.Count} GameObject(s)");
+            }
+        }
+
+        private static void ListGameObjectsWithLayerOrTag(IEnumerable<GameObject> gameObjects)
+        {
+            var foundGameObjects = new HashSet<GameObject>();
+            foreach (var go in gameObjects)
+            {
+                if (go.layer != 0 || !go.CompareTag(UnityConstants.Tags.Untagged))
+                {
+                    foundGameObjects.Add(go);
+                }
+            }
+            foreach (var go in foundGameObjects)
+            {
+                const string none = "----";
+                var layerName = go.layer != 0 ? LayerMask.LayerToName(go.layer) : none;
+                var tag = go.tag;
+                if (tag.Equals(UnityConstants.Tags.Untagged))
+                {
+                    tag = none;
+                }
+                Debug.Log($"layer {layerName,-16} tag {tag,-16} {go.name}", go);
             }
         }
 
