@@ -9,7 +9,9 @@ namespace Editor.Prg.Util
 {
     public static class UnityConstantsGenerator
     {
-        [MenuItem("Window/ALT-Zone/Util/Generate UnityConstants.cs")]
+        private const string MenuRoot = "Window/ALT-Zone/Util/";
+
+        [MenuItem(MenuRoot + "Generate UnityConstants.cs")]
         public static void Generate()
         {
             Debug.Log("*");
@@ -62,15 +64,25 @@ namespace Editor.Prg.Util
                 writer.WriteLine("namespace UnityConstants");
                 writer.WriteLine("{");
 
-                // Write out the tags
+                // Write out the tags - https://docs.unity3d.com/Manual/Tags.html
                 writer.WriteLine("    /// <summary>");
                 writer.WriteLine("    /// Convenience class for UNITY Tags");
                 writer.WriteLine("    /// </summary>");
                 writer.WriteLine("    public static class Tags");
                 writer.WriteLine("    {");
+                writer.WriteLine("        // Builtin tags");
                 foreach (var tag in InternalEditorUtility.tags)
                 {
+                    if (tag.Equals("EditorOnly"))
+                    {
+                        // Google: what is EditorOnly tag used for?
+                        continue;
+                    }
                     writer.WriteLine("        public const string {0} = \"{1}\";", MakeSafeForCode(tag), tag);
+                    if (tag.Equals("GameController"))
+                    {
+                        writer.WriteLine("        // Project specific tags");
+                    }
                 }
                 writer.WriteLine("    }");
                 writer.WriteLine();
@@ -95,6 +107,9 @@ namespace Editor.Prg.Util
                 writer.WriteLine("    /// <summary>");
                 writer.WriteLine("    /// Convenience class for UNITY Layers");
                 writer.WriteLine("    /// </summary>");
+                writer.WriteLine("    /// <remarks>");
+                writer.WriteLine("    /// If using <c>LayerMask</c> in Editor compiler can not check 'used layers' here.");
+                writer.WriteLine("    /// </remarks>");
                 writer.WriteLine("    public static class Layers");
                 writer.WriteLine("    {");
                 var first = true;

@@ -8,28 +8,14 @@ namespace UnityConstants
     /// </summary>
     public static class Tags
     {
+        // Builtin tags
         public const string Untagged = "Untagged";
         public const string Respawn = "Respawn";
         public const string Finish = "Finish";
-        public const string EditorOnly = "EditorOnly";
         public const string MainCamera = "MainCamera";
         public const string Player = "Player";
         public const string GameController = "GameController";
-        public const string Xaxis = "Xaxis";
-        public const string Goal = "Goal";
-        public const string Ball = "Ball";
-        public const string PelaajaAlue1 = "PelaajaAlue-1";
-        public const string PelaajaAlue2 = "PelaajaAlue-2";
-        public const string PelaajaAlue3 = "PelaajaAlue-3";
-        public const string PelaajaAlue4 = "PelaajaAlue-4";
-        public const string PalloPeliAlue = "PalloPeliAlue";
-        public const string ErikoisTiili = "ErikoisTiili";
-        public const string Pelaaja1 = "Pelaaja-1";
-        public const string Pelaaja2 = "Pelaaja-2";
-        public const string Pelaaja3 = "Pelaaja-3";
-        public const string Pelaaja4 = "Pelaaja-4";
-        public const string TopSide = "TopSide";
-        public const string BotSide = "BotSide";
+        // Project specific tags
         public const string RedTeam = "RedTeam";
         public const string BlueTeam = "BlueTeam";
     }
@@ -48,6 +34,9 @@ namespace UnityConstants
     /// <summary>
     /// Convenience class for UNITY Layers
     /// </summary>
+    /// <remarks>
+    /// If using <c>LayerMask</c> in Editor compiler can not check 'used layers' here.
+    /// </remarks>
     public static class Layers
     {
         // Index of layer
