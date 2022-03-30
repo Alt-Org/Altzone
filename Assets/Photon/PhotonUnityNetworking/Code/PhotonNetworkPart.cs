@@ -303,7 +303,9 @@ namespace Photon.Pun
                     }
                     // For non-instantiated objects (scene objects) - reset the view
                     else
+                    {
                         view.ResetPhotonView(true);
+                    }
                 }
 
                 foreach (GameObject go in instantiatedGos)

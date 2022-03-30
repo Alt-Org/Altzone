@@ -3,6 +3,13 @@ PUN 2 - Changelog
 Exit Games GmbH - www.photonengine.com - forum.photonengine.com
 
 
+v2.40 (22. November 2021)
+Fixed: Unity 2021.2 support. PhotonEditorUtils.IsPrefab now uses the correct prefab stage utility for Unity 2021.2 and up.
+Changed: PhotonHandler.Dispatch is now catching exceptions. It will count them but only provide the first one's callstack (to avoid log spamming).
+Note: While the Photon lib caught exceptions in v4.1.6.10, that has not been a good solution. This new approach can be changed in source and is more flexible overall.
+Changed: On Xbox, the peer classes no longer assume a native socket plugin exists. This was setting the UDP implementation to null in some cases, which failed to connect.
+Updated: Library and Realtime to 4.1.6.11. More details in the change logs.
+
 v2.39 (21. October 2021)
 Changed: PhotonTransformView interpolation of position and rotation. It's now framerate independent.
 Updated: Library to 4.1.6.10. More details in changes-library.txt.

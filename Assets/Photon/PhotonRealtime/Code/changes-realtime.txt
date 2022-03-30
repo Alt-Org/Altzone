@@ -3,12 +3,16 @@ Photon Realtime C# Client - Changelog
 Exit Games GmbH - www.photonengine.com - forum.photonengine.com
 
 
-Version 4.1.6.8 (2021)
+Version 4.1.6.11 (22. November 2021)
+    Changed: For Unity, PhotonEditorUtils.IsPrefab to use the correct prefab stage utility for Unity 2021.2 and up.
+    Added: CustomAuthenticationType.Epic to authenticate via Epic Online Services (EOS).
+    Added: CustomAuthenticationType.FacebookGaming to authenticate via Facebook Gaming services.
+
+Version 4.1.6.8 (12. October 2021)
     Changed: CustomTypesUnity. The default Quaternion is now Quaternion.identity (which is a legit Quaterion, as opposed to the previously used new Quaternion). Added const values for each type's byte-size.
     Added: Checks to avoid creating a player for actorNumber 0.
     Added: CheckIfOpCanBeSent to OpJoinOrCreateRoom and OpRejoinRoom. Avoids changing state and repeating operation.
     Removed: Surplus checks if the LoadBalancingPeer is non-null. This is done in CheckIfOpCanBeSent(), too.
-
 
 Version 4.1.6.7 (27. September 2021)
     Replaced: Pointer_stringify with UTF8ToString in WebSocket.jslib. It was removed from newer Emscripten versions and is no longer working when exporting from Unity 2021.2. betas. Replaced with UTF8ToString. Tested in 2018.4.x and a current beta.
