@@ -1,0 +1,274 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8558728558653974019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_1
+  guid: 3fe4f8f22515c544a306414d8a203a61
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &-7695761762779463969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: ../altprogFMOD201/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  lastModified: 637846661004296389
+  LoadResult: 0
+  FileSizes:
+  - Name: Desktop
+    Value: 1042
+  Exists: 1
+--- !u!114 &-7041372326710343851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_wrong_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_wrong_1
+  guid: 6e9e9e3b88a77f4cae9d5e712bbb28c1
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &-2419401936248607640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: ../altprogFMOD201/Build/Desktop/Master.bank
+  Name: Master
+  lastModified: 637846661004206614
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-835249737105467465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_2
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_2
+  guid: 6a809a8b097f514a8261fbf11edc5037
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1561
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: -7695761762779463969}
+  - {fileID: -2419401936248607640}
+  - {fileID: 7513838109285615250}
+  EditorEvents:
+  - {fileID: -8558728558653974019}
+  - {fileID: 6415377003796923718}
+  - {fileID: 6338772488561360457}
+  - {fileID: -835249737105467465}
+  - {fileID: -7041372326710343851}
+  - {fileID: 915594336232484396}
+  - {fileID: 4651421908816577422}
+  - {fileID: 3022762118089398778}
+  EditorParameters: []
+  MasterBanks:
+  - {fileID: -2419401936248607640}
+  StringsBanks:
+  - {fileID: -7695761762779463969}
+  stringsBankWriteTime: 637846661004296389
+  cacheVersion: 5
+--- !u!114 &915594336232484396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/the-cradle-of-your-soul-15700
+  m_EditorClassIdentifier: 
+  Path: event:/the-cradle-of-your-soul-15700
+  guid: af798478ad3e944d801188038bd6ccf7
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 177502
+--- !u!114 &3022762118089398778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_hover_2
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_hover_2
+  guid: cf72d6bd8d761c42b0c8deffc4f3afa6
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &4651421908816577422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_4
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_4
+  guid: b43af81fbecc4743a51b2f12f86eacad
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2127
+--- !u!114 &6338772488561360457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_hover_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_hover_1
+  guid: 68f7009f82f76441992b30c091dbecd4
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &6415377003796923718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_3
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_3
+  guid: 5d58e953f8413244af0694e1414e60eb
+  Banks:
+  - {fileID: 7513838109285615250}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1276
+--- !u!114 &7513838109285615250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/TestBank.bank
+  m_EditorClassIdentifier: 
+  Path: ../altprogFMOD201/Build/Desktop/TestBank.bank
+  Name: TestBank
+  lastModified: 637822439817979908
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
