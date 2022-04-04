@@ -17,6 +17,8 @@ namespace Editor.Prg
     {
         private const string MenuRoot = "Window/ALT-Zone/Dependencies/";
 
+        private const string AssetRootName = "Assets";
+
         [MenuItem(MenuRoot + "Check Usages", false, 10)]
         private static void _CheckDependencies()
         {
@@ -71,8 +73,7 @@ namespace Editor.Prg
                 return;
             }
             Debug.Log($"Search dependencies for {selectedGuids.Length} assets in {string.Join(", ", validExtensions)}");
-            const string assetRoot = "Assets";
-            var searchFolders = new[] { assetRoot };
+            var searchFolders = new[] { AssetRootName };
             var foundCount = new int[selectedGuids.Length];
             Array.Clear(foundCount, 0, foundCount.Length);
 
@@ -120,27 +121,59 @@ namespace Editor.Prg
             }
         }
 
-        [MenuItem(MenuRoot + "Sort Selection", false, 11)]
-        private static void _SortSelection()
+        [MenuItem(MenuRoot + "Show Folders", false, 11)]
+        private static void _ShowFolders()
         {
             Debug.Log("*");
-            var selectedGuids = Selection.assetGUIDs;
-            if (selectedGuids.Length == 0)
+            var paths = GetPathsForSelectedGuids();
+            if (paths == null)
             {
                 Debug.Log("Nothing is selected");
                 return;
             }
-            var list = new List<string>();
-            foreach (var t in selectedGuids)
+            var uniquePaths = new HashSet<string>();
+            var specialPaths = new HashSet<string>();
+            foreach (var path in paths)
             {
-                var path = AssetDatabase.GUIDToAssetPath(t);
-                list.Add(path);
+                var dirname = Path.GetDirectoryName(RemoveAssetRootName(path));
+                if (path.StartsWith(AssetRootName))
+                {
+                    uniquePaths.Add(dirname);
+                }
+                else
+                {
+                    specialPaths.Add(dirname);
+                }
             }
-            list.Sort();
-            foreach (var path in list)
+            paths = uniquePaths.ToList();
+            paths.Sort();
+            foreach (var path in paths)
+            {
+                Debug.Log($"{RichText.Yellow(path)}");
+            }
+            paths = specialPaths.ToList();
+            paths.Sort();
+            foreach (var path in paths)
+            {
+                Debug.Log($"{RichText.Brown(path)}");
+            }
+        }
+
+        [MenuItem(MenuRoot + "Sort Selection", false, 12)]
+        private static void _SortSelection()
+        {
+            Debug.Log("*");
+            var paths = GetPathsForSelectedGuids();
+            if (paths == null)
+            {
+                Debug.Log("Nothing is selected");
+                return;
+            }
+            paths.Sort();
+            foreach (var path in paths)
             {
                 var asset = AssetDatabase.LoadMainAssetAtPath(path);
-                var dirname = Path.GetDirectoryName(path)?.Replace("Assets\\", "");
+                var dirname = Path.GetDirectoryName(RemoveAssetRootName(path));
                 var filename = Path.GetFileName(path);
                 Debug.Log($"{RichText.Yellow(dirname)} {RichText.Brown(filename)}", asset);
             }
@@ -167,6 +200,32 @@ namespace Editor.Prg
                 }
             }
             return count;
+        }
+
+        private static List<string> GetPathsForSelectedGuids()
+        {
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
+            {
+                Debug.Log("Nothing is selected");
+                return null;
+            }
+            var paths = new List<string>();
+            foreach (var t in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(t);
+                paths.Add(path);
+            }
+            return paths;
+        }
+
+        private static string RemoveAssetRootName(string path)
+        {
+            if (path.StartsWith(AssetRootName) && path[AssetRootName.Length] == '/')
+            {
+                path = path.Replace(AssetRootName, "").Substring(1);
+            }
+            return path;
         }
     }
 }
