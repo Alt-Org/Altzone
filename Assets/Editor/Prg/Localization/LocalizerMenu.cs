@@ -10,33 +10,30 @@ namespace Editor.Prg.Localization
     /// <summary>
     /// Localization process in Editor menu commands.
     /// </summary>
-    public static class LocalizerMenu
+    internal static class LocalizerMenu
     {
-        public const string MenuRoot = "Window/ALT-Zone/Localization/";
+        private const string GoogleDriveUrl =
+            @"https://docs.google.com/spreadsheets/d/1ZwjasMpaXABXZ5N6_ivuSMeXv-764TDmqUSG5ufJmvA/edit#gid=1638234547";
 
-        [MenuItem(MenuRoot + "Load Translations (bin)", false, 1)]
-        private static void LoadTranslations()
+        public static void LoadTranslations()
         {
             Debug.Log("*");
             Localizer.LoadTranslations();
         }
 
-        [MenuItem(MenuRoot + "Save Translations (tsv->bin)", false, 2)]
-        private static void SaveTranslations()
+        public static void SaveTranslations()
         {
             Debug.Log("*");
             Localizer.LocalizerHelper.SaveTranslations();
         }
 
-        [MenuItem(MenuRoot + "Show Translations (bin)", false, 3)]
-        private static void ShowTranslations()
+        public static void ShowTranslations()
         {
             Debug.Log("*");
             Localizer.LocalizerHelper.ShowTranslations();
         }
 
-        [MenuItem(MenuRoot + "Check Selected Asset(s)", false, 4)]
-        private static void CheckUsedTranslationsInAssets()
+        public static void CheckUsedTranslationsInAssets()
         {
             Debug.Log("*");
             if (Selection.assetGUIDs.Length == 0)
@@ -59,11 +56,10 @@ namespace Editor.Prg.Localization
             Localizer.LocalizerHelper.SaveIfDirty();
         }
 
-        [MenuItem(MenuRoot + "Open In Google Drive", false, 5)]
-        private static void OpenInGoogleDrive()
+        public static void OpenInGoogleDrive()
         {
-            const string googleDriveUrl = @"https://docs.google.com/spreadsheets/d/1ZwjasMpaXABXZ5N6_ivuSMeXv-764TDmqUSG5ufJmvA/edit#gid=1638234547";
-            Application.OpenURL(googleDriveUrl);
+            Debug.Log("*");
+            Application.OpenURL(GoogleDriveUrl);
         }
 
         private static void DoSmartTextAndTextAssetCheck(GameObject gameObject)

@@ -49,7 +49,6 @@ namespace Editor
             Log($"output filename: {GetOutputFile(args.BuildTarget)}");
         }
 
-        //[MenuItem("Window/ALT-Zone/Build/Test/Android Build Post Processing")]
         private static void do_Android_Build_Post_processing()
         {
             const string scriptName = "m_BuildScript_PostProcess.bat";
@@ -59,7 +58,6 @@ namespace Editor
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
-        //[MenuItem("Window/ALT-Zone/Build/Test/WebGL Build Post Processing")]
         private static void do_WebGL_Build_Post_processing()
         {
             void PatchIndexHtml(string htmlFile, string curTitle, string newTitle)

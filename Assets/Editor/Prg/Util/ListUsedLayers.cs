@@ -1,30 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
+using UnityConstants;
 using UnityEngine;
 
 namespace Editor.Prg.Util
 {
-    public class ListUsedLayers : MonoBehaviour
+    internal static class ListUsedLayers
     {
-        private const string MenuRoot = "Window/ALT-Zone/Util/";
-
-        [MenuItem(MenuRoot + "List Used layers in Scene")]
-        private static void _ListUsedLayers()
+        public static void ListUsedLayersInScene()
         {
             Debug.Log("*");
             ListObjectsInLayer(GetSceneObjects());
         }
 
-        [MenuItem(MenuRoot + "List Used tags in Scene")]
-        private static void _ListUsedTags()
+        public static void ListUsedTagsInScene()
         {
             Debug.Log("*");
             ListObjectsWithTag(GetSceneObjects());
         }
 
-        [MenuItem(MenuRoot + "List GameObjects with layer or tag in Scene")]
-        private static void _ListGameObjectsWithLayerOrTag()
+        public static void ListGameObjectsWithLayerOrTagInScene()
         {
             Debug.Log("*");
             ListGameObjectsWithLayerOrTag(GetSceneObjects());
@@ -62,7 +57,7 @@ namespace Editor.Prg.Util
             var taggedObjects = new Dictionary<string, List<string>>();
             foreach (var go in gameObjects)
             {
-                if (go.CompareTag(UnityConstants.Tags.Untagged))
+                if (go.CompareTag(Tags.Untagged))
                 {
                     continue;
                 }
@@ -88,7 +83,7 @@ namespace Editor.Prg.Util
             var foundGameObjects = new HashSet<GameObject>();
             foreach (var go in gameObjects)
             {
-                if (go.layer != 0 || !go.CompareTag(UnityConstants.Tags.Untagged))
+                if (go.layer != 0 || !go.CompareTag(Tags.Untagged))
                 {
                     foundGameObjects.Add(go);
                 }
@@ -98,7 +93,7 @@ namespace Editor.Prg.Util
                 const string none = "----";
                 var layerName = go.layer != 0 ? LayerMask.LayerToName(go.layer) : none;
                 var tag = go.tag;
-                if (tag.Equals(UnityConstants.Tags.Untagged))
+                if (tag.Equals(Tags.Untagged))
                 {
                     tag = none;
                 }

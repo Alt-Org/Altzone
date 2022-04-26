@@ -11,14 +11,11 @@ namespace Editor.Prg.Localization
     /// <summary>
     /// Localization process in Editor utility window.
     /// </summary>
-    public class SmartTextSearchEditorWindow : EditorWindow
+    internal class SmartTextSearchEditorWindow : EditorWindow
     {
-        private const string MenuRoot = LocalizerMenu.MenuRoot;
-
-        [MenuItem(MenuRoot + "Show Localization Window")]
-        private static void SearchLocalizationKeys()
+        public static void SearchLocalizationKeys()
         {
-            Debug.Log("SearchLocalizationKeys");
+            Debug.Log("*");
             GetWindow<SmartTextSearchEditorWindow>("Localization Key Utility")
                 .Show();
         }
@@ -48,7 +45,7 @@ namespace Editor.Prg.Localization
         private string _searchText;
         private string _usedSearchText;
 
-        private List<string> _fullResults;
+        private List<string> _fullResults = new List<string>();
         private List<string> _searchResults = new List<string>();
 
         private GameObject _activeGameObject;
@@ -65,10 +62,12 @@ namespace Editor.Prg.Localization
             CreateStyles();
             _searchField = new SearchField();
             _searchText = string.Empty;
+            var keys = Localizer.LocalizerHelper.GetTranslationKeys() ?? new List<string>();
+            _fullResults = keys.Where(x => !x.StartsWith("lang.")).ToList();
+            _searchResults = new List<string>();
             _label1 = string.Empty;
             _label2 = string.Empty;
             _label3 = string.Empty;
-            _fullResults = Localizer.LocalizerHelper.GetTranslationKeys().Where(x => !x.StartsWith("lang.")).ToList();
             // Prevent double registration
             Selection.selectionChanged -= SelectionChanged;
             Selection.selectionChanged += SelectionChanged;

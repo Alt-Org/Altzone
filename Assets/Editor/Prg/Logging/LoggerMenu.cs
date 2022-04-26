@@ -8,12 +8,9 @@ using UnityEngine;
 
 namespace Editor.Prg.Logging
 {
-    public static class LoggerMenu
+    internal static class LoggerMenu
     {
-        private const string MenuRoot = "Window/ALT-Zone/Logging/";
-
-        [MenuItem(MenuRoot + "Add 'FORCE_LOG' define", false, 10)]
-        private static void AddDefine()
+        public static void AddDefine()
         {
             Debug.Log("*");
             var knownTargets = new[] { BuildTarget.Android, BuildTarget.StandaloneWindows64, BuildTarget.WebGL };
@@ -32,8 +29,7 @@ namespace Editor.Prg.Logging
             }
         }
 
-        [MenuItem(MenuRoot + "Remove 'FORCE_LOG' define", false, 11)]
-        private static void RemoveDefine()
+        public static void RemoveDefine()
         {
             Debug.Log("*");
             var knownTargets = new[] { BuildTarget.Android, BuildTarget.StandaloneWindows64, BuildTarget.WebGL };
@@ -52,24 +48,21 @@ namespace Editor.Prg.Logging
             }
         }
 
-        [MenuItem(MenuRoot + "Highlight logging settings", false, 12)]
-        private static void HighlightSettings()
+        public static void HighlightLoggerSettings()
         {
             var loggerConfig = (LoggerConfig)Resources.Load(nameof(LoggerConfig), typeof(LoggerConfig));
             Selection.objects = new UnityEngine.Object[] { loggerConfig };
             EditorGUIUtility.PingObject(loggerConfig);
         }
 
-        [MenuItem(MenuRoot + "Show log file location", false, 13)]
-        private static void Show()
+        public static void ShowLogFilePath()
         {
             Debug.Log("*");
             var path = GetLogFilePath();
             Debug.Log($"Editor log {(File.Exists(path) ? "is in" : RichText.Brown("NOT found"))}: {path}");
         }
 
-        [MenuItem(MenuRoot + "Open log file in text editor", false, 14)]
-        private static void Load()
+        public static void LoadLogFileToTextEditor()
         {
             Debug.Log("*");
             var path = GetLogFilePath();

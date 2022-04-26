@@ -3,10 +3,9 @@ using UnityEditor;
 
 namespace Editor.Prg.Util
 {
-    public static class CreateStandardFolders
+    internal static class CreateStandardFolders
     {
-        [MenuItem("Window/ALT-Zone/Util/Create Project 'Standard' Folders")]
-        private static void _CreateStandardFolders()
+        public static void CreateProjectStandardFolders()
         {
             Debug.Log("*");
             var activeObject = Selection.activeObject;

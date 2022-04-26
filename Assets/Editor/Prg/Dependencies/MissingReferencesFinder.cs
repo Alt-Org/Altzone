@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Editor.Prg
+namespace Editor.Prg.Dependencies
 {
     /// <summary>
     /// A helper editor script for finding missing references to objects.
@@ -16,14 +16,11 @@ namespace Editor.Prg
     /// See: http://www.li0rtal.com/find-missing-references-unity/
     ///
     /// </remarks>
-    public static class MissingReferencesFinder
+    internal static class MissingReferencesFinder
     {
-        private const string MenuRoot = "Window/ALT-Zone/Dependencies/Missing References : ";
-
         /// <summary>
         /// Finds all missing references to objects in the currently loaded scene.
         /// </summary>
-        [MenuItem(MenuRoot + "Search in scene", false, 50)]
         public static void FindMissingReferencesInCurrentScene()
         {
             Debug.Log("*");
@@ -35,7 +32,6 @@ namespace Editor.Prg
         /// Finds all missing references to objects in all enabled scenes in the project.
         /// This works by loading the scenes one by one and checking for missing object references.
         /// </summary>
-        [MenuItem(MenuRoot + "Search in all scenes", false, 51)]
         public static void FindMissingReferencesInAllScenes()
         {
             Debug.Log("*");
@@ -50,7 +46,6 @@ namespace Editor.Prg
         /// <summary>
         /// Finds all missing references to objects in assets (objects from the project window).
         /// </summary>
-        [MenuItem(MenuRoot + "Search in assets", false, 52)]
         public static void FindMissingReferencesInAssets()
         {
             Debug.Log("*");
@@ -63,7 +58,6 @@ namespace Editor.Prg
         /// <summary>
         /// Finds all missing references to selected objects in the project window.
         /// </summary>
-        [MenuItem(MenuRoot + "Search in selection", false, 53)]
         public static void FindMissingReferencesInSelection()
         {
             Debug.Log("*");

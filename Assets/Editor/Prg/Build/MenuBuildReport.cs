@@ -16,7 +16,7 @@ namespace Editor.Prg.Build
     /// <remarks>
     /// Paths for ExcludedFolders and TestFolders uses <c>RegexOptions.IgnoreCase</c>
     /// </remarks>
-    public class MenuBuildReport : MonoBehaviour
+    internal static class MenuBuildReport
     {
         private static readonly string[] ExcludedFolders =
         {
@@ -33,21 +33,21 @@ namespace Editor.Prg.Build
             ".*/zzDeleteMe/.*",
         };
 
-        [MenuItem("Window/ALT-Zone/Build/Create Build Script", false, 1)]
-        private static void CreateBuildScript()
+        public static void CreateBuildScript()
         {
+            Debug.Log("*");
             TeamCity.CreateBuildScript();
         }
 
-        [MenuItem("Window/ALT-Zone/Build/Test Android Build Config", false, 2)]
-        private static void CheckAndroidBuild()
+        public static void CheckAndroidBuild()
         {
+            Debug.Log("*");
             TeamCity.CheckAndroidBuild();
         }
 
-        [MenuItem("Window/ALT-Zone/Build/Check Build Report", false, 9)]
-        private static void CheckBuildReport()
+        public static void CheckBuildReport()
         {
+            Debug.Log("*");
             var logWriter = new LogWriter();
 
             var buildTargetName = TeamCity.CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);

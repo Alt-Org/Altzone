@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,23 +10,20 @@ using UnityEngine;
 
 namespace Editor.UiProto
 {
-    public class MenuWindowReport : MonoBehaviour
+    internal static class MenuWindowReport
     {
-        private static readonly string[] excludedFolders =
+        private static readonly string[] ExcludedFolders =
         {
             "Assets/Photon",
         };
 
         private const string OpenWindowButtonGuid = "a019d4d3f61e52648b2acac7801c5e4b";
 
-        [MenuItem("Window/ALT-Zone/Ui Proto/Window Report")]
-        private static void WindowReport()
+        public static void WindowReport()
         {
             Debug.Log("*");
-            Debug.Log("* " + nameof(MenuWindowReport));
-            Debug.Log("*");
             var excluded = new List<Regex>();
-            foreach (var excludedFolder in excludedFolders)
+            foreach (var excludedFolder in ExcludedFolders)
             {
                 excluded.Add(new Regex(excludedFolder));
             }
@@ -73,7 +69,7 @@ namespace Editor.UiProto
 
         private static void handleSubFolder(string parent, Context context, List<Regex> excluded)
         {
-            if (excludedFolders.Contains(parent))
+            if (ExcludedFolders.Contains(parent))
             {
                 context.excludedColderCount += 1;
                 return;
@@ -421,4 +417,3 @@ namespace Editor.UiProto
         }
     }
 }
-#endif

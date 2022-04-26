@@ -7,10 +7,9 @@ namespace Editor.Prg.Util
     /// <summary>
     /// Example class to show how to access <c>SerializedObject</c> and <c>SerializedProperty</c> from code.
     /// </summary>
-    public class MenuShowVersionInfo : MonoBehaviour
+    internal static class MenuShowVersionInfo
     {
-        [MenuItem("Window/ALT-Zone/Util/Show Version Info")]
-        private static void ShowVersionInfo()
+        public static void ShowVersionInfo()
         {
             void PrintProperty(SerializedObject anObject, string propName)
             {
@@ -42,6 +41,7 @@ namespace Editor.Prg.Util
             // https://docs.unity3d.com/ScriptReference/SerializedProperty.html
             // https://docs.unity3d.com/ScriptReference/SerializedPropertyType.html
 
+            Debug.Log("*");
             var asset = AssetDatabase.LoadAssetAtPath<Object>("ProjectSettings/ProjectSettings.asset");
             Debug.Log("asset=" + asset);
 

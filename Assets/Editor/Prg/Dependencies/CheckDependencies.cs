@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Prg
+namespace Editor.Prg.Dependencies
 {
     /// <summary>
     /// Utility script to check dependencies of selected objects in UNITY <c>Editor</c> based on their <c>GUID</c>.
@@ -13,14 +13,11 @@ namespace Editor.Prg
     /// <remarks>
     /// List of supported object types (in selection) is limited to some "well known" types used in UNITY.
     /// </remarks>
-    public static class CheckDependencies
+    internal static class CheckDependencies
     {
-        private const string MenuRoot = "Window/ALT-Zone/Dependencies/";
-
         private const string AssetRootName = "Assets";
 
-        [MenuItem(MenuRoot + "Check Usages", false, 10)]
-        private static void _CheckDependencies()
+        public static void CheckUsages()
         {
             Debug.Log("*");
             var selectedGuids = Selection.assetGUIDs;
@@ -121,8 +118,7 @@ namespace Editor.Prg
             }
         }
 
-        [MenuItem(MenuRoot + "Show Folders", false, 11)]
-        private static void _ShowFolders()
+        public static void ShowFolders()
         {
             Debug.Log("*");
             var paths = GetPathsForSelectedGuids();
@@ -159,8 +155,7 @@ namespace Editor.Prg
             }
         }
 
-        [MenuItem(MenuRoot + "Sort Selection", false, 12)]
-        private static void _SortSelection()
+        public static void SortSelection()
         {
             Debug.Log("*");
             var paths = GetPathsForSelectedGuids();
@@ -207,7 +202,6 @@ namespace Editor.Prg
             var selectedGuids = Selection.assetGUIDs;
             if (selectedGuids.Length == 0)
             {
-                Debug.Log("Nothing is selected");
                 return null;
             }
             var paths = new List<string>();

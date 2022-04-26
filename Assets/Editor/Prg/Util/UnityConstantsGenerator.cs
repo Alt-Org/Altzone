@@ -7,12 +7,10 @@ using UnityEngine.Assertions;
 
 namespace Editor.Prg.Util
 {
-    public static class UnityConstantsGenerator
+    internal static class UnityConstantsGenerator
     {
-        private const string MenuRoot = "Window/ALT-Zone/Util/";
 
-        [MenuItem(MenuRoot + "Generate UnityConstants.cs")]
-        public static void Generate()
+        public static void GenerateUnityConstants()
         {
             Debug.Log("*");
             var path = InternalGenerate();

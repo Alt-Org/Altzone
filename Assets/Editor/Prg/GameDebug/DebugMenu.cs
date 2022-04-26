@@ -1,26 +1,21 @@
 ﻿using System;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Editor.Prg.GameDebug
 {
-    public static class DebugMenu
+    internal static class DebugMenu
     {
-        private const string MenuRoot = "Window/ALT-Zone/Game Debug/";
-
-        [MenuItem(MenuRoot +"Show Player Data", false, 1)]
-        private static void ShowLocalPlayerData()
+        public static void ShowLocalPlayerData()
         {
             Debug.Log("*");
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
             Debug.Log(playerData.ToString());
         }
 
-        [MenuItem(MenuRoot +"Create Dummy Player Data", false, 2)]
-        private static void CreateDummyPlayerData()
+        public static void CreateDummyPlayerData()
         {
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
             playerData.BatchSave(() =>
@@ -32,8 +27,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log(playerData.ToString());
         }
 
-        [MenuItem(MenuRoot +"Set Player Language to EN", false, 3)]
-        private static void SetLanguageToEn()
+        public static void SetLanguageToEn()
         {
             Debug.Log("*");
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
@@ -41,8 +35,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log(playerData.ToString());
         }
 
-        [MenuItem(MenuRoot +"Delete Player Data", false, 4)]
-        private static void DeleteLocalPlayerData()
+        public static void DeleteLocalPlayerData()
         {
             Debug.Log("*");
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
@@ -50,8 +43,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log(playerData.ToString());
         }
 
-        [MenuItem(MenuRoot +"Danger Zone/Delete All Local Data", false, 1)]
-        private static void DeleteLocalAllData()
+        public static void DeleteLocalAllData()
         {
             Debug.Log("*");
             Debug.Log(RichText.Brown("PlayerPrefs.DeleteAll"));
