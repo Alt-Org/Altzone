@@ -106,13 +106,16 @@ namespace Editor
             var unityName = EditorApplication.applicationPath.Replace(sep1, sep2);
             var methodName = $"{typeof(TeamCity).FullName}.{nameof(Build)}";
             var script = MyCmdLineScripts.BuildScript
+                .Replace("<<unity_version>>", Application.unityVersion)
                 .Replace("<<unity_name>>", unityName)
                 .Replace("<<method_name>>", methodName);
             File.WriteAllText(scriptName, script);
             Debug.Log($"Build script '{scriptName}' written");
             var buildTargetName = CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
-            var driverScript = $"{scriptName} {buildTargetName} && pause";
+            var driverScript = MyCmdLineScripts.BuildDriverScript
+                .Replace("<<build_script_name>>", scriptName)
+                .Replace("<<build_target_name>>", buildTargetName);
             File.WriteAllText(driverName, driverScript);
             Debug.Log($"Build script driver '{driverName}' written");
         }
@@ -453,11 +456,21 @@ namespace Editor
         private static class MyCmdLineScripts
         {
             public static string BuildScript => BuildScriptContent;
+            public static string BuildDriverScript => BuildDriverScriptContent;
             public static string AndroidPostProcessScript => AndroidPostProcessScriptContent;
             public static string WebGLPostProcessScript => WebGLPostProcessScriptContent;
 
+            #region BuildScriptContent
+
             private const string BuildScriptContent = @"@echo off
+set VERSION=<<unity_version>>
 set UNITY=<<unity_name>>
+if not exist ""%UNITY%"" (
+    echo *
+    echo * UNITY executable not found: ""%UNITY%""
+    echo *
+    goto :eof
+)
 
 set BUILDTARGET=%1
 if ""%BUILDTARGET%"" == ""Win64"" goto :valid_build
@@ -479,6 +492,9 @@ goto :eof
 set PROJECTPATH=./
 set METHOD=<<method_name>>
 set LOGFILE=m_Build_%BUILDTARGET%.log
+if exist %LOGFILE% (
+    del /Q %LOGFILE%
+)
 if ""%BUILDTARGET%"" == ""Android"" (
     set ANDROID_KEYSTORE=-keystore ..\local_%USERNAME%\altzone.keystore
 )
@@ -491,7 +507,9 @@ if exist %build_output% (
     echo Delete folder %build_output%
     rmdir /S /Q %build_output%
 )
-echo Start build
+echo.
+echo Start build with UNITY %VERSION% log file %LOGFILE%
+echo.
 echo ""%UNITY%"" %UNITY_OPTIONS%
 ""%UNITY%"" %UNITY_OPTIONS%
 set RESULT=%ERRORLEVEL%
@@ -501,6 +519,7 @@ if not ""%RESULT%"" == ""0"" (
     echo *
     goto :eof
 )
+echo.
 if not exist m_BuildScript_PostProcess.bat (
     echo Build done, check log for results
     goto :eof
@@ -510,7 +529,21 @@ echo *
 call m_BuildScript_PostProcess.bat
 echo *
 echo Post processing done
+goto :eof
 ";
+
+            #endregion
+
+            #region BuildDriverScriptContent
+
+            private const string BuildDriverScriptContent = @"@echo off
+echo ~~~~~ BUILD start ~~~~~
+call <<build_script_name>> <<build_target_name>>
+echo ~~~~~ BUILD  done ~~~~~
+pause";
+
+            #endregion
+            #region AndroidPostProcessScriptContent
 
             private const string AndroidPostProcessScriptContent = @"@echo off
 set BUILD_DIR=BuildAndroid
@@ -575,6 +608,10 @@ echo ROBOCOPY result %RESULT%
 goto :eof
 ";
 
+            #endregion
+
+            #region WebGLPostProcessScriptContent
+
             private const string WebGLPostProcessScriptContent = @"@echo off
 set BUILD_DIR=BuildWebGL
 set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
@@ -589,6 +626,8 @@ if ""%LOGFILE%""  == """" (
 robocopy %BUILD_DIR% %DROPBOX_DIR% /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
 goto :eof
 ";
+
+            #endregion
         }
     }
 }
