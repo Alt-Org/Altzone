@@ -280,7 +280,9 @@ namespace Lobby.Scripts.InRoom
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
             _interactableGuest = true;
-            _interactableSpectator = true;
+            // Spectator does not work with current NetworkSync and RoomLoader2,
+            // it is from earlier versions with different implementation how room was initialized.
+            _interactableSpectator = false; //true;
             _interactableStartPlay = false;
 
             _captionPlayerP1 = $"Free";
