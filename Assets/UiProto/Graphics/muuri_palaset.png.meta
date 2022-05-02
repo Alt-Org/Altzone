@@ -95,6 +95,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -103,12 +105,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -126,9 +128,12 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
@@ -672,6 +677,31 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      muuri_palaset_21: 1800495237995100746
+      muuri_palaset_14: 2000107485302639198
+      muuri_palaset_2: -3065835773443488927
+      muuri_palaset_15: -3510693389399472789
+      muuri_palaset_7: 7781799146934267335
+      muuri_palaset_16: 5512351577580246851
+      muuri_palaset_22: -7439558934689087115
+      muuri_palaset_6: 8336659506334113586
+      muuri_palaset_4: 2661741273663458458
+      muuri_palaset_12: 933669890938880952
+      muuri_palaset_0: 2568211617524331118
+      muuri_palaset_17: -3107676468622943891
+      muuri_palaset_10: 8396527437090976759
+      muuri_palaset_1: 8423209480519102916
+      muuri_palaset_5: -5578635339086151455
+      muuri_palaset_13: -8090912523423635345
+      muuri_palaset_3: 8172966128483282579
+      muuri_palaset_19: 7103967603129742201
+      muuri_palaset_23: -6405699574352122889
+      muuri_palaset_8: -7587685667610872039
+      muuri_palaset_20: -4864259232813594254
+      muuri_palaset_18: 8149025508789876665
+      muuri_palaset_9: 1279363686360097688
+      muuri_palaset_11: 1696205209059114615
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
