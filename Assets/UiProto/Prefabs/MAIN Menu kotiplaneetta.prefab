@@ -29,10 +29,11 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 544440936089880098}
   m_Father: {fileID: 8631082850878396041}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -82,6 +83,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2063958948925650686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,8 +128,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 66.16954, y: 31.701834, z: -170.04544}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1572967413293933230}
   - {fileID: 2063958948925650687}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -422,95 +424,4 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3268688833113216514, guid: 1a95c6ec34c96824ca75a7cfa2edec03,
     type: 3}
   m_PrefabInstance: {fileID: 3085679368566886432}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &8107314058378324840
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 8631082850878396041}
-    m_Modifications:
-    - target: {fileID: 7302229083572299530, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921601, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_Name
-      value: Tutorial
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921601, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7302229084271921607, guid: 2bf779bc79797444daa17bdb9a0877d1,
-        type: 3}
-      propertyPath: TutorialText
-      value: "Tervetuloa p\xE4\xE4valikkoon! Valikosta voit muokata hahmoja ja k\xE4ynnist\xE4\xE4
-        pelin."
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2bf779bc79797444daa17bdb9a0877d1, type: 3}
---- !u!4 &1572967413293933230 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7302229084271921606, guid: 2bf779bc79797444daa17bdb9a0877d1,
-    type: 3}
-  m_PrefabInstance: {fileID: 8107314058378324840}
   m_PrefabAsset: {fileID: 0}
