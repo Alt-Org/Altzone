@@ -145,6 +145,7 @@ namespace Editor
                     case BuildTarget.WebGL:
                         outputDir = OutputFolderWebgl;
                         targetGroup = BuildTargetGroup.WebGL;
+                        configure_WebGL(args);
                         break;
                     case BuildTarget.StandaloneWindows64:
                         outputDir = Path.Combine(OutputFolderWin64, GetOutputFile(args.BuildTarget));
@@ -307,6 +308,14 @@ namespace Editor
             LogObfuscated("keystorePass", PlayerSettings.keystorePass);
             PlayerSettings.keyaliasPass = GetLocalPasswordFor(passwordFolder, "alias_password");
             LogObfuscated("keyaliasPass", PlayerSettings.keyaliasPass);
+        }
+
+        private static void configure_WebGL(CommandLine args)
+        {
+#if UNITY_2019
+#else
+            Log($"WebGL.compressionFormat={PlayerSettings.WebGL.compressionFormat}");
+#endif
         }
 
         private static string SanitizePath(string path)
@@ -543,6 +552,7 @@ echo ~~~~~ BUILD  done ~~~~~
 pause";
 
             #endregion
+
             #region AndroidPostProcessScriptContent
 
             private const string AndroidPostProcessScriptContent = @"@echo off
