@@ -14,26 +14,17 @@ public static class UnityExtensions
     public static T GetOrAddComponent<T>(this GameObject parent) where T : Component
     {
         var component = parent.GetComponent<T>();
-        if (component == null)
-        {
-            component = parent.AddComponent<T>();
-        }
-        return component;
+        return component != null ? component : parent.AddComponent<T>();
     }
 
     public static T CreateGameObjectAndComponent<T>(string name, bool isDontDestroyOnLoad) where T : Component
     {
-        var parent = GameObject.Find(name);
-        if (parent == null)
+        var parent = new GameObject(name);
+        if (isDontDestroyOnLoad)
         {
-            parent = new GameObject(name);
-            if (isDontDestroyOnLoad)
-            {
-                Object.DontDestroyOnLoad(parent);
-            }
-            return parent.AddComponent<T>();
+            Object.DontDestroyOnLoad(parent);
         }
-        return parent.GetComponent<T>();
+        return parent.AddComponent<T>();
     }
 
     #endregion
