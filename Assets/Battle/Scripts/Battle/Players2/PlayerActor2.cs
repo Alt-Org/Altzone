@@ -101,9 +101,11 @@ namespace Battle.Scripts.Battle.Players2
                 UnReachableDistance = 100,
                 Speed = 10f,
             };
-            // Setup audio listener for the player.
-            SetupAudio(this, gameCamera);
-
+            // Setup audio listener only for local player.
+            if (player.IsLocal)
+            {
+                SetupAudio(this, gameCamera);
+            }
             this.Subscribe<BallManager.ActiveTeamEvent>(OnActiveTeamEvent);
 
             Debug.Log($"Awake Done {name} shieldDistance {_shieldDistance} playerArea {playerArea}");
