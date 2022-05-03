@@ -10,7 +10,7 @@ namespace Prg.Scripts.Common.Unity
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
 #if UNITY_EDITOR
-                Debug.LogFormat("ExitGracefully");
+                Debug.Log("ExitGracefully");
                 EditorApplication.isPlaying = false;
 #endif
                 return;
