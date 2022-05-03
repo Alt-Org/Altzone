@@ -44,12 +44,13 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void OnEscapeActionPerformed(InputAction.CallbackContext ctx)
         {
-            Debug.Log($"OnEscapeActionPerformed {ctx.action}");
+            Debug.Log($"OnEscapeActionPerformed {_callback?.Method} {ctx.action}");
             _callback?.Invoke();
         }
 
         public void SetCallback(Action callback)
         {
+            Debug.Log($"SetCallback {_callback?.Method} <- {callback.Method}");
             _callback = callback;
         }
     }
