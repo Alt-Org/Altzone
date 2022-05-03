@@ -14,6 +14,26 @@ namespace UiProto.Scripts.Window
         private void Start()
         {
             var button = GetComponent<Button>();
+            if (WindowManager.Get() == null)
+            {
+                if (button.transition == Selectable.Transition.ColorTint)
+                {
+                    Debug.LogWarning($"Button is disabled: {name}", gameObject);
+                    var colors = button.colors;
+                    colors.normalColor = Color.magenta;
+                    colors.disabledColor = Color.magenta;
+                    colors.pressedColor = Color.white;
+                    colors.highlightedColor = Color.white;
+                    colors.selectedColor = Color.yellow;
+                    button.colors = colors;
+                }
+                else
+                {
+                    Debug.LogWarning($"<color=red>BAD</color> Button is disabled: {name}", gameObject);
+                }
+                enabled = false;
+                return;
+            }
             var currentWindow = WindowManager.Get().CurrentWindow.windowId;
             if (currentWindow.windowId == window.windowId)
             {
