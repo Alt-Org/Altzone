@@ -18,6 +18,14 @@ namespace UiProto.Scripts.Window
             return _Instance;
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _Instance = null;
+            WindowStack.Instance = null;
+        }
+
         [Header("Settings"), SerializeField] private WindowInstance initialWindow;
         [SerializeField] private WindowConfig config;
 

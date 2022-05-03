@@ -23,7 +23,7 @@ namespace UiProto.Scripts.Window
         }
     }
 
-    public class WindowStack : MonoBehaviour
+    internal class WindowStack : MonoBehaviour
     {
         private static WindowStack _Instance;
         private static readonly StackEntry empty = new StackEntry("", "");
@@ -42,6 +42,7 @@ namespace UiProto.Scripts.Window
                 }
                 return _Instance;
             }
+            set => _Instance = value;
         }
 
         public static bool hasWindowStack => _Instance != null;
