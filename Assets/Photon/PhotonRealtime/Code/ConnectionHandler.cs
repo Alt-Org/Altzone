@@ -75,12 +75,10 @@ namespace Photon.Realtime
 
         #if UNITY_2019_4_OR_NEWER
 
-        /// <summary>
-        /// Resets statics for Domain Reload
-        /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void StaticReset()
+        static void SubsystemRegistration()
         {
+            // Manual reset if UNITY Domain Reloading is disabled.
             AppQuits = false;
         }
 

@@ -10,7 +10,7 @@ namespace Prg.Scripts.Common.PubSub
         private static readonly Hub Hub = new Hub();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void InitializeOnLoad()
+        private static void BeforeSceneLoad()
         {
             SetEditorStatus();
         }

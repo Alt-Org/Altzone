@@ -42,7 +42,7 @@ namespace Prg.Scripts.Common.Photon
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void RuntimeInitializeOnLoadMethod()
+        private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;

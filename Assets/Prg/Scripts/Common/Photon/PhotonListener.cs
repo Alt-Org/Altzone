@@ -51,7 +51,7 @@ namespace Prg.Scripts.Common.Photon
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void InitializeOnLoad()
+        private static void BeforeSceneLoad()
         {
             SetEditorStatus();
         }

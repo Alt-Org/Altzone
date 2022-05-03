@@ -31,7 +31,7 @@ namespace Prg.Scripts.Common.Unity
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void RuntimeInitializeOnLoadMethod()
+        private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;
