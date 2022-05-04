@@ -8,6 +8,7 @@ namespace Prg.Scripts.Common.PubSub
     public static class PubSubExtensions
     {
         private static readonly Hub Hub = new Hub();
+        private static bool _isApplicationQuitting;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
@@ -20,62 +21,60 @@ namespace Prg.Scripts.Common.PubSub
         {
             void CheckHandlerCount()
             {
-                var handlerCount = Hub.handlers.Count;
-                if (handlerCount > 0)
+                if (_isApplicationQuitting)
                 {
-                    foreach (var h in Hub.handlers)
-                    {
-                        Debug.Log($"handler {h}");
-                    }
-                    Debug.LogWarning($"PubSubExtensions.HandlerCount is {handlerCount}");
+                    return;
                 }
+                var handlerCount = Hub.Handlers.Count;
+                if (handlerCount <= 0)
+                {
+                    return;
+                }
+                foreach (var h in Hub.Handlers)
+                {
+                    Debug.Log($"handler {h}");
+                }
+                Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
             }
 
-            SceneManager.sceneUnloaded += s => CheckHandlerCount();
+            _isApplicationQuitting = false;
+            Application.quitting += () => _isApplicationQuitting = true;
+            SceneManager.sceneUnloaded += _ => CheckHandlerCount();
         }
 
-        public static bool Exists<T>(this object obj)
+        public static bool Exists<T>(this object subscriber)
         {
-            foreach (var h in Hub.handlers)
-            {
-                if (Equals(h.Sender.Target, obj) &&
-                    typeof(T) == h.Type)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Hub.Exists<T>(subscriber);
         }
 
-        public static void Publish<T>(this object obj)
+        public static void Publish<T>(this object _)
         {
-            Hub.Publish(obj, default(T));
+            Hub.Publish(default(T));
         }
 
-        public static void Publish<T>(this object obj, T data)
+        public static void Publish<T>(this object _, T data)
         {
-            Hub.Publish(obj, data);
+            Hub.Publish(data);
         }
 
-        public static void Subscribe<T>(this object obj, Action<T> handler)
+        public static void Subscribe<T>(this object subscriber, Action<T> handler)
         {
-            Hub.Subscribe(obj, handler);
+            Hub.Subscribe(subscriber, handler);
         }
 
-        public static void Unsubscribe(this object obj)
+        public static void Unsubscribe(this object subscriber)
         {
-            Hub.Unsubscribe(obj);
+            Hub.Unsubscribe(subscriber);
         }
 
-        public static void Unsubscribe<T>(this object obj)
+        public static void Unsubscribe<T>(this object subscriber)
         {
-            Hub.Unsubscribe(obj, (Action<T>)null);
+            Hub.Unsubscribe(subscriber, (Action<T>)null);
         }
 
-        public static void Unsubscribe<T>(this object obj, Action<T> handler)
+        public static void Unsubscribe<T>(this object subscriber, Action<T> handler)
         {
-            Hub.Unsubscribe(obj, handler);
+            Hub.Unsubscribe(subscriber, handler);
         }
     }
 }

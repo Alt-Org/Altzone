@@ -8,18 +8,42 @@ namespace Prg.Scripts.Common.PubSub
     {
         internal class Handler
         {
-            public Delegate Action { get; set; }
-            public WeakReference Sender { get; set; }
-            public Type Type { get; set; }
+            public readonly Delegate Action;
+            public readonly WeakReference Subscriber;
+            public readonly Type Type;
+
+            public Handler(Delegate action, WeakReference subscriber, Type type)
+            {
+                Action = action;
+                Subscriber = subscriber;
+                Type = type;
+            }
 
             public override string ToString()
             {
-                return $"A={Action.Method.Name}, S={(Sender.IsAlive ? Sender.Target : "dead")}, T={Type.Name}";
+                return $"A={Action.Method.Name}, S={(Subscriber.IsAlive ? Subscriber.Target : "dead")}, T={Type.Name}";
             }
         }
 
-        private readonly object locker = new object();
-        internal readonly List<Handler> handlers = new List<Handler>();
+        private readonly object _locker = new object();
+        internal readonly List<Handler> Handlers = new List<Handler>();
+
+        public bool Exists<T>(object subscriber)
+        {
+            lock (_locker)
+            {
+                foreach (var h in Handlers)
+                {
+                    if (h.Subscriber.IsAlive &&
+                        Equals(h.Subscriber.Target, subscriber) &&
+                        typeof(T) == h.Type)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         /// Allow publishing directly onto this Hub.
@@ -28,19 +52,14 @@ namespace Prg.Scripts.Common.PubSub
         /// <param name="data"></param>
         public void Publish<T>(T data = default)
         {
-            Publish(this, data);
-        }
-
-        public void Publish<T>(object sender, T data = default)
-        {
             var handlerList = new List<Handler>();
             var handlersToRemoveList = new List<Handler>();
 
-            lock (locker)
+            lock (_locker)
             {
-                foreach (var handler in handlers)
+                foreach (var handler in Handlers)
                 {
-                    if (!handler.Sender.IsAlive)
+                    if (!handler.Subscriber.IsAlive)
                     {
                         handlersToRemoveList.Add(handler);
                     }
@@ -53,13 +72,13 @@ namespace Prg.Scripts.Common.PubSub
                 foreach (var l in handlersToRemoveList)
                 {
                     //-Debug.Log($"remove {l}");
-                    handlers.Remove(l);
+                    Handlers.Remove(l);
                 }
             }
 
             foreach (var l in handlerList)
             {
-                ((Action<T>) l.Action)(data);
+                ((Action<T>)l.Action)(data);
             }
         }
 
@@ -73,19 +92,13 @@ namespace Prg.Scripts.Common.PubSub
             Subscribe(this, handler);
         }
 
-        public void Subscribe<T>(object sender, Action<T> handler)
+        public void Subscribe<T>(object subscriber, Action<T> handler)
         {
-            var item = new Handler
-            {
-                Action = handler,
-                Sender = new WeakReference(sender),
-                Type = typeof(T)
-            };
-
-            lock (locker)
+            var item = new Handler(handler, new WeakReference(subscriber), typeof(T));
+            lock (_locker)
             {
                 //-Debug.Log($"subscribe {item}");
-                handlers.Add(item);
+                Handlers.Add(item);
             }
         }
 
@@ -97,17 +110,17 @@ namespace Prg.Scripts.Common.PubSub
             Unsubscribe(this);
         }
 
-        public void Unsubscribe(object sender)
+        public void Unsubscribe(object subscriber)
         {
-            lock (locker)
+            lock (_locker)
             {
-                var query = handlers.Where(a => !a.Sender.IsAlive ||
-                                                a.Sender.Target.Equals(sender));
+                var query = Handlers.Where(a => !a.Subscriber.IsAlive ||
+                                                a.Subscriber.Target.Equals(subscriber));
 
                 foreach (var h in query.ToList())
                 {
                     //-Debug.Log($"unsubscribe {h}");
-                    handlers.Remove(h);
+                    Handlers.Remove(h);
                 }
             }
         }
@@ -131,13 +144,13 @@ namespace Prg.Scripts.Common.PubSub
             Unsubscribe(this, handler);
         }
 
-        public void Unsubscribe<T>(object sender, Action<T> handler = null)
+        public void Unsubscribe<T>(object subscriber, Action<T> handler = null)
         {
-            lock (locker)
+            lock (_locker)
             {
-                var query = handlers
-                    .Where(a => !a.Sender.IsAlive ||
-                                a.Sender.Target.Equals(sender) && a.Type == typeof(T));
+                var query = Handlers
+                    .Where(a => !a.Subscriber.IsAlive ||
+                                (a.Subscriber.Target.Equals(subscriber) && a.Type == typeof(T)));
 
                 if (handler != null)
                 {
@@ -147,7 +160,7 @@ namespace Prg.Scripts.Common.PubSub
                 foreach (var h in query.ToList())
                 {
                     //-Debug.Log($"unsubscribe {h}");
-                    handlers.Remove(h);
+                    Handlers.Remove(h);
                 }
             }
         }
