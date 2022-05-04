@@ -93,16 +93,25 @@ namespace Editor
 
         #endregion
 
-        #region Build
+        #region Util
 
-        [MenuItem(Build + "Create Build Report", false, 10)]
-        private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
+        [MenuItem(Util + "List Used layers in Scene", false, 10)]
+        private static void ListUsedLayersInScene() => ListUsedLayers.ListUsedLayersInScene();
 
-        [MenuItem(Build + "Create Build Script", false, 11)]
-        private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
+        [MenuItem(Util + "List Used tags in Scene", false, 11)]
+        private static void ListUsedTagsInScene() => ListUsedLayers.ListUsedTagsInScene();
 
-        [MenuItem(Build + "Test Android Build Config", false, 12)]
-        private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
+        [MenuItem(Util + "List GameObjects with layer or tag in Scene", false, 12)]
+        private static void ListGameObjectsWithLayerOrTagInScene() => ListUsedLayers.ListGameObjectsWithLayerOrTagInScene();
+
+        [MenuItem(Util + "Create Project 'Standard' Folders", false, 13)]
+        private static void CreateProjectStandardFolders() => CreateStandardFolders.CreateProjectStandardFolders();
+
+        [MenuItem(Util + "Generate UnityConstants.cs", false, 14)]
+        private static void GenerateUnityConstants() => UnityConstantsGenerator.GenerateUnityConstants();
+
+        [MenuItem(Util + "Show Version Info", false, 15)]
+        private static void ShowVersionInfo() => MenuShowVersionInfo.ShowVersionInfo();
 
         #endregion
 
@@ -125,25 +134,16 @@ namespace Editor
 
         #endregion
 
-        #region Util
+        #region Build
 
-        [MenuItem(Util + "List Used layers in Scene", false, 10)]
-        private static void ListUsedLayersInScene() => ListUsedLayers.ListUsedLayersInScene();
+        [MenuItem(Build + "Create Build Report", false, 10)]
+        private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
 
-        [MenuItem(Util + "List Used tags in Scene", false, 11)]
-        private static void ListUsedTagsInScene() => ListUsedLayers.ListUsedTagsInScene();
+        [MenuItem(Build + "Create Build Script", false, 11)]
+        private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
 
-        [MenuItem(Util + "List GameObjects with layer or tag in Scene", false, 12)]
-        private static void ListGameObjectsWithLayerOrTagInScene() => ListUsedLayers.ListGameObjectsWithLayerOrTagInScene();
-
-        [MenuItem(Util + "Create Project 'Standard' Folders", false, 13)]
-        private static void CreateProjectStandardFolders() => CreateStandardFolders.CreateProjectStandardFolders();
-
-        [MenuItem(Util + "Generate UnityConstants.cs", false, 14)]
-        private static void GenerateUnityConstants() => UnityConstantsGenerator.GenerateUnityConstants();
-
-        [MenuItem(Util + "Show Version Info", false, 15)]
-        private static void ShowVersionInfo() => MenuShowVersionInfo.ShowVersionInfo();
+        [MenuItem(Build + "Test Android Build Config", false, 12)]
+        private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
 
         #endregion
 
