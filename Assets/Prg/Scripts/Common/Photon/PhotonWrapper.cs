@@ -36,7 +36,9 @@ namespace Prg.Scripts.Common.Photon
         /// <remarks>
         /// <c>NetworkClientState</c> is PeerCreated || Disconnected || ConnectedToMasterServer.
         /// </remarks>
-        public static bool IsPhotonReady => _IsPhotonReady();
+        public static bool IsPhotonReady => PhotonNetwork.NetworkClientState == ClientState.PeerCreated ||
+                                            PhotonNetwork.NetworkClientState == ClientState.Disconnected || 
+                                            PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer;
 
         public static void LoadLevel(string levelUnityName)
         {
@@ -53,11 +55,5 @@ namespace Prg.Scripts.Common.Photon
             var value = room.GetCustomProperty(key, defaultValue);
             return value;
         }
-
-        private static bool _IsPhotonReady()
-        {
-            var state = PhotonNetwork.NetworkClientState;
-            return state == ClientState.PeerCreated || state == ClientState.Disconnected || state == ClientState.ConnectedToMasterServer;
-        }
-    }
+   }
 }
