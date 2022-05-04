@@ -74,7 +74,7 @@ namespace Prg.Scripts.Common.Unity
         [SerializeField] private Vector3 _position;
         [SerializeField] private Rect _rect;
 
-        public int Index { get; private set; }
+        public readonly int Index;
 
         public Vector2 Position => _position;
 
