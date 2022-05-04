@@ -10,15 +10,19 @@ namespace Lobby.Scripts.InLobby
     {
         [SerializeField] private InLobbyView _view;
 
+        private void Awake()
+        {
+            _view.CharacterButton.onClick.AddListener(CharacterButtonOnClick);
+            _view.RoomButton.onClick.AddListener(RoomButtonOnClick);
+
+        }
+        
         private void OnEnable()
         {
             Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
             _view.Reset();
             _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
             _view.LobbyText = string.Empty;
-
-            _view.CharacterButton.onClick.AddListener(CharacterButton);
-            _view.RoomButton.onClick.AddListener(RoomButton);
 
             StartCoroutine(StartLobby());
         }
@@ -60,14 +64,14 @@ namespace Lobby.Scripts.InLobby
             ;
         }
 
-        private void CharacterButton()
+        private void CharacterButtonOnClick()
         {
-            Debug.Log("CharacterButton");
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
 
-        private void RoomButton()
+        private void RoomButtonOnClick()
         {
-            Debug.Log("RoomButton");
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
     }
 }

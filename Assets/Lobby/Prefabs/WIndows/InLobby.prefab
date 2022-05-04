@@ -839,7 +839,8 @@ GameObject:
   - component: {fileID: 2946997330590361081}
   - component: {fileID: 1341026168487592291}
   - component: {fileID: 6490520096148569441}
-  - component: {fileID: 4133692450174666293}
+  - component: {fileID: 8504121414399956319}
+  - component: {fileID: 5542946599477177701}
   m_Layer: 0
   m_Name: InLobby
   m_TagString: Untagged
@@ -892,7 +893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _view: {fileID: 1341026168487592291}
---- !u!114 &4133692450174666293
+--- !u!114 &8504121414399956319
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -901,13 +902,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2946997330590361080}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a89393718f5d1e40840af64ff1c81ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c6020764c4c4afa990739b0de8f04fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
-  _templateButton: {fileID: 2946997329709451914}
+  _roomButton: {fileID: 2946997329709451914}
   _buttonParent: {fileID: 2946997329239384765}
-  _photonRoomList: {fileID: 0}
+--- !u!114 &5542946599477177701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946997330590361080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a530ab3be754e549076c08c776b80be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _view: {fileID: 8504121414399956319}
+  _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
 --- !u!1 &2946997331089748540
 GameObject:
   m_ObjectHideFlags: 0
