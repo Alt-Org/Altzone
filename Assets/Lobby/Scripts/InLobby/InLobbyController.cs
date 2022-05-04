@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -8,31 +9,43 @@ namespace Lobby.Scripts.InLobby
     public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
-        [SerializeField] private StartLobby _startLobby;
 
-        private void Awake()
+        private void OnEnable()
         {
-            Debug.Log("Awake");
+            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
+            _view.Reset();
             _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
             _view.LobbyText = string.Empty;
 
             _view.CharacterButton.onClick.AddListener(CharacterButton);
             _view.RoomButton.onClick.AddListener(RoomButton);
+
+            StartCoroutine(StartLobby());
         }
 
-        private void OnEnable()
+        private IEnumerator StartLobby()
         {
-            _startLobby.enabled = true;
-            _view.RoomButton.interactable = false;
-            StartCoroutine(WaitForLobby());
+            var delay = new WaitForSeconds(0.1f);
+            while (!PhotonNetwork.InLobby)
+            {
+                Debug.Log($"{PhotonNetwork.NetworkClientState}");
+                if (PhotonWrapper.InRoom)
+                {
+                    PhotonLobby.LeaveRoom();
+                }
+                else if (PhotonWrapper.CanConnect)
+                {
+                    var playerData = RuntimeGameConfig.Get().PlayerDataCache;
+                    PhotonLobby.Connect(playerData.PlayerName);
+                }
+                else if (PhotonWrapper.CanJoinLobby)
+                {
+                    PhotonLobby.JoinLobby();
+                }
+                yield return delay;
+            }
+            _view.EnableButtons();
         }
-
-        private IEnumerator WaitForLobby()
-        {
-            yield return new WaitUntil(() => PhotonNetwork.InLobby);
-            _view.RoomButton.interactable = true;
-        }
-
 
         private void Update()
         {

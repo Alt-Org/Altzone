@@ -22,5 +22,24 @@ namespace Lobby.Scripts.InLobby
         {
             set => _lobbyText.text = value;
         }
+
+        public void Reset()
+        {
+            _titleText.text = string.Empty;
+            _lobbyText.text = string.Empty;
+            DisableButtons();
+        }
+
+        private void DisableButtons()
+        {
+            CharacterButton.interactable = false;
+            RoomButton.interactable = false;
+        }
+
+        public void EnableButtons()
+        {
+            CharacterButton.interactable = true;
+            RoomButton.interactable = true;
+        }
     }
 }
