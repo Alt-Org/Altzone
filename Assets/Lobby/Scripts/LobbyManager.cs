@@ -14,7 +14,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 namespace Lobby.Scripts
 {
     /// <summary>
-    /// Manages local player position and setup in a room and controls which level is loaded next.
+    /// Manages local player position and setup in a room.
     /// </summary>
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
@@ -29,7 +29,6 @@ namespace Lobby.Scripts
         private const int PlayerPosition3 = PhotonBattle.PlayerPosition3;
         private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
-        private const int StartPlayingEvent = PhotonBattle.StartPlayingEvent;
 
         [SerializeField] private WindowDef _lobbyWindow;
         [SerializeField] private WindowDef _gameWindow;
@@ -38,6 +37,7 @@ namespace Lobby.Scripts
         {
             base.OnEnable();
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
+            this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
         }
 
         public override void OnDisable()
@@ -61,14 +61,15 @@ namespace Lobby.Scripts
         private void OnPlayerPosEvent(PlayerPosEvent data)
         {
             Debug.Log($"onEvent {data}");
-            if (data.PlayerPosition == StartPlayingEvent)
-            {
-                StartCoroutine(StartTheGameplay(_gameWindow));
-                return;
-            }
             SetPlayer(PhotonNetwork.LocalPlayer, data.PlayerPosition);
         }
 
+        private void OnStartPlayingEvent(StartPlayingEvent data)
+        {
+            Debug.Log($"onEvent {data}");
+            StartCoroutine(StartTheGameplay(_gameWindow));
+        }
+        
         private static IEnumerator StartTheGameplay(WindowDef gameWindow)
         {
             Debug.Log($"startTheGameplay {gameWindow}");
@@ -86,7 +87,7 @@ namespace Lobby.Scripts
             foreach (var player in players)
             {
                 var curValue = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (curValue >= PlayerPosition1 && curValue <= PlayerPosition4 || curValue == PlayerPositionSpectator)
+                if (curValue is >= PlayerPosition1 and <= PlayerPosition4 or PlayerPositionSpectator)
                 {
                     continue;
                 }
@@ -149,6 +150,11 @@ namespace Lobby.Scripts
             {
                 return $"{nameof(PlayerPosition)}: {PlayerPosition}";
             }
+        }
+        
+        public class StartPlayingEvent
+        {
+            
         }
     }
 }

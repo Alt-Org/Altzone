@@ -35,8 +35,8 @@ namespace Lobby.Scripts.InRoom
 
         private void StartPlaying()
         {
-            Debug.Log($"startPlaying {PhotonBattle.StartPlayingEvent}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.StartPlayingEvent));
+            Debug.Log($"startPlaying");
+            this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
         /// <summary>
