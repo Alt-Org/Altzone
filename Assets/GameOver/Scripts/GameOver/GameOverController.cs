@@ -2,6 +2,8 @@
 using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity.Window;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 
 namespace GameOver.Scripts.GameOver
@@ -11,6 +13,7 @@ namespace GameOver.Scripts.GameOver
         private const float DefaultTimeout = 2.0f;
 
         [SerializeField] private GameOverView _view;
+        [SerializeField] private WindowDef _gameWindow;
         [SerializeField] private float _timeOutDelay;
         [SerializeField] private bool _isDebugKeepRoomOpen;
 
@@ -37,6 +40,7 @@ namespace GameOver.Scripts.GameOver
             {
                 _timeOutDelay = DefaultTimeout;
             }
+            _view.RestartButton.onClick.AddListener(RestartButtonClick);
             Debug.Log($"OnEnable {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             StartCoroutine(WaitForWinner());
         }
@@ -85,7 +89,7 @@ namespace GameOver.Scripts.GameOver
                 }
                 break;
             }
-            _view.ContinueButton.interactable = true;
+            _view.EnableButtons();
             if (_isDebugKeepRoomOpen && Application.platform.ToString().ToLower().EndsWith("editor"))
             {
                 // Do not leave room in Editor in order to be able see room state for debugging.
@@ -95,6 +99,12 @@ namespace GameOver.Scripts.GameOver
             {
                 PhotonNetwork.LeaveRoom();
             }
+        }
+
+        private void RestartButtonClick()
+        {
+            Debug.Log($"RestartButtonClick {_gameWindow}");
+            WindowManager.Get().ShowWindow(_gameWindow);
         }
     }
 }
