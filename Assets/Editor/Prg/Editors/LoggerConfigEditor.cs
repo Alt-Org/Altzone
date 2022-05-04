@@ -9,7 +9,14 @@ namespace Editor.Prg.Editors
     [CustomEditor(typeof(LoggerConfig))]
     public class LoggerConfigEditor : UnityEditor.Editor
     {
-        private static readonly string[] ExcludedFolders =
+        private static readonly string[] RulesForReset =
+        {
+            ".*PhotonListener.*=1",
+            ".*SceneLoader.*=1",
+            ".*ScoreFlash.*=0",
+        };
+
+        private static readonly string[] ExcludedFoldersForReset =
         {
             "Assets/Photon",
             "Assets/TextMesh Pro",
@@ -23,7 +30,7 @@ namespace Editor.Prg.Editors
                 DrawDefaultInspector();
                 return;
             }
-            if (GUILayout.Button("Create Default Config"))
+            if (GUILayout.Button("Reset Folders for Logger Rules"))
             {
                 serializedObject.Update();
                 UpdateState(serializedObject);
@@ -36,26 +43,28 @@ namespace Editor.Prg.Editors
         private static void UpdateState(SerializedObject serializedObject)
         {
             var loggerRules = serializedObject.FindProperty("_loggerRules");
-            var curValue = loggerRules.stringValue;
-            var newValue = LoadAssetFolders();
-            loggerRules.stringValue = newValue;
+            loggerRules.stringValue = LoadAssetFolders();
         }
 
         private static string LoadAssetFolders()
         {
             var folders = AssetDatabase.GetSubFolders("Assets");
             var builder = new StringBuilder();
-            builder.Append(".*PhotonListener.*=1");
+            foreach (var defaultRule in RulesForReset)
+            {
+                builder.Append(defaultRule).AppendLine();
+            }
             foreach (var folder in folders)
             {
-                if (ExcludedFolders.Contains(folder))
+                if (ExcludedFoldersForReset.Contains(folder))
                 {
                     continue;
                 }
                 var line = folder.Replace("Assets/", "^");
                 line += ".*=0";
-                builder.AppendLine().Append(line);
+                builder.Append(line).AppendLine();
             }
+            builder.Append("^.*=0");
             return builder.ToString();
         }
     }

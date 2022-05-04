@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
   _isLogToFile: 0
-  _colorForClassName: 
+  _isShowMethodName: 1
+  _colorForClassName: White
   _loggerRules: '.*PhotonListener.*=1
+
+    .*SceneLoader.*=1
+
+    .*ScoreFlash.*=0
 
     ^Altzone.*=0
 
@@ -22,10 +27,16 @@ MonoBehaviour:
 
     ^Editor.*=0
 
+    ^GameOver.*=0
+
     ^Lobby.*=0
 
     ^MainMenu.*=0
 
     ^Prg.*=0
 
-    ^Scripts.*=0'
+    ^Scripts.*=0
+
+    ^UiProto.*=0
+
+    ^.*=0'

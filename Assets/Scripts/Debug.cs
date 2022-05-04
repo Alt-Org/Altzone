@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -56,6 +57,7 @@ public static class Debug
     private static bool _isClassNamePrefix;
     private static string _prefixTag;
     private static string _suffixTag;
+    private static bool _isShowMethodName;
     private static bool _isEditorHook;
 
     /// <summary>
@@ -84,22 +86,24 @@ public static class Debug
     /// https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html#ColorNames
     /// </remarks>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-    public static void SetTagsForClassName(string prefixTag, string suffixTag)
+    public static void SetTagsForClassName(string prefixTag, string suffixTag, bool isShowMethodName)
     {
         _isClassNamePrefix = true;
         _prefixTag = prefixTag;
         _suffixTag = suffixTag;
+        _isShowMethodName = isShowMethodName;
     }
 
-    public static void RemoveTagsForClassName()
+    private static void RemoveTagsForClassName()
     {
         _isClassNamePrefix = false;
         _prefixTag = null;
         _suffixTag = null;
+        _isShowMethodName = false;
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-    public static void Log(string message, Object context = null)
+    public static void Log(string message, Object context = null, [CallerMemberName] string memberName = null)
     {
         var frame = new StackFrame(1);
         var method = frame.GetMethod();
@@ -109,7 +113,8 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.Log($"{Time.frameCount % 1000} {GetPrefix(method)}{message}", context);
+            var prefix = GetPrefix(method, _isShowMethodName ? memberName : null);
+            UnityEngine.Debug.Log($"{Time.frameCount % 1000} {prefix}{message}", context);
         }
     }
 
@@ -144,13 +149,19 @@ public static class Debug
         UnityEngine.Debug.LogException(exception);
     }
 
-    private static string GetPrefix(MemberInfo method)
+    private static string GetPrefix(MemberInfo method, string memberName = null)
     {
         var className = method.ReflectedType?.Name ?? nameof(Debug);
         if (className.StartsWith("<"))
         {
             // For anonymous types we try its parent type.
             className = method.ReflectedType?.DeclaringType?.Name ?? nameof(Debug);
+        }
+        if (memberName != null)
+        {
+            return _isClassNamePrefix
+                ? $"{_prefixTag}{className}.{memberName}{_suffixTag} "
+                : $"[{className}.{memberName}] ";
         }
         return _isClassNamePrefix
             ? $"{_prefixTag}{className}{_suffixTag} "

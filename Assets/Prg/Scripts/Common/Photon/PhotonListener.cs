@@ -98,20 +98,20 @@ namespace Prg.Scripts.Common.Photon
             var frame = new StackFrame(1);
             var method = frame.GetMethod();
             var methodName = method != null && method.ReflectedType != null ? method.Name : string.Empty;
-            _logMessage($"{methodName} {message}");
+            Log($"{methodName} {message}");
         }
 
         private static void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            _logMessage($"sceneLoaded {scene.name} ({scene.buildIndex})");
+            Log($"sceneLoaded {scene.name} ({scene.buildIndex})");
         }
 
         private static void SceneUnloaded(Scene scene)
         {
-            _logMessage($"sceneUnloaded {scene.name} ({scene.buildIndex})");
+            Log($"sceneUnloaded {scene.name} ({scene.buildIndex})");
         }
 
-        private static void _logMessage(string message)
+        private static void Log(string message)
         {
             var c = PhotonNetwork.IsConnectedAndReady ? "r" : PhotonNetwork.IsConnected ? "c" : "-";
             var deltaTime = PhotonNetwork.ServerTimestamp - _lastServerTimestampForLog;

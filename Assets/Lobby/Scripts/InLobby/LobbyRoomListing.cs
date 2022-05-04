@@ -59,7 +59,7 @@ namespace Lobby.Scripts.InLobby
                     ? 0
                     : string.Compare(a.Name, b.Name, StringComparison.Ordinal);
             });
-            Debug.Log($"updateStatus enter {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
+            //Debug.Log($"updateStatus enter {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
 
             // Synchronize button count with room count.
             while (_buttonParent.childCount < rooms.Count)
@@ -87,7 +87,7 @@ namespace Lobby.Scripts.InLobby
                     }
                 }
             }
-            Debug.Log($"updateStatus exit {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
+            //Debug.Log($"updateStatus exit {PhotonNetwork.NetworkClientState} buttons: {_buttonParent.childCount} rooms: {rooms.Count}");
         }
 
         private static void CreateRoomForMe()
