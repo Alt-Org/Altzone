@@ -17,10 +17,11 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            var localDevConfig = ResourceLoader.Get().LoadAsset<LocalDevConfig>(nameof(LocalDevConfig));
+            var defaultResourceLoader = ResourceLoader.Get();
+            var localDevConfig = defaultResourceLoader.LoadAsset<LocalDevConfig>(nameof(LocalDevConfig));
             LocalDevConfig.Instance = Instantiate(localDevConfig);
 
-            var folderConfig = ResourceLoader.Get().LoadAsset<FolderConfig>(nameof(FolderConfig));
+            var folderConfig = defaultResourceLoader.LoadAsset<FolderConfig>(nameof(FolderConfig));
             var resourceLoader = ResourceLoader.Get(folderConfig.primaryConfigFolder, localDevConfig.developmentConfigFolder);
 
             var loggerConfig = resourceLoader.LoadAsset<LoggerConfig>(nameof(LoggerConfig));
@@ -76,6 +77,7 @@ namespace Altzone.Scripts
     }
 #if USE_UNITY_ADS
 #else
+    // Keep compiler happy with these dummy classes for UnityEngine.Advertisements package when UNITY ADS are not in use.
     public class MetaData
     {
         public MetaData(string category)
