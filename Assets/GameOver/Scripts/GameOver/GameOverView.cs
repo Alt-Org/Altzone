@@ -8,6 +8,7 @@ namespace GameOver.Scripts.GameOver
         [SerializeField] private Text _winnerInfo1;
         [SerializeField] private Text _winnerInfo2;
         [SerializeField] private Button _continueButton;
+        [SerializeField] private Button _restartButton;
 
         public string WinnerInfo1
         {
@@ -25,9 +26,23 @@ namespace GameOver.Scripts.GameOver
         {
             _winnerInfo1.text = string.Empty;
             _winnerInfo2.text = string.Empty;
-            _continueButton.interactable = false;
+            DisableButtons();
         }
 
+        public void DisableButtons()
+        {
+            _continueButton.interactable = false;
+            _restartButton.interactable = false;
+        }
+
+        public void EnableButtons()
+        {
+            _continueButton.interactable = true;
+            _restartButton.interactable = true;
+        }
+
+
         public Button ContinueButton => _continueButton;
+        public Button RestartButton => _restartButton;
     }
 }
