@@ -2,13 +2,16 @@
 
 namespace Scenes.Clan_Planet
 {
+    /// <summary>
+    /// <c>RotatePlanet</c> is obsolete as we use new UNITY Input System package.
+    /// </summary>
     public class RotatePlanet : MonoBehaviour
     {
         public float rotationSpeed;
         public float dragSpeed;
         public float dragGuardDelay;
 
-        private float dragGuardTime;
+        /*private float dragGuardTime;
 
         private void Update()
         {
@@ -34,6 +37,6 @@ namespace Scenes.Clan_Planet
 
             transform.Rotate(Vector3.up, -angleX);
             transform.Rotate(Vector3.right, angleY);
-        }
+        }*/
     }
 }
