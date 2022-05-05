@@ -17,25 +17,6 @@ namespace Battle.Scripts.Battle.Room
     /// </summary>
     internal class RoomManager : MonoBehaviour
     {
-        private class TeamInfo
-        {
-            public readonly int Team;
-            public readonly int Score;
-            public readonly string ScoreKey;
-
-            public TeamInfo(int team, int score, string scoreKey)
-            {
-                Team = team;
-                Score = score;
-                ScoreKey = scoreKey;
-            }
-
-            public override string ToString()
-            {
-                return $"Team: {Team}, Score: {Score}";
-            }
-        }
-
         [Header("Live Data"), SerializeField] private int _requiredActorCount;
         [SerializeField] private int _currentActorCount;
         [SerializeField] private bool _isWaitForActors;
@@ -97,17 +78,11 @@ namespace Battle.Scripts.Battle.Room
 
         private void GameOver(int winningTeam, ScoreManager.GameScoreEvent data)
         {
-            var blue = new TeamInfo(PhotonBattle.TeamBlueValue, data.TeamBlueHeadScore + data.TeamBlueWallScore, PhotonBattle.TeamBlueScoreKey);
-            var red = new TeamInfo(PhotonBattle.TeamRedValue, data.TeamRedHeadScore + data.TeamRedWallScore, PhotonBattle.TeamRedScoreKey);
-            Debug.Log($"GameOver win {winningTeam} : {blue} : {red}");
+            var blueScore = data.TeamBlueHeadScore + data.TeamBlueWallScore;
+            var redScore = data.TeamRedHeadScore + data.TeamRedWallScore;
+            Debug.Log($"GameOver win {winningTeam} : blue {blueScore} : red {redScore}");
             var room = PhotonNetwork.CurrentRoom;
-            var props = new ExitGames.Client.Photon.Hashtable
-            {
-                { PhotonBattle.TeamWinKey, winningTeam },
-                { blue.ScoreKey, blue.Score },
-                { red.ScoreKey, red.Score },
-            };
-            room.SetCustomProperties(props);
+            PhotonBattle.SetRoomGameOver(room, winningTeam, blueScore, redScore);
             // Unsubscribe now to be on the safe side
             this.Unsubscribe<ScoreManager.GameScoreEvent>(OnGameScoreEvent);
 
