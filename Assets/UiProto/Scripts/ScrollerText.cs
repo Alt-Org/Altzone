@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Altzone.Scripts.Apu
@@ -26,7 +27,7 @@ namespace Altzone.Scripts.Apu
             textToScrollTransform = textToScroll.GetComponent<Transform>();
             textToScrollRectTransform = textToScroll.GetComponent<RectTransform>();
             // Get screen position once
-            getRect(GetComponent<RectTransform>(), ref screenRect);
+            GetRect(GetComponent<RectTransform>(), ref screenRect);
             startPosition = textToScrollTransform.position;
         }
 
@@ -38,31 +39,21 @@ namespace Altzone.Scripts.Apu
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            // https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/Migration.html
+            if (Mouse.current.leftButton.isPressed)
             {
                 initialDelay = Time.time + mouseDelay;
             }
             if (textHeight == 0f)
             {
-                // Text measurements must be done when text has been initialized properly by UNITY!
-                textHeight = LayoutUtility.GetPreferredHeight(textToScrollRectTransform);
-                textToScrollRectTransform.sizeDelta = new Vector2(textToScrollRectTransform.rect.width, textHeight);
-                // Create a clone so the text seems to wrap around from end
-                var clone = Instantiate(textToScroll.GetComponent<Text>());
-                var cloneRect = clone.GetComponent<RectTransform>();
-                cloneRect.SetParent(textToScrollRectTransform);
-                cloneRect.localScale = Vector3.one;
-                // Move it vertically "after" original so it seems to follow the original seamlessly.
-                var localPosition = textToScrollTransform.localPosition;
-                localPosition.y = -textHeight;
-                cloneRect.transform.localPosition = localPosition;
+                InitMeasurements();
             }
             if (Time.time < initialDelay)
             {
                 return;
             }
             // Get scroller position
-            getRect(textToScrollRectTransform, ref textRect);
+            GetRect(textToScrollRectTransform, ref textRect);
             if (textRect.Overlaps(screenRect))
             {
                 textToScrollTransform.Translate(Vector3.up * (scrollSpeed * Time.deltaTime));
@@ -77,7 +68,23 @@ namespace Altzone.Scripts.Apu
             enabled = false;
         }
 
-        private static void getRect(RectTransform rectTransform, ref Rect rect)
+        private void InitMeasurements()
+        {
+            // Text measurements must be done when text has been initialized properly by UNITY!
+            textHeight = LayoutUtility.GetPreferredHeight(textToScrollRectTransform);
+            textToScrollRectTransform.sizeDelta = new Vector2(textToScrollRectTransform.rect.width, textHeight);
+            // Create a clone so the text seems to wrap around from end
+            var clone = Instantiate(textToScroll.GetComponent<Text>());
+            var cloneRect = clone.GetComponent<RectTransform>();
+            cloneRect.SetParent(textToScrollRectTransform);
+            cloneRect.localScale = Vector3.one;
+            // Move it vertically "after" original so it seems to follow the original seamlessly.
+            var localPosition = textToScrollTransform.localPosition;
+            localPosition.y = -textHeight;
+            cloneRect.transform.localPosition = localPosition;
+        }
+        
+        private static void GetRect(RectTransform rectTransform, ref Rect rect)
         {
             // Grab the corners of the rect transform.
             rectTransform.GetWorldCorners(_worldCorners);
