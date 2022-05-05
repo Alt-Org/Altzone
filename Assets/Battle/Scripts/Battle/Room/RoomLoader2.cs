@@ -77,10 +77,6 @@ namespace Battle.Scripts.Battle.Room
                 _debugUi.SetWaitText(_debug._minPlayersToStart);
                 _debugUi.SetOnPlayClick(OnStartPlayClicked);
             }
-            else
-            {
-                _debugUi.Hide();
-            }
             Debug.Log($"Awake and create test room {PhotonNetwork.NetworkClientState}");
         }
 
@@ -290,6 +286,7 @@ namespace Battle.Scripts.Battle.Room
                 _canvas = debugUISettings._canvas;
                 _roomInfoText = debugUISettings._roomInfoText;
                 _playNowButton = debugUISettings._playNowButton;
+                Hide();
             }
 
             public void Show()
