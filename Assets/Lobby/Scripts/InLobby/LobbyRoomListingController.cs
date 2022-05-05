@@ -18,7 +18,7 @@ namespace Lobby.Scripts.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _view.RoomButton.onClick.AddListener(CreateRoom);
+            _view.RoomButtonOnClick = CreateRoom;
         }
 
         public override void OnEnable()
@@ -82,7 +82,7 @@ namespace Lobby.Scripts.InLobby
             {
                 // First open rooms by name, then closed (aka playing) rooms by name
                 var strA = $"{(a.IsOpen?0:1)}{a.Name}";
-                var strB = $"{(a.IsOpen?0:1)}{a.Name}";
+                var strB = $"{(b.IsOpen?0:1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
             _view.UpdateStatus(rooms, JoinRoom);

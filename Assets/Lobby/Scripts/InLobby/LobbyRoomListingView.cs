@@ -11,8 +11,11 @@ namespace Lobby.Scripts.InLobby
         [SerializeField] private Button _roomButton;
         [SerializeField] private Transform _buttonParent;
 
-        public Button RoomButton => _roomButton;
-        
+        public Action RoomButtonOnClick
+        {
+            set { _roomButton.onClick.AddListener(() => value()); }
+        }
+
         public void Reset()
         {
             DeleteExtraButtons(_buttonParent);
@@ -47,7 +50,7 @@ namespace Lobby.Scripts.InLobby
                 }
             }
         }
-        
+
         private static void AddButton(Transform parent, Button template)
         {
             var templateParent = template.gameObject;
