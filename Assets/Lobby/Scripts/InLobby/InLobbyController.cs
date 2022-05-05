@@ -14,16 +14,19 @@ namespace Lobby.Scripts.InLobby
         {
             _view.CharacterButton.onClick.AddListener(CharacterButtonOnClick);
             _view.RoomButton.onClick.AddListener(RoomButtonOnClick);
-
+            _view.QuickGameButton.onClick.AddListener(QuickGameButtonOnClick);
         }
-        
+
         private void OnEnable()
         {
             Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
             _view.Reset();
             _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
             _view.LobbyText = string.Empty;
-
+            if (Application.platform.ToString().ToLower().EndsWith("editor"))
+            {
+                _view.ShowDebugButtons();
+            }
             StartCoroutine(StartLobby());
         }
 
@@ -70,6 +73,11 @@ namespace Lobby.Scripts.InLobby
         }
 
         private void RoomButtonOnClick()
+        {
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+        }
+
+        private void QuickGameButtonOnClick()
         {
             Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
