@@ -124,7 +124,7 @@ namespace Lobby.Scripts
 
         public override void OnJoinedRoom()
         {
-            // PhotonNetwork.CloseConnection needs to to work across all clients!
+            // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonNetwork.EnableCloseConnection = true;
         }
 
