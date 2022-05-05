@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Model;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
@@ -17,26 +17,42 @@ namespace Battle.Scripts.Battle.Room
     /// Game room loader to establish a well known state for the room before actual gameplay starts.
     /// </summary>
     /// <remarks>
-    /// Can create a test room environment for more than one player.
+    /// Can create a test room environment for more than one player.<br />
+    /// Note that <c>RoomLoaderProduction</c> contains production code, rest is just for testing.
     /// </remarks>
     internal class RoomLoader2 : MonoBehaviourPunCallbacks
     {
-        private const string TestRoomName = "TestRoom4";
+        [Serializable]
+        internal class DebugSettings
+        {
+            public const string TestRoomName = "TestRoom4";
 
-        private const string Tooltip1 = "If Is Offline Mode only one player can play";
-        private const string Tooltip2 = "if > 1 Debug Player Pos is automatic";
+            private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
+            private const string Tooltip2 = "Player start position for single player test";
+            private const string Tooltip3 = "If 'Player Pos' > 1 then this is automatic";
+            private const string Tooltip4 = "Maybe test against bots or wall";
 
-        [Header("Settings"), SerializeField, Tooltip(Tooltip1)] private bool _isOfflineMode;
-        [SerializeField, Range(1, 4)] private int _debugPlayerPos = 1;
-        [SerializeField, Range(1, 4), Tooltip(Tooltip2)] private int _minPlayersToStart = 1;
-        [SerializeField] private bool _isFillTeamBlueFirst;
-        [SerializeField] private GameObject[] _objectsToActivate;
+            [Tooltip(Tooltip1)] public bool _isOfflineMode;
+            [Tooltip(Tooltip2), Range(1, 4)] public int _playerPos = 1;
+            [Range(1, 4), Tooltip(Tooltip3)] public int _minPlayersToStart = 1;
+            [Tooltip(Tooltip4)] public bool _isFillTeamBlueFirst;
+            public int _currentPlayersInRoom;
+        }
 
-        [Header("UI Settings"), SerializeField] private UISettings _uiSettings;
+        [Serializable]
+        internal class DebugUISettings
+        {
+            public Canvas _canvas;
+            public TMP_Text _roomInfoText;
+            public Button _playNowButton;
+        }
 
-        [Header("Live Data"), SerializeField] private int _currentPlayersInRoom;
+        [Header("Settings"), SerializeField] private GameObject[] _objectsToActivate;
 
-        private RoomLoaderUi _ui;
+        [SerializeField, Header("Debug Settings")] private DebugSettings _debug;
+        [SerializeField] private DebugUISettings _debugUISettings;
+
+        private RoomLoaderDebugUi _debugUi;
 
         private void Awake()
         {
@@ -47,23 +63,19 @@ namespace Battle.Scripts.Battle.Room
                 enabled = false;
                 return;
             }
-            _ui = new RoomLoaderUi(_uiSettings);
+            _debugUi = new RoomLoaderDebugUi(_debugUISettings);
             if (PhotonNetwork.InRoom)
             {
                 // Normal logic is that we are in a room and just do what we must do and continue.
-                ContinueToNextStage();
+                RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
                 enabled = false;
                 return;
             }
-            if (_minPlayersToStart > 1)
+            if (_debug._minPlayersToStart > 1)
             {
-                _ui.Show();
-                _ui.SetWaitText(_minPlayersToStart);
-                _ui.SetOnPlayClick(OnStartPlayClicked);
-            }
-            else
-            {
-                _ui.Hide();
+                _debugUi.Show();
+                _debugUi.SetWaitText(_debug._minPlayersToStart);
+                _debugUi.SetOnPlayClick(OnStartPlayClicked);
             }
             Debug.Log($"Awake and create test room {PhotonNetwork.NetworkClientState}");
         }
@@ -79,13 +91,13 @@ namespace Battle.Scripts.Battle.Room
                 throw new UnityException($"OnEnable: invalid connection state {PhotonNetwork.NetworkClientState}");
             }
             var playerName = PhotonBattle.GetLocalPlayerName();
-            Debug.Log($"connect {PhotonNetwork.NetworkClientState} isOfflineMode {_isOfflineMode} player {playerName}");
-            PhotonNetwork.OfflineMode = _isOfflineMode;
+            Debug.Log($"connect {PhotonNetwork.NetworkClientState} isOfflineMode {_debug._isOfflineMode} player {playerName}");
+            PhotonNetwork.OfflineMode = _debug._isOfflineMode;
             PhotonNetwork.NickName = playerName;
-            if (_isOfflineMode)
+            if (_debug._isOfflineMode)
             {
                 // JoinRandomRoom -> OnJoinedRoom -> WaitForPlayersToArrive -> ContinueToNextStage
-                _minPlayersToStart = 1;
+                _debug._minPlayersToStart = 1;
                 PhotonNetwork.JoinRandomRoom();
             }
             else if (state == ClientState.ConnectedToMasterServer)
@@ -117,39 +129,28 @@ namespace Battle.Scripts.Battle.Room
             StopAllCoroutines();
             if (!PhotonNetwork.InRoom)
             {
-                _ui.SetErrorMessage("Not in room");
+                _debugUi.SetErrorMessage("Not in room");
                 return;
             }
             var player = PhotonNetwork.LocalPlayer;
             var playerPos = PhotonBattle.GetPlayerPos(player);
             if (!PhotonBattle.IsValidPlayerPos(playerPos))
             {
-                _ui.SetErrorMessage("Invalid player");
+                _debugUi.SetErrorMessage("Invalid player");
                 PhotonNetwork.LeaveRoom();
                 return;
             }
-            _ui.Hide();
+            _debugUi.Hide();
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
             {
                 PhotonLobby.CloseRoom(true);
             }
-            // Enable game objects when this room stage is ready to play
-            StartCoroutine(ActivateObjects(_objectsToActivate));
-        }
-
-        private static IEnumerator ActivateObjects(GameObject[] objectsToActivate)
-        {
-            // Enable game objects one per frame in array sequence
-            for (var i = 0; i < objectsToActivate.LongLength; i++)
-            {
-                yield return null;
-                objectsToActivate[i].SetActive(true);
-            }
+            RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
         }
 
         public override void OnConnectedToMaster()
         {
-            if (!_isOfflineMode)
+            if (!_debug._isOfflineMode)
             {
                 Debug.Log($"joinLobby {PhotonNetwork.NetworkClientState}");
                 PhotonLobby.JoinLobby();
@@ -159,18 +160,18 @@ namespace Battle.Scripts.Battle.Room
         public override void OnJoinedLobby()
         {
             Debug.Log($"createRoom {PhotonNetwork.NetworkClientState}");
-            PhotonLobby.JoinOrCreateRoom(TestRoomName);
+            PhotonLobby.JoinOrCreateRoom(DebugSettings.TestRoomName);
         }
 
         public override void OnJoinedRoom()
         {
             int GetPlayerPosFromPlayerCount(int playerCount)
             {
-                if (_minPlayersToStart == 1)
+                if (_debug._minPlayersToStart == 1)
                 {
-                    return _debugPlayerPos;
+                    return _debug._playerPos;
                 }
-                if (_isFillTeamBlueFirst)
+                if (_debug._isFillTeamBlueFirst)
                 {
                     // Shield visibility testing needs two players on same team.
                     return PhotonBattle.PlayerPosition1 + playerCount - 1;
@@ -193,15 +194,11 @@ namespace Battle.Scripts.Battle.Room
             }
 
             var room = PhotonNetwork.CurrentRoom;
-            _debugPlayerPos = GetPlayerPosFromPlayerCount(room.PlayerCount);
+            _debug._playerPos = GetPlayerPosFromPlayerCount(room.PlayerCount);
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
-            var playerMainSkill = (int)Defence.Deflection;
-            player.SetCustomProperties(new Hashtable
-            {
-                { PhotonBattle.PlayerPositionKey, _debugPlayerPos },
-                { PhotonBattle.PlayerMainSkillKey, playerMainSkill }
-            });
+            var playerMainSkill = RuntimeGameConfig.Get().PlayerDataCache.CharacterModel.Defence;
+            PhotonBattle.SetDebugPlayerProps(player, _debug._playerPos, playerMainSkill);
             Debug.Log($"OnJoinedRoom {player.GetDebugLabel()}");
             StartCoroutine(WaitForPlayersToArrive());
         }
@@ -220,7 +217,7 @@ namespace Battle.Scripts.Battle.Room
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"OnJoinRoomFailed {returnCode} {message}");
-            _ui.SetErrorMessage(message);
+            _debugUi.SetErrorMessage(message);
         }
 
         private IEnumerator WaitForPlayersToArrive()
@@ -236,45 +233,60 @@ namespace Battle.Scripts.Battle.Room
                 {
                     return true;
                 }
-                _currentPlayersInRoom = PhotonBattle.CountRealPlayers();
-                _ui.SetWaitText(_minPlayersToStart - _currentPlayersInRoom);
-                return _currentPlayersInRoom >= _minPlayersToStart;
+                _debug._currentPlayersInRoom = PhotonBattle.CountRealPlayers();
+                _debugUi.SetWaitText(_debug._minPlayersToStart - _debug._currentPlayersInRoom);
+                return _debug._currentPlayersInRoom >= _debug._minPlayersToStart;
             }
 
             if (PhotonNetwork.IsMasterClient)
             {
-                _ui.EnableButton();
+                _debugUi.EnableButtons();
             }
             else
             {
-                _ui.HideButton();
+                _debugUi.HideButtons();
             }
-            StartCoroutine(_ui.Blink(0.6f, 0.3f));
+            StartCoroutine(_debugUi.Blink(0.6f, 0.3f));
             yield return new WaitUntil(CanContinueToNextStage);
             ContinueToNextStage();
         }
 
-        [Serializable]
-        internal class UISettings
+        private static class RoomLoaderProduction
         {
-            public Canvas _canvas;
-            public TMP_Text _roomInfoText;
-            public Button _playNowButton;
+            public static void ContinueToNextStage(MonoBehaviour host, GameObject[] objectsToActivate)
+            {
+                // Enable game objects when this room stage is ready to play
+                host.StartCoroutine(ActivateObjects(objectsToActivate));
+            }
+
+            private static IEnumerator ActivateObjects(GameObject[] objectsToActivate)
+            {
+                // Enable game objects one per frame in array sequence
+                for (var i = 0; i < objectsToActivate.LongLength; i++)
+                {
+                    yield return null;
+                    objectsToActivate[i].SetActive(true);
+                }
+            }
         }
 
-        private class RoomLoaderUi
+        /// <summary>
+        /// Helper class for debug UI without null checking all the time for our caller.
+        /// </summary>
+        private class RoomLoaderDebugUi
         {
             private readonly bool _isValid;
             private readonly Canvas _canvas;
             private readonly TMP_Text _roomInfoText;
             private readonly Button _playNowButton;
 
-            public RoomLoaderUi(UISettings uiSettings)
+            public RoomLoaderDebugUi(DebugUISettings debugUISettings)
             {
-                _isValid = uiSettings._canvas != null;
-                _canvas = uiSettings._canvas;
-                _roomInfoText = uiSettings._roomInfoText;
-                _playNowButton = uiSettings._playNowButton;
+                _isValid = debugUISettings._canvas != null;
+                _canvas = debugUISettings._canvas;
+                _roomInfoText = debugUISettings._roomInfoText;
+                _playNowButton = debugUISettings._playNowButton;
+                Hide();
             }
 
             public void Show()
@@ -296,7 +308,7 @@ namespace Battle.Scripts.Battle.Room
                 _canvas.gameObject.SetActive(false);
             }
 
-            public void EnableButton()
+            public void EnableButtons()
             {
                 if (!_isValid)
                 {
@@ -305,16 +317,7 @@ namespace Battle.Scripts.Battle.Room
                 _playNowButton.interactable = true;
             }
 
-            public void DisableButton()
-            {
-                if (!_isValid)
-                {
-                    return;
-                }
-                _playNowButton.interactable = false;
-            }
-
-            public void HideButton()
+            public void HideButtons()
             {
                 if (!_isValid)
                 {

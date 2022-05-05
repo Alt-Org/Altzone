@@ -45,8 +45,6 @@ namespace Altzone.Scripts.Battle
         public const int TeamBlueValue = 1;
         public const int TeamRedValue = 2;
 
-        public const int StartPlayingEvent = 123;
-
         public static bool IsRealPlayer(Player player)
         {
             var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);

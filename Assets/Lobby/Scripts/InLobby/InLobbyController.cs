@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -8,31 +9,50 @@ namespace Lobby.Scripts.InLobby
     public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
-        [SerializeField] private StartLobby _startLobby;
 
         private void Awake()
         {
-            Debug.Log("Awake");
-            _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
-            _view.LobbyText = string.Empty;
-
-            _view.CharacterButton.onClick.AddListener(CharacterButton);
-            _view.RoomButton.onClick.AddListener(RoomButton);
+            _view.CharacterButton.onClick.AddListener(CharacterButtonOnClick);
+            _view.RoomButton.onClick.AddListener(RoomButtonOnClick);
+            _view.QuickGameButton.onClick.AddListener(QuickGameButtonOnClick);
         }
 
         private void OnEnable()
         {
-            _startLobby.enabled = true;
-            _view.RoomButton.interactable = false;
-            StartCoroutine(WaitForLobby());
+            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
+            _view.Reset();
+            _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
+            _view.LobbyText = string.Empty;
+            if (Application.platform.ToString().ToLower().EndsWith("editor"))
+            {
+                _view.ShowDebugButtons();
+            }
+            StartCoroutine(StartLobby());
         }
 
-        private IEnumerator WaitForLobby()
+        private IEnumerator StartLobby()
         {
-            yield return new WaitUntil(() => PhotonNetwork.InLobby);
-            _view.RoomButton.interactable = true;
+            var delay = new WaitForSeconds(0.1f);
+            while (!PhotonNetwork.InLobby)
+            {
+                Debug.Log($"{PhotonNetwork.NetworkClientState}");
+                if (PhotonWrapper.InRoom)
+                {
+                    PhotonLobby.LeaveRoom();
+                }
+                else if (PhotonWrapper.CanConnect)
+                {
+                    var playerData = RuntimeGameConfig.Get().PlayerDataCache;
+                    PhotonLobby.Connect(playerData.PlayerName);
+                }
+                else if (PhotonWrapper.CanJoinLobby)
+                {
+                    PhotonLobby.JoinLobby();
+                }
+                yield return delay;
+            }
+            _view.EnableButtons();
         }
-
 
         private void Update()
         {
@@ -47,14 +67,19 @@ namespace Lobby.Scripts.InLobby
             ;
         }
 
-        private void CharacterButton()
+        private void CharacterButtonOnClick()
         {
-            Debug.Log("CharacterButton");
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
 
-        private void RoomButton()
+        private void RoomButtonOnClick()
         {
-            Debug.Log("RoomButton");
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+        }
+
+        private void QuickGameButtonOnClick()
+        {
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
     }
 }
