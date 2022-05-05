@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Model;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
@@ -17,7 +17,8 @@ namespace Battle.Scripts.Battle.Room
     /// Game room loader to establish a well known state for the room before actual gameplay starts.
     /// </summary>
     /// <remarks>
-    /// Can create a test room environment for more than one player.
+    /// Can create a test room environment for more than one player.<br />
+    /// Note that <c>RoomLoaderProduction</c> contains production code, rest is just for testing.
     /// </remarks>
     internal class RoomLoader2 : MonoBehaviourPunCallbacks
     {
@@ -35,6 +36,7 @@ namespace Battle.Scripts.Battle.Room
             [Tooltip(Tooltip2), Range(1, 4)] public int _playerPos = 1;
             [Range(1, 4), Tooltip(Tooltip3)] public int _minPlayersToStart = 1;
             [Tooltip(Tooltip4)] public bool _isFillTeamBlueFirst;
+            public int _currentPlayersInRoom;
         }
 
         [Serializable]
@@ -46,8 +48,6 @@ namespace Battle.Scripts.Battle.Room
         }
 
         [Header("Settings"), SerializeField] private GameObject[] _objectsToActivate;
-
-        [Header("Live Data"), SerializeField] private int _currentPlayersInRoom;
 
         [SerializeField, Header("Debug Settings")] private DebugSettings _debug;
         [SerializeField] private DebugUISettings _debugUISettings;
@@ -67,7 +67,7 @@ namespace Battle.Scripts.Battle.Room
             if (PhotonNetwork.InRoom)
             {
                 // Normal logic is that we are in a room and just do what we must do and continue.
-                ContinueToNextStage();
+                RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
                 enabled = false;
                 return;
             }
@@ -149,18 +149,7 @@ namespace Battle.Scripts.Battle.Room
             {
                 PhotonLobby.CloseRoom(true);
             }
-            // Enable game objects when this room stage is ready to play
-            StartCoroutine(ActivateObjects(_objectsToActivate));
-        }
-
-        private static IEnumerator ActivateObjects(GameObject[] objectsToActivate)
-        {
-            // Enable game objects one per frame in array sequence
-            for (var i = 0; i < objectsToActivate.LongLength; i++)
-            {
-                yield return null;
-                objectsToActivate[i].SetActive(true);
-            }
+            RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
         }
 
         public override void OnConnectedToMaster()
@@ -212,12 +201,8 @@ namespace Battle.Scripts.Battle.Room
             _debug._playerPos = GetPlayerPosFromPlayerCount(room.PlayerCount);
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
-            var playerMainSkill = (int)Defence.Deflection;
-            player.SetCustomProperties(new Hashtable
-            {
-                { PhotonBattle.PlayerPositionKey, _debug._playerPos },
-                { PhotonBattle.PlayerMainSkillKey, playerMainSkill }
-            });
+            var playerMainSkill = RuntimeGameConfig.Get().PlayerDataCache.CharacterModel.Defence;
+            PhotonBattle.SetDebugPlayerProps(player, _debug._playerPos, playerMainSkill);
             Debug.Log($"OnJoinedRoom {player.GetDebugLabel()}");
             StartCoroutine(WaitForPlayersToArrive());
         }
@@ -252,9 +237,9 @@ namespace Battle.Scripts.Battle.Room
                 {
                     return true;
                 }
-                _currentPlayersInRoom = PhotonBattle.CountRealPlayers();
-                _debugUi.SetWaitText(_debug._minPlayersToStart - _currentPlayersInRoom);
-                return _currentPlayersInRoom >= _debug._minPlayersToStart;
+                _debug._currentPlayersInRoom = PhotonBattle.CountRealPlayers();
+                _debugUi.SetWaitText(_debug._minPlayersToStart - _debug._currentPlayersInRoom);
+                return _debug._currentPlayersInRoom >= _debug._minPlayersToStart;
             }
 
             if (PhotonNetwork.IsMasterClient)
@@ -268,6 +253,25 @@ namespace Battle.Scripts.Battle.Room
             StartCoroutine(_debugUi.Blink(0.6f, 0.3f));
             yield return new WaitUntil(CanContinueToNextStage);
             ContinueToNextStage();
+        }
+
+        private static class RoomLoaderProduction
+        {
+            public static void ContinueToNextStage(MonoBehaviour host, GameObject[] objectsToActivate)
+            {
+                // Enable game objects when this room stage is ready to play
+                host.StartCoroutine(ActivateObjects(objectsToActivate));
+            }
+
+            private static IEnumerator ActivateObjects(GameObject[] objectsToActivate)
+            {
+                // Enable game objects one per frame in array sequence
+                for (var i = 0; i < objectsToActivate.LongLength; i++)
+                {
+                    yield return null;
+                    objectsToActivate[i].SetActive(true);
+                }
+            }
         }
 
         /// <summary>
@@ -314,15 +318,6 @@ namespace Battle.Scripts.Battle.Room
                     return;
                 }
                 _playNowButton.interactable = true;
-            }
-
-            public void DisableButtons()
-            {
-                if (!_isValid)
-                {
-                    return;
-                }
-                _playNowButton.interactable = false;
             }
 
             public void HideButtons()
