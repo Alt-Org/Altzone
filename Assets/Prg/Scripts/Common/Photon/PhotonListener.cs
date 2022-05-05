@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -93,12 +94,9 @@ namespace Prg.Scripts.Common.Photon
             Debug.Log("OnApplicationQuit");
         }
 
-        private static void LogPhotonStatus(string message = null)
+        private static void LogPhotonStatus(string message = null, [CallerMemberName] string memberName = null)
         {
-            var frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var methodName = method != null && method.ReflectedType != null ? method.Name : string.Empty;
-            Log($"{methodName} {message}");
+            Log($"{memberName} {message}");
         }
 
         private static void SceneLoaded(Scene scene, LoadSceneMode mode)
@@ -177,7 +175,7 @@ namespace Prg.Scripts.Common.Photon
             LogPhotonStatus($"#{data.Count}");
             foreach (var entry in data)
             {
-                Debug.LogFormat("+ data:{0}={1}", entry.Key, entry.Value);
+                LogPhotonStatus($"+ data:{entry.Key}={entry.Value}");
             }
         }
 
@@ -205,7 +203,7 @@ namespace Prg.Scripts.Common.Photon
             LogPhotonStatus($"#{roomList.Count}");
             foreach (var roomInfo in roomList)
             {
-                Debug.LogFormat("+ {0}", roomInfo.GetDebugLabel());
+                Debug.Log($"+ {roomInfo.GetDebugLabel()}");
             }
         }
 
@@ -214,7 +212,7 @@ namespace Prg.Scripts.Common.Photon
             LogPhotonStatus($"#{lobbyStatistics.Count}");
             foreach (var lobbyInfo in lobbyStatistics)
             {
-                Debug.LogFormat("+ {0}", lobbyInfo.ToString());
+                Debug.Log($"+ {lobbyInfo}");
             }
         }
 
@@ -227,7 +225,7 @@ namespace Prg.Scripts.Common.Photon
             LogPhotonStatus($"#{friendList.Count}");
             foreach (var friendInfo in friendList)
             {
-                Debug.LogFormat("+ friend {0}", friendInfo.ToString());
+                Debug.Log($"+ friend {friendInfo}");
             }
         }
 
