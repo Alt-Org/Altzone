@@ -75,7 +75,7 @@ namespace Battle.Scripts.Battle.Room
             {
                 _debugUi.Show();
                 _debugUi.SetWaitText(_debug._minPlayersToStart);
-                _debugUi.SetOnPlayClick(OnStartPlayClicked);
+                _debugUi.PlayNowButtonOnClick = OnStartPlayClicked;
             }
             Debug.Log($"Awake and create test room {PhotonNetwork.NetworkClientState}");
         }
@@ -347,13 +347,16 @@ namespace Battle.Scripts.Battle.Room
                     : $"Waiting for {playersToWait} players";
             }
 
-            public void SetOnPlayClick(Action callback)
+            public Action PlayNowButtonOnClick
             {
-                if (!_isValid)
+                set
                 {
-                    return;
+                    if (!_isValid)
+                    {
+                        return;
+                    }
+                    _playNowButton.onClick.AddListener(() => { value(); });
                 }
-                _playNowButton.onClick.AddListener(() => { callback(); });
             }
 
             public IEnumerator Blink(float visibleDuration, float hiddenDuration)
