@@ -12,9 +12,9 @@ namespace Lobby.Scripts.InLobby
 
         private void Awake()
         {
-            _view.CharacterButton.onClick.AddListener(CharacterButtonOnClick);
-            _view.RoomButton.onClick.AddListener(RoomButtonOnClick);
-            _view.QuickGameButton.onClick.AddListener(QuickGameButtonOnClick);
+            _view.CharacterButtonOnClick = CharacterButtonOnClick;
+            _view.RoomButtonOnClick = RoomButtonOnClick;
+            _view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
 
         private void OnEnable()
