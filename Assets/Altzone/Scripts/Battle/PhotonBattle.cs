@@ -156,6 +156,17 @@ namespace Altzone.Scripts.Battle
             return character;
         }
 
+        public static void SetRoomGameOver(Room room, int winningTeam, int blueScore, int redScore)
+        {
+            var props = new Hashtable
+            {
+                { TeamWinKey, winningTeam },
+                { TeamBlueScoreKey, blueScore },
+                { TeamRedScoreKey, redScore },
+            };
+            room.SetCustomProperties(props);
+        }
+
         [Conditional("UNITY_EDITOR")]
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
