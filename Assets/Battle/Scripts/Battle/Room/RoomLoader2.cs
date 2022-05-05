@@ -255,6 +255,8 @@ namespace Battle.Scripts.Battle.Room
         {
             public static void ContinueToNextStage(MonoBehaviour host, GameObject[] objectsToActivate)
             {
+                // Disable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
+                PhotonNetwork.EnableCloseConnection = false;
                 // Enable game objects when this room stage is ready to play
                 host.StartCoroutine(ActivateObjects(objectsToActivate));
             }

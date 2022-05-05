@@ -31,12 +31,14 @@ namespace Lobby.Scripts
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
         [SerializeField] private WindowDef _lobbyWindow;
+        [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private WindowDef _gameWindow;
 
         public override void OnEnable()
         {
             base.OnEnable();
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
+            this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
         }
 
@@ -64,6 +66,12 @@ namespace Lobby.Scripts
             SetPlayer(PhotonNetwork.LocalPlayer, data.PlayerPosition);
         }
 
+        private void OnStartRoomEvent(StartRoomEvent data)
+        {
+            Debug.Log($"onEvent {data}");
+            WindowManager.Get().ShowWindow(_roomWindow);
+        }
+        
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
@@ -124,7 +132,7 @@ namespace Lobby.Scripts
 
         public override void OnJoinedRoom()
         {
-            // PhotonNetwork.CloseConnection needs to to work across all clients!
+            // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonNetwork.EnableCloseConnection = true;
         }
 
@@ -152,9 +160,12 @@ namespace Lobby.Scripts
             }
         }
         
+        public class StartRoomEvent
+        {
+        }
+        
         public class StartPlayingEvent
         {
-            
         }
     }
 }

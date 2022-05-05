@@ -27,6 +27,9 @@ namespace Lobby.Scripts.InChooseModel
         {
             _buttons = leftPane.GetComponentsInChildren<Button>();
             _labels = rightPane.GetComponentsInChildren<Text>();
+            // Index 0 is not used but must be valid in order to prevent NRE at runtime.
+            // - we rely that prefab index is same as CharacterModel Id and table is setup accordingly.
+            curPrefab = prefabs[0];
         }
 
         public string Title
