@@ -1,8 +1,9 @@
-﻿using Photon.Pun;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -11,50 +12,50 @@ namespace Prg.Scripts.Common.Photon
     /// </summary>
     public class PhotonStatsWindow : MonoBehaviour
     {
-        public bool Visible;
-        public KeyCode controlKey = KeyCode.F2;
+        public bool _visible;
+        public Key _controlKey = Key.F2;
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
-        private int WindowId;
-        private Rect WindowRect;
-        private string WindowTitle;
-        private bool hasStyles;
-        private GUIStyle guiButtonStyle;
-        private GUIStyle guiLabelStyle;
+        private int _windowId;
+        private Rect _windowRect;
+        private string _windowTitle;
+        private bool _hasStyles;
+        private GUIStyle _guiButtonStyle;
+        private GUIStyle _guiLabelStyle;
 
         private void OnEnable()
         {
-            WindowId = (int)DateTime.Now.Ticks;
-            WindowRect = new Rect(0, 0, Screen.width, Screen.height);
-            WindowTitle = $"({controlKey}) Photon";
+            _windowId = (int)DateTime.Now.Ticks;
+            _windowRect = new Rect(0, 0, Screen.width, Screen.height);
+            _windowTitle = $"({_controlKey}) Photon";
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(controlKey))
+            if (Keyboard.current[_controlKey].wasPressedThisFrame)
             {
-                toggleWindowState();
+                ToggleWindowState();
             }
         }
 
-        private void toggleWindowState()
+        private void ToggleWindowState()
         {
-            Visible = !Visible;
+            _visible = !_visible;
         }
 
         private void OnGUI()
         {
-            if (!Visible)
+            if (!_visible)
             {
                 return;
             }
-            if (!hasStyles)
+            if (!_hasStyles)
             {
-                hasStyles = true;
-                guiButtonStyle = new GUIStyle(GUI.skin.button) { fontSize = 20 };
-                guiLabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 24 };
+                _hasStyles = true;
+                _guiButtonStyle = new GUIStyle(GUI.skin.button) { fontSize = 20 };
+                _guiLabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 24 };
             }
-            WindowRect = GUILayout.Window(WindowId, WindowRect, DebugWindow, WindowTitle);
+            _windowRect = GUILayout.Window(_windowId, _windowRect, DebugWindow, _windowTitle);
         }
 
         private void DebugWindow(int windowId)
@@ -78,9 +79,9 @@ namespace Prg.Scripts.Common.Photon
             {
                 label = $"Photon: {PhotonNetwork.NetworkClientState}";
             }
-            if (GUILayout.Button(label, guiButtonStyle))
+            if (GUILayout.Button(label, _guiButtonStyle))
             {
-                toggleWindowState();
+                ToggleWindowState();
             }
             if (inRoom)
             {
@@ -131,7 +132,7 @@ namespace Prg.Scripts.Common.Photon
                     label += $"AutomaticallySyncScene ";
                 }
             }
-            GUILayout.Label(label, guiLabelStyle);
+            GUILayout.Label(label, _guiLabelStyle);
         }
 
         private static readonly Dictionary<Type, string> TypeMap = new Dictionary<Type, string>()
