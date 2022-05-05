@@ -2282,19 +2282,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee610c351c9b4bde8a1e533c0fa15e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isOfflineMode: 0
-  _debugPlayerPos: 1
-  _minPlayersToStart: 4
-  _isFillTeamBlueFirst: 0
   _objectsToActivate:
   - {fileID: 577912816}
   - {fileID: 1651784406}
   - {fileID: 15747789}
-  _uiSettings:
+  _currentPlayersInRoom: 0
+  _debug:
+    _isOfflineMode: 0
+    _playerPos: 1
+    _minPlayersToStart: 4
+    _isFillTeamBlueFirst: 0
+  _debugUISettings:
     _canvas: {fileID: 1572118464}
     _roomInfoText: {fileID: 1744251392}
     _playNowButton: {fileID: 1432655194}
-  _currentPlayersInRoom: 0
 --- !u!4 &1107679312
 Transform:
   m_ObjectHideFlags: 0
