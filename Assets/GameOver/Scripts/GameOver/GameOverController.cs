@@ -23,7 +23,7 @@ namespace GameOver.Scripts.GameOver
             if (!PhotonNetwork.InRoom)
             {
                 _view.WinnerInfo1 = RichText.Yellow("Game was interrupted");
-                _view.ContinueButton.interactable = true;
+                _view.EnableButtons();
                 return;
             }
             // We disable scene sync in order to prevent Photon sending scene load events to other clients because this room is finished now.
@@ -40,7 +40,7 @@ namespace GameOver.Scripts.GameOver
             {
                 _timeOutDelay = DefaultTimeout;
             }
-            _view.RestartButton.onClick.AddListener(RestartButtonClick);
+            _view.RestartButtonOnClick = RestartButtonClick;
             Debug.Log($"OnEnable {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             StartCoroutine(WaitForWinner());
         }

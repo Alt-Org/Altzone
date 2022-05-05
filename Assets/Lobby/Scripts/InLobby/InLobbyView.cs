@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lobby.Scripts.InLobby
@@ -11,10 +12,19 @@ namespace Lobby.Scripts.InLobby
         [SerializeField] private Button _roomButton;
         [SerializeField] private Button _quickGameButton;
 
-        public Button CharacterButton => _characterButton;
-        public Button RoomButton => _roomButton;
-        public Button QuickGameButton => _quickGameButton;
-
+        public Action CharacterButtonOnClick
+        {
+            set { _characterButton.onClick.AddListener(() => value()); }
+        }
+        public Action RoomButtonOnClick
+        {
+            set { _roomButton.onClick.AddListener(() => value()); }
+        }
+        public Action QuickGameButtonOnClick
+        {
+            set { _quickGameButton.onClick.AddListener(() => value()); }
+        }
+        
         public string TitleText
         {
             set => _titleText.text = value;
@@ -29,27 +39,27 @@ namespace Lobby.Scripts.InLobby
         {
             _titleText.text = string.Empty;
             _lobbyText.text = string.Empty;
-            QuickGameButton.gameObject.SetActive(false);
+            _quickGameButton.gameObject.SetActive(false);
             DisableButtons();
         }
 
         public void ShowDebugButtons()
         {
-            QuickGameButton.gameObject.SetActive(true);
+            _quickGameButton.gameObject.SetActive(true);
         }
         
         private void DisableButtons()
         {
-            CharacterButton.interactable = false;
-            RoomButton.interactable = false;
-            QuickGameButton.interactable = false;
+            _characterButton.interactable = false;
+            _roomButton.interactable = false;
+            _quickGameButton.interactable = false;
         }
 
         public void EnableButtons()
         {
-            CharacterButton.interactable = true;
-            RoomButton.interactable = true;
-            QuickGameButton.interactable = true;
+            _characterButton.interactable = true;
+            _roomButton.interactable = true;
+            _quickGameButton.interactable = true;
         }
     }
 }

@@ -1,58 +1,100 @@
-﻿using Altzone.Scripts.Model;
+﻿using System;
+using System.Collections.Generic;
+using Altzone.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lobby.Scripts.InChooseModel
 {
     /// <summary>
-    /// Model view.
+    /// <c>CharacterModel</c> view.
     /// </summary>
     public class ModelView : MonoBehaviour
     {
-        public Text titleText;
-        public InputField playerName;
-        public Button continueButton;
+        [SerializeField] private Text titleText;
+        [SerializeField] private InputField playerName;
+        [SerializeField] private Button continueButton;
 
         [SerializeField] private Transform leftPane;
         [SerializeField] private Transform rightPane;
         [SerializeField] private GameObject[] prefabs;
         [SerializeField] private GameObject curPrefab;
 
-        private Button[] buttons;
-        private Text[] labels;
+        private Button[] _buttons;
+        private Text[] _labels;
 
         private void Awake()
         {
-            buttons = leftPane.GetComponentsInChildren<Button>();
-            labels = rightPane.GetComponentsInChildren<Text>();
+            _buttons = leftPane.GetComponentsInChildren<Button>();
+            _labels = rightPane.GetComponentsInChildren<Text>();
         }
 
-        public Button getButton(int buttonIndex)
+        public string Title
         {
-            return buttons[buttonIndex];
+            get => titleText.text;
+            set => titleText.text = value;
         }
 
-        public void hideCharacter()
+        public string PlayerName
         {
-            foreach (var label in labels)
+            get => playerName.text;
+            set => playerName.text = value;
+        }
+
+        public int CurrentCharacterId { get; private set; }
+
+        public Action ContinueButtonOnClick
+        {
+            set { continueButton.onClick.AddListener(() => value()); }
+        }
+
+        public void Reset()
+        {
+            Title = string.Empty;
+            PlayerName = string.Empty;
+            foreach (var label in _labels)
             {
-                label.text = "";
+                label.text = string.Empty;
+            }
+            foreach (var prefab in prefabs)
+            {
+                prefab.SetActive(false);
             }
         }
 
-        public void showCharacter(CharacterModel character)
+        public void SetCharacters(List<CharacterModel> characters, int currentCharacterId)
         {
-            var i = -1;
-            labels[++i].text = $"{character.Name}";
-            labels[++i].text = $"MainDefence:\r\n{character.MainDefence}";
-            labels[++i].text = $"Speed:\r\n{character.Speed}";
-            labels[++i].text = $"Resistance:\r\n{character.Resistance}";
-            labels[++i].text = $"Attack:\r\n{character.Attack}";
-            labels[++i].text = $"Defence:\r\n{character.Defence}";
-            setCharacterPrefab(character);
+            CurrentCharacterId = currentCharacterId;
+            for (var i = 0; i < characters.Count; ++i)
+            {
+                var character = characters[i];
+                var button = _buttons[i];
+                button.SetCaption(character.Name);
+                button.onClick.AddListener(() =>
+                {
+                    currentCharacterId = character.Id;
+                    ShowCharacter(character);
+                });
+                if (currentCharacterId == character.Id)
+                {
+                    ShowCharacter(character);
+                }
+            }
         }
 
-        private void setCharacterPrefab(CharacterModel character)
+        private void ShowCharacter(CharacterModel character)
+        {
+            var i = -1;
+            _labels[++i].text = $"{character.Name}";
+            _labels[++i].text = $"MainDefence:\r\n{character.MainDefence}";
+            _labels[++i].text = $"Speed:\r\n{character.Speed}";
+            _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
+            _labels[++i].text = $"Attack:\r\n{character.Attack}";
+            _labels[++i].text = $"Defence:\r\n{character.Defence}";
+            SetCharacterPrefab(character);
+        }
+
+        private void SetCharacterPrefab(CharacterModel character)
         {
             curPrefab.SetActive(false);
             curPrefab = prefabs[character.Id];

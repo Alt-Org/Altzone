@@ -8,58 +8,45 @@ using UnityEngine;
 namespace Lobby.Scripts.InChooseModel
 {
     /// <summary>
-    /// UI controller for model view.
+    /// UI controller for <c>CharacterModel</c> view.
     /// </summary>
     public class ModelController : MonoBehaviour
     {
         [SerializeField] private ModelView _view;
 
-        private int _currentCharacterId;
-
         private void Start()
         {
             Debug.Log("Start");
-            _view.titleText.text = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
+            _view.Reset();
+            _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            _view.playerName.text = playerDataCache.PlayerName;
-            _view.hideCharacter();
-            _view.continueButton.onClick.AddListener(() =>
-            {
-                Debug.Log("continueButton");
-                // Save player settings if changed before continuing!
-                if (_view.playerName.text != playerDataCache.PlayerName ||
-                    _currentCharacterId != playerDataCache.CharacterModelId)
-                {
-                    Debug.Log("player.BatchSave");
-                    playerDataCache.BatchSave(() =>
-                    {
-                        playerDataCache.PlayerName = _view.playerName.text;
-                        playerDataCache.CharacterModelId = _currentCharacterId;
-                    });
-                }
-                if (PhotonNetwork.NickName != playerDataCache.PlayerName)
-                {
-                    // Fix player name if it has been changed.
-                    PhotonNetwork.NickName = playerDataCache.PlayerName;
-                }
-            });
-            _currentCharacterId = playerDataCache.CharacterModelId;
+            _view.PlayerName = playerDataCache.PlayerName;
+            _view.ContinueButtonOnClick = ContinueButtonOnClick;
+            var currentCharacterId = playerDataCache.CharacterModelId;
             var characters = Storefront.Get().GetAllCharacterModels();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-            for (var i = 0; i < characters.Count; ++i)
+            _view.SetCharacters(characters, currentCharacterId);
+        }
+
+        private void ContinueButtonOnClick()
+        {
+            Debug.Log("click");
+            // Save player settings if changed before continuing!
+            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            if (_view.PlayerName != playerDataCache.PlayerName ||
+                _view.CurrentCharacterId != playerDataCache.CharacterModelId)
             {
-                var character = characters[i];
-                var button = _view.getButton(i);
-                button.SetCaption(character.Name);
-                button.onClick.AddListener(() =>
+                Debug.Log("player.BatchSave");
+                playerDataCache.BatchSave(() =>
                 {
-                    _currentCharacterId = character.Id;
-                    _view.showCharacter(character);
+                    playerDataCache.PlayerName = _view.PlayerName;
+                    playerDataCache.CharacterModelId = _view.CurrentCharacterId;
                 });
-                if (_currentCharacterId == character.Id)
-                {
-                    _view.showCharacter(character);
-                }
+            }
+            if (PhotonNetwork.NickName != playerDataCache.PlayerName)
+            {
+                // Fix player name if it has been changed.
+                PhotonNetwork.NickName = playerDataCache.PlayerName;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GameOver.Scripts.GameOver
@@ -22,6 +23,16 @@ namespace GameOver.Scripts.GameOver
             set => _winnerInfo2.text = value;
         }
 
+        public Action ContinueButtonOnClick
+        {
+            set { _continueButton.onClick.AddListener(() => value()); }
+        }
+
+        public Action RestartButtonOnClick
+        {
+            set { _restartButton.onClick.AddListener(() => value()); }
+        }
+
         public void Reset()
         {
             _winnerInfo1.text = string.Empty;
@@ -40,9 +51,5 @@ namespace GameOver.Scripts.GameOver
             _continueButton.interactable = true;
             _restartButton.interactable = true;
         }
-
-
-        public Button ContinueButton => _continueButton;
-        public Button RestartButton => _restartButton;
     }
 }
