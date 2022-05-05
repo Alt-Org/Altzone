@@ -2,8 +2,7 @@ using System;
 using System.Linq;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
-using Prg.Scripts.Common.Unity.Window;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
 namespace Lobby.Scripts.InLobby
@@ -11,14 +10,13 @@ namespace Lobby.Scripts.InLobby
     public class LobbyRoomListingController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private LobbyRoomListingView _view;
-        [SerializeField] private WindowDef _roomWindow;
         
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _view.RoomButtonOnClick = CreateRoom;
+            _view.RoomButtonOnClick = CreateRoomOnClick;
         }
 
         public override void OnEnable()
@@ -40,7 +38,7 @@ namespace Lobby.Scripts.InLobby
             _view.Reset();
         }
 
-        private static void CreateRoom()
+        private static void CreateRoomOnClick()
         {
             var roomName = $"Room{DateTime.Now.Second:00}";
             Debug.Log($"{roomName}");
@@ -67,7 +65,7 @@ namespace Lobby.Scripts.InLobby
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonNetwork.NickName}'");
-            WindowManager.Get().ShowWindow(_roomWindow);
+            this.Publish(new LobbyManager.StartRoomEvent());
         }
         
         private void UpdateStatus()
