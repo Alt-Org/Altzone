@@ -3,7 +3,6 @@ using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Unity.Window;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 
 namespace GameOver.Scripts.GameOver
@@ -13,27 +12,16 @@ namespace GameOver.Scripts.GameOver
         private const float DefaultTimeout = 2.0f;
 
         [SerializeField] private GameOverView _view;
-        [SerializeField] private WindowDef _gameWindow;
         [SerializeField] private float _timeOutDelay;
-        [SerializeField] private bool _isDebugKeepRoomOpen;
 
         private void OnEnable()
         {
             _view.Reset();
             if (!PhotonNetwork.InRoom)
             {
+                _view.EnableContinueButton();
                 _view.WinnerInfo1 = RichText.Yellow("Game was interrupted");
-                _view.EnableButtons();
                 return;
-            }
-            // We disable scene sync in order to prevent Photon sending scene load events to other clients because this room is finished now.
-            // - PhotonLobby should set it again if/when needed.
-            PhotonNetwork.AutomaticallySyncScene = false;
-
-            // Fix room state
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
-            {
-                //PhotonLobby.CloseRoom();
             }
             _view.WinnerInfo1 = RichText.Yellow("Checking results");
             if (_timeOutDelay == 0f)
@@ -42,16 +30,13 @@ namespace GameOver.Scripts.GameOver
             }
             _view.RestartButtonOnClick = RestartButtonClick;
             _view.ContinueButtonOnClick = ContinueButtonClick;
+            WindowManager.Get().RegisterGoBackHandlerOnce(() =>
+            {
+                CloseRoomForLobby();
+                return WindowManager.GoBackAction.Continue;
+            });
             Debug.Log($"OnEnable {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             StartCoroutine(WaitForWinner());
-        }
-
-        private void OnDisable()
-        {
-           if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
         }
 
         private IEnumerator WaitForWinner()
@@ -65,7 +50,7 @@ namespace GameOver.Scripts.GameOver
                     _view.WinnerInfo1 = RichText.Yellow("No scores found");
                     break;
                 }
-                var winnerTeam = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamWinKey, -1);
+                var winnerTeam = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamWinKey, PhotonBattle.NoTeamValue);
                 if (winnerTeam == -1)
                 {
                     yield return null;
@@ -90,24 +75,36 @@ namespace GameOver.Scripts.GameOver
                 }
                 break;
             }
-            _view.EnableButtons();
-            if (_isDebugKeepRoomOpen && Application.platform.ToString().ToLower().EndsWith("editor"))
+            _view.EnableContinueButton();
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
             {
-                // Do not leave room in Editor in order to be able see room state for debugging.
-                yield break;
+                _view.EnableRestartButton();
             }
-
         }
 
-     
         private void RestartButtonClick()
         {
-            Debug.Log($"RestartButtonClick {_gameWindow}");
-            WindowManager.Get().ShowWindow(_gameWindow);
+            Debug.Log($"click {PhotonNetwork.NetworkClientState}");
+            if (PhotonNetwork.InRoom)
+            {
+                PhotonBattle.ResetRoomScores(PhotonNetwork.CurrentRoom);
+            }
         }
 
-        private void ContinueButtonClick()
+        private static void ContinueButtonClick()
         {
+            Debug.Log($"click {PhotonNetwork.NetworkClientState}");
+            CloseRoomForLobby();
+        }
+
+        private static void CloseRoomForLobby()
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                // We disable scene sync in order to prevent Photon sending scene load events to other clients because this room is finished now.
+                // - PhotonLobby should set it automatically again if/when needed.
+                PhotonNetwork.AutomaticallySyncScene = false;
+            }
             if (PhotonNetwork.InRoom)
             {
                 PhotonNetwork.LeaveRoom();

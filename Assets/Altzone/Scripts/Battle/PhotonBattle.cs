@@ -156,7 +156,7 @@ namespace Altzone.Scripts.Battle
             return character;
         }
 
-        public static void SetRoomGameOver(Room room, int winningTeam, int blueScore, int redScore)
+        public static void SetRoomScores(Room room, int winningTeam, int blueScore, int redScore)
         {
             var props = new Hashtable
             {
@@ -167,6 +167,17 @@ namespace Altzone.Scripts.Battle
             room.SetCustomProperties(props);
         }
 
+        public static void ResetRoomScores(Room room)
+        {
+            var props = new Hashtable
+            {
+                { TeamWinKey, NoTeamValue },
+                { TeamBlueScoreKey, 0 },
+                { TeamRedScoreKey, 0 },
+            };
+            room.SetCustomProperties(props);
+        }
+        
         [Conditional("UNITY_EDITOR")]
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {

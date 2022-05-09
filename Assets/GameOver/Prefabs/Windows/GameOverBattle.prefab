@@ -215,6 +215,7 @@ MonoBehaviour:
   _winnerInfo2: {fileID: 1479789815820081459}
   _continueButton: {fileID: 5871932341164372116}
   _restartButton: {fileID: 6693932342413485338}
+  RoomOpen: 0
 --- !u!114 &207284715564931638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,7 +231,6 @@ MonoBehaviour:
   _view: {fileID: 6078231900938770628}
   _gameWindow: {fileID: 11400000, guid: ad80eddbedce5e24f843c96a9e284694, type: 2}
   _timeOutDelay: 1
-  _isDebugKeepRoomOpen: 1
 --- !u!1 &2043907499675552608
 GameObject:
   m_ObjectHideFlags: 0
