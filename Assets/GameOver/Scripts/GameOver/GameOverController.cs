@@ -51,7 +51,7 @@ namespace GameOver.Scripts.GameOver
                     break;
                 }
                 var winnerTeam = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamWinKey, PhotonBattle.NoTeamValue);
-                if (winnerTeam == -1)
+                if (winnerTeam == PhotonBattle.NoTeamValue)
                 {
                     yield return null;
                     continue;
