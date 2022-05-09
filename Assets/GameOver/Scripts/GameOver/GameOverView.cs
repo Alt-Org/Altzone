@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 namespace GameOver.Scripts.GameOver
 {
@@ -10,6 +11,8 @@ namespace GameOver.Scripts.GameOver
         [SerializeField] private Text _winnerInfo2;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _restartButton;
+
+        public bool RoomOpen;
 
         public string WinnerInfo1
         {
@@ -31,6 +34,7 @@ namespace GameOver.Scripts.GameOver
         public Action RestartButtonOnClick
         {
             set { _restartButton.onClick.AddListener(() => value()); }
+            
         }
 
         public void Reset()
@@ -48,8 +52,24 @@ namespace GameOver.Scripts.GameOver
 
         public void EnableButtons()
         {
+
             _continueButton.interactable = true;
-            _restartButton.interactable = true;
+            if (PhotonNetwork.IsMasterClient)
+                _restartButton.interactable = true;
+            if  (!PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
+                _restartButton.interactable = true;
+
         }
+      /*  private void Start()
+        {
+            RoomOpen = false; 
+        }
+        private void Update()
+        {
+            if (!PhotonNetwork.IsMasterClient || RoomOpen == true)
+            {
+                 _restartButton.interactable = true;
+            }
+        }*/
     }
 }

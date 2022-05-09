@@ -33,7 +33,7 @@ namespace GameOver.Scripts.GameOver
             // Fix room state
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
             {
-                PhotonLobby.CloseRoom();
+                //PhotonLobby.CloseRoom();
             }
             _view.WinnerInfo1 = RichText.Yellow("Checking results");
             if (_timeOutDelay == 0f)
@@ -41,13 +41,14 @@ namespace GameOver.Scripts.GameOver
                 _timeOutDelay = DefaultTimeout;
             }
             _view.RestartButtonOnClick = RestartButtonClick;
+            _view.ContinueButtonOnClick = ContinueButtonClick;
             Debug.Log($"OnEnable {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             StartCoroutine(WaitForWinner());
         }
 
         private void OnDisable()
         {
-            if (PhotonNetwork.InRoom)
+           if (PhotonNetwork.InRoom)
             {
                 PhotonNetwork.LeaveRoom();
             }
@@ -95,16 +96,22 @@ namespace GameOver.Scripts.GameOver
                 // Do not leave room in Editor in order to be able see room state for debugging.
                 yield break;
             }
-            if (PhotonNetwork.InRoom)
-            {
-                PhotonNetwork.LeaveRoom();
-            }
+
         }
 
+     
         private void RestartButtonClick()
         {
             Debug.Log($"RestartButtonClick {_gameWindow}");
             WindowManager.Get().ShowWindow(_gameWindow);
+        }
+
+        private void ContinueButtonClick()
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                PhotonNetwork.LeaveRoom();
+            }
         }
     }
 }
