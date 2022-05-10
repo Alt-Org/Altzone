@@ -38,11 +38,13 @@ namespace GameOver.Scripts.GameOver
         public void EnableContinueButton() => _continueButton.interactable = true;
 
         public void EnableRestartButton() => _restartButton.interactable = true;
+        public void DisableRestartButton() => _restartButton.interactable = false;
 
         public void Reset()
         {
             _winnerInfo1.text = string.Empty;
             _winnerInfo2.text = string.Empty;
+
             DisableButtons();
         }
 

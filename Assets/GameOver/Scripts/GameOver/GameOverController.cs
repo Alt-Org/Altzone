@@ -80,8 +80,30 @@ namespace GameOver.Scripts.GameOver
             {
                 _view.EnableRestartButton();
             }
-        }
 
+        }
+        private void Update()
+        {
+            StartCoroutine(BusyPolling());
+        }
+        private IEnumerator BusyPolling()
+        {
+            var delay = new WaitForSeconds(0.3f);
+            var room = PhotonNetwork.CurrentRoom;
+            var playerCount = room.PlayerCount;
+            for (int i = 0; i < room.PlayerCount; i++)
+            {
+                yield return delay;
+                if (playerCount != room.PlayerCount)
+                {
+                    _view.DisableRestartButton();
+                    if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
+                        PhotonNetwork.CurrentRoom.IsOpen = false;
+                    break;
+                }
+
+            }
+        }
         private void RestartButtonClick()
         {
             Debug.Log($"click {PhotonNetwork.NetworkClientState}");
@@ -110,5 +132,6 @@ namespace GameOver.Scripts.GameOver
                 PhotonNetwork.LeaveRoom();
             }
         }
+
     }
 }
