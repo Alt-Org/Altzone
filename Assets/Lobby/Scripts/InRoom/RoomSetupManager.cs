@@ -25,8 +25,8 @@ namespace Lobby.Scripts.InRoom
         private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueKey = PhotonBattle.TeamBlueNameKey;
-        private const string TeamRedKey = PhotonBattle.TeamRedNameKey;
+        private const string TeamBlueNameKey = PhotonBattle.TeamBlueNameKey;
+        private const string TeamRedNameKey = PhotonBattle.TeamRedNameKey;
         private const int TeamBlueValue = PhotonBattle.TeamBlueValue;
         private const int TeamRedValue = PhotonBattle.TeamRedValue;
 
@@ -98,15 +98,6 @@ namespace Lobby.Scripts.InRoom
                 { PlayerPositionKey, PlayerPositionGuest },
                 { PlayerMainSkillKey, (int)defence }
             });
-            if (player.IsMasterClient)
-            {
-                room.SetCustomProperties(new Hashtable
-                {
-                    // Master client plays in Team Blue "Alpha"
-                    { TeamBlueKey, "Alpha" },
-                    { TeamRedKey, "Beta" }
-                });
-            }
             UpdateStatus();
         }
 
@@ -172,13 +163,13 @@ namespace Lobby.Scripts.InRoom
             var masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
-                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedKey)}";
-                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueKey)}";
+                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedNameKey)}";
+                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueNameKey)}";
             }
             else
             {
-                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueKey)}";
-                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedKey)}";
+                _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamBlueNameKey)}";
+                _lowerTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedNameKey)}";
             }
         }
 

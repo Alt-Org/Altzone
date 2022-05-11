@@ -525,6 +525,8 @@ MonoBehaviour:
   _lobbyWindow: {fileID: 11400000, guid: 9b34626d6ff18ff4db74bce3eb3b681d, type: 2}
   _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
   _gameWindow: {fileID: 11400000, guid: ad80eddbedce5e24f843c96a9e284694, type: 2}
+  _blueTeamName: Alpha
+  _redTeamName: Beta
 --- !u!1 &1556160748
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,5 +586,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44d324d68d8342842bbe4b4f51f115f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Visible: 0
-  controlKey: 283
+  _visible: 0
+  _controlKey: 95

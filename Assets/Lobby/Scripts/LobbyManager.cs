@@ -22,17 +22,20 @@ namespace Lobby.Scripts
     public class LobbyManager : MonoBehaviourPunCallbacks
     {
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-
+        private const string PlayerCountKey = PhotonBattle.PlayerCountKey;
         private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
-        private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;
-        private const int PlayerPosition2 = PhotonBattle.PlayerPosition2;
-        private const int PlayerPosition3 = PhotonBattle.PlayerPosition3;
-        private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
+
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        [SerializeField] private WindowDef _lobbyWindow;
+        private const string TeamBlueNameKey = PhotonBattle.TeamBlueNameKey;
+        private const string TeamRedNameKey = PhotonBattle.TeamRedNameKey;
+
+        [Header("Settings"), SerializeField] private WindowDef _lobbyWindow;
         [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private WindowDef _gameWindow;
+
+        [Header("Team Names"), SerializeField] private string _blueTeamName;
+        [SerializeField] private string _redTeamName;
 
         public override void OnEnable()
         {
@@ -71,37 +74,56 @@ namespace Lobby.Scripts
             Debug.Log($"onEvent {data}");
             WindowManager.Get().ShowWindow(_roomWindow);
         }
-        
+
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_gameWindow));
+            StartCoroutine(StartTheGameplay(_gameWindow, _blueTeamName, _redTeamName));
         }
-        
-        private static IEnumerator StartTheGameplay(WindowDef gameWindow)
+
+        private static IEnumerator StartTheGameplay(WindowDef gameWindow, string blueTeamName, string redTeamName)
         {
             Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonNetwork.IsMasterClient)
             {
                 throw new UnityException("only master client can start the game");
             }
-            var masterPosition = PhotonNetwork.LocalPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (masterPosition < PlayerPosition1 || masterPosition > PlayerPosition4)
+            var player = PhotonNetwork.LocalPlayer;
+            var masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            if (!PhotonBattle.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
             // Snapshot player list before iteration because we can change it
             var players = PhotonNetwork.CurrentRoom.Players.Values.ToList();
-            foreach (var player in players)
+            var realPlayerCount = 0;
+            foreach (var roomPlayer in players)
             {
-                var curValue = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (curValue is >= PlayerPosition1 and <= PlayerPosition4 or PlayerPositionSpectator)
+                var playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                if (PhotonBattle.IsValidPlayerPos(playerPos))
+                {
+                    realPlayerCount += 1;
+                    continue;
+                }
+                if (playerPos == PlayerPositionSpectator)
                 {
                     continue;
                 }
-                Debug.Log($"Kick player (close connection) {player.GetDebugLabel()} {PlayerPositionKey}={curValue}");
-                PhotonNetwork.CloseConnection(player);
+                Debug.Log($"Kick player (close connection) @ {PlayerPositionKey}={playerPos} {roomPlayer.GetDebugLabel()}");
+                PhotonNetwork.CloseConnection(roomPlayer);
                 yield return null;
+            }
+            if (player.IsMasterClient)
+            {
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
+                Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
+                var room = PhotonNetwork.CurrentRoom;
+                room.SetCustomProperties(new Hashtable
+                {
+                    { TeamBlueNameKey, blueTeamName },
+                    { TeamRedNameKey, redTeamName },
+                    { PlayerCountKey, realPlayerCount }
+                });
             }
             WindowManager.Get().ShowWindow(gameWindow);
         }
@@ -159,11 +181,11 @@ namespace Lobby.Scripts
                 return $"{nameof(PlayerPosition)}: {PlayerPosition}";
             }
         }
-        
+
         public class StartRoomEvent
         {
         }
-        
+
         public class StartPlayingEvent
         {
         }

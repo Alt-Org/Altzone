@@ -13,7 +13,7 @@ namespace Altzone.Scripts.Battle
     public static class PhotonBattle
     {
         public const string PlayerPositionKey = "pp";
-        public const string PlayerClanKey = "pc";
+        public const string PlayerCountKey = "pc";
         public const string PlayerMainSkillKey = "mk";
         public const string TeamBlueNameKey = "tb";
         public const string TeamRedNameKey = "tr";
