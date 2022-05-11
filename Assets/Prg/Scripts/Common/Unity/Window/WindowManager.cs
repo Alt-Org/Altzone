@@ -41,23 +41,24 @@ namespace Prg.Scripts.Common.Unity.Window
 
         public static IWindowManager Get()
         {
-            var windowManager = FindObjectOfType<WindowManager>();
-            if (windowManager == null)
-            {
-                return new NoOpWindowManager();
-            }
-            return windowManager;
+            Assert.IsNotNull(_windowManager, "windowManager != null");
+            return _windowManager;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            var windowManager = FindObjectOfType<WindowManager>();
-            if (windowManager == null)
-            {
-                UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
-            }
+            _windowManager = UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
         }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _windowManager = null;
+        }
+
+        private static WindowManager _windowManager;
 
         [SerializeField] private List<MyWindow> _currentWindows;
         [SerializeField] private List<MyWindow> _knownWindows;
@@ -386,52 +387,6 @@ namespace Prg.Scripts.Common.Unity.Window
             }
             Debug.Log($"InvokeCallbacks : {goBackResult}");
             return goBackResult;
-        }
-
-        /// <summary>
-        /// No-op implementation when actual implementation is not available.
-        /// </summary>
-        /// <remarks>
-        /// This can happen during app exit.
-        /// </remarks>
-        private class NoOpWindowManager : IWindowManager
-        {
-            public void RegisterGoBackHandlerOnce(Func<GoBackAction> handler)
-            {
-                // NOP
-            }
-
-            public void UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
-            {
-                // NOP
-            }
-
-            public int WindowCount => 0;
-
-            public void GoBack()
-            {
-                // NOP
-            }
-
-            public void Unwind(WindowDef windowDef)
-            {
-                // NOP
-            }
-
-            public void ShowWindow(WindowDef windowDef)
-            {
-                // NOP
-            }
-
-            public void PopCurrentWindow()
-            {
-                // NOP
-            }
-
-            public void SetWindowsParent(GameObject windowsParent)
-            {
-                // NOP
-            }
         }
     }
 }
