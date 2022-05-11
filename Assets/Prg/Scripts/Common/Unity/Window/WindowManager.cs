@@ -58,7 +58,7 @@ namespace Prg.Scripts.Common.Unity.Window
             _windowManager = null;
         }
 
-        private static WindowManager _windowManager;
+        private static IWindowManager _windowManager;
 
         [SerializeField] private List<MyWindow> _currentWindows;
         [SerializeField] private List<MyWindow> _knownWindows;
@@ -91,6 +91,8 @@ namespace Prg.Scripts.Common.Unity.Window
 #if UNITY_EDITOR
         private void OnApplicationQuit()
         {
+            // Replace actual WindowManager with dummy so that our clients do not have to check for Application Quit themselves. 
+            _windowManager = new NoOpWindowManager();
             ResetState();
         }
 #endif
@@ -392,6 +394,54 @@ namespace Prg.Scripts.Common.Unity.Window
             }
             Debug.Log($"InvokeCallbacks : {goBackResult}");
             return goBackResult;
+        }
+
+        /// <summary>
+        /// No-op implementation when actual implementation is not available.
+        /// </summary>
+        /// <remarks>
+        /// This can happen during app exit.
+        /// </remarks>
+        private class NoOpWindowManager : IWindowManager
+        {
+            public void RegisterGoBackHandlerOnce(Func<GoBackAction> handler)
+            {
+                // NOP
+            }
+
+            public void UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
+            {
+                // NOP
+            }
+
+            public int WindowCount => 0;
+
+            public int FindIndex(WindowDef windowDef) => -1;
+
+            public void GoBack()
+            {
+                // NOP
+            }
+
+            public void Unwind(WindowDef windowDef)
+            {
+                // NOP
+            }
+
+            public void ShowWindow(WindowDef windowDef)
+            {
+                // NOP
+            }
+
+            public void PopCurrentWindow()
+            {
+                // NOP
+            }
+
+            public void SetWindowsParent(GameObject windowsParent)
+            {
+                // NOP
+            }
         }
     }
 }
