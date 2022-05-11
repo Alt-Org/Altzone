@@ -138,6 +138,11 @@ namespace Prg.Scripts.Common.Unity.Window
 
         int IWindowManager.WindowCount => _currentWindows.Count;
 
+        int IWindowManager.FindIndex(WindowDef windowDef)
+        {
+            return _currentWindows.FindIndex(x => x._windowDef == windowDef);
+        }
+
         void IWindowManager.GoBack()
         {
             Debug.Log($"GoBack count {_currentWindows.Count} handler {_goBackOnceHandler?.Count ?? -1}");

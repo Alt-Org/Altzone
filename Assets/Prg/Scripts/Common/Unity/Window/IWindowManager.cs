@@ -30,6 +30,11 @@ namespace Prg.Scripts.Common.Unity.Window
         int WindowCount { get; }
 
         /// <summary>
+        /// Finds given windows index in window stack, top most window has index value 0 and not found window -1.
+        /// </summary>
+        int FindIndex(WindowDef windowDef);
+        
+        /// <summary>
         /// Go back in window chain following bread crumbs.
         /// </summary>
         void GoBack();
