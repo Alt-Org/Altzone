@@ -20,10 +20,17 @@ namespace Prg.Scripts.Common.Unity.Window
         {
             Assert.IsNotNull(_naviTarget, "_naviTarget != null");
             var button = GetComponent<Button>();
+            var windowManager = WindowManager.Get();
+            var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
+            if (isCurrentWindow)
+            {
+                button.interactable = false;
+                return;
+            }
+            button.interactable = true;
             button.onClick.AddListener(() =>
             {
                 Debug.Log($"Click {_naviTarget}");
-                var windowManager = WindowManager.Get();
                 if (_isCurrentPopOutWindow)
                 {
                     windowManager.PopCurrentWindow();
