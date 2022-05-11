@@ -3,7 +3,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using UnityEngine;
 
-namespace MainMenu.Scripts
+namespace MenuUi.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
