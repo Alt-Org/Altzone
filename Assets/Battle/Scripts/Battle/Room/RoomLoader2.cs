@@ -75,7 +75,7 @@ namespace Battle.Scripts.Battle.Room
             {
                 _debugUi.Show();
                 _debugUi.SetWaitText(_debug._minPlayersToStart);
-                _debugUi.PlayNowButtonOnClick = OnStartPlayClicked;
+                _debugUi.PlayNowButtonOnClick = CloseRoomToStartPlay;
             }
             Debug.Log($"Awake and create test room {PhotonNetwork.NetworkClientState}");
         }
@@ -112,9 +112,9 @@ namespace Battle.Scripts.Battle.Room
             }
         }
 
-        private void OnStartPlayClicked()
+        private void CloseRoomToStartPlay()
         {
-            Debug.Log($"OnStartPlayClicked {PhotonNetwork.NetworkClientState} {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
+            Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             if (PhotonNetwork.InRoom
                 && PhotonNetwork.CurrentRoom.IsOpen
                 && PhotonNetwork.IsMasterClient)
@@ -141,10 +141,6 @@ namespace Battle.Scripts.Battle.Room
                 return;
             }
             _debugUi.Hide();
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
-            {
-                PhotonLobby.CloseRoom(true);
-            }
             RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
         }
 
@@ -210,7 +206,7 @@ namespace Battle.Scripts.Battle.Room
             if (!room.IsOpen)
             {
                 // Somebody has closed the room, we can continue as if Start button was pressed.
-                OnStartPlayClicked();
+                CloseRoomToStartPlay();
             }
         }
 
@@ -255,6 +251,10 @@ namespace Battle.Scripts.Battle.Room
         {
             public static void ContinueToNextStage(MonoBehaviour host, GameObject[] objectsToActivate)
             {
+                if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
+                {
+                    PhotonLobby.CloseRoom(true);
+                }
                 // Disable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
                 PhotonNetwork.EnableCloseConnection = false;
                 // Enable game objects when this room stage is ready to play
