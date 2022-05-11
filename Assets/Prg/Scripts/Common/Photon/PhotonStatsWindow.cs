@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.Common.Photon
@@ -25,6 +26,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnEnable()
         {
+            Assert.IsTrue(FindObjectsOfType<PhotonStatsWindow>().Length == 1, "FindObjectsOfType<PhotonStatsWindow>().Length == 1");
             _windowId = (int)DateTime.Now.Ticks;
             _windowRect = new Rect(0, 0, Screen.width, Screen.height);
             _windowTitle = $"({_controlKey}) Photon";
