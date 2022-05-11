@@ -22,6 +22,7 @@ namespace Prg.Scripts.Common.Photon
         private const int MaxServerTimeDifferenceMs = 60 * 60 * 1000;
         private const int MinServerTimeDifferenceMs = -60 * 60 * 1000;
         private static int _lastServerTimestampForLog;
+        private static string _prevMessage;
 
         private static readonly Dictionary<string, string> PhotonRoomPropNames;
         private static readonly Dictionary<string, string> PhotonPlayerPropNames;
@@ -111,6 +112,10 @@ namespace Prg.Scripts.Common.Photon
 
         private static void Log(string message)
         {
+            if (message == _prevMessage)
+            {
+                return;
+            }
             var c = PhotonNetwork.IsConnectedAndReady ? "r" : PhotonNetwork.IsConnected ? "c" : "-";
             var deltaTime = PhotonNetwork.ServerTimestamp - _lastServerTimestampForLog;
             if (deltaTime > MaxServerTimeDifferenceMs || deltaTime < MinServerTimeDifferenceMs)
@@ -120,6 +125,7 @@ namespace Prg.Scripts.Common.Photon
                 c += ">";
             }
             Debug.Log($"{c}> {PhotonNetwork.NetworkClientState} {deltaTime} {message}");
+            _prevMessage = message;
         }
 
         private static string HashtableToString(Hashtable props, IReadOnlyDictionary<string, string> keyMapping)
