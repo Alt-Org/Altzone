@@ -62,7 +62,7 @@ namespace Battle.Scripts.Battle.Photon
 
         private void OnEnable()
         {
-            Debug.Log($"OnEnable type {_componentTypeId} owner {_ownerActorNr} {name} required {_requiredComponentCount}");
+            Debug.Log($"type {_componentTypeId} owner {_ownerActorNr} {name} required {_requiredComponentCount} {_photonView.Owner.GetDebugLabel()}");
             SendMsgNetworkCreated();
             _failSafeActivationTime = Time.time + _failSafeActivationDelay;
         }
