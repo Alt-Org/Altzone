@@ -48,7 +48,7 @@ namespace Altzone.Scripts.Battle
         public static bool IsRealPlayer(Player player)
         {
             var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            return playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4;
+            return IsValidPlayerPos(playerPos);
         }
 
         public static int CountRealPlayers()
@@ -178,11 +178,10 @@ namespace Altzone.Scripts.Battle
             room.SetCustomProperties(props);
         }
         
-        [Conditional("UNITY_EDITOR")]
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
-            Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4,
-                "playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4");
+            Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
             if (playerMainSkill < (int)Defence.Desensitisation || playerMainSkill > (int)Defence.Confluence)
             {
                 // Should be fastest movement skill to have for testing.
