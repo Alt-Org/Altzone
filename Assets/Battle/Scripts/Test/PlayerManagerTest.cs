@@ -7,8 +7,9 @@ namespace Battle.Scripts.Test
 {
     public class PlayerManagerTest : MonoBehaviour
     {
-        [Header("Debug Only")] public bool _startCountdown;
-        public bool _useScoreFlash;
+        [Header("Debug Only")] public bool _useScoreFlash;
+        public bool _startCountdown;
+        public bool _startGameplay;
 
         private IPlayerManager _playerManager;
 
@@ -22,16 +23,21 @@ namespace Battle.Scripts.Test
             if (_startCountdown)
             {
                 _startCountdown = false;
-                if (_useScoreFlash)
+                Debug.Log("StartCountdown");
+                if (_useScoreFlash) ScoreFlash.Push("StartCountdown");
+                _playerManager.StartCountdown(() =>
                 {
-                    Debug.Log("StartCountdown");
-                    ScoreFlash.Push("Start Countdown");
-                    _playerManager.StartCountdown(() =>
-                    {
-                        Debug.Log("Countdown done");
-                        ScoreFlash.Push("Countdown done");
-                    });
-                }
+                    Debug.Log("Countdown done");
+                    if (_useScoreFlash) ScoreFlash.Push("StartCountdown done");
+                });
+                return;
+            }
+            if (_startGameplay)
+            {
+                _startGameplay = false;
+                Debug.Log("StartGameplay");
+                if (_useScoreFlash) ScoreFlash.Push("StartGameplay");
+                _playerManager.StartGameplay();
                 return;
             }
         }
