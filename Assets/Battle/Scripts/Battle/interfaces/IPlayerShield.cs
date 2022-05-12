@@ -1,11 +1,9 @@
-using UnityEngine;
-
 namespace Battle.Scripts.Battle.interfaces
 {
     /// <summary>
     /// Local shield management interface.
     /// </summary>
-    public interface IPlayerShield2
+    public interface IPlayerShield
     {
         bool IsVisible { get; }
         int RotationIndex { get; }
@@ -14,12 +12,5 @@ namespace Battle.Scripts.Battle.interfaces
         void SetPlayMode(int playMode);
         void SetRotation(int rotationIndex);
         void PlayHitEffects();
-    }
-
-    public interface IPlayerShield
-    {
-        void SetupShield(int playerPos, bool isLower);
-        void SetShieldState(int playMode);
-        void SetShieldRotation(int rotationIndex, Vector2 contactPoint);
     }
 }

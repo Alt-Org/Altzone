@@ -38,14 +38,14 @@ namespace Battle.Scripts.Battle.Players2
         private PhotonView _photonView;
         private Transform _transform;
         private IPlayerMovement _playerMovement;
-        private IPlayerShield2 _shield;
+        private IPlayerShield _shield;
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
         public string StateString =>
-            $"{StateNames[_state._currentMode]} {((PlayerShield2)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
+            $"{StateNames[_state._currentMode]} {((PlayerShield)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
 
         private void Awake()
         {
@@ -83,7 +83,7 @@ namespace Battle.Scripts.Battle.Players2
                 : _playerShieldFoot;
             var model = PhotonBattle.GetPlayerCharacterModel(player);
             var shieldConfig = GetLocalPlayerShield(_playerShield);
-            _shield = new PlayerShield2(shieldConfig);
+            _shield = new PlayerShield(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
             _shield.Setup(name, isShieldRotated, false, _startPlayMode, 0);
             var multiplier = runtimeGameConfig.Variables._shieldDistanceMultiplier;

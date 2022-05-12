@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players2
 {
-    internal class PlayerShield2 : IPlayerShield2
+    internal class PlayerShield : IPlayerShield
     {
         private static readonly string[] StateNames = { "Norm", "Frozen", "Ghost" };
 
@@ -23,7 +23,7 @@ namespace Battle.Scripts.Battle.Players2
 
         public string StateString => $"{(_isVisible ? "V" : "H")} R{_rotationIndex} {(_collider.enabled ? "col" : "~~~")}";
 
-        public PlayerShield2(ShieldConfig config)
+        public PlayerShield(ShieldConfig config)
         {
             _config = config;
             _shieldHitEffect = _config._shieldHitEffect;
@@ -52,25 +52,25 @@ namespace Battle.Scripts.Battle.Players2
             }
         }
 
-        void IPlayerShield2.Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex)
+        void IPlayerShield.Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex)
         {
             _shieldName = shieldName;
             _isVisible = isVisible;
             _rotationIndex = rotationIndex;
             SetupShield(isShieldRotated);
-            ((IPlayerShield2)this).SetVisibility(isVisible);
-            ((IPlayerShield2)this).SetPlayMode(playMode);
-            ((IPlayerShield2)this).SetRotation(rotationIndex);
+            ((IPlayerShield)this).SetVisibility(isVisible);
+            ((IPlayerShield)this).SetPlayMode(playMode);
+            ((IPlayerShield)this).SetRotation(rotationIndex);
         }
 
-        void IPlayerShield2.SetVisibility(bool isVisible)
+        void IPlayerShield.SetVisibility(bool isVisible)
         {
             Debug.Log($"SetVisibility {_shieldName} mode {StateNames[_playMode]} isVisible {_isVisible} <- {isVisible}");
             _isVisible = isVisible;
             _shield.SetActive(_isVisible);
         }
 
-        void IPlayerShield2.SetPlayMode(int playMode)
+        void IPlayerShield.SetPlayMode(int playMode)
         {
             _playMode = playMode;
             Debug.Log(
@@ -91,7 +91,7 @@ namespace Battle.Scripts.Battle.Players2
             _shield.SetActive(_isVisible);
         }
 
-        void IPlayerShield2.SetRotation(int rotationIndex)
+        void IPlayerShield.SetRotation(int rotationIndex)
         {
             if (rotationIndex >= _config.Shields.Length)
             {
@@ -105,7 +105,7 @@ namespace Battle.Scripts.Battle.Players2
             _shield.SetActive(_isVisible);
         }
 
-        void IPlayerShield2.PlayHitEffects()
+        void IPlayerShield.PlayHitEffects()
         {
             _shieldHitEffect.Play();
         }
