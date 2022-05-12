@@ -14,6 +14,8 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class PlayerDataCache
     {
+        protected const int DefaultModelId = (int)Defence.Introjection;
+        
         [SerializeField] protected string _playerName;
 
         /// <summary>
@@ -57,7 +59,8 @@ namespace Altzone.Scripts.Config
         /// </remarks>
         public CharacterModel CharacterModel =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
-            new CharacterModel(-1, "Ö", Defence.Desensitisation, 0, 0, 0, 0);
+            Storefront.Get().GetCharacterModel(DefaultModelId) ??
+            new CharacterModel(-1, "Ö", Defence.Desensitisation, 1, 1, 1, 1);
 
         [SerializeField] protected int _clanId;
 
@@ -173,7 +176,7 @@ namespace Altzone.Scripts.Config
             BatchSave(() =>
             {
                 PlayerName = string.Empty;
-                CharacterModelId = -1;
+                CharacterModelId = DefaultModelId;
                 ClanId = -1;
                 IsTosAccepted = false;
             });
@@ -204,7 +207,7 @@ namespace Altzone.Scripts.Config
         public PlayerDataCacheLocal()
         {
             _playerName = PlayerPrefs.GetString(PlayerNameKey, string.Empty);
-            _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, -1);
+            _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, DefaultModelId);
             _clanId = PlayerPrefs.GetInt(ClanIdKey, -1);
             _playerGuid = PlayerPrefs.GetString(PlayerGuidKey, string.Empty);
             if (string.IsNullOrWhiteSpace(PlayerGuid))
