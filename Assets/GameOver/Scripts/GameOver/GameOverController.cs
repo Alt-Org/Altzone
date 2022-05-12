@@ -58,14 +58,16 @@ namespace GameOver.Scripts.GameOver
                 }
                 var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
                 var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
+                // It is possible that we can have equal score and winning team - but that can not be true!
+                var isScoreValid = blueScore != redScore;
                 if (winnerTeam == PhotonBattle.TeamBlueValue)
                 {
-                    _view.WinnerInfo1 = RichText.Blue("Team BLUE");
+                    _view.WinnerInfo1 = isScoreValid ? RichText.Blue("Team BLUE") : RichText.Yellow("DRAW!");
                     _view.WinnerInfo2 = $"{blueScore} - {redScore}";
                 }
                 else if (winnerTeam == PhotonBattle.TeamRedValue)
                 {
-                    _view.WinnerInfo1 = RichText.Red("Team RED");
+                    _view.WinnerInfo1 = isScoreValid ? RichText.Red("Team RED") : RichText.Yellow("DRAW!");
                     _view.WinnerInfo2 = $"{redScore} - {blueScore}";
                 }
                 else
@@ -80,12 +82,13 @@ namespace GameOver.Scripts.GameOver
             {
                 _view.EnableRestartButton();
             }
-
         }
+
         private void Update()
         {
             StartCoroutine(BusyPolling());
         }
+
         private IEnumerator BusyPolling()
         {
             var delay = new WaitForSeconds(0.3f);
@@ -101,9 +104,9 @@ namespace GameOver.Scripts.GameOver
                         PhotonNetwork.CurrentRoom.IsOpen = false;
                     break;
                 }
-
             }
         }
+
         private void RestartButtonClick()
         {
             Debug.Log($"click {PhotonNetwork.NetworkClientState}");
@@ -132,6 +135,5 @@ namespace GameOver.Scripts.GameOver
                 PhotonNetwork.LeaveRoom();
             }
         }
-
     }
 }
