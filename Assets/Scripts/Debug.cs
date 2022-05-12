@@ -57,7 +57,6 @@ public static class Debug
     private static bool _isClassNamePrefix;
     private static string _prefixTag;
     private static string _suffixTag;
-    private static bool _isShowMethodName;
     private static bool _isEditorHook;
 
     /// <summary>
@@ -86,12 +85,11 @@ public static class Debug
     /// https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html#ColorNames
     /// </remarks>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-    public static void SetTagsForClassName(string prefixTag, string suffixTag, bool isShowMethodName)
+    public static void SetTagsForClassName(string prefixTag, string suffixTag)
     {
         _isClassNamePrefix = true;
         _prefixTag = prefixTag;
         _suffixTag = suffixTag;
-        _isShowMethodName = isShowMethodName;
     }
 
     private static void RemoveTagsForClassName()
@@ -99,7 +97,6 @@ public static class Debug
         _isClassNamePrefix = false;
         _prefixTag = null;
         _suffixTag = null;
-        _isShowMethodName = false;
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
@@ -113,7 +110,7 @@ public static class Debug
         }
         else if (IsMethodAllowedForLog(method))
         {
-            var prefix = GetPrefix(method, _isShowMethodName ? memberName : null);
+            var prefix = GetPrefix(method, memberName);
             UnityEngine.Debug.Log($"{Time.frameCount % 1000} {prefix}{message}", context);
         }
     }

@@ -23,7 +23,6 @@ namespace Prg.Scripts.Common.Util
         }
 
         [Header("Settings")] public bool _isLogToFile;
-        public bool _isShowMethodName;
         public string _colorForClassName;
 
         [Header("Class Filter"), TextArea(5, 20)] public string _loggerRules;
@@ -53,7 +52,7 @@ namespace Prg.Scripts.Common.Util
                     // - LogWriter receives it and needs to remove those parts that are only for console logging, like colors.
                     _prefixTag = $"[<color={config._colorForClassName}>";
                     _suffixTag = "</color>]";
-                    Debug.SetTagsForClassName(_prefixTag, _suffixTag, config._isShowMethodName);
+                    Debug.SetTagsForClassName(_prefixTag, _suffixTag);
                     LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
                 }
             }
