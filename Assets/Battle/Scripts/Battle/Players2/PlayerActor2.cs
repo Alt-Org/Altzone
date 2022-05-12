@@ -6,6 +6,7 @@ using Battle.Scripts.Battle.interfaces;
 using Battle.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -249,6 +250,8 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 ((IPlayerActor)this).SetGhostedMode();
+                var stunDuration = RuntimeGameConfig.Get().Variables._playerHeadHitStunDuration;
+                ScoreFlash.Push($"{PhotonNetwork.NickName} stun for {stunDuration}");
             }
         }
 

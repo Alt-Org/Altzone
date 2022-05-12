@@ -56,12 +56,12 @@ namespace Battle.Scripts.Battle.Ball
         {
             var contactPoint = collision.GetFirstContactPoint();
             var other = collision.gameObject;
-            Debug.Log($"onHeadCollision {other.GetFullPath()} @ point {contactPoint.point}");
+            Debug.Log($"{other.GetFullPath()} @ point {contactPoint.point} {_photonView.Owner.GetDebugLabel()}");
             var playerActor = other.GetComponentInParent<IPlayerActor>();
             playerActor.HeadCollision();
             var scoreType = playerActor.TeamNumber == PhotonBattle.TeamBlueValue ? ScoreType.RedHead : ScoreType.BlueHead;
             this.Publish(new ScoreManager.ScoreEvent(scoreType));
-            if (_photonView.Owner.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
             {
                 ScoreFlashNet.Push(HeadMessage[playerActor.PlayerPos], contactPoint.point);
             }
@@ -71,7 +71,7 @@ namespace Battle.Scripts.Battle.Ball
         {
             var contactPoint = collision.GetFirstContactPoint();
             var other = collision.gameObject;
-            Debug.Log($"onShieldCollision {other.GetFullPath()}");
+            Debug.Log($"{other.GetFullPath()}");
             var playerActor = other.GetComponentInParent<IPlayerActor>();
             playerActor.ShieldCollision();
             if (_photonView.Owner.IsMasterClient)
