@@ -43,6 +43,7 @@ namespace Battle.Scripts.Battle.Players2
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
         private float _playerHeadHitStunDuration;
+        private int _playerResistance;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
@@ -77,16 +78,17 @@ namespace Battle.Scripts.Battle.Players2
                 }
             }
 
+            var model = PhotonBattle.GetPlayerCharacterModel(player);
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             
             _playerHeadHitStunDuration = variables._playerHeadHitStunDuration;
+            _playerResistance = model.Resistance;
 
             // Shield
             _playerShield = isLower
                 ? _playerShieldHead
                 : _playerShieldFoot;
-            var model = PhotonBattle.GetPlayerCharacterModel(player);
             var shieldConfig = GetLocalPlayerShield(_playerShield);
             _shield = new PlayerShield(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
