@@ -42,6 +42,7 @@ namespace Battle.Scripts.Battle.Players2
         private IPlayerShield _shield;
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
+        private float _playerHeadHitStunDuration;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
@@ -77,6 +78,9 @@ namespace Battle.Scripts.Battle.Players2
             }
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            
+            _playerHeadHitStunDuration = variables._playerHeadHitStunDuration;
 
             // Shield
             _playerShield = isLower
@@ -87,7 +91,7 @@ namespace Battle.Scripts.Battle.Players2
             _shield = new PlayerShield(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
             _shield.Setup(name, isShieldRotated, false, _startPlayMode, 0);
-            var multiplier = runtimeGameConfig.Variables._shieldDistanceMultiplier;
+            var multiplier = variables._shieldDistanceMultiplier;
             _shieldDistance = model.Defence * multiplier;
 
             Debug.Log(
@@ -250,8 +254,10 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 ((IPlayerActor)this).SetGhostedMode();
-                var stunDuration = RuntimeGameConfig.Get().Variables._playerHeadHitStunDuration;
-                ScoreFlash.Push($"{PhotonNetwork.NickName} stun for {stunDuration}");
+                if (_playerHeadHitStunDuration > 0)
+                {
+                    ScoreFlash.Push($"{PhotonNetwork.NickName} stun for {_playerHeadHitStunDuration}");
+                }
             }
         }
 
