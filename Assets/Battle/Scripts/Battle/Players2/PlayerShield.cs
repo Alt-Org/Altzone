@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players2
 {
+    /// <summary>
+    /// Manager for local shield state.
+    /// </summary>
     internal class PlayerShield : IPlayerShield
     {
         private static readonly string[] StateNames = { "Norm", "Frozen", "Ghost" };
