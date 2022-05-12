@@ -123,27 +123,6 @@ namespace Battle.Scripts.Battle.Room
             }
         }
 
-        private void ContinueToNextStage()
-        {
-            Debug.Log($"ContinueToNextStage {PhotonNetwork.NetworkClientState} {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
-            StopAllCoroutines();
-            if (!PhotonNetwork.InRoom)
-            {
-                _debugUi.SetErrorMessage("Not in room");
-                return;
-            }
-            var player = PhotonNetwork.LocalPlayer;
-            var playerPos = PhotonBattle.GetPlayerPos(player);
-            if (!PhotonBattle.IsValidPlayerPos(playerPos))
-            {
-                _debugUi.SetErrorMessage("Invalid player");
-                PhotonNetwork.LeaveRoom();
-                return;
-            }
-            _debugUi.Hide();
-            RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
-        }
-
         public override void OnConnectedToMaster()
         {
             if (!_debug._isOfflineMode)
@@ -206,14 +185,14 @@ namespace Battle.Scripts.Battle.Room
             if (!room.IsOpen)
             {
                 // Somebody has closed the room, we can continue as if Start button was pressed.
-                CloseRoomToStartPlay();
+                ContinueToNextStage();
             }
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"OnJoinRoomFailed {returnCode} {message}");
-            _debugUi.SetErrorMessage(message);
+            _debugUi.SetErrorMessage($"Join failed: {message}");
         }
 
         private IEnumerator WaitForPlayersToArrive()
@@ -247,10 +226,33 @@ namespace Battle.Scripts.Battle.Room
             ContinueToNextStage();
         }
 
+        private void ContinueToNextStage()
+        {
+            StopAllCoroutines();
+            if (!PhotonNetwork.InRoom)
+            {
+                Debug.Log($"{PhotonNetwork.NetworkClientState}");
+                _debugUi.SetErrorMessage("Not in room");
+                return;
+            }
+            Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
+            var player = PhotonNetwork.LocalPlayer;
+            var playerPos = PhotonBattle.GetPlayerPos(player);
+            if (!PhotonBattle.IsValidPlayerPos(playerPos))
+            {
+                _debugUi.SetErrorMessage("Invalid player");
+                PhotonNetwork.LeaveRoom();
+                return;
+            }
+            _debugUi.Hide();
+            RoomLoaderProduction.ContinueToNextStage(this, _objectsToActivate);
+        }
+
         private static class RoomLoaderProduction
         {
             public static void ContinueToNextStage(MonoBehaviour host, GameObject[] objectsToActivate)
             {
+                Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.CurrentRoom.GetDebugLabel()} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
                 if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.IsOpen)
                 {
                     PhotonLobby.CloseRoom(true);
