@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Threading;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
-using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 #if USE_UNITY_ADS
@@ -17,17 +16,23 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            var defaultResourceLoader = ResourceLoader.Get();
-            var localDevConfig = defaultResourceLoader.LoadAsset<LocalDevConfig>(nameof(LocalDevConfig));
-            LocalDevConfig.Instance = Instantiate(localDevConfig);
-
-            var folderConfig = defaultResourceLoader.LoadAsset<FolderConfig>(nameof(FolderConfig));
-            var resourceLoader = ResourceLoader.Get(folderConfig.primaryConfigFolder, localDevConfig.developmentConfigFolder);
-
-            var loggerConfig = resourceLoader.LoadAsset<LoggerConfig>(nameof(LoggerConfig));
-            LoggerConfig.CreateLoggerConfig(loggerConfig);
-
+            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
+            var loggerConfig = localDevConfig != null
+                ? localDevConfig._loggerConfig
+                : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
+            if (loggerConfig != null)
+            {
+                LoggerConfig.CreateLoggerConfig(loggerConfig);
+            }
             SetEditorStatus();
+            if (localDevConfig != null)
+            {
+                if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
+                {
+                    var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
+                    PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
+                }
+            }
             GeoLocation.Load(data =>
             {
                 UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data}");
@@ -68,11 +73,6 @@ namespace Altzone.Scripts
             var ci = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentCulture = ci;
             Thread.CurrentThread.CurrentUICulture = ci;
-
-            if (!string.IsNullOrWhiteSpace(LocalDevConfig.Instance.photonVersionPrefix))
-            {
-                PhotonLobby.GetGameVersion = () => $"{LocalDevConfig.Instance.photonVersionPrefix}{Application.version}";
-            }
         }
     }
 #if USE_UNITY_ADS

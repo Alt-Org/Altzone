@@ -2,7 +2,6 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -49,7 +48,7 @@ namespace Prg.Scripts.Common.Photon
             }
             if (PhotonNetwork.NetworkClientState == ClientState.PeerCreated || PhotonNetwork.NetworkClientState == ClientState.Disconnected)
             {
-                var photonAppSettings = ResourceLoader.Get().LoadAsset<PhotonAppSettings>(nameof(PhotonAppSettings));
+                var photonAppSettings = Resources.Load<PhotonAppSettings>(nameof(PhotonAppSettings));
                 var appSettings = photonAppSettings != null ? photonAppSettings.appSettings : null;
                 ConnectUsingSettings(appSettings, playerName);
                 return;

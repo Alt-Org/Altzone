@@ -9,7 +9,7 @@ namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
     /// <remarks>
     /// For example in "DefaultInputActions" asset its path is "UI/Cancel" for this action.
     /// </remarks>
-    [CreateAssetMenu(menuName = "ALT-Zone/EscapeInputAction", fileName = "EscapeInputAction")]
+    //[CreateAssetMenu(menuName = "ALT-Zone/EscapeInputAction", fileName = "EscapeInputAction")]
     public class EscapeInputAction: ScriptableObject
     {
         [Header("Input System Package")] public InputActionReference _escapeInputAction;

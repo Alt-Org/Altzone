@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity.Localization
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/LocalizationConfig", fileName = "LocalizationConfig")]
+    //[CreateAssetMenu(menuName = "ALT-Zone/LocalizationConfig", fileName = "LocalizationConfig")]
     public class LocalizationConfig : ScriptableObject
     {
         [SerializeField] private TextAsset _translationsTsvFile;
