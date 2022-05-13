@@ -9,7 +9,8 @@ namespace Editor.Prg.Util
 {
     internal static class UnityConstantsGenerator
     {
-
+        private const string UnityConstantsName = "UnityConstants.cs";
+        
         public static void GenerateUnityConstants()
         {
             Debug.Log("*");
@@ -29,9 +30,10 @@ namespace Editor.Prg.Util
 
             // Try to find an existing file in the project called "UnityConstants.cs"
             var filePath = string.Empty;
-            foreach (var file in Directory.GetFiles(Application.dataPath, "*.cs", SearchOption.AllDirectories))
+            var files = Directory.GetFiles(Application.dataPath, $"*{UnityConstantsName}", SearchOption.AllDirectories);
+            foreach (var file in files)
             {
-                if (Path.GetFileNameWithoutExtension(file) == "UnityConstants")
+                if (file.ToLower().EndsWith(UnityConstantsName.ToLower()))
                 {
                     filePath = file;
                     break;
@@ -42,15 +44,14 @@ namespace Editor.Prg.Util
             if (string.IsNullOrEmpty(filePath))
             {
                 var directory =
-                    EditorUtility.OpenFolderPanel("Choose location for UnityConstants.cs", Application.dataPath, string.Empty);
+                    EditorUtility.OpenFolderPanel($"Choose location for {UnityConstantsName}", Application.dataPath, string.Empty);
 
                 // Canceled choose? Do nothing.
                 if (string.IsNullOrEmpty(directory))
                 {
-                    return directory;
+                    return "NOTHING - operation cancelled";
                 }
-
-                filePath = Path.Combine(directory, "UnityConstants.cs");
+                filePath = Path.Combine(directory, UnityConstantsName);
             }
 
             // Write out our file
