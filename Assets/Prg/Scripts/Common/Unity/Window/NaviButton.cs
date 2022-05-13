@@ -18,8 +18,12 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void Start()
         {
-            Assert.IsNotNull(_naviTarget, "_naviTarget != null");
             var button = GetComponent<Button>();
+            if (_naviTarget == null)
+            {
+                button.interactable = false;
+                return;
+            }
             var windowManager = WindowManager.Get();
             var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
             if (isCurrentWindow)
