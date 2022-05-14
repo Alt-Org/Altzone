@@ -3,7 +3,7 @@ using Battle.Scripts.Battle.interfaces;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 
-namespace Battle.Scripts.Test
+namespace Battle.Test.Scripts.Test
 {
     public class PlayerManagerTest : MonoBehaviour
     {
