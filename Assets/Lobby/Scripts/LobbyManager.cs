@@ -130,7 +130,7 @@ namespace Lobby.Scripts
 
         private static void SetPlayer(Player player, int playerPosition)
         {
-            Assert.IsTrue(PhotonBattle.IsValidGameplayPos(playerPosition));
+            Assert.IsTrue(PhotonBattle.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");

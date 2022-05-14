@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Test
 {
-    public class PlayerManagerTest : MonoBehaviour
+    internal class PlayerManagerTest : MonoBehaviour
     {
         [Header("Debug Only")] public bool _useScoreFlash;
         public bool _startCountdown;

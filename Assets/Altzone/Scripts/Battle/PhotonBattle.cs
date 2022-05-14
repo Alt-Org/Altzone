@@ -58,7 +58,12 @@ namespace Altzone.Scripts.Battle
 
         public static bool IsValidGameplayPos(int playerPos)
         {
-            return IsValidPlayerPos(playerPos) || playerPos == PlayerPositionGuest || playerPos == PlayerPositionSpectator;
+            return IsValidPlayerPos(playerPos) || playerPos == PlayerPositionSpectator;
+        }
+
+        public static bool IsValidGameplayPosOrGuest(int playerPos)
+        {
+            return IsValidGameplayPos(playerPos) || playerPos == PlayerPositionGuest;
         }
 
         public static bool IsValidPlayerPos(int playerPos)
