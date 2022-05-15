@@ -8,7 +8,6 @@ using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
 using TMPro;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -340,21 +339,16 @@ namespace Battle.Scripts.Battle.Players2
 
         private void OnSetShieldRotation(int rotationIndex)
         {
+            // This uses the condition of whether the shield can rotate anymore until max rotation
+            // Otherwise if it can't, it will stun the player for a set amount of time
+            if (!_shield.CanRotate)
+            {
+                _playerHeadHitStunDuration = 3.0f;
+            }
             _shield.SetRotation(rotationIndex);
             _shield.PlayHitEffects();
-            if (rotationIndex >= 60)
-                StartCoroutine(OnParalysis());
         }
 
         #endregion
-
-        private IEnumerator OnParalysis()
-        {
-            OnSetPlayMode(1);
-            yield return new WaitForSecondsRealtime(3);
-            OnSetPlayMode(0);
-        }
     }
-
-
 }
