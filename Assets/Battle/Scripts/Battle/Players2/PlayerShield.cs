@@ -1,5 +1,6 @@
 using Battle.Scripts.Battle.interfaces;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Players2
 {
@@ -12,6 +13,7 @@ namespace Battle.Scripts.Battle.Players2
 
         private readonly ShieldConfig _config;
         private readonly ParticleSystem _shieldHitEffect;
+        private readonly int _maxRotationIndex;
 
         private string _shieldName;
         private int _playMode;
@@ -20,8 +22,7 @@ namespace Battle.Scripts.Battle.Players2
         private Collider2D _collider;
 
         public bool IsVisible { get; private set; }
-
-        public bool CanRotate => RotationIndex < _config.Shields.Length - 1;
+        public bool CanRotate => RotationIndex < _maxRotationIndex;
         public int RotationIndex { get; private set; }
 
         public string StateString => $"{(IsVisible ? "V" : "H")} R{RotationIndex} {(_collider.enabled ? "col" : "~~~")}";
@@ -30,11 +31,12 @@ namespace Battle.Scripts.Battle.Players2
         {
             _config = config;
             _shieldHitEffect = _config._shieldHitEffect;
+            _maxRotationIndex = _config.Shields.Length - 1;
         }
 
-        private void SetupShield(bool isShieldRotated)
+        private void SetupShield(bool isShieldRotated, bool isVisible, int rotationIndex)
         {
-            Debug.Log($"SetupShield {_shieldName} isShieldRotated {isShieldRotated}");
+            Debug.Log($"{_shieldName} isShieldRotated {isShieldRotated} isVisible {isVisible} rotationIndex {rotationIndex}");
             var shields = _config.Shields;
             var pivot = _config._particlePivot;
             for (var i = 0; i < shields.Length; ++i)
@@ -51,16 +53,17 @@ namespace Battle.Scripts.Battle.Players2
                 else
                 {
                     shield.gameObject.SetActive(false);
+                    shield.GetComponent<Collider2D>().enabled = false;
                 }
             }
+            IsVisible = isVisible;
+            RotationIndex = rotationIndex;
         }
 
         void IPlayerShield.Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex)
         {
             _shieldName = shieldName;
-            IsVisible = isVisible;
-            RotationIndex = rotationIndex;
-            SetupShield(isShieldRotated);
+            SetupShield(isShieldRotated, isVisible, rotationIndex);
             ((IPlayerShield)this).SetVisibility(isVisible);
             ((IPlayerShield)this).SetPlayMode(playMode);
             ((IPlayerShield)this).SetRotation(rotationIndex);
@@ -68,7 +71,7 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetVisibility(bool isVisible)
         {
-            Debug.Log($"SetVisibility {_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible}");
+            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible}");
             IsVisible = isVisible;
             _shield.SetActive(IsVisible);
         }
@@ -77,7 +80,7 @@ namespace Battle.Scripts.Battle.Players2
         {
             _playMode = playMode;
             Debug.Log(
-                $"SetShieldState {_shieldName} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
+                $"{_shieldName} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
             _playMode = playMode;
             switch (_playMode)
             {
@@ -96,11 +99,18 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetRotation(int rotationIndex)
         {
-            if (rotationIndex >= _config.Shields.Length)
+            // TODO: test code to be removed:
+            if (rotationIndex > _maxRotationIndex)
             {
-                rotationIndex %= _config.Shields.Length;
+                rotationIndex = 0;
             }
-            Debug.Log($"SetRotation {_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex}");
+            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex}");
+            Assert.IsTrue(rotationIndex >= 0 && rotationIndex <= _maxRotationIndex,
+                "rotationIndex >= 0 && rotationIndex <= _maxRotationIndex");
+            if (RotationIndex == rotationIndex)
+            {
+                return;
+            }
             RotationIndex = rotationIndex;
             _shield.SetActive(false);
             _shield = _config.Shields[RotationIndex].gameObject;
