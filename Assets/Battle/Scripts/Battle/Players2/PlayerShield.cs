@@ -14,17 +14,17 @@ namespace Battle.Scripts.Battle.Players2
         private readonly ParticleSystem _shieldHitEffect;
 
         private string _shieldName;
-        private bool _isVisible;
         private int _playMode;
-        private int _rotationIndex;
 
         private GameObject _shield;
         private Collider2D _collider;
 
-        public bool IsVisible => _isVisible;
-        public int RotationIndex => _rotationIndex;
+        public bool IsVisible { get; private set; }
 
-        public string StateString => $"{(_isVisible ? "V" : "H")} R{_rotationIndex} {(_collider.enabled ? "col" : "~~~")}";
+        public bool CanRotate => RotationIndex < _config.Shields.Length - 1;
+        public int RotationIndex { get; private set; }
+
+        public string StateString => $"{(IsVisible ? "V" : "H")} R{RotationIndex} {(_collider.enabled ? "col" : "~~~")}";
 
         public PlayerShield(ShieldConfig config)
         {
@@ -42,7 +42,7 @@ namespace Battle.Scripts.Battle.Players2
                 var shield = shields[i];
                 shield.Rotate(isShieldRotated);
                 pivot.Rotate(isShieldRotated);
-                if (i == _rotationIndex)
+                if (i == RotationIndex)
                 {
                     _shield = shield.gameObject;
                     _shield.SetActive(true);
@@ -58,8 +58,8 @@ namespace Battle.Scripts.Battle.Players2
         void IPlayerShield.Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex)
         {
             _shieldName = shieldName;
-            _isVisible = isVisible;
-            _rotationIndex = rotationIndex;
+            IsVisible = isVisible;
+            RotationIndex = rotationIndex;
             SetupShield(isShieldRotated);
             ((IPlayerShield)this).SetVisibility(isVisible);
             ((IPlayerShield)this).SetPlayMode(playMode);
@@ -68,16 +68,16 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetVisibility(bool isVisible)
         {
-            Debug.Log($"SetVisibility {_shieldName} mode {StateNames[_playMode]} isVisible {_isVisible} <- {isVisible}");
-            _isVisible = isVisible;
-            _shield.SetActive(_isVisible);
+            Debug.Log($"SetVisibility {_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible}");
+            IsVisible = isVisible;
+            _shield.SetActive(IsVisible);
         }
 
         void IPlayerShield.SetPlayMode(int playMode)
         {
             _playMode = playMode;
             Debug.Log(
-                $"SetShieldState {_shieldName} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {_rotationIndex} collider {_collider.enabled}");
+                $"SetShieldState {_shieldName} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
             _playMode = playMode;
             switch (_playMode)
             {
@@ -91,7 +91,7 @@ namespace Battle.Scripts.Battle.Players2
                 default:
                     throw new UnityException($"invalid playmode {_playMode}");
             }
-            _shield.SetActive(_isVisible);
+            _shield.SetActive(IsVisible);
         }
 
         void IPlayerShield.SetRotation(int rotationIndex)
@@ -100,12 +100,12 @@ namespace Battle.Scripts.Battle.Players2
             {
                 rotationIndex %= _config.Shields.Length;
             }
-            Debug.Log($"SetRotation {_shieldName} mode {StateNames[_playMode]} rotation {_rotationIndex} <- {rotationIndex}");
-            _rotationIndex = rotationIndex;
+            Debug.Log($"SetRotation {_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex}");
+            RotationIndex = rotationIndex;
             _shield.SetActive(false);
-            _shield = _config.Shields[_rotationIndex].gameObject;
+            _shield = _config.Shields[RotationIndex].gameObject;
             _collider = _shield.GetComponent<Collider2D>();
-            _shield.SetActive(_isVisible);
+            _shield.SetActive(IsVisible);
         }
 
         void IPlayerShield.PlayHitEffects()
