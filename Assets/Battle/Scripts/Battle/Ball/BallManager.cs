@@ -36,6 +36,7 @@ namespace Battle.Scripts.Battle.Ball
         private void Awake()
         {
             Debug.Log("Awake");
+            _state = new State();
             _ball = Context.GetBall;
             _brickManager = Context.GetBrickManager;
             _photonView = PhotonView.Get(this);
@@ -111,7 +112,7 @@ namespace Battle.Scripts.Battle.Ball
 
         private void OnEnterTeamArea(GameObject other)
         {
-            //Debug.Log($"onEnterTeamArea {other.name} {other.tag}");
+            //Debug.Log($"{other.tag}");
             switch (other.tag)
             {
                 case Tags.RedTeam:
@@ -128,7 +129,7 @@ namespace Battle.Scripts.Battle.Ball
 
         private void OnExitTeamArea(GameObject other)
         {
-            //Debug.Log($"onExitTeamArea {other.name} {other.tag}");
+            //Debug.Log($"{other.tag}");
             switch (other.tag)
             {
                 case Tags.RedTeam:
@@ -147,16 +148,19 @@ namespace Battle.Scripts.Battle.Ball
         {
             if (state._isRedTeamActive && !state._isBlueTeamActive)
             {
+                //Debug.Log($"blue {(state._isBlueTeamActive ? 1 : 0)} red {(state._isRedTeamActive ? 1 : 0)} RED");
                 ball.SetColor(BallColor.RedTeam);
                 ball.Publish(new ActiveTeamEvent(PhotonBattle.TeamRedValue));
                 return;
             }
             if (state._isBlueTeamActive && !state._isRedTeamActive)
             {
+                //Debug.Log($"blue {(state._isBlueTeamActive ? 1 : 0)} red {(state._isRedTeamActive ? 1 : 0)} BLUE");
                 ball.SetColor(BallColor.BlueTeam);
                 ball.Publish(new ActiveTeamEvent(PhotonBattle.TeamBlueValue));
                 return;
             }
+            //Debug.Log($"blue {(state._isBlueTeamActive ? 1 : 0)} red {(state._isRedTeamActive ? 1 : 0)} INDETERMINATE");
             ball.SetColor(BallColor.NoTeam);
             ball.Publish(new ActiveTeamEvent(PhotonBattle.NoTeamValue));
         }
