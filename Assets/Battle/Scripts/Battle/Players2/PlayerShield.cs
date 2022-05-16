@@ -71,7 +71,7 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetVisibility(bool isVisible)
         {
-            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible}");
+            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible} collider {_collider.enabled}");
             IsVisible = isVisible;
             _shield.SetActive(IsVisible);
         }
@@ -80,7 +80,7 @@ namespace Battle.Scripts.Battle.Players2
         {
             _playMode = playMode;
             Debug.Log(
-                $"{_shieldName} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
+                $"{_shieldName} isVisible {IsVisible} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
             _playMode = playMode;
             switch (_playMode)
             {
@@ -104,7 +104,7 @@ namespace Battle.Scripts.Battle.Players2
             {
                 rotationIndex = 0;
             }
-            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex}");
+            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex} collider {_collider.enabled}");
             Assert.IsTrue(rotationIndex >= 0 && rotationIndex <= _maxRotationIndex,
                 "rotationIndex >= 0 && rotationIndex <= _maxRotationIndex");
             if (RotationIndex == rotationIndex)
