@@ -78,7 +78,6 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetPlayMode(int playMode)
         {
-            _playMode = playMode;
             Debug.Log(
                 $"{_shieldName} isVisible {IsVisible} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
             _playMode = playMode;
