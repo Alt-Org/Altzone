@@ -58,7 +58,6 @@ namespace Battle.Scripts.Battle.Ball
         [SerializeField] private TextMeshPro _debugInfoText;
         private GameObject _debugInfoParent;
 
-
         // This is indexed by BallColor!
         private GameObject[] _stateObjects;
 
@@ -262,6 +261,15 @@ namespace Battle.Scripts.Battle.Ball
             }
             if (CallbackEvent(_shieldMaskValue, colliderMask, collision, _onShieldCollision))
             {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    // This is a bit extreme (and totally in wrong place) - but it works!
+                    // - we have to disable the player shield collider immediately
+                    //   because messages are routed via Photon relay server and it takes too long for them to arrive
+                    //   and that can cause more than one collision as ball can sometimes travel trough the shield several times
+                    var playerCollider = otherGameObject.GetComponent<Collider2D>();
+                    playerCollider.enabled = false;
+                }
                 return;
             }
             if (CallbackEvent(_brickMaskValue, colliderMask, collision, _onBrickCollision))
