@@ -7,6 +7,7 @@ using Battle.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -44,7 +45,6 @@ namespace Battle.Scripts.Battle.Players2
         private PhotonPlayerRpc _rpc;
         private float _playerHeadHitStunDuration;
         private int _playerResistance;
-        private bool _isShowDebugInfo;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
@@ -128,19 +128,20 @@ namespace Battle.Scripts.Battle.Players2
 
         private void SetDebug()
         {
+            var playerData = RuntimeGameConfig.Get().PlayerDataCache;
+            var isDebugFlag = playerData.IsDebugFlag;
+            _isShowDebugCanvas = isDebugFlag && _isShowDebugCanvas;
             _playerInfo = GetComponentInChildren<TextMeshPro>();
             if (_playerInfo != null)
             {
-                _isShowDebugInfo = true;
-                SetDebugText($"{PlayerPos:N0}");
-            }
-        }
-
-        private void SetDebugText(string text)
-        {
-            if (_isShowDebugInfo)
-            {
-                _playerInfo.text = text;
+                if (isDebugFlag)
+                {
+                    _playerInfo.text = PlayerPos.ToString("N0");
+                }
+                else
+                {
+                    _playerInfo.enabled = false;
+                }
             }
         }
 
@@ -224,22 +225,17 @@ namespace Battle.Scripts.Battle.Players2
 
         private void OnActiveTeamEvent(BallManager.ActiveTeamEvent data)
         {
-            if (data.TeamIndex == PhotonBattle.NoTeamValue)
-            {
-                // Ball is moving from one side to an other, everybody is frozen (except ghosts)!
-                if (_state._currentMode != PlayModeGhosted)
-                {
-                    ((IPlayerActor)this).SetFrozenMode();
-                }
-                return;
-            }
             if (data.TeamIndex == _state._teamNumber)
             {
-                // NOP
+                // Ghosted -> Frozen is not allowed
+                if (_state._currentMode != PlayModeNormal)
+                {
+                    return;
+                }
+                ((IPlayerActor)this).SetFrozenMode();
             }
             else
             {
-                // Ball has moved to opposite team, we can move now
                 ((IPlayerActor)this).SetNormalMode();
             }
         }
@@ -281,7 +277,6 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} N");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeNormal);
             }
         }
@@ -290,7 +285,6 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} F");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeFrozen);
             }
         }
@@ -299,7 +293,6 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} G");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeGhosted);
             }
         }
@@ -318,7 +311,6 @@ namespace Battle.Scripts.Battle.Players2
             switch (playMode)
             {
                 case PlayModeNormal:
-                    SetDebugText($"{PlayerPos:N0} N");
                     _collider.enabled = true;
                     _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
@@ -327,7 +319,6 @@ namespace Battle.Scripts.Battle.Players2
                     }
                     break;
                 case PlayModeFrozen:
-                    SetDebugText($"{PlayerPos:N0} F");
                     _collider.enabled = true;
                     _playerMovement.SetStopped();
                     if (_isStateSpriteColorTint)
@@ -336,7 +327,6 @@ namespace Battle.Scripts.Battle.Players2
                     }
                     break;
                 case PlayModeGhosted:
-                    SetDebugText($"{PlayerPos:N0} G");
                     _collider.enabled = false;
                     _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
@@ -350,16 +340,29 @@ namespace Battle.Scripts.Battle.Players2
 
         private void OnSetShieldRotation(int rotationIndex)
         {
-            // This uses the condition of whether the shield can rotate anymore until max rotation
-            // Otherwise if it can't, it will stun the player for a set amount of time
+            _shield.PlayHitEffects();
+            _shield.SetRotation(rotationIndex);
+
+            // This will be changed, Since this only allows the OnParalysis to work once
             if (!_shield.CanRotate)
             {
-                _playerHeadHitStunDuration = 3.0f;
+                StartCoroutine(OnParalysis(3.0f));
+                print("Player is set to Paralized");
             }
-            _shield.SetRotation(rotationIndex);
-            _shield.PlayHitEffects();
         }
 
         #endregion
+
+        private IEnumerator OnParalysis(float playerHeadHitStunDuration)
+        {
+            // This uses the condition of whether the shield can rotate anymore until max rotation
+            // Otherwise if it can't, it will stun the player for a set amount of time
+
+
+            ((IPlayerActor)this).SetFrozenMode();
+            yield return new WaitForSecondsRealtime(playerHeadHitStunDuration);
+            ((IPlayerActor)this).SetNormalMode();
+        }
+
     }
 }

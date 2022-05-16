@@ -98,11 +98,6 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetRotation(int rotationIndex)
         {
-            // TODO: test code to be removed:
-            if (rotationIndex > _maxRotationIndex)
-            {
-                rotationIndex = 0;
-            }
             Debug.Log($"{_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex} collider {_collider.enabled}");
             Assert.IsTrue(rotationIndex >= 0 && rotationIndex <= _maxRotationIndex,
                 "rotationIndex >= 0 && rotationIndex <= _maxRotationIndex");
