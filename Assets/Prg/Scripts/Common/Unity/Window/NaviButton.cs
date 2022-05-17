@@ -39,6 +39,17 @@ namespace Prg.Scripts.Common.Unity.Window
                 {
                     windowManager.PopCurrentWindow();
                 }
+                // Check if navigation target window is already in window stack and we area actually going back to it via button.
+                var windowCount = windowManager.WindowCount;
+                if (windowCount > 1)
+                {
+                    var targetIndex = windowManager.FindIndex(_naviTarget);
+                    if (targetIndex == 1)
+                    {
+                        windowManager.GoBack();
+                        return;
+                    }
+                }
                 windowManager.ShowWindow(_naviTarget);
             });
         }
