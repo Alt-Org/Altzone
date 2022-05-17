@@ -82,7 +82,7 @@ namespace Battle.Scripts.Battle.Players2
                 }
             }
 
-            // Note that we do not use PlayerDataCache to get CharacterModel because it can ge changed fot the room for various reasons!
+            // Note that we do not use PlayerDataCache to get CharacterModel because it can ge changed for the room for various reasons!
             var model = PhotonBattle.GetCharacterModelForRoom(player);
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
