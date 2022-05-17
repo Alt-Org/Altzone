@@ -9,14 +9,12 @@ namespace Battle.Scripts.Battle.Players2
     /// </summary>
     internal class PlayerShield : IPlayerShield
     {
-        private static readonly string[] StateNames = { "Norm", "Frozen", "Ghost" };
-
         private readonly ShieldConfig _config;
         private readonly ParticleSystem _shieldHitEffect;
         private readonly int _maxRotationIndex;
 
         private string _shieldName;
-        private int _playMode;
+        private BattlePlayMode _playMode;
 
         private GameObject _shield;
         private Collider2D _collider;
@@ -60,7 +58,7 @@ namespace Battle.Scripts.Battle.Players2
             RotationIndex = rotationIndex;
         }
 
-        void IPlayerShield.Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex)
+        void IPlayerShield.Setup(string shieldName, BattlePlayMode playMode, bool isShieldRotated, bool isVisible, int rotationIndex)
         {
             _shieldName = shieldName;
             SetupShield(isShieldRotated, isVisible, rotationIndex);
@@ -71,23 +69,23 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetVisibility(bool isVisible)
         {
-            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} isVisible {IsVisible} <- {isVisible} collider {_collider.enabled}");
+            Debug.Log($"{_shieldName} mode {_playMode} isVisible {IsVisible} <- {isVisible} collider {_collider.enabled}");
             IsVisible = isVisible;
             _shield.SetActive(IsVisible);
         }
 
-        void IPlayerShield.SetPlayMode(int playMode)
+        void IPlayerShield.SetPlayMode(BattlePlayMode playMode)
         {
             Debug.Log(
-                $"{_shieldName} isVisible {IsVisible} mode {StateNames[_playMode]} <- {StateNames[playMode]} rotation {RotationIndex} collider {_collider.enabled}");
+                $"{_shieldName} isVisible {IsVisible} mode {_playMode} <- {playMode} rotation {RotationIndex} collider {_collider.enabled}");
             _playMode = playMode;
             switch (_playMode)
             {
-                case PlayerActor.PlayModeNormal:
-                case PlayerActor.PlayModeFrozen:
+                case BattlePlayMode.Normal:
+                case BattlePlayMode.Frozen:
                     _collider.enabled = true;
                     break;
-                case PlayerActor.PlayModeGhosted:
+                case BattlePlayMode.Ghosted:
                     _collider.enabled = false;
                     break;
                 default:
@@ -98,7 +96,7 @@ namespace Battle.Scripts.Battle.Players2
 
         void IPlayerShield.SetRotation(int rotationIndex)
         {
-            Debug.Log($"{_shieldName} mode {StateNames[_playMode]} rotation {RotationIndex} <- {rotationIndex} collider {_collider.enabled}");
+            Debug.Log($"{_shieldName} mode {_playMode} rotation {RotationIndex} <- {rotationIndex} collider {_collider.enabled}");
             Assert.IsTrue(rotationIndex >= 0 && rotationIndex <= _maxRotationIndex,
                 "rotationIndex >= 0 && rotationIndex <= _maxRotationIndex");
             if (RotationIndex == rotationIndex)

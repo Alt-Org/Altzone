@@ -3,7 +3,7 @@ namespace Battle.Scripts.Battle.interfaces
     /// <summary>
     /// Local shield management interface.
     /// </summary>
-    public interface IPlayerShield
+    internal interface IPlayerShield
     {
         /// <summary>
         /// Is shield visible.
@@ -23,7 +23,7 @@ namespace Battle.Scripts.Battle.interfaces
         /// <summary>
         /// Set shield initial state.
         /// </summary>
-        void Setup(string shieldName, bool isShieldRotated, bool isVisible, int playMode, int rotationIndex);
+        void Setup(string shieldName, BattlePlayMode playMode, bool isShieldRotated, bool isVisible, int rotationIndex);
 
         /// <summary>
         /// Set shield visibility.
@@ -33,8 +33,8 @@ namespace Battle.Scripts.Battle.interfaces
         /// <summary>
         /// Set shield visual look based on <c>PlayerActor</c> playmode.
         /// </summary>
-        /// <param name="playMode"></param>
-        void SetPlayMode(int playMode);
+        /// <param name="battlePlayMode"></param>
+        void SetPlayMode(BattlePlayMode battlePlayMode);
 
         /// <summary>
         /// Set shield visual state (rotation) using shield rotation index.

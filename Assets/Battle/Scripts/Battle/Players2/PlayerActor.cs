@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Altzone.Scripts.Battle;
+using Battle.Scripts.Battle.interfaces;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -11,22 +12,18 @@ namespace Battle.Scripts.Battle.Players2
     /// </summary>
     internal abstract class PlayerActor : MonoBehaviour
     {
-        internal const int PlayModeNormal = 0;
-        internal const int PlayModeFrozen = 1;
-        internal const int PlayModeGhosted = 2;
-
         [Serializable]
         internal class PlayerState
         {
-            public int _currentMode;
+            public BattlePlayMode _currentMode;
             public Transform _transform;
             public int _playerPos;
             public int _teamNumber;
             public PlayerActor _teamMate;
 
-            public void InitState(Transform transform, Player player)
+            public void InitState(Transform transform, Player player, BattlePlayMode battlePlayMode = BattlePlayMode.Normal)
             {
-                _currentMode = PlayModeNormal;
+                _currentMode = battlePlayMode;
                 _transform = transform;
                 _playerPos = PhotonBattle.GetPlayerPos(player);
                 _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);

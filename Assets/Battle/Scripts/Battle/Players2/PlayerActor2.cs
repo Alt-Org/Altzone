@@ -19,11 +19,9 @@ namespace Battle.Scripts.Battle.Players2
     /// </summary>
     internal class PlayerActor2 : PlayerActor, IPlayerActor
     {
-        private static readonly string[] StateNames = { "Norm", "Frozen", "Ghost" };
-
         private const string Tooltip1 = @"0=""Normal"", 1=""Frozen"", 2=""Ghosted""";
 
-        [Header("Settings"), SerializeField, Tooltip(Tooltip1), Range(0, 2)] private int _startPlayMode;
+        [Header("Settings"), SerializeField, Tooltip(Tooltip1), Range(0, 2)] private BattlePlayMode _startPlayMode;
         [SerializeField] private SpriteRenderer _highlightSprite;
         [SerializeField] private SpriteRenderer _stateSprite;
         [SerializeField] private Collider2D _collider;
@@ -49,7 +47,7 @@ namespace Battle.Scripts.Battle.Players2
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
         public string StateString =>
-            $"{StateNames[_state._currentMode]} {((PlayerShield)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
+            $"{_state._currentMode} {((PlayerShield)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
 
         private void Awake()
         {
@@ -97,7 +95,7 @@ namespace Battle.Scripts.Battle.Players2
             var shieldConfig = GetLocalPlayerShield(_playerShield);
             _shield = new PlayerShield(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
-            _shield.Setup(name, isShieldRotated, false, _startPlayMode, 0);
+            _shield.Setup(name, _startPlayMode, isShieldRotated, false, 0);
             var multiplier = variables._shieldDistanceMultiplier;
             _shieldDistance = model.Defence * multiplier;
 
@@ -234,7 +232,7 @@ namespace Battle.Scripts.Battle.Players2
             if (data.TeamIndex == PhotonBattle.NoTeamValue)
             {
                 // Ball is moving from one side to an other, everybody is frozen (except ghosts)!
-                if (_state._currentMode != PlayModeGhosted)
+                if (_state._currentMode != BattlePlayMode.Ghosted)
                 {
                     ((IPlayerActor)this).SetFrozenMode();
                 }
@@ -289,7 +287,7 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 SetDebugText($"{PlayerPos:N0}N");
-                _rpc.SendPlayMode(OnSetPlayMode, PlayModeNormal);
+                _rpc.SendPlayMode(OnSetPlayMode, BattlePlayMode.Normal);
             }
         }
 
@@ -298,7 +296,7 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 SetDebugText($"{PlayerPos:N0}F");
-                _rpc.SendPlayMode(OnSetPlayMode, PlayModeFrozen);
+                _rpc.SendPlayMode(OnSetPlayMode, BattlePlayMode.Frozen);
             }
         }
 
@@ -307,7 +305,7 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 SetDebugText($"{PlayerPos:N0}G");
-                _rpc.SendPlayMode(OnSetPlayMode, PlayModeGhosted);
+                _rpc.SendPlayMode(OnSetPlayMode, BattlePlayMode.Ghosted);
             }
         }
 
@@ -316,15 +314,15 @@ namespace Battle.Scripts.Battle.Players2
             _shield.SetVisibility(isVisible);
         }
 
-        private void OnSetPlayMode(int playMode)
+        private void OnSetPlayMode(BattlePlayMode battlePlayMode)
         {
-            Debug.Log($"OnSetPlayMode {name} {StateNames[playMode]}");
-            Assert.IsTrue(playMode >= PlayModeNormal && playMode <= PlayModeGhosted,
+            Debug.Log($"OnSetPlayMode {name} {battlePlayMode}");
+            Assert.IsTrue(battlePlayMode >= BattlePlayMode.Normal && battlePlayMode <= BattlePlayMode.Ghosted,
                 "playMode >= PlayModeNormal && playMode <= PlayModeGhosted");
-            _state._currentMode = playMode;
-            switch (playMode)
+            _state._currentMode = battlePlayMode;
+            switch (battlePlayMode)
             {
-                case PlayModeNormal:
+                case BattlePlayMode.Normal:
                     SetDebugText($"{PlayerPos:N0}N");
                     _collider.enabled = true;
                     _playerMovement.SetMovementAllowed();
@@ -333,7 +331,7 @@ namespace Battle.Scripts.Battle.Players2
                         _stateSprite.color = Color.blue;
                     }
                     break;
-                case PlayModeFrozen:
+                case BattlePlayMode.Frozen:
                     SetDebugText($"{PlayerPos:N0}F");
                     _collider.enabled = true;
                     _playerMovement.SetStopped();
@@ -342,7 +340,7 @@ namespace Battle.Scripts.Battle.Players2
                         _stateSprite.color = Color.magenta;
                     }
                     break;
-                case PlayModeGhosted:
+                case BattlePlayMode.Ghosted:
                     SetDebugText($"{PlayerPos:N0}G");
                     _collider.enabled = false;
                     _playerMovement.SetMovementAllowed();
@@ -352,7 +350,7 @@ namespace Battle.Scripts.Battle.Players2
                     }
                     break;
             }
-            _shield.SetPlayMode(playMode);
+            _shield.SetPlayMode(battlePlayMode);
         }
 
         private void OnSetShieldRotation(int rotationIndex)

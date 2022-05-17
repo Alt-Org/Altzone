@@ -2,6 +2,13 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.interfaces
 {
+    internal enum BattlePlayMode
+    {
+        Normal = 0,
+        Frozen = 1,
+        Ghosted = 2,
+    }
+        
     public interface IPlayerActor
     {
         Transform Transform { get; }

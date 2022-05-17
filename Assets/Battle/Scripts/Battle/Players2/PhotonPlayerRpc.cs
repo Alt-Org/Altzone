@@ -1,4 +1,5 @@
 using System;
+using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -6,11 +7,11 @@ using UnityEngine.Assertions;
 namespace Battle.Scripts.Battle.Players2
 {
     [RequireComponent(typeof(PhotonView))]
-    public class PhotonPlayerRpc : MonoBehaviour
+    internal class PhotonPlayerRpc : MonoBehaviour
     {
         private PhotonView _photonView;
 
-        private Action<int> _onSendPlayMode;
+        private Action<BattlePlayMode> _onSendPlayMode;
         private Action<bool> _onSendShieldVisibility;
         private Action<int> _onSendShieldRotation;
 
@@ -19,7 +20,7 @@ namespace Battle.Scripts.Battle.Players2
             _photonView = PhotonView.Get(this);
         }
 
-        public void SendPlayMode(Action<int> callback)
+        public void SendPlayMode(Action<BattlePlayMode> callback)
         {
             _onSendPlayMode = callback;
         }
@@ -34,7 +35,7 @@ namespace Battle.Scripts.Battle.Players2
             _onSendShieldRotation = callback;
         }
 
-        public void SendPlayMode(Action<int> callback, int playMode)
+        public void SendPlayMode(Action<BattlePlayMode> callback, BattlePlayMode playMode)
         {
             Assert.IsTrue(callback == _onSendPlayMode, "callback == _onSendPlayMode");
             _photonView.RPC(nameof(SendPlayModeRpc), RpcTarget.All, playMode);
@@ -53,7 +54,7 @@ namespace Battle.Scripts.Battle.Players2
         }
 
         [PunRPC]
-        private void SendPlayModeRpc(int playMode)
+        private void SendPlayModeRpc(BattlePlayMode playMode)
         {
             _onSendPlayMode(playMode);
         }
