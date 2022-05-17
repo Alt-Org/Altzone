@@ -154,7 +154,7 @@ namespace Altzone.Scripts.Battle
             }
         }
 
-        public static CharacterModel GetPlayerCharacterModel(Player player)
+        public static CharacterModel GetCharacterModelForRoom(Player player)
         {
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             var character = Storefront.Get().GetCharacterModel(skillId);
