@@ -45,7 +45,6 @@ namespace Battle.Scripts.Battle.Players2
         private PhotonPlayerRpc _rpc;
         private float _playerHeadHitStunDuration;
         private int _playerResistance;
-        private bool _isShowDebugInfo;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
@@ -60,7 +59,10 @@ namespace Battle.Scripts.Battle.Players2
             _state.InitState(_transform, player);
             var prefix = $"{(player.IsLocal ? "L" : "R")}{PlayerPos}:{TeamNumber}";
             name = $"@{name.Replace("(Clone)", string.Empty)}:{prefix}>{player.NickName}";
-            SetDebug();
+            if (_isShowDebugCanvas)
+            {
+                SetDebug();
+            }
             var gameCamera = Context.GetGameCamera;
             Assert.IsNotNull(gameCamera, "gameCameraInstance != null");
             // Must detect player position from actual y coordinate!
@@ -132,14 +134,17 @@ namespace Battle.Scripts.Battle.Players2
             _playerInfo = GetComponentInChildren<TextMeshPro>();
             if (_playerInfo != null)
             {
-                _isShowDebugInfo = true;
                 SetDebugText($"{PlayerPos:N0}");
+            }
+            else
+            {
+                _isShowDebugCanvas = false;
             }
         }
 
         private void SetDebugText(string text)
         {
-            if (_isShowDebugInfo)
+            if (_isShowDebugCanvas)
             {
                 _playerInfo.text = text;
             }
@@ -177,12 +182,12 @@ namespace Battle.Scripts.Battle.Players2
             {
                 _highlightSprite.color = Color.yellow;
             }
-            if (_isShowDebugCanvas && _photonView.IsMine)
+            /*if (_isShowDebugCanvas && _photonView.IsMine)
             {
                 var debugInfoPrefab = Resources.Load<PlayerDebugInfo>($"PlayerDebugInfo");
                 var debugInfo = Instantiate(debugInfoPrefab, _transform);
                 debugInfo.PlayerActor = this;
-            }
+            }*/
             _rpc = _photonView.gameObject.GetOrAddComponent<PhotonPlayerRpc>();
             _rpc.SendPlayMode(OnSetPlayMode);
             _rpc.SendShieldVisibility(OnSetShieldVisibility);
@@ -282,7 +287,7 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} N");
+                SetDebugText($"{PlayerPos:N0}N");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeNormal);
             }
         }
@@ -291,7 +296,7 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} F");
+                SetDebugText($"{PlayerPos:N0}F");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeFrozen);
             }
         }
@@ -300,7 +305,7 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SetDebugText($"{PlayerPos:N0} G");
+                SetDebugText($"{PlayerPos:N0}G");
                 _rpc.SendPlayMode(OnSetPlayMode, PlayModeGhosted);
             }
         }
@@ -319,7 +324,7 @@ namespace Battle.Scripts.Battle.Players2
             switch (playMode)
             {
                 case PlayModeNormal:
-                    SetDebugText($"{PlayerPos:N0} N");
+                    SetDebugText($"{PlayerPos:N0}N");
                     _collider.enabled = true;
                     _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
@@ -328,7 +333,7 @@ namespace Battle.Scripts.Battle.Players2
                     }
                     break;
                 case PlayModeFrozen:
-                    SetDebugText($"{PlayerPos:N0} F");
+                    SetDebugText($"{PlayerPos:N0}F");
                     _collider.enabled = true;
                     _playerMovement.SetStopped();
                     if (_isStateSpriteColorTint)
@@ -337,7 +342,7 @@ namespace Battle.Scripts.Battle.Players2
                     }
                     break;
                 case PlayModeGhosted:
-                    SetDebugText($"{PlayerPos:N0} G");
+                    SetDebugText($"{PlayerPos:N0}G");
                     _collider.enabled = false;
                     _playerMovement.SetMovementAllowed();
                     if (_isStateSpriteColorTint)
