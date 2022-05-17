@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Room
 {
-    public class PlayerPlayArea : MonoBehaviour
+    internal class PlayerPlayArea : MonoBehaviour
     {
         [Header("Player Areas"), SerializeField] private Rect _playAreaP1;
         [SerializeField] private Rect _playAreaP2;
@@ -17,6 +17,12 @@ namespace Battle.Scripts.Battle.Room
         [SerializeField] private Vector2 _startPositionP3;
         [SerializeField] private Vector2 _startPositionP4;
 
+        [Header("Team Middle Positions"), SerializeField] private Transform _blueTeamMiddlePosition;
+        [SerializeField] private Transform _redTeamMiddlePosition;
+
+        public Transform BlueTeamMiddlePosition => _blueTeamMiddlePosition;
+        public Transform RedTeamMiddlePosition => _redTeamMiddlePosition;
+        
         public Rect GetPlayerPlayArea(int playerPos)
         {
             Rect playArea;
