@@ -19,6 +19,8 @@ namespace Battle.Scripts.Battle.Factory
     {
         internal static GameCamera GetGameCamera => Object.FindObjectOfType<GameCamera>();
 
+        internal static GameBackground GetGameBackground => Object.FindObjectOfType<GameBackground>();
+        
         internal static IPlayerManager GetPlayerManager => Object.FindObjectOfType<PlayerManager>();
 
         internal static IBall GetBall => Object.FindObjectOfType<BallActor>();

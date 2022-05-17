@@ -16,8 +16,6 @@ namespace Battle.Scripts.Battle.Room
     {
         [Header("Player Settings"), SerializeField] private GameObject _playerPrefab;
 
-        [Header("Level Settings"), SerializeField] private GameObject _gameBackground;
-
         private void OnEnable()
         {
             var player = PhotonNetwork.LocalPlayer;
@@ -31,9 +29,9 @@ namespace Battle.Scripts.Battle.Room
             var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
             if (teamNumber == PhotonBattle.TeamRedValue)
             {
-                var gameCameraInstance = Context.GetGameCamera;
-                var gameCamera = gameCameraInstance != null ? gameCameraInstance.Camera : null;
-                var isRotated = RotateLocalPlayer(gameCamera, _gameBackground);
+                var gameCamera = Context.GetGameCamera;
+                var gameBackground = Context.GetGameBackground;
+                var isRotated = RotateLocalPlayer(gameCamera.Camera, gameBackground.Background);
                 if (isRotated)
                 {
                     isNormalTeamLayout = false;
@@ -67,7 +65,7 @@ namespace Battle.Scripts.Battle.Room
             void RotateBackground(bool isUpsideDown)
             {
                 Debug.Log($"RotateBackground upsideDown {isUpsideDown}");
-                gameBackground.transform.Rotate(isUpsideDown);
+                gameBackground.GetComponent<Transform>().Rotate(isUpsideDown);
             }
 
             var features = RuntimeGameConfig.Get().Features;
