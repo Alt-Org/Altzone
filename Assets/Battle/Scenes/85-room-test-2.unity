@@ -1400,7 +1400,7 @@ GameObject:
   - component: {fileID: 685996055}
   - component: {fileID: 685996056}
   m_Layer: 14
-  m_Name: RedTeamLine
+  m_Name: BlueTeamLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1419,7 +1419,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1439507822}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &685996056
 SpriteRenderer:
@@ -2100,7 +2100,7 @@ GameObject:
   - component: {fileID: 857887051}
   - component: {fileID: 857887052}
   m_Layer: 14
-  m_Name: BlueTeamLine
+  m_Name: RedTeamLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2119,7 +2119,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1439507822}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &857887052
 SpriteRenderer:
@@ -2966,8 +2966,8 @@ Transform:
   m_LocalScale: {x: 1, y: 0.2067997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 685996055}
   - {fileID: 857887051}
+  - {fileID: 685996055}
   m_Father: {fileID: 1523517239}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3040,7 +3040,8 @@ MonoBehaviour:
     y: 0
     width: 9
     height: 8
-  _deflatePlayArea: {x: 0, y: 2.1}
+  _deflateLeftBottomArea: {x: 0, y: 0}
+  _deflateRightTopArea: {x: 0, y: 2}
   _startPositionP1: {x: -2.5, y: -4}
   _startPositionP2: {x: 2.5, y: -5}
   _startPositionP3: {x: 2.5, y: 4}

@@ -143,6 +143,28 @@ public static class UnityExtensions
         };
     }
 
+    public static Rect InflateBlueSide(this Rect rect, Vector2 size, Vector2 size2)
+    {
+        return new Rect
+        {
+            xMin = rect.xMin - size.x,
+            yMin = rect.yMin - size.y,
+            xMax = rect.xMax + size2.x,
+            yMax = rect.yMax + size2.y
+        };
+    }
+
+    public static Rect InflateRedSide(this Rect rect, Vector2 size, Vector2 size2)
+    {
+        return new Rect
+        {
+            xMin = rect.xMin - size2.x,
+            yMin = rect.yMin - size2.y,
+            xMax = rect.xMax + size.x,
+            yMax = rect.yMax + size.y
+        };
+    }
+
     #endregion
 
     #region Debugging

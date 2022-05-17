@@ -9,7 +9,8 @@ namespace Battle.Scripts.Battle.Room
         [SerializeField] private Rect _playAreaP2;
         [SerializeField] private Rect _playAreaP3;
         [SerializeField] private Rect _playAreaP4;
-        [SerializeField] private Vector2 _deflatePlayArea;
+        [SerializeField] private Vector2 _deflateLeftBottomArea;
+        [SerializeField] private Vector2 _deflateRightTopArea;
 
         [Header("Player Start Positions"), SerializeField] private Vector2 _startPositionP1;
         [SerializeField] private Vector2 _startPositionP2;
@@ -36,10 +37,16 @@ namespace Battle.Scripts.Battle.Room
                 default:
                     throw new UnityException($"Invalid player position {playerPos}");
             }
-            if (_deflatePlayArea != Vector2.zero)
+
+            if (playerPos == PhotonBattle.PlayerPosition1 || playerPos == PhotonBattle.PlayerPosition2)
             {
-                playArea = playArea.Inflate(-_deflatePlayArea);
+                playArea = playArea.InflateBlueSide(-_deflateLeftBottomArea, -_deflateRightTopArea);
             }
+            else if (playerPos == PhotonBattle.PlayerPosition3 || playerPos == PhotonBattle.PlayerPosition4)
+            {
+                playArea = playArea.InflateRedSide(-_deflateLeftBottomArea, -_deflateRightTopArea);
+            }
+
             return playArea;
         }
 
