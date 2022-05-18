@@ -49,6 +49,12 @@ namespace Prg.Scripts.Common.Unity.Window
                         windowManager.GoBack();
                         return;
                     }
+                    if (targetIndex > 1)
+                    {
+                        windowManager.Unwind(_naviTarget);
+                        windowManager.GoBack();
+                        return;
+                    }
                 }
                 windowManager.ShowWindow(_naviTarget);
             });
