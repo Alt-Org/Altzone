@@ -365,7 +365,7 @@ GameObject:
   - component: {fileID: 959857971}
   - component: {fileID: 959857970}
   m_Layer: 0
-  m_Name: PhotonPlayer
+  m_Name: PhotonPlayerInstantiate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -383,6 +383,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cceacf6dbb574f45b0c39b157f83be45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _photonPrefab: {fileID: 3022018102379483262, guid: 838e36aa39adca0489e0726c194d1373,
+    type: 3}
+  _playerPrefab: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
+    type: 3}
   _debug:
     _playerPos: 1
     _playerMainSkill: 2
@@ -460,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debug:
-    _isOfflineMode: 0
+    _isOfflineMode: 1
 --- !u!114 &1107679315
 MonoBehaviour:
   m_ObjectHideFlags: 0
