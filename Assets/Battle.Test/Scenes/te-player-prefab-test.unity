@@ -387,6 +387,8 @@ MonoBehaviour:
     type: 3}
   _playerPrefab: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
     type: 3}
+  _photonInstance: {fileID: 0}
+  _playerInstance: {fileID: 0}
   _debug:
     _playerPos: 1
     _playerMainSkill: 2
@@ -464,7 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debug:
-    _isOfflineMode: 1
+    _isOfflineMode: 0
 --- !u!114 &1107679315
 MonoBehaviour:
   m_ObjectHideFlags: 0

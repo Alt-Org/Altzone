@@ -27,9 +27,9 @@ namespace Battle.Test.Scripts.Battle.Room
 
         private IEnumerator Start()
         {
+            PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
             PhotonNetwork.OfflineMode = _debug._isOfflineMode;
-            PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
             for (; enabled;)
             {
                 if (PhotonNetwork.InRoom)

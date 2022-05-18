@@ -45,6 +45,8 @@ namespace Altzone.Scripts.Battle
         public const int TeamBlueValue = 1;
         public const int TeamRedValue = 2;
 
+        private const string NoPlayerName = "noname";
+        
         public static bool IsRealPlayer(Player player)
         {
             var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
@@ -95,12 +97,12 @@ namespace Altzone.Scripts.Battle
 
         public static string GetLocalPlayerName()
         {
-            if (PhotonNetwork.InRoom)
+            if (PhotonNetwork.InRoom && !string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
             {
                 return PhotonNetwork.NickName;
             }
             var playerData = RuntimeGameConfig.Get().PlayerDataCache;
-            return playerData.PlayerName;
+            return !string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : NoPlayerName;
         }
 
         public static int GetPlayerIndex(int playerPos)

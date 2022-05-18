@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.Factory;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using UnityEngine;
@@ -72,24 +73,31 @@ namespace Battle.Test.Scripts.Battle.Player
         {
             var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
-            Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()} {player.GetDebugLabel()}");
-            if (_photonPrefab != null)
-            {
-                var instantiationPosition = Vector3.zero;
-                _playerInstance = Instantiate(_playerPrefab, instantiationPosition, Quaternion.identity);
-                _playerInstance.SetPhotonPlayerInstantiate(this);
+            PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
+            Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
+            Debug.Log($"{player.GetDebugLabel()}");
 
-                var instance = PhotonNetwork.Instantiate(_photonPrefab.name, instantiationPosition, Quaternion.identity);
-                _photonInstance = instance.GetComponent<PlayerDriver>();
-                _photonInstance.SetPhotonPlayerInstantiate(this);
-            }
+            var playerPos = PhotonBattle.GetPlayerPos(player);
+            var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
+            var playerTag = $"{playerPos}:{PhotonNetwork.NickName}";
+
+            _playerInstance = Instantiate(_playerPrefab, instantiationPosition, Quaternion.identity);
+            _playerInstance.name = _playerInstance.name.Replace("Clone", playerTag);
+            _playerInstance.SetPhotonPlayerInstantiate(this);
+
+            var instance = PhotonNetwork.Instantiate(_photonPrefab.name, instantiationPosition, Quaternion.identity);
+            _photonInstance = instance.GetComponent<PlayerDriver>();
+            _photonInstance.name = _photonInstance.name.Replace("Clone", playerTag);
+            _photonInstance.SetPhotonPlayerInstantiate(this);
+
             enabled = false;
         }
 
         public void OnPhotonPlayerInstantiated(Photon.Realtime.Player player)
         {
             var room = PhotonNetwork.CurrentRoom;
-            Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()} {player.GetDebugLabel()}");
+            Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
+            Debug.Log($"{player.GetDebugLabel()}");
         }
     }
 }
