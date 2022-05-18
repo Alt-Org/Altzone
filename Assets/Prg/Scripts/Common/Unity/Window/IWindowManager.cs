@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 
@@ -29,6 +30,11 @@ namespace Prg.Scripts.Common.Unity.Window
         /// </summary>
         int WindowCount { get; }
 
+        /// <summary>
+        /// Get current window stack.
+        /// </summary>
+        List<WindowManager.MyWindow> WindowStack { get; }
+        
         /// <summary>
         /// Finds given windows index in window stack, top most window has index value 0 and not found window -1.
         /// </summary>

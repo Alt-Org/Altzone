@@ -20,7 +20,7 @@ namespace Prg.Scripts.Common.Unity.Window
         }
 
         [Serializable]
-        private class MyWindow
+        public class MyWindow
         {
             public WindowDef _windowDef;
             public GameObject _window;
@@ -140,6 +140,8 @@ namespace Prg.Scripts.Common.Unity.Window
 
         int IWindowManager.WindowCount => _currentWindows.Count;
 
+        List<MyWindow> IWindowManager.WindowStack => _currentWindows;
+        
         int IWindowManager.FindIndex(WindowDef windowDef)
         {
             return _currentWindows.FindIndex(x => x._windowDef == windowDef);
@@ -415,6 +417,8 @@ namespace Prg.Scripts.Common.Unity.Window
             }
 
             public int WindowCount => 0;
+
+            public List<MyWindow> WindowStack => new();
 
             public int FindIndex(WindowDef windowDef) => -1;
 
