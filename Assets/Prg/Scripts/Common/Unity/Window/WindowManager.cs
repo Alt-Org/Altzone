@@ -37,6 +37,11 @@ namespace Prg.Scripts.Common.Unity.Window
                 _windowDef = windowDef;
                 _window = window;
             }
+
+            public override string ToString()
+            {
+                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_window != null ? _window.name : "noname")}";
+            }
         }
 
         public static IWindowManager Get()
