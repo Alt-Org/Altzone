@@ -39,11 +39,10 @@ public static class PhotonExtensions
         {
             if (string.IsNullOrWhiteSpace(playerName))
             {
-                playerName = $"Player{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
+                playerName = $"Player{separator}{player.ActorNumber}";
             }
-            foreach (var otherPlayer in PhotonNetwork.PlayerList)
-                if (!otherPlayer.Equals(player) &&
-                    string.Equals(otherPlayer.NickName, playerName, StringComparison.CurrentCultureIgnoreCase))
+            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
+                if (string.Equals(otherPlayer.NickName, playerName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     // Assign new name to current player.
                     playerName = $"{playerName}{separator}{PhotonNetwork.LocalPlayer.ActorNumber}";
