@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace MenuUi.Scripts.Test
         private bool _hasStyles;
         private GUIStyle _guiLabelStyle;
         private StringBuilder _builder;
+        private readonly List<WindowManager.MyWindow> _windows = new();
 
         private void OnEnable()
         {
@@ -78,7 +80,10 @@ namespace MenuUi.Scripts.Test
             }
             else
             {
-                foreach (var window in windowManager.WindowStack)
+                _windows.Clear();
+                _windows.AddRange(windowManager.WindowStack);
+                _windows.Reverse();
+                foreach (var window in _windows)
                 {
                     if (_builder.Length > 0)
                     {
