@@ -1,30 +1,36 @@
-using System;
+using Altzone.Scripts.Battle;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Player
 {
+    /// <summary>
+    /// Photon <c>PlayerDriver</c> implementation.
+    /// </summary>
     internal class PlayerDriver : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private PhotonPlayerInstantiate _photonPlayerInstantiate;
+        [SerializeField] private PlayerActor _playerActor;
 
-        public void SetPhotonPlayerInstantiate(PhotonPlayerInstantiate photonPlayerInstantiate)
-        {
-            _photonPlayerInstantiate = photonPlayerInstantiate;
-            enabled = true;
-        }
+        public Photon.Realtime.Player Player => photonView.Owner;
 
         private void Awake()
         {
-            enabled = false;
+            var player = photonView.Owner;
+            Debug.Log($"{player.GetDebugLabel()} {photonView}");
+            var playerPos = PhotonBattle.GetPlayerPos(player);
+            var playerTag = $"{playerPos}:{player.NickName}";
+            name = name.Replace("Clone", playerTag);
         }
 
         public override void OnEnable()
         {
             base.OnEnable();
-            var player = PhotonNetwork.LocalPlayer;
-            Debug.Log($"{player.GetDebugLabel()}");
-            _photonPlayerInstantiate.OnPhotonPlayerInstantiated(player);
+            var player = photonView.Owner;
+            Debug.Log($"{player.GetDebugLabel()} {photonView}");
+            var photonPlayerInstantiate = FindObjectOfType<PhotonPlayerInstantiate>();
+            Assert.IsNotNull(photonPlayerInstantiate, "photonPlayerInstantiate != null");
+            _playerActor = photonPlayerInstantiate.OnPhotonPlayerInstantiated(player, this);
         }
     }
 }

@@ -9,6 +9,9 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Player
 {
+    /// <summary>
+    /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
+    /// </summary>
     internal class PhotonPlayerInstantiate : MonoBehaviourPunCallbacks
     {
         [Serializable]
@@ -21,11 +24,12 @@ namespace Battle.Test.Scripts.Battle.Player
         [Header("Prefab Settings"), SerializeField] private PlayerDriver _photonPrefab;
         [SerializeField] private PlayerActor _playerPrefab;
         
-        [Header("Live Data"), SerializeField] private PlayerDriver _photonInstance;
-        [SerializeField] private PlayerActor _playerInstance;
+        [Header("Live Data"), SerializeField] private PlayerDriver _localPhotonInstance;
         
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
+        private bool _isLocalPlayerInstantiated;
+        
         public override void OnEnable()
         {
             Assert.IsNotNull(_photonPrefab, "_photonPrefab != null");
@@ -56,6 +60,10 @@ namespace Battle.Test.Scripts.Battle.Player
 
         public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
         {
+            if (_isLocalPlayerInstantiated)
+            {
+                return;
+            }
             var player = PhotonNetwork.LocalPlayer;
             if (!player.Equals(targetPlayer))
             {
@@ -77,27 +85,25 @@ namespace Battle.Test.Scripts.Battle.Player
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
 
-            var playerPos = PhotonBattle.GetPlayerPos(player);
-            var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
-            var playerTag = $"{playerPos}:{PhotonNetwork.NickName}";
-
-            _playerInstance = Instantiate(_playerPrefab, instantiationPosition, Quaternion.identity);
-            _playerInstance.name = _playerInstance.name.Replace("Clone", playerTag);
-            _playerInstance.SetPhotonPlayerInstantiate(this);
-
-            var instance = PhotonNetwork.Instantiate(_photonPrefab.name, instantiationPosition, Quaternion.identity);
-            _photonInstance = instance.GetComponent<PlayerDriver>();
-            _photonInstance.name = _photonInstance.name.Replace("Clone", playerTag);
-            _photonInstance.SetPhotonPlayerInstantiate(this);
-
-            enabled = false;
+            var instance = PhotonNetwork.Instantiate(_photonPrefab.name, Vector3.zero, Quaternion.identity);
+            _localPhotonInstance = instance.GetComponent<PlayerDriver>();
+            _isLocalPlayerInstantiated = true;
         }
 
-        public void OnPhotonPlayerInstantiated(Photon.Realtime.Player player)
+        public PlayerActor OnPhotonPlayerInstantiated(Photon.Realtime.Player player, PlayerDriver playerDriver)
         {
             var room = PhotonNetwork.CurrentRoom;
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
+            
+            var playerPos = PhotonBattle.GetPlayerPos(player);
+            var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
+            var playerTag = $"{playerPos}:{player.NickName}";
+
+            var playerActor = Instantiate(_playerPrefab, instantiationPosition, Quaternion.identity);
+            playerActor.name = playerActor.name.Replace("Clone", playerTag);
+            playerActor.SetPlayerDriver(playerDriver);
+            return playerActor;
         }
     }
 }

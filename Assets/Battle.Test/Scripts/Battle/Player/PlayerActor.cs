@@ -1,28 +1,32 @@
-using Photon.Pun;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Player
 {
+    /// <summary>
+    /// <c>PlayerActor</c> for local and remote instances.
+    /// </summary>
+    /// <remarks>
+    /// This class manages local visual representation of player actor.
+    /// </remarks>
     internal class PlayerActor : MonoBehaviour
     {
-        [SerializeField] private PhotonPlayerInstantiate _photonPlayerInstantiate;
-
-        public void SetPhotonPlayerInstantiate(PhotonPlayerInstantiate photonPlayerInstantiate)
-        {
-            _photonPlayerInstantiate = photonPlayerInstantiate;
-            enabled = true;
-        }
+        [SerializeField] private PlayerDriver _playerDriver;
 
         private void Awake()
         {
             enabled = false;
         }
 
+        public void SetPlayerDriver(PlayerDriver playerDriver)
+        {
+            _playerDriver = playerDriver;
+            enabled = true;
+        }
+
         private void OnEnable()
         {
-            var player = PhotonNetwork.LocalPlayer;
+            var player = _playerDriver.Player;
             Debug.Log($"{player.GetDebugLabel()}");
-            _photonPlayerInstantiate.OnPhotonPlayerInstantiated(player);
         }
     }
 }
