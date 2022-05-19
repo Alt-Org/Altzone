@@ -20,20 +20,19 @@ namespace Battle.Test.Scripts.Battle.Players
             public TextMeshPro _playerText;
         }
         
-        [SerializeField] private PlayerDriver _playerDriver;
-
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
         
-        public static PlayerActor Instantiate(PlayerDriver playerDriver, PlayerActor playerPrefab)
+        private IPlayerDriver _playerDriver;
+
+        public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
-            var player = playerDriver.Player;
-            Debug.Log($"{player.GetDebugLabel()} prefab {playerPrefab.name}");
-            
-            var playerPos = PhotonBattle.GetPlayerPos(player);
+            Debug.Log($"prefab {playerPrefab.name}");
+
+            var playerPos = playerDriver.PlayerPos;
             var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
 
             var playerActor = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            var playerTag = $"{playerPos}:{player.NickName}";
+            var playerTag = $"{playerPos}:{playerDriver.NickName}";
             playerActor.name = playerActor.name.Replace("Clone", playerTag);
             playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
@@ -41,12 +40,17 @@ namespace Battle.Test.Scripts.Battle.Players
         
         private void Awake()
         {
-            // Wait until PlayerDriver is assigned. 
-            enabled = false;
+            Debug.Log($"{name} {enabled}");
+            // Wait until PlayerDriver is assigned.
+            if (enabled)
+            {
+                enabled = false;
+            }
         }
 
-        private void SetPlayerDriver(PlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriver playerDriver)
         {
+            Debug.Log($"{name} {enabled}");
             // Now we are good to go.
             _playerDriver = playerDriver;
             enabled = true;
@@ -54,9 +58,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void OnEnable()
         {
-            var player = _playerDriver.Player;
-            Debug.Log($"{player.GetDebugLabel()}");
-            _debug._playerText.text = $"{player.ActorNumber}";
+            Debug.Log($"{name}");
+            _debug._playerText.text = $"{_playerDriver.ActorNumber}";
         }
     }
 }

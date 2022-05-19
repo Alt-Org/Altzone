@@ -23,7 +23,7 @@ namespace Battle.Test.Scripts.Battle.Players
             public Defence _playerMainSkill = Defence.Deflection;
         }
 
-        [Header("Prefab Settings"), SerializeField] private PlayerDriver _photonPrefab;
+        [Header("Prefab Settings"), SerializeField] private PhotonPlayerDriver _photonPrefab;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -81,7 +81,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
 
-            PlayerDriver.InstantiateLocalPlayer(player, _photonPrefab.name);
+            PhotonPlayerDriver.InstantiateLocalPlayer(player, _photonPrefab.name);
             enabled = false;
         }
     }

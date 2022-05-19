@@ -11,7 +11,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriver : MonoBehaviourPunCallbacks
+    internal class PhotonPlayerDriver : MonoBehaviourPunCallbacks, IPlayerDriver
     {
         [Serializable]
         internal class DebugSettings
@@ -23,10 +23,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
-        public Player Player => photonView.Owner;
-
-        public CharacterModel CharacterModel { get; private set; }
-
+        private IPlayerDriver _interface;
+        private CharacterModel _characterModel;
+        
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
@@ -36,11 +35,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Awake()
         {
+            _interface = this;
             print("+");
             var player = photonView.Owner;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
-            var playerPos = PhotonBattle.GetPlayerPos(player);
-            var playerTag = $"{playerPos}:{player.NickName}";
+            var playerPos = _interface.PlayerPos;
+            var playerTag = $"{playerPos}:{_interface.NickName}";
             name = name.Replace("Clone", playerTag);
         }
 
@@ -57,8 +57,20 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
             _playerActor = PlayerActor.Instantiate(this, _debug._playerPrefab);
-            CharacterModel = PhotonBattle.GetCharacterModelForRoom(player);
         }
+
+        #region IPlayerDriver
+
+        string IPlayerDriver.NickName => photonView.Owner.NickName;
+
+        int IPlayerDriver.ActorNumber => photonView.Owner.ActorNumber;
+
+        int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
+
+        CharacterModel IPlayerDriver.CharacterModel => _characterModel;
+
+        #endregion
     }
 }
