@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -19,6 +19,7 @@ namespace Battle.Test.Scripts.Battle.Players
         internal class DebugSettings
         {
             [Range(1, 4)] public int _playerPos = 1;
+            public bool _isAllocateByTeams;
             public Defence _playerMainSkill = Defence.Deflection;
         }
 
@@ -56,10 +57,10 @@ namespace Battle.Test.Scripts.Battle.Players
                 OnLocalPlayerReady();
                 return;
             }
-            SetDebugPlayer(player, _debug._playerPos, (int)_debug._playerMainSkill);
+            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, (int)_debug._playerMainSkill);
         }
 
-        public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (!targetPlayer.Equals(PhotonNetwork.LocalPlayer))
             {
@@ -70,37 +71,6 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 OnLocalPlayerReady();
             }
-        }
-
-        private static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerMainSkill)
-        {
-            var usedPlayerPositions = new HashSet<int>();
-            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
-            {
-                var otherPlayerPos = PhotonBattle.GetPlayerPos(otherPlayer);
-                if (PhotonBattle.IsValidPlayerPos(otherPlayerPos))
-                {
-                    usedPlayerPositions.Add(otherPlayerPos);
-                }
-            }
-            if (usedPlayerPositions.Contains(wantedPlayerPos))
-            {
-                var playerPositions = new[]
-                    { PhotonBattle.PlayerPosition3, PhotonBattle.PlayerPosition2, PhotonBattle.PlayerPosition4, PhotonBattle.PlayerPosition1 };
-                foreach (var playerPos in playerPositions)
-                {
-                    if (!usedPlayerPositions.Contains(playerPos))
-                    {
-                        wantedPlayerPos = playerPos;
-                        break;
-                    }
-                }
-            }
-            if (!PhotonBattle.IsValidPlayerPos(wantedPlayerPos))
-            {
-                wantedPlayerPos = PhotonBattle.PlayerPositionSpectator;
-            }
-            PhotonBattle.SetDebugPlayerProps(player, wantedPlayerPos, playerMainSkill);
         }
 
         private void OnLocalPlayerReady()

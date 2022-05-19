@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
@@ -46,7 +47,7 @@ namespace Altzone.Scripts.Battle
         public const int TeamRedValue = 2;
 
         private const string NoPlayerName = "noname";
-        
+
         public static bool IsRealPlayer(Player player)
         {
             var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
@@ -184,7 +185,40 @@ namespace Altzone.Scripts.Battle
             };
             room.SetCustomProperties(props);
         }
-        
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        public static void SetDebugPlayer(Player player, int wantedPlayerPos, bool isAllocateByTeams, int playerMainSkill)
+        {
+            var usedPlayerPositions = new HashSet<int>();
+            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
+            {
+                var otherPlayerPos = GetPlayerPos(otherPlayer);
+                if (IsValidPlayerPos(otherPlayerPos))
+                {
+                    usedPlayerPositions.Add(otherPlayerPos);
+                }
+            }
+            if (usedPlayerPositions.Contains(wantedPlayerPos))
+            {
+                var playerPositions = isAllocateByTeams
+                    ? new[] { PlayerPosition2, PlayerPosition3, PlayerPosition4, PlayerPosition1 }
+                    : new[] { PlayerPosition3, PlayerPosition2, PlayerPosition4, PlayerPosition1 };
+                foreach (var playerPos in playerPositions)
+                {
+                    if (!usedPlayerPositions.Contains(playerPos))
+                    {
+                        wantedPlayerPos = playerPos;
+                        break;
+                    }
+                }
+            }
+            if (!IsValidPlayerPos(wantedPlayerPos))
+            {
+                wantedPlayerPos = PlayerPositionSpectator;
+            }
+            SetDebugPlayerProps(player, wantedPlayerPos, playerMainSkill);
+        }
+
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
