@@ -76,11 +76,11 @@ namespace Battle.Test.Scripts.Battle.Players
             // TODO: check that player position is valid before assigning it to local player
             // - check below is not perfect but good enough for now
             var realPlayerCount = 1 + PhotonBattle.CountRealPlayers();
-            if (realPlayerCount > _debug._playerPos)
+            if (realPlayerCount > 1 && realPlayerCount > _debug._playerPos)
             {
                 _debug._playerPos = realPlayerCount;
             }
-            PhotonBattle.SetDebugPlayerProps(player, realPlayerCount, (int)_debug._playerMainSkill);
+            PhotonBattle.SetDebugPlayerProps(player, _debug._playerPos, (int)_debug._playerMainSkill);
         }
 
         private void OnPhotonPlayerReady()
