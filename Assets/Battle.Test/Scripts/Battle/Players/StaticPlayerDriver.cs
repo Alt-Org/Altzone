@@ -1,6 +1,7 @@
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.interfaces;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -40,11 +41,23 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
+        int IPlayerDriver.MaxPoseIndex => 0;
+
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
+        }
+
+        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        {
+            _playerActor.SetCharacterPose(poseIndex);
+        }
+
+        void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
+        {
+            _playerActor.SetPlayMode(playMode);
         }
 
         #endregion

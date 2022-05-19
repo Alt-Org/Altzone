@@ -1,5 +1,6 @@
 using System;
 using Battle.Scripts.Battle.Factory;
+using Battle.Scripts.Battle.interfaces;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
+            public bool _isShowPlayerText;
             public TextMeshPro _playerText;
         }
 
@@ -27,6 +29,9 @@ namespace Battle.Test.Scripts.Battle.Players
         private bool _isMoving;
         private Vector3 _targetPosition;
         private Vector3 _tempPosition;
+
+        private BattlePlayMode _playMode;
+        private int _poseIndex;
 
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
@@ -44,14 +49,18 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Awake()
         {
-            Debug.Log($"{name} {enabled}");
+            Debug.Log($"{name}");
+            if (_debug._playerText == null)
+            {
+                _debug._isShowPlayerText = false;
+            }
             // Wait until PlayerDriver is assigned.
             enabled = false;
         }
 
         private void SetPlayerDriver(IPlayerDriver playerDriver)
         {
-            Debug.Log($"{name} {enabled}");
+            Debug.Log($"{name}");
             // Now we are good to go.
             _playerDriver = playerDriver;
             _transform = GetComponent<Transform>();
@@ -61,7 +70,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            _debug._playerText.text = $"{_playerDriver.ActorNumber}";
+            UpdatePlayerText();
         }
 
         private void Update()
@@ -73,6 +82,15 @@ namespace Battle.Test.Scripts.Battle.Players
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, _speed * Time.deltaTime);
             _transform.position = _tempPosition;
             _isMoving = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
+        }
+
+        private void UpdatePlayerText()
+        {
+            if (!_debug._isShowPlayerText)
+            {
+                return;
+            }
+            _debug._playerText.text = $"{_playerDriver.ActorNumber}{_poseIndex}{_playMode.ToString().ToLower()[0]}";
         }
 
         #region IPlayerActor Interface
@@ -87,9 +105,23 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
-            Debug.Log($"{name} {targetPosition} Speed {_speed}");
+            Debug.Log($"{name} {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
             _isMoving = true;
             _targetPosition = targetPosition;
+        }
+
+        void IPlayerActor.SetCharacterPose(int poseIndex)
+        {
+            Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
+            _poseIndex = poseIndex;
+            UpdatePlayerText();
+        }
+
+        void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
+        {
+            Debug.Log($"{name} {_playMode} <- {playMode}");
+            _playMode = playMode;
+            UpdatePlayerText();
         }
 
         #endregion

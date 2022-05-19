@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
-        
+
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
@@ -70,11 +71,23 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
 
+        int IPlayerDriver.MaxPoseIndex => 0;
+
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(MoveToRpc), RpcTarget.All, targetPosition);
+        }
+
+        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        {
+            photonView.RPC(nameof(SetCharacterPoseRpc), RpcTarget.All, poseIndex);
+        }
+
+        void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
+        {
+            photonView.RPC(nameof(SetPlayModeRpc), RpcTarget.All, playMode);
         }
 
         #endregion
@@ -85,6 +98,18 @@ namespace Battle.Test.Scripts.Battle.Players
         private void MoveToRpc(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
+        }
+
+        [PunRPC]
+        private void SetCharacterPoseRpc(int poseIndex)
+        {
+            _playerActor.SetCharacterPose(poseIndex);
+        }
+
+        [PunRPC]
+        private void SetPlayModeRpc(BattlePlayMode playMode)
+        {
+            _playerActor.SetPlayMode(playMode);
         }
 
         #endregion
