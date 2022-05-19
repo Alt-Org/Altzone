@@ -138,6 +138,7 @@ namespace Altzone.Scripts.Config
                     throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
             }
         }
+
         public GameObject GetShieldPrefab(Defence defence)
         {
             switch (defence)
@@ -256,8 +257,6 @@ namespace Altzone.Scripts.Config
 
         private static void LoadGameConfig(RuntimeGameConfig instance)
         {
-            // We can use models
-            Storefront.Create();
             // Create default values
             instance._permanentFeatures = new GameFeatures();
             instance._permanentConstraints = new GameConstraints();

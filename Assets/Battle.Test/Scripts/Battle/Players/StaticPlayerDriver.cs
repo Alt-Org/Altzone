@@ -27,8 +27,6 @@ namespace Battle.Test.Scripts.Battle.Players
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            // Stupid way to create store.
-            RuntimeGameConfig.Get();
             _characterModel = Storefront.Get().GetCharacterModel((int)_playerMainSkill);
             _playerActor = PlayerActor.Instantiate(this, _playerPrefab);
         }

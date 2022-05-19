@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace Altzone.Scripts.Model
 {
+    /// <summary>
+    /// Store for model objects.
+    /// </summary>
     public interface IStorefront
     {
         CharacterModel GetCharacterModel(int id);
@@ -14,18 +17,10 @@ namespace Altzone.Scripts.Model
     {
         public static IStorefront Get()
         {
-            return _instance;
+            return _instance ??= new Storefront();
         }
 
         private static Storefront _instance;
-
-        public static void Create()
-        {
-            if (_instance == null)
-            {
-                _instance = new Storefront();
-            }
-        }
 
         private Storefront()
         {
