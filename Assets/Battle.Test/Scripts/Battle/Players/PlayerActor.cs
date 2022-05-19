@@ -1,5 +1,4 @@
 using System;
-using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle.Factory;
 using TMPro;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// <remarks>
     /// This class manages local visual representation of player actor.
     /// </remarks>
-    internal class PlayerActor : MonoBehaviour
+    internal class PlayerActor : MonoBehaviour, IPlayerActor
     {
         [Serializable]
         internal class DebugSettings
@@ -71,18 +70,24 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, Speed * Time.deltaTime);
+            _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, _speed * Time.deltaTime);
             _transform.position = _tempPosition;
             _isMoving = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
         }
 
-        #region Public Interface
+        #region IPlayerActor Interface
 
-        public float Speed { get; set; }
-        
-        public void MoveTo(Vector2 targetPosition)
+        private float _speed;
+
+        float IPlayerActor.Speed
         {
-            Debug.Log($"{name} {targetPosition} Speed {Speed}");
+            get => _speed;
+            set => _speed = value;
+        }
+
+        void IPlayerActor.MoveTo(Vector2 targetPosition)
+        {
+            Debug.Log($"{name} {targetPosition} Speed {_speed}");
             _isMoving = true;
             _targetPosition = targetPosition;
         }

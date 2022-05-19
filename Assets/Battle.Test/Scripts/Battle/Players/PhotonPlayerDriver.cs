@@ -19,28 +19,27 @@ namespace Battle.Test.Scripts.Battle.Players
             public PlayerActor _playerPrefab;
         }
 
-        [Header("Live Data"), SerializeField] private PlayerActor _playerActor;
+        [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
-        private IPlayerDriver _interface;
         private CharacterModel _characterModel;
+        private IPlayerActor _playerActor;
         
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
             Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
-            var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
         }
 
         private void Awake()
         {
-            _interface = this;
             print("+");
             var player = photonView.Owner;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
-            var playerPos = _interface.PlayerPos;
-            var playerTag = $"{playerPos}:{_interface.NickName}";
+            var playerPos = ((IPlayerDriver)this).PlayerPos;
+            var playerTag = $"{playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
         }
 
@@ -58,7 +57,8 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
-            _playerActor = PlayerActor.Instantiate(this, _debug._playerPrefab);
+            _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
+            _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
         }
 

@@ -12,23 +12,23 @@ namespace Battle.Test.Scripts.Battle.Players
         [SerializeField] private Defence _playerMainSkill = Defence.Deflection;
         [SerializeField] private PlayerActor _playerPrefab;
 
-        [Header("Live Data"), SerializeField] private PlayerActor _playerActor;
+        [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
 
-        private IPlayerDriver _interface;
         private CharacterModel _characterModel;
+        private IPlayerActor _playerActor;
 
         private void Awake()
         {
             print("+");
-            _interface = this;
-            Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_interface.PlayerPos), "PhotonBattle.IsValidGameplayPos(_interface.PlayerPos)");
+            Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
         }
 
         private void OnEnable()
         {
             Debug.Log($"{name}");
             _characterModel = Storefront.Get().GetCharacterModel((int)_playerMainSkill);
-            _playerActor = PlayerActor.Instantiate(this, _playerPrefab);
+            _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
+            _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
         }
 
