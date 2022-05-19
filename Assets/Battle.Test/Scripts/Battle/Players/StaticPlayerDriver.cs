@@ -16,7 +16,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private IPlayerDriver _interface;
         private CharacterModel _characterModel;
-        
+
         private void Awake()
         {
             print("+");
@@ -29,8 +29,9 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name}");
             _characterModel = Storefront.Get().GetCharacterModel((int)_playerMainSkill);
             _playerActor = PlayerActor.Instantiate(this, _playerPrefab);
+            _playerActor.Speed = _characterModel.Speed;
         }
-        
+
         #region IPlayerDriver
 
         string IPlayerDriver.NickName => "Static";
@@ -41,7 +42,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
+        void IPlayerDriver.MoveTo(Vector2 targetPosition)
+        {
+            _playerActor.MoveTo(targetPosition);
+        }
+
         #endregion
-        
     }
 }

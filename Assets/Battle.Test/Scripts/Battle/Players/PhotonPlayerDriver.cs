@@ -59,6 +59,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
             _playerActor = PlayerActor.Instantiate(this, _debug._playerPrefab);
+            _playerActor.Speed = _characterModel.Speed;
         }
 
         #region IPlayerDriver
@@ -70,6 +71,21 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
+
+        void IPlayerDriver.MoveTo(Vector2 targetPosition)
+        {
+            photonView.RPC(nameof(MoveToRpc), RpcTarget.All, targetPosition);
+        }
+
+        #endregion
+
+        #region Photon RPC
+
+        [PunRPC]
+        private void MoveToRpc(Vector2 targetPosition)
+        {
+            _playerActor.MoveTo(targetPosition);
+        }
 
         #endregion
     }

@@ -19,10 +19,15 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             public TextMeshPro _playerText;
         }
-        
+
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
-        
+
         private IPlayerDriver _playerDriver;
+        private Transform _transform;
+
+        private bool _isMoving;
+        private Vector3 _targetPosition;
+        private Vector3 _tempPosition;
 
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
@@ -37,22 +42,20 @@ namespace Battle.Test.Scripts.Battle.Players
             playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
         }
-        
+
         private void Awake()
         {
             Debug.Log($"{name} {enabled}");
             // Wait until PlayerDriver is assigned.
-            if (enabled)
-            {
-                enabled = false;
-            }
+            enabled = false;
         }
 
-        public void SetPlayerDriver(IPlayerDriver playerDriver)
+        private void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             Debug.Log($"{name} {enabled}");
             // Now we are good to go.
             _playerDriver = playerDriver;
+            _transform = GetComponent<Transform>();
             enabled = true;
         }
 
@@ -61,5 +64,29 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name}");
             _debug._playerText.text = $"{_playerDriver.ActorNumber}";
         }
+
+        private void Update()
+        {
+            if (!_isMoving)
+            {
+                return;
+            }
+            _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, Speed * Time.deltaTime);
+            _transform.position = _tempPosition;
+            _isMoving = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
+        }
+
+        #region Public Interface
+
+        public float Speed { get; set; }
+        
+        public void MoveTo(Vector2 targetPosition)
+        {
+            Debug.Log($"{name} {targetPosition} Speed {Speed}");
+            _isMoving = true;
+            _targetPosition = targetPosition;
+        }
+
+        #endregion
     }
 }
