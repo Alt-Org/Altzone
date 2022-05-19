@@ -23,11 +23,10 @@ namespace Battle.Test.Scripts.Battle.Players
         
         public Player Player => photonView.Owner;
 
-        public static PlayerDriver Instantiate(Player player, string networkPrefabName)
+        public static void Instantiate(Player player, string networkPrefabName)
         {
+            Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
             var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
-            var playerDriver = instance.GetComponent<PlayerDriver>();
-            return playerDriver;
         }
 
         private void Awake()

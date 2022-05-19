@@ -194,12 +194,19 @@ namespace Altzone.Scripts.Battle
                 // Should be fastest movement skill to have for testing.
                 playerMainSkill = (int)Defence.Deflection;
             }
+            var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
+            var curPlayerMainSkill = player.GetCustomProperty(PlayerMainSkillKey, -1);
+            if (curPlayerPos == playerPos && curPlayerMainSkill == playerMainSkill)
+            {
+                // Prevent setting same values because it is hard for client to keep track of asynchronous changes over network.
+                return;
+            }
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, playerPos },
                 { PlayerMainSkillKey, playerMainSkill }
             });
-            Debug.LogWarning($"setDebugPlayerProps {player.GetDebugLabel()}");
+            Debug.LogWarning($"setDebugPlayerProps {player.GetDebugLabel()} playerPos {playerPos} skill {playerMainSkill}");
         }
     }
 }
