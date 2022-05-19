@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battle.Test.Scripts.Battle.Player
+namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
     /// <c>PlayerActor</c> for local and remote instances.

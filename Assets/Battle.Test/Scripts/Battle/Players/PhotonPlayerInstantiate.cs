@@ -4,10 +4,11 @@ using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Battle.Test.Scripts.Battle.Player
+namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
     /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
@@ -90,7 +91,7 @@ namespace Battle.Test.Scripts.Battle.Player
             _isLocalPlayerInstantiated = true;
         }
 
-        public PlayerActor OnPhotonPlayerInstantiated(Photon.Realtime.Player player, PlayerDriver playerDriver)
+        public PlayerActor OnPhotonPlayerInstantiated(Player player, PlayerDriver playerDriver)
         {
             var room = PhotonNetwork.CurrentRoom;
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");

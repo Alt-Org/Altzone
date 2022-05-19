@@ -1,9 +1,10 @@
 using Altzone.Scripts.Battle;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Battle.Test.Scripts.Battle.Player
+namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
@@ -12,7 +13,7 @@ namespace Battle.Test.Scripts.Battle.Player
     {
         [SerializeField] private PlayerActor _playerActor;
 
-        public Photon.Realtime.Player Player => photonView.Owner;
+        public Player Player => photonView.Owner;
 
         private void Awake()
         {
