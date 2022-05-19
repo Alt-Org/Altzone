@@ -1,5 +1,7 @@
+using System;
 using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle.Factory;
+using TMPro;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Players
@@ -12,8 +14,16 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : MonoBehaviour
     {
+        [Serializable]
+        internal class DebugSettings
+        {
+            public TextMeshPro _playerText;
+        }
+        
         [SerializeField] private PlayerDriver _playerDriver;
 
+        [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
+        
         public static PlayerActor Instantiate(PlayerDriver playerDriver, PlayerActor playerPrefab)
         {
             var player = playerDriver.Player;
@@ -46,6 +56,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var player = _playerDriver.Player;
             Debug.Log($"{player.GetDebugLabel()}");
+            _debug._playerText.text = $"{player.ActorNumber}";
         }
     }
 }
