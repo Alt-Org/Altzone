@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -25,8 +26,6 @@ namespace Battle.Test.Scripts.Battle.Players
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
-        private bool _isLocalPlayerInstantiated;
-
         public override void OnEnable()
         {
             Assert.IsNotNull(_photonPrefab, "_photonPrefab != null");
@@ -37,6 +36,13 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 OnPhotonPlayerReady();
             }
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            var player = PhotonNetwork.LocalPlayer;
+            Debug.Log($"{PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
         }
 
         public override void OnJoinedRoom()
@@ -50,15 +56,11 @@ namespace Battle.Test.Scripts.Battle.Players
                 OnPhotonPlayerReady();
                 return;
             }
-            SetDebugPlayer(player);
+            SetDebugPlayer(player, _debug._playerPos, (int)_debug._playerMainSkill);
         }
 
-        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
         {
-            if (_isLocalPlayerInstantiated)
-            {
-                return;
-            }
             if (!targetPlayer.Equals(PhotonNetwork.LocalPlayer))
             {
                 return;
@@ -68,25 +70,37 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 OnPhotonPlayerReady();
             }
-            if (!PhotonNetwork.OfflineMode)
-            {
-                SetDebugPlayer(targetPlayer);
-                return;
-            }
-            // In OfflineMode we can not modify properties during this callback :-(
-            this.ExecuteOnNextFrame(() => SetDebugPlayer(targetPlayer));
         }
 
-        private void SetDebugPlayer(Player player)
+        private static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerMainSkill)
         {
-            // TODO: check that player position is valid before assigning it to local player
-            // - check below is not perfect but good enough for now
-            var realPlayerCount = 1 + PhotonBattle.CountRealPlayers();
-            if (realPlayerCount > 1 && realPlayerCount > _debug._playerPos)
+            var usedPlayerPositions = new HashSet<int>();
+            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
             {
-                _debug._playerPos = realPlayerCount;
+                var otherPlayerPos = PhotonBattle.GetPlayerPos(otherPlayer);
+                if (PhotonBattle.IsValidPlayerPos(otherPlayerPos))
+                {
+                    usedPlayerPositions.Add(otherPlayerPos);
+                }
             }
-            PhotonBattle.SetDebugPlayerProps(player, _debug._playerPos, (int)_debug._playerMainSkill);
+            if (usedPlayerPositions.Contains(wantedPlayerPos))
+            {
+                var playerPositions = new[]
+                    { PhotonBattle.PlayerPosition3, PhotonBattle.PlayerPosition2, PhotonBattle.PlayerPosition4, PhotonBattle.PlayerPosition1 };
+                foreach (var playerPos in playerPositions)
+                {
+                    if (!usedPlayerPositions.Contains(playerPos))
+                    {
+                        wantedPlayerPos = playerPos;
+                        break;
+                    }
+                }
+            }
+            if (!PhotonBattle.IsValidPlayerPos(wantedPlayerPos))
+            {
+                wantedPlayerPos = PhotonBattle.PlayerPositionSpectator;
+            }
+            PhotonBattle.SetDebugPlayerProps(player, wantedPlayerPos, playerMainSkill);
         }
 
         private void OnPhotonPlayerReady()
@@ -97,8 +111,8 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
 
-            PlayerDriver.Instantiate(player, _photonPrefab.name);
-            _isLocalPlayerInstantiated = true;
+            PlayerDriver.InstantiateLocalPlayer(player, _photonPrefab.name);
+            enabled = false;
         }
     }
 }

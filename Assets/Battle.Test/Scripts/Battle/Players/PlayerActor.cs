@@ -17,13 +17,13 @@ namespace Battle.Test.Scripts.Battle.Players
         public static PlayerActor Instantiate(PlayerDriver playerDriver, PlayerActor playerPrefab)
         {
             var player = playerDriver.Player;
-            Debug.Log($"{player.GetDebugLabel()} {playerPrefab}");
+            Debug.Log($"{player.GetDebugLabel()} prefab {playerPrefab.name}");
             
             var playerPos = PhotonBattle.GetPlayerPos(player);
             var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
-            var playerTag = $"{playerPos}:{player.NickName}";
 
             var playerActor = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            var playerTag = $"{playerPos}:{player.NickName}";
             playerActor.name = playerActor.name.Replace("Clone", playerTag);
             playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
@@ -37,7 +37,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void SetPlayerDriver(PlayerDriver playerDriver)
         {
-            // No we are good to go.
+            // Now we are good to go.
             _playerDriver = playerDriver;
             enabled = true;
         }
