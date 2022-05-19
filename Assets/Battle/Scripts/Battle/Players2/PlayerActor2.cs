@@ -356,13 +356,15 @@ namespace Battle.Scripts.Battle.Players2
         private void OnSetShieldRotation(int rotationIndex)
         {
             _shield.PlayHitEffects();
-            _shield.SetRotation(rotationIndex);
-
-            // This will be changed, Since this only allows the OnParalysis to work once
-            if (!_shield.CanRotate)
+            if (_shield.CanRotate)
             {
-                StartCoroutine(OnParalysis(3.0f));
-                print("Player is set to Paralized");
+                _shield.SetRotation(rotationIndex);
+            }
+            else
+            {
+                // This will be changed, Since this only allows the OnParalysis to work once
+                StartCoroutine(OnParalysis(_playerHeadHitStunDuration));
+                Debug.Log($"Player is set to Paralyzed {_playerHeadHitStunDuration}");
             }
         }
 
@@ -372,10 +374,8 @@ namespace Battle.Scripts.Battle.Players2
         {
             // This uses the condition of whether the shield can rotate anymore until max rotation
             // Otherwise if it can't, it will stun the player for a set amount of time
-
-
             ((IPlayerActor)this).SetFrozenMode();
-            yield return new WaitForSecondsRealtime(playerHeadHitStunDuration);
+            yield return new WaitForSeconds(playerHeadHitStunDuration);
             ((IPlayerActor)this).SetNormalMode();
         }
     }
