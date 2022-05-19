@@ -68,7 +68,13 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 OnPhotonPlayerReady();
             }
-            SetDebugPlayer(targetPlayer);
+            if (!PhotonNetwork.OfflineMode)
+            {
+                SetDebugPlayer(targetPlayer);
+                return;
+            }
+            // In OfflineMode we can not modify properties during this callback :-(
+            this.ExecuteOnNextFrame(() => SetDebugPlayer(targetPlayer));
         }
 
         private void SetDebugPlayer(Player player)
