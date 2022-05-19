@@ -34,7 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
             if (PhotonNetwork.InRoom)
             {
-                OnPhotonPlayerReady();
+                OnLocalPlayerReady();
             }
         }
 
@@ -53,7 +53,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{player.GetDebugLabel()}");
             if (PhotonBattle.IsRealPlayer(player))
             {
-                OnPhotonPlayerReady();
+                OnLocalPlayerReady();
                 return;
             }
             SetDebugPlayer(player, _debug._playerPos, (int)_debug._playerMainSkill);
@@ -68,7 +68,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{targetPlayer.GetDebugLabel()}");
             if (PhotonBattle.IsRealPlayer(targetPlayer))
             {
-                OnPhotonPlayerReady();
+                OnLocalPlayerReady();
             }
         }
 
@@ -103,7 +103,7 @@ namespace Battle.Test.Scripts.Battle.Players
             PhotonBattle.SetDebugPlayerProps(player, wantedPlayerPos, playerMainSkill);
         }
 
-        private void OnPhotonPlayerReady()
+        private void OnLocalPlayerReady()
         {
             var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
