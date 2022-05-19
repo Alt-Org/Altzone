@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Model;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -20,8 +21,10 @@ namespace Battle.Test.Scripts.Battle.Players
         [Header("Live Data"), SerializeField] private PlayerActor _playerActor;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
-        
+
         public Player Player => photonView.Owner;
+
+        public CharacterModel CharacterModel { get; private set; }
 
         public static void Instantiate(Player player, string networkPrefabName)
         {
@@ -43,7 +46,12 @@ namespace Battle.Test.Scripts.Battle.Players
             base.OnEnable();
             var player = photonView.Owner;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
+            if (_playerActor != null)
+            {
+                return;
+            }
             _playerActor = PlayerActor.Instantiate(this, _debug._playerPrefab);
+            CharacterModel = PhotonBattle.GetCharacterModelForRoom(player);
         }
     }
 }
