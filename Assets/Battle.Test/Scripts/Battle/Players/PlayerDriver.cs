@@ -1,8 +1,8 @@
+using System;
 using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -11,9 +11,24 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </summary>
     internal class PlayerDriver : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private PlayerActor _playerActor;
+        [Serializable]
+        internal class DebugSettings
+        {
+            public PlayerActor _playerPrefab;
+        }
 
+        [Header("Live Data"), SerializeField] private PlayerActor _playerActor;
+
+        [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
+        
         public Player Player => photonView.Owner;
+
+        public static PlayerDriver Instantiate(Player player, string networkPrefabName)
+        {
+            var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            var playerDriver = instance.GetComponent<PlayerDriver>();
+            return playerDriver;
+        }
 
         private void Awake()
         {
@@ -29,9 +44,7 @@ namespace Battle.Test.Scripts.Battle.Players
             base.OnEnable();
             var player = photonView.Owner;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
-            var photonPlayerInstantiate = FindObjectOfType<PhotonPlayerInstantiate>();
-            Assert.IsNotNull(photonPlayerInstantiate, "photonPlayerInstantiate != null");
-            _playerActor = photonPlayerInstantiate.OnPhotonPlayerInstantiated(player, this);
+            _playerActor = PlayerActor.Instantiate(this, _debug._playerPrefab);
         }
     }
 }
