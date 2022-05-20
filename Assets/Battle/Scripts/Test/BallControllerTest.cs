@@ -5,7 +5,7 @@ using Photon.Pun;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 
-namespace Battle.Test.Scripts.Test
+namespace Battle.Scripts.Test
 {
     internal class BallControllerTest : MonoBehaviour
     {

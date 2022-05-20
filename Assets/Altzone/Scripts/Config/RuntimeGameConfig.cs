@@ -71,9 +71,12 @@ namespace Altzone.Scripts.Config
         [Min(0)] public float _playerHeadHitStunDuration;
 
         [Header("Ball")] public float _ballMoveSpeedMultiplier;
+        public float _ballMinMoveSpeed;
+        public float _ballMaxMoveSpeed;
         public float _ballLerpSmoothingFactor;
         public float _ballTeleportDistance;
-        public float _minSlingShotDistance;
+        
+        [Header("Start Ball")] public float _minSlingShotDistance;
         public float _maxSlingShotDistance;
         [Min(1)] public int _ballRestartDelay;
 
