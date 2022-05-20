@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
+    /// <summary>
+    /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />
+    /// Player visual state can be managed locally and/or remotely.
+    /// </summary>
     internal interface IPlayerDriver
     {
         string NickName { get; }

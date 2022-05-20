@@ -7,7 +7,11 @@ namespace Battle.Test.Scripts.Battle.Players
     {
         Stunned = 1,
     }
-        
+
+    /// <summary>
+    /// Local player management interface to keep visual player representation synchronized with "player state" managed elsewhere.<br />
+    /// Player state can be managed locally and/or remotely.
+    /// </summary>
     internal interface IPlayerActor
     {
         float Speed { get; set; }
