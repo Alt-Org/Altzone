@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    public class StaticPlayerDriver : MonoBehaviour, IPlayerDriver
+    public class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
         [Header("Settings"), SerializeField] private int _playerPos;
         [SerializeField] private Defence _playerMainSkill = Defence.Deflection;

@@ -13,7 +13,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PhotonPlayerDriver : MonoBehaviourPunCallbacks, IPlayerDriver
+    internal class PlayerDriverPhoton : MonoBehaviourPunCallbacks, IPlayerDriver
     {
         [Serializable]
         internal class DebugSettings
