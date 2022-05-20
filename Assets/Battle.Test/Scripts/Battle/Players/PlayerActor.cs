@@ -16,6 +16,8 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : MonoBehaviour, IPlayerActor
     {
+        private const int InvalidPlayerDriver = -1;
+        
         [Serializable]
         internal class DebugSettings
         {
@@ -27,6 +29,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private IPlayerDriver _playerDriver;
         private Transform _transform;
+        private int _actorNumber;
 
         private bool _isMoving;
         private Vector3 _targetPosition;
@@ -65,6 +68,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name}");
             // Now we are good to go.
             _playerDriver = playerDriver;
+            _actorNumber = playerDriver.ActorNumber;
             _transform = GetComponent<Transform>();
             if (_debug._isShowPlayerText && !playerDriver.IsLocal)
             {
@@ -106,7 +110,12 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            _debug._playerText.text = $"{_playerDriver.ActorNumber}{_poseIndex}{_playMode.ToString().ToLower()[0]}";
+            if (_actorNumber == -1)
+            {
+                _debug._playerText.text = $"---";
+                return;
+            }
+            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_playMode.ToString().ToLower()[0]}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -175,6 +184,15 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name} {_playMode} <- {playMode}");
             _playMode = playMode;
+            UpdatePlayerText();
+        }
+
+        void IPlayerActor.ResetPlayerDriver()
+        {
+            // We have lost our original driver
+            Debug.Log($"{name} {_actorNumber} <- {InvalidPlayerDriver}");
+            _playerDriver = null;
+            _actorNumber = InvalidPlayerDriver;
             UpdatePlayerText();
         }
 

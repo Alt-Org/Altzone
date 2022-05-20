@@ -12,5 +12,7 @@ namespace Battle.Test.Scripts.Battle.Players
         void SetCharacterPose(int poseIndex);
         
         void SetPlayMode(BattlePlayMode playMode);
+
+        void ResetPlayerDriver();
     }
 }

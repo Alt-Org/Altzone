@@ -28,6 +28,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private bool _isLocal;
+        private bool _isApplicationQuitting;
 
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
@@ -44,6 +45,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playerPos = ((IPlayerDriver)this).PlayerPos;
             var playerTag = $"{playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
+            Application.quitting += () => _isApplicationQuitting = true;
         }
 
         public override void OnEnable()
@@ -78,6 +80,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void OnDestroy()
         {
+            if (_isApplicationQuitting)
+            {
+                return;
+            }
+            print("x");
+            Debug.Log($"{name}");
+            _playerActor.ResetPlayerDriver();
             if (_isLocal)
             {
                 var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
