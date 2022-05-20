@@ -82,7 +82,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name}");
             UpdatePlayerText();
-            StartCoroutine(ThrottledDebugLogger());
+            StartCoroutine(ThrottledLogger());
         }
 
         private void OnDisable()
@@ -131,7 +131,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private float _debugLogTime;
         private string _debugLogMessage;
 
-        private IEnumerator ThrottledDebugLogger()
+        private IEnumerator ThrottledLogger()
         {
             if (!Application.isEditor)
             {
@@ -168,7 +168,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
-            SetThrottledDebugLogMessage($"{name} {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
+            SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
             _isMoving = true;
             _targetPosition = targetPosition;
         }

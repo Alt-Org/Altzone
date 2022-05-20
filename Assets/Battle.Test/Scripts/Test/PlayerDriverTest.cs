@@ -1,15 +1,18 @@
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Players;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Test
 {
-    internal class MovePlayerTest : MonoBehaviour
+    internal class PlayerDriverTest : MonoBehaviour
     {
         [Header("Test Settings")] public Vector2 _playerPosition;
         public int _poseIndex;
         public BattlePlayMode _playMode;
 
+        [Header("Live Data")] public string _nickname;
+        
         [Header("Debug Actions")] public bool _startMoving;
         public bool _setPose;
         public bool _setPlayMode;
@@ -19,7 +22,9 @@ namespace Battle.Test.Scripts.Test
         private void Awake()
         {
             _playerDriver = GetComponent<IPlayerDriver>();
+            Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
+            _nickname = _playerDriver.NickName ?? "noname";
         }
 
         private void Update()
