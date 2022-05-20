@@ -5,10 +5,19 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    internal class PlayerInputHandler : MonoBehaviour
+    internal interface IPlayerInputHandler
+    {
+        void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform, Rect playerArea);
+
+        void ResetPlayerDriver();
+    }
+
+    internal class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
     {
         private static readonly Rect DefaultPlayerArea = Rect.MinMaxRect(-100, -100, 100, 100);
-        
+
+        public static IPlayerInputHandler Get() => FindObjectOfType<PlayerInputHandler>();
+
         [Header("Settings"), SerializeField] private float _unReachableDistance = 100;
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
@@ -32,6 +41,14 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
         }
 
+        private void OnDestroy()
+        {
+            Debug.Log($"{name}");
+            ReleaseInput();
+        }
+
+        #region IPlayerInputHandler
+
         public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform, Rect playerArea)
         {
             Debug.Log($"{name}");
@@ -50,16 +67,12 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerArea = DefaultPlayerArea;
         }
 
-        private void OnDestroy()
-        {
-            Debug.Log($"{name}");
-            ReleaseInput();
-        }
-
         private void SendMoveTo(Vector2 targetPosition)
         {
             _playerDriver.MoveTo(targetPosition);
         }
+
+        #endregion
 
         #region UNITY Input System
 

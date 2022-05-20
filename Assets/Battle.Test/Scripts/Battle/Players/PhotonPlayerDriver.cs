@@ -72,7 +72,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
+            var playerInputHandler = PlayerInputHandler.Get();
             var playerPos = ((IPlayerDriver)this).PlayerPos;
             var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
@@ -89,11 +89,8 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.ResetPlayerDriver();
             if (_isLocal)
             {
-                var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
-                if (playerInputHandler != null)
-                {
-                    playerInputHandler.ResetPlayerDriver();
-                }
+                var playerInputHandler = PlayerInputHandler.Get();
+                playerInputHandler?.ResetPlayerDriver();
             }
         }
 

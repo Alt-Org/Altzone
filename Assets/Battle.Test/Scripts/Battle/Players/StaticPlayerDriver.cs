@@ -34,7 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.Speed = _characterModel.Speed;
             if (_isConnectInputHandler)
             {
-                var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
+                var playerInputHandler = PlayerInputHandler.Get();
                 var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
                 playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
             }
@@ -44,11 +44,8 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             if (_isConnectInputHandler)
             {
-                var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
-                if (playerInputHandler != null)
-                {
-                    playerInputHandler.ResetPlayerDriver();
-                }
+                var playerInputHandler = PlayerInputHandler.Get();
+                playerInputHandler?.ResetPlayerDriver();
             }
         }
 
