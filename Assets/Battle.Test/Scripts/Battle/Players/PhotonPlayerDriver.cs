@@ -77,37 +77,39 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
-            photonView.RPC(nameof(MoveToRpc), RpcTarget.All, targetPosition);
+            photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
-            photonView.RPC(nameof(SetCharacterPoseRpc), RpcTarget.All, poseIndex);
+            photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.All, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
         {
-            photonView.RPC(nameof(SetPlayModeRpc), RpcTarget.All, playMode);
+            photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.All, playMode);
         }
 
         #endregion
 
         #region Photon RPC
 
+        // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
+        
         [PunRPC]
-        private void MoveToRpc(Vector2 targetPosition)
+        private void TestMoveToRpc(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
         }
 
         [PunRPC]
-        private void SetCharacterPoseRpc(int poseIndex)
+        private void TestSetCharacterPoseRpc(int poseIndex)
         {
             _playerActor.SetCharacterPose(poseIndex);
         }
 
         [PunRPC]
-        private void SetPlayModeRpc(BattlePlayMode playMode)
+        private void TestSetPlayModeRpc(BattlePlayMode playMode)
         {
             _playerActor.SetPlayMode(playMode);
         }
