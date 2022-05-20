@@ -13,6 +13,8 @@ namespace Battle.Test.Scripts.Battle.Players
         bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
 
+        void SetStunned(float duration);
+        
         void MoveTo(Vector2 targetPosition);
  
         void SetCharacterPose(int poseIndex);

@@ -38,6 +38,12 @@ namespace Battle.Test.Scripts.Battle.Players
         private BattlePlayMode _playMode;
         private int _poseIndex;
 
+        private bool IsBuffedOrDeBuffed => _isStunned;
+        
+        private bool _isStunned;
+        private Coroutine _stunnedCoroutine;
+        private char _playerModeOrBuff = '?';
+
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
             Debug.Log($"prefab {playerPrefab.name}");
@@ -92,7 +98,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Update()
         {
-            if (!_isMoving)
+            if (!_isMoving || _isStunned)
             {
                 return;
             }
@@ -115,7 +121,11 @@ namespace Battle.Test.Scripts.Battle.Players
                 _debug._playerText.text = $"---";
                 return;
             }
-            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_playMode.ToString().ToLower()[0]}";
+            if (!IsBuffedOrDeBuffed)
+            {
+                _playerModeOrBuff = _playMode.ToString().ToLower()[0];
+            }
+            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -187,6 +197,40 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdatePlayerText();
         }
 
+        void IPlayerActor.SetBuff(PlayerBuff buff, float duration)
+        {
+            Debug.Log($"{name} start {buff} {duration:0.0}s");
+            switch (buff)
+            {
+                case PlayerBuff.Stunned:
+                    StartStunnedBuff(duration);
+                    break;
+                default:
+                    throw new UnityException($"Unknown buff {buff}");
+            }
+        }
+
+        private void StartStunnedBuff(float duration)
+        {
+            _isStunned = true;
+            _playerModeOrBuff = 'X';
+            if (_stunnedCoroutine != null)
+            {
+                StopCoroutine(_stunnedCoroutine);
+            }
+            _stunnedCoroutine = StartCoroutine(StunnedBuff(duration));
+            UpdatePlayerText();
+        }
+        
+        private IEnumerator StunnedBuff(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+            _isStunned = false;
+            _stunnedCoroutine = null;
+            UpdatePlayerText();
+            Debug.Log($"{name} expired");
+        }
+        
         void IPlayerActor.ResetPlayerDriver()
         {
             // We have lost our original driver

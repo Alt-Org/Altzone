@@ -63,6 +63,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
+        void IPlayerDriver.SetStunned(float duration)
+        {
+            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+        
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);

@@ -10,12 +10,14 @@ namespace Battle.Test.Scripts.Test
         [Header("Test Settings")] public Vector2 _playerPosition;
         public int _poseIndex;
         public BattlePlayMode _playMode;
+        public float _stunDuration = 3f;
 
         [Header("Live Data")] public string _nickname;
         
         [Header("Debug Actions")] public bool _startMoving;
         public bool _setPose;
         public bool _setPlayMode;
+        public bool _setStunned;
 
         private IPlayerDriver _playerDriver;
 
@@ -54,6 +56,12 @@ namespace Battle.Test.Scripts.Test
             {
                 _setPlayMode = false;
                 _playerDriver.SetPlayMode(_playMode);
+                return;
+            }
+            if (_setStunned)
+            {
+                _setStunned = false;
+                _playerDriver.SetStunned(_stunDuration);
             }
         }
     }

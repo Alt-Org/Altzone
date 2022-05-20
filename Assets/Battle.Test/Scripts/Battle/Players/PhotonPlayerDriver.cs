@@ -108,6 +108,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
+        void IPlayerDriver.SetStunned(float duration)
+        {
+            
+        }
+        
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);

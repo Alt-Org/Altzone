@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
+    internal enum PlayerBuff
+    {
+        Stunned = 1,
+    }
+        
     internal interface IPlayerActor
     {
         float Speed { get; set; }
@@ -13,6 +18,8 @@ namespace Battle.Test.Scripts.Battle.Players
         
         void SetPlayMode(BattlePlayMode playMode);
 
+        void SetBuff(PlayerBuff buff, float duration);
+        
         void ResetPlayerDriver();
     }
 }
