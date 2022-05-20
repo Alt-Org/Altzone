@@ -103,16 +103,17 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
 
         int IPlayerDriver.MaxPoseIndex => 0;
-        
+
         bool IPlayerDriver.IsLocal => photonView.Owner.IsLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         void IPlayerDriver.SetStunned(float duration)
         {
-            
+            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+            photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
         }
-        
+
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
@@ -120,12 +121,14 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
-            photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.All, poseIndex);
+            _playerActor.SetCharacterPose(poseIndex);
+            photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
         {
-            photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.All, playMode);
+            _playerActor.SetPlayMode(playMode);
+            photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
         }
 
         #endregion
@@ -133,6 +136,12 @@ namespace Battle.Test.Scripts.Battle.Players
         #region Photon RPC
 
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
+
+        [PunRPC]
+        private void TestSetStunnedRpc(float duration)
+        {
+            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
 
         [PunRPC]
         private void TestMoveToRpc(Vector2 targetPosition)
