@@ -65,6 +65,10 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _debug._isShowPlayerText = false;
             }
+            else if (!_debug._isShowPlayerText)
+            {
+                _debug._playerText.gameObject.SetActive(false);
+            }
             // Wait until PlayerDriver is assigned.
             enabled = false;
         }
