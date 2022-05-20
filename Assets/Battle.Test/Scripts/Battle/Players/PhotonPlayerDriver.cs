@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Photon.Realtime;
@@ -26,6 +27,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
+        private bool _isLocal;
 
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
@@ -51,16 +53,39 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
             if (!PhotonBattle.IsRealPlayer(player))
             {
+                enabled = false;
                 return;
             }
             if (_playerActor != null)
             {
+                // Should not be enabled twice!
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
             _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            _isLocal = player.IsLocal;
+            if (!_isLocal)
+            {
+                return;
+            }
+            var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
+            var playerPos = ((IPlayerDriver)this).PlayerPos;
+            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(playerPos);
+            playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
+        }
+
+        private void OnDestroy()
+        {
+            if (_isLocal)
+            {
+                var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
+                if (playerInputHandler != null)
+                {
+                    playerInputHandler.ResetPlayerDriver();
+                }
+            }
         }
 
         #region IPlayerDriver
@@ -95,7 +120,7 @@ namespace Battle.Test.Scripts.Battle.Players
         #region Photon RPC
 
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
-        
+
         [PunRPC]
         private void TestMoveToRpc(Vector2 targetPosition)
         {

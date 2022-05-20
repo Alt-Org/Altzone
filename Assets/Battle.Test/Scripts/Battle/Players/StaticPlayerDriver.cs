@@ -40,6 +40,18 @@ namespace Battle.Test.Scripts.Battle.Players
             }
         }
 
+        private void OnDestroy()
+        {
+            if (_isConnectInputHandler)
+            {
+                var playerInputHandler = FindObjectOfType<PlayerInputHandler>();
+                if (playerInputHandler != null)
+                {
+                    playerInputHandler.ResetPlayerDriver();
+                }
+            }
+        }
+
         #region IPlayerDriver
 
         string IPlayerDriver.NickName => "Static";

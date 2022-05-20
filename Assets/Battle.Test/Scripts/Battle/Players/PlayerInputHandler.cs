@@ -1,4 +1,3 @@
-using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Factory;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -59,7 +58,6 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            Debug.Log($"{targetPosition}");
             _playerDriver.MoveTo(targetPosition);
         }
 
