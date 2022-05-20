@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using TMPro;
@@ -64,6 +66,11 @@ namespace Battle.Test.Scripts.Battle.Players
             // Now we are good to go.
             _playerDriver = playerDriver;
             _transform = GetComponent<Transform>();
+            if (_debug._isShowPlayerText && !playerDriver.IsLocal)
+            {
+                // Pinkish text color.
+                _debug._playerText.faceColor = new Color32(255, 204, 255, 255);
+            }
             enabled = true;
         }
 
@@ -71,6 +78,12 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name}");
             UpdatePlayerText();
+            StartCoroutine(ThrottledDebugLogger());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
         }
 
         private void Update()
@@ -84,6 +97,9 @@ namespace Battle.Test.Scripts.Battle.Players
             _isMoving = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
         }
 
+        #region Debugging
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()
         {
             if (!_debug._isShowPlayerText)
@@ -92,6 +108,44 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             _debug._playerText.text = $"{_playerDriver.ActorNumber}{_poseIndex}{_playMode.ToString().ToLower()[0]}";
         }
+
+        [Conditional("UNITY_EDITOR")]
+        private void SetThrottledDebugLogMessage(string debugLogMessage)
+        {
+            if (!_playerDriver.IsLocal)
+            {
+                return;
+            }
+            _debugLogMessage = debugLogMessage;
+        }
+
+        private float _debugLogTime;
+        private string _debugLogMessage;
+
+        private IEnumerator ThrottledDebugLogger()
+        {
+            if (!Application.isEditor)
+            {
+                yield break;
+            }
+            _debugLogTime = Time.time;
+            _debugLogMessage = null;
+            for (;;)
+            {
+                if (Time.time > _debugLogTime)
+                {
+                    if (_debugLogMessage != null)
+                    {
+                        Debug.Log(_debugLogMessage);
+                        _debugLogMessage = null;
+                        _debugLogTime = Time.time + 1f;
+                    }
+                }
+                yield return null;
+            }
+        }
+
+        #endregion
 
         #region IPlayerActor Interface
 
@@ -105,7 +159,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
-            Debug.Log($"{name} {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
+            SetThrottledDebugLogMessage($"{name} {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
             _isMoving = true;
             _targetPosition = targetPosition;
         }

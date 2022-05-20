@@ -10,6 +10,7 @@ namespace Battle.Test.Scripts.Battle.Players
         int ActorNumber { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
+        bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
 
         void MoveTo(Vector2 targetPosition);

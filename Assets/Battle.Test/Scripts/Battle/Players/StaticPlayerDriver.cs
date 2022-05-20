@@ -61,6 +61,8 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.PlayerPos => _playerPos;
 
         int IPlayerDriver.MaxPoseIndex => 0;
+        
+        bool IPlayerDriver.IsLocal => false; 
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 

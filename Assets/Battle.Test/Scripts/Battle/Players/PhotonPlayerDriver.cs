@@ -97,6 +97,8 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
 
         int IPlayerDriver.MaxPoseIndex => 0;
+        
+        bool IPlayerDriver.IsLocal => photonView.Owner.IsLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
