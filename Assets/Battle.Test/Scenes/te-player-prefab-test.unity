@@ -422,7 +422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1107679312
 Transform:
   m_ObjectHideFlags: 0
@@ -528,7 +528,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerPosition: {x: 2, y: 3}
+  _poseIndex: 0
+  _playMode: 0
   _startMoving: 0
+  _setPose: 0
+  _setPlayMode: 0
 --- !u!1001 &1689957325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -751,6 +755,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StaticPlayerDriver
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _isAddInputHandler
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}

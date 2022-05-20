@@ -34,25 +34,16 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
-  - catchABallRpc
-  - MovePlayerRpc
-  - MoveTowardsRpc
-  - SendMessageRpc
-  - SetBallColorRpc
-  - setBallVisibilityRpc
-  - SetPlayerPlayModeRpc
-  - SyncPlayerHandleRpc
+  - MoveToRpc
   - SendPlayModeRpc
   - SendShieldRotationRpc
   - SendShieldVisibilityRpc
-  - ClickRpc
-  - DestroyRpc
-  - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - MoveToRpc
+  - SetBallColorRpc
   - SetCharacterPoseRpc
   - SetPlayModeRpc
+  - TestMoveToRpc
+  - TestSetCharacterPoseRpc
+  - TestSetPlayModeRpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

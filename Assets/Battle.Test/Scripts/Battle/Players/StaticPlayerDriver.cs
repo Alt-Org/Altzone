@@ -1,5 +1,4 @@
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.interfaces;
 using UnityEngine;
@@ -12,6 +11,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Header("Settings"), SerializeField] private int _playerPos;
         [SerializeField] private Defence _playerMainSkill = Defence.Deflection;
         [SerializeField] private PlayerActor _playerPrefab;
+        [SerializeField] private bool _isAddInputHandler;
 
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
 
@@ -31,6 +31,11 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            if (_isAddInputHandler)
+            {
+                var playerInputHandler = _playerActorInstance.gameObject.AddComponent<PlayerInputHandler>();
+                playerInputHandler.SetPlayerDriver(this);
+            }
         }
 
         #region IPlayerDriver
