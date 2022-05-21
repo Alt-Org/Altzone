@@ -184,7 +184,8 @@ namespace Battle.Test.Scripts.Battle.Ball
                     var curSqr = _currentVelocity.sqrMagnitude;
                     if (!Mathf.Approximately(prevSqr, curSqr))
                     {
-                        Debug.Log($"{name} velocity {_currentVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {(1-prevSqr/curSqr)*100:0.00}%");
+                        var velocityChange = -(1 - prevSqr / curSqr) * 100;
+                        Debug.Log($"{name} velocity {_currentVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
                     }
                     _currentVelocity = velocity;
                 }
