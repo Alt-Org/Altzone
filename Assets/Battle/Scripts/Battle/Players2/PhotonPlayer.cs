@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Photon;
@@ -18,7 +19,14 @@ namespace Battle.Scripts.Battle.Players2
     public class PhotonPlayer : MonoBehaviour
     {
         private PlayerActor2 _playerActor;
+        private bool _isLocal;
+        private bool _isApplicationQuitting;
 
+        private void Awake()
+        {
+            Application.quitting += () => _isApplicationQuitting = true;
+        }
+        
         private void OnEnable()
         {
             if (_playerActor != null)
@@ -27,18 +35,37 @@ namespace Battle.Scripts.Battle.Players2
             }
             name = name.Replace("(Clone)", string.Empty);
             var playerPrefab = GetLocalPlayerPrefab();
-            Debug.Log($"OnEnable start {name} for {playerPrefab.name}");
+            Debug.Log($"{name} for {playerPrefab.name}");
             var instance = Instantiate(playerPrefab);
             _playerActor = instance.GetComponent<PlayerActor2>();
             Assert.IsNotNull(_playerActor, "_playerActor != null");
             var myTransform = GetComponent<Transform>();
             var playerTransform = _playerActor.GetComponent<Transform>();
             playerTransform.position = myTransform.position;
-            _playerActor.SetPhotonView(PhotonView.Get(this));
+            var photonView = PhotonView.Get(this);
+            _isLocal = photonView.Owner.IsLocal;
+            _playerActor.SetPhotonView(photonView);
             _playerActor.gameObject.SetActive(true);
             Debug.Log($"OnEnable done {name} for {playerPrefab.name}");
 
             StartCoroutine(WaitForSystemToStabilize(playerPrefab.name));
+        }
+
+        private void OnDestroy()
+        {
+            if (_isApplicationQuitting)
+            {
+                return;
+            }
+            if (_isLocal)
+            {
+                return;
+            }
+            Debug.Log($"{name}");
+            if (_playerActor != null)
+            {
+                _playerActor.OnNetworkLost();
+            }
         }
 
         private IEnumerator WaitForSystemToStabilize(string playerPrefabName)
@@ -53,7 +80,6 @@ namespace Battle.Scripts.Battle.Players2
             var myTransform = GetComponent<Transform>();
             var playerTransform = _playerActor.GetComponent<Transform>();
             myTransform.parent = playerTransform;
-            enabled = false;
         }
 
         private static GameObject GetLocalPlayerPrefab()

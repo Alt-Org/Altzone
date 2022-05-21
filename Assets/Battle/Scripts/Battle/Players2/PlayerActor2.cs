@@ -229,6 +229,14 @@ namespace Battle.Scripts.Battle.Players2
 
         #region External events
 
+        public void OnNetworkLost()
+        {
+            Debug.Log($"{name}");
+            // Just stop doing anything if we loose our controlling player instance.
+            this.Unsubscribe();
+            OnSetPlayMode(BattlePlayMode.Ghosted);
+        }
+        
         private void OnActiveTeamEvent(BallManager.ActiveTeamEvent data)
         {
             if (data.TeamIndex == PhotonBattle.NoTeamValue)
