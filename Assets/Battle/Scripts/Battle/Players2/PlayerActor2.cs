@@ -34,6 +34,8 @@ namespace Battle.Scripts.Battle.Players2
         [Header("Debug"), SerializeField] private TextMeshPro _playerInfo;
         [SerializeField] private bool _isShowDebugCanvas;
         [SerializeField] private bool _isStateSpriteColorTint;
+        // For OnParalyzed to work with the modes
+        [SerializeField] private bool _isStunned;
 
         private PhotonView _photonView;
         private Transform _transform;
@@ -325,7 +327,12 @@ namespace Battle.Scripts.Battle.Players2
                 case BattlePlayMode.Normal:
                     SetDebugText($"{PlayerPos:N0}N");
                     _collider.enabled = true;
-                    _playerMovement.SetMovementAllowed();
+                    // This is only setup to work if the player doesn't become ghosted
+                    // Ghosted is treated as a higher priority than the other states
+                    if(!_isStunned)
+                    {
+                        _playerMovement.SetMovementAllowed();
+                    }
                     if (_isStateSpriteColorTint)
                     {
                         _stateSprite.color = Color.blue;
@@ -366,17 +373,23 @@ namespace Battle.Scripts.Battle.Players2
                 StartCoroutine(OnParalysis(_playerHeadHitStunDuration));
                 Debug.Log($"Player is set to Paralyzed {_playerHeadHitStunDuration}");
             }
+
         }
 
         #endregion
 
+        // Currently setup so that it only messes with variables in the script
+        // without introducing anything new apart from a bool
+        // Works independently from the SetPlayMode.
+        // The stun is instantaneous and doesn't wait until the player is unfrozen
         private IEnumerator OnParalysis(float playerHeadHitStunDuration)
         {
-            // This uses the condition of whether the shield can rotate anymore until max rotation
-            // Otherwise if it can't, it will stun the player for a set amount of time
-            ((IPlayerActor)this).SetFrozenMode();
+            _isStunned = true;
+            _playerMovement.SetStopped();
             yield return new WaitForSeconds(playerHeadHitStunDuration);
-            ((IPlayerActor)this).SetNormalMode();
+            _isStunned = false;
+            _playerMovement.SetMovementAllowed();
+            Debug.Log($"{name} expired");
         }
     }
 }
