@@ -388,7 +388,13 @@ namespace Battle.Scripts.Battle.Players2
             _playerMovement.SetStopped();
             yield return new WaitForSeconds(playerHeadHitStunDuration);
             _isStunned = false;
-            _playerMovement.SetMovementAllowed();
+            // If not for this if statement, the player would be able to move
+            // when the stun timer expires while the ball is on their side
+            // TLDR; Prevents a backdoor that allows the player to move when frozen
+            if (_state._currentMode != BattlePlayMode.Frozen)
+            {
+                _playerMovement.SetMovementAllowed();
+            }
             Debug.Log($"{name} expired");
         }
     }
