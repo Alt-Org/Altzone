@@ -120,7 +120,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            if (_actorNumber == -1)
+            if (_actorNumber == InvalidPlayerDriver)
             {
                 _debug._playerText.text = $"---";
                 return;
@@ -240,8 +240,15 @@ namespace Battle.Test.Scripts.Battle.Players
             // We have lost our original driver
             Debug.Log($"{name} {_actorNumber} <- {InvalidPlayerDriver}");
             _playerDriver = null;
+            
             _actorNumber = InvalidPlayerDriver;
             UpdatePlayerText();
+            
+            var colliders = GetComponentsInChildren<Collider2D>();
+            foreach (var childCollider in colliders)
+            {
+                childCollider.enabled = false;
+            }
         }
 
         #endregion
