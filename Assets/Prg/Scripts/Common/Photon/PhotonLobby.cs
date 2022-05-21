@@ -11,7 +11,8 @@ namespace Prg.Scripts.Common.Photon
     /// Static helper class to handle basic <c>PhotonNetwork</c> operations in convenient and consistent way.
     /// </summary>
     /// <remarks>
-    /// Note that <c>PhotonNetwork</c> <c>OfflineMode</c> must be handled separately if needed.
+    /// Note (1) that by default we use <code>PhotonNetwork.AutomaticallySyncScene = true</code>.<br />
+    /// Note (2) that <c>PhotonNetwork</c> <c>OfflineMode</c> must be handled separately if needed.
     /// </remarks>
     public static class PhotonLobby
     {
