@@ -389,12 +389,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d4fc598910482383654c1d6746427b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _position: {x: 0, y: 0}
-  _velocity: {x: 2, y: 2}
-  _state: 0
   _setBallPosition: 0
   _setBallVelocity: 0
   _isSetBallState: 0
+  _position: {x: 0, y: 0}
+  _velocity: {x: 2, y: 2}
+  _state: 0
+  _isAutoStart: 1
+  _requiredPlayerCount: 2
+  _startVelocity: {x: 3, y: 3}
+  _realPlayerCount: 0
 --- !u!1 &808757184 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
@@ -500,7 +504,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &959857970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,7 +597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debug:
-    _isOfflineMode: 1
+    _isOfflineMode: 0
 --- !u!114 &1107679315
 MonoBehaviour:
   m_ObjectHideFlags: 0

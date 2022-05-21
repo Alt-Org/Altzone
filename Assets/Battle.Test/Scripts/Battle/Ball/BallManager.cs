@@ -27,7 +27,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         void SetBallState(BallState ballState);
     }
 
-    internal class BallManager : MonoBehaviour, IBallManager
+    internal class BallManager : MonoBehaviour, IBallManager, IPunObservable
     {
         [Serializable]
         internal class DebugSettings
@@ -53,6 +53,9 @@ namespace Battle.Test.Scripts.Battle.Ball
         [SerializeField] private GameObject _spriteHidden;
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
+
+        [Header("Photon Networking"), SerializeField] private Vector2 _networkPosition;
+        [SerializeField] private float _networkLag;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -118,6 +121,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             StopAllCoroutines();
             _ballVelocityTracker = null;
+            _ballNetworkTracker = null;
         }
 
         private void _SetBallState(BallState ballState)
@@ -153,7 +157,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         }
 
         private Coroutine _ballVelocityTracker;
-        private Vector2 _currentVelocity;
+        private Vector2 _currentDebugVelocity;
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void TrackBallVelocity()
@@ -166,8 +170,8 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private IEnumerator BallVelocityTracker()
         {
-            Debug.Log($"{name} velocity {_currentVelocity} <- {_rigidbody.velocity}");
-            _currentVelocity = _rigidbody.velocity;
+            Debug.Log($"{name} velocity {_currentDebugVelocity} <- {_rigidbody.velocity}");
+            _currentDebugVelocity = _rigidbody.velocity;
             for (;;)
             {
                 yield return null;
@@ -175,19 +179,20 @@ namespace Battle.Test.Scripts.Battle.Ball
                 if (velocity == Vector2.zero)
                 {
                     _ballVelocityTracker = null;
-                    _currentVelocity = Vector2.zero;
+                    _currentDebugVelocity = Vector2.zero;
                     yield break;
                 }
-                if (velocity != _currentVelocity)
+                if (velocity != _currentDebugVelocity)
                 {
                     var prevSqr = velocity.sqrMagnitude;
-                    var curSqr = _currentVelocity.sqrMagnitude;
+                    var curSqr = _currentDebugVelocity.sqrMagnitude;
                     if (!Mathf.Approximately(prevSqr, curSqr))
                     {
                         var velocityChange = -(1 - prevSqr / curSqr) * 100;
-                        Debug.Log($"{name} velocity {_currentVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
+                        Debug.Log(
+                            $"{name} velocity {_currentDebugVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
                     }
-                    _currentVelocity = velocity;
+                    _currentDebugVelocity = velocity;
                 }
                 UpdateBallText();
             }
@@ -233,6 +238,52 @@ namespace Battle.Test.Scripts.Battle.Ball
             _SetBallState(ballState);
             _photonView.RPC(nameof(TestSetBallState), RpcTarget.Others, ballState);
             UpdateBallText();
+        }
+
+        #endregion
+
+        #region IPunObservable
+
+        private Coroutine _ballNetworkTracker;
+
+        void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(_rigidbody.position);
+                stream.SendNext(_rigidbody.velocity);
+                return;
+            }
+            _networkPosition = (Vector2)stream.ReceiveNext();
+            var networkVelocity = (Vector2)stream.ReceiveNext();
+            if (_rigidbody.velocity != networkVelocity)
+            {
+                _rigidbody.velocity = networkVelocity;
+                UpdateBallText();
+            }
+            _networkLag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+            _networkPosition += networkVelocity * _networkLag;
+
+            if (_ballNetworkTracker != null)
+            {
+                return;
+            }
+            _ballNetworkTracker = StartCoroutine(BallNetworkTracker());
+            _ballCollider.SetActive(false);
+        }
+
+        private IEnumerator BallNetworkTracker()
+        {
+            for (;;)
+            {
+                var position = _rigidbody.position;
+                var isTeleport = Mathf.Abs(position.x - _networkPosition.x) > _ballTeleportDistance ||
+                                 Mathf.Abs(position.y - _networkPosition.y) > _ballTeleportDistance;
+                _rigidbody.position = isTeleport
+                    ? _networkPosition
+                    : Vector2.MoveTowards(position, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                yield return null;
+            }
         }
 
         #endregion
