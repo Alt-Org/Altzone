@@ -87,11 +87,12 @@ namespace Battle.Test.Scripts.Battle.Players
             print("x");
             Debug.Log($"{name}");
             _playerActor.ResetPlayerDriver();
-            if (_isLocal)
+            if (!_isLocal)
             {
-                var playerInputHandler = PlayerInputHandler.Get();
-                playerInputHandler?.ResetPlayerDriver();
+                return;
             }
+            var playerInputHandler = PlayerInputHandler.Get();
+            playerInputHandler?.ResetPlayerDriver();
         }
 
         #region IPlayerDriver
