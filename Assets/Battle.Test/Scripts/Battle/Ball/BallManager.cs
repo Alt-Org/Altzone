@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using Altzone.Scripts.Config;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
@@ -32,6 +34,8 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             public bool _isShowBallText;
             public TextMeshPro _ballText;
+            public bool _isShowTrailRenderer;
+            public TrailRenderer _trailRenderer;
         }
 
         private static readonly BallState[] BallStates =
@@ -74,6 +78,13 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballLerpSmoothingFactor = variables._ballLerpSmoothingFactor;
             _ballTeleportDistance = variables._ballTeleportDistance;
             _sprites = new[] { _spriteNoTeam, _spriteRedTeam, _spriteBlueTeam, _spriteGhosted, _spriteHidden };
+            SetDebug();
+            _SetBallState(BallState.Ghosted);
+            UpdateBallText();
+        }
+
+        private void SetDebug()
+        {
             if (_debug._ballText == null)
             {
                 _debug._isShowBallText = false;
@@ -82,8 +93,14 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 _debug._ballText.gameObject.SetActive(false);
             }
-            _SetBallState(BallState.Ghosted);
-            UpdateBallText();
+            if (_debug._trailRenderer == null)
+            {
+                _debug._isShowTrailRenderer = false;
+            }
+            else if (!_debug._isShowTrailRenderer)
+            {
+                _debug._trailRenderer.gameObject.SetActive(false);
+            }
         }
 
         private void OnEnable()
@@ -94,6 +111,13 @@ namespace Battle.Test.Scripts.Battle.Ball
                 // - and this helps to avoid unnecessary warnings when view starts to serialize itself "too early" for other views not yet ready.
                 _photonView.ObservedComponents.Add(this);
             }
+            UpdateBallText();
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            _ballVelocityTracker = null;
         }
 
         private void _SetBallState(BallState ballState)
@@ -105,9 +129,14 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 _sprites[i].SetActive(BallStates[i] == ballState);
             }
+            var isDebugVisible = _ballState != BallState.Hidden;
             if (_debug._isShowBallText)
             {
-                _debug._ballText.gameObject.SetActive(_ballState != BallState.Hidden);
+                _debug._ballText.gameObject.SetActive(isDebugVisible);
+            }
+            if (_debug._isShowTrailRenderer)
+            {
+                _debug._trailRenderer.gameObject.SetActive(isDebugVisible);
             }
         }
 
@@ -120,7 +149,47 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 return;
             }
-            _debug._ballText.text = $"{_rigidbody.velocity.magnitude:0.0}";
+            _debug._ballText.text = $"{_rigidbody.velocity.magnitude:0.00}";
+        }
+
+        private Coroutine _ballVelocityTracker;
+        private Vector2 _currentVelocity;
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        private void TrackBallVelocity()
+        {
+            if (_ballVelocityTracker == null)
+            {
+                _ballVelocityTracker = StartCoroutine(BallVelocityTracker());
+            }
+        }
+
+        private IEnumerator BallVelocityTracker()
+        {
+            Debug.Log($"{name} velocity {_currentVelocity} <- {_rigidbody.velocity}");
+            _currentVelocity = _rigidbody.velocity;
+            for (;;)
+            {
+                yield return null;
+                var velocity = _rigidbody.velocity;
+                if (velocity == Vector2.zero)
+                {
+                    _ballVelocityTracker = null;
+                    _currentVelocity = Vector2.zero;
+                    yield break;
+                }
+                if (velocity != _currentVelocity)
+                {
+                    var prevSqr = velocity.sqrMagnitude;
+                    var curSqr = _currentVelocity.sqrMagnitude;
+                    if (!Mathf.Approximately(prevSqr, curSqr))
+                    {
+                        Debug.Log($"{name} velocity {_currentVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {(1-prevSqr/curSqr)*100:0.00}%");
+                    }
+                    _currentVelocity = velocity;
+                }
+                UpdateBallText();
+            }
         }
 
         #endregion
@@ -131,6 +200,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             if (!PhotonNetwork.IsMasterClient)
             {
+                Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
             _rigidbody.position = position;
@@ -142,18 +212,21 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             if (!PhotonNetwork.IsMasterClient)
             {
+                Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
             var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed);
             _rigidbody.velocity = velocity.normalized * speed * _ballMoveSpeedMultiplier;
             _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, velocity);
             UpdateBallText();
+            TrackBallVelocity();
         }
 
         void IBallManager.SetBallState(BallState ballState)
         {
             if (!PhotonNetwork.IsMasterClient)
             {
+                Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
             _SetBallState(ballState);
@@ -162,7 +235,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         }
 
         #endregion
-        
+
         #region Photon RPC
 
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!

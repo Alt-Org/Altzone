@@ -396,7 +396,8 @@ GameObject:
   - component: {fileID: 4536664284718766799}
   - component: {fileID: 4536664284718766798}
   - component: {fileID: 391384246942854671}
-  m_Layer: 0
+  - component: {fileID: 4837782819669267017}
+  m_Layer: 9
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -421,8 +422,8 @@ Transform:
   - {fileID: 4536664283519944141}
   - {fileID: 4536664284870313865}
   - {fileID: 4536664283146464653}
-  - {fileID: 9207393417558569078}
   - {fileID: 6750541773427164003}
+  - {fileID: 9207393417558569078}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -489,11 +490,23 @@ MonoBehaviour:
   _spriteGhosted: {fileID: 4536664284870313864}
   _spriteHidden: {fileID: 4536664283146464652}
   _ballState: 0
-  _minBallSpeed: 0
-  _maxBallSpeed: 0
   _debug:
     _isShowBallText: 0
     _ballText: {fileID: 1331194194009747703}
+    _isShowTrailRenderer: 0
+    _trailRenderer: {fileID: 7798124839987952256}
+--- !u!114 &4837782819669267017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4536664284718766770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb0f21b3b7d2477c8583b0e62dd08419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4536664284870313864
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,8 +601,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9207393417558569078}
   - component: {fileID: 7798124839987952256}
-  m_Layer: 0
-  m_Name: Trail
+  m_Layer: 9
+  m_Name: DebugTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -608,7 +621,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4536664284718766771}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &7798124839987952256
 TrailRenderer:
@@ -727,7 +740,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6750541773427164003}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -748,7 +761,7 @@ Transform:
   m_Children:
   - {fileID: 5094241960748004732}
   m_Father: {fileID: 4536664284718766771}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5805332411237225310
 GameObject:
@@ -761,7 +774,7 @@ GameObject:
   - component: {fileID: 5094241960748004732}
   - component: {fileID: 8357535778977223168}
   - component: {fileID: 1331194194009747703}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DebugText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -5,14 +5,15 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Test
 {
+    [RequireComponent(typeof(BallManager))]
     internal class BallManagerTest : MonoBehaviour
     {
         [Header("Test Settings")] public Vector2 _position;
-        public Vector2 _velocity;
+        public Vector2 _velocity = Vector2.one;
         public BallState _state;
         
-        [Header("Debug Actions")] public bool _isBallPosition;
-        public bool _isBallVelocity;
+        [Header("Debug Actions")] public bool _setBallPosition;
+        public bool _setBallVelocity;
         public bool _isSetBallState;
 
         private IBallManager _ball;
@@ -37,15 +38,15 @@ namespace Battle.Test.Scripts.Test
 
         private void Update()
         {
-            if (_isBallPosition)
+            if (_setBallPosition)
             {
-                _isBallPosition = false;
+                _setBallPosition = false;
                 _ball.SetBallPosition(_position);
                 return;
             }
-            if (_isBallVelocity)
+            if (_setBallVelocity)
             {
-                _isBallVelocity = false;
+                _setBallVelocity = false;
                 _ball.SetBallVelocity(_velocity);
                 return;
             }
