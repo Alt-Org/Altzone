@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using Altzone.Scripts.Config;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -27,7 +28,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         void SetBallState(BallState ballState);
     }
 
-    internal class BallManager : MonoBehaviour, IBallManager, IPunObservable
+    internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IPunObservable
     {
         [Serializable]
         internal class DebugSettings
@@ -106,8 +107,9 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
             if (!_photonView.ObservedComponents.Contains(this))
             {
                 // If not set in Editor
@@ -117,13 +119,23 @@ namespace Battle.Test.Scripts.Battle.Ball
             UpdateBallText();
         }
 
-        private void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             StopAllCoroutines();
             _ballVelocityTracker = null;
             _ballNetworkTracker = null;
         }
 
+        private void MasterClientSwitched()
+        {
+            Debug.Log($"{name}");
+            StopAllCoroutines();
+            _ballVelocityTracker = null;
+            _ballNetworkTracker = null;
+            UpdateBallText();
+        }
+        
         private void _SetBallState(BallState ballState)
         {
             _ballState = ballState;
@@ -283,6 +295,18 @@ namespace Battle.Test.Scripts.Battle.Ball
                     ? _networkPosition
                     : Vector2.MoveTowards(position, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
                 yield return null;
+            }
+        }
+
+        #endregion
+
+        #region Photon
+
+        public override void OnMasterClientSwitched(Player newMasterClient)
+        {
+            if (newMasterClient.Equals(PhotonNetwork.LocalPlayer))
+            {
+                MasterClientSwitched();
             }
         }
 
