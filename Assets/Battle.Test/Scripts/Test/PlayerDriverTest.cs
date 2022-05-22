@@ -1,3 +1,4 @@
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Players;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Battle.Test.Scripts.Test
         [Header("Test Settings")] public Vector2 _playerPosition;
         public int _poseIndex;
         public BattlePlayMode _playMode;
-        public float _stunDuration = 3f;
+        public float _stunDuration;
 
         [Header("Live Data")] public string _nickname;
         
@@ -26,6 +27,11 @@ namespace Battle.Test.Scripts.Test
             _playerDriver = GetComponent<IPlayerDriver>();
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
+            if (_stunDuration == 0)
+            {
+                var variables = RuntimeGameConfig.Get().Variables;
+                _stunDuration = variables._playerHeadHitStunDuration;
+            }
             _nickname = _playerDriver.NickName ?? "noname";
         }
 

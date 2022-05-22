@@ -17,12 +17,13 @@ namespace Battle.Test.Scripts.Battle.Players
     internal class PlayerActor : MonoBehaviour, IPlayerActor
     {
         private const int InvalidPlayerDriver = -1;
-        
+
         [Serializable]
         internal class DebugSettings
         {
             public bool _isShowPlayerText;
             public TextMeshPro _playerText;
+            public char _playerModeOrBuff = '?';
         }
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -42,7 +43,6 @@ namespace Battle.Test.Scripts.Battle.Players
         
         private bool _isStunned;
         private Coroutine _stunnedCoroutine;
-        private char _playerModeOrBuff = '?';
 
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
@@ -127,9 +127,9 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!IsBuffedOrDeBuffed)
             {
-                _playerModeOrBuff = _playMode.ToString().ToLower()[0];
+                _debug._playerModeOrBuff = _playMode.ToString().ToLower()[0];
             }
-            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_playerModeOrBuff}";
+            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -217,7 +217,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private void StartStunnedBuff(float duration)
         {
             _isStunned = true;
-            _playerModeOrBuff = 'X';
+            _debug._playerModeOrBuff = 'X';
             if (_stunnedCoroutine != null)
             {
                 StopCoroutine(_stunnedCoroutine);
@@ -225,7 +225,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _stunnedCoroutine = StartCoroutine(StunnedBuff(duration));
             UpdatePlayerText();
         }
-        
+
         private IEnumerator StunnedBuff(float duration)
         {
             yield return new WaitForSeconds(duration);
@@ -234,16 +234,16 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdatePlayerText();
             Debug.Log($"{name} expired");
         }
-        
+
         void IPlayerActor.ResetPlayerDriver()
         {
             // We have lost our original driver
             Debug.Log($"{name} {_actorNumber} <- {InvalidPlayerDriver}");
             _playerDriver = null;
-            
+
             _actorNumber = InvalidPlayerDriver;
             UpdatePlayerText();
-            
+
             var colliders = GetComponentsInChildren<Collider2D>();
             foreach (var childCollider in colliders)
             {

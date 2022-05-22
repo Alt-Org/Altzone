@@ -392,7 +392,7 @@ MonoBehaviour:
   _playerPosition: {x: 2, y: -2}
   _poseIndex: 0
   _playMode: 0
-  _stunDuration: 3
+  _stunDuration: 0
   _nickname: 
   _startMoving: 0
   _setPose: 0
@@ -541,6 +541,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 391384246942854671, guid: 6753bd84da3a0b24e9408c9ea15d1599,
+        type: 3}
+      propertyPath: _debug._isShowBallText
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 391384246942854671, guid: 6753bd84da3a0b24e9408c9ea15d1599,
+        type: 3}
+      propertyPath: _debug._isShowTrailRenderer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4536664284718766770, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
       propertyPath: m_Name
@@ -626,9 +636,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d4fc598910482383654c1d6746427b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _setBallState: 0
   _setBallPosition: 0
   _setBallVelocity: 0
-  _setBallState: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
   _velocity: {x: 3, y: 3}
