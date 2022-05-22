@@ -20,8 +20,8 @@ namespace Battle.Scripts.Battle.Room
         [Header("Team Middle Positions"), SerializeField] private Transform _blueTeamMiddlePosition;
         [SerializeField] private Transform _redTeamMiddlePosition;
 
-        public Transform BlueTeamMiddlePosition => _blueTeamMiddlePosition;
-        public Transform RedTeamMiddlePosition => _redTeamMiddlePosition;
+        public Vector2 BlueTeamMiddlePosition => _blueTeamMiddlePosition.position;
+        public Vector2 RedTeamMiddlePosition => _redTeamMiddlePosition.position;
         
         public Rect GetPlayerPlayArea(int playerPos)
         {
