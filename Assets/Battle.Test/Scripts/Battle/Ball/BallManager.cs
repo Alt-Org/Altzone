@@ -43,7 +43,10 @@ namespace Battle.Test.Scripts.Battle.Ball
         private static readonly BallState[] BallStates =
             { BallState.Stopped, BallState.NoTeam, BallState.RedTeam, BallState.BlueTeam, BallState.Ghosted, BallState.Hidden };
 
+        // ColliderStates controls when ball collider is active based on ball state.
         private static readonly bool[] ColliderStates = { false, true, true, true, false, false };
+        // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
+        private static readonly bool[] StopStates = { true, false, false, false, true, true };
 
         public static BallManager Get() => FindObjectOfType<BallManager>();
 
@@ -56,7 +59,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         [SerializeField] private GameObject _spriteHidden;
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
-        [SerializeField] private float _ballCurMoveSpeed;
+        [SerializeField] private float _ballRequiredMoveSpeed;
 
         [Header("Photon Networking"), SerializeField] private Vector2 _networkPosition;
         [SerializeField] private float _networkLag;
@@ -167,18 +170,24 @@ namespace Battle.Test.Scripts.Battle.Ball
                 var sqrMagnitude = velocity.sqrMagnitude;
                 if (!Mathf.Approximately(_rigidbodyVelocitySqrMagnitude, sqrMagnitude))
                 {
-                    if (velocity == Vector2.zero && _rigidbodyVelocitySqrMagnitude > 0)
+                    if (_ballState == BallState.Stopped)
                     {
-                        // We are badly stuck and can not move :-(
-                        if (_ballState != BallState.Stopped)
-                        {
-                            ((IBallManager)this).SetBallState(BallState.Stopped);
-                        }
                         yield return delay;
                         continue;
                     }
-                    Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyVelocitySqrMagnitude} vs {sqrMagnitude}");
-                    _rigidbody.velocity = velocity.normalized * _ballCurMoveSpeed;
+                    if (velocity == Vector2.zero && _ballRequiredMoveSpeed > 0)
+                    {
+                        // We are badly stuck and can not move :-(
+                        ((IBallManager)this).SetBallState(BallState.Stopped);
+                        ((IBallManager)this).SetBallVelocity(Vector2.zero);
+                        yield return delay;
+                        continue;
+                    }
+                    if (_ballRequiredMoveSpeed > 0)
+                    {
+                        Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyVelocitySqrMagnitude} vs {sqrMagnitude}");
+                        _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
+                    }
                 }
                 yield return delay;
             }
@@ -204,6 +213,10 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballState = ballState;
             var stateIndex = (int)ballState;
             _ballCollider.SetActive(ColliderStates[stateIndex]);
+            if (StopStates[stateIndex])
+            {
+                InternalSetRigidbodyVelocity(Vector2.zero);
+            }
             for (var i = 0; i < BallStates.Length; ++i)
             {
                 _sprites[i].SetActive(BallStates[i] == ballState);
@@ -295,15 +308,29 @@ namespace Battle.Test.Scripts.Battle.Ball
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
-            _ballCurMoveSpeed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
-            _rigidbody.velocity = velocity.normalized * _ballCurMoveSpeed;
-            var rigidbodyVelocity = _rigidbody.velocity;
-            _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
-            _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, rigidbodyVelocity);
+            var actualVelocity = InternalSetRigidbodyVelocity(velocity);
+            _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, actualVelocity);
             UpdateBallText();
             StartBallVelocityTracker();
         }
 
+        private Vector2 InternalSetRigidbodyVelocity(Vector2 velocity)
+        {
+            if (velocity == Vector2.zero)
+            {
+                _ballRequiredMoveSpeed = 0;
+                _rigidbody.velocity = Vector2.zero;
+            }
+            else
+            {
+                _ballRequiredMoveSpeed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
+                _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
+            }
+            var rigidbodyVelocity = _rigidbody.velocity;
+            _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
+            return rigidbodyVelocity;
+        }
+        
         void IBallManager.SetBallState(BallState ballState)
         {
             if (!PhotonNetwork.IsMasterClient)

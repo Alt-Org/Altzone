@@ -1,9 +1,15 @@
+using System;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
     public class ColliderHelper : MonoBehaviour
     {
+        private void OnEnable()
+        {
+            // Just to be able to disable us to disable debug logging.
+        }
+
         #region Collisions
 
         private void OnTriggerEnter2D(Collider2D other)

@@ -492,7 +492,7 @@ MonoBehaviour:
   _spriteGhosted: {fileID: 4536664284870313864}
   _spriteHidden: {fileID: 4536664283146464652}
   _ballState: 0
-  _ballCurMoveSpeed: 0
+  _ballRequiredMoveSpeed: 0
   _networkPosition: {x: 0, y: 0}
   _networkLag: 0
   _debug:
@@ -507,7 +507,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4536664284718766770}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb0f21b3b7d2477c8583b0e62dd08419, type: 3}
   m_Name: 
