@@ -8,6 +8,9 @@ namespace Prg.Scripts.Common.Unity.Window
     /// <summary>
     /// Default navigation button for <c>WindowManager</c>.
     /// </summary>
+    /// <remarks>
+    /// <c>Button</c> initial <c>interactable</c> state can be set in Editor and later by code.
+    /// </remarks>
     [RequireComponent(typeof(Button))]
     public class NaviButton : MonoBehaviour
     {
@@ -31,33 +34,35 @@ namespace Prg.Scripts.Common.Unity.Window
                 button.interactable = false;
                 return;
             }
-            button.interactable = true;
-            button.onClick.AddListener(() =>
+            button.onClick.AddListener(OnNaviButtonClick);
+        }
+
+        private void OnNaviButtonClick()
+        {
+            Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}");
+            var windowManager = WindowManager.Get();
+            if (_isCurrentPopOutWindow)
             {
-                Debug.Log($"Click {_naviTarget}");
-                if (_isCurrentPopOutWindow)
+                windowManager.PopCurrentWindow();
+            }
+            // Check if navigation target window is already in window stack and we area actually going back to it via button.
+            var windowCount = windowManager.WindowCount;
+            if (windowCount > 1)
+            {
+                var targetIndex = windowManager.FindIndex(_naviTarget);
+                if (targetIndex == 1)
                 {
-                    windowManager.PopCurrentWindow();
+                    windowManager.GoBack();
+                    return;
                 }
-                // Check if navigation target window is already in window stack and we area actually going back to it via button.
-                var windowCount = windowManager.WindowCount;
-                if (windowCount > 1)
+                if (targetIndex > 1)
                 {
-                    var targetIndex = windowManager.FindIndex(_naviTarget);
-                    if (targetIndex == 1)
-                    {
-                        windowManager.GoBack();
-                        return;
-                    }
-                    if (targetIndex > 1)
-                    {
-                        windowManager.Unwind(_naviTarget);
-                        windowManager.GoBack();
-                        return;
-                    }
+                    windowManager.Unwind(_naviTarget);
+                    windowManager.GoBack();
+                    return;
                 }
-                windowManager.ShowWindow(_naviTarget);
-            });
+            }
+            windowManager.ShowWindow(_naviTarget);
         }
     }
 }
