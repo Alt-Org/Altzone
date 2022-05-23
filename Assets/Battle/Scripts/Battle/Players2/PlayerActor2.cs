@@ -43,6 +43,7 @@ namespace Battle.Scripts.Battle.Players2
         private IPlayerShield _shield;
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
+        private bool _isDestroyed;
         private float _playerHeadHitStunDuration;
         private int _playerResistance;
 
@@ -197,10 +198,11 @@ namespace Battle.Scripts.Battle.Players2
 
         private void OnDestroy()
         {
-            Debug.Log($"OnDestroy {name}");
+            Debug.Log($"{name}");
             this.Unsubscribe();
             _playerMovement.OnDestroy();
             _playerMovement = null;
+            _isDestroyed = true;
         }
 
         private void Update()
@@ -231,6 +233,10 @@ namespace Battle.Scripts.Battle.Players2
 
         public void OnNetworkLost()
         {
+            if (_isDestroyed)
+            {
+                return;
+            }
             Debug.Log($"{name}");
             // Just stop doing anything if we loose our controlling player instance.
             this.Unsubscribe();
