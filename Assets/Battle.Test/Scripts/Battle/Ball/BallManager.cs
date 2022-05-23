@@ -12,11 +12,12 @@ namespace Battle.Test.Scripts.Battle.Ball
 {
     internal enum BallState : byte
     {
-        NoTeam = 0,
-        RedTeam = 1,
-        BlueTeam = 2,
-        Ghosted = 3,
-        Hidden = 4,
+        Stopped = 0,
+        NoTeam = 1,
+        RedTeam = 2,
+        BlueTeam = 3,
+        Ghosted = 4,
+        Hidden = 5,
     }
 
     internal interface IBallManager
@@ -40,13 +41,14 @@ namespace Battle.Test.Scripts.Battle.Ball
         }
 
         private static readonly BallState[] BallStates =
-            { BallState.NoTeam, BallState.RedTeam, BallState.BlueTeam, BallState.Ghosted, BallState.Hidden };
+            { BallState.Stopped, BallState.NoTeam, BallState.RedTeam, BallState.BlueTeam, BallState.Ghosted, BallState.Hidden };
 
-        private static readonly bool[] ColliderStates = { true, true, true, false, false };
+        private static readonly bool[] ColliderStates = { false, true, true, true, false, false };
 
         public static BallManager Get() => FindObjectOfType<BallManager>();
 
         [Header("Settings"), SerializeField] private GameObject _ballCollider;
+        [SerializeField] private GameObject _spriteStopped;
         [SerializeField] private GameObject _spriteNoTeam;
         [SerializeField] private GameObject _spriteRedTeam;
         [SerializeField] private GameObject _spriteBlueTeam;
@@ -54,6 +56,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         [SerializeField] private GameObject _spriteHidden;
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
+        [SerializeField] private float _ballCurMoveSpeed;
 
         [Header("Photon Networking"), SerializeField] private Vector2 _networkPosition;
         [SerializeField] private float _networkLag;
@@ -70,6 +73,8 @@ namespace Battle.Test.Scripts.Battle.Ball
         private float _ballLerpSmoothingFactor;
         private float _ballTeleportDistance;
 
+        private float _rigidbodyVelocitySqrMagnitude;
+
         private void Awake()
         {
             Debug.Log($"{name}");
@@ -81,9 +86,9 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballMaxMoveSpeed = variables._ballMaxMoveSpeed;
             _ballLerpSmoothingFactor = variables._ballLerpSmoothingFactor;
             _ballTeleportDistance = variables._ballTeleportDistance;
-            _sprites = new[] { _spriteNoTeam, _spriteRedTeam, _spriteBlueTeam, _spriteGhosted, _spriteHidden };
+            _sprites = new[] { _spriteStopped, _spriteNoTeam, _spriteRedTeam, _spriteBlueTeam, _spriteGhosted, _spriteHidden };
             SetDebug();
-            _SetBallState(BallState.Ghosted);
+            _SetBallState(BallState.Stopped);
             UpdateBallText();
         }
 
@@ -116,6 +121,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                 // - and this helps to avoid unnecessary warnings when view starts to serialize itself "too early" for other views not yet ready.
                 _photonView.ObservedComponents.Add(this);
             }
+            StartCoroutine(StartBallCoroutinesEtc());
             UpdateBallText();
         }
 
@@ -124,7 +130,6 @@ namespace Battle.Test.Scripts.Battle.Ball
             base.OnDisable();
             StopAllCoroutines();
             _ballVelocityTracker = null;
-            _ballNetworkTracker = null;
         }
 
         private void MasterClientSwitched()
@@ -132,10 +137,68 @@ namespace Battle.Test.Scripts.Battle.Ball
             Debug.Log($"{name}");
             StopAllCoroutines();
             _ballVelocityTracker = null;
-            _ballNetworkTracker = null;
+            StartCoroutine(StartBallCoroutinesEtc());
             UpdateBallText();
         }
+
+        private IEnumerator StartBallCoroutinesEtc()
+        {
+            yield return new WaitUntil(() => PhotonNetwork.InRoom);
+            Debug.Log($"{name}");
+            _SetBallState(_ballState);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(OnMasterClientFixedUpdate());
+            }
+            else
+            {
+                StartCoroutine(OnRemoteBallNetworkUpdate());
+                _ballCollider.SetActive(false);
+            }
+        }
+
+        private IEnumerator OnMasterClientFixedUpdate()
+        {
+            Debug.Log($"{name}");
+            var delay = new WaitForFixedUpdate();
+            for (;;)
+            {
+                var velocity = _rigidbody.velocity;
+                var sqrMagnitude = velocity.sqrMagnitude;
+                if (!Mathf.Approximately(_rigidbodyVelocitySqrMagnitude, sqrMagnitude))
+                {
+                    if (velocity == Vector2.zero && _rigidbodyVelocitySqrMagnitude > 0)
+                    {
+                        // We are badly stuck and can not move :-(
+                        if (_ballState != BallState.Stopped)
+                        {
+                            ((IBallManager)this).SetBallState(BallState.Stopped);
+                        }
+                        yield return delay;
+                        continue;
+                    }
+                    Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyVelocitySqrMagnitude} vs {sqrMagnitude}");
+                    _rigidbody.velocity = velocity.normalized * _ballCurMoveSpeed;
+                }
+                yield return delay;
+            }
+        }
         
+        private IEnumerator OnRemoteBallNetworkUpdate()
+        {
+            Debug.Log($"{name}");
+            for (;;)
+            {
+                var position = _rigidbody.position;
+                var isTeleport = Mathf.Abs(position.x - _networkPosition.x) > _ballTeleportDistance ||
+                                 Mathf.Abs(position.y - _networkPosition.y) > _ballTeleportDistance;
+                _rigidbody.position = isTeleport
+                    ? _networkPosition
+                    : Vector2.MoveTowards(position, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                yield return null;
+            }
+        }
+
         private void _SetBallState(BallState ballState)
         {
             _ballState = ballState;
@@ -172,7 +235,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         private Vector2 _currentDebugVelocity;
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        private void TrackBallVelocity()
+        private void StartBallVelocityTracker()
         {
             if (_ballVelocityTracker == null)
             {
@@ -188,12 +251,6 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 yield return null;
                 var velocity = _rigidbody.velocity;
-                if (velocity == Vector2.zero)
-                {
-                    _ballVelocityTracker = null;
-                    _currentDebugVelocity = Vector2.zero;
-                    yield break;
-                }
                 if (velocity != _currentDebugVelocity)
                 {
                     var prevSqr = velocity.sqrMagnitude;
@@ -207,6 +264,11 @@ namespace Battle.Test.Scripts.Battle.Ball
                     _currentDebugVelocity = velocity;
                 }
                 UpdateBallText();
+                if (velocity == Vector2.zero)
+                {
+                    _ballVelocityTracker = null;
+                    yield break;
+                }
             }
         }
 
@@ -233,11 +295,13 @@ namespace Battle.Test.Scripts.Battle.Ball
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
-            var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed);
-            _rigidbody.velocity = velocity.normalized * speed * _ballMoveSpeedMultiplier;
-            _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, velocity);
+            _ballCurMoveSpeed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
+            _rigidbody.velocity = velocity.normalized * _ballCurMoveSpeed;
+            var rigidbodyVelocity = _rigidbody.velocity;
+            _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
+            _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, rigidbodyVelocity);
             UpdateBallText();
-            TrackBallVelocity();
+            StartBallVelocityTracker();
         }
 
         void IBallManager.SetBallState(BallState ballState)
@@ -256,8 +320,6 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         #region IPunObservable
 
-        private Coroutine _ballNetworkTracker;
-
         void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
@@ -275,27 +337,6 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
             _networkLag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
             _networkPosition += networkVelocity * _networkLag;
-
-            if (_ballNetworkTracker != null)
-            {
-                return;
-            }
-            _ballNetworkTracker = StartCoroutine(BallNetworkTracker());
-            _ballCollider.SetActive(false);
-        }
-
-        private IEnumerator BallNetworkTracker()
-        {
-            for (;;)
-            {
-                var position = _rigidbody.position;
-                var isTeleport = Mathf.Abs(position.x - _networkPosition.x) > _ballTeleportDistance ||
-                                 Mathf.Abs(position.y - _networkPosition.y) > _ballTeleportDistance;
-                _rigidbody.position = isTeleport
-                    ? _networkPosition
-                    : Vector2.MoveTowards(position, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
-                yield return null;
-            }
         }
 
         #endregion
