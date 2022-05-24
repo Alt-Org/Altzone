@@ -5,6 +5,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Ball
 {
@@ -320,7 +321,7 @@ namespace Battle.Scripts.Battle.Ball
 
         void IBall.StopMoving()
         {
-            Debug.Log($"StopMoving {_state._isMoving} <- {false}");
+            Debug.Log($"{_state._isMoving} <- {false}");
             _state._isMoving = false;
             if (PhotonNetwork.IsMasterClient)
             {
@@ -332,7 +333,7 @@ namespace Battle.Scripts.Battle.Ball
 
         void IBall.StartMoving(Vector2 position, Vector2 velocity)
         {
-            Debug.Log($"StartMoving {_state._isMoving} <- {true} position {position} velocity {velocity}");
+            Debug.Log($"{_state._isMoving} <- {true} position {position} velocity {velocity}");
             _state._isMoving = true;
             if (PhotonNetwork.IsMasterClient)
             {
@@ -345,6 +346,17 @@ namespace Battle.Scripts.Battle.Ball
             }
         }
 
+        void IBall.SetSpeed(float speed)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            Assert.IsTrue(_state._isMoving, "_state._isMoving");
+            Assert.IsTrue(speed > 0, "speed > 0");
+            Debug.Log($"{_state._isMoving} position {_rigidbody.position} speed {_currentSpeed} <- {speed}");
+        }
+        
         void IBall.SetColor(BallColor ballColor)
         {
             if (PhotonNetwork.IsMasterClient)

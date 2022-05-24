@@ -46,6 +46,7 @@ namespace Battle.Scripts.Battle.Players2
         private bool _isDestroyed;
         private float _playerHeadHitStunDuration;
         private int _playerResistance;
+        private int _playerAttack;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
 
@@ -90,6 +91,7 @@ namespace Battle.Scripts.Battle.Players2
 
             _playerHeadHitStunDuration = variables._playerHeadHitStunDuration;
             _playerResistance = model.Resistance;
+            _playerAttack = model.Attack;
 
             // Shield
             _playerShield = isLower
@@ -293,6 +295,8 @@ namespace Battle.Scripts.Battle.Players2
         {
             if (PhotonNetwork.IsMasterClient)
             {
+                var ball = Context.GetBall;
+                ball.SetSpeed(_playerAttack);
                 var rotationIndex = _shield.RotationIndex + 1;
                 _rpc.SendShieldRotation(OnSetShieldRotation, rotationIndex);
             }
