@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Photon.Realtime;
@@ -24,9 +25,6 @@ namespace Battle.Scripts.Battle.Ball
         public LayerMask _shieldMask;
         public LayerMask _brickMask;
         public LayerMask _wallMask;
-
-        [Header("Ball Constraints")] public float _minBallSpeed;
-        public float _maxBallSpeed;
     }
 
     [Serializable]
@@ -75,6 +73,9 @@ namespace Battle.Scripts.Battle.Ball
         private Action<GameObject> _onEnterTeamArea;
         private Action<GameObject> _onExitTeamArea;
 
+        private float _minBallSpeed;
+        private float _maxBallSpeed;
+        
         private void Awake()
         {
             Debug.Log("Awake");
@@ -93,6 +94,10 @@ namespace Battle.Scripts.Battle.Ball
             _shieldMaskValue = _settings._shieldMask.value;
             _brickMaskValue = _settings._brickMask.value;
             _wallMaskValue = _settings._wallMask.value;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _minBallSpeed = variables._ballMinMoveSpeed;
+            _maxBallSpeed = variables._ballMaxMoveSpeed;
             _debugInfoParent = _debugInfoText.gameObject;
             if (!_isDebugInfoText)
             {
@@ -340,7 +345,7 @@ namespace Battle.Scripts.Battle.Ball
                 _settings._ballCollider.SetActive(true);
 
                 _rigidbody.position = position;
-                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _settings._minBallSpeed, _settings._maxBallSpeed);
+                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _minBallSpeed, _maxBallSpeed);
                 _rigidbody.velocity = velocity.normalized * speed;
                 _currentSpeed = _rigidbody.velocity.magnitude;
             }
