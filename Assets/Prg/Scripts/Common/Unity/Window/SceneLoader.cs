@@ -19,7 +19,7 @@ namespace Prg.Scripts.Common.Unity.Window
             Assert.IsFalse(string.IsNullOrEmpty(scene.SceneName), "string.IsNullOrEmpty(scene.SceneName)");
             if (scene.IsNetworkScene)
             {
-                Debug.Log($"LoadScene NETWORK {scene.SceneName}");
+                Debug.Log($"LoadScene NETWORK {scene.SceneName}", windowDef);
 #if PHOTON_UNITY_NETWORKING
                 PhotonNetwork.LoadLevel(scene.SceneName);
                 return;
