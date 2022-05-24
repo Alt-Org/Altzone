@@ -376,9 +376,11 @@ namespace Battle.Scripts.Battle.Players2
 
         private void OnSetShieldRotation(int rotationIndex)
         {
+            // Note that this is for local player only!
             _shield.PlayHitEffects();
             if (_shield.CanRotate)
             {
+                // Check _playerResistance here!
                 _shield.SetRotation(rotationIndex);
             }
             else
