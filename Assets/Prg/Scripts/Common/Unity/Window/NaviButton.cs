@@ -1,6 +1,5 @@
 ﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 namespace Prg.Scripts.Common.Unity.Window
@@ -21,6 +20,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void Start()
         {
+            Debug.Log($"{name}");
             var button = GetComponent<Button>();
             if (_naviTarget == null)
             {

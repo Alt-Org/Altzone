@@ -16,6 +16,7 @@ namespace GameOver.Scripts.GameOver
 
         private void OnEnable()
         {
+            Debug.Log($"{name}");
             _view.Reset();
             if (!PhotonNetwork.InRoom)
             {

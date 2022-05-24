@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,9 +43,9 @@ namespace GameOver.Scripts.GameOver
 
         public void Reset()
         {
+            Debug.Log($"{name}");
             _winnerInfo1.text = string.Empty;
             _winnerInfo2.text = string.Empty;
-
             DisableButtons();
         }
 
