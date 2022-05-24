@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
-namespace MenuUi.Scripts.Test
+namespace Prg.Scripts.Test
 {
     /// <summary>
     /// Helper OnGUI window to show breadcrumbs from <c>WindowManager</c>.
