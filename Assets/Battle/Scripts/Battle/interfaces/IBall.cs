@@ -24,6 +24,7 @@ namespace Battle.Scripts.Battle.interfaces
         IBallCollision BallCollision { get; }
         void StopMoving();
         void StartMoving(Vector2 position, Vector2 velocity);
+        void SetSpeed(float speed);
         void SetColor(BallColor ballColor);
     }
 

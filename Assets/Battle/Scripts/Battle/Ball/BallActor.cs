@@ -1,10 +1,12 @@
 using System;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Ball
 {
@@ -23,9 +25,6 @@ namespace Battle.Scripts.Battle.Ball
         public LayerMask _shieldMask;
         public LayerMask _brickMask;
         public LayerMask _wallMask;
-
-        [Header("Ball Constraints")] public float _minBallSpeed;
-        public float _maxBallSpeed;
     }
 
     [Serializable]
@@ -74,6 +73,9 @@ namespace Battle.Scripts.Battle.Ball
         private Action<GameObject> _onEnterTeamArea;
         private Action<GameObject> _onExitTeamArea;
 
+        private float _minBallSpeed;
+        private float _maxBallSpeed;
+        
         private void Awake()
         {
             Debug.Log("Awake");
@@ -92,6 +94,10 @@ namespace Battle.Scripts.Battle.Ball
             _shieldMaskValue = _settings._shieldMask.value;
             _brickMaskValue = _settings._brickMask.value;
             _wallMaskValue = _settings._wallMask.value;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _minBallSpeed = variables._ballMinMoveSpeed;
+            _maxBallSpeed = variables._ballMaxMoveSpeed;
             _debugInfoParent = _debugInfoText.gameObject;
             if (!_isDebugInfoText)
             {
@@ -320,7 +326,7 @@ namespace Battle.Scripts.Battle.Ball
 
         void IBall.StopMoving()
         {
-            Debug.Log($"StopMoving {_state._isMoving} <- {false}");
+            Debug.Log($"{_state._isMoving} <- {false}");
             _state._isMoving = false;
             if (PhotonNetwork.IsMasterClient)
             {
@@ -332,19 +338,30 @@ namespace Battle.Scripts.Battle.Ball
 
         void IBall.StartMoving(Vector2 position, Vector2 velocity)
         {
-            Debug.Log($"StartMoving {_state._isMoving} <- {true} position {position} velocity {velocity}");
+            Debug.Log($"{_state._isMoving} <- {true} position {position} velocity {velocity}");
             _state._isMoving = true;
             if (PhotonNetwork.IsMasterClient)
             {
                 _settings._ballCollider.SetActive(true);
 
                 _rigidbody.position = position;
-                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _settings._minBallSpeed, _settings._maxBallSpeed);
+                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _minBallSpeed, _maxBallSpeed);
                 _rigidbody.velocity = velocity.normalized * speed;
                 _currentSpeed = _rigidbody.velocity.magnitude;
             }
         }
 
+        void IBall.SetSpeed(float speed)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            Assert.IsTrue(_state._isMoving, "_state._isMoving");
+            Assert.IsTrue(speed > 0, "speed > 0");
+            Debug.Log($"{_state._isMoving} position {_rigidbody.position} speed {_currentSpeed} <- {speed}");
+        }
+        
         void IBall.SetColor(BallColor ballColor)
         {
             if (PhotonNetwork.IsMasterClient)
