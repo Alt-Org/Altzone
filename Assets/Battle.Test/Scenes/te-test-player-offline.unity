@@ -546,16 +546,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 391384246942854671, guid: 6753bd84da3a0b24e9408c9ea15d1599,
-        type: 3}
-      propertyPath: _debug._isShowBallText
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 391384246942854671, guid: 6753bd84da3a0b24e9408c9ea15d1599,
-        type: 3}
-      propertyPath: _debug._isShowTrailRenderer
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4536664284718766770, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
       propertyPath: m_Name
@@ -621,11 +611,6 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4837782819669267017, guid: 6753bd84da3a0b24e9408c9ea15d1599,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6753bd84da3a0b24e9408c9ea15d1599, type: 3}
 --- !u!1 &1212394122 stripped
@@ -634,7 +619,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1212394121}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1212394123
+--- !u!114 &1212394129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -648,13 +633,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setBallState: 0
   _setBallPosition: 0
-  _setBallVelocity: 0
+  _setBallDirection: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
-  _velocity: {x: 3, y: 3}
+  _speed: 3
+  _direction: {x: 2, y: 3}
   _state: 1
   _isAutoStart: 1
-  _requiredPlayerCount: 1
+  _requiredPlayerCount: 0
   _realPlayerCount: 0
 --- !u!1 &1360003051
 GameObject:

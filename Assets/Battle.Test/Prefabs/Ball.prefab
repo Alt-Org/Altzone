@@ -440,7 +440,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.001
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -496,9 +496,9 @@ MonoBehaviour:
   _networkPosition: {x: 0, y: 0}
   _networkLag: 0
   _debug:
-    _isShowBallText: 0
+    _isShowBallText: 1
     _ballText: {fileID: 1331194194009747703}
-    _isShowTrailRenderer: 0
+    _isShowTrailRenderer: 1
     _trailRenderer: {fileID: 7798124839987952256}
 --- !u!114 &4837782819669267017
 MonoBehaviour:

@@ -11,11 +11,13 @@ namespace Battle.Test.Scripts.Test
     {
         [Header("Test Actions")] public bool _setBallState;
         public bool _setBallPosition;
-        public bool _setBallVelocity;
+        public bool _setBallSpeed;
+        public bool _setBallSpeedAndDir;
         public bool _stopBall;
 
         [Header("Test Settings")] public Vector2 _position;
-        public Vector2 _velocity = Vector2.one;
+        public float _speed = 1f;
+        public Vector2 _direction = Vector2.one;
         public BallState _state;
 
         [Header("Photon Master Client")] public bool _isAutoStart;
@@ -69,7 +71,7 @@ namespace Battle.Test.Scripts.Test
             // Auto start!
             _setBallState = true;
             _setBallPosition = true;
-            _setBallVelocity = true;
+            _setBallSpeedAndDir = true;
         }
 
         private void Update()
@@ -84,15 +86,20 @@ namespace Battle.Test.Scripts.Test
                 _setBallPosition = false;
                 _ball.SetBallPosition(_position);
             }
-            if (_setBallVelocity)
+            if (_setBallSpeed)
             {
-                _setBallVelocity = false;
-                _ball.SetBallVelocity(_velocity);
+                _setBallSpeed = false;
+                _ball.SetBallSpeed(_speed, Vector2.zero);
+            }
+            if (_setBallSpeedAndDir)
+            {
+                _setBallSpeedAndDir = false;
+                _ball.SetBallSpeed(_speed, _direction);
             }
             else if (_stopBall)
             {
                 _stopBall = false;
-                _ball.SetBallVelocity(Vector2.zero);
+                _ball.SetBallSpeed(0, Vector2.zero);
             }
         }
     }

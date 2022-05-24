@@ -24,7 +24,7 @@ namespace Battle.Test.Scripts.Battle.Ball
     {
         void SetBallPosition(Vector2 position);
 
-        void SetBallVelocity(Vector2 velocity);
+        void SetBallSpeed(float speed, Vector2 direction);
 
         void SetBallState(BallState ballState);
     }
@@ -179,7 +179,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                     {
                         // We are badly stuck and can not move :-(
                         ((IBallManager)this).SetBallState(BallState.Stopped);
-                        ((IBallManager)this).SetBallVelocity(Vector2.zero);
+                        ((IBallManager)this).SetBallSpeed(0, Vector2.zero);
                         yield return delay;
                         continue;
                     }
@@ -215,7 +215,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballCollider.SetActive(ColliderStates[stateIndex]);
             if (StopStates[stateIndex])
             {
-                InternalSetRigidbodyVelocity(Vector2.zero);
+                InternalSetRigidbodyVelocity(0, Vector2.zero);
             }
             for (var i = 0; i < BallStates.Length; ++i)
             {
@@ -301,32 +301,34 @@ namespace Battle.Test.Scripts.Battle.Ball
             UpdateBallText();
         }
 
-        void IBallManager.SetBallVelocity(Vector2 velocity)
+        void IBallManager.SetBallSpeed(float speed, Vector2 direction)
         {
             if (!PhotonNetwork.IsMasterClient)
             {
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
-            var actualVelocity = InternalSetRigidbodyVelocity(velocity);
+            var actualVelocity = InternalSetRigidbodyVelocity(speed, direction);
             _photonView.RPC(nameof(TestBallVelocity), RpcTarget.Others, actualVelocity);
             UpdateBallText();
             StartBallVelocityTracker();
         }
 
-        private Vector2 InternalSetRigidbodyVelocity(Vector2 velocity)
+        private Vector2 InternalSetRigidbodyVelocity(float speed, Vector2 direction)
         {
-            if (velocity == Vector2.zero)
+            if (speed == 0)
             {
                 _ballRequiredMoveSpeed = 0;
                 _rigidbody.velocity = Vector2.zero;
+                _rigidbodyVelocitySqrMagnitude = 0;
+                return Vector2.zero;
+
             }
-            else
-            {
-                _ballRequiredMoveSpeed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
-                _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
-            }
-            var rigidbodyVelocity = _rigidbody.velocity;
+            _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
+            var rigidbodyVelocity = direction != Vector2.zero
+                ? direction.normalized * _ballRequiredMoveSpeed
+                : _rigidbody.velocity.normalized * _ballRequiredMoveSpeed;
+            _rigidbody.velocity = rigidbodyVelocity;
             _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
             return rigidbodyVelocity;
         }

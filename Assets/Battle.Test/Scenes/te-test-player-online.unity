@@ -227,10 +227,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setBallState: 0
   _setBallPosition: 0
-  _setBallVelocity: 0
+  _setBallDirection: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
-  _velocity: {x: 3, y: 3}
+  _speed: 3
+  _direction: {x: 2, y: 3}
   _state: 1
   _isAutoStart: 1
   _requiredPlayerCount: 2
