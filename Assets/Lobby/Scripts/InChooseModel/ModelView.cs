@@ -75,7 +75,7 @@ namespace Lobby.Scripts.InChooseModel
                 button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    currentCharacterId = character.Id;
+                    CurrentCharacterId = character.Id;
                     ShowCharacter(character);
                 });
                 if (currentCharacterId == character.Id)
