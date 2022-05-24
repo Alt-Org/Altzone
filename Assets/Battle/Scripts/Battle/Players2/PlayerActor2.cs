@@ -71,7 +71,8 @@ namespace Battle.Scripts.Battle.Players2
             var isYCoordNegative = _transform.position.y < 0;
             var isLower = isYCoordNegative;
             var isCameraRotated = false;
-            var features = RuntimeGameConfig.Get().Features;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var features = runtimeGameConfig.Features;
             if (features._isRotateGameCamera)
             {
                 isCameraRotated = gameCamera.IsRotated;
@@ -86,7 +87,6 @@ namespace Battle.Scripts.Battle.Players2
 
             // Note that we do not use PlayerDataCache to get CharacterModel because it can ge changed for the room for various reasons!
             var model = PhotonBattle.GetCharacterModelForRoom(player);
-            var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
 
             _playerHeadHitStunDuration = variables._playerHeadHitStunDuration;
