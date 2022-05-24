@@ -9,14 +9,16 @@ namespace Battle.Scripts.Test
 {
     internal class BallControllerTest : MonoBehaviour
     {
-        [Header("Debug Only")] public Vector2 _ballVelocity;
-        public bool _startBallMoving;
+        [Header("Debug Only")] public Vector2 _ballVelocity = Vector2.one * 2;
         public bool _stopBallMoving;
         public bool _hideBall;
         public bool _showBall;
         public bool _ghostBall;
         public bool _useScoreFlash;
 
+        [Header("Photon Master Client Auto Start")] public bool _startBallMoving;
+        public float _networkDelaySecs = 1.0f;
+        
         private IBall _ball;
 
         private void Awake()
@@ -30,11 +32,11 @@ namespace Battle.Scripts.Test
 
         private IEnumerator Start()
         {
-            if (_startBallMoving)
+            if (_startBallMoving && PhotonNetwork.IsMasterClient)
             {
                 _startBallMoving = false;
                 // Networking takes some time to establish ready state
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(_networkDelaySecs);
                 _startBallMoving = true;
             }
             _stopBallMoving = false;
