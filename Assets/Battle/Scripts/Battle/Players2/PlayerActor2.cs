@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players2
     {
         private const string Tooltip1 = @"0=""Normal"", 1=""Frozen"", 2=""Ghosted""";
 
-        [Header("Settings"), SerializeField, Tooltip(Tooltip1), Range(0, 2)] private BattlePlayMode _startPlayMode;
+        [Header("Settings"), SerializeField, Tooltip(Tooltip1)] private BattlePlayMode _startPlayMode;
         [SerializeField] private SpriteRenderer _highlightSprite;
         [SerializeField] private SpriteRenderer _stateSprite;
         [SerializeField] private Collider2D _collider;
