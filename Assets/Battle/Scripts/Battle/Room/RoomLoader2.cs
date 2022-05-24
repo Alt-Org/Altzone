@@ -85,6 +85,12 @@ namespace Battle.Scripts.Battle.Room
             // Create a test room - in offline (faster to create) or online (real thing) mode.
             base.OnEnable();
             var state = PhotonNetwork.NetworkClientState;
+            if (state == ClientState.JoinedLobby)
+            {
+                // JoinOrCreateRoom -> OnJoinedRoom -> WaitForPlayersToArrive -> ContinueToNextStage
+                OnJoinedLobby();
+                return;
+            }
             var isStateValid = state == ClientState.PeerCreated || state == ClientState.Disconnected || state == ClientState.ConnectedToMasterServer;
             if (!isStateValid)
             {
