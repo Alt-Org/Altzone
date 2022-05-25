@@ -26,11 +26,12 @@ namespace Battle.Scripts.Battle.Room
             }
             var playerPos = PhotonBattle.GetPlayerPos(player);
             var isNormalTeamLayout = playerPos <= PhotonBattle.PlayerPosition2;
+            var gameBackground = Context.GetGameBackground;
+            gameBackground.SetBackgroundImageByIndex(0);
             var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
             if (teamNumber == PhotonBattle.TeamRedValue)
             {
                 var gameCamera = Context.GetGameCamera;
-                var gameBackground = Context.GetGameBackground;
                 var isRotated = RotateLocalPlayer(gameCamera.Camera, gameBackground.Background);
                 if (isRotated)
                 {
