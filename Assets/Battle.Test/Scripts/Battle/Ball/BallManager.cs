@@ -124,7 +124,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                 // - and this helps to avoid unnecessary warnings when view starts to serialize itself "too early" for other views not yet ready.
                 _photonView.ObservedComponents.Add(this);
             }
-            StartCoroutine(StartBallCoroutinesEtc());
+            StartCoroutine(StartBallCoroutinesAndLogic());
             UpdateBallText();
         }
 
@@ -140,11 +140,11 @@ namespace Battle.Test.Scripts.Battle.Ball
             Debug.Log($"{name}");
             StopAllCoroutines();
             _ballVelocityTracker = null;
-            StartCoroutine(StartBallCoroutinesEtc());
+            StartCoroutine(StartBallCoroutinesAndLogic());
             UpdateBallText();
         }
 
-        private IEnumerator StartBallCoroutinesEtc()
+        private IEnumerator StartBallCoroutinesAndLogic()
         {
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
             Debug.Log($"{name}");
@@ -378,6 +378,17 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 MasterClientSwitched();
             }
+        }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            // This is purely optional for late coming players to make them "catch up" current ball state.
+            // - position and velocity will be updated automatically!
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            _photonView.RPC(nameof(TestSetBallState), RpcTarget.Others, _ballState);
         }
 
         #endregion
