@@ -19,9 +19,9 @@ namespace Battle.Scripts.Battle.Players2
     /// </summary>
     internal class PlayerActor2 : PlayerActor, IPlayerActor
     {
-        private const string Tooltip1 = @"0=""Normal"", 1=""Frozen"", 2=""Ghosted""";
-
-        [Header("Settings"), SerializeField, Tooltip(Tooltip1)] private BattlePlayMode _startPlayMode;
+        private const float UnReachableDistance = 100f;
+        
+        [Header("Settings"), SerializeField] private BattlePlayMode _startPlayMode;
         [SerializeField] private SpriteRenderer _highlightSprite;
         [SerializeField] private SpriteRenderer _stateSprite;
         [SerializeField] private Collider2D _collider;
@@ -32,9 +32,8 @@ namespace Battle.Scripts.Battle.Players2
         [SerializeField] private float _shieldDistance;
 
         [Header("Debug"), SerializeField] private TextMeshPro _playerInfo;
-        [SerializeField] private bool _isShowDebugCanvas;
-        // For OnParalyzed to work with the modes
-        [SerializeField] private bool _isStunned;
+        [SerializeField] private bool _isShowPlayerDebugText;
+        [SerializeField] private bool _isShowLocalDebugInfo;
 
         private PhotonView _photonView;
         private Transform _transform;
@@ -43,6 +42,7 @@ namespace Battle.Scripts.Battle.Players2
         private IPlayerDistanceMeter _distanceMeter;
         private PhotonPlayerRpc _rpc;
         private bool _isDestroyed;
+        private bool _isStunned;
         private float _playerHeadHitStunDuration;
         private int _playerResistance;
         private int _playerAttack;
@@ -54,13 +54,14 @@ namespace Battle.Scripts.Battle.Players2
 
         private void Awake()
         {
-            Debug.Log($"Awake {_photonView} with prefab {name}");
             var player = _photonView.Owner;
+            Debug.Log($"prefab {name} {_photonView}");
+            Debug.Log($"{player.GetDebugLabel()}");
             _transform = GetComponent<Transform>();
             _state.InitState(_transform, player);
             var prefix = $"{(player.IsLocal ? "L" : "R")}{PlayerPos}:{TeamNumber}";
             name = $"@{name.Replace("(Clone)", string.Empty)}:{prefix}>{player.NickName}";
-            if (_isShowDebugCanvas)
+            if (_isShowPlayerDebugText)
             {
                 SetDebug();
             }
@@ -104,7 +105,8 @@ namespace Battle.Scripts.Battle.Players2
             _shieldDistance = model.Defence * multiplier;
 
             Debug.Log(
-                $"Awake {name} pos {_transform.position} isLower {(isLower ? 1 : 0)} isCameraRotated {(isCameraRotated ? 1 : 0)} isShieldRotated {(isShieldRotated ? 1 : 0)}");
+                $"Awake {name} pos {_transform.position} model {model.Name} speed {model.Speed} " +
+                $"isLower={(isLower ? 1 : 0)} isRotated camera={(isCameraRotated ? 1 : 0)} shield={(isShieldRotated ? 1 : 0)}");
 
             // Player movement and play area.
             var playerArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(PlayerPos);
@@ -112,8 +114,8 @@ namespace Battle.Scripts.Battle.Players2
             _playerMovement = new PlayerMovement2(_transform, gameInput, Camera.main, _photonView)
             {
                 PlayerArea = playerArea,
-                UnReachableDistance = 100,
-                Speed = 10f,
+                UnReachableDistance = UnReachableDistance,
+                Speed = model.Speed,
             };
             // Setup audio listener only for local player.
             if (player.IsLocal)
@@ -141,13 +143,13 @@ namespace Battle.Scripts.Battle.Players2
             }
             else
             {
-                _isShowDebugCanvas = false;
+                _isShowPlayerDebugText = false;
             }
         }
 
         private void SetDebugText(string text)
         {
-            if (_isShowDebugCanvas)
+            if (_isShowPlayerDebugText)
             {
                 _playerInfo.text = text;
             }
@@ -185,12 +187,12 @@ namespace Battle.Scripts.Battle.Players2
             {
                 _highlightSprite.color = Color.yellow;
             }
-            /*if (_isShowDebugCanvas && _photonView.IsMine)
+            if (_isShowLocalDebugInfo && _photonView.IsMine)
             {
-                var debugInfoPrefab = Resources.Load<PlayerDebugInfo>($"PlayerDebugInfo");
+                var debugInfoPrefab = Resources.Load<PlayerDebugInfo>(nameof(PlayerDebugInfo));
                 var debugInfo = Instantiate(debugInfoPrefab, _transform);
                 debugInfo.PlayerActor = this;
-            }*/
+            }
             _rpc = _photonView.gameObject.GetOrAddComponent<PhotonPlayerRpc>();
             _rpc.SendPlayMode(OnSetPlayMode);
             _rpc.SendShieldVisibility(OnSetShieldVisibility);
