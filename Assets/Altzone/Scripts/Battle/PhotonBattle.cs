@@ -160,6 +160,10 @@ namespace Altzone.Scripts.Battle
         public static CharacterModel GetCharacterModelForRoom(Player player)
         {
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
+            if (skillId == -1)
+            {
+                skillId = (int)RuntimeGameConfig.Get().PlayerDataCache.CharacterModel.MainDefence;
+            }
             var character = Storefront.Get().GetCharacterModel(skillId);
             return character;
         }
