@@ -33,7 +33,6 @@ namespace Battle.Scripts.Battle.Players2
 
         [Header("Debug"), SerializeField] private TextMeshPro _playerInfo;
         [SerializeField] private bool _isShowDebugCanvas;
-        [SerializeField] private bool _isStateSpriteColorTint;
         // For OnParalyzed to work with the modes
         [SerializeField] private bool _isStunned;
 
@@ -351,28 +350,16 @@ namespace Battle.Scripts.Battle.Players2
                     {
                         _playerMovement.SetMovementAllowed();
                     }
-                    if (_isStateSpriteColorTint)
-                    {
-                        _stateSprite.color = Color.blue;
-                    }
                     break;
                 case BattlePlayMode.Frozen:
                     SetDebugText($"{PlayerPos:N0}F");
                     _collider.enabled = true;
                     _playerMovement.SetStopped();
-                    if (_isStateSpriteColorTint)
-                    {
-                        _stateSprite.color = Color.magenta;
-                    }
                     break;
                 case BattlePlayMode.Ghosted:
                     SetDebugText($"{PlayerPos:N0}G");
                     _collider.enabled = false;
                     _playerMovement.SetMovementAllowed();
-                    if (_isStateSpriteColorTint)
-                    {
-                        _stateSprite.color = Color.grey;
-                    }
                     break;
             }
             _shield.SetPlayMode(battlePlayMode);
