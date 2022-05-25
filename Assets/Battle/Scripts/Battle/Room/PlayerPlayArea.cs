@@ -1,6 +1,5 @@
 using Altzone.Scripts.Battle;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Room
 {
@@ -18,11 +17,11 @@ namespace Battle.Scripts.Battle.Room
         [SerializeField] private Vector2 _startPositionP3;
         [SerializeField] private Vector2 _startPositionP4;
 
-        [Header("Team Middle Positions"), SerializeField] private Transform _blueTeamMiddlePosition;
-        [SerializeField] private Transform _redTeamMiddlePosition;
+        [Header("Team Positions"), SerializeField] private Transform _blueTeam;
+        [SerializeField] private Transform _redTeam;
 
-        public Vector2 BlueTeamMiddlePosition => _blueTeamMiddlePosition.position;
-        public Vector2 RedTeamMiddlePosition => _redTeamMiddlePosition.position;
+        public Vector2 BlueTeamMiddlePosition => _blueTeam.position;
+        public Vector2 RedTeamMiddlePosition => _redTeam.position;
 
         public Rect GetPlayerPlayArea(int playerPos)
         {
