@@ -13,9 +13,11 @@ namespace GameOver.Scripts.GameOver
 
         [SerializeField] private GameOverView _view;
         [SerializeField] private float _timeOutDelay;
+        private int _playerCount;
 
         private void OnEnable()
         {
+            _playerCount = PhotonBattle.CountRealPlayers();
             Debug.Log($"{name}");
             _view.Reset();
             if (!PhotonNetwork.InRoom)
@@ -82,29 +84,21 @@ namespace GameOver.Scripts.GameOver
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
             {
                 _view.EnableRestartButton();
+                StartCoroutine(BusyPolling(_playerCount));
             }
         }
 
-        private void Update()
-        {
-            StartCoroutine(BusyPolling());
-        }
-
-        private IEnumerator BusyPolling()
+        private IEnumerator BusyPolling(int playerCount)
         {
             var delay = new WaitForSeconds(0.3f);
-            var room = PhotonNetwork.CurrentRoom;
-            var playerCount = room.PlayerCount;
-            for (int i = 0; i < room.PlayerCount; i++)
+            while (PhotonNetwork.InRoom)
             {
-                yield return delay;
-                if (playerCount != room.PlayerCount)
+                if (playerCount != PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     _view.DisableRestartButton();
-                    if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
-                        PhotonNetwork.CurrentRoom.IsOpen = false;
-                    break;
+                    yield break;
                 }
+                yield return delay;
             }
         }
 
