@@ -17,7 +17,7 @@ namespace GameOver.Scripts.GameOver
 
         private void OnEnable()
         {
-            _playerCount = PhotonBattle.CountRealPlayers();
+            _playerCount = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
             Debug.Log($"{name}");
             _view.Reset();
             if (!PhotonNetwork.InRoom)
