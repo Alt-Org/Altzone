@@ -10,9 +10,11 @@ namespace GameOver.Scripts.GameOver
     public class GameOverController : MonoBehaviour
     {
         private const float DefaultTimeout = 2.0f;
+        private const float DefaultPollingInterval = 0.3f;
 
         [SerializeField] private GameOverView _view;
         [SerializeField] private float _timeOutDelay;
+        [SerializeField] private float _pollingInterval;
         private int _playerCount;
 
         private void OnEnable()
@@ -27,9 +29,13 @@ namespace GameOver.Scripts.GameOver
                 return;
             }
             _view.WinnerInfo1 = RichText.Yellow("Checking results");
-            if (_timeOutDelay == 0f)
+            if (_timeOutDelay == 0)
             {
                 _timeOutDelay = DefaultTimeout;
+            }
+            if (_pollingInterval == 0)
+            {
+                _pollingInterval = DefaultPollingInterval;
             }
             _view.RestartButtonOnClick = RestartButtonClick;
             _view.ContinueButtonOnClick = ContinueButtonClick;
@@ -83,17 +89,20 @@ namespace GameOver.Scripts.GameOver
             _view.EnableContinueButton();
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
             {
-                _view.EnableRestartButton();
-                StartCoroutine(BusyPolling(_playerCount));
+                if (_playerCount == PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    _view.EnableRestartButton();
+                    StartCoroutine(BusyPlayerPolling());
+                }
             }
         }
 
-        private IEnumerator BusyPolling(int playerCount)
+        private IEnumerator BusyPlayerPolling()
         {
-            var delay = new WaitForSeconds(0.3f);
+            var delay = new WaitForSeconds(_pollingInterval);
             while (PhotonNetwork.InRoom)
             {
-                if (playerCount != PhotonNetwork.CurrentRoom.PlayerCount)
+                if (_playerCount != PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     _view.DisableRestartButton();
                     yield break;
@@ -102,7 +111,7 @@ namespace GameOver.Scripts.GameOver
             }
         }
 
-        private void RestartButtonClick()
+        private static void RestartButtonClick()
         {
             Debug.Log($"click {PhotonNetwork.NetworkClientState}");
             if (PhotonNetwork.InRoom)
