@@ -75,6 +75,7 @@ namespace Battle.Scripts.Battle.Room
             var playArea = GetPlayerPlayArea(playerPos);
             if (!playArea.Contains(startPosition))
             {
+                Debug.LogWarning($"playerPos {playerPos} startPosition {startPosition} outside playArea {playArea}");
                 startPosition = playArea.center;
             }
             return startPosition;
