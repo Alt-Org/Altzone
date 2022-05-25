@@ -74,8 +74,14 @@ namespace Battle.Scripts.Battle.Room
             var playArea = GetPlayerPlayArea(playerPos);
             if (!playArea.Contains(startPosition))
             {
-                Debug.LogWarning($"playerPos {playerPos} startPosition {startPosition} outside playArea {playArea}");
-                startPosition = playArea.center;
+                // Note that Rect.Contains tests if a point is "inside this rectangle" - not "on the border line"
+                const float smallOffset = 0.001f;
+                playArea = playArea.Inflate(smallOffset, smallOffset, smallOffset, smallOffset);
+                if (!playArea.Contains(startPosition))
+                {
+                    Debug.LogWarning($"playerPos {playerPos} startPosition {startPosition} outside playArea {playArea}");
+                    startPosition = playArea.center;
+                }
             }
             return startPosition;
         }
