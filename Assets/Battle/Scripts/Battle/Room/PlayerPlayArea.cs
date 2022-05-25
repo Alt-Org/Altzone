@@ -1,5 +1,6 @@
 using Altzone.Scripts.Battle;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Room
 {
@@ -22,7 +23,7 @@ namespace Battle.Scripts.Battle.Room
 
         public Vector2 BlueTeamMiddlePosition => _blueTeamMiddlePosition.position;
         public Vector2 RedTeamMiddlePosition => _redTeamMiddlePosition.position;
-        
+
         public Rect GetPlayerPlayArea(int playerPos)
         {
             Rect playArea;
@@ -44,16 +45,11 @@ namespace Battle.Scripts.Battle.Room
                     throw new UnityException($"Invalid player position {playerPos}");
             }
 
-            if (playerPos == PhotonBattle.PlayerPosition1 || playerPos == PhotonBattle.PlayerPosition2)
+            if (PhotonBattle.GetTeamNumber(playerPos) == PhotonBattle.TeamBlueValue)
             {
-                playArea = playArea.InflateBlueSide(-_deflateLeftBottomArea, -_deflateRightTopArea);
+                return InflateBlueSide(playArea, -_deflateLeftBottomArea, -_deflateRightTopArea);
             }
-            else if (playerPos == PhotonBattle.PlayerPosition3 || playerPos == PhotonBattle.PlayerPosition4)
-            {
-                playArea = playArea.InflateRedSide(-_deflateLeftBottomArea, -_deflateRightTopArea);
-            }
-
-            return playArea;
+            return InflateRedSide(playArea, -_deflateLeftBottomArea, -_deflateRightTopArea);
         }
 
         public Vector2 GetPlayerStartPosition(int playerPos)
@@ -82,6 +78,28 @@ namespace Battle.Scripts.Battle.Room
                 startPosition = playArea.center;
             }
             return startPosition;
+        }
+
+        private static Rect InflateBlueSide(Rect rect, Vector2 leftBottom, Vector2 rightTop)
+        {
+            return new Rect
+            {
+                xMin = rect.xMin - leftBottom.x,
+                yMin = rect.yMin - leftBottom.y,
+                xMax = rect.xMax + rightTop.x,
+                yMax = rect.yMax + rightTop.y
+            };
+        }
+
+        private static Rect InflateRedSide(Rect rect, Vector2 leftBottom, Vector2 rightTop)
+        {
+            return new Rect
+            {
+                xMin = rect.xMin - rightTop.x,
+                yMin = rect.yMin - rightTop.y,
+                xMax = rect.xMax + leftBottom.x,
+                yMax = rect.yMax + leftBottom.y
+            };
         }
     }
 }
