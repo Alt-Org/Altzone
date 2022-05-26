@@ -33,26 +33,26 @@
 
             // Last edit was made on 18 January, 17:24 Helena Pavloff-Pelkonen
             
-            AddModel("Koulukiusaaja", new CharacterModel(
-                (int)Defence.Desensitisation, "Koulukiusaaja", Defence.Desensitisation, 1, 9, 8, 3));
-            AddModel("Vitsiniekka", new CharacterModel(
-                (int)Defence.Deflection, "Vitsiniekka", Defence.Deflection, 9, 3, 4, 4));
-            AddModel("Pappi", new CharacterModel(
-                (int)Defence.Introjection, "Pappi", Defence.Introjection, 5, 5, 5, 5));
-            AddModel("Taiteilija", new CharacterModel(
-                (int)Defence.Projection, "Taiteilija", Defence.Projection, 3, 2, 9, 6));
-            AddModel("Hodariläski", new CharacterModel(
-                (int)Defence.Retroflection, "Hodariläski", Defence.Retroflection, 2, 7, 2, 9));
-            AddModel("Älykkö", new CharacterModel(
-                (int)Defence.Egotism, "Älykkö", Defence.Egotism, 4, 2, 7, 7));
-            AddModel("Tytöt", new CharacterModel(
-                (int)Defence.Confluence, "Tytöt", Defence.Confluence, 7, 7, 1, 5));
+            AddCharacterModel("Koulukiusaaja", Defence.Desensitisation, 1, 9, 8, 3);
+            AddCharacterModel("Vitsiniekka", Defence.Deflection, 9, 3, 4, 4);
+            AddCharacterModel("Pappi", Defence.Introjection, 5, 5, 5, 5);
+            AddCharacterModel("Taiteilija", Defence.Projection, 3, 2, 9, 6);
+            AddCharacterModel("Hodariläski", Defence.Retroflection, 2, 7, 2, 9);
+            AddCharacterModel("Älykkö", Defence.Egotism, 4, 2, 7, 7);
+            AddCharacterModel("Tytöt", Defence.Confluence, 7, 7, 1, 5);
 
             AddModel("Alpha", new ClanModel(1, "Alpha", "ALPHA"));
             AddModel("Beta", new ClanModel(2, "Beta", "BETA"));
             AddModel("Viewer", new ClanModel(9, "Viewer", "VIEW", true));
         }
 
+        private static void AddCharacterModel(string name, Defence mainDefence, int speed, int resistance, int attack, int defence)
+        {
+            var id = (int)mainDefence;
+            var model = new CharacterModel(id, name, mainDefence, speed, resistance, attack, defence);
+            Models.Add(model, name);
+        }
+        
         private static void AddModel(string name, AbstractModel model)
         {
             Models.Add(model, name);
