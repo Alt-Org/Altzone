@@ -1,6 +1,7 @@
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Players;
+using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -22,7 +23,8 @@ namespace Battle.Test.Scripts.Test
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
 
-        [Header("Live Data")] public string _nickname;
+        [Header("Live Data"), ReadOnly] public bool _isLocal;
+        [ReadOnly] public string _nickname;
 
         private IPlayerDriver _playerDriver;
 
@@ -37,6 +39,7 @@ namespace Battle.Test.Scripts.Test
                 _stunDuration = variables._playerHeadHitStunDuration;
             }
             _nickname = _playerDriver.NickName ?? "noname";
+            _isLocal = _playerDriver.IsLocal;
         }
 
         private void Update()
