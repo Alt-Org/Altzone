@@ -1,8 +1,9 @@
-using System;
 using System.Collections;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -33,20 +34,23 @@ namespace Battle.Scripts.Battle.Players2
             {
                 return;
             }
+            print("++");
             name = name.Replace("(Clone)", string.Empty);
-            var playerPrefab = GetLocalPlayerPrefab();
-            Debug.Log($"{name} for {playerPrefab.name}");
+            var photonView = PhotonView.Get(this);
+            var player = photonView.Owner;
+            var playerPrefab = GetPlayerPrefab(player);
+            Debug.Log($"{name} prefab {playerPrefab.name}");
+            Debug.Log($"owner {player}");
             var instance = Instantiate(playerPrefab);
             _playerActor = instance.GetComponent<PlayerActor2>();
             Assert.IsNotNull(_playerActor, "_playerActor != null");
             var myTransform = GetComponent<Transform>();
             var playerTransform = _playerActor.GetComponent<Transform>();
             playerTransform.position = myTransform.position;
-            var photonView = PhotonView.Get(this);
             _isLocal = photonView.Owner.IsLocal;
             _playerActor.SetPhotonView(photonView);
             _playerActor.gameObject.SetActive(true);
-            Debug.Log($"OnEnable done {name} for {playerPrefab.name}");
+            Debug.Log($"done {name}");
 
             StartCoroutine(WaitForSystemToStabilize(playerPrefab.name));
         }
@@ -82,12 +86,11 @@ namespace Battle.Scripts.Battle.Players2
             myTransform.parent = playerTransform;
         }
 
-        private static GameObject GetLocalPlayerPrefab()
+        private static GameObject GetPlayerPrefab(Player player)
         {
+            var model = PhotonBattle.GetCharacterModelForRoom(player);
             var runtimeGameConfig = RuntimeGameConfig.Get();
-            var playerDataCache = runtimeGameConfig.PlayerDataCache;
-            var defence = playerDataCache.CharacterModel.MainDefence;
-            var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(defence);
+            var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(model.MainDefence);
             return playerPrefab;
         }
     }
