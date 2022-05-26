@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    public class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
+    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
         [Header("Settings"), SerializeField] private int _actorNumber;
         [SerializeField] private int _playerPos = 1;

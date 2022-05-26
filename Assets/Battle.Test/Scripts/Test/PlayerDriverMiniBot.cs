@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Test
 {
-    public class PlayerDriverMiniBot : MonoBehaviour
+    internal class PlayerDriverMiniBot : MonoBehaviour
     {
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;

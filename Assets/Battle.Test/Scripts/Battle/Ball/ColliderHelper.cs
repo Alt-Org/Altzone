@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
-    public class ColliderHelper : MonoBehaviour
+    internal class ColliderHelper : MonoBehaviour
     {
         private void OnEnable()
         {
