@@ -8,21 +8,21 @@ namespace Battle.Test.Scripts.Test
 {
     internal class PlayerDriverTest : MonoBehaviour
     {
-        [Header("Test Settings")] public Vector2 _moveToPosition;
-        public int _poseIndex;
-        public BattlePlayMode _playMode;
-        public bool _isShieldVisible;
-        public float _stunDuration;
-        public bool _isUpsideDown;
-
-        [Header("Live Data")] public string _nickname;
-
-        [Header("Debug Actions")] public bool _moveTo;
+        [Header("Player Test Actions")] public bool _moveTo;
         public bool _setPose;
         public bool _setPlayMode;
         public bool _setShieldVisibility;
         public bool _setStunned;
         public bool _setRotation;
+
+        [Header("Test Settings")] public Vector2 _moveToPosition;
+        public int _poseIndex;
+        public BattlePlayMode _playMode;
+        public bool _isShieldVisible;
+        public float _stunDuration;
+        public bool _isPlayerUpsideDown;
+
+        [Header("Live Data")] public string _nickname;
 
         private IPlayerDriver _playerDriver;
 
@@ -85,8 +85,8 @@ namespace Battle.Test.Scripts.Test
             if (_setRotation)
             {
                 _setRotation = false;
-                _playerDriver.Rotate(_isUpsideDown);
-                _isUpsideDown = !_isUpsideDown;
+                _playerDriver.Rotate(_isPlayerUpsideDown);
+                _isPlayerUpsideDown = !_isPlayerUpsideDown;
             }
         }
     }
