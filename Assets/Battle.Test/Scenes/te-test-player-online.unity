@@ -227,7 +227,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setBallState: 0
   _setBallPosition: 0
-  _setBallDirection: 0
+  _setBallSpeed: 0
+  _setBallSpeedAndDir: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
   _speed: 3
@@ -277,7 +278,12 @@ PrefabInstance:
     - target: {fileID: 3197958825814177033, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3197958825974087068, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.75
       objectReference: {fileID: 0}
     - target: {fileID: 3197958826038724894, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
         type: 3}
@@ -338,6 +344,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameplayArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 3197958826184754613, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3197958826476912446, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05d366a439fd1564eb6bebe4fdbcc5cf, type: 3}
