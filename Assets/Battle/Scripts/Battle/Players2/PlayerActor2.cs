@@ -8,6 +8,7 @@ using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
 using System.Collections;
+using Altzone.Scripts.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -96,7 +97,7 @@ namespace Battle.Scripts.Battle.Players2
             _playerShield = isLower
                 ? _playerShieldHead
                 : _playerShieldFoot;
-            var shieldConfig = GetLocalPlayerShield(_playerShield);
+            var shieldConfig = GetPlayerShield(_playerShield, model.MainDefence);
             _shield = new PlayerShield(shieldConfig);
             var isShieldRotated = !isYCoordNegative;
             _shield.Setup(name, _startPlayMode, isShieldRotated, false, 0);
@@ -218,11 +219,9 @@ namespace Battle.Scripts.Battle.Players2
             }
         }
 
-        private static ShieldConfig GetLocalPlayerShield(Transform transform)
+        private static ShieldConfig GetPlayerShield(Transform transform, Defence defence)
         {
             var runtimeGameConfig = RuntimeGameConfig.Get();
-            var playerDataCache = runtimeGameConfig.PlayerDataCache;
-            var defence = playerDataCache.CharacterModel.MainDefence;
             var shieldPrefab = runtimeGameConfig.Prefabs.GetShieldPrefab(defence);
             Assert.IsNotNull(shieldPrefab, "shieldPrefab != null");
             var instance = Instantiate(shieldPrefab, transform);
