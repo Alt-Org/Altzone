@@ -21,9 +21,10 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class PlayerSettings
         {
+            public Transform _geometryRoot;
             public GameObject _shield;
         }
-        
+
         [Serializable]
         internal class DebugSettings
         {
@@ -216,6 +217,13 @@ namespace Battle.Test.Scripts.Battle.Players
             set => _speed = value;
         }
 
+        void IPlayerActor.Rotate(bool isUpsideDown)
+        {
+            Debug.Log($"{name} isUpsideDown {isUpsideDown}");
+            _settings._geometryRoot.Rotate(isUpsideDown);
+            UpdatePlayerText();
+        }
+
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
@@ -243,7 +251,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _settings._shield.SetActive(state);
             UpdatePlayerText();
         }
-        
+
         void IPlayerActor.SetBuff(PlayerBuff buff, float duration)
         {
             Debug.Log($"{name} start {buff} {duration:0.0}s");

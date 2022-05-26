@@ -13,6 +13,7 @@ namespace Battle.Test.Scripts.Test
         public BattlePlayMode _playMode;
         public bool _isShieldVisible;
         public float _stunDuration;
+        public bool _isUpsideDown;
 
         [Header("Live Data")] public string _nickname;
 
@@ -21,6 +22,7 @@ namespace Battle.Test.Scripts.Test
         public bool _setPlayMode;
         public bool _setShieldVisibility;
         public bool _setStunned;
+        public bool _setRotation;
 
         private IPlayerDriver _playerDriver;
 
@@ -79,6 +81,12 @@ namespace Battle.Test.Scripts.Test
             {
                 _setStunned = false;
                 _playerDriver.SetStunned(_stunDuration);
+            }
+            if (_setRotation)
+            {
+                _setRotation = false;
+                _playerDriver.Rotate(_isUpsideDown);
+                _isUpsideDown = !_isUpsideDown;
             }
         }
     }

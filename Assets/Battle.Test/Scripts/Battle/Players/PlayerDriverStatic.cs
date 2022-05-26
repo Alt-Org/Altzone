@@ -71,6 +71,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
             
+        void IPlayerDriver.Rotate(bool isUpsideDown)
+        {
+            _playerActor.Rotate(isUpsideDown);
+        }
+
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);

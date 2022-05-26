@@ -105,6 +105,7 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.ActorNumber => photonView.Owner.ActorNumber;
 
         int IPlayerDriver.PlayerPos => _playerPos;
+        
         int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
@@ -115,6 +116,10 @@ namespace Battle.Test.Scripts.Battle.Players
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
 
+        void IPlayerDriver.Rotate(bool isUpsideDown)
+        {
+            photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
+        }
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
@@ -149,6 +154,12 @@ namespace Battle.Test.Scripts.Battle.Players
         #region Photon RPC
 
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
+
+        [PunRPC]
+        private void TestRotateRpc(bool isUpsideDown)
+        {
+            _playerActor.Rotate(isUpsideDown);
+        }
 
         [PunRPC]
         private void TestMoveToRpc(Vector2 targetPosition)

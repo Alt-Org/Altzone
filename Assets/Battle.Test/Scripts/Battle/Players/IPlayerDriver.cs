@@ -19,6 +19,8 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
 
+        void Rotate(bool isUpsideDown);
+        
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);

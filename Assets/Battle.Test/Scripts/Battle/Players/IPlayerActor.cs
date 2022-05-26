@@ -18,6 +18,8 @@ namespace Battle.Test.Scripts.Battle.Players
         
         float Speed { get; set; }
 
+        void Rotate(bool isUpsideDown);
+        
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);
