@@ -5,11 +5,11 @@
     /// </summary>
     public static class ModelLoader
     {
-        private static bool isModelsLoaded;
+        private static bool _isModelsLoaded;
 
         public static void LoadModels()
         {
-            if (!isModelsLoaded)
+            if (!_isModelsLoaded)
             {
                 LoadAndClearModels();
             }
@@ -17,7 +17,7 @@
 
         public static void LoadAndClearModels()
         {
-            isModelsLoaded = true;
+            _isModelsLoaded = true;
             Models.Clear();
 
             AddModel(Defence.Desensitisation.ToString(), new DefenceModel((int)Defence.Desensitisation, Defence.Desensitisation));
@@ -28,20 +28,25 @@
             AddModel(Defence.Egotism.ToString(), new DefenceModel((int)Defence.Egotism, Defence.Egotism));
             AddModel(Defence.Confluence.ToString(), new DefenceModel((int)Defence.Confluence, Defence.Confluence));
 
+            // HAHMOT ja niiden kuvaukset (+ värit)
+            // https://docs.google.com/spreadsheets/d/1GBlkKJia89lFvEspTzrq_IJ3XXfCTRDQmB4NrZs-Npo/edit#gid=0
+
+            // Last edit was made on 18 January, 17:24 Helena Pavloff-Pelkonen
+            
             AddModel("Koulukiusaaja", new CharacterModel(
-                (int)Defence.Desensitisation, "Koulukiusaaja", Defence.Desensitisation, 3, 9, 6, 2));
+                (int)Defence.Desensitisation, "Koulukiusaaja", Defence.Desensitisation, 1, 9, 8, 3));
             AddModel("Vitsiniekka", new CharacterModel(
-                (int)Defence.Deflection, "Vitsiniekka", Defence.Deflection, 9, 2, 4, 5));
+                (int)Defence.Deflection, "Vitsiniekka", Defence.Deflection, 9, 3, 4, 4));
             AddModel("Pappi", new CharacterModel(
                 (int)Defence.Introjection, "Pappi", Defence.Introjection, 5, 5, 5, 5));
             AddModel("Taiteilija", new CharacterModel(
-                (int)Defence.Projection, "Taiteilija", Defence.Projection, 2, 2, 8, 8));
+                (int)Defence.Projection, "Taiteilija", Defence.Projection, 3, 2, 9, 6));
             AddModel("Hodariläski", new CharacterModel(
-                (int)Defence.Retroflection, "Hodariläski", Defence.Retroflection, 3, 6, 2, 9));
+                (int)Defence.Retroflection, "Hodariläski", Defence.Retroflection, 2, 7, 2, 9));
             AddModel("Älykkö", new CharacterModel(
-                (int)Defence.Egotism, "Älykkö", Defence.Egotism, 6, 2, 6, 6));
+                (int)Defence.Egotism, "Älykkö", Defence.Egotism, 4, 2, 7, 7));
             AddModel("Tytöt", new CharacterModel(
-                (int)Defence.Confluence, "Tytöt", Defence.Confluence, 6, 7, 1, 6));
+                (int)Defence.Confluence, "Tytöt", Defence.Confluence, 7, 7, 1, 5));
 
             AddModel("Alpha", new ClanModel(1, "Alpha", "ALPHA"));
             AddModel("Beta", new ClanModel(2, "Beta", "BETA"));
