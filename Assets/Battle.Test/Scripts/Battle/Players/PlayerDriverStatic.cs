@@ -26,6 +26,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
+            _isLocal = _isConnectInputHandler;
         }
 
         private void OnEnable()
@@ -35,7 +36,6 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
-            _isLocal = _isConnectInputHandler;
             if (_isConnectInputHandler)
             {
                 var playerInputHandler = PlayerInputHandler.Get();
