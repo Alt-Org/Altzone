@@ -19,6 +19,12 @@ namespace Battle.Test.Scripts.Battle.Players
         private const int InvalidPlayerDriver = -1;
 
         [Serializable]
+        internal class PlayerSettings
+        {
+            public GameObject _shield;
+        }
+        
+        [Serializable]
         internal class DebugSettings
         {
             public bool _isShowPlayerText;
@@ -37,6 +43,8 @@ namespace Battle.Test.Scripts.Battle.Players
             public Color _colorForEgo;
             public Color _colorForCon;
         }
+
+        [Header("Player Settings"), SerializeField] private PlayerSettings _settings;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -229,6 +237,13 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdatePlayerText();
         }
 
+        void IPlayerActor.SetShieldVisibility(bool state)
+        {
+            Debug.Log($"{name} {_settings._shield.activeSelf} <- {state}");
+            _settings._shield.SetActive(state);
+            UpdatePlayerText();
+        }
+        
         void IPlayerActor.SetBuff(PlayerBuff buff, float duration)
         {
             Debug.Log($"{name} start {buff} {duration:0.0}s");

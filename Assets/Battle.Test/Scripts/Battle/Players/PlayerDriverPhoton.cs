@@ -115,12 +115,6 @@ namespace Battle.Test.Scripts.Battle.Players
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
 
-        void IPlayerDriver.SetStunned(float duration)
-        {
-            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
-            photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
-        }
-
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
@@ -128,14 +122,26 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
-            _playerActor.SetCharacterPose(poseIndex);
+            TestSetCharacterPoseRpc(poseIndex);
             photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
         {
-            _playerActor.SetPlayMode(playMode);
+            TestSetPlayModeRpc(playMode);
             photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
+        }
+
+        void IPlayerDriver.SetShieldVisibility(bool state)
+        {
+            TestSetShieldVisibilityRpc(state);
+            photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
+        }
+
+        void IPlayerDriver.SetStunned(float duration)
+        {
+            TestSetStunnedRpc(duration);
+            photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
         }
 
         #endregion
@@ -143,12 +149,6 @@ namespace Battle.Test.Scripts.Battle.Players
         #region Photon RPC
 
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
-
-        [PunRPC]
-        private void TestSetStunnedRpc(float duration)
-        {
-            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
-        }
 
         [PunRPC]
         private void TestMoveToRpc(Vector2 targetPosition)
@@ -166,6 +166,18 @@ namespace Battle.Test.Scripts.Battle.Players
         private void TestSetPlayModeRpc(BattlePlayMode playMode)
         {
             _playerActor.SetPlayMode(playMode);
+        }
+
+        [PunRPC]
+        private void TestSetShieldVisibilityRpc(bool state)
+        {
+            _playerActor.SetShieldVisibility(state);
+        }
+
+        [PunRPC]
+        private void TestSetStunnedRpc(float duration)
+        {
+            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
         }
 
         #endregion

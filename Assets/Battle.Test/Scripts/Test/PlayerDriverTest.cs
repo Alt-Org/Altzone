@@ -11,13 +11,15 @@ namespace Battle.Test.Scripts.Test
         [Header("Test Settings")] public Vector2 _moveToPosition;
         public int _poseIndex;
         public BattlePlayMode _playMode;
+        public bool _isShieldVisible;
         public float _stunDuration;
 
         [Header("Live Data")] public string _nickname;
-        
+
         [Header("Debug Actions")] public bool _moveTo;
         public bool _setPose;
         public bool _setPlayMode;
+        public bool _setShieldVisibility;
         public bool _setStunned;
 
         private IPlayerDriver _playerDriver;
@@ -64,6 +66,13 @@ namespace Battle.Test.Scripts.Test
             {
                 _setPlayMode = false;
                 _playerDriver.SetPlayMode(_playMode);
+                return;
+            }
+            if (_setShieldVisibility)
+            {
+                _setShieldVisibility = false;
+                _playerDriver.SetShieldVisibility(_isShieldVisible);
+                _isShieldVisible = !_isShieldVisible;
                 return;
             }
             if (_setStunned)

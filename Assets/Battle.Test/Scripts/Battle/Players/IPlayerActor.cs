@@ -23,6 +23,8 @@ namespace Battle.Test.Scripts.Battle.Players
         void SetCharacterPose(int poseIndex);
         
         void SetPlayMode(BattlePlayMode playMode);
+        
+        void SetShieldVisibility(bool state);
 
         void SetBuff(PlayerBuff buff, float duration);
         

@@ -19,12 +19,14 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
 
-        void SetStunned(float duration);
-
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);
 
         void SetPlayMode(BattlePlayMode playMode);
+
+        void SetShieldVisibility(bool state);
+        
+        void SetStunned(float duration);
     }
 }

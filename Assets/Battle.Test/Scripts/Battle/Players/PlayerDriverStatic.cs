@@ -71,11 +71,6 @@ namespace Battle.Test.Scripts.Battle.Players
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
             
-        void IPlayerDriver.SetStunned(float duration)
-        {
-            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
-        }
-        
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
@@ -91,6 +86,16 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.SetPlayMode(playMode);
         }
 
+        void IPlayerDriver.SetShieldVisibility(bool state)
+        {
+            _playerActor.SetShieldVisibility(state);
+        }
+        
+        void IPlayerDriver.SetStunned(float duration)
+        {
+            _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+        
         #endregion
     }
 }
