@@ -26,7 +26,21 @@ namespace Battle.Test.Scripts.Battle.Players
             public char _playerModeOrBuff = '?';
         }
 
+        [Serializable]
+        internal class ColorSettings
+        {
+            public Color _colorForDes;
+            public Color _colorForDef;
+            public Color _colorForInt;
+            public Color _colorForPro;
+            public Color _colorForRet;
+            public Color _colorForEgo;
+            public Color _colorForCon;
+        }
+
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
+
+        [Header("Color Settings"), SerializeField] private ColorSettings _colors;
 
         private IPlayerDriver _playerDriver;
         private Transform _transform;
@@ -40,9 +54,11 @@ namespace Battle.Test.Scripts.Battle.Players
         private int _poseIndex;
 
         private bool IsBuffedOrDeBuffed => _isStunned;
-        
+
         private bool _isStunned;
         private Coroutine _stunnedCoroutine;
+
+        private Color[] _skillColors;
 
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
@@ -69,6 +85,11 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _debug._playerText.gameObject.SetActive(false);
             }
+            _skillColors = new[]
+            {
+                Color.black, _colors._colorForDes, _colors._colorForDef, _colors._colorForInt,
+                _colors._colorForPro, _colors._colorForRet, _colors._colorForEgo, _colors._colorForCon
+            };
             // Wait until PlayerDriver is assigned.
             enabled = false;
         }
@@ -90,7 +111,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void OnEnable()
         {
-            Debug.Log($"{name}");
+            var model = _playerDriver.CharacterModel;
+            Debug.Log($"{name} {model.Name} {model.MainDefence}");
+            foreach (var spriteRenderer in GetComponentsInChildren<SpriteRenderer>())
+            {
+                spriteRenderer.color = _skillColors[(int)model.MainDefence];
+            }
             UpdatePlayerText();
             StartCoroutine(ThrottledLogger());
         }
@@ -175,7 +201,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private float _speed;
 
         Vector2 IPlayerActor.Position => _transform.position;
-        
+
         float IPlayerActor.Speed
         {
             get => _speed;
