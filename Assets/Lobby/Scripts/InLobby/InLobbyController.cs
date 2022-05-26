@@ -23,10 +23,6 @@ namespace Lobby.Scripts.InLobby
             _view.Reset();
             _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
             _view.LobbyText = string.Empty;
-            if (Application.platform.ToString().ToLower().EndsWith("editor"))
-            {
-                _view.ShowDebugButtons();
-            }
             StartCoroutine(StartLobby());
         }
 

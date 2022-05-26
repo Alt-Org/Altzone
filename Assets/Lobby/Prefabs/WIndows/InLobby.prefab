@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Quick Game
+  m_Text: Game Test
 --- !u!1 &2946997329239384764
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,6 +922,7 @@ GameObject:
   - component: {fileID: 6490520096148569441}
   - component: {fileID: 8504121414399956319}
   - component: {fileID: 5542946599477177701}
+  - component: {fileID: 4902185192539302290}
   m_Layer: 0
   m_Name: InLobby
   m_TagString: Untagged
@@ -1002,7 +1003,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _view: {fileID: 8504121414399956319}
-  _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
+--- !u!114 &4902185192539302290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946997330590361080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba4e073e319d4c1d93a8a83b00ca38a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isAllowInEditor: 1
+  _isAllowDevelopmentBuild: 1
+  _isAllowInProductionPlatforms: 0
+  _platforms: 
+  _gameObjectsToWatch:
+  - {fileID: 6963446039123060788}
 --- !u!1 &2946997331089748540
 GameObject:
   m_ObjectHideFlags: 0

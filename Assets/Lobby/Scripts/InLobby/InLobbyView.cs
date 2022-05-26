@@ -39,15 +39,9 @@ namespace Lobby.Scripts.InLobby
         {
             _titleText.text = string.Empty;
             _lobbyText.text = string.Empty;
-            _quickGameButton.gameObject.SetActive(false);
             DisableButtons();
         }
 
-        public void ShowDebugButtons()
-        {
-            _quickGameButton.gameObject.SetActive(true);
-        }
-        
         private void DisableButtons()
         {
             _characterButton.interactable = false;
