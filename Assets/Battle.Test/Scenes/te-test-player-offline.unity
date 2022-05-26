@@ -264,7 +264,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1683276531}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &488282798
+--- !u!114 &488282801
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -273,21 +273,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 488282797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f74d589ae1f48e14d9d6612a416b6298, type: 3}
+  m_Script: {fileID: 11500000, guid: fb600291bbef0164c8f7f077eefdac61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveTo: 0
-  _setPose: 0
-  _setPlayMode: 0
-  _setShieldVisibility: 0
-  _setStunned: 0
-  _setRotation: 0
-  _moveToPosition: {x: -1, y: -2}
-  _poseIndex: 0
-  _playMode: 0
-  _isShieldVisible: 0
-  _stunDuration: 0
-  _isPlayerUpsideDown: 0
   _isLocal: 0
   _nickname: 
 --- !u!1001 &535875372
@@ -429,6 +417,11 @@ PrefabInstance:
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: _playerPos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _actorNumber
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
@@ -817,6 +810,16 @@ PrefabInstance:
         type: 3}
       propertyPath: _teamNumber
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _actorNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _playerMainSkill
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}

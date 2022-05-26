@@ -9,7 +9,8 @@ namespace Battle.Test.Scripts.Battle.Players
 {
     public class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
-        [Header("Settings"), SerializeField] private int _playerPos = 1;
+        [Header("Settings"), SerializeField] private int _actorNumber;
+        [SerializeField] private int _playerPos = 1;
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
         [SerializeField] private Defence _playerMainSkill = Defence.Deflection;
         [SerializeField] private PlayerActor _playerPrefab;
@@ -18,7 +19,9 @@ namespace Battle.Test.Scripts.Battle.Players
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
 
         private CharacterModel _characterModel;
+
         private IPlayerActor _playerActor;
+
         // We are local if we have input handler connected to us.
         private bool _isLocal;
 
@@ -57,20 +60,20 @@ namespace Battle.Test.Scripts.Battle.Players
 
         string IPlayerDriver.NickName => name;
 
-        int IPlayerDriver.ActorNumber => 0;
+        int IPlayerDriver.ActorNumber => _actorNumber;
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
         int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
-        
-        bool IPlayerDriver.IsLocal => _isLocal; 
+
+        bool IPlayerDriver.IsLocal => _isLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
-            
+
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {
             _playerActor.Rotate(isUpsideDown);
@@ -95,12 +98,12 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _playerActor.SetShieldVisibility(state);
         }
-        
+
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
         }
-        
+
         #endregion
     }
 }
