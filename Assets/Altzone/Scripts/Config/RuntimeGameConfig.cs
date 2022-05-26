@@ -184,7 +184,7 @@ namespace Altzone.Scripts.Config
     /// </remarks>
     public class RuntimeGameConfig : MonoBehaviour
     {
-        private const string IsFirsTimePlayingKey = "PlayerData.IsFirsTimePlaying";
+        private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
         public static RuntimeGameConfig Get()
         {
@@ -197,9 +197,9 @@ namespace Altzone.Scripts.Config
             return instance;
         }
 
-        public static bool IsFirsTimePlaying => PlayerPrefs.GetInt(IsFirsTimePlayingKey, 1) == 1;
+        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
 
-        public static void RemoveIsFirsTimePlayingStatus() => PlayerPrefs.SetInt(IsFirsTimePlayingKey, 0);
+        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(IsFirstTimePlayingKey, 0);
 
 #if UNITY_EDITOR
         public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache();
