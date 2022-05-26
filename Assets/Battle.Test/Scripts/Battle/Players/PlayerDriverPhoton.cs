@@ -25,6 +25,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
+        private int _playerPos;
+        private int _teamNumber;
+
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private bool _isLocal;
@@ -39,11 +42,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Awake()
         {
-            print("+");
+            print("++");
             var player = photonView.Owner;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
-            var playerPos = ((IPlayerDriver)this).PlayerPos;
-            var playerTag = $"{playerPos}:{((IPlayerDriver)this).NickName}";
+            _playerPos = PhotonBattle.GetPlayerPos(photonView.Owner);
+            _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
+            var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
         }
@@ -73,8 +77,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             var playerInputHandler = PlayerInputHandler.Get();
-            var playerPos = ((IPlayerDriver)this).PlayerPos;
-            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(playerPos);
+            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
 
@@ -101,7 +104,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => photonView.Owner.ActorNumber;
 
-        int IPlayerDriver.PlayerPos => PhotonBattle.GetPlayerPos(photonView.Owner);
+        int IPlayerDriver.PlayerPos => _playerPos;
+        int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
 
@@ -110,7 +114,7 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
-            
+
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);

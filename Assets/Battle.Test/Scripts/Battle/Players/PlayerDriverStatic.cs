@@ -9,7 +9,8 @@ namespace Battle.Test.Scripts.Battle.Players
 {
     public class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
-        [Header("Settings"), SerializeField] private int _playerPos;
+        [Header("Settings"), SerializeField] private int _playerPos = 1;
+        [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
         [SerializeField] private Defence _playerMainSkill = Defence.Deflection;
         [SerializeField] private PlayerActor _playerPrefab;
         [SerializeField] private bool _isConnectInputHandler;
@@ -23,7 +24,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Awake()
         {
-            print("+");
+            print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
         }
 
@@ -54,11 +55,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IPlayerDriver
 
-        string IPlayerDriver.NickName => "Static";
+        string IPlayerDriver.NickName => name;
 
         int IPlayerDriver.ActorNumber => 0;
 
         int IPlayerDriver.PlayerPos => _playerPos;
+
+        int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
         

@@ -13,6 +13,7 @@ namespace Battle.Test.Scripts.Battle.Players
         string NickName { get; }
         int ActorNumber { get; }
         int PlayerPos { get; }
+        int TeamNumber { get; }
         int MaxPoseIndex { get; }
         bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
