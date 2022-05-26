@@ -174,6 +174,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private float _speed;
 
+        Vector2 IPlayerActor.Position => _transform.position;
+        
         float IPlayerActor.Speed
         {
             get => _speed;

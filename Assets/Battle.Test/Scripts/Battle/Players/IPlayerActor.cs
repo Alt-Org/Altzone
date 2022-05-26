@@ -14,6 +14,8 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </summary>
     internal interface IPlayerActor
     {
+        Vector2 Position { get; }
+        
         float Speed { get; set; }
 
         void MoveTo(Vector2 targetPosition);

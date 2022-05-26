@@ -16,13 +16,14 @@ namespace Battle.Test.Scripts.Battle.Players
         int MaxPoseIndex { get; }
         bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
+        Vector2 Position { get; }
 
         void SetStunned(float duration);
-        
+
         void MoveTo(Vector2 targetPosition);
- 
+
         void SetCharacterPose(int poseIndex);
-        
+
         void SetPlayMode(BattlePlayMode playMode);
     }
 }

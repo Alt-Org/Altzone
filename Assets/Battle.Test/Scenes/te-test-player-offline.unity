@@ -226,6 +226,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameplayArea
       objectReference: {fileID: 0}
+    - target: {fileID: 3383973144692370355, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4193641096581974854, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: _deflateRightTopArea.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7266488057144349267, guid: 05d366a439fd1564eb6bebe4fdbcc5cf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05d366a439fd1564eb6bebe4fdbcc5cf, type: 3}
 --- !u!1001 &535875372
@@ -394,12 +409,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74d589ae1f48e14d9d6612a416b6298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPosition: {x: 2, y: -2}
+  _moveToPosition: {x: -1, y: -2}
   _poseIndex: 0
   _playMode: 0
   _stunDuration: 0
   _nickname: 
-  _startMoving: 0
+  _moveTo: 0
   _setPose: 0
   _setPlayMode: 0
   _setStunned: 0
@@ -633,7 +648,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setBallState: 0
   _setBallPosition: 0
-  _setBallDirection: 0
+  _setBallSpeed: 0
+  _setBallSpeedAndDir: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
   _speed: 3

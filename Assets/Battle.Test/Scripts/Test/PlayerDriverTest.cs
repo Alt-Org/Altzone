@@ -8,14 +8,14 @@ namespace Battle.Test.Scripts.Test
 {
     internal class PlayerDriverTest : MonoBehaviour
     {
-        [Header("Test Settings")] public Vector2 _playerPosition;
+        [Header("Test Settings")] public Vector2 _moveToPosition;
         public int _poseIndex;
         public BattlePlayMode _playMode;
         public float _stunDuration;
 
         [Header("Live Data")] public string _nickname;
         
-        [Header("Debug Actions")] public bool _startMoving;
+        [Header("Debug Actions")] public bool _moveTo;
         public bool _setPose;
         public bool _setPlayMode;
         public bool _setStunned;
@@ -37,11 +37,13 @@ namespace Battle.Test.Scripts.Test
 
         private void Update()
         {
-            if (_startMoving)
+            if (_moveTo)
             {
-                _startMoving = false;
-                _playerDriver.MoveTo(_playerPosition);
-                _playerPosition = -_playerPosition;
+                _moveTo = false;
+                // Toggle between test target position and current player position 
+                var position = _moveToPosition;
+                _moveToPosition = _playerDriver.Position;
+                _playerDriver.MoveTo(position);
                 return;
             }
             if (_setPose)

@@ -18,6 +18,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
+        // We are local if we have input handler connected to us.
+        private bool _isLocal;
 
         private void Awake()
         {
@@ -32,6 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            _isLocal = _isConnectInputHandler;
             if (_isConnectInputHandler)
             {
                 var playerInputHandler = PlayerInputHandler.Get();
@@ -59,10 +62,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.MaxPoseIndex => 0;
         
-        bool IPlayerDriver.IsLocal => false; 
+        bool IPlayerDriver.IsLocal => _isLocal; 
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
+        Vector2 IPlayerDriver.Position => _playerActor.Position;
+            
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);

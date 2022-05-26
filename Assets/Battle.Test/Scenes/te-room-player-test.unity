@@ -141,13 +141,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46b20ffa986543fa8834debfedca92fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ballVelocity: {x: 2, y: 3}
+  _ballVelocity: {x: 0.1, y: 1}
+  _startBallMoving: 0
   _stopBallMoving: 0
   _hideBall: 0
   _showBall: 0
   _ghostBall: 0
   _useScoreFlash: 0
-  _startBallMoving: 1
+  _autoStartBallMoving: 1
   _networkDelaySecs: 1
 --- !u!1 &101507592
 GameObject:
