@@ -157,8 +157,12 @@ namespace Altzone.Scripts.Battle
             }
         }
 
+        /// <summary>
+        /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
+        /// </summary>
         public static CharacterModel GetCharacterModelForRoom(Player player)
         {
+            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (skillId == -1)
             {
