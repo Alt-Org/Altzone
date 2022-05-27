@@ -5,7 +5,7 @@ using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
+using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -36,7 +36,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
             public bool IsActive { get; private set; }
 
+            public int MaxPoseIndex => _childCount - 1;
+            
             private GameObject _currentAvatar;
+            private Transform _parentTransform;
+            private int _childCount;
 
             public void SetActive(bool state)
             {
@@ -44,17 +48,25 @@ namespace Battle.Test.Scripts.Battle.Players
                 _currentAvatar.SetActive(state);
             }
 
-            public void Reset(Color avatarColor)
+            public void SetPose(int poseIndex)
+            {
+                Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
+                _currentAvatar.SetActive(false);
+                _currentAvatar = _parentTransform.GetChild(poseIndex).gameObject;
+                _currentAvatar.SetActive(IsActive);
+            }
+
+            public void Reset(bool isVisible, Color avatarColor)
             {
                 _currentAvatar = _avatar1;
                 _currentAvatar.SetActive(true);
 
-                var parentTransform = _avatar1.GetComponent<Transform>().parent;
-                var childCount = parentTransform.childCount;
-                var firstChild = parentTransform.GetChild(0);
-                for (var i = 0; i < childCount; ++i)
+                _parentTransform = _avatar1.GetComponent<Transform>().parent;
+                _childCount = _parentTransform.childCount;
+                var firstChild = _parentTransform.GetChild(0);
+                for (var i = 0; i < _childCount; ++i)
                 {
-                    var child = parentTransform.GetChild(i);
+                    var child = _parentTransform.GetChild(i);
                     var spriteRenderer = child.GetComponent<SpriteRenderer>();
                     spriteRenderer.color = avatarColor;
                     if (i > 0)
@@ -63,6 +75,8 @@ namespace Battle.Test.Scripts.Battle.Players
                         child.gameObject.SetActive(false);
                     }
                 }
+
+                SetActive(isVisible);
             }
         }
 
@@ -78,6 +92,8 @@ namespace Battle.Test.Scripts.Battle.Players
             public bool IsActive { get; private set; }
 
             private GameObject _currentShield;
+            private Transform _parentTransform;
+            private int _childCount;
 
             public void SetActive(bool state)
             {
@@ -85,25 +101,33 @@ namespace Battle.Test.Scripts.Battle.Players
                 _currentShield.SetActive(state);
             }
 
+            public void SetPose(int poseIndex)
+            {
+                Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
+                _currentShield.SetActive(false);
+                _currentShield = _parentTransform.GetChild(poseIndex).gameObject;
+                _currentShield.SetActive(IsActive);
+            }
+
             public void Reset(bool isVisible)
             {
                 _currentShield = _shield1;
                 _currentShield.SetActive(true);
-                
-                var parentTransform = _shield1.GetComponent<Transform>().parent;
-                var childCount = parentTransform.childCount;
-                var firstChild = parentTransform.GetChild(0);
-                for (var i = 0; i < childCount; ++i)
+
+                _parentTransform = _shield1.GetComponent<Transform>().parent;
+                _childCount = _parentTransform.childCount;
+                var firstChild = _parentTransform.GetChild(0);
+                for (var i = 0; i < _childCount; ++i)
                 {
-                    var child = parentTransform.GetChild(i);
+                    var child = _parentTransform.GetChild(i);
                     if (i > 0)
                     {
                         child.position = firstChild.position;
                         child.gameObject.SetActive(false);
                     }
                 }
-                
-                _currentShield.SetActive(isVisible);
+
+                SetActive(isVisible);
             }
         }
 
@@ -206,7 +230,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var model = _playerDriver.CharacterModel;
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
-            _settings._avatar.Reset(_skillColors[(int)model.MainDefence]);
+            _settings._avatar.Reset(true, _skillColors[(int)model.MainDefence]);
             _settings._shield.Reset(true);
             UpdatePlayerText();
             StartCoroutine(ThrottledLogger());
@@ -291,6 +315,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private float _speed;
 
+        int IPlayerActor.MaxPoseIndex => _settings._avatar.MaxPoseIndex;
+
         Vector2 IPlayerActor.Position => _transform.position;
 
         float IPlayerActor.Speed
@@ -317,6 +343,8 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
             _poseIndex = poseIndex;
+            _settings._shield.SetPose(poseIndex);
+            _settings._avatar.SetPose(poseIndex);
             UpdatePlayerText();
         }
 
@@ -376,6 +404,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _hasPlayer = false;
             UpdatePlayerText();
 
+            // Brute force way to disable everything!
             var colliders = GetComponentsInChildren<Collider2D>();
             foreach (var childCollider in colliders)
             {

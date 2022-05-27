@@ -87,7 +87,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.TeamNumber => _settings._teamNumber;
 
-        int IPlayerDriver.MaxPoseIndex => 0;
+        int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
         bool IPlayerDriver.IsLocal => _settings._isLocal;
 

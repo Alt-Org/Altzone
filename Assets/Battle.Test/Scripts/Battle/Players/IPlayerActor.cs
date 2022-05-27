@@ -14,6 +14,8 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </summary>
     internal interface IPlayerActor
     {
+        int MaxPoseIndex { get; }
+        
         Vector2 Position { get; }
         
         float Speed { get; set; }

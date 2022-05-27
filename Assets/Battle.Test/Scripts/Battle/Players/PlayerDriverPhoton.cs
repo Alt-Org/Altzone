@@ -110,7 +110,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.TeamNumber => _teamNumber;
 
-        int IPlayerDriver.MaxPoseIndex => 0;
+        int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
         bool IPlayerDriver.IsLocal => photonView.Owner.IsLocal;
 
