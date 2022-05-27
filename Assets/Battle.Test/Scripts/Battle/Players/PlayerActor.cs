@@ -5,6 +5,7 @@ using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -20,7 +21,90 @@ namespace Battle.Test.Scripts.Battle.Players
         internal class PlayerSettings
         {
             public Transform _geometryRoot;
-            public GameObject _shield;
+            public Avatar _avatar;
+            public Shield _shield;
+        }
+
+        [Serializable]
+        internal class Avatar
+        {
+            public GameObject _avatar1;
+            public GameObject _avatar2;
+            public GameObject _avatar3;
+            public GameObject _avatar4;
+            public GameObject _avatar5;
+
+            public bool IsActive { get; private set; }
+
+            private GameObject _currentAvatar;
+
+            public void SetActive(bool state)
+            {
+                IsActive = state;
+                _currentAvatar.SetActive(state);
+            }
+
+            public void Reset(Color avatarColor)
+            {
+                _currentAvatar = _avatar1;
+                _currentAvatar.SetActive(true);
+
+                var parentTransform = _avatar1.GetComponent<Transform>().parent;
+                var childCount = parentTransform.childCount;
+                var firstChild = parentTransform.GetChild(0);
+                for (var i = 0; i < childCount; ++i)
+                {
+                    var child = parentTransform.GetChild(i);
+                    var spriteRenderer = child.GetComponent<SpriteRenderer>();
+                    spriteRenderer.color = avatarColor;
+                    if (i > 0)
+                    {
+                        child.position = firstChild.position;
+                        child.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+
+        [Serializable]
+        internal class Shield
+        {
+            public GameObject _shield1;
+            public GameObject _shield2;
+            public GameObject _shield3;
+            public GameObject _shield4;
+            public GameObject _shield5;
+
+            public bool IsActive { get; private set; }
+
+            private GameObject _currentShield;
+
+            public void SetActive(bool state)
+            {
+                IsActive = state;
+                _currentShield.SetActive(state);
+            }
+
+            public void Reset(bool isVisible)
+            {
+                _currentShield = _shield1;
+                _currentShield.SetActive(true);
+                
+                var parentTransform = _shield1.GetComponent<Transform>().parent;
+                var childCount = parentTransform.childCount;
+                var firstChild = parentTransform.GetChild(0);
+                for (var i = 0; i < childCount; ++i)
+                {
+                    var child = parentTransform.GetChild(i);
+                    if (i > 0)
+                    {
+                        child.position = firstChild.position;
+                        child.gameObject.SetActive(false);
+                    }
+                }
+                
+                _currentShield.SetActive(isVisible);
+            }
         }
 
         [Serializable]
@@ -122,10 +206,8 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var model = _playerDriver.CharacterModel;
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
-            foreach (var spriteRenderer in GetComponentsInChildren<SpriteRenderer>())
-            {
-                spriteRenderer.color = _skillColors[(int)model.MainDefence];
-            }
+            _settings._avatar.Reset(_skillColors[(int)model.MainDefence]);
+            _settings._shield.Reset(true);
             UpdatePlayerText();
             StartCoroutine(ThrottledLogger());
         }
@@ -247,7 +329,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetShieldVisibility(bool state)
         {
-            Debug.Log($"{name} {_settings._shield.activeSelf} <- {state}");
+            Debug.Log($"{name} {_settings._shield.IsActive} <- {state}");
             _settings._shield.SetActive(state);
             UpdatePlayerText();
         }
