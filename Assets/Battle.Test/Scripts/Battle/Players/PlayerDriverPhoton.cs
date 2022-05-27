@@ -5,6 +5,7 @@ using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Photon.Pun;
 using Photon.Realtime;
+using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -32,6 +33,8 @@ namespace Battle.Test.Scripts.Battle.Players
         private IPlayerActor _playerActor;
         private bool _isLocal;
         private bool _isApplicationQuitting;
+
+        private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
@@ -73,6 +76,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
             GameplayManager.Get().RegisterPlayer(this);
+            ScoreFlashNet.RegisterEventListener();
             if (!_isLocal)
             {
                 return;
@@ -104,12 +108,26 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
         {
-            Debug.Log($"SHIELD {name}");
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
+            var message = $"SHIELD {_playerPos}";
+            var point = collision.GetContact(0).point;
+            ScoreFlashNet.Push(message, point);
+            Debug.Log($"SHIELD {name} contacts {collision.contactCount} {point}");
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
         {
-            Debug.Log($"HEAD {name}");
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
+            var message = $"HEAD {_playerPos}";
+            var point = collision.GetContact(0).point;
+            ScoreFlashNet.Push(message, point);
+            Debug.Log($"HEAD {name} contacts {collision.contactCount} {point}");
         }
 
         #endregion
@@ -136,35 +154,57 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
             photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
         }
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
+            // NO IsNetworkSynchronize check!
+            // - If input is configured to us, lets do it!
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
             TestSetCharacterPoseRpc(poseIndex);
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
             photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
         {
             TestSetPlayModeRpc(playMode);
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
             photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
         }
 
         void IPlayerDriver.SetShieldVisibility(bool state)
         {
             TestSetShieldVisibilityRpc(state);
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
             photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
         }
 
         void IPlayerDriver.SetStunned(float duration)
         {
             TestSetStunnedRpc(duration);
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
             photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
         }
 

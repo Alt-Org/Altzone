@@ -3,6 +3,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -81,12 +82,18 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
         {
-            Debug.Log($"SHIELD {name}");
+            var message = $"SHIELD {_settings._playerPos}";
+            var point = collision.GetContact(0).point;
+            ScoreFlash.Push(message, point);
+            Debug.Log($"SHIELD {name} contacts {collision.contactCount} {point}");
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
         {
-            Debug.Log($"HEAD {name}");
+           var message = $"HEAD {_settings._playerPos}";
+            var point = collision.GetContact(0).point;
+            ScoreFlash.Push(message, point);
+            Debug.Log($"HEAD {name} contacts {collision.contactCount} {point}");
         }
 
         #endregion

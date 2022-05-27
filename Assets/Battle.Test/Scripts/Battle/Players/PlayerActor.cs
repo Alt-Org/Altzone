@@ -53,6 +53,7 @@ namespace Battle.Test.Scripts.Battle.Players
         internal class DebugSettings
         {
             public bool _isShowMoveTo;
+            public bool _isInterfaceEvents;
             public bool _isShowPlayerText;
             public TextMeshPro _playerText;
             public char _playerModeOrBuff = '?';
@@ -270,7 +271,10 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.Rotate(bool isUpsideDown)
         {
-            Debug.Log($"{name} isUpsideDown {isUpsideDown}");
+            if (_debug._isInterfaceEvents)
+            {
+                Debug.Log($"{name} isUpsideDown {isUpsideDown}");
+            }
             _settings._geometryRoot.Rotate(isUpsideDown);
             UpdatePlayerText();
         }
@@ -289,7 +293,10 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
-            Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
+            if (_debug._isInterfaceEvents)
+            {
+                Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
+            }
             _poseIndex = poseIndex;
             _shieldPose.SetPose(poseIndex);
             _avatarPose.SetPose(poseIndex);
@@ -298,7 +305,10 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {
-            Debug.Log($"{name} {_playMode} <- {playMode}");
+            if (_debug._isInterfaceEvents)
+            {
+                Debug.Log($"{name} {_playMode} <- {playMode}");
+            }
             _playMode = playMode;
             _shieldPose.SetPlayMode(playMode);
             _avatarPose.SetPlayMode(playMode);
@@ -307,14 +317,20 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetShieldVisibility(bool state)
         {
-            Debug.Log($"{name} {_shieldPose.IsVisible} <- {state}");
+            if (_debug._isInterfaceEvents)
+            {
+                Debug.Log($"{name} {_shieldPose.IsVisible} <- {state}");
+            }
             _shieldPose.SetVisible(state);
             UpdatePlayerText();
         }
 
         void IPlayerActor.SetBuff(PlayerBuff buff, float duration)
         {
-            Debug.Log($"{name} start {buff} {duration:0.0}s");
+            if (_debug._isInterfaceEvents)
+            {
+                Debug.Log($"{name} start {buff} {duration:0.0}s");
+            }
             switch (buff)
             {
                 case PlayerBuff.Stunned:
@@ -464,6 +480,10 @@ namespace Battle.Test.Scripts.Battle.Players
             if (!enabled)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            if (collision.contactCount == 0)
+            {
+                return;
             }
             Callback(collision);
         }
