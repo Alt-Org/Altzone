@@ -29,22 +29,19 @@ namespace Battle.Test.Scripts.Test
                 enabled = false;
                 return;
             }
-            _nickname = _playerDriver.NickName ?? "noname";
+            _nickname = "wait";
         }
         
         private void OnEnable()
         {
-            StartCoroutine(WaitForPlayerDriver());
+            StartCoroutine(WaitForPlayerDriverToRegister());
         }
 
-        private IEnumerator WaitForPlayerDriver()
+        private IEnumerator WaitForPlayerDriverToRegister()
         {
-            var component = _playerDriver as MonoBehaviour;
-            if (component == null)
-            {
-                yield break;
-            }
-            yield return new WaitUntil(() => component.enabled);
+            var gameplayManager = GameplayManager.Get();
+            yield return new WaitUntil(() => gameplayManager.GetPlayerByActorNumber(_playerDriver.ActorNumber) != null);
+            _nickname = _playerDriver.NickName ?? "noname";
             Debug.Log($"{name} {_nickname}");
             if (_playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
             {

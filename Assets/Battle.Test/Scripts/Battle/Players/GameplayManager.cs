@@ -11,15 +11,34 @@ namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
     /// Manager for gameplay activities where one or more players are involved.<br />
-    /// Requires registration in order to participate.
+    /// Requires player's registration in order to participate.
     /// </summary>
     internal interface IGameplayManager
     {
         int PlayerCount { get; }
-        
+
+        IPlayerDriver GetPlayerByActorNumber(int actorNumber);
+
         void RegisterPlayer(IPlayerDriver playerDriver);
 
         void UnregisterPlayer(IPlayerDriver playerDriver);
+    }
+
+    internal class PlayerJoined
+    {
+        public readonly IPlayerDriver Player;
+
+        public PlayerJoined(IPlayerDriver player)
+        {
+            Player = player;
+        }
+    }
+
+    internal class PlayerLeft : PlayerJoined
+    {
+        public PlayerLeft(IPlayerDriver player) : base(player)
+        {
+        }
     }
 
     internal class TeamCreated
@@ -69,6 +88,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IGameplayManager.PlayerCount => _players.Count;
 
+        IPlayerDriver IGameplayManager.GetPlayerByActorNumber(int actorNumber)
+        {
+            return _players.FirstOrDefault(x => x.ActorNumber == actorNumber);
+        }
+
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
             Debug.Log($"add {playerDriver.NickName} pp={playerDriver.PlayerPos} actor={playerDriver.ActorNumber}");
@@ -76,6 +100,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
+            this.Publish(new PlayerJoined(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {
                 _teamBlue.Add(playerDriver);
@@ -107,6 +132,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"remove {playerDriver.NickName} pp={playerDriver.PlayerPos}");
             _players.Remove(playerDriver);
+            this.Publish(new PlayerLeft(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {
                 _teamBlue.Remove(playerDriver);
