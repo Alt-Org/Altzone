@@ -193,9 +193,6 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
-            var otherGameObject = other.gameObject;
-            var layer = otherGameObject.layer;
-            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
             foreach (var playerDriver in TeamMembers)
             {
                 playerDriver.SetPlayMode(BattlePlayMode.Frozen);
@@ -208,9 +205,6 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
-            var otherGameObject = other.gameObject;
-            var layer = otherGameObject.layer;
-            Debug.Log($"exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
             foreach (var playerDriver in TeamMembers)
             {
                 playerDriver.SetPlayMode(BattlePlayMode.Normal);
