@@ -13,7 +13,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : MonoBehaviourPunCallbacks, IPlayerDriver
+    internal class PlayerDriverPhoton : MonoBehaviourPunCallbacks, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class DebugSettings
@@ -100,6 +100,20 @@ namespace Battle.Test.Scripts.Battle.Players
             playerInputHandler?.ResetPlayerDriver();
         }
 
+        #region IPlayerActorCollision
+
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
+        {
+            Debug.Log($"SHIELD {name}");
+        }
+
+        void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
+        {
+            Debug.Log($"HEAD {name}");
+        }
+
+        #endregion
+
         #region IPlayerDriver
 
         string IPlayerDriver.NickName => photonView.Owner.NickName;
@@ -117,6 +131,8 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
+
+        IPlayerActorCollision IPlayerDriver.IPlayerActorCollision => this;
 
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {

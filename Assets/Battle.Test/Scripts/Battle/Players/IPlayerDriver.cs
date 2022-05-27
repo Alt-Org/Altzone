@@ -5,6 +5,16 @@ using UnityEngine;
 namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
+    /// Local player callback interface for collision handling.
+    /// </summary>
+    internal interface IPlayerActorCollision
+    {
+        void OnShieldCollision(Collision2D collision);
+        
+        void OnHeadCollision(Collision2D collision);
+    }
+    
+    /// <summary>
     /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />
     /// Player visual state can be managed locally and/or remotely.
     /// </summary>
@@ -24,6 +34,8 @@ namespace Battle.Test.Scripts.Battle.Players
         bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
+        
+        IPlayerActorCollision IPlayerActorCollision { get; }
 
         void Rotate(bool isUpsideDown);
 

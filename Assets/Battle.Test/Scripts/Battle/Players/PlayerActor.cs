@@ -52,6 +52,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
+            public bool _isShowMoveTo;
             public bool _isShowPlayerText;
             public TextMeshPro _playerText;
             public char _playerModeOrBuff = '?';
@@ -159,7 +160,23 @@ namespace Battle.Test.Scripts.Battle.Players
             _shieldPose = new PoseManager(_settings._shield.Shields);
             _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, false);
             UpdatePlayerText();
-            StartCoroutine(ThrottledLogger());
+            // We have to add ColliderTracker for every collider there is
+            // - if we add it to upper level in hierarchy (which would be nice) it does not receive collision events :-(
+            var collisionCallback = _playerDriver.IPlayerActorCollision;
+            foreach (var avatar in _settings._avatar.Avatars)
+            {
+                var tracker = avatar.AddComponent<ColliderTracker>();
+                tracker.Callback = collision => { collisionCallback.OnHeadCollision(collision); };
+            }
+            foreach (var shield in _settings._shield.Shields)
+            {
+                var tracker = shield.AddComponent<ColliderTracker>();
+                tracker.Callback = collision => { collisionCallback.OnShieldCollision(collision); };
+            }
+            if (_debug._isShowMoveTo)
+            {
+                StartCoroutine(ThrottledLogger());
+            }
         }
 
         private void OnDisable()
@@ -435,6 +452,20 @@ namespace Battle.Test.Scripts.Battle.Players
             _state.PlayMode = playMode;
             _state.IsVisible = isVisible;
             SetPose(0);
+        }
+    }
+
+    internal class ColliderTracker : MonoBehaviour
+    {
+        public Action<Collision2D> Callback;
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (!enabled)
+            {
+                return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            Callback(collision);
         }
     }
 }

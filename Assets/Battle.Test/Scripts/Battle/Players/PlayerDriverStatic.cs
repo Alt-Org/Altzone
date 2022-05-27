@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
+    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class Settings
@@ -77,6 +77,20 @@ namespace Battle.Test.Scripts.Battle.Players
             }
         }
 
+        #region IPlayerActorCollision
+
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
+        {
+            Debug.Log($"SHIELD {name}");
+        }
+
+        void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
+        {
+            Debug.Log($"HEAD {name}");
+        }
+
+        #endregion
+
         #region IPlayerDriver
 
         string IPlayerDriver.NickName => _settings._nickName;
@@ -94,6 +108,8 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
+
+        IPlayerActorCollision IPlayerDriver.IPlayerActorCollision => this;
 
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {
