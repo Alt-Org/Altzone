@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Battle.Test.Scripts.Battle.Ball;
 using Photon.Pun;
+using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Test
@@ -22,7 +23,7 @@ namespace Battle.Test.Scripts.Test
 
         [Header("Photon Master Client")] public bool _isAutoStart;
         public int _requiredPlayerCount;
-        public int _realPlayerCount;
+        [ReadOnly] public int _realPlayerCount;
 
         private IBallManager _ball;
 
