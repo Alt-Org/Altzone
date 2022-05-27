@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battle.Test.Scripts.Battle.Ball
+namespace Battle.Test.Scripts.Test
 {
     internal class ColliderHelper : MonoBehaviour
     {
@@ -22,7 +22,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
             var otherGameObject = other.gameObject;
             var layer = otherGameObject.layer;
-            Debug.Log($"UNHANDLED trigger_enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -33,7 +33,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
             var otherGameObject = other.gameObject;
             var layer = otherGameObject.layer;
-            Debug.Log($"UNHANDLED trigger_exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            Debug.Log($"exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -45,7 +45,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             var otherGameObject = collision.gameObject;
             var layer = otherGameObject.layer;
             var material = collision.collider.sharedMaterial != null ? collision.collider.sharedMaterial.name : "NULL";
-            Debug.Log($"UNHANDLED collision_enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)} mat {material}");
+            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)} mat {material}");
         }
 
         #endregion

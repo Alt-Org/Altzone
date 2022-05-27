@@ -195,7 +195,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             var otherGameObject = other.gameObject;
             var layer = otherGameObject.layer;
-            Debug.Log($"trigger_enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
             foreach (var playerDriver in TeamMembers)
             {
                 playerDriver.SetPlayMode(BattlePlayMode.Frozen);
@@ -210,7 +210,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             var otherGameObject = other.gameObject;
             var layer = otherGameObject.layer;
-            Debug.Log($"trigger_exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            Debug.Log($"exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
             foreach (var playerDriver in TeamMembers)
             {
                 playerDriver.SetPlayMode(BattlePlayMode.Normal);
