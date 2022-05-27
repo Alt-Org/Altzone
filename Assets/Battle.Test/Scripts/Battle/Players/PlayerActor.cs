@@ -16,8 +16,6 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : MonoBehaviour, IPlayerActor
     {
-        private const int InvalidPlayerDriver = -1;
-
         [Serializable]
         internal class PlayerSettings
         {
@@ -52,6 +50,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Header("Color Settings"), SerializeField] private ColorSettings _colors;
 
         private IPlayerDriver _playerDriver;
+        private bool _hasPlayer;
         private Transform _transform;
         private int _actorNumber;
 
@@ -108,6 +107,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name}");
             // Now we are good to go.
             _playerDriver = playerDriver;
+            _hasPlayer = true;
             _actorNumber = playerDriver.ActorNumber;
             _transform = GetComponent<Transform>();
             if (_debug._isShowPlayerText && !playerDriver.IsLocal)
@@ -155,7 +155,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            if (_actorNumber == InvalidPlayerDriver)
+            if (!_hasPlayer)
             {
                 _debug._playerText.text = $"---";
                 return;
@@ -289,10 +289,9 @@ namespace Battle.Test.Scripts.Battle.Players
         void IPlayerActor.ResetPlayerDriver()
         {
             // We have lost our original driver
-            Debug.Log($"{name} {_actorNumber} <- {InvalidPlayerDriver}");
+            Debug.Log($"{name}");
             _playerDriver = null;
-
-            _actorNumber = InvalidPlayerDriver;
+            _hasPlayer = false;
             UpdatePlayerText();
 
             var colliders = GetComponentsInChildren<Collider2D>();
