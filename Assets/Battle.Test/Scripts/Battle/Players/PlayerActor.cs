@@ -37,15 +37,19 @@ namespace Battle.Test.Scripts.Battle.Players
             public bool IsActive { get; private set; }
 
             public int MaxPoseIndex => _childCount - 1;
-            
+
+            private BattlePlayMode _playMode;
             private GameObject _currentAvatar;
+            private Collider2D _currentCollider;
+
             private Transform _parentTransform;
             private int _childCount;
 
-            public void SetActive(bool state)
+            public void SetVisible(bool state)
             {
                 IsActive = state;
                 _currentAvatar.SetActive(state);
+                _currentCollider.enabled = _playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Frozen;
             }
 
             public void SetPose(int poseIndex)
@@ -53,13 +57,20 @@ namespace Battle.Test.Scripts.Battle.Players
                 Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
                 _currentAvatar.SetActive(false);
                 _currentAvatar = _parentTransform.GetChild(poseIndex).gameObject;
-                _currentAvatar.SetActive(IsActive);
+                _currentCollider = _currentAvatar.GetComponentsInChildren<Collider2D>(true)[0];
+                SetVisible(IsActive);
             }
 
-            public void Reset(bool isVisible, Color avatarColor)
+            public void SetPlayMode(BattlePlayMode playMode)
+            {
+                _playMode = playMode;
+                SetVisible(IsActive);
+            }
+
+            public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor)
             {
                 _currentAvatar = _avatar1;
-                _currentAvatar.SetActive(true);
+                _currentCollider = _currentAvatar.GetComponentsInChildren<Collider2D>(true)[0];
 
                 _parentTransform = _avatar1.GetComponent<Transform>().parent;
                 _childCount = _parentTransform.childCount;
@@ -76,7 +87,8 @@ namespace Battle.Test.Scripts.Battle.Players
                     }
                 }
 
-                SetActive(isVisible);
+                _playMode = playMode;
+                SetVisible(isVisible);
             }
         }
 
@@ -91,14 +103,18 @@ namespace Battle.Test.Scripts.Battle.Players
 
             public bool IsActive { get; private set; }
 
+            private BattlePlayMode _playMode;
             private GameObject _currentShield;
+            private Collider2D _currentCollider;
+
             private Transform _parentTransform;
             private int _childCount;
 
-            public void SetActive(bool state)
+            public void SetVisible(bool state)
             {
                 IsActive = state;
                 _currentShield.SetActive(state);
+                _currentCollider.enabled = _playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Frozen;
             }
 
             public void SetPose(int poseIndex)
@@ -106,13 +122,20 @@ namespace Battle.Test.Scripts.Battle.Players
                 Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
                 _currentShield.SetActive(false);
                 _currentShield = _parentTransform.GetChild(poseIndex).gameObject;
-                _currentShield.SetActive(IsActive);
+                _currentCollider = _currentShield.GetComponentsInChildren<Collider2D>(true)[0];
+                SetVisible(IsActive);
             }
 
-            public void Reset(bool isVisible)
+            public void SetPlayMode(BattlePlayMode playMode)
+            {
+                _playMode = playMode;
+                SetVisible(IsActive);
+            }
+
+            public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor)
             {
                 _currentShield = _shield1;
-                _currentShield.SetActive(true);
+                _currentCollider = _currentShield.GetComponentsInChildren<Collider2D>(true)[0];
 
                 _parentTransform = _shield1.GetComponent<Transform>().parent;
                 _childCount = _parentTransform.childCount;
@@ -127,7 +150,8 @@ namespace Battle.Test.Scripts.Battle.Players
                     }
                 }
 
-                SetActive(isVisible);
+                _playMode = playMode;
+                SetVisible(isVisible);
             }
         }
 
@@ -162,19 +186,20 @@ namespace Battle.Test.Scripts.Battle.Players
         private Transform _transform;
         private int _actorNumber;
 
-        private bool _isMoving;
+        private bool _hasTarget;
         private Vector3 _targetPosition;
         private Vector3 _tempPosition;
 
         private BattlePlayMode _playMode;
         private int _poseIndex;
-
-        private bool IsBuffedOrDeBuffed => _isStunned;
-
         private bool _isStunned;
         private Coroutine _stunnedCoroutine;
 
         private Color[] _skillColors;
+
+        private bool CanMove => _hasTarget && !_isStunned && (_playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Ghosted);
+
+        private bool IsBuffedOrDeBuffed => _isStunned;
 
         public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
@@ -230,8 +255,9 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var model = _playerDriver.CharacterModel;
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
-            _settings._avatar.Reset(true, _skillColors[(int)model.MainDefence]);
-            _settings._shield.Reset(true);
+            var skillColor = _skillColors[(int)model.MainDefence];
+            _settings._avatar.Reset(BattlePlayMode.Normal, true, skillColor);
+            _settings._shield.Reset(BattlePlayMode.Normal, true, skillColor);
             UpdatePlayerText();
             StartCoroutine(ThrottledLogger());
         }
@@ -243,13 +269,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void Update()
         {
-            if (!_isMoving || _isStunned)
+            if (!CanMove)
             {
                 return;
             }
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, _speed * Time.deltaTime);
             _transform.position = _tempPosition;
-            _isMoving = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
+            _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
         }
 
         #region Debugging
@@ -335,7 +361,7 @@ namespace Battle.Test.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed}");
-            _isMoving = true;
+            _hasTarget = true;
             _targetPosition = targetPosition;
         }
 
@@ -352,13 +378,15 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name} {_playMode} <- {playMode}");
             _playMode = playMode;
+            _settings._shield.SetPlayMode(playMode);
+            _settings._avatar.SetPlayMode(playMode);
             UpdatePlayerText();
         }
 
         void IPlayerActor.SetShieldVisibility(bool state)
         {
             Debug.Log($"{name} {_settings._shield.IsActive} <- {state}");
-            _settings._shield.SetActive(state);
+            _settings._shield.SetVisible(state);
             UpdatePlayerText();
         }
 
