@@ -17,7 +17,7 @@ namespace Altzone.Scripts
         private static void BeforeSceneLoad()
         {
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
-            var loggerConfig = localDevConfig != null
+            var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
                 ? localDevConfig._loggerConfig
                 : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
             if (loggerConfig != null)
