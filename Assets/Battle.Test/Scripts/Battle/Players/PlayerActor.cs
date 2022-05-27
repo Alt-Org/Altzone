@@ -346,84 +346,95 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
+    }
 
+    /// <summary>
+    /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor</c> (shields and avatars).
+    /// </summary>
+    internal class PoseManager
+    {
         /// <summary>
-        /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor</c> (shields and avatars).
+        /// Internal state that defines how this pose behaves.
         /// </summary>
-        private class PoseManager
+        private class PoseState
         {
-            private readonly GameObject[] _avatars;
-            private readonly Collider2D[] _colliders;
+            public bool IsVisible;
+            public BattlePlayMode PlayMode;
+        }
 
-            public bool IsVisible { get; private set; }
+        private readonly PoseState _state;
+        private readonly GameObject[] _avatars;
+        private readonly Collider2D[] _colliders;
 
-            public int MaxPoseIndex => _childCount - 1;
+        public bool IsVisible => _state.IsVisible;
 
-            private BattlePlayMode _playMode;
-            private GameObject _currentAvatar;
-            private Collider2D _currentCollider;
+        public int MaxPoseIndex => _childCount - 1;
 
-            private Transform _parentTransform;
-            private int _childCount;
+        private GameObject _currentAvatar;
+        private Collider2D _currentCollider;
 
-            public PoseManager(GameObject[] avatars)
+        private Transform _parentTransform;
+        private int _childCount;
+
+        public PoseManager(GameObject[] avatars)
+        {
+            _state = new PoseState();
+            _avatars = avatars;
+            _colliders = new Collider2D[avatars.Length];
+            var index = -1;
+            foreach (var avatar in _avatars)
             {
-                _avatars = avatars;
-                _colliders = new Collider2D[avatars.Length];
-                var index = -1;
-                foreach (var avatar in _avatars)
+                _colliders[++index] = avatar.GetComponentsInChildren<Collider2D>(true)[0];
+            }
+        }
+
+        public void SetVisible(bool isVisible)
+        {
+            _state.IsVisible = isVisible;
+            _currentAvatar.SetActive(isVisible);
+            _currentCollider.enabled = _state.PlayMode == BattlePlayMode.Normal || _state.PlayMode == BattlePlayMode.Frozen;
+        }
+
+        public void SetPlayMode(BattlePlayMode playMode)
+        {
+            _state.PlayMode = playMode;
+            SetVisible(IsVisible);
+        }
+
+        public void SetPose(int poseIndex)
+        {
+            Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
+            _currentAvatar.SetActive(false);
+            _currentAvatar = _avatars[poseIndex];
+            _currentCollider = _colliders[poseIndex];
+            SetVisible(IsVisible);
+        }
+
+        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, bool setAvatarColor)
+        {
+            _currentAvatar = _avatars[0];
+            _currentCollider = _colliders[0];
+
+            _childCount = _avatars.Length;
+            var firstPosition = _currentAvatar.transform.position;
+            for (var i = 0; i < _childCount; ++i)
+            {
+                var child = _avatars[i];
+                if (setAvatarColor)
                 {
-                    _colliders[++index] = avatar.GetComponentsInChildren<Collider2D>(true)[0];
+                    var spriteRenderer = child.GetComponent<SpriteRenderer>();
+                    spriteRenderer.color = avatarColor;
+                }
+                if (i > 0)
+                {
+                    child.transform.position = firstPosition;
+                    child.gameObject.SetActive(false);
                 }
             }
 
-            public void SetVisible(bool state)
-            {
-                IsVisible = state;
-                _currentAvatar.SetActive(state);
-                _currentCollider.enabled = _playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Frozen;
-            }
-
-            public void SetPose(int poseIndex)
-            {
-                Assert.IsTrue(poseIndex >= 0 && poseIndex < _childCount);
-                _currentAvatar.SetActive(false);
-                _currentAvatar = _avatars[poseIndex];
-                _currentCollider = _colliders[poseIndex];
-                SetVisible(IsVisible);
-            }
-
-            public void SetPlayMode(BattlePlayMode playMode)
-            {
-                _playMode = playMode;
-                SetVisible(IsVisible);
-            }
-
-            public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, bool setAvatarColor)
-            {
-                _currentAvatar = _avatars[0];
-                _currentCollider = _colliders[0];
-
-                _childCount = _avatars.Length;
-                var firstPosition = _currentAvatar.transform.position;
-                for (var i = 0; i < _childCount; ++i)
-                {
-                    var child = _avatars[i];
-                    if (setAvatarColor)
-                    {
-                        var spriteRenderer = child.GetComponent<SpriteRenderer>();
-                        spriteRenderer.color = avatarColor;
-                    }
-                    if (i > 0)
-                    {
-                        child.transform.position = firstPosition;
-                        child.gameObject.SetActive(false);
-                    }
-                }
-
-                _playMode = playMode;
-                SetVisible(isVisible);
-            }
+            _state.PlayMode = playMode;
+            _state.IsVisible = isVisible;
+            SetPose(0);
         }
     }
 }
