@@ -10,15 +10,16 @@ namespace Battle.Test.Scripts.Test
     internal class PlayerDriverTest : MonoBehaviour
     {
         [Header("Player Test Actions")] public bool _moveTo;
+        public bool _setPlayModeNormal;
+        public bool _setPlayModeFrozen;
+        public bool _setPlayModeGhosted;
         public bool _setPose;
-        public bool _setPlayMode;
         public bool _setShieldVisibility;
         public bool _setStunned;
         public bool _setRotation;
 
         [Header("Test Settings")] public Vector2 _moveToPosition;
         public int _poseIndex;
-        public BattlePlayMode _playMode;
         public bool _isShieldVisible;
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
@@ -67,10 +68,22 @@ namespace Battle.Test.Scripts.Test
                 }
                 return;
             }
-            if (_setPlayMode)
+            if (_setPlayModeNormal)
             {
-                _setPlayMode = false;
-                _playerDriver.SetPlayMode(_playMode);
+                _setPlayModeNormal = false;
+                _playerDriver.SetPlayMode(BattlePlayMode.Normal);
+                return;
+            }
+            if (_setPlayModeFrozen)
+            {
+                _setPlayModeFrozen = false;
+                _playerDriver.SetPlayMode(BattlePlayMode.Frozen);
+                return;
+            }
+            if (_setPlayModeGhosted)
+            {
+                _setPlayModeGhosted = false;
+                _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 return;
             }
             if (_setShieldVisibility)
