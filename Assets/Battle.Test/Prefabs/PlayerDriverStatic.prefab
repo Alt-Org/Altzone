@@ -44,10 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e840eaa5524245a4f298be7a179f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPos: 1
-  _teamNumber: 1
-  _playerMainSkill: 2
-  _playerPrefab: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
-    type: 3}
-  _isConnectInputHandler: 0
+  _settings:
+    _nickName: Player
+    _playerPos: 1
+    _teamNumber: 1
+    _playerMainSkill: 2
+    _playerPrefab: {fileID: 0}
+    _isLocal: 0
+  _actorNumber: 0
   _playerActorInstance: {fileID: 0}

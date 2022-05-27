@@ -14,6 +14,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class Settings
         {
+            public string _nickName;
             public int _playerPos = PhotonBattle.PlayerPosition1;
             public int _teamNumber = PhotonBattle.TeamBlueValue;
             public Defence _playerMainSkill = Defence.Deflection;
@@ -42,6 +43,10 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             Debug.Log($"{name}");
             var gameplayManager = GameplayManager.Get();
+            if (string.IsNullOrWhiteSpace(_settings._nickName))
+            {
+                _settings._nickName = name;
+            }
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
             _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
@@ -74,7 +79,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IPlayerDriver
 
-        string IPlayerDriver.NickName => name;
+        string IPlayerDriver.NickName => _settings._nickName;
 
         int IPlayerDriver.ActorNumber => _actorNumber;
 
