@@ -11,6 +11,12 @@ namespace Battle.Test.Scripts.Battle.Players
     internal interface IPlayerDriver
     {
         string NickName { get; }
+        /// <summary>
+        /// ActorNumber is unique identifier for any player.
+        /// </summary>
+        /// <remarks>
+        /// Currently Photon uses positive and static player negative values.
+        /// </remarks>
         int ActorNumber { get; }
         int PlayerPos { get; }
         int TeamNumber { get; }

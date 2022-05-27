@@ -96,7 +96,6 @@ namespace Battle.Test.Scripts.Battle.Players
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
             Debug.Log($"add {playerDriver.NickName} pp={playerDriver.PlayerPos} actor={playerDriver.ActorNumber}");
-            // ActorNumber might not be used but we need to ensure it is unique for consistency with Photon.
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
