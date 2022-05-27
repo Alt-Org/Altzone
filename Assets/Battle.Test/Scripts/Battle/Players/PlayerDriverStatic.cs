@@ -21,6 +21,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private CharacterModel _characterModel;
 
         private IPlayerActor _playerActor;
+        private bool _isApplicationQuitting;
 
         // We are local if we have input handler connected to us.
         private bool _isLocal;
@@ -30,6 +31,7 @@ namespace Battle.Test.Scripts.Battle.Players
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             _isLocal = _isConnectInputHandler;
+            Application.quitting += () => _isApplicationQuitting = true;
         }
 
         private void OnEnable()
@@ -39,16 +41,24 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
-            if (_isConnectInputHandler)
+            GameplayManager.Get().RegisterPlayer(this);
+            if (!_isLocal)
             {
-                var playerInputHandler = PlayerInputHandler.Get();
-                var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
-                playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
+                return;
             }
+            var playerInputHandler = PlayerInputHandler.Get();
+            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
+            playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
 
         private void OnDestroy()
         {
+            if (_isApplicationQuitting)
+            {
+                return;
+            }
+            print("xx");
+            GameplayManager.Get().UnregisterPlayer(this);
             if (_isConnectInputHandler)
             {
                 var playerInputHandler = PlayerInputHandler.Get();

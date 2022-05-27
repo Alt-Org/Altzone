@@ -44,6 +44,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             print("++");
             var player = photonView.Owner;
+            _isLocal = player.IsLocal;
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
             _playerPos = PhotonBattle.GetPlayerPos(photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
@@ -71,7 +72,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
-            _isLocal = player.IsLocal;
+            GameplayManager.Get().RegisterPlayer(this);
             if (!_isLocal)
             {
                 return;
@@ -87,8 +88,9 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            print("x");
+            print("xx");
             Debug.Log($"{name}");
+            GameplayManager.Get().UnregisterPlayer(this);
             _playerActor.ResetPlayerDriver();
             if (!_isLocal)
             {
