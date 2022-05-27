@@ -41,7 +41,7 @@ namespace Battle.Test.Scripts.Battle.Players
             PlayerWhoLeft = playerWhoLeft;
         }
     }
-    
+
     internal class GameplayManager : MonoBehaviour, IGameplayManager
     {
         [Serializable]
@@ -49,6 +49,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             public List<MonoBehaviour> _playerList;
         }
+
         public static IGameplayManager Get() => FindObjectOfType<GameplayManager>();
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -74,7 +75,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 Assert.IsTrue(_teamBlue.Count <= 2, "_teamBlue.Count <= 2");
                 if (_teamBlue.Count == 2)
                 {
-                    _teamBlue.Sort((a,b) => a.PlayerPos.CompareTo(b.PlayerPos));
+                    _teamBlue.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
                     this.Publish(new TeamCreated(_teamBlue[0], _teamBlue[1]));
                 }
             }
@@ -84,7 +85,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 Assert.IsTrue(_teamRed.Count <= 2, "_teamRed.Count <= 2");
                 if (_teamRed.Count == 2)
                 {
-                    _teamRed.Sort((a,b) => a.PlayerPos.CompareTo(b.PlayerPos));
+                    _teamRed.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
                     this.Publish(new TeamCreated(_teamRed[0], _teamRed[1]));
                 }
             }
@@ -126,7 +127,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private void UpdateDebugPlayerList()
         {
             var playerList = _players.ToList();
-            playerList.Sort((a,b) => a.PlayerPos.CompareTo(b.PlayerPos));
+            playerList.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
             _debug._playerList = playerList.Cast<MonoBehaviour>().ToList();
         }
 

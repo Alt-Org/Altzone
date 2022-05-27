@@ -20,7 +20,7 @@ namespace Battle.Test.Scripts.Battle.Players
         Vector2 Position { get; }
 
         void Rotate(bool isUpsideDown);
-        
+
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);
@@ -28,7 +28,7 @@ namespace Battle.Test.Scripts.Battle.Players
         void SetPlayMode(BattlePlayMode playMode);
 
         void SetShieldVisibility(bool state);
-        
+
         void SetStunned(float duration);
     }
 }

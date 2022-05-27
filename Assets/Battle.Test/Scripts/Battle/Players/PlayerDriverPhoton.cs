@@ -107,7 +107,7 @@ namespace Battle.Test.Scripts.Battle.Players
         int IPlayerDriver.ActorNumber => photonView.Owner.ActorNumber;
 
         int IPlayerDriver.PlayerPos => _playerPos;
-        
+
         int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
@@ -122,6 +122,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
         }
+
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
