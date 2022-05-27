@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Battle;
+using Battle.Scripts.Battle.Factory;
+using Battle.Scripts.Battle.interfaces;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -65,9 +67,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class GameplayManager : MonoBehaviour, IGameplayManager
     {
+        private const string Tooltip1 = "Do not set player to 'Normal'/'Frozen' when ball travels over team gameplay areas";
+
         [Serializable]
         internal class DebugSettings
         {
+            [Tooltip(Tooltip1)] public bool _isDisableTeamColliderTracking;
             public List<MonoBehaviour> _playerList;
         }
 
@@ -79,9 +84,21 @@ namespace Battle.Test.Scripts.Battle.Players
         private readonly List<IPlayerDriver> _teamBlue = new();
         private readonly List<IPlayerDriver> _teamRed = new();
 
+        private TeamColliderTracker _teamBlueTracker;
+        private TeamColliderTracker _teamRedTracker;
+
         private void Awake()
         {
             Debug.Log($"{name}");
+            if (_debug._isDisableTeamColliderTracking)
+            {
+                return;
+            }
+            var playArea = Context.GetPlayerPlayArea;
+            _teamBlueTracker = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderTracker>();
+            _teamBlueTracker.TeamMembers = _teamBlue;
+            _teamRedTracker = playArea.RedTeamCollider.gameObject.AddComponent<TeamColliderTracker>();
+            _teamRedTracker.TeamMembers = _teamRed;
         }
 
         #region IGameplayManager
@@ -164,5 +181,40 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
+    }
+
+    internal class TeamColliderTracker : MonoBehaviour
+    {
+        public List<IPlayerDriver> TeamMembers { get; set; }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!enabled)
+            {
+                return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            var otherGameObject = other.gameObject;
+            var layer = otherGameObject.layer;
+            Debug.Log($"trigger_enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            foreach (var playerDriver in TeamMembers)
+            {
+                playerDriver.SetPlayMode(BattlePlayMode.Frozen);
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (!enabled)
+            {
+                return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            var otherGameObject = other.gameObject;
+            var layer = otherGameObject.layer;
+            Debug.Log($"trigger_exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            foreach (var playerDriver in TeamMembers)
+            {
+                playerDriver.SetPlayMode(BattlePlayMode.Normal);
+            }
+        }
     }
 }

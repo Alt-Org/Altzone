@@ -1,10 +1,12 @@
-using System;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
     internal class ColliderHelper : MonoBehaviour
     {
+        [SerializeField] private bool _isShowTriggers;
+        [SerializeField] private bool _isShowColliders;
+
         private void OnEnable()
         {
             // Just to be able to disable us to disable debug logging.
@@ -14,7 +16,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!enabled)
+            if (!enabled ||!_isShowTriggers)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
@@ -25,7 +27,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!enabled)
+            if (!enabled ||!_isShowTriggers)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
@@ -36,7 +38,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (!enabled)
+            if (!enabled || !_isShowColliders)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }

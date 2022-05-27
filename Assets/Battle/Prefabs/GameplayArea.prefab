@@ -30,7 +30,7 @@ Transform:
   m_Children:
   - {fileID: 3197958826503921600}
   m_Father: {fileID: 3197958824710963897}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2334976550746615840
 GameObject:
@@ -183,8 +183,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3383973144692370355}
   - {fileID: 7266488057144349267}
+  - {fileID: 3383973144692370355}
   m_Father: {fileID: 3197958824660771040}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1345,6 +1345,8 @@ MonoBehaviour:
   _startPositionP4: {x: -2.5, y: 5}
   _blueTeam: {fileID: 3197958825979341293}
   _redTeam: {fileID: 3197958825233962014}
+  _teamBlueCollider: {fileID: 3197958825979341292}
+  _teamRedCollider: {fileID: 3197958825233962013}
 --- !u!1 &3197958826110964505
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,7 +2229,7 @@ Transform:
   m_Children:
   - {fileID: 3197958826432558748}
   m_Father: {fileID: 3197958824710963897}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6839925466662230071
 GameObject:
