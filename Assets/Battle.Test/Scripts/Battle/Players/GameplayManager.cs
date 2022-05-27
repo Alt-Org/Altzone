@@ -15,6 +15,8 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </summary>
     internal interface IGameplayManager
     {
+        int PlayerCount { get; }
+        
         void RegisterPlayer(IPlayerDriver playerDriver);
 
         void UnregisterPlayer(IPlayerDriver playerDriver);
@@ -65,9 +67,14 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IGameplayManager
 
+        int IGameplayManager.PlayerCount => _players.Count;
+
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
-            Debug.Log($"add {playerDriver.NickName} pp={playerDriver.PlayerPos}");
+            Debug.Log($"add {playerDriver.NickName} pp={playerDriver.PlayerPos} actor={playerDriver.ActorNumber}");
+            // ActorNumber might not be used but we need to ensure it is unique for consistency with Photon.
+            Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
+                "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {

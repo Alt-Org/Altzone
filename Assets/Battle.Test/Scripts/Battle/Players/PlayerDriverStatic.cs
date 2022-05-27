@@ -1,7 +1,9 @@
+using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,45 +11,49 @@ namespace Battle.Test.Scripts.Battle.Players
 {
     internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
-        [Header("Settings"), SerializeField] private int _actorNumber;
-        [SerializeField] private int _playerPos = 1;
-        [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
-        [SerializeField] private Defence _playerMainSkill = Defence.Deflection;
-        [SerializeField] private PlayerActor _playerPrefab;
-        [SerializeField] private bool _isConnectInputHandler;
+        [Serializable]
+        internal class Settings
+        {
+            public int _playerPos = PhotonBattle.PlayerPosition1;
+            public int _teamNumber = PhotonBattle.TeamBlueValue;
+            public Defence _playerMainSkill = Defence.Deflection;
+            public PlayerActor _playerPrefab;
+            public bool _isLocal;
+        }
 
-        [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
+        [Header("Settings"), SerializeField] private Settings _settings;
+
+        [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
+        [SerializeField] private PlayerActor _playerActorInstance;
 
         private CharacterModel _characterModel;
 
         private IPlayerActor _playerActor;
         private bool _isApplicationQuitting;
 
-        // We are local if we have input handler connected to us.
-        private bool _isLocal;
-
         private void Awake()
         {
             print("++");
-            Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
-            _isLocal = _isConnectInputHandler;
+            Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
         }
 
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            _characterModel = Storefront.Get().GetCharacterModel((int)_playerMainSkill);
-            _playerActorInstance = PlayerActor.Instantiate(this, _playerPrefab);
+            var gameplayManager = GameplayManager.Get();
+            _actorNumber = -(gameplayManager.PlayerCount + 1);
+            _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
+            _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
-            GameplayManager.Get().RegisterPlayer(this);
-            if (!_isLocal)
+            gameplayManager.RegisterPlayer(this);
+            if (!_settings._isLocal)
             {
                 return;
             }
             var playerInputHandler = PlayerInputHandler.Get();
-            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
+            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_settings._playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
 
@@ -59,7 +65,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             print("xx");
             GameplayManager.Get().UnregisterPlayer(this);
-            if (_isConnectInputHandler)
+            if (_settings._isLocal)
             {
                 var playerInputHandler = PlayerInputHandler.Get();
                 playerInputHandler?.ResetPlayerDriver();
@@ -72,13 +78,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => _actorNumber;
 
-        int IPlayerDriver.PlayerPos => _playerPos;
+        int IPlayerDriver.PlayerPos => _settings._playerPos;
 
-        int IPlayerDriver.TeamNumber => _teamNumber;
+        int IPlayerDriver.TeamNumber => _settings._teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => 0;
 
-        bool IPlayerDriver.IsLocal => _isLocal;
+        bool IPlayerDriver.IsLocal => _settings._isLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
