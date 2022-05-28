@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Util;
@@ -24,9 +25,9 @@ namespace Altzone.Scripts.Config
         public bool _isRotateGamePlayArea;
 
         /// <summary>
-        /// Spawn mini ball aka diamonds.
+        /// Disable player <c>SetPlayMode</c> calls when ball goes over team's gameplay area.
         /// </summary>
-        public bool _isSPawnMiniBall;
+        public bool _isDisablePlayModeChanges;
 
         /// <summary>
         /// Is shield always on when team has only one player (for testing).

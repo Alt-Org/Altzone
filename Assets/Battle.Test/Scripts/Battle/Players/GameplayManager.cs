@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Prg.Scripts.Common.PubSub;
@@ -67,12 +68,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class GameplayManager : MonoBehaviour, IGameplayManager
     {
-        private const string Tooltip1 = "Do not set player to 'Normal'/'Frozen' when ball travels over team gameplay areas";
-
         [Serializable]
         internal class DebugSettings
         {
-            [Tooltip(Tooltip1)] public bool _isDisableTeamColliderTracking;
             public List<MonoBehaviour> _playerList;
         }
 
@@ -84,21 +82,22 @@ namespace Battle.Test.Scripts.Battle.Players
         private readonly List<IPlayerDriver> _teamBlue = new();
         private readonly List<IPlayerDriver> _teamRed = new();
 
-        private TeamColliderTracker _teamBlueTracker;
-        private TeamColliderTracker _teamRedTracker;
+        private TeamColliderPlayModeTrigger _teamBluePlayModeTrigger;
+        private TeamColliderPlayModeTrigger _teamRedPlayModeTrigger;
 
         private void Awake()
         {
             Debug.Log($"{name}");
-            if (_debug._isDisableTeamColliderTracking)
+            var features = RuntimeGameConfig.Get().Features;
+            if (features._isDisablePlayModeChanges)
             {
                 return;
             }
             var playArea = Context.GetPlayerPlayArea;
-            _teamBlueTracker = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderTracker>();
-            _teamBlueTracker.TeamMembers = _teamBlue;
-            _teamRedTracker = playArea.RedTeamCollider.gameObject.AddComponent<TeamColliderTracker>();
-            _teamRedTracker.TeamMembers = _teamRed;
+            _teamBluePlayModeTrigger = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
+            _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
+            _teamRedPlayModeTrigger = playArea.RedTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
+            _teamRedPlayModeTrigger.TeamMembers = _teamRed;
         }
 
         #region IGameplayManager
@@ -183,7 +182,7 @@ namespace Battle.Test.Scripts.Battle.Players
         #endregion
     }
 
-    internal class TeamColliderTracker : MonoBehaviour
+    internal class TeamColliderPlayModeTrigger : MonoBehaviour
     {
         public List<IPlayerDriver> TeamMembers { get; set; }
 
