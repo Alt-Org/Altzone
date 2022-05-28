@@ -40,6 +40,12 @@ namespace Altzone.Scripts.Config
         public bool _isDisableShieldStateChanges;
 
         /// <summary>
+        /// Disable ball speed changes when ball collides with shield.
+        /// </summary>
+        [Tooltip("Disable ball speed changes when ball collides with shield")]
+        public bool _isDisableBallSpeedChanges;
+
+        /// <summary>
         /// Is shield always on when team has only one player.
         /// </summary>
         [Tooltip("Is shield always on when team has only one player")]

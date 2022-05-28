@@ -2,6 +2,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Ball;
+using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private IBallManager _ballManager;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
+        private bool _isDisableBallSpeedChanges;
 
         public void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel)
         {
@@ -29,6 +31,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _stunDuration = variables._playerShieldHitStunDuration;
             var features = runtimeGameConfig.Features;
             _isDisableShieldStateChanges = features._isDisableShieldStateChanges;
+            _isDisableBallSpeedChanges = features._isDisableBallSpeedChanges;
 
             _currentPoseIndex = 0;
             _currentShieldResistance = characterModel.Resistance;
@@ -46,11 +49,17 @@ namespace Battle.Test.Scripts.Battle.Players
         
         public string OnShieldCollision()
         {
+            if (!_isDisableBallSpeedChanges)
+            {
+                if (_playerDriver.IsLocal && PhotonNetwork.IsMasterClient)
+                {
+                    _ballManager.SetBallSpeed(_characterModel.Attack);
+                }
+            }
             if (_isDisableShieldStateChanges)
             {
                 return string.Empty;
             }
-            _ballManager.SetBallSpeed(_characterModel.Attack);
             if (_currentShieldResistance > 0)
             {
                 _currentShieldResistance -= 1;
