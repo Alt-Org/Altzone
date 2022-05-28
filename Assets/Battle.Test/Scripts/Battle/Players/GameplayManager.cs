@@ -20,6 +20,8 @@ namespace Battle.Test.Scripts.Battle.Players
     {
         int PlayerCount { get; }
 
+        IPlayerDriver LocalPlayer { get; }
+
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 
         void RegisterPlayer(IPlayerDriver playerDriver);
@@ -103,6 +105,8 @@ namespace Battle.Test.Scripts.Battle.Players
         #region IGameplayManager
 
         int IGameplayManager.PlayerCount => _players.Count;
+
+        IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
 
         IPlayerDriver IGameplayManager.GetPlayerByActorNumber(int actorNumber)
         {

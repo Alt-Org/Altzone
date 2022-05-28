@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using Altzone.Scripts.Battle;
 using Battle.Test.Scripts.Battle.Ball;
+using Battle.Test.Scripts.Battle.Players;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
@@ -25,6 +25,7 @@ namespace Battle.Test.Scripts.Test
 
         [Header("Photon Master Client")] public bool _isOnGuiStart;
         public bool _isAutoStart;
+        public bool _useAttackSpeed;
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
@@ -51,6 +52,13 @@ namespace Battle.Test.Scripts.Test
             {
                 yield break;
             }
+            var gameplayManager = GameplayManager.Get();
+            if (_useAttackSpeed)
+            {
+                yield return new WaitUntil(() => gameplayManager.LocalPlayer != null);
+                var localPlayer = gameplayManager.LocalPlayer;
+                _speed = localPlayer.CharacterModel.Attack;
+            }
             if (_isAutoStart && PhotonNetwork.OfflineMode)
             {
                 StartTheBall();
@@ -70,15 +78,10 @@ namespace Battle.Test.Scripts.Test
                 guiStart._tester = this;
                 yield break;
             }
-            while (PhotonNetwork.InRoom)
+            if (PhotonNetwork.InRoom)
             {
-                _realPlayerCount = PhotonBattle.CountRealPlayers();
-                if (_realPlayerCount >= _requiredPlayerCount)
-                {
-                    StartTheBall();
-                    yield break;
-                }
-                yield return null;
+                yield return new WaitUntil(() => gameplayManager.PlayerCount >= _requiredPlayerCount);
+                StartTheBall();
             }
         }
 
