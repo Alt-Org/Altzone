@@ -16,6 +16,7 @@ MonoBehaviour:
     _isRotateGameCamera: 1
     _isRotateGameBackground: 1
     _isDisablePlayModeChanges: 0
+    _isDisableShieldStateChanges: 0
     _isSinglePlayerShieldOn: 1
     _isBricksVisible: 0
   _constraints:
@@ -25,7 +26,7 @@ MonoBehaviour:
     _roomStartDelay: 3
     _headScoreToWin: 5
     _wallScoreToWin: 99
-    _playerHeadHitStunDuration: 3
+    _playerShieldHitStunDuration: 3
     _ballMoveSpeedMultiplier: 1
     _ballMinMoveSpeed: 1.001
     _ballMaxMoveSpeed: 11
