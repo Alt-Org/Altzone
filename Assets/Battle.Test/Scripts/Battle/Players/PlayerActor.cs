@@ -219,7 +219,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_avatarPose.MaxPoseIndex-_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
