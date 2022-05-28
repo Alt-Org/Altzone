@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Battle.Test.Scripts.Battle.Ball;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Battle.Test.Scripts.Test
 {
@@ -21,7 +23,8 @@ namespace Battle.Test.Scripts.Test
         public Vector2 _direction = Vector2.one;
         public BallState _state;
 
-        [Header("Photon Master Client")] public bool _isAutoStart;
+        [Header("Photon Master Client")] public bool _isOnGuiStart;
+        public bool _isAutoStart;
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
@@ -43,33 +46,44 @@ namespace Battle.Test.Scripts.Test
                 }
                 yield return null;
             }
-            if (!_isAutoStart)
+            var isStart = _isAutoStart || _isOnGuiStart;
+            if (!isStart)
             {
+                yield break;
+            }
+            if (_isAutoStart && PhotonNetwork.OfflineMode)
+            {
+                StartTheBall();
                 yield break;
             }
             while (!PhotonNetwork.InRoom)
             {
                 yield return null;
             }
-            Debug.Log(
-                $"IsMasterClient {PhotonNetwork.IsMasterClient} OfflineMode {PhotonNetwork.OfflineMode} _requiredPlayerCount {_requiredPlayerCount}");
-            if (PhotonNetwork.OfflineMode)
+            if (!PhotonNetwork.IsMasterClient)
             {
-                _realPlayerCount = 1;
+                yield break;
             }
-            else
+            if (_isOnGuiStart)
             {
-                while (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
+                var guiStart = gameObject.AddComponent<OnGuiStart>();
+                guiStart._tester = this;
+                yield break;
+            }
+            while (PhotonNetwork.InRoom)
+            {
+                _realPlayerCount = PhotonBattle.CountRealPlayers();
+                if (_realPlayerCount >= _requiredPlayerCount)
                 {
-                    _realPlayerCount = PhotonBattle.CountRealPlayers();
-                    if (_realPlayerCount >= _requiredPlayerCount)
-                    {
-                        break;
-                    }
-                    yield return null;
+                    StartTheBall();
+                    yield break;
                 }
+                yield return null;
             }
-            // Auto start!
+        }
+
+        public void StartTheBall()
+        {
             _setBallState = true;
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
@@ -103,5 +117,47 @@ namespace Battle.Test.Scripts.Test
                 _ball.SetBallSpeed(0, Vector2.zero);
             }
         }
+    }
+
+    internal class OnGuiStart : MonoBehaviour
+    {
+        public Key _controlKey = Key.F4;
+
+        public BallManagerTest _tester;
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
+        private int _windowId;
+        private Rect _windowRect;
+        private string _windowTitle;
+
+        private void OnEnable()
+        {
+            _windowId = (int)DateTime.Now.Ticks;
+            _windowRect = new Rect(0, 0, Screen.width, Screen.height / 5f);
+            _windowTitle = "Start the Ball when players are ready";
+        }
+
+        private void Update()
+        {
+            if (Keyboard.current[_controlKey].wasPressedThisFrame)
+            {
+                enabled = false;
+                _tester.StartTheBall();
+            }
+        }
+        private void OnGUI()
+        {
+            _windowRect = GUILayout.Window(_windowId, _windowRect, DebugWindow, _windowTitle);
+        }
+
+        private void DebugWindow(int windowId)
+        {
+            GUILayout.Label(" ");
+            if (GUILayout.Button("Start the Ball (F4)"))
+            {
+                enabled = false;
+                _tester.StartTheBall();
+            }
+        }
+#endif
     }
 }
