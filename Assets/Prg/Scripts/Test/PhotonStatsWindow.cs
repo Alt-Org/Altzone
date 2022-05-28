@@ -86,9 +86,10 @@ namespace Prg.Scripts.Test
             {
                 ToggleWindowState();
             }
+            var space = "  ";
             if (inRoom)
             {
-                label = "Props:";
+                label = "--Props--";
                 var room = PhotonNetwork.CurrentRoom;
                 var props = room.CustomProperties;
                 var keys = props.Keys.ToList();
@@ -101,9 +102,9 @@ namespace Prg.Scripts.Test
                         continue;
                     }
                     var propValue = props[key];
-                    label += $"\r\n{key}={propValue} [{ShortTypeName(propValue.GetType())}]";
+                    label += $"\r\n{space}{key}={propValue} [{ShortTypeName(propValue.GetType())}]";
                 }
-                label += "\r\nPlayers:";
+                label += "\r\n--Players--";
                 foreach (var player in room.GetPlayersByActorNumber())
                 {
                     var text = player.GetDebugLabel(verbose: false);
@@ -116,7 +117,7 @@ namespace Prg.Scripts.Test
                         foreach (var key in keys)
                         {
                             var propValue = props[key];
-                            label += $"\r\n{key}={propValue} [{ShortTypeName(propValue.GetType())}]";
+                            label += $"\r\n{space}{key}={propValue} [{ShortTypeName(propValue.GetType())}]";
                         }
                     }
                 }
