@@ -18,26 +18,31 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Rotate game camera for upper team so they see their own game area in lower part of the screen.
         /// </summary>
+        [Tooltip("Rotate game camera for upper team so they see their own game area in lower part of the screen")]
         public bool _isRotateGameCamera;
 
         /// <summary>
-        /// Is local player team color always "blue" team side.
+        /// Rotate game background for upper team so they see their own game area color in lower part of the screen.
         /// </summary>
-        public bool _isRotateGamePlayArea;
+        [Tooltip("Rotate game background for upper team so they see their own game area color in lower part of the screen")]
+        public bool _isRotateGameBackground;
 
         /// <summary>
         /// Disable player <c>SetPlayMode</c> calls when ball goes over team's gameplay area.
         /// </summary>
+        [Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
         public bool _isDisablePlayModeChanges;
 
         /// <summary>
-        /// Is shield always on when team has only one player (for testing).
+        /// Is shield always on when team has only one player.
         /// </summary>
+        [Tooltip("Is shield always on when team has only one player")]
         public bool _isSinglePlayerShieldOn;
 
         /// <summary>
         /// Is bricks visible.
         /// </summary>
+        [Tooltip("Is bricks visible")]
         public bool _isBricksVisible;
 
         public void CopyFrom(GameFeatures other)

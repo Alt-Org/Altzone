@@ -25,28 +25,28 @@ namespace Battle.Scripts.Battle.Room
                 return;
             }
             var playerPos = PhotonBattle.GetPlayerPos(player);
-            var isNormalTeamLayout = playerPos <= PhotonBattle.PlayerPosition2;
             var gameBackground = Context.GetGameBackground;
             gameBackground.SetBackgroundImageByIndex(0);
             var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
+            var isNormalPlayerPlacement = playerPos <= PhotonBattle.PlayerPosition2;
             if (teamNumber == PhotonBattle.TeamRedValue)
             {
                 var gameCamera = Context.GetGameCamera;
-                var isRotated = RotateLocalPlayer(gameCamera.Camera, gameBackground.Background);
+                var isRotated = RotateLocalPlayerGameplayExperience(gameCamera.Camera, gameBackground.Background);
                 if (isRotated)
                 {
-                    isNormalTeamLayout = false;
+                    isNormalPlayerPlacement = false;
                 }
             }
-            var pos = GetPlayerPosition(playerPos, isNormalTeamLayout);
+            var pos = GetPlayerPosition(playerPos, isNormalPlayerPlacement);
             var instantiationPosition = new Vector3(pos.x, pos.y);
             Debug.Log($"OnEnable create player {player.GetDebugLabel()} @ {instantiationPosition} from {_playerPrefab.name}");
             PhotonNetwork.Instantiate(_playerPrefab.name, instantiationPosition, Quaternion.identity);
         }
 
-        private static Vector2 GetPlayerPosition(int playerPos, bool isNormalTeamLayout)
+        private static Vector2 GetPlayerPosition(int playerPos, bool isNormalPlayerPlacement)
         {
-            if (!isNormalTeamLayout)
+            if (!isNormalPlayerPlacement)
             {
                 playerPos = PhotonBattle.GetTeamMemberPlayerPos(playerPos);
             }
@@ -54,36 +54,26 @@ namespace Battle.Scripts.Battle.Room
             return startPosition;
         }
 
-        private static bool RotateLocalPlayer(Camera gameCamera, GameObject gameBackground)
+        private static bool RotateLocalPlayerGameplayExperience(Camera gameCamera, GameObject gameBackground)
         {
-            void RotateGameCamera(bool isUpsideDown)
-            {
-                // Rotate game camera for team red.
-                Debug.Log($"RotateGameCamera upsideDown {isUpsideDown}");
-                gameCamera.GetComponent<Transform>().Rotate(isUpsideDown);
-            }
-
-            void RotateBackground(bool isUpsideDown)
-            {
-                Debug.Log($"RotateBackground upsideDown {isUpsideDown}");
-                gameBackground.GetComponent<Transform>().Rotate(isUpsideDown);
-            }
-
             var features = RuntimeGameConfig.Get().Features;
-            var isRotate = features._isRotateGameCamera && gameCamera != null;
-            if (isRotate)
+            var isRotateGameCamera = features._isRotateGameCamera && gameCamera != null;
+            if (isRotateGameCamera)
             {
                 // Rotate game camera.
-                RotateGameCamera(true);
+                Debug.Log($"RotateGameCamera upsideDown");
+                gameCamera.GetComponent<Transform>().Rotate(true);
             }
-            if (features._isRotateGamePlayArea && gameBackground != null)
+            var isRotateGameBackground  = features._isRotateGameBackground && gameBackground != null;
+            if (isRotateGameBackground)
             {
                 // Rotate background.
-                RotateBackground(true);
+                Debug.Log($"RotateGameBackground upsideDown");
+                gameBackground.GetComponent<Transform>().Rotate(true);
                 // Separate sprites for each team gameplay area - these might not be visible in final game
                 // - see Battle.Scripts.Room.RoomSetup.SetupLocalPlayer() how this is done in Altzone project.
             }
-            return isRotate;
+            return isRotateGameCamera;
         }
     }
 }
