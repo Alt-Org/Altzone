@@ -1,6 +1,7 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle.Ball;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private IPlayerDriver _playerDriver;
         private CharacterModel _characterModel;
+        private IBallManager _ballManager;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
 
@@ -20,6 +22,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _playerDriver = playerDriver;
             _characterModel = characterModel;
+            _ballManager = BallManager.Get();
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
@@ -33,8 +36,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         public void CheckRotation(Vector2 position)
         {
-            Debug.Log($"{name} playerPos {_playerDriver.PlayerPos} position {position}");
-            if (position.y > 0)
+            var doRotate = position.y > 0;
+            Debug.Log($"{name} playerPos {_playerDriver.PlayerPos} position {position} rotate {doRotate}");
+            if (doRotate)
             {
                 _playerDriver.Rotate(true);
             }
@@ -46,6 +50,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return string.Empty;
             }
+            _ballManager.SetBallSpeed(_characterModel.Attack);
             if (_currentShieldResistance > 0)
             {
                 _currentShieldResistance -= 1;

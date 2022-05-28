@@ -1,12 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Random = UnityEngine.Random;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -20,6 +22,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             [Range(1, 4)] public int _playerPos = 1;
             public bool _isAllocateByTeams;
+            public bool _isRandomSKill;
             public Defence _playerMainSkill = Defence.Deflection;
         }
 
@@ -57,7 +60,11 @@ namespace Battle.Test.Scripts.Battle.Players
                 OnLocalPlayerReady();
                 return;
             }
-            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, (int)_debug._playerMainSkill);
+            var mainSKill = _debug._isRandomSKill
+                ? Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1)
+                : (int)_debug._playerMainSkill;
+
+            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, mainSKill);
         }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -75,6 +82,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void OnLocalPlayerReady()
         {
+            // Not important but give one frame slack for local player instantiation
+            StartCoroutine(OnLocalPlayerReadyDelay());
+        }
+
+        private IEnumerator OnLocalPlayerReadyDelay()
+        {
+            yield return null;
             var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");

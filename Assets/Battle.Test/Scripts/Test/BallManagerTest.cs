@@ -104,7 +104,7 @@ namespace Battle.Test.Scripts.Test
             if (_setBallSpeed)
             {
                 _setBallSpeed = false;
-                _ball.SetBallSpeed(_speed, Vector2.zero);
+                _ball.SetBallSpeed(_speed);
             }
             if (_setBallSpeedAndDir)
             {

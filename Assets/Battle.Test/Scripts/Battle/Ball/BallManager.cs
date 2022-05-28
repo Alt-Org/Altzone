@@ -24,6 +24,8 @@ namespace Battle.Test.Scripts.Battle.Ball
     {
         void SetBallPosition(Vector2 position);
 
+        void SetBallSpeed(float speed);
+
         void SetBallSpeed(float speed, Vector2 direction);
 
         void SetBallState(BallState ballState);
@@ -45,6 +47,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         // ColliderStates controls when ball collider is active based on ball state.
         private static readonly bool[] ColliderStates = { false, true, true, true, false, false };
+
         // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
         private static readonly bool[] StopStates = { true, false, false, false, true, true };
 
@@ -179,7 +182,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                     {
                         // We are badly stuck and can not move :-(
                         ((IBallManager)this).SetBallState(BallState.Stopped);
-                        ((IBallManager)this).SetBallSpeed(0, Vector2.zero);
+                        ((IBallManager)this).SetBallSpeed(0);
                         yield return delay;
                         continue;
                     }
@@ -192,7 +195,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                 yield return delay;
             }
         }
-        
+
         private IEnumerator OnRemoteBallNetworkUpdate()
         {
             Debug.Log($"{name}");
@@ -301,6 +304,11 @@ namespace Battle.Test.Scripts.Battle.Ball
             UpdateBallText();
         }
 
+        void IBallManager.SetBallSpeed(float speed)
+        {
+            ((IBallManager)this).SetBallSpeed(speed, Vector2.zero);
+        }
+
         void IBallManager.SetBallSpeed(float speed, Vector2 direction)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -322,7 +330,6 @@ namespace Battle.Test.Scripts.Battle.Ball
                 _rigidbody.velocity = Vector2.zero;
                 _rigidbodyVelocitySqrMagnitude = 0;
                 return Vector2.zero;
-
             }
             _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
             var rigidbodyVelocity = direction != Vector2.zero
@@ -332,7 +339,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
             return rigidbodyVelocity;
         }
-        
+
         void IBallManager.SetBallState(BallState ballState)
         {
             if (!PhotonNetwork.IsMasterClient)

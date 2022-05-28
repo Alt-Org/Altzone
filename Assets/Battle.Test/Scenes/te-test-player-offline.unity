@@ -258,25 +258,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05d366a439fd1564eb6bebe4fdbcc5cf, type: 3}
---- !u!1 &488282797 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
-    type: 3}
-  m_PrefabInstance: {fileID: 1683276531}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &488282801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 488282797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb600291bbef0164c8f7f077eefdac61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _nickname: 
 --- !u!1001 &535875372
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -615,6 +596,126 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _visible: 0
   _controlKey: 95
+--- !u!1001 &1180396113
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerDriver-P4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _playerPos
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _teamNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _actorNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _playerMainSkill
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._nickName
+      value: Player-4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerPos
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._teamNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _isConnectInputHandler
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerPrefab
+      value: 
+      objectReference: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
+        type: 3}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerMainSkill
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}
 --- !u!1001 &1212394121
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -630,7 +731,7 @@ PrefabInstance:
     - target: {fileID: 4536664284718766771, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4536664284718766771, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
@@ -867,7 +968,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: _settings._playerMainSkill
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}

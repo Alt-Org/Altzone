@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
@@ -37,6 +38,8 @@ namespace Battle.Test.Scripts.Battle.Players
         private bool _isApplicationQuitting;
 
         private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
+        
+        private bool IsLocalPlayerSynchronize => photonView.Owner.IsLocal;
 
         public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
@@ -92,7 +95,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
-
+        
         private void OnDestroy()
         {
             if (_isApplicationQuitting)
@@ -163,10 +166,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {
-            if (!IsNetworkSynchronize)
-            {
-                return;
-            }
+            // NO IsNetworkSynchronize check!
+            // - rotation is based on initial player position Y coordinate.
             photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
         }
 
