@@ -6,6 +6,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle.Ball;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -156,6 +157,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 {
                     player.FixCameraRotation(gameCamera.Camera);
                 }
+                BallManager.Get().FixCameraRotation(gameCamera.Camera);
             }
             UpdateDebugPlayerList();
         }

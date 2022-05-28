@@ -22,6 +22,8 @@ namespace Battle.Test.Scripts.Battle.Ball
 
     internal interface IBallManager
     {
+        void FixCameraRotation(Camera gameCamera);
+
         void SetBallPosition(Vector2 position);
 
         void SetBallSpeed(float speed);
@@ -51,7 +53,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
         private static readonly bool[] StopStates = { true, false, false, false, true, true };
 
-        public static BallManager Get() => FindObjectOfType<BallManager>();
+        public static IBallManager Get() => FindObjectOfType<BallManager>();
 
         [Header("Settings"), SerializeField] private GameObject _ballCollider;
         [SerializeField] private GameObject _spriteStopped;
@@ -291,6 +293,14 @@ namespace Battle.Test.Scripts.Battle.Ball
         #endregion
 
         #region IBallManager
+
+        void IBallManager.FixCameraRotation(Camera gameCamera)
+        {
+            if (_debug._isShowBallText)
+            {
+                _debug._ballText.GetComponent<Transform>().rotation = gameCamera.GetComponent<Transform>().rotation;
+            }
+        }
 
         void IBallManager.SetBallPosition(Vector2 position)
         {
