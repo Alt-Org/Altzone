@@ -44,7 +44,7 @@ namespace Battle.Scripts.Battle.Players2
         private PhotonPlayerRpc _rpc;
         private bool _isDestroyed;
         private bool _isStunned;
-        private float _playerHeadHitStunDuration;
+        private float _playerShieldHitStunDuration;
         private int _playerResistance;
         private int _playerAttack;
 
@@ -89,7 +89,7 @@ namespace Battle.Scripts.Battle.Players2
             var model = PhotonBattle.GetCharacterModelForRoom(player);
             var variables = runtimeGameConfig.Variables;
 
-            _playerHeadHitStunDuration = variables._playerHeadHitStunDuration;
+            _playerShieldHitStunDuration = variables._playerShieldHitStunDuration;
             _playerResistance = model.Resistance;
             _playerAttack = model.Attack;
 
@@ -283,9 +283,9 @@ namespace Battle.Scripts.Battle.Players2
             if (PhotonNetwork.IsMasterClient)
             {
                 ((IPlayerActor)this).SetGhostedMode();
-                if (_playerHeadHitStunDuration > 0)
+                if (_playerShieldHitStunDuration > 0)
                 {
-                    ScoreFlash.Push($"{PhotonNetwork.NickName} stun for {_playerHeadHitStunDuration}");
+                    ScoreFlash.Push($"{PhotonNetwork.NickName} stun for {_playerShieldHitStunDuration}");
                 }
             }
         }
@@ -377,8 +377,8 @@ namespace Battle.Scripts.Battle.Players2
             else
             {
                 // This will be changed, Since this only allows the OnParalysis to work once
-                StartCoroutine(OnParalysis(_playerHeadHitStunDuration));
-                Debug.Log($"Player is set to Paralyzed {_playerHeadHitStunDuration}");
+                StartCoroutine(OnParalysis(_playerShieldHitStunDuration));
+                Debug.Log($"Player is set to Paralyzed {_playerShieldHitStunDuration}");
             }
 
         }

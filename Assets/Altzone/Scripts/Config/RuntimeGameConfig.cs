@@ -75,7 +75,7 @@ namespace Altzone.Scripts.Config
         [Header("Battle"), Min(1)] public int _roomStartDelay;
         [Min(0)] public int _headScoreToWin;
         [Min(0)] public int _wallScoreToWin;
-        [Min(0)] public float _playerHeadHitStunDuration;
+        [Min(0)] public float _playerShieldHitStunDuration;
 
         [Header("Ball")] public float _ballMoveSpeedMultiplier;
         public float _ballMinMoveSpeed;

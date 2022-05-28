@@ -37,7 +37,7 @@ namespace Battle.Test.Scripts.Test
             if (_stunDuration == 0)
             {
                 var variables = RuntimeGameConfig.Get().Variables;
-                _stunDuration = variables._playerHeadHitStunDuration;
+                _stunDuration = variables._playerShieldHitStunDuration;
             }
             _nickname = _playerDriver.NickName ?? "noname";
             _isLocal = _playerDriver.IsLocal;
