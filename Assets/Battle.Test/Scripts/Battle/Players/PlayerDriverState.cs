@@ -1,5 +1,6 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.interfaces;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 
@@ -40,18 +41,21 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _currentShieldResistance -= 1;
                 Debug.Log($"hit pose {_currentPoseIndex} shield {_currentShieldResistance}");
+                _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 _playerDriver.SetShieldResistance(_currentShieldResistance);
                 return "HIT";
             }
             if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
             {
                 Debug.Log($"stun pose {_currentPoseIndex} shield {_currentShieldResistance}");
+                _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 _playerDriver.SetStunned(_stunDuration);
                 return "STUN";
             }
             _currentShieldResistance = _characterModel.Resistance;
             _currentPoseIndex += 1;
             Debug.Log($"bend pose {_currentPoseIndex} shield {_currentShieldResistance}");
+            _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
             _playerDriver.SetCharacterPose(_currentPoseIndex);
             _playerDriver.SetShieldResistance(_currentShieldResistance);
             return "BEND";
@@ -59,6 +63,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         public void OnHeadCollision()
         {
+            _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
         }
     }
 }
