@@ -685,6 +685,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
+      propertyPath: _settings._isLocal
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
       propertyPath: _settings._nickName
       value: Player-4
       objectReference: {fileID: 0}
@@ -712,7 +717,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: _settings._playerMainSkill
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}
@@ -819,6 +824,7 @@ MonoBehaviour:
   _state: 1
   _isOnGuiStart: 0
   _isAutoStart: 1
+  _useAttackSpeed: 0
   _requiredPlayerCount: 0
   _realPlayerCount: 0
 --- !u!1 &1360003051
@@ -968,7 +974,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: _settings._playerMainSkill
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}
