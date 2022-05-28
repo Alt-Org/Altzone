@@ -111,7 +111,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
-            Debug.Log($"add {playerDriver.NickName} pp={playerDriver.PlayerPos} actor={playerDriver.ActorNumber}");
+            Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} local {playerDriver.IsLocal}");
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
@@ -141,13 +141,13 @@ namespace Battle.Test.Scripts.Battle.Players
                 throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
             }
             var gameCamera = Context.GetGameCamera;
-            var wasCameraRotated = gameCamera.IsRotated;
             if (playerDriver.IsLocal)
             {
                 CheckLocalPlayerSettings(gameCamera.Camera, playerDriver);
             }
-            if (wasCameraRotated! && gameCamera.IsRotated)
+            if (gameCamera.IsRotated)
             {
+                // When game camera is rotated, we must allow all existing and new players to setup their visual orientation accordingly.
                 foreach (var player in _players)
                 {
                     player.FixCameraRotation(gameCamera.Camera);
