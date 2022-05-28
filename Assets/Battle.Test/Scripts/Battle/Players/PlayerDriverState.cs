@@ -51,7 +51,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             if (!_isDisableBallSpeedChanges)
             {
-                if (_playerDriver.IsLocal && PhotonNetwork.IsMasterClient)
+                if (PhotonNetwork.IsMasterClient)
                 {
                     _ballManager.SetBallSpeed(_characterModel.Attack);
                 }
