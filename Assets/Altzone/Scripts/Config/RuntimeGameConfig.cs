@@ -201,7 +201,7 @@ namespace Altzone.Scripts.Config
                 instance = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
                 LoadGameConfig(instance);
             }
-            CallerFilePathWarning(callerFilePath);
+            //CallerFilePathWarning(callerFilePath);
             return instance;
         }
 
