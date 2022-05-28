@@ -72,8 +72,9 @@ namespace Prg.Scripts.Common.Unity.Window
         {
 #if DEVELOPMENT_BUILD
             return true;
-#endif
+#else
             return false;
+#endif
         }
     }
 }

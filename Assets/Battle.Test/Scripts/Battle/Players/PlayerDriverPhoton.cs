@@ -105,6 +105,11 @@ namespace Battle.Test.Scripts.Battle.Players
             print("xx");
             Debug.Log($"{name}");
             GameplayManager.Get().UnregisterPlayer(this);
+            if (_playerActor == null)
+            {
+                // Did not manage to initialize properly?
+                return;
+            }
             _playerActor.ResetPlayerDriver();
             if (!_isLocal)
             {

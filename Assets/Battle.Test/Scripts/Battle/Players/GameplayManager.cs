@@ -198,7 +198,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver)
         {
-            Debug.Log($"remove {playerDriver.NickName} pp={playerDriver.PlayerPos}");
+            Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
             _players.Remove(playerDriver);
             this.Publish(new PlayerLeft(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
