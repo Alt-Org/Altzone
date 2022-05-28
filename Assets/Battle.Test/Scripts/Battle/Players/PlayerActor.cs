@@ -33,8 +33,10 @@ namespace Battle.Test.Scripts.Battle.Players
             public GameObject _avatar3;
             public GameObject _avatar4;
             public GameObject _avatar5;
+            public GameObject _avatar6;
 
-            public GameObject[] Avatars => new[] { _avatar1, _avatar2, _avatar3, _avatar4, _avatar5 };
+            // Last pose is reserved for disconnected pose
+            public GameObject[] Avatars => new[] { _avatar1, _avatar2, _avatar3, _avatar4, _avatar5, _avatar6 };
         }
 
         [Serializable]
@@ -159,9 +161,9 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
             _avatarPose = new PoseManager(_settings._avatar.Avatars);
-            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, true);
+            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _settings._avatar.Avatars.Length - 1);
             _shieldPose = new PoseManager(_settings._shield.Shields);
-            _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, false);
+            _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, 0);
             UpdatePlayerText();
             // We have to add ColliderTracker for every collider there is
             // - if we add it to upper level in hierarchy (which would be nice) it does not receive collision events :-(
@@ -212,7 +214,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!_hasPlayer)
             {
-                _debug._playerText.text = $"{PlayerPosChars[_playerPos]}--~";
+                _debug._playerText.text = $"{PlayerPosChars[_playerPos]}---";
                 return;
             }
             if (!IsBuffedOrDeBuffed)
@@ -265,7 +267,8 @@ namespace Battle.Test.Scripts.Battle.Players
         private float _speed;
         private int _resistance;
 
-        int IPlayerActor.MaxPoseIndex => _avatarPose.MaxPoseIndex;
+        // Last pose is reserved for disconnected pose
+        int IPlayerActor.MaxPoseIndex => _avatarPose.MaxPoseIndex - 1;
 
         Vector2 IPlayerActor.Position => _transform.position;
 
@@ -402,8 +405,10 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerDriver = null;
             _hasPlayer = false;
             UpdatePlayerText();
+            _avatarPose.SetPose(_avatarPose.MaxPoseIndex);
+            _shieldPose.SetVisible(false);
 
-            // Brute force way to disable everything!
+            // Brute force way to disable everything (that is still active)!
             var colliders = GetComponentsInChildren<Collider2D>();
             foreach (var childCollider in colliders)
             {
@@ -476,7 +481,7 @@ namespace Battle.Test.Scripts.Battle.Players
             SetVisible(IsVisible);
         }
 
-        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, bool setAvatarColor)
+        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, int setAvatarColor)
         {
             _currentAvatar = _avatars[0];
             _currentCollider = _colliders[0];
@@ -486,7 +491,7 @@ namespace Battle.Test.Scripts.Battle.Players
             for (var i = 0; i < _childCount; ++i)
             {
                 var child = _avatars[i];
-                if (setAvatarColor)
+                if (setAvatarColor-- > 0)
                 {
                     var spriteRenderer = child.GetComponent<SpriteRenderer>();
                     spriteRenderer.color = avatarColor;
