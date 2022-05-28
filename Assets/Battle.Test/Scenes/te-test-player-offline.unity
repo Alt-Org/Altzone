@@ -465,14 +465,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveTo: 0
+  _setPlayModeNormal: 0
+  _setPlayModeFrozen: 0
+  _setPlayModeGhosted: 0
   _setPose: 0
-  _setPlayMode: 0
   _setShieldVisibility: 0
   _setStunned: 0
   _setRotation: 0
   _moveToPosition: {x: -1, y: -2}
   _poseIndex: 1
-  _playMode: 0
   _isShieldVisible: 0
   _stunDuration: 0
   _isPlayerUpsideDown: 0
@@ -712,7 +713,7 @@ MonoBehaviour:
   _setBallSpeedAndDir: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
-  _speed: 3
+  _speed: 5
   _direction: {x: 2, y: 3}
   _state: 1
   _isAutoStart: 1
@@ -865,7 +866,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: _settings._playerMainSkill
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}

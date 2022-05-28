@@ -30,30 +30,31 @@ namespace Battle.Test.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
         }
 
-        public void OnShieldCollision()
+        public string OnShieldCollision()
         {
             if (_isDisableShieldStateChanges)
             {
-                return;
+                return string.Empty;
             }
             if (_currentShieldResistance > 0)
             {
                 _currentShieldResistance -= 1;
-                Debug.Log($"reflect pose {_currentPoseIndex} shield {_currentShieldResistance}");
+                Debug.Log($"hit pose {_currentPoseIndex} shield {_currentShieldResistance}");
                 _playerDriver.SetShieldResistance(_currentShieldResistance);
-                return;
+                return "HIT";
             }
             if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
             {
                 Debug.Log($"stun pose {_currentPoseIndex} shield {_currentShieldResistance}");
                 _playerDriver.SetStunned(_stunDuration);
-                return;
+                return "STUN";
             }
             _currentShieldResistance = _characterModel.Resistance;
             _currentPoseIndex += 1;
             Debug.Log($"bend pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _playerDriver.SetCharacterPose(_currentPoseIndex);
             _playerDriver.SetShieldResistance(_currentShieldResistance);
+            return "BEND";
         }
 
         public void OnHeadCollision()

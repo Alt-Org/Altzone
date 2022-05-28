@@ -29,6 +29,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private int _playerPos;
         private int _teamNumber;
+        private char _playerPosChar;
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
@@ -52,6 +53,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{player.GetDebugLabel()} {photonView}");
             _playerPos = PhotonBattle.GetPlayerPos(photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
+            _playerPosChar = new[] { '?', 'A', 'B', 'C', 'D' }[_playerPos];
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
@@ -110,17 +112,17 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IPlayerActorCollision
 
-        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
         {
             if (!IsNetworkSynchronize)
             {
                 return;
             }
-            _state.OnShieldCollision();
-            var message = $"SHIELD {_playerPos}";
+            var hitType = _state.OnShieldCollision();
+            var message = $"{hitType} {_playerPosChar}";
             var point = collision.GetContact(0).point;
             ScoreFlashNet.Push(message, point);
-            Debug.Log($"SHIELD {name} contacts {collision.contactCount} {point}");
+            Debug.Log($"{hitType} {name} {component.name} contacts {collision.contactCount} {point}");
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
@@ -130,7 +132,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             _state.OnHeadCollision();
-            var message = $"HEAD {_playerPos}";
+            var message = $"HEAD {_playerPosChar}";
             var point = collision.GetContact(0).point;
             ScoreFlashNet.Push(message, point);
             Debug.Log($"HEAD {name} contacts {collision.contactCount} {point}");

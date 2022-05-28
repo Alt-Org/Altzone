@@ -231,7 +231,7 @@ MonoBehaviour:
   _setBallSpeedAndDir: 0
   _stopBall: 0
   _position: {x: 0, y: 0}
-  _speed: 3
+  _speed: 5
   _direction: {x: 2, y: 3}
   _state: 1
   _isAutoStart: 1
@@ -570,6 +570,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5601946857894714654, guid: 525fb2a0c1aff9140b09644b41e4e209,
+        type: 3}
+      propertyPath: _debug._isDisableTeamColliderTracking
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5601946857894714655, guid: 525fb2a0c1aff9140b09644b41e4e209,
         type: 3}
       propertyPath: m_Name
@@ -637,6 +642,11 @@ PrefabInstance:
     - target: {fileID: 6713629973779646884, guid: 44bff6ee1cfd62a4bb6534dd2fafb5e5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6713629973779646885, guid: 44bff6ee1cfd62a4bb6534dd2fafb5e5,
+        type: 3}
+      propertyPath: _debug._isAllocateByTeams
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6713629973779646886, guid: 44bff6ee1cfd62a4bb6534dd2fafb5e5,

@@ -169,12 +169,12 @@ namespace Battle.Test.Scripts.Battle.Players
             foreach (var avatar in _settings._avatar.Avatars)
             {
                 var tracker = avatar.AddComponent<ColliderTracker>();
-                tracker.Callback = collision => { collisionDriver.OnHeadCollision(collision); };
+                tracker.Callback = (collision, _) => { collisionDriver.OnHeadCollision(collision); };
             }
             foreach (var shield in _settings._shield.Shields)
             {
                 var tracker = shield.AddComponent<ColliderTracker>();
-                tracker.Callback = collision => { collisionDriver.OnShieldCollision(collision); };
+                tracker.Callback = (collision, component) => { collisionDriver.OnShieldCollision(collision, component); };
             }
             if (_debug._isShowMoveTo)
             {
@@ -200,7 +200,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region Debugging
 
-        private static readonly char[] PlayerPos = { '?', 'a', 'b', 'c', 'd' };
+        private static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
         private static readonly char[] PlayModes = { 'n', 'F', 'g', };
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
@@ -212,14 +212,14 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!_hasPlayer)
             {
-                _debug._playerText.text = $"{PlayerPos[_playerPos]}--~";
+                _debug._playerText.text = $"{PlayerPosChars[_playerPos]}--~";
                 return;
             }
             if (!IsBuffedOrDeBuffed)
             {
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{PlayerPos[_playerPos]}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -496,7 +496,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class ColliderTracker : MonoBehaviour
     {
-        public Action<Collision2D> Callback;
+        public Action<Collision2D, MonoBehaviour> Callback;
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -508,7 +508,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            Callback(collision);
+            Callback(collision, this);
         }
     }
 }

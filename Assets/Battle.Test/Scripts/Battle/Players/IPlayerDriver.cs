@@ -9,7 +9,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// </summary>
     internal interface IPlayerActorCollision
     {
-        void OnShieldCollision(Collision2D collision);
+        void OnShieldCollision(Collision2D collision, MonoBehaviour component);
         
         void OnHeadCollision(Collision2D collision);
     }

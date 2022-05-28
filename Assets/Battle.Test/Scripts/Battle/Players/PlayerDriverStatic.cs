@@ -30,6 +30,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [SerializeField] private PlayerDriverState _state;
 
         private CharacterModel _characterModel;
+        private char _playerPosChar;
 
         private IPlayerActor _playerActor;
         private bool _isApplicationQuitting;
@@ -39,6 +40,8 @@ namespace Battle.Test.Scripts.Battle.Players
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
+            _playerPosChar = new[] { '?', 'A', 'B', 'C', 'D' }[_settings._playerPos];
+
         }
 
         private void OnEnable()
@@ -84,19 +87,19 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IPlayerActorCollision
 
-        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
         {
-            _state.OnShieldCollision();
-            var message = $"SHIELD {_settings._playerPos}";
+            var hitType = _state.OnShieldCollision();
+            var message = $"{hitType} {_playerPosChar}";
             var point = collision.GetContact(0).point;
             ScoreFlash.Push(message, point);
-            Debug.Log($"SHIELD {name} contacts {collision.contactCount} {point}");
+            Debug.Log($"{hitType} {name} {component.name} contacts {collision.contactCount} {point}");
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
         {
             _state.OnHeadCollision();
-            var message = $"HEAD {_settings._playerPos}";
+            var message = $"HEAD {_playerPosChar}";
             var point = collision.GetContact(0).point;
             ScoreFlash.Push(message, point);
             Debug.Log($"HEAD {name} contacts {collision.contactCount} {point}");
