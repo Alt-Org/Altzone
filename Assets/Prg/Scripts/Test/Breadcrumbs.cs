@@ -11,7 +11,7 @@ namespace Prg.Scripts.Test
     /// <summary>
     /// Helper OnGUI window to show breadcrumbs from <c>WindowManager</c>.
     /// </summary>
-    public class Breadcrumbs : MonoBehaviour
+    internal class Breadcrumbs : MonoBehaviour
     {
         public bool _visible;
         public Key _controlKey = Key.F3;

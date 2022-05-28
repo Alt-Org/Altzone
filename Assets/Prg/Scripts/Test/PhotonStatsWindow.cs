@@ -12,7 +12,7 @@ namespace Prg.Scripts.Test
     /// <summary>
     /// Helper OnGUI window to show some Photon related info as "overlay" window.
     /// </summary>
-    public class PhotonStatsWindow : MonoBehaviour
+    internal class PhotonStatsWindow : MonoBehaviour
     {
         public bool _visible;
         public Key _controlKey = Key.F2;
