@@ -7,7 +7,7 @@
 [LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
 [LOG] Thread::initThread                       : Init FMOD stream thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFB, Stack Size: 98304, Semaphore: No, Sleep Time: 10, Looping: Yes.
 [LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
-[LOG] AsyncManager::init                       : manager 00000247B232D868 isAsync 0 updatePeriod 0.02
+[LOG] AsyncManager::init                       : manager 00000216228F2858 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
@@ -21,71 +21,6 @@
 [LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
 [LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
 [LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
-[LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] Manager::readBank                        : fileversion = 141, compatVersion = 140 (oldest = 44, newest = 141)
-[LOG] SystemI::createSound                     : filename = ../altprogFMOD201/Build/Desktop/BGM.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] Thread::initThread                       : Init FMOD nonblocking thread (0). Affinity: 0x4000000000000003, Priority: 0xFFFF7FFC, Stack Size: 114688, Semaphore: Yes, Sleep Time: 0, Looping: Yes.
-[LOG] SystemI::createSound                     : setdata soundi = 00000246B9CB0DF8 : node = 00000246DFFBED50
-[LOG] SystemI::createSound                     : add node to async list : head = 00000247B0B884E8.  list count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000246B9CB0DF8
-[LOG] SystemI::createSoundInternal             :     Create name='../altprogFMOD201/Build/Desktop/BGM.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 10752672
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 8672
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 00000246DFFBEE60
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSound                     :     filename = ../altprogFMOD201/Build/Desktop/BGM.bank : mode 02010082
-[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] SystemI::createSound                     :     setdata soundi = 00000246B9CB1308 : node = 00000246DFFBEAD0
-[LOG] SystemI::createSound                     :     add node to async list : head = 00000247B0B884E8.  list count = 0
-[LOG] SystemI::createSound                     :     filename = ../altprogFMOD201/Build/Desktop/BGM.bank : mode 02010082
-[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] SystemI::createSound                     :     setdata soundi = 00000246B9CB1B78 : node = 00000246DFFBE850
-[LOG] SystemI::createSound                     :     add node to async list : head = 00000247B0B884E8.  list count = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Electric piano', format=5, channels=2, frequency=48000, lengthbytes=663616, lengthpcm=4253537, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.390381.
-[LOG] Thread::initThread                       :     Init FMOD file thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFC, Stack Size: 65536, Semaphore: No, Sleep Time: 10, Looping: Yes.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000246B9CB0DF8
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000246B9CB1308
-[LOG] SystemI::createSoundInternal             :     Create name='../altprogFMOD201/Build/Desktop/BGM.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 10752672
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 8672
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 00000246DFFBEBE0
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='basso_1', format=5, channels=2, frequency=48000, lengthbytes=612032, lengthpcm=4352257, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.490295.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000246B9CB1308
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000246B9CB1B78
-[LOG] SystemI::createSoundInternal             :     Create name='../altprogFMOD201/Build/Desktop/BGM.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 10752672
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 8672
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 00000246DFFBE960
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Rummut', format=5, channels=2, frequency=48000, lengthbytes=1012448, lengthpcm=4253539, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.691986.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000246B9CB1B78
-[LOG] SoundI::release                          : Rummut (00000246B9CB1B78)
-[LOG] SoundI::release                          :     Rummut (00000247B10574C8)
-[LOG] SoundI::release                          :     Rummut (00000247F63DDE68)
-[LOG] SoundI::release                          : basso_1 (00000246B9CB1308)
-[LOG] SoundI::release                          :     basso_1 (00000247B1056FE8)
-[LOG] SoundI::release                          :     basso_1 (00000247F63DD7A8)
-[LOG] SoundI::release                          : Electric piano (00000246B9CB0DF8)
-[LOG] SoundI::release                          :     Electric piano (00000247B1057328)
-[LOG] SoundI::release                          :     Electric piano (00000247F63DD0E8)
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
@@ -93,5 +28,3 @@
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
 [LOG] SystemI::close                           : Closed.
-[LOG] Thread::callback                         : FMOD nonblocking thread (0) finished.
-[LOG] Thread::callback                         : FMOD file thread finished.
