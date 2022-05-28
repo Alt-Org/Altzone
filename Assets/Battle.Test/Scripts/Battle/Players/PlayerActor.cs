@@ -295,6 +295,16 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdatePlayerText();
         }
 
+        void IPlayerActor.FixCameraRotation(Camera gameCamera)
+        {
+            // Check that camera and everything that needs to have same orientation is oriented in the same way.
+            // - That is if camera is upside down, we must change e.g. texts to be upside down so they have correct orientation.
+            if (_debug._isShowPlayerText)
+            {
+                _debug._playerText.GetComponent<Transform>().rotation = gameCamera.GetComponent<Transform>().rotation;
+            }
+        }
+
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             var canDo = CanAcceptMove;

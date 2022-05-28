@@ -140,7 +140,54 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
             }
+            var gameCamera = Context.GetGameCamera;
+            var wasCameraRotated = gameCamera.IsRotated;
+            if (playerDriver.IsLocal)
+            {
+                CheckLocalPlayerSettings(gameCamera.Camera, playerDriver);
+            }
+            if (wasCameraRotated! && gameCamera.IsRotated)
+            {
+                foreach (var player in _players)
+                {
+                    player.FixCameraRotation(gameCamera.Camera);
+                }
+            }
             UpdateDebugPlayerList();
+        }
+
+        private static void CheckLocalPlayerSettings(Camera gameCamera, IPlayerDriver playerDriver)
+        {
+            var gameBackground = Context.GetGameBackground;
+            gameBackground.SetBackgroundImageByIndex(0);
+
+            var teamNumber = PhotonBattle.GetTeamNumber(playerDriver.PlayerPos);
+            if (teamNumber == PhotonBattle.TeamBlueValue)
+            {
+                return;
+            }
+            RotateLocalPlayerGameplayExperience(gameCamera, gameBackground.Background);
+        }
+
+        private static void RotateLocalPlayerGameplayExperience(Camera gameCamera, GameObject gameBackground)
+        {
+            var features = RuntimeGameConfig.Get().Features;
+            var isRotateGameCamera = features._isRotateGameCamera && gameCamera != null;
+            if (isRotateGameCamera)
+            {
+                // Rotate game camera.
+                Debug.Log($"RotateGameCamera upsideDown");
+                gameCamera.GetComponent<Transform>().Rotate(true);
+            }
+            var isRotateGameBackground = features._isRotateGameBackground && gameBackground != null;
+            if (isRotateGameBackground)
+            {
+                // Rotate background.
+                Debug.Log($"RotateGameBackground upsideDown");
+                gameBackground.GetComponent<Transform>().Rotate(true);
+                // Separate sprites for each team gameplay area - these might not be visible in final game
+                // - see Battle.Scripts.Room.RoomSetup.SetupLocalPlayer() how this is done in Altzone project.
+            }
         }
 
         void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver)

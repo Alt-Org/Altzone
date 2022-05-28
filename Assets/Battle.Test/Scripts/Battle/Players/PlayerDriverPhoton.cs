@@ -171,6 +171,12 @@ namespace Battle.Test.Scripts.Battle.Players
             photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
         }
 
+        void IPlayerDriver.FixCameraRotation(Camera gameCamera)
+        {
+            // This is just local operation!
+            _playerActor.FixCameraRotation(gameCamera);
+        }
+
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             // NO IsNetworkSynchronize check!

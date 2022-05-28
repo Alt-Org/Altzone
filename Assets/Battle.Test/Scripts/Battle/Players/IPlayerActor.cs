@@ -24,6 +24,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void Rotate(bool isUpsideDown);
         
+        void FixCameraRotation(Camera gameCamera);
+        
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);

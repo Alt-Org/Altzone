@@ -133,6 +133,11 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.Rotate(isUpsideDown);
         }
 
+        void IPlayerDriver.FixCameraRotation(Camera gameCamera)
+        {
+            _playerActor.FixCameraRotation(gameCamera);
+        }
+
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
