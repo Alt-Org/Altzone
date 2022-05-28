@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Battle.Test.Scripts.Battle.Ball;
 using Battle.Test.Scripts.Battle.Players;
+using Battle.Test.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace Battle.Test.Scripts.Test
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
+        [Header("Timer")] public SimpleRoomTimer _timer;
+        
         private IBallManager _ballManager;
 
         private void Awake()
@@ -83,6 +86,10 @@ namespace Battle.Test.Scripts.Test
             _setBallState = true;
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
+            if (_timer != null)
+            {
+                _timer.StartTimer();
+            }
         }
 
         private void Update()
