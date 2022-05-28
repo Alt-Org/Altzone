@@ -122,7 +122,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         Vector2 IPlayerDriver.Position => _playerActor.Position;
 
-        IPlayerActorCollision IPlayerDriver.IPlayerActorCollision => this;
+        IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
 
         void IPlayerDriver.Rotate(bool isUpsideDown)
         {

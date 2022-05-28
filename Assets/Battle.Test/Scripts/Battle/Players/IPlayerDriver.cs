@@ -35,7 +35,7 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
         
-        IPlayerActorCollision IPlayerActorCollision { get; }
+        IPlayerActorCollision PlayerActorCollision { get; }
 
         void Rotate(bool isUpsideDown);
 
