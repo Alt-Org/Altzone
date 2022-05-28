@@ -34,23 +34,20 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
-  - MoveToRpc
   - SendPlayModeRpc
   - SendShieldRotationRpc
   - SendShieldVisibilityRpc
   - SetBallColorRpc
-  - SetCharacterPoseRpc
-  - SetPlayModeRpc
+  - TestBallPositionRpc
+  - TestBallVelocityRpc
   - TestMoveToRpc
+  - TestRotateRpc
+  - TestSetBallStateRpc
   - TestSetCharacterPoseRpc
   - TestSetPlayModeRpc
-  - TestSetStunnedRpc
-  - TestBallPosition
-  - TestBallVelocity
-  - TestSetBallState
-  - TestSetShieldVisibilityRpc
-  - TestRotateRpc
   - TestSetShieldResistanceRpc
+  - TestSetShieldVisibilityRpc
+  - TestSetStunnedRpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
