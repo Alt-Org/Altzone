@@ -23,6 +23,7 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
+        [SerializeField] private PlayerDriverState _state;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -75,6 +76,8 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            _state = gameObject.AddComponent<PlayerDriverState>();
+            _state.ResetState(this, _characterModel);
             GameplayManager.Get().RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             if (!_isLocal)
@@ -112,6 +115,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            _state.OnShieldCollision();
             var message = $"SHIELD {_playerPos}";
             var point = collision.GetContact(0).point;
             ScoreFlashNet.Push(message, point);
@@ -124,6 +128,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            _state.OnHeadCollision();
             var message = $"HEAD {_playerPos}";
             var point = collision.GetContact(0).point;
             ScoreFlashNet.Push(message, point);
