@@ -512,6 +512,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb0f21b3b7d2477c8583b0e62dd08419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isShowTriggers: 0
+  _isShowColliders: 0
 --- !u!1 &4536664284870313864
 GameObject:
   m_ObjectHideFlags: 0
@@ -877,8 +879,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4290756600
+  m_fontColor: {r: 0.9716981, g: 0.7471075, b: 0.7471075, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
