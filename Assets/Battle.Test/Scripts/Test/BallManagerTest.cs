@@ -29,7 +29,7 @@ namespace Battle.Test.Scripts.Test
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
-        private IBallManager _ball;
+        private IBallManager _ballManager;
 
         private void Awake()
         {
@@ -38,15 +38,8 @@ namespace Battle.Test.Scripts.Test
 
         private IEnumerator Start()
         {
-            for (;;)
-            {
-                _ball = BallManager.Get();
-                if (_ball != null)
-                {
-                    break;
-                }
-                yield return null;
-            }
+            yield return new WaitUntil(() => (_ballManager ??= BallManager.Get()) != null);
+
             var isStart = _isAutoStart || _isOnGuiStart;
             if (!isStart)
             {
@@ -97,27 +90,27 @@ namespace Battle.Test.Scripts.Test
             if (_setBallState)
             {
                 _setBallState = false;
-                _ball.SetBallState(_state);
+                _ballManager.SetBallState(_state);
             }
             if (_setBallPosition)
             {
                 _setBallPosition = false;
-                _ball.SetBallPosition(_position);
+                _ballManager.SetBallPosition(_position);
             }
             if (_setBallSpeed)
             {
                 _setBallSpeed = false;
-                _ball.SetBallSpeed(_speed);
+                _ballManager.SetBallSpeed(_speed);
             }
             if (_setBallSpeedAndDir)
             {
                 _setBallSpeedAndDir = false;
-                _ball.SetBallSpeed(_speed, _direction);
+                _ballManager.SetBallSpeed(_speed, _direction);
             }
             else if (_stopBall)
             {
                 _stopBall = false;
-                _ball.SetBallSpeed(0, Vector2.zero);
+                _ballManager.SetBallSpeed(0, Vector2.zero);
             }
         }
     }
@@ -147,6 +140,7 @@ namespace Battle.Test.Scripts.Test
                 _tester.StartTheBall();
             }
         }
+
         private void OnGUI()
         {
             _windowRect = GUILayout.Window(_windowId, _windowRect, DebugWindow, _windowTitle);
