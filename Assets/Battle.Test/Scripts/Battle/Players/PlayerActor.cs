@@ -163,16 +163,16 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdatePlayerText();
             // We have to add ColliderTracker for every collider there is
             // - if we add it to upper level in hierarchy (which would be nice) it does not receive collision events :-(
-            var collisionCallback = _playerDriver.IPlayerActorCollision;
+            var collisionDriver = _playerDriver.IPlayerActorCollision;
             foreach (var avatar in _settings._avatar.Avatars)
             {
                 var tracker = avatar.AddComponent<ColliderTracker>();
-                tracker.Callback = collision => { collisionCallback.OnHeadCollision(collision); };
+                tracker.Callback = collision => { collisionDriver.OnHeadCollision(collision); };
             }
             foreach (var shield in _settings._shield.Shields)
             {
                 var tracker = shield.AddComponent<ColliderTracker>();
-                tracker.Callback = collision => { collisionCallback.OnShieldCollision(collision); };
+                tracker.Callback = collision => { collisionDriver.OnShieldCollision(collision); };
             }
             if (_debug._isShowMoveTo)
             {
