@@ -157,6 +157,28 @@ namespace Altzone.Scripts.Battle
             }
         }
 
+        public static bool IsPlayerPosAvailable(Player player)
+        {
+            if (!PhotonNetwork.InRoom)
+            {
+                return false;
+            }
+            var playerPos = GetPlayerPos(player);
+            if (!IsValidPlayerPos(playerPos))
+            {
+                return false;
+            }
+            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
+            {
+                var otherPlayerPos = GetPlayerPos(otherPlayer);
+                if (IsValidPlayerPos(otherPlayerPos) && otherPlayerPos == playerPos)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         /// <summary>
         /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
         /// </summary>
