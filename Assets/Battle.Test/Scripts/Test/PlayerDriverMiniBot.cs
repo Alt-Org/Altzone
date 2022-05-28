@@ -43,10 +43,6 @@ namespace Battle.Test.Scripts.Test
             yield return new WaitUntil(() => gameplayManager.GetPlayerByActorNumber(_playerDriver.ActorNumber) != null);
             _nickname = _playerDriver.NickName ?? "noname";
             Debug.Log($"{name} {_nickname}");
-            if (_playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
-            {
-                _playerDriver.Rotate(true);
-            }
             var playerArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerDriver.PlayerPos);
             var center = playerArea.center;
             _playerDriver.MoveTo(center);

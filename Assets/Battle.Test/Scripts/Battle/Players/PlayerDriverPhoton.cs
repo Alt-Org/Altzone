@@ -81,6 +81,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
+            _state.CheckRotation(_playerActor.Position);
             GameplayManager.Get().RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             if (!_isLocal)

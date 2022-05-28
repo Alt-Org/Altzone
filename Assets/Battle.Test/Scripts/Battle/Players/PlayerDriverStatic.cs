@@ -60,6 +60,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
+            _state.CheckRotation(_playerActor.Position);
             gameplayManager.RegisterPlayer(this);
             if (!_settings._isLocal)
             {

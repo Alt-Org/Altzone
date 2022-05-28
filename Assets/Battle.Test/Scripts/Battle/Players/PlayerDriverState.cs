@@ -31,6 +31,15 @@ namespace Battle.Test.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
         }
 
+        public void CheckRotation(Vector2 position)
+        {
+            Debug.Log($"{name} playerPos {_playerDriver.PlayerPos} position {position}");
+            if (position.y > 0)
+            {
+                _playerDriver.Rotate(true);
+            }
+        }
+        
         public string OnShieldCollision()
         {
             if (_isDisableShieldStateChanges)
