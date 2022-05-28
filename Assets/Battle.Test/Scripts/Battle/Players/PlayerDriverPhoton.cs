@@ -76,6 +76,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
             GameplayManager.Get().RegisterPlayer(this);
@@ -203,6 +204,15 @@ namespace Battle.Test.Scripts.Battle.Players
             photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
         }
 
+        void IPlayerDriver.SetShieldResistance(int resistance)
+        {
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
+            photonView.RPC(nameof(TestSetShieldResistanceRpc), RpcTarget.All, resistance);
+        }
+
         void IPlayerDriver.SetStunned(float duration)
         {
             TestSetStunnedRpc(duration);
@@ -247,6 +257,12 @@ namespace Battle.Test.Scripts.Battle.Players
         private void TestSetShieldVisibilityRpc(bool state)
         {
             _playerActor.SetShieldVisibility(state);
+        }
+
+        [PunRPC]
+        void TestSetShieldResistanceRpc(int resistance)
+        {
+            _playerActor.CurrentResistance = resistance;
         }
 
         [PunRPC]

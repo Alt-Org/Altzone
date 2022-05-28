@@ -19,6 +19,8 @@ namespace Battle.Test.Scripts.Battle.Players
         Vector2 Position { get; }
         
         float Speed { get; set; }
+        
+        int CurrentResistance { get; set; }
 
         void Rotate(bool isUpsideDown);
         

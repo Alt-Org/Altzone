@@ -54,6 +54,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActor.Speed = _characterModel.Speed;
+            _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
             gameplayManager.RegisterPlayer(this);
@@ -148,6 +149,11 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActor.SetShieldVisibility(state);
         }
 
+        void IPlayerDriver.SetShieldResistance(int resistance)
+        {
+            _playerActor.CurrentResistance = resistance;
+        }
+        
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);

@@ -198,6 +198,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region Debugging
 
+        private static readonly char[] PlayModes = { 'n', 'F', 'g', };
+        
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()
         {
@@ -207,14 +209,14 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!_hasPlayer)
             {
-                _debug._playerText.text = $"---";
+                _debug._playerText.text = $"{_actorNumber}--~";
                 return;
             }
             if (!IsBuffedOrDeBuffed)
             {
-                _debug._playerModeOrBuff = _playMode.ToString().ToLower()[0];
+                _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -258,6 +260,7 @@ namespace Battle.Test.Scripts.Battle.Players
         #region IPlayerActor Interface
 
         private float _speed;
+        private int _resistance;
 
         int IPlayerActor.MaxPoseIndex => _avatarPose.MaxPoseIndex;
 
@@ -267,6 +270,16 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             get => _speed;
             set => _speed = value;
+        }
+
+        int IPlayerActor.CurrentResistance
+        {
+            get => _resistance;
+            set
+            {
+                _resistance = value; 
+                UpdatePlayerText();
+            }
         }
 
         void IPlayerActor.Rotate(bool isUpsideDown)
@@ -298,10 +311,18 @@ namespace Battle.Test.Scripts.Battle.Players
                 Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
             }
             _poseIndex = poseIndex;
-            _shieldPose.SetPose(poseIndex);
-            _avatarPose.SetPose(poseIndex);
+            StartCoroutine(SetPoseOnNextFrame());
             UpdatePlayerText();
         }
+        
+        private IEnumerator SetPoseOnNextFrame()
+        {
+            // We have a problem with colliders when character pose is changed during a collision!
+            yield return null;
+            _shieldPose.SetPose(_poseIndex);
+            _avatarPose.SetPose(_poseIndex);
+        }
+
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {

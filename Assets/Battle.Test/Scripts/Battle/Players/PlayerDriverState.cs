@@ -40,6 +40,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _currentShieldResistance -= 1;
                 Debug.Log($"reflect pose {_currentPoseIndex} shield {_currentShieldResistance}");
+                _playerDriver.SetShieldResistance(_currentShieldResistance);
                 return;
             }
             if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
@@ -52,6 +53,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _currentPoseIndex += 1;
             Debug.Log($"bend pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _playerDriver.SetCharacterPose(_currentPoseIndex);
+            _playerDriver.SetShieldResistance(_currentShieldResistance);
         }
 
         public void OnHeadCollision()

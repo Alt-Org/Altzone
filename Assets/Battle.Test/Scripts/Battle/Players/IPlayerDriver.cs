@@ -46,6 +46,8 @@ namespace Battle.Test.Scripts.Battle.Players
         void SetPlayMode(BattlePlayMode playMode);
 
         void SetShieldVisibility(bool state);
+        
+        void SetShieldResistance(int resistance);
 
         void SetStunned(float duration);
     }
