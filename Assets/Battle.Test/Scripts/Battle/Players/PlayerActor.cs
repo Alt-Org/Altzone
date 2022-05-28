@@ -81,6 +81,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private bool _hasPlayer;
         private Transform _transform;
         private int _actorNumber;
+        private int _playerPos;
 
         private bool _hasTarget;
         private Vector3 _targetPosition;
@@ -137,11 +138,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private void SetPlayerDriver(IPlayerDriver playerDriver)
         {
-            Debug.Log($"{name}");
             // Now we are good to go.
             _playerDriver = playerDriver;
             _hasPlayer = true;
             _actorNumber = playerDriver.ActorNumber;
+            _playerPos = playerDriver.PlayerPos;
+            Debug.Log($"{name} pos {_playerPos} actor {_actorNumber}");
             _transform = GetComponent<Transform>();
             if (_debug._isShowPlayerText && !playerDriver.IsLocal)
             {
@@ -198,8 +200,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region Debugging
 
+        private static readonly char[] PlayerPos = { '?', 'a', 'b', 'c', 'd' };
         private static readonly char[] PlayModes = { 'n', 'F', 'g', };
-        
+
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()
         {
@@ -209,14 +212,14 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!_hasPlayer)
             {
-                _debug._playerText.text = $"{_actorNumber}--~";
+                _debug._playerText.text = $"{PlayerPos[_playerPos]}--~";
                 return;
             }
             if (!IsBuffedOrDeBuffed)
             {
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{_actorNumber}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{PlayerPos[_playerPos]}{_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -277,7 +280,7 @@ namespace Battle.Test.Scripts.Battle.Players
             get => _resistance;
             set
             {
-                _resistance = value; 
+                _resistance = value;
                 UpdatePlayerText();
             }
         }
@@ -314,7 +317,7 @@ namespace Battle.Test.Scripts.Battle.Players
             StartCoroutine(SetPoseOnNextFrame());
             UpdatePlayerText();
         }
-        
+
         private IEnumerator SetPoseOnNextFrame()
         {
             // We have a problem with colliders when character pose is changed during a collision!
@@ -322,7 +325,6 @@ namespace Battle.Test.Scripts.Battle.Players
             _shieldPose.SetPose(_poseIndex);
             _avatarPose.SetPose(_poseIndex);
         }
-
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {
