@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
@@ -187,7 +188,7 @@ namespace Altzone.Scripts.Config
     {
         private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
-        public static RuntimeGameConfig Get()
+        public static RuntimeGameConfig Get([CallerFilePath] string callerFilePath  = null)
         {
             var instance = FindObjectOfType<RuntimeGameConfig>();
             if (instance == null)
@@ -195,14 +196,29 @@ namespace Altzone.Scripts.Config
                 instance = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
                 LoadGameConfig(instance);
             }
+            CallerFilePathWarning(callerFilePath);
             return instance;
         }
 
+        [Conditional("UNITY_EDITOR")]
+        private static void CallerFilePathWarning(string callerFilePath)
+        {
+            if (callerFilePath == null || !callerFilePath.Contains("Battle"))
+            {
+                return;
+            }
+            var path = callerFilePath.Substring(callerFilePath.IndexOf("Assets", StringComparison.Ordinal));
+            Debug.LogWarning($"CHECK THIS CALL {path}");
+        }
+        
         public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
 
         public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(IsFirstTimePlayingKey, 0);
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Used by Editor classes with <c>MenuItem</c> to pre-load <c>PlayerDataCache</c> as it is not otherwise available.
+        /// </summary>
         public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache();
 #endif
 
