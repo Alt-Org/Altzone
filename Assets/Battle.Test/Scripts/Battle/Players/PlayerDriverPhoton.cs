@@ -253,6 +253,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            ScoreFlashNet.Push("RESTART");
             StartTheBall.RestartBallInGame(this);
         }
 

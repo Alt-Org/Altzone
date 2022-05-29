@@ -184,6 +184,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            ScoreFlash.Push("RESTART");
             StartTheBall.RestartBallInGame(this);
         }
 
