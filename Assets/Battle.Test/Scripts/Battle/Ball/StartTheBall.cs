@@ -57,8 +57,8 @@ namespace Battle.Test.Scripts.Battle.Ball
             yield return delay;
             tracker1.StopTracking();
             tracker2.StopTracking();
-            var distance1= tracker1.GetSqrDistance;
-            var distance2= tracker2.GetSqrDistance;
+            var distance1= Mathf.Sqrt(tracker1.GetSqrDistance);
+            var distance2= Mathf.Sqrt(tracker2.GetSqrDistance);
             _startingTeam = distance1 > distance2 ? PhotonBattle.TeamBlueValue : PhotonBattle.TeamRedValue;
             Debug.Log($"{name} dist1 {distance1:0.00} dist2 {distance2:0.00} startingTeam {_startingTeam}");
             _ballManager.SetBallState(BallState.NoTeam);

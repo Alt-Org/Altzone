@@ -34,6 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
         bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
+        Transform PlayerTransform { get; }
         
         IPlayerActorCollision PlayerActorCollision { get; }
 

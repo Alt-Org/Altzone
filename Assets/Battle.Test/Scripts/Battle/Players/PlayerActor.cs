@@ -270,8 +270,6 @@ namespace Battle.Test.Scripts.Battle.Players
         // Last pose is reserved for disconnected pose
         int IPlayerActor.MaxPoseIndex => _avatarPose.MaxPoseIndex - 1;
 
-        Vector2 IPlayerActor.Position => _transform.position;
-
         float IPlayerActor.Speed
         {
             get => _speed;

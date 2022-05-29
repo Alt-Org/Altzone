@@ -307,7 +307,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class TeamSnapshotTracker : ITeamSnapshotTracker
     {
-        public float GetSqrDistance => _sqrSqrDistance;
+        public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);
 
         private readonly int _teamNumber;
         private readonly Transform _player1;
@@ -321,11 +321,11 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _teamNumber = battleTeam.TeamNumber;
             var firstPlayer = battleTeam.FirstPlayer;
-            _player1 = ((MonoBehaviour)firstPlayer).GetComponent<Transform>();
+            _player1 = firstPlayer.PlayerTransform;
             var secondPlayer = battleTeam.SecondPlayer;
             if (secondPlayer != null)
             {
-                _player2 = ((MonoBehaviour)secondPlayer).GetComponent<Transform>();
+                _player2 = secondPlayer.PlayerTransform;
             }
             else
             {
@@ -350,12 +350,12 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _isStopped = true;
             CalculateDistance();
-            Debug.Log($"team {_teamNumber} distance {_sqrSqrDistance:0.00}");
+            Debug.Log($"team {_teamNumber} sqr distance {_sqrSqrDistance:0.00}");
         }
 
         private void CalculateDistance()
         {
-            _sqrSqrDistance = Mathf.Abs((_player1.position - _player2.position).sqrMagnitude);
+            _sqrSqrDistance = (_player1.position - _player2.position).sqrMagnitude;
         }
 
         public IEnumerator TrackTheTeam()
@@ -377,7 +377,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 {
                     debugLogTIme = Time.time + debugInterval;
                     _prevSqrSqrDistance = _sqrSqrDistance;
-                    Debug.Log($"team {_teamNumber} distance {_sqrSqrDistance:0.00}");
+                    Debug.Log($"team {_teamNumber} sqr distance {_sqrSqrDistance:0.00}");
                 }
             }
         }

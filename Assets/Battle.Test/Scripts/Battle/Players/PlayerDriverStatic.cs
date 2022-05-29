@@ -33,6 +33,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private char _playerPosChar;
 
         private IPlayerActor _playerActor;
+        private Transform _playerActorTransform;
         private bool _isApplicationQuitting;
 
         private void Awake()
@@ -56,11 +57,12 @@ namespace Battle.Test.Scripts.Battle.Players
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
             _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
             _playerActor = _playerActorInstance;
+            _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
             _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
-            _state.CheckRotation(_playerActor.Position);
+            _state.CheckRotation(_playerActorTransform.position);
             gameplayManager.RegisterPlayer(this);
             if (!_settings._isLocal)
             {
@@ -124,7 +126,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
-        Vector2 IPlayerDriver.Position => _playerActor.Position;
+        Vector2 IPlayerDriver.Position => _playerActorTransform.position;
+        
+        Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
 
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
 

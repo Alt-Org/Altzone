@@ -34,6 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
+        private Transform _playerActorTransform;
         private bool _isLocal;
         private bool _isApplicationQuitting;
 
@@ -80,11 +81,12 @@ namespace Battle.Test.Scripts.Battle.Players
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
             _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
+            _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
             _playerActor.CurrentResistance = _characterModel.Resistance;
             _state = gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(this, _characterModel);
-            _state.CheckRotation(_playerActor.Position);
+            _state.CheckRotation(_playerActorTransform.position);
             GameplayManager.Get().RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             if (!_isLocal)
@@ -165,7 +167,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
-        Vector2 IPlayerDriver.Position => _playerActor.Position;
+        Vector2 IPlayerDriver.Position => _playerActorTransform.position;
+        
+        Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
 
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
 

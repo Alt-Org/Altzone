@@ -16,8 +16,6 @@ namespace Battle.Test.Scripts.Battle.Players
     {
         int MaxPoseIndex { get; }
         
-        Vector2 Position { get; }
-        
         float Speed { get; set; }
         
         int CurrentResistance { get; set; }
