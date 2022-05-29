@@ -24,6 +24,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         IPlayerDriver LocalPlayer { get; }
 
+        BattleTeam GetBattleTeam(int teamNumber);
+
         ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber);
 
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
@@ -39,11 +41,34 @@ namespace Battle.Test.Scripts.Battle.Players
         public readonly IPlayerDriver FirstPlayer;
         public readonly IPlayerDriver SecondPlayer;
 
+        public readonly int PlayerCount;
+
         public BattleTeam(int teamNumber, IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
         {
+            Assert.IsNotNull(firstPlayer, "firstPlayer != null");
             TeamNumber = teamNumber;
             FirstPlayer = firstPlayer;
             SecondPlayer = secondPlayer;
+            PlayerCount = SecondPlayer == null ? 1 : 2;
+        }
+
+        public Transform SafeTransform(IPlayerDriver player)
+        {
+            Assert.IsTrue(player == FirstPlayer || player == SecondPlayer, "player == FirstPlayer || player == SecondPlayer");
+            if (player != null)
+            {
+                return player.PlayerTransform;
+            }
+            var playArea = Context.GetPlayerPlayArea;
+            switch (TeamNumber)
+            {
+                case PhotonBattle.TeamBlueValue:
+                    return playArea.BlueTeamMiddlePosition;
+                case PhotonBattle.TeamRedValue:
+                    return playArea.RedTeamMiddlePosition;
+                default:
+                    return null;
+            }
         }
     }
 
@@ -123,7 +148,7 @@ namespace Battle.Test.Scripts.Battle.Players
             StopAllCoroutines();
         }
 
-        private BattleTeam GetBattleTeam(int teamNumber)
+        private BattleTeam CreateBattleTeam(int teamNumber)
         {
             if (teamNumber == PhotonBattle.TeamBlueValue)
             {
@@ -154,7 +179,15 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber)
         {
-            var tracker = new TeamSnapshotTracker(GetBattleTeam(teamNumber));
+            if (teamNumber == PhotonBattle.TeamBlueValue && _teamBlue.Count == 0)
+            {
+                return new NullTeamSnapshotTracker();
+            }
+            if (teamNumber == PhotonBattle.TeamRedValue && _teamRed.Count == 0)
+            {
+                return new NullTeamSnapshotTracker();
+            }
+            var tracker = new TeamSnapshotTracker(CreateBattleTeam(teamNumber));
             StartCoroutine(tracker.TrackTheTeam());
             return tracker;
         }
@@ -164,6 +197,11 @@ namespace Battle.Test.Scripts.Battle.Players
         int IGameplayManager.PlayerCount => _players.Count;
 
         IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
+
+        BattleTeam IGameplayManager.GetBattleTeam(int teamNumber)
+        {
+            return CreateBattleTeam(teamNumber);
+        }
 
         ITeamSnapshotTracker IGameplayManager.GetTeamSnapshotTracker(int teamNumber)
         {
@@ -305,6 +343,15 @@ namespace Battle.Test.Scripts.Battle.Players
         public void StopTracking();
     }
 
+    internal class NullTeamSnapshotTracker : ITeamSnapshotTracker
+    {
+        public float GetSqrDistance => 0;
+
+        public void StopTracking()
+        {
+        }
+    }
+    
     internal class TeamSnapshotTracker : ITeamSnapshotTracker
     {
         public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);
@@ -320,29 +367,8 @@ namespace Battle.Test.Scripts.Battle.Players
         public TeamSnapshotTracker(BattleTeam battleTeam)
         {
             _teamNumber = battleTeam.TeamNumber;
-            var firstPlayer = battleTeam.FirstPlayer;
-            _player1 = firstPlayer.PlayerTransform;
-            var secondPlayer = battleTeam.SecondPlayer;
-            if (secondPlayer != null)
-            {
-                _player2 = secondPlayer.PlayerTransform;
-            }
-            else
-            {
-                var playArea = Context.GetPlayerPlayArea;
-                switch (battleTeam.TeamNumber)
-                {
-                    case PhotonBattle.TeamBlueValue:
-                        _player2 = playArea.BlueTeamMiddlePosition;
-                        break;
-                    case PhotonBattle.TeamRedValue:
-                        _player2 = playArea.RedTeamMiddlePosition;
-                        break;
-                    default:
-                        _player2 = _player1;
-                        break;
-                }
-            }
+            _player1 = battleTeam.SafeTransform(battleTeam.FirstPlayer);
+            _player2 = battleTeam.SafeTransform(battleTeam.SecondPlayer);
             Debug.Log($"team {_teamNumber} p1 {_player1.position} p2 {_player2.position}");
         }
 

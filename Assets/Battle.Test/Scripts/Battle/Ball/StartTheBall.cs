@@ -57,11 +57,42 @@ namespace Battle.Test.Scripts.Battle.Ball
             yield return delay;
             tracker1.StopTracking();
             tracker2.StopTracking();
-            var distance1= Mathf.Sqrt(tracker1.GetSqrDistance);
-            var distance2= Mathf.Sqrt(tracker2.GetSqrDistance);
+            var distance1 = Mathf.Sqrt(tracker1.GetSqrDistance);
+            var distance2 = Mathf.Sqrt(tracker2.GetSqrDistance);
             _startingTeam = distance1 > distance2 ? PhotonBattle.TeamBlueValue : PhotonBattle.TeamRedValue;
-            Debug.Log($"{name} dist1 {distance1:0.00} dist2 {distance2:0.00} startingTeam {_startingTeam}");
+            var team = _gameplayManager.GetBattleTeam(_startingTeam);
+            var playerCount = team.PlayerCount;
+            Debug.Log($"{name} dist1 {distance1:0.00} dist2 {distance2:0.00} startingTeam {_startingTeam} players {playerCount}");
             _ballManager.SetBallState(BallState.NoTeam);
+            yield return null;
+            
+            float speed = 1f;
+            Vector2 direction;
+
+            var center = Vector3.zero;
+            var transform1 = team.FirstPlayer.PlayerTransform;
+            var pos1 = transform1.position;
+            if (playerCount == 1)
+            {
+                direction = center - pos1;
+            }
+            else
+            {
+                var transform2 = team.SecondPlayer.PlayerTransform;
+                var pos2 = transform2.position;
+                var dist1 = Mathf.Abs((pos1 - center).sqrMagnitude);
+                var dist2 = Mathf.Abs((pos2 - center).sqrMagnitude);
+                if (dist1 < dist2)
+                {
+                    direction = pos1 - pos2;
+                }
+                else
+                {
+                    direction = pos2 - pos1;
+                }
+            }
+            Debug.Log($"{name} speed {speed} direction {direction.normalized}");
+            _ballManager.SetBallSpeed(speed, direction);
         }
     }
 }
