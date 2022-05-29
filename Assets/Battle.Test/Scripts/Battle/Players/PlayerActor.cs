@@ -97,6 +97,8 @@ namespace Battle.Test.Scripts.Battle.Players
         private Color[] _skillColors;
         private PoseManager _avatarPose;
         private PoseManager _shieldPose;
+        private int _maxPoseIndex;
+        private int _disconnectedPoseIndex;
 
         private bool CanMove => _hasTarget && !_isStunned && _playMode.CanMove();
 
@@ -161,7 +163,10 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
             _avatarPose = new PoseManager(_settings._avatar.Avatars);
-            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _settings._avatar.Avatars.Length - 1);
+            // Last pose is reserved for disconnected pose
+            _maxPoseIndex = _settings._avatar.Avatars.Length - 1;
+            _disconnectedPoseIndex = _maxPoseIndex + 1;
+            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _maxPoseIndex);
             _shieldPose = new PoseManager(_settings._shield.Shields);
             _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, 0);
             UpdatePlayerText();
@@ -221,7 +226,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_avatarPose.MaxPoseIndex - _poseIndex}{_resistance}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_maxPoseIndex - _poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -267,8 +272,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private float _speed;
         private int _resistance;
 
-        // Last pose is reserved for disconnected pose
-        int IPlayerActor.MaxPoseIndex => _avatarPose.MaxPoseIndex - 1;
+        int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 
         float IPlayerActor.Speed
         {
@@ -411,7 +415,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerDriver = null;
             _hasPlayer = false;
             UpdatePlayerText();
-            _avatarPose.SetPose(_avatarPose.MaxPoseIndex);
+            _avatarPose.SetPose(_disconnectedPoseIndex);
             _shieldPose.SetVisible(false);
 
             // Brute force way to disable everything (that is still active)!

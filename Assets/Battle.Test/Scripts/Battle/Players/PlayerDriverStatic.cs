@@ -82,7 +82,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             print("xx");
-            GameplayManager.Get().UnregisterPlayer(this);
+            GameplayManager.Get().UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_settings._isLocal)
             {
                 var playerInputHandler = PlayerInputHandler.Get();

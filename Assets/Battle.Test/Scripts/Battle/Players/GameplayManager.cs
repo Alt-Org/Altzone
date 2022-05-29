@@ -36,7 +36,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void RegisterPlayer(IPlayerDriver playerDriver);
 
-        void UnregisterPlayer(IPlayerDriver playerDriver);
+        void UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot);
     }
 
     internal class BattleTeam
@@ -127,6 +127,7 @@ namespace Battle.Test.Scripts.Battle.Players
         internal class DebugSettings
         {
             public List<MonoBehaviour> _playerList;
+            public List<GameObject> _abandonedPlayerList;
         }
 
         public static IGameplayManager Get() => FindObjectOfType<GameplayManager>();
@@ -134,6 +135,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
         private readonly HashSet<IPlayerDriver> _players = new();
+        private readonly Dictionary<int, GameObject> _abandonedPlayersByPlayerPos = new();
         private readonly List<IPlayerDriver> _teamBlue = new();
         private readonly List<IPlayerDriver> _teamRed = new();
 
@@ -210,7 +212,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 action(playerDriver);
             }
         }
-        
+
         BattleTeam IGameplayManager.GetBattleTeam(int teamNumber)
         {
             return CreateBattleTeam(teamNumber);
@@ -237,6 +239,13 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
+            if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
+            {
+                _abandonedPlayersByPlayerPos.Remove(playerDriver.PlayerPos); 
+                deletePreviousInstance.SetActive(false);
+                Destroy(deletePreviousInstance);
+            }
+            
             // Publish PlayerJoined first, then TeamCreated
             this.Publish(new PlayerJoined(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
@@ -280,10 +289,17 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdateDebugPlayerList();
         }
 
-        void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver)
+        void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot)
         {
             Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
             _players.Remove(playerDriver);
+            if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
+            {
+                deletePreviousInstance.SetActive(false);
+                Destroy(deletePreviousInstance);
+            }
+            _abandonedPlayersByPlayerPos[playerDriver.ActorNumber] = playerInstanceRoot;
+            
             // Publish events in reverse order: TeamBroken first, then PlayerLeft
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {
@@ -349,6 +365,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playerList = _players.ToList();
             playerList.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
             _debug._playerList = playerList.Cast<MonoBehaviour>().ToList();
+            _debug._abandonedPlayerList = _abandonedPlayersByPlayerPos.Values.ToList();
         }
 
         #endregion
@@ -369,7 +386,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
         }
     }
-    
+
     internal class TeamSnapshotTracker : ITeamSnapshotTracker
     {
         public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);

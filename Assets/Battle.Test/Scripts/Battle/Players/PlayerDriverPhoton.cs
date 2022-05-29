@@ -107,7 +107,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             print("xx");
             Debug.Log($"{name}");
-            GameplayManager.Get().UnregisterPlayer(this);
+            GameplayManager.Get().UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_playerActor == null)
             {
                 // Did not manage to initialize properly?
