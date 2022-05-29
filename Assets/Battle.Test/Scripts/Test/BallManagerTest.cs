@@ -24,72 +24,22 @@ namespace Battle.Test.Scripts.Test
         public Vector2 _direction = Vector2.one;
         public BallState _state;
 
-        [Header("Photon Master Client")] public bool _isOnGuiStart;
-        public bool _isAutoStart;
+        [Header("Photon Master Client")] public bool _isStartTheBallStart;
+        public bool _isStartOnGui;
+        public bool _isAutoStartTest;
         public bool _useAttackSpeed;
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
+        [Header("Start The Ball")] public StartTheBall _startTheBall;
+
         [Header("Timer")] public SimpleRoomTimer _timer;
-        
+
         private IBallManager _ballManager;
 
         private void Awake()
         {
             Debug.Log($"IsMasterClient {PhotonNetwork.IsMasterClient} OfflineMode {PhotonNetwork.OfflineMode}");
-        }
-
-        private IEnumerator Start()
-        {
-            yield return new WaitUntil(() => (_ballManager ??= BallManager.Get()) != null);
-
-            var isStart = _isAutoStart || _isOnGuiStart;
-            if (!isStart)
-            {
-                yield break;
-            }
-            var gameplayManager = GameplayManager.Get();
-            if (_useAttackSpeed)
-            {
-                yield return new WaitUntil(() => gameplayManager.LocalPlayer != null);
-                var localPlayer = gameplayManager.LocalPlayer;
-                _speed = localPlayer.CharacterModel.Attack;
-            }
-            if (_isAutoStart && PhotonNetwork.OfflineMode)
-            {
-                StartTheBall();
-                yield break;
-            }
-            while (!PhotonNetwork.InRoom)
-            {
-                yield return null;
-            }
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                yield break;
-            }
-            if (_isOnGuiStart)
-            {
-                var guiStart = gameObject.AddComponent<OnGuiStart>();
-                guiStart._tester = this;
-                yield break;
-            }
-            if (PhotonNetwork.InRoom)
-            {
-                yield return new WaitUntil(() => gameplayManager.PlayerCount >= _requiredPlayerCount);
-                StartTheBall();
-            }
-        }
-
-        public void StartTheBall()
-        {
-            _setBallState = true;
-            _setBallPosition = true;
-            _setBallSpeedAndDir = true;
-            if (_timer != null)
-            {
-                _timer.StartTimer();
-            }
         }
 
         private void Update()
@@ -120,6 +70,78 @@ namespace Battle.Test.Scripts.Test
                 _ballManager.SetBallSpeed(0, Vector2.zero);
             }
         }
+
+        private IEnumerator Start()
+        {
+            // Start flag priorities
+            if (_startTheBall == null)
+            {
+                _isStartTheBallStart = false;
+            }
+            if (_isStartTheBallStart)
+            {
+                _isStartOnGui = false;
+                _isAutoStartTest = false;
+            }
+            else if (_isStartOnGui)
+            {
+                _isAutoStartTest = false;
+            }
+            yield return new WaitUntil(() => (_ballManager ??= BallManager.Get()) != null);
+
+            var isStart = _isStartTheBallStart || _isStartOnGui || _isAutoStartTest;
+            if (!isStart)
+            {
+                yield break;
+            }
+            var gameplayManager = GameplayManager.Get();
+            if (_useAttackSpeed)
+            {
+                yield return new WaitUntil(() => gameplayManager.LocalPlayer != null);
+                var localPlayer = gameplayManager.LocalPlayer;
+                _speed = localPlayer.CharacterModel.Attack;
+            }
+            if (_isAutoStartTest && PhotonNetwork.OfflineMode)
+            {
+                TestAutoStart();
+                yield break;
+            }
+            while (!PhotonNetwork.InRoom)
+            {
+                yield return null;
+            }
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                yield break;
+            }
+            if (_isStartTheBallStart || _isStartOnGui)
+            {
+                var guiStart = gameObject.AddComponent<OnGuiStart>();
+                guiStart._tester = this;
+                yield break;
+            }
+            if (PhotonNetwork.InRoom)
+            {
+                yield return new WaitUntil(() => gameplayManager.PlayerCount >= _requiredPlayerCount);
+                TestAutoStart();
+            }
+        }
+
+        public void TestAutoStart()
+        {
+            if (_timer != null)
+            {
+                _timer.StartTimer();
+            }
+            if (_isStartTheBallStart)
+            {
+                _startTheBall.StartBall1();
+                return;
+            }
+            _setBallState = true;
+            _setBallPosition = true;
+            _setBallSpeedAndDir = true;
+        }
     }
 
     internal class OnGuiStart : MonoBehaviour
@@ -135,8 +157,8 @@ namespace Battle.Test.Scripts.Test
         private void OnEnable()
         {
             _windowId = (int)DateTime.Now.Ticks;
-            _windowRect = new Rect(0, 0, Screen.width, Screen.height / 5f);
-            _windowTitle = "Start the Ball when players are ready";
+            _windowRect = new Rect(0, 0, Screen.width, Screen.height / 10f * 1.5f);
+            _windowTitle = "Start the Ball when ALL players are ready";
         }
 
         private void Update()
@@ -144,7 +166,7 @@ namespace Battle.Test.Scripts.Test
             if (Keyboard.current[_controlKey].wasPressedThisFrame)
             {
                 enabled = false;
-                _tester.StartTheBall();
+                _tester.TestAutoStart();
             }
         }
 
@@ -156,10 +178,10 @@ namespace Battle.Test.Scripts.Test
         private void DebugWindow(int windowId)
         {
             GUILayout.Label(" ");
-            if (GUILayout.Button("Start the Ball (F4)"))
+            if (GUILayout.Button($"Start the Ball ({_controlKey})"))
             {
                 enabled = false;
-                _tester.StartTheBall();
+                _tester.TestAutoStart();
             }
         }
 #endif
