@@ -148,19 +148,10 @@ namespace Battle.Test.Scripts.Battle.Ball
                     direction = Vector2.one * (Time.frameCount % 2 == 0 ? 1 : -1);
                 }
             }
-            // NOTE 1: Actually we would like to be in a state that can not move and can not collide with ball.
-            // - Ghosted can move but not collide - this is thew best option we have now!
-            // - Frozen can not move but can collide
-            // This state is very short as when ball starts moving it will set all players to their proper states in relation with ball position
-            
-            // NOTE 2: Changing ball state changes player states as well - and we have to compensate for that!
-            // - TeamColliderPlayModeTrigger in GameplayManager notices when ball enter team's gameplay area => player becomes Frozen
-            
-            startTeam.SetPlayMode(BattlePlayMode.Ghosted);
+            startTeam.SetPlayMode(BattlePlayMode.SuperGhosted);
             otherTeam?.SetPlayMode(BattlePlayMode.Ghosted);
             yield return null;
 
-            ballDropPosition = Vector2.zero;
             _ballManager.SetBallPosition(ballDropPosition);
             _ballManager.SetBallState(BallState.NoTeam);
             _ballManager.SetBallSpeed(speed, direction);

@@ -98,9 +98,9 @@ namespace Battle.Test.Scripts.Battle.Players
         private PoseManager _avatarPose;
         private PoseManager _shieldPose;
 
-        private bool CanMove => _hasTarget && !_isStunned && (_playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Ghosted);
+        private bool CanMove => _hasTarget && !_isStunned && _playMode.CanMove();
 
-        private bool CanAcceptMove => !_isStunned && (_playMode == BattlePlayMode.Normal || _playMode == BattlePlayMode.Ghosted);
+        private bool CanAcceptMove => !_isStunned && _playMode.CanMove();
 
         private bool IsBuffedOrDeBuffed => _isStunned;
 
@@ -203,7 +203,7 @@ namespace Battle.Test.Scripts.Battle.Players
         #region Debugging
 
         private static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
-        private static readonly char[] PlayModes = { 'n', 'F', 'g', };
+        private static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', '-' };
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()
@@ -214,14 +214,14 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             if (!_hasPlayer)
             {
-                _debug._playerText.text = $"{PlayerPosChars[_playerPos]}---";
+                _debug._playerText.text = $"{PlayerPosChars[_playerPos]}--{PlayModes[^1]}";
                 return;
             }
             if (!IsBuffedOrDeBuffed)
             {
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
-            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_avatarPose.MaxPoseIndex-_poseIndex}{_resistance}{_debug._playerModeOrBuff}";
+            _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_avatarPose.MaxPoseIndex - _poseIndex}{_resistance}{_debug._playerModeOrBuff}";
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -339,6 +339,14 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {
+            if (!_playMode.CanTransition(playMode))
+            {
+                if (_debug._isInterfaceEvents)
+                {
+                    Debug.Log($"{name} {_playMode} <- {playMode} IGNORED");
+                }
+                return;
+            }
             if (_debug._isInterfaceEvents)
             {
                 Debug.Log($"{name} {_playMode} <- {playMode}");
@@ -415,7 +423,7 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
- 
+
         public override string ToString()
         {
             return $"{name}";
@@ -466,7 +474,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _state.IsVisible = isVisible;
             _currentAvatar.SetActive(isVisible);
-            _currentCollider.enabled = _state.PlayMode == BattlePlayMode.Normal || _state.PlayMode == BattlePlayMode.Frozen;
+            _currentCollider.enabled = _state.PlayMode.CanCollide();
         }
 
         public void SetPlayMode(BattlePlayMode playMode)
