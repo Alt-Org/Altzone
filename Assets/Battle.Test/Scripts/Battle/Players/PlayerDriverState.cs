@@ -87,6 +87,7 @@ namespace Battle.Test.Scripts.Battle.Players
         public void OnHeadCollision()
         {
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
+            StartTheBall.RestartBallInGame(_playerDriver);
         }
  
         public override string ToString()

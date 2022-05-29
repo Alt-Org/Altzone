@@ -10,12 +10,12 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
-    public class StartTheBall : MonoBehaviour
+    internal class StartTheBall : MonoBehaviour
     {
+        private static StartTheBall _instance;
+
         [Header("Debug Settings"), SerializeField] private float _testDelay;
         [SerializeField] private float _forceSpeedOverride;
-
-        [Header("Live Data"), SerializeField, ReadOnly] private int _startingTeam;
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
@@ -37,7 +37,6 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 _delayToStart = _testDelay;
             }
-            _startingTeam = PhotonBattle.NoTeamValue;
         }
 
         public void StartBallFirstTime()
@@ -47,59 +46,86 @@ namespace Battle.Test.Scripts.Battle.Ball
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
             Assert.IsNotNull(_ballManager, "_ballManager != null");
-            StartCoroutine(StartBallFirstTimeRoutine());
+            StartCoroutine(StartBallRoutine(null));
         }
 
-        public void RestartBallInGame()
+        public static void RestartBallInGame(IPlayerDriver playerToStart)
         {
-            Debug.Log($"{name}");
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<StartTheBall>();
+            }
+            Debug.Log($"{_instance.name} {playerToStart.Position}");
+            _instance.StartCoroutine(_instance.StartBallRoutine(playerToStart));
         }
 
-        private IEnumerator StartBallFirstTimeRoutine()
+        private IEnumerator StartBallRoutine(IPlayerDriver playerToStart)
         {
             _ballManager.SetBallState(BallState.Hidden);
             _ballManager.SetBallPosition(Vector2.zero);
             yield return null;
-            
+
             _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             yield return null;
-            
-            _startingTeam = PhotonBattle.NoTeamValue;
-            var delay = new WaitForSeconds(_delayToStart);
-            var tracker1 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
-            var tracker2 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
-            yield return delay;
 
-            tracker1.StopTracking();
-            tracker2.StopTracking();
-            yield return null;
-
-            float startDistance;
-            float otherDistance;
+            int startingTeam;
+            BattleTeam startTeam;
+            BattleTeam otherTeam;
+            float speed;
+            if (playerToStart != null)
             {
-                var distance1 = Mathf.Sqrt(tracker1.GetSqrDistance);
-                var distance2 = Mathf.Sqrt(tracker2.GetSqrDistance);
-                if (distance1 > distance2)
-                {
-                    _startingTeam = PhotonBattle.TeamBlueValue;
-                    startDistance = distance1;
-                    otherDistance = distance2;
-                }
-                else
-                {
-                    _startingTeam = PhotonBattle.TeamRedValue;
-                    startDistance = distance2;
-                    otherDistance = distance1;
-                }
-            }
-            var startTeam = _gameplayManager.GetBattleTeam(_startingTeam);
-            var otherTeam = _gameplayManager.GetOppositeTeam(_startingTeam);
-            var startAttack = startTeam.Attack;
-            var otherAttack = otherTeam?.Attack ?? 0;
-            Debug.Log(
-                $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {_startingTeam} players {startTeam.PlayerCount}");
+                startingTeam = playerToStart.TeamNumber;
 
-            var speed = startAttack * startDistance - otherAttack * otherDistance;
+                var delay = new WaitForSeconds(_delayToStart);
+                var tracker = _gameplayManager.GetTeamSnapshotTracker(startingTeam);
+                yield return delay;
+
+                startTeam = _gameplayManager.GetBattleTeam(startingTeam);
+                otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
+                
+                var startAttack = startTeam.Attack;
+                var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
+                speed = startAttack * startDistance;
+                Debug.Log(
+                    $"{name} RESTART attack {startAttack} dist {startDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+            }
+            else
+            {
+                var delay = new WaitForSeconds(_delayToStart);
+                var tracker1 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
+                var tracker2 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
+                yield return delay;
+
+                tracker1.StopTracking();
+                tracker2.StopTracking();
+                yield return null;
+
+                float startDistance;
+                float otherDistance;
+                {
+                    var distance1 = Mathf.Sqrt(tracker1.GetSqrDistance);
+                    var distance2 = Mathf.Sqrt(tracker2.GetSqrDistance);
+                    if (distance1 > distance2)
+                    {
+                        startingTeam = PhotonBattle.TeamBlueValue;
+                        startDistance = distance1;
+                        otherDistance = distance2;
+                    }
+                    else
+                    {
+                        startingTeam = PhotonBattle.TeamRedValue;
+                        startDistance = distance2;
+                        otherDistance = distance1;
+                    }
+                }
+                startTeam = _gameplayManager.GetBattleTeam(startingTeam);
+                otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
+                var startAttack = startTeam.Attack;
+                var otherAttack = otherTeam?.Attack ?? 0;
+                speed = startAttack * startDistance - otherAttack * otherDistance;
+                Debug.Log(
+                    $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+            }
 
             Vector2 direction;
             Vector2 ballDropPosition;
@@ -141,7 +167,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                 speed = 1;
                 if (otherTeam == null)
                 {
-                    direction = Vector2.one * (_startingTeam == PhotonBattle.TeamBlueValue ? 1 : -1);
+                    direction = Vector2.one * (startingTeam == PhotonBattle.TeamBlueValue ? 1 : -1);
                 }
                 else
                 {
