@@ -10,29 +10,6 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
-    internal enum BallState : byte
-    {
-        Stopped = 0,
-        NoTeam = 1,
-        RedTeam = 2,
-        BlueTeam = 3,
-        Ghosted = 4,
-        Hidden = 5,
-    }
-
-    internal interface IBallManager
-    {
-        void FixCameraRotation(Camera gameCamera);
-
-        void SetBallPosition(Vector2 position);
-
-        void SetBallSpeed(float speed);
-
-        void SetBallSpeed(float speed, Vector2 direction);
-
-        void SetBallState(BallState ballState);
-    }
-
     internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IPunObservable
     {
         [Serializable]

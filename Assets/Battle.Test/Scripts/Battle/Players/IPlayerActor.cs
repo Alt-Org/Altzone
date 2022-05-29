@@ -12,6 +12,9 @@ namespace Battle.Test.Scripts.Battle.Players
     /// Local player management interface to keep visual player representation synchronized with "player state" managed elsewhere.<br />
     /// Player state can be managed locally and/or remotely.
     /// </summary>
+    /// <remarks>
+    /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Player-Prefab
+    /// </remarks>
     internal interface IPlayerActor
     {
         int MaxPoseIndex { get; }
