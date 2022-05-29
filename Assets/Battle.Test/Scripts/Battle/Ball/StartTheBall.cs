@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Players;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
@@ -11,6 +12,9 @@ namespace Battle.Test.Scripts.Battle.Ball
 {
     public class StartTheBall : MonoBehaviour
     {
+        [Header("Debug Settings"), SerializeField] private float _testDelay;
+        [SerializeField] private float _forceSpeedOverride;
+
         [Header("Live Data"), SerializeField, ReadOnly] private int _startingTeam;
 
         private IGameplayManager _gameplayManager;
@@ -29,6 +33,10 @@ namespace Battle.Test.Scripts.Battle.Ball
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _delayToStart = variables._roomStartDelay;
+            if (_testDelay > 0)
+            {
+                _delayToStart = _testDelay;
+            }
             _startingTeam = PhotonBattle.NoTeamValue;
         }
 
@@ -40,6 +48,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
             Assert.IsNotNull(_ballManager, "_ballManager != null");
             _ballManager.SetBallState(BallState.Hidden);
+            _ballManager.SetBallPosition(Vector2.zero);
             StartCoroutine(StartBallFirstTimeRoutine());
         }
 
@@ -55,9 +64,9 @@ namespace Battle.Test.Scripts.Battle.Ball
             var tracker1 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
             var tracker2 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
             yield return delay;
+
             tracker1.StopTracking();
             tracker2.StopTracking();
-            _ballManager.SetBallState(BallState.NoTeam);
             yield return null;
 
             float startDistance;
@@ -82,17 +91,20 @@ namespace Battle.Test.Scripts.Battle.Ball
             var otherTeam = _gameplayManager.GetOppositeTeam(_startingTeam);
             var startAttack = startTeam.Attack;
             var otherAttack = otherTeam?.Attack ?? 0;
-
             Debug.Log(
-                $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {_startingTeam}");
+                $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {_startingTeam} players {startTeam.PlayerCount}");
+
+            var speed = startAttack * startDistance - otherAttack * otherDistance;
 
             Vector2 direction;
+            Vector2 ballDropPosition;
             var center = Vector3.zero;
             var transform1 = startTeam.FirstPlayer.PlayerTransform;
             var pos1 = transform1.position;
             if (startTeam.PlayerCount == 1)
             {
                 direction = center - pos1;
+                ballDropPosition = pos1;
             }
             else
             {
@@ -103,15 +115,19 @@ namespace Battle.Test.Scripts.Battle.Ball
                 if (dist1 < dist2)
                 {
                     direction = pos1 - pos2;
+                    ballDropPosition = pos1;
                 }
                 else
                 {
                     direction = pos2 - pos1;
+                    ballDropPosition = pos2;
                 }
             }
-
-            var speed = startAttack * startDistance - otherAttack * otherDistance;
-            Debug.Log($"{name} speed {speed} direction {direction.normalized}");
+            Debug.Log($"{name} speed {speed:0.00} direction {direction.normalized} position {ballDropPosition}");
+            if (_forceSpeedOverride > 0)
+            {
+                speed = _forceSpeedOverride;
+            }
             if (speed == 0)
             {
                 // This can happen if
@@ -127,6 +143,21 @@ namespace Battle.Test.Scripts.Battle.Ball
                     direction = Vector2.one * (Time.frameCount % 2 == 0 ? 1 : -1);
                 }
             }
+            // NOTE 1: Actually we would like to be in a state that can not move and can not collide with ball.
+            // - Ghosted can move but not collide - this is thew best option we have now!
+            // - Frozen can not move but can collide
+            // This state is very short as when ball starts moving it will set all players to their proper states in relation with ball position
+            
+            // NOTE 2: Changing ball state changes player states as well - and we have to compensate for that!
+            // - TeamColliderPlayModeTrigger in GameplayManager notices when ball enter team's gameplay area => player becomes Frozen
+            
+            startTeam.SetPlayMode(BattlePlayMode.Ghosted);
+            otherTeam?.SetPlayMode(BattlePlayMode.Ghosted);
+            yield return null;
+
+            ballDropPosition = Vector2.zero;
+            _ballManager.SetBallPosition(ballDropPosition);
+            _ballManager.SetBallState(BallState.NoTeam);
             _ballManager.SetBallSpeed(speed, direction);
         }
     }
