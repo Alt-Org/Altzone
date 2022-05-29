@@ -88,5 +88,10 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
         }
+ 
+        public override string ToString()
+        {
+            return $"{name}";
+        }
     }
 }

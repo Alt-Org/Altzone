@@ -169,5 +169,10 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"{name}";
+        }
     }
 }
