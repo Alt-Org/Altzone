@@ -47,8 +47,6 @@ namespace Battle.Test.Scripts.Battle.Ball
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
             Assert.IsNotNull(_ballManager, "_ballManager != null");
-            _ballManager.SetBallState(BallState.Hidden);
-            _ballManager.SetBallPosition(Vector2.zero);
             StartCoroutine(StartBallFirstTimeRoutine());
         }
 
@@ -59,6 +57,13 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private IEnumerator StartBallFirstTimeRoutine()
         {
+            _ballManager.SetBallState(BallState.Hidden);
+            _ballManager.SetBallPosition(Vector2.zero);
+            yield return null;
+            
+            _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
+            yield return null;
+            
             _startingTeam = PhotonBattle.NoTeamValue;
             var delay = new WaitForSeconds(_delayToStart);
             var tracker1 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);

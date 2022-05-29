@@ -24,6 +24,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         IPlayerDriver LocalPlayer { get; }
 
+        void ForEach(Action<IPlayerDriver> action);
+
         BattleTeam GetBattleTeam(int teamNumber);
 
         BattleTeam GetOppositeTeam(int teamNumber);
@@ -201,6 +203,14 @@ namespace Battle.Test.Scripts.Battle.Players
 
         IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
 
+        void IGameplayManager.ForEach(Action<IPlayerDriver> action)
+        {
+            foreach (var playerDriver in _players)
+            {
+                action(playerDriver);
+            }
+        }
+        
         BattleTeam IGameplayManager.GetBattleTeam(int teamNumber)
         {
             return CreateBattleTeam(teamNumber);
