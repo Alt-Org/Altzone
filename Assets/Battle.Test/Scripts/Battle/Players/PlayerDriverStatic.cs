@@ -92,20 +92,24 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
         {
+            var contactCount = collision.contactCount;
+            var point = collision.GetContact(0).point;
+            // This call can invalidate current collider!
             var hitType = _state.OnShieldCollision();
             var message = $"{hitType} {_playerPosChar}";
-            var point = collision.GetContact(0).point;
             ScoreFlash.Push(message, point);
-            Debug.Log($"{hitType} {name} {component.name} contacts {collision.contactCount} {point}");
+            Debug.Log($"{hitType} {name} {component.name} contacts {contactCount} {point}");
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
         {
+            var contactCount = collision.contactCount;
+            var point = collision.GetContact(0).point;
+            // This call can invalidate current collider!
             _state.OnHeadCollision();
             var message = $"HEAD {_playerPosChar}";
-            var point = collision.GetContact(0).point;
             ScoreFlash.Push(message, point);
-            Debug.Log($"HEAD {name} contacts {collision.contactCount} {point}");
+            Debug.Log($"HEAD {name} contacts {contactCount} {point}");
         }
 
         #endregion
