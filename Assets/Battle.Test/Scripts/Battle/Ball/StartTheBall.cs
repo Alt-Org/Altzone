@@ -29,7 +29,6 @@ namespace Battle.Test.Scripts.Battle.Ball
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            _gameplayManager = GameplayManager.Get();
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _delayToStart = variables._roomStartDelay;
@@ -41,10 +40,10 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         public void StartBallFirstTime()
         {
+            Debug.Log($"{name} delayToStart {_delayToStart}");
+            _gameplayManager = GameplayManager.Get();
+            Assert.IsNotNull(_gameplayManager, "_gameplayManager != null");
             _ballManager = BallManager.Get();
-            Debug.Log($"{name} {_ballManager} delayToStart {_delayToStart}");
-            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
-            Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
             Assert.IsNotNull(_ballManager, "_ballManager != null");
             StartCoroutine(StartBallRoutine(null));
         }
@@ -55,12 +54,16 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 _instance = FindObjectOfType<StartTheBall>();
             }
-            Debug.Log($"{_instance.name} {playerToStart.Position}");
+            Debug.Log($"{_instance.name} delayToStart {_instance._delayToStart} player pos  {playerToStart.Position}");
             _instance.StartCoroutine(_instance.StartBallRoutine(playerToStart));
         }
 
         private IEnumerator StartBallRoutine(IPlayerDriver playerToStart)
         {
+            print("~~");
+            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
+            Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
+
             _ballManager.SetBallState(BallState.Hidden);
             _ballManager.SetBallPosition(Vector2.zero);
             yield return null;
@@ -181,6 +184,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballManager.SetBallPosition(ballDropPosition);
             _ballManager.SetBallState(BallState.NoTeam);
             _ballManager.SetBallSpeed(speed, direction);
+            print("~~");
         }
     }
 }

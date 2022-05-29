@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle.Ball;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Unity;
@@ -244,6 +245,15 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
+        }
+
+        void IPlayerDriver.StopAndRestartBall()
+        {
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
+            StartTheBall.RestartBallInGame(this);
         }
 
         #endregion

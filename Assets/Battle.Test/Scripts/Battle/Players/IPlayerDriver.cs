@@ -48,6 +48,8 @@ namespace Battle.Test.Scripts.Battle.Players
         void SetShieldResistance(int resistance);
 
         void SetStunned(float duration);
+
+        void StopAndRestartBall();
     }
 
     /// <summary>

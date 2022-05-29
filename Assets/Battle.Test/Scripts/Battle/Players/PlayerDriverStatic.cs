@@ -3,6 +3,8 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle.Ball;
+using Photon.Pun;
 using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
@@ -174,6 +176,15 @@ namespace Battle.Test.Scripts.Battle.Players
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+
+        void IPlayerDriver.StopAndRestartBall()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            StartTheBall.RestartBallInGame(this);
         }
 
         #endregion
