@@ -55,7 +55,13 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         public int Attack => FirstPlayer.CharacterModel.Attack + SecondPlayer?.CharacterModel.Attack ?? 0;
-        
+
+        public void SetPlayMode(BattlePlayMode playMode)
+        {
+            FirstPlayer.SetPlayMode(playMode);
+            SecondPlayer?.SetPlayMode(playMode);
+        }
+
         public Transform SafeTransform(IPlayerDriver player)
         {
             Assert.IsTrue(player == FirstPlayer || player == SecondPlayer, "player == FirstPlayer || player == SecondPlayer");
