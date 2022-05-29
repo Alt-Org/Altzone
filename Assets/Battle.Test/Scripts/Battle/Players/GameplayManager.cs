@@ -23,6 +23,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         IPlayerDriver LocalPlayer { get; }
 
+        int GetStartingTeamSnapshot { get; }
+        
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 
         void RegisterPlayer(IPlayerDriver playerDriver);
@@ -103,11 +105,18 @@ namespace Battle.Test.Scripts.Battle.Players
             _teamRedPlayModeTrigger.TeamMembers = _teamRed;
         }
 
+        private int GetStartingTeamSnapshot()
+        {
+            return 1;
+        }
+        
         #region IGameplayManager
 
         int IGameplayManager.PlayerCount => _players.Count;
 
         IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
+
+        int IGameplayManager.GetStartingTeamSnapshot => GetStartingTeamSnapshot();
 
         IPlayerDriver IGameplayManager.GetPlayerByActorNumber(int actorNumber)
         {
@@ -120,6 +129,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
+            // Publish PlayerJoined first, then TeamCreated
             this.Publish(new PlayerJoined(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {
@@ -162,6 +172,31 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdateDebugPlayerList();
         }
 
+        void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver)
+        {
+            Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
+            _players.Remove(playerDriver);
+            // Publish events in reverse order: TeamBroken first, then PlayerLeft
+            if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
+            {
+                _teamBlue.Remove(playerDriver);
+                if (_teamBlue.Count == 1)
+                {
+                    this.Publish(new TeamBroken(_teamBlue[0]));
+                }
+            }
+            else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
+            {
+                _teamRed.Remove(playerDriver);
+                if (_teamRed.Count == 1)
+                {
+                    this.Publish(new TeamBroken(_teamRed[0]));
+                }
+            }
+            this.Publish(new PlayerLeft(playerDriver));
+            UpdateDebugPlayerList();
+        }
+
         private static void CheckLocalPlayerSettings(Camera gameCamera, IPlayerDriver playerDriver)
         {
             var gameBackground = Context.GetGameBackground;
@@ -194,30 +229,6 @@ namespace Battle.Test.Scripts.Battle.Players
                 // Separate sprites for each team gameplay area - these might not be visible in final game
                 // - see Battle.Scripts.Room.RoomSetup.SetupLocalPlayer() how this is done in Altzone project.
             }
-        }
-
-        void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver)
-        {
-            Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
-            _players.Remove(playerDriver);
-            this.Publish(new PlayerLeft(playerDriver));
-            if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
-            {
-                _teamBlue.Remove(playerDriver);
-                if (_teamBlue.Count == 1)
-                {
-                    this.Publish(new TeamBroken(_teamBlue[0]));
-                }
-            }
-            else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
-            {
-                _teamRed.Remove(playerDriver);
-                if (_teamRed.Count == 1)
-                {
-                    this.Publish(new TeamBroken(_teamRed[0]));
-                }
-            }
-            UpdateDebugPlayerList();
         }
 
         #endregion
