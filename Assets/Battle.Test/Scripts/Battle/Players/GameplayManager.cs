@@ -11,7 +11,6 @@ using Battle.Test.Scripts.Battle.Ball;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Random = UnityEngine.Random;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -34,6 +33,20 @@ namespace Battle.Test.Scripts.Battle.Players
         void UnregisterPlayer(IPlayerDriver playerDriver);
     }
 
+    internal class BattleTeam
+    {
+        public readonly int TeamNumber;
+        public readonly IPlayerDriver FirstPlayer;
+        public readonly IPlayerDriver SecondPlayer;
+
+        public BattleTeam(int teamNumber, IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
+        {
+            TeamNumber = teamNumber;
+            FirstPlayer = firstPlayer;
+            SecondPlayer = secondPlayer;
+        }
+    }
+
     internal class PlayerJoined
     {
         public readonly IPlayerDriver Player;
@@ -53,13 +66,11 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class TeamCreated
     {
-        public readonly IPlayerDriver FirstPlayer;
-        public readonly IPlayerDriver SecondPlayer;
+        public readonly BattleTeam BattleTeam;
 
-        public TeamCreated(IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
+        public TeamCreated(int teamNumber, IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
         {
-            FirstPlayer = firstPlayer;
-            SecondPlayer = secondPlayer;
+            BattleTeam = new BattleTeam(teamNumber, firstPlayer, secondPlayer);
         }
     }
 
@@ -112,9 +123,38 @@ namespace Battle.Test.Scripts.Battle.Players
             StopAllCoroutines();
         }
 
+        private BattleTeam GetBattleTeam(int teamNumber)
+        {
+            if (teamNumber == PhotonBattle.TeamBlueValue)
+            {
+                switch (_teamBlue.Count)
+                {
+                    case 0:
+                        return new BattleTeam(teamNumber, null, null);
+                    case 1:
+                        return new BattleTeam(teamNumber, _teamBlue[0], null);
+                    case 2:
+                        return new BattleTeam(teamNumber, _teamBlue[0], _teamBlue[1]);
+                }
+            }
+            if (teamNumber == PhotonBattle.TeamRedValue)
+            {
+                switch (_teamRed.Count)
+                {
+                    case 0:
+                        return new BattleTeam(teamNumber, null, null);
+                    case 1:
+                        return new BattleTeam(teamNumber, _teamRed[0], null);
+                    case 2:
+                        return new BattleTeam(teamNumber, _teamRed[0], _teamRed[1]);
+                }
+            }
+            return null;
+        }
+
         private ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber)
         {
-            var tracker = new TeamSnapshotTracker(this, teamNumber);
+            var tracker = new TeamSnapshotTracker(GetBattleTeam(teamNumber));
             StartCoroutine(tracker.TrackTheTeam());
             return tracker;
         }
@@ -150,7 +190,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 if (_teamBlue.Count == 2)
                 {
                     _teamBlue.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
-                    this.Publish(new TeamCreated(_teamBlue[0], _teamBlue[1]));
+                    this.Publish(new TeamCreated(PhotonBattle.TeamBlueValue, _teamBlue[0], _teamBlue[1]));
                 }
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
@@ -160,7 +200,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 if (_teamRed.Count == 2)
                 {
                     _teamRed.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
-                    this.Publish(new TeamCreated(_teamRed[0], _teamRed[1]));
+                    this.Publish(new TeamCreated(PhotonBattle.TeamRedValue, _teamRed[0], _teamRed[1]));
                 }
             }
             else
@@ -260,46 +300,71 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal interface ITeamSnapshotTracker
     {
-        float GetDistance { get; }
+        float GetSqrDistance { get; }
 
         public void StopTracking();
     }
 
     internal class TeamSnapshotTracker : ITeamSnapshotTracker
     {
-        public float GetDistance => _distance;
+        public float GetSqrDistance => _sqrSqrDistance;
 
-        private readonly IGameplayManager _gameplayManager;
         private readonly int _teamNumber;
+        private readonly Transform _player1;
+        private readonly Transform _player2;
 
         private bool _isStopped;
-        private float _distance;
+        private float _sqrSqrDistance;
+        private float _prevSqrSqrDistance;
 
-        public TeamSnapshotTracker(IGameplayManager gameplayManager, int teamNumber)
+        public TeamSnapshotTracker(BattleTeam battleTeam)
         {
-            _gameplayManager = gameplayManager;
-            _teamNumber = teamNumber;
-            Debug.Log($"team {_teamNumber}");
+            _teamNumber = battleTeam.TeamNumber;
+            var firstPlayer = battleTeam.FirstPlayer;
+            _player1 = ((MonoBehaviour)firstPlayer).GetComponent<Transform>();
+            var secondPlayer = battleTeam.SecondPlayer;
+            if (secondPlayer != null)
+            {
+                _player2 = ((MonoBehaviour)secondPlayer).GetComponent<Transform>();
+            }
+            else
+            {
+                var playArea = Context.GetPlayerPlayArea;
+                switch (battleTeam.TeamNumber)
+                {
+                    case PhotonBattle.TeamBlueValue:
+                        _player2 = playArea.BlueTeamMiddlePosition;
+                        break;
+                    case PhotonBattle.TeamRedValue:
+                        _player2 = playArea.RedTeamMiddlePosition;
+                        break;
+                    default:
+                        _player2 = _player1;
+                        break;
+                }
+            }
+            Debug.Log($"team {_teamNumber} p1 {_player1.position} p2 {_player2.position}");
         }
 
         public void StopTracking()
         {
             _isStopped = true;
             CalculateDistance();
-            Debug.Log($"team {_teamNumber} distance {_distance:0.00}");
+            Debug.Log($"team {_teamNumber} distance {_sqrSqrDistance:0.00}");
         }
 
         private void CalculateDistance()
         {
-            _distance = Random.Range(4f, 6f);
+            _sqrSqrDistance = Mathf.Abs((_player1.position - _player2.position).sqrMagnitude);
         }
-        
+
         public IEnumerator TrackTheTeam()
         {
             var delay = new WaitForSeconds(0.1f);
             const float debugInterval = 0.5f;
             var debugLogTIme = Time.time + debugInterval;
-            _distance = 0;
+            _sqrSqrDistance = 0;
+            _prevSqrSqrDistance = _sqrSqrDistance;
             while (!_isStopped)
             {
                 yield return delay;
@@ -308,10 +373,11 @@ namespace Battle.Test.Scripts.Battle.Players
                     yield break;
                 }
                 CalculateDistance();
-                if (Time.time > debugLogTIme)
+                if (Time.time > debugLogTIme && _prevSqrSqrDistance != _sqrSqrDistance)
                 {
                     debugLogTIme = Time.time + debugInterval;
-                    Debug.Log($"team {_teamNumber} distance {_distance:0.00}");
+                    _prevSqrSqrDistance = _sqrSqrDistance;
+                    Debug.Log($"team {_teamNumber} distance {_sqrSqrDistance:0.00}");
                 }
             }
         }

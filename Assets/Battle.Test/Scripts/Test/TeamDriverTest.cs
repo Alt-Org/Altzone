@@ -30,16 +30,17 @@ namespace Battle.Test.Scripts.Test
 
         private void OnTeamCreated(TeamCreated data)
         {
-            Debug.Log($"first {data.FirstPlayer.NickName} second {data.SecondPlayer.NickName}");
-            if (data.FirstPlayer.TeamNumber == PhotonBattle.TeamBlueValue)
+            var team = data.BattleTeam;
+            Debug.Log($"first {team.FirstPlayer.NickName} second {team.SecondPlayer.NickName}");
+            if (team.FirstPlayer.TeamNumber == PhotonBattle.TeamBlueValue)
             {
-                _teamBlue._player1 = data.FirstPlayer as MonoBehaviour;
-                _teamBlue._player2 = data.SecondPlayer as MonoBehaviour;
+                _teamBlue._player1 = team.FirstPlayer as MonoBehaviour;
+                _teamBlue._player2 = team.SecondPlayer as MonoBehaviour;
             }
-            else if (data.FirstPlayer.TeamNumber == PhotonBattle.TeamRedValue)
+            else if (team.FirstPlayer.TeamNumber == PhotonBattle.TeamRedValue)
             {
-                _teamRed._player1 = data.FirstPlayer as MonoBehaviour;
-                _teamRed._player2 = data.SecondPlayer as MonoBehaviour;
+                _teamRed._player1 = team.FirstPlayer as MonoBehaviour;
+                _teamRed._player2 = team.SecondPlayer as MonoBehaviour;
             }
         }
 

@@ -28,7 +28,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             _gameplayManager = GameplayManager.Get();
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
-            _delayToStart = variables._ballRestartDelay;
+            _delayToStart = variables._roomStartDelay;
             _startingTeam = PhotonBattle.NoTeamValue;
         }
 
@@ -57,8 +57,8 @@ namespace Battle.Test.Scripts.Battle.Ball
             yield return delay;
             tracker1.StopTracking();
             tracker2.StopTracking();
-            var distance1= tracker1.GetDistance;
-            var distance2= tracker2.GetDistance;
+            var distance1= tracker1.GetSqrDistance;
+            var distance2= tracker2.GetSqrDistance;
             _startingTeam = distance1 > distance2 ? PhotonBattle.TeamBlueValue : PhotonBattle.TeamRedValue;
             Debug.Log($"{name} dist1 {distance1:0.00} dist2 {distance2:0.00} startingTeam {_startingTeam}");
             _ballManager.SetBallState(BallState.NoTeam);
