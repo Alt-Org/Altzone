@@ -240,7 +240,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private IEnumerator BallVelocityTracker()
         {
-            Debug.Log($"{name} velocity {_currentDebugVelocity} <- {_rigidbody.velocity}");
+            Debug.Log($"{name} speed {_ballRequiredMoveSpeed:0.00} velocity {_currentDebugVelocity} <- {_rigidbody.velocity}");
             _currentDebugVelocity = _rigidbody.velocity;
             for (;;)
             {
@@ -254,7 +254,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                     {
                         var velocityChange = -(1 - prevSqr / curSqr) * 100;
                         Debug.Log(
-                            $"{name} velocity {_currentDebugVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
+                            $"{name} speed {_ballRequiredMoveSpeed:0.00} velocity {_currentDebugVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
                     }
                     _currentDebugVelocity = velocity;
                 }
