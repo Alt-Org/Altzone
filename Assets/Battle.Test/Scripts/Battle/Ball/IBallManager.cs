@@ -13,7 +13,7 @@ namespace Battle.Test.Scripts.Battle.Ball
     }
 
     /// <summary>
-    /// 
+    /// External ball management interface.
     /// </summary>
     /// <remarks>
     /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Pallo-ja-sen-liikkuminen
