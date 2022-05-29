@@ -60,17 +60,15 @@ namespace Battle.Test.Scripts.Battle.Ball
             var distance1 = Mathf.Sqrt(tracker1.GetSqrDistance);
             var distance2 = Mathf.Sqrt(tracker2.GetSqrDistance);
             _startingTeam = distance1 > distance2 ? PhotonBattle.TeamBlueValue : PhotonBattle.TeamRedValue;
-            var team = _gameplayManager.GetBattleTeam(_startingTeam);
-            var playerCount = team.PlayerCount;
+            var startingTeam = _gameplayManager.GetBattleTeam(_startingTeam);
+            var playerCount = startingTeam.PlayerCount;
             Debug.Log($"{name} dist1 {distance1:0.00} dist2 {distance2:0.00} startingTeam {_startingTeam} players {playerCount}");
             _ballManager.SetBallState(BallState.NoTeam);
             yield return null;
             
-            float speed = 1f;
             Vector2 direction;
-
             var center = Vector3.zero;
-            var transform1 = team.FirstPlayer.PlayerTransform;
+            var transform1 = startingTeam.FirstPlayer.PlayerTransform;
             var pos1 = transform1.position;
             if (playerCount == 1)
             {
@@ -78,7 +76,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
             else
             {
-                var transform2 = team.SecondPlayer.PlayerTransform;
+                var transform2 = startingTeam.SecondPlayer.PlayerTransform;
                 var pos2 = transform2.position;
                 var dist1 = Mathf.Abs((pos1 - center).sqrMagnitude);
                 var dist2 = Mathf.Abs((pos2 - center).sqrMagnitude);
@@ -91,7 +89,22 @@ namespace Battle.Test.Scripts.Battle.Ball
                     direction = pos2 - pos1;
                 }
             }
+
+            var attack1 = startingTeam.Attack;
+            var otherTeam = _gameplayManager.GetOppositeTeam(_startingTeam);
+            var attack2 = otherTeam?.Attack ?? 0;
+            
+            var speed = attack1 * distance1 - attack2 * distance2;
+            Debug.Log($"{name} attack1 {attack1} distance1 {distance1:0.00} - attack2 {attack2} distance2 {distance2:0.00}");
             Debug.Log($"{name} speed {speed} direction {direction.normalized}");
+            if (speed == 0)
+            {
+                // This can happen if
+                // - both teams has the same attack value and
+                // - no player has moved (thus distances can be exactly the same for both teams)
+                speed = 1;
+                direction = Vector2.one * (Time.frameCount % 2 == 0 ? 1 : -1);
+            }
             _ballManager.SetBallSpeed(speed, direction);
         }
     }

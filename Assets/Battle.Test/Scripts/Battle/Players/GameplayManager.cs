@@ -26,6 +26,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         BattleTeam GetBattleTeam(int teamNumber);
 
+        BattleTeam GetOppositeTeam(int teamNumber);
+
         ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber);
 
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
@@ -52,6 +54,8 @@ namespace Battle.Test.Scripts.Battle.Players
             PlayerCount = SecondPlayer == null ? 1 : 2;
         }
 
+        public int Attack => FirstPlayer.CharacterModel.Attack + SecondPlayer?.CharacterModel.Attack ?? 0;
+        
         public Transform SafeTransform(IPlayerDriver player)
         {
             Assert.IsTrue(player == FirstPlayer || player == SecondPlayer, "player == FirstPlayer || player == SecondPlayer");
@@ -154,8 +158,6 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 switch (_teamBlue.Count)
                 {
-                    case 0:
-                        return new BattleTeam(teamNumber, null, null);
                     case 1:
                         return new BattleTeam(teamNumber, _teamBlue[0], null);
                     case 2:
@@ -166,8 +168,6 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 switch (_teamRed.Count)
                 {
-                    case 0:
-                        return new BattleTeam(teamNumber, null, null);
                     case 1:
                         return new BattleTeam(teamNumber, _teamRed[0], null);
                     case 2:
@@ -179,15 +179,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber)
         {
-            if (teamNumber == PhotonBattle.TeamBlueValue && _teamBlue.Count == 0)
+            var team = CreateBattleTeam(teamNumber);
+            if (team == null)
             {
                 return new NullTeamSnapshotTracker();
             }
-            if (teamNumber == PhotonBattle.TeamRedValue && _teamRed.Count == 0)
-            {
-                return new NullTeamSnapshotTracker();
-            }
-            var tracker = new TeamSnapshotTracker(CreateBattleTeam(teamNumber));
+            var tracker = new TeamSnapshotTracker(team);
             StartCoroutine(tracker.TrackTheTeam());
             return tracker;
         }
@@ -201,6 +198,11 @@ namespace Battle.Test.Scripts.Battle.Players
         BattleTeam IGameplayManager.GetBattleTeam(int teamNumber)
         {
             return CreateBattleTeam(teamNumber);
+        }
+
+        BattleTeam IGameplayManager.GetOppositeTeam(int teamNumber)
+        {
+            return CreateBattleTeam(PhotonBattle.GetOppositeTeamNumber(teamNumber));
         }
 
         ITeamSnapshotTracker IGameplayManager.GetTeamSnapshotTracker(int teamNumber)

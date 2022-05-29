@@ -130,7 +130,7 @@ namespace Altzone.Scripts.Battle
 
         public static int GetOppositeTeamNumber(int teamNumber)
         {
-            return teamNumber == TeamBlueValue ? TeamRedValue : TeamBlueValue;
+            return teamNumber == TeamBlueValue ? TeamRedValue : teamNumber == TeamRedValue ? TeamBlueValue : NoTeamValue;
         }
 
         public static int GetTeamIndex(int teamNumber)
