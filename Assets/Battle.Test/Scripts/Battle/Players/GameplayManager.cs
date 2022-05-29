@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +11,7 @@ using Battle.Test.Scripts.Battle.Ball;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
@@ -23,8 +25,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         IPlayerDriver LocalPlayer { get; }
 
-        int GetStartingTeamSnapshot { get; }
-        
+        ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber);
+
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 
         void RegisterPlayer(IPlayerDriver playerDriver);
@@ -105,18 +107,28 @@ namespace Battle.Test.Scripts.Battle.Players
             _teamRedPlayModeTrigger.TeamMembers = _teamRed;
         }
 
-        private int GetStartingTeamSnapshot()
+        private void OnDestroy()
         {
-            return 1;
+            StopAllCoroutines();
         }
-        
+
+        private ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber)
+        {
+            var tracker = new TeamSnapshotTracker(this, teamNumber);
+            StartCoroutine(tracker.TrackTheTeam());
+            return tracker;
+        }
+
         #region IGameplayManager
 
         int IGameplayManager.PlayerCount => _players.Count;
 
         IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
 
-        int IGameplayManager.GetStartingTeamSnapshot => GetStartingTeamSnapshot();
+        ITeamSnapshotTracker IGameplayManager.GetTeamSnapshotTracker(int teamNumber)
+        {
+            return GetTeamSnapshotTracker(teamNumber);
+        }
 
         IPlayerDriver IGameplayManager.GetPlayerByActorNumber(int actorNumber)
         {
@@ -244,6 +256,65 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
+    }
+
+    internal interface ITeamSnapshotTracker
+    {
+        float GetDistance { get; }
+
+        public void StopTracking();
+    }
+
+    internal class TeamSnapshotTracker : ITeamSnapshotTracker
+    {
+        public float GetDistance => _distance;
+
+        private readonly IGameplayManager _gameplayManager;
+        private readonly int _teamNumber;
+
+        private bool _isStopped;
+        private float _distance;
+
+        public TeamSnapshotTracker(IGameplayManager gameplayManager, int teamNumber)
+        {
+            _gameplayManager = gameplayManager;
+            _teamNumber = teamNumber;
+            Debug.Log($"team {_teamNumber}");
+        }
+
+        public void StopTracking()
+        {
+            _isStopped = true;
+            CalculateDistance();
+            Debug.Log($"team {_teamNumber} distance {_distance:0.00}");
+        }
+
+        private void CalculateDistance()
+        {
+            _distance = Random.Range(4f, 6f);
+        }
+        
+        public IEnumerator TrackTheTeam()
+        {
+            var delay = new WaitForSeconds(0.1f);
+            const float debugInterval = 0.5f;
+            var debugLogTIme = Time.time + debugInterval;
+            _distance = 0;
+            while (!_isStopped)
+            {
+                yield return delay;
+                if (_isStopped)
+                {
+                    yield break;
+                }
+                CalculateDistance();
+                if (Time.time > debugLogTIme)
+                {
+                    debugLogTIme = Time.time + debugInterval;
+                    Debug.Log($"team {_teamNumber} distance {_distance:0.00}");
+                }
+            }
+        }
     }
 
     internal class TeamColliderPlayModeTrigger : MonoBehaviour

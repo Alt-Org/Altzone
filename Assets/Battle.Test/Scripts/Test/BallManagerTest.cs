@@ -135,7 +135,7 @@ namespace Battle.Test.Scripts.Test
             }
             if (_isStartTheBallStart)
             {
-                _startTheBall.StartBall1();
+                _startTheBall.StartBallFirstTime();
                 return;
             }
             _setBallState = true;
