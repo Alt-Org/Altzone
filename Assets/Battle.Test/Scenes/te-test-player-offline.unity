@@ -207,7 +207,7 @@ PrefabInstance:
     - target: {fileID: 2505763150791101619, guid: 87f5af0e91135264480fffdd50b52a0b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2505763150791101619, guid: 87f5af0e91135264480fffdd50b52a0b,
         type: 3}
@@ -566,6 +566,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
+      propertyPath: _settings._playerPos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._teamNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
       propertyPath: _isConnectInputHandler
       value: 1
       objectReference: {fileID: 0}
@@ -610,6 +620,136 @@ MonoBehaviour:
   _isPlayerUpsideDown: 0
   _isLocal: 0
   _nickname: 
+--- !u!1001 &818494351
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerDriver-P2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _playerPos
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _teamNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _actorNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _playerMainSkill
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._isLocal
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._nickName
+      value: Player-2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerPos
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._teamNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _isConnectInputHandler
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerPrefab
+      value: 
+      objectReference: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
+        type: 3}
+    - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: _settings._playerMainSkill
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 73c08388579938a44af0f580ccb26ddf, type: 3}
 --- !u!850595691 &938297618
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -756,7 +896,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
@@ -812,6 +952,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerDriver-P4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
@@ -886,7 +1031,7 @@ PrefabInstance:
     - target: {fileID: 4536664284718766771, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4536664284718766771, guid: 6753bd84da3a0b24e9408c9ea15d1599,
         type: 3}
@@ -1033,7 +1178,7 @@ PrefabInstance:
     - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904770, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
@@ -1089,6 +1234,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerDriver-P3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719212202528904772, guid: 73c08388579938a44af0f580ccb26ddf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2719212202528904773, guid: 73c08388579938a44af0f580ccb26ddf,
         type: 3}
