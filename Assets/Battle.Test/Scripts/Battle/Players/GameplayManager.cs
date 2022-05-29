@@ -54,7 +54,7 @@ namespace Battle.Test.Scripts.Battle.Players
             PlayerCount = SecondPlayer == null ? 1 : 2;
         }
 
-        public int Attack => FirstPlayer.CharacterModel.Attack + SecondPlayer?.CharacterModel.Attack ?? 0;
+        public int Attack => FirstPlayer.CharacterModel.Attack + (SecondPlayer?.CharacterModel.Attack ?? 0);
 
         public void SetPlayMode(BattlePlayMode playMode)
         {
