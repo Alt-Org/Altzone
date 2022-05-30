@@ -164,7 +164,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var skillColor = _skillColors[(int)model.MainDefence];
             _avatarPose = new PoseManager(_settings._avatar.Avatars);
             // Last pose is reserved for disconnected pose
-            _maxPoseIndex = _settings._avatar.Avatars.Length - 1;
+            _maxPoseIndex = _settings._avatar.Avatars.Length - 2;
             _disconnectedPoseIndex = _maxPoseIndex + 1;
             _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _maxPoseIndex);
             _shieldPose = new PoseManager(_settings._shield.Shields);

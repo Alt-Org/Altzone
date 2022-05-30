@@ -141,6 +141,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private TeamColliderPlayModeTrigger _teamBluePlayModeTrigger;
         private TeamColliderPlayModeTrigger _teamRedPlayModeTrigger;
+        private bool _isApplicationQuitting;
 
         private void Awake()
         {
@@ -150,6 +151,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
+            Application.quitting += () => _isApplicationQuitting = true;
             var playArea = Context.GetPlayerPlayArea;
             _teamBluePlayModeTrigger = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
             _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
@@ -291,6 +293,10 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot)
         {
+            if (_isApplicationQuitting)
+            {
+                return;
+            }
             Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
             _players.Remove(playerDriver);
             if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
@@ -298,7 +304,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 deletePreviousInstance.SetActive(false);
                 Destroy(deletePreviousInstance);
             }
-            _abandonedPlayersByPlayerPos[playerDriver.ActorNumber] = playerInstanceRoot;
+            _abandonedPlayersByPlayerPos[playerDriver.PlayerPos] = playerInstanceRoot;
             
             // Publish events in reverse order: TeamBroken first, then PlayerLeft
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
