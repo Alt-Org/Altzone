@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Photon.Pun;
 using Photon.Realtime;
+using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -19,7 +20,11 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
-            [Min(0)] public float _timeout;
+            const string Tooltip1 = "Polling delay for Photon Custom Player propeties update";
+            const string Tooltip2 = "Timeout to find free player position quickly";
+
+            [Min(0.1f), Tooltip(Tooltip1)] public float _waitForPlayerPropertiesToUpdate = 1f;
+            [Min(1), Tooltip(Tooltip2)] public float _timeoutFastWait = 3f;
             [Range(1, 4)] public int _playerPos = 1;
             public bool _isAllocateByTeams;
             public bool _isRandomSKill;
@@ -87,10 +92,10 @@ namespace Battle.Test.Scripts.Battle.Players
         private void OnLocalPlayerReady()
         {
             // Not important but give one frame slack for local player instantiation
-            StartCoroutine(OnLocalPlayerReadyDelay());
+            StartCoroutine(OnLocalPlayerReadyForPlay());
         }
 
-        private IEnumerator OnLocalPlayerReadyDelay()
+        private IEnumerator OnLocalPlayerReadyForPlay()
         {
             _isStopListeningForPlayerProperties = true;
             yield return null;
@@ -100,13 +105,13 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
 
-            var waitForPlayerPropertiesToUpdate = new WaitForSeconds(0.5f);
+            var delay = new WaitForSeconds(_debug._waitForPlayerPropertiesToUpdate);
             if (PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
             {
                 SetDebugPlayer(player);
-                yield return waitForPlayerPropertiesToUpdate;
+                yield return delay;
             }
-            var timeoutTime = Time.time + Mathf.Max(3f, _debug._timeout);
+            var timeoutTime = Time.time + _debug._timeoutFastWait;
             while (!PhotonBattle.IsPlayerPosAvailable(player))
             {
                 if (!PhotonNetwork.InRoom)
@@ -116,11 +121,12 @@ namespace Battle.Test.Scripts.Battle.Players
                 if (Time.time > timeoutTime)
                 {
                     Debug.Log($"No free position found {player.GetDebugLabel()}");
+                    ScoreFlash.Push("NO FREE PLAYER POSITION FOUND");
                     yield break;
                 }
                 Debug.Log($"My player position was taken {player.GetDebugLabel()}");
                 SetDebugPlayer(player);
-                yield return waitForPlayerPropertiesToUpdate;
+                yield return delay;
             }
             PlayerDriverPhoton.InstantiateLocalPlayer(player, _photonPrefab.name);
             enabled = false;
