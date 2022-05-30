@@ -114,7 +114,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
 
             var playerActor = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            var playerTag = $"{playerPos}:{playerDriver.NickName}";
+            var playerTag = $"{playerPos}:{playerDriver.NickName}:{PlayerPosChars[playerPos]}";
             playerActor.name = playerActor.name.Replace("Clone", playerTag);
             playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
