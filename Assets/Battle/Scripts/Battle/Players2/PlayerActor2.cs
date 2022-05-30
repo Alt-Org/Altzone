@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players2
     internal class PlayerActor2 : PlayerActor, IPlayerActor
     {
         private const float UnReachableDistance = 100f;
-        
+
         [Header("Settings"), SerializeField] private BattlePlayMode _startPlayMode;
         [SerializeField] private SpriteRenderer _highlightSprite;
         [SerializeField] private SpriteRenderer _stateSprite;
@@ -46,6 +46,7 @@ namespace Battle.Scripts.Battle.Players2
         private bool _isStunned;
         private float _playerShieldHitStunDuration;
         private int _playerResistance;
+        private int _playerResitanceOnStart;
         private int _playerAttack;
 
         public void SetPhotonView(PhotonView photonView) => _photonView = photonView;
@@ -54,7 +55,7 @@ namespace Battle.Scripts.Battle.Players2
             $"{_state._currentMode} {((PlayerShield)_shield).StateString} d={_distanceMeter.SqrDistance:0}\r\n{_playerMovement.StateString}";
 
         private void Awake()
-        {
+        {   
             var player = _photonView.Owner;
             Debug.Log($"prefab {name} {_photonView}");
             Debug.Log($"{player.GetDebugLabel()}");
@@ -91,7 +92,10 @@ namespace Battle.Scripts.Battle.Players2
 
             _playerShieldHitStunDuration = variables._playerShieldHitStunDuration;
             _playerResistance = model.Resistance;
+            _playerResitanceOnStart = model.Resistance;
             _playerAttack = model.Attack;
+
+
 
             // Shield
             _playerShield = isLower
@@ -243,7 +247,7 @@ namespace Battle.Scripts.Battle.Players2
             this.Unsubscribe();
             OnSetPlayMode(BattlePlayMode.Ghosted);
         }
-        
+
         private void OnActiveTeamEvent(BallManager.ActiveTeamEvent data)
         {
             if (data.TeamIndex == PhotonBattle.NoTeamValue)
@@ -346,7 +350,7 @@ namespace Battle.Scripts.Battle.Players2
                     _collider.enabled = true;
                     // This is only setup to work if the player doesn't become ghosted
                     // Ghosted is treated as a higher priority than the other states
-                    if(!_isStunned)
+                    if (!_isStunned)
                     {
                         _playerMovement.SetMovementAllowed();
                     }
@@ -372,7 +376,15 @@ namespace Battle.Scripts.Battle.Players2
             if (_shield.CanRotate)
             {
                 // Check _playerResistance here!
-                _shield.SetRotation(rotationIndex);
+                if (_playerResistance >= 1)
+                {
+                    _playerResistance = _playerResistance - 1;
+                }
+                else if (_playerResistance <= 0)
+                {
+                    _shield.SetRotation(rotationIndex);
+                    _playerResistance = _playerResitanceOnStart;
+                }
             }
             else
             {
