@@ -4,12 +4,17 @@ using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Players;
 using Photon.Pun;
-using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Ball
 {
+    /// <summary>
+    /// Starts the ball into gameplay
+    /// </summary>
+    /// <remarks>
+    /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Pallo-ja-sen-liikkuminen
+    /// </remarks>
     internal class StartTheBall : MonoBehaviour
     {
         private static StartTheBall _instance;
@@ -60,6 +65,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private IEnumerator StartBallRoutine(IPlayerDriver playerToStart)
         {
+            // I must admit that this method is not easiest to write or read afterwards.
             print("~~");
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
@@ -71,111 +77,61 @@ namespace Battle.Test.Scripts.Battle.Ball
             _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             yield return null;
 
-            int startingTeam;
             BattleTeam startTeam;
             BattleTeam otherTeam;
             float speed;
+            var delay = new WaitForSeconds(_delayToStart);
             if (playerToStart != null)
             {
-                startingTeam = playerToStart.TeamNumber;
-
-                var delay = new WaitForSeconds(_delayToStart);
-                var tracker = _gameplayManager.GetTeamSnapshotTracker(startingTeam);
+                var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 yield return delay;
 
+                tracker.StopTracking();
+                yield return null;
+
+                var startingTeam = playerToStart.TeamNumber;
                 startTeam = _gameplayManager.GetBattleTeam(startingTeam);
                 otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
-                
+
                 var startAttack = startTeam.Attack;
                 var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
+                // Official formula for ball speed (continue gameplay)
                 speed = startAttack * startDistance;
                 Debug.Log(
                     $"{name} RESTART attack {startAttack} dist {startDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
             }
             else
             {
-                var delay = new WaitForSeconds(_delayToStart);
-                var tracker1 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
-                var tracker2 = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
+                var blueTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
+                var redTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
                 yield return delay;
 
-                tracker1.StopTracking();
-                tracker2.StopTracking();
+                blueTracker.StopTracking();
+                redTracker.StopTracking();
                 yield return null;
 
-                float startDistance;
-                float otherDistance;
-                {
-                    var distance1 = Mathf.Sqrt(tracker1.GetSqrDistance);
-                    var distance2 = Mathf.Sqrt(tracker2.GetSqrDistance);
-                    if (distance1 > distance2)
-                    {
-                        startingTeam = PhotonBattle.TeamBlueValue;
-                        startDistance = distance1;
-                        otherDistance = distance2;
-                    }
-                    else
-                    {
-                        startingTeam = PhotonBattle.TeamRedValue;
-                        startDistance = distance2;
-                        otherDistance = distance1;
-                    }
-                }
+                var startingTeam = GetStatingTeamByDistance(blueTracker, redTracker, out var startDistance, out var otherDistance);
                 startTeam = _gameplayManager.GetBattleTeam(startingTeam);
                 otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
+
                 var startAttack = startTeam.Attack;
                 var otherAttack = otherTeam?.Attack ?? 0;
+                // Official formula for ball speed (start gameplay)
                 speed = startAttack * startDistance - otherAttack * otherDistance;
+                if (speed == 0)
+                {
+                    speed = startAttack * startDistance;
+                }
                 Debug.Log(
                     $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
             }
 
-            Vector2 direction;
-            Vector2 ballDropPosition;
-            var center = Vector3.zero;
-            var transform1 = startTeam.FirstPlayer.PlayerTransform;
-            var pos1 = transform1.position;
-            if (startTeam.PlayerCount == 1)
-            {
-                direction = center - pos1;
-                ballDropPosition = pos1;
-            }
-            else
-            {
-                var transform2 = startTeam.SecondPlayer.PlayerTransform;
-                var pos2 = transform2.position;
-                var dist1 = Mathf.Abs((pos1 - center).sqrMagnitude);
-                var dist2 = Mathf.Abs((pos2 - center).sqrMagnitude);
-                if (dist1 < dist2)
-                {
-                    direction = pos1 - pos2;
-                    ballDropPosition = pos1;
-                }
-                else
-                {
-                    direction = pos2 - pos1;
-                    ballDropPosition = pos2;
-                }
-            }
+            GetDirectionAndPosition(startTeam, out var direction, out var ballDropPosition);
+
             Debug.Log($"{name} speed {speed:0.00} direction {direction.normalized} position {ballDropPosition}");
             if (_forceSpeedOverride > 0)
             {
                 speed = _forceSpeedOverride;
-            }
-            if (speed == 0)
-            {
-                // This can happen if
-                // - both teams has the same attack value and
-                // - no player has moved (thus distances can be floating point exactly the same for both teams)
-                speed = 1;
-                if (otherTeam == null)
-                {
-                    direction = Vector2.one * (startingTeam == PhotonBattle.TeamBlueValue ? 1 : -1);
-                }
-                else
-                {
-                    direction = Vector2.one * (Time.frameCount % 2 == 0 ? 1 : -1);
-                }
             }
             startTeam.SetPlayMode(BattlePlayMode.SuperGhosted);
             otherTeam?.SetPlayMode(BattlePlayMode.Ghosted);
@@ -185,6 +141,50 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballManager.SetBallState(BallState.NoTeam);
             _ballManager.SetBallSpeed(speed, direction);
             print("~~");
+        }
+
+        private static int GetStatingTeamByDistance(ITeamSnapshotTracker blueTracker, ITeamSnapshotTracker redTracker, out float startDistance,
+            out float otherDistance)
+        {
+            var blueDistance = Mathf.Sqrt(blueTracker.GetSqrDistance);
+            var redDistance = Mathf.Sqrt(redTracker.GetSqrDistance);
+            if (blueDistance < redDistance)
+            {
+                startDistance = redDistance;
+                otherDistance = blueDistance;
+                return PhotonBattle.TeamRedValue;
+            }
+            startDistance = blueDistance;
+            otherDistance = redDistance;
+            return PhotonBattle.TeamBlueValue;
+        }
+
+        private static void GetDirectionAndPosition(BattleTeam startTeam, out Vector2 direction, out Vector2 ballDropPosition)
+        {
+            var center = Vector3.zero;
+
+            var transform1 = startTeam.FirstPlayer.PlayerTransform;
+            var pos1 = transform1.position;
+            if (startTeam.PlayerCount == 1)
+            {
+                direction = center - pos1;
+                ballDropPosition = pos1;
+                return;
+            }
+            var transform2 = startTeam.SecondPlayer.PlayerTransform;
+            var pos2 = transform2.position;
+            var dist1 = Mathf.Abs((pos1 - center).sqrMagnitude);
+            var dist2 = Mathf.Abs((pos2 - center).sqrMagnitude);
+            if (dist1 < dist2)
+            {
+                direction = pos1 - pos2;
+                ballDropPosition = pos1;
+            }
+            else
+            {
+                direction = pos2 - pos1;
+                ballDropPosition = pos2;
+            }
         }
     }
 }
