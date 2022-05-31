@@ -15,12 +15,12 @@ namespace Battle.Test.Scripts.Test
 
         private void OnEnable()
         {
-            SetBallPosition(_rigidbody, _startPosition);
+            SetBallPosition(_rigidbody, _trailRenderer, _startPosition);
             SetBallSpeed(_rigidbody, _speed, _startDirection);
-            StartCoroutine(RandomTeleport(_rigidbody, _teleportDistance));
+            StartCoroutine(RandomTeleport(_rigidbody, _trailRenderer, _teleportDistance));
         }
 
-        private static IEnumerator RandomTeleport(Rigidbody2D rigidbody, float teleportDistance)
+        private static IEnumerator RandomTeleport(Rigidbody2D rigidbody, TrailRenderer trailRenderer, float teleportDistance)
         {
             var delay = new WaitForSeconds(0.5f);
             for (;;)
@@ -37,15 +37,15 @@ namespace Battle.Test.Scripts.Test
                     {
                         position.y -= teleportDistance;
                     }
-                    Debug.Log($"SetBallPosition {rigidbody.position} <- {position}");
-                    SetBallPosition(rigidbody, position);
+                    SetBallPosition(rigidbody, trailRenderer, position);
                 }
                 yield return delay;
             }
         }
 
-        private static void SetBallPosition(Rigidbody2D rigidbody, Vector2 position)
+        private static void SetBallPosition(Rigidbody2D rigidbody, TrailRenderer trailRenderer, Vector2 position)
         {
+            Debug.Log($"{rigidbody.position} <- {position} trail line count #{trailRenderer.positionCount}");
             rigidbody.position = position;
         }
 
