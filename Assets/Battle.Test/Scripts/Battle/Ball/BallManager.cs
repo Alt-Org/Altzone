@@ -131,6 +131,11 @@ namespace Battle.Test.Scripts.Battle.Ball
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
             Debug.Log($"{name}");
             _SetBallState(_ballState);
+            if (_rigidbody.isKinematic != !PhotonNetwork.IsMasterClient)
+            {
+                Debug.Log($"{name} SET isKinematic {_rigidbody.isKinematic} <- {!PhotonNetwork.IsMasterClient}");
+                _rigidbody.isKinematic = !PhotonNetwork.IsMasterClient;
+            }
             if (PhotonNetwork.IsMasterClient)
             {
                 StartCoroutine(OnMasterClientFixedUpdate());
