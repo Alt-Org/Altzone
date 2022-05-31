@@ -43,13 +43,25 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
         }
 
+        private void LoadDependencies()
+        {
+            // If master client is switched during gameplay it might be that StartBallFirstTime and RestartBallInGame
+            // are not called on same instance.
+            if (_gameplayManager == null)
+            {
+                _gameplayManager = GameplayManager.Get();
+                Assert.IsNotNull(_gameplayManager, "_gameplayManager != null");
+            }
+            if (_ballManager == null)
+            {
+                _ballManager = BallManager.Get();
+                Assert.IsNotNull(_ballManager, "_ballManager != null");
+            }
+        }
+        
         public void StartBallFirstTime()
         {
             Debug.Log($"{name} delayToStart {_delayToStart}");
-            _gameplayManager = GameplayManager.Get();
-            Assert.IsNotNull(_gameplayManager, "_gameplayManager != null");
-            _ballManager = BallManager.Get();
-            Assert.IsNotNull(_ballManager, "_ballManager != null");
             StartCoroutine(StartBallRoutine(null));
         }
 
@@ -66,6 +78,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         private IEnumerator StartBallRoutine(IPlayerDriver playerToStart)
         {
             // I must admit that this method is not easiest to write or read afterwards.
+            LoadDependencies();
             print("~~");
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
