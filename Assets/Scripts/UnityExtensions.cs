@@ -93,6 +93,31 @@ public static class UnityExtensions
 
     #endregion
 
+    #region TrailRenderer
+
+    public static void ResetTrailRendererAfterTeleport(this TrailRenderer trailRenderer, MonoBehaviour host, int skipFrames = 2)
+    {
+        IEnumerator DelayedExecute()
+        {
+            var trailRendererTime = trailRenderer.time;
+            trailRenderer.time = 0;
+            trailRenderer.emitting = false;
+            yield return null;
+            // It seems that at least two frames is required for physics engine to catch up after Rigidbody has been teleported.
+            var delay = new WaitForFixedUpdate();
+            while (--skipFrames >= 0)
+            {
+                yield return delay;
+            }
+            trailRenderer.time = trailRendererTime;
+            trailRenderer.emitting = true;
+        }
+
+        host.StartCoroutine(DelayedExecute());
+    }
+
+    #endregion
+
     #region Coroutines
 
     /// <summary>

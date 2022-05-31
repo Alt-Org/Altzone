@@ -5,6 +5,8 @@ namespace Battle.Test.Scripts.Test
 {
     public class TrailRendererTest : MonoBehaviour
     {
+        private static MonoBehaviour _context;
+        
         public float _speed = 5f;
         public float _teleportDistance = 3f;
         public Vector2 _startDirection;
@@ -15,6 +17,7 @@ namespace Battle.Test.Scripts.Test
 
         private void OnEnable()
         {
+            _context = this;
             SetBallPosition(_rigidbody, _trailRenderer, _startPosition);
             SetBallSpeed(_rigidbody, _speed, _startDirection);
             StartCoroutine(RandomTeleport(_rigidbody, _trailRenderer, _teleportDistance));
@@ -46,7 +49,9 @@ namespace Battle.Test.Scripts.Test
         private static void SetBallPosition(Rigidbody2D rigidbody, TrailRenderer trailRenderer, Vector2 position)
         {
             Debug.Log($"{rigidbody.position} <- {position} trail line count #{trailRenderer.positionCount}");
+            trailRenderer.ResetTrailRendererAfterTeleport(_context);
             rigidbody.position = position;
+            Debug.Log($"{rigidbody.transform.position} transform.position");
         }
 
         private static void SetBallSpeed(Rigidbody2D rigidbody, float speed, Vector2 direction)
