@@ -32,7 +32,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         public static IBallManager Get() => FindObjectOfType<BallManager>();
 
-        [Header("Settings"), SerializeField] private GameObject _ballCollider;
+        [Header("Settings"), SerializeField] private GameObject _ballColliderParent;
         [SerializeField] private GameObject _spriteStopped;
         [SerializeField] private GameObject _spriteNoTeam;
         [SerializeField] private GameObject _spriteRedTeam;
@@ -45,18 +45,21 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         [Header("Photon Networking"), SerializeField] private Vector2 _networkPosition;
         [SerializeField] private float _networkLag;
+        private int _networkUpdateCount;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
         private PhotonView _photonView;
         private Rigidbody2D _rigidbody;
         private GameObject[] _sprites;
+        private Collider2D _ballCollider;
 
         private float _ballMoveSpeedMultiplier;
         private float _ballMinMoveSpeed;
         private float _ballMaxMoveSpeed;
         private float _ballLerpSmoothingFactor;
         private float _ballTeleportDistance;
+        private float _ballMoveDistance = 0.01f;
 
         private float _rigidbodyVelocitySqrMagnitude;
 
@@ -65,6 +68,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             Debug.Log($"{name}");
             _photonView = PhotonView.Get(this);
             _rigidbody = GetComponent<Rigidbody2D>();
+            _ballCollider = _ballColliderParent.GetComponent<Collider2D>();
             var variables = RuntimeGameConfig.Get().Variables;
             _ballMoveSpeedMultiplier = variables._ballMoveSpeedMultiplier;
             _ballMinMoveSpeed = variables._ballMinMoveSpeed;
@@ -100,6 +104,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         public override void OnEnable()
         {
             base.OnEnable();
+            Debug.Log($"{name} IsMasterClient {PhotonNetwork.IsMasterClient}");
             if (!_photonView.ObservedComponents.Contains(this))
             {
                 // If not set in Editor
@@ -108,6 +113,10 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
             StartCoroutine(StartBallCoroutinesAndLogic());
             UpdateBallText();
+            if (_debug._isShowBallText && !PhotonNetwork.InRoom)
+            {
+                _debug._ballText.text = string.Empty;
+            }
         }
 
         public override void OnDisable()
@@ -119,7 +128,7 @@ namespace Battle.Test.Scripts.Battle.Ball
 
         private void MasterClientSwitched()
         {
-            Debug.Log($"{name}");
+            Debug.Log($"{name} IsMasterClient {PhotonNetwork.IsMasterClient}");
             StopAllCoroutines();
             _ballVelocityTracker = null;
             StartCoroutine(StartBallCoroutinesAndLogic());
@@ -129,7 +138,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         private IEnumerator StartBallCoroutinesAndLogic()
         {
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
-            Debug.Log($"{name}");
+            Debug.Log($"{name} IsMasterClient {PhotonNetwork.IsMasterClient}");
             _SetBallState(_ballState);
             if (_rigidbody.isKinematic != !PhotonNetwork.IsMasterClient)
             {
@@ -139,12 +148,16 @@ namespace Battle.Test.Scripts.Battle.Ball
             if (PhotonNetwork.IsMasterClient)
             {
                 StartCoroutine(OnMasterClientFixedUpdate());
+                _ballColliderParent.SetActive(true);
+                _ballCollider.isTrigger = false;
             }
             else
             {
                 StartCoroutine(OnRemoteBallNetworkUpdate());
-                _ballCollider.SetActive(false);
+                _ballColliderParent.SetActive(true);
+                _ballCollider.isTrigger = true;
             }
+            UpdateBallText();
         }
 
         private IEnumerator OnMasterClientFixedUpdate()
@@ -185,12 +198,28 @@ namespace Battle.Test.Scripts.Battle.Ball
             Debug.Log($"{name}");
             for (;;)
             {
-                var position = _rigidbody.position;
-                var isTeleport = Mathf.Abs(position.x - _networkPosition.x) > _ballTeleportDistance ||
-                                 Mathf.Abs(position.y - _networkPosition.y) > _ballTeleportDistance;
-                _rigidbody.position = isTeleport
-                    ? _networkPosition
-                    : Vector2.MoveTowards(position, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                var rigidbodyPosition = _rigidbody.position;
+                var deltaX = Mathf.Abs(rigidbodyPosition.x - _networkPosition.x);
+                var deltaY = Mathf.Abs(rigidbodyPosition.y - _networkPosition.y);
+                var isTeleport = deltaX > _ballTeleportDistance || deltaY > _ballTeleportDistance;
+                if (isTeleport)
+                {
+                    _rigidbody.position = _networkPosition;
+                    _networkUpdateCount = 0;
+                }
+                else
+                {
+                    var isMoving = deltaX > _ballMoveDistance || deltaY > _ballMoveDistance;
+                    if (isMoving)
+                    {
+                        _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                        _networkUpdateCount += 1;
+                    }
+                    else
+                    {
+                        _networkUpdateCount = 0;
+                    }
+                }
                 yield return null;
             }
         }
@@ -199,7 +228,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             _ballState = ballState;
             var stateIndex = (int)ballState;
-            _ballCollider.SetActive(ColliderStates[stateIndex]);
+            _ballColliderParent.SetActive(ColliderStates[stateIndex]);
             if (StopStates[stateIndex])
             {
                 InternalSetRigidbodyVelocity(0, Vector2.zero);
@@ -228,7 +257,14 @@ namespace Battle.Test.Scripts.Battle.Ball
             {
                 return;
             }
-            _debug._ballText.text = $"{_rigidbody.velocity.magnitude:0.00}";
+            if (PhotonNetwork.IsMasterClient)
+            {
+                _debug._ballText.text = $"{_rigidbody.velocity.magnitude:0.00}";
+            }
+            else
+            {
+                _debug._ballText.text = $"{_networkUpdateCount}:{_networkLag * 100:000}";
+            }
         }
 
         private Coroutine _ballVelocityTracker;
