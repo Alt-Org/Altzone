@@ -157,7 +157,8 @@ namespace Battle.Test.Scripts.Test
         private void OnEnable()
         {
             _windowId = (int)DateTime.Now.Ticks;
-            _windowRect = new Rect(0, 0, Screen.width, Screen.height / 10f * 1.5f);
+            var margin = Screen.width / 10;
+            _windowRect = new Rect(margin, 0, Screen.width - 2 * margin, Screen.height / 10f * 1.5f);
             _windowTitle = "Start the Ball when ALL players are ready";
         }
 
@@ -178,7 +179,7 @@ namespace Battle.Test.Scripts.Test
         private void DebugWindow(int windowId)
         {
             GUILayout.Label(" ");
-            if (GUILayout.Button($"Start the Ball ({_controlKey})"))
+            if (GUILayout.Button($" \r\nStart the Ball ({_controlKey})\r\n "))
             {
                 enabled = false;
                 _tester.TestAutoStart();
