@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Room
@@ -35,6 +36,7 @@ namespace Battle.Test.Scripts.Battle.Room
                 if (PhotonNetwork.InRoom)
                 {
                     // We are in a room and that's it.
+                    ShowRoomJoinedMessage();
                     enabled = false;
                     yield break;
                 }
@@ -67,6 +69,14 @@ namespace Battle.Test.Scripts.Battle.Room
         {
             Debug.LogError($"{PhotonNetwork.NetworkClientState} Error {returnCode} {message}");
             enabled = false;
+        }
+
+        private static void ShowRoomJoinedMessage()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#else
+            ScoreFlash.Push("DEVELOPMENT\r\nBUILD\r\nREQUIRED\r\nFOR TESTING");
+#endif
         }
     }
 }
