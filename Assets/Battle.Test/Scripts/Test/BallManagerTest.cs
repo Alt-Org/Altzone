@@ -31,7 +31,7 @@ namespace Battle.Test.Scripts.Test
         public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
-        [Header("Start The Ball")] public StartTheBall _startTheBall;
+        [Header("Start The Ball")] public StartTheBallTest _startTheBall;
 
         [Header("Timer")] public SimpleRoomTimer _timer;
 
@@ -116,8 +116,10 @@ namespace Battle.Test.Scripts.Test
             }
             if (_isStartTheBallStart || _isStartOnGui)
             {
-                var guiStart = gameObject.AddComponent<OnGuiStart>();
-                guiStart._tester = this;
+                var guiStart = gameObject.AddComponent<OnGuiWindowTest>();
+                guiStart._windowTitle = "Start the Ball when ALL players are ready";
+                guiStart._buttonCaption = $" \r\nStart the Ball ({guiStart._controlKey})\r\n ";
+                guiStart.OnKeyPressed = TestAutoStart;
                 yield break;
             }
             if (PhotonNetwork.InRoom)
@@ -142,49 +144,5 @@ namespace Battle.Test.Scripts.Test
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
         }
-    }
-
-    internal class OnGuiStart : MonoBehaviour
-    {
-        public Key _controlKey = Key.F4;
-
-        public BallManagerTest _tester;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
-        private int _windowId;
-        private Rect _windowRect;
-        private string _windowTitle;
-
-        private void OnEnable()
-        {
-            _windowId = (int)DateTime.Now.Ticks;
-            var margin = Screen.width / 10;
-            _windowRect = new Rect(margin, 0, Screen.width - 2 * margin, Screen.height / 10f * 1.5f);
-            _windowTitle = "Start the Ball when ALL players are ready";
-        }
-
-        private void Update()
-        {
-            if (Keyboard.current[_controlKey].wasPressedThisFrame)
-            {
-                enabled = false;
-                _tester.TestAutoStart();
-            }
-        }
-
-        private void OnGUI()
-        {
-            _windowRect = GUILayout.Window(_windowId, _windowRect, DebugWindow, _windowTitle);
-        }
-
-        private void DebugWindow(int windowId)
-        {
-            GUILayout.Label(" ");
-            if (GUILayout.Button($" \r\nStart the Ball ({_controlKey})\r\n "))
-            {
-                enabled = false;
-                _tester.TestAutoStart();
-            }
-        }
-#endif
     }
 }
