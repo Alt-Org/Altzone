@@ -2,12 +2,13 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle.Ball;
 using Battle.Test.Scripts.Battle.Players;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Battle.Test.Scripts.Battle.Ball
+namespace Battle.Test.Scripts.Test
 {
     /// <summary>
     /// Starts the ball into gameplay
@@ -15,12 +16,13 @@ namespace Battle.Test.Scripts.Battle.Ball
     /// <remarks>
     /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Pallo-ja-sen-liikkuminen
     /// </remarks>
-    internal class StartTheBall : MonoBehaviour
+    internal class StartTheBallTest : MonoBehaviour
     {
-        private static StartTheBall _instance;
+        private static StartTheBallTest _instance;
 
         [Header("Debug Settings"), SerializeField] private float _testDelay;
         [SerializeField] private float _forceSpeedOverride;
+        [SerializeField] private int[] _teamRestartCount = new int[3];
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
@@ -58,7 +60,7 @@ namespace Battle.Test.Scripts.Battle.Ball
                 Assert.IsNotNull(_ballManager, "_ballManager != null");
             }
         }
-        
+
         public void StartBallFirstTime()
         {
             Debug.Log($"{name} delayToStart {_delayToStart}");
@@ -69,7 +71,7 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<StartTheBall>();
+                _instance = FindObjectOfType<StartTheBallTest>();
             }
             Debug.Log($"{_instance.name} delayToStart {_instance._delayToStart} player pos  {playerToStart.Position}");
             _instance.StartCoroutine(_instance.StartBallRoutine(playerToStart));
@@ -96,6 +98,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             var delay = new WaitForSeconds(_delayToStart);
             if (playerToStart != null)
             {
+                _teamRestartCount[playerToStart.TeamNumber] += 1;
                 var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 yield return delay;
 

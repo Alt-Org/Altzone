@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
-using Battle.Test.Scripts.Battle.Ball;
+using Battle.Test.Scripts.Test;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Unity;
@@ -254,7 +253,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             ScoreFlashNet.Push("RESTART");
-            StartTheBall.RestartBallInGame(this);
+            StartTheBallTest.RestartBallInGame(this);
         }
 
         #endregion
