@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Ball;
 using Battle.Test.Scripts.Battle.Players;
@@ -22,10 +24,12 @@ namespace Battle.Test.Scripts.Test
 
         [Header("Debug Settings"), SerializeField] private float _testDelay;
         [SerializeField] private float _forceSpeedOverride;
+        [SerializeField] private int _teamRestartLimit;
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
+        private OnGuiWindowTest _onGuiWindow;
         private float _delayToStart;
 
         private void Awake()
@@ -64,7 +68,8 @@ namespace Battle.Test.Scripts.Test
         public void StartBallFirstTime()
         {
             Debug.Log($"{name} delayToStart {_delayToStart}");
-            StartCoroutine(StartBallRoutine(null));
+            Array.Clear(_teamRestartCount, 0 , _teamRestartCount.Length);
+            StartCoroutine(StartBallRoutinePreload(null));
         }
 
         public static void RestartBallInGame(IPlayerDriver playerToStart)
@@ -74,12 +79,12 @@ namespace Battle.Test.Scripts.Test
                 _instance = FindObjectOfType<StartTheBallTest>();
             }
             Debug.Log($"{_instance.name} delayToStart {_instance._delayToStart} player pos  {playerToStart.Position}");
-            _instance.StartCoroutine(_instance.StartBallRoutine(playerToStart));
+            _instance.StartCoroutine(_instance.StartBallRoutinePreload(playerToStart));
         }
 
-        private IEnumerator StartBallRoutine(IPlayerDriver playerToStart)
+        private IEnumerator StartBallRoutinePreload(IPlayerDriver playerToStart)
         {
-            // I must admit that this method is not easiest to write or read afterwards.
+            // I must admit that this and below methods are not easiest to write or read afterwards.
             LoadDependencies();
             print("~~");
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
@@ -89,16 +94,48 @@ namespace Battle.Test.Scripts.Test
             _ballManager.SetBallPosition(Vector2.zero);
             yield return null;
 
+            if (playerToStart != null && _teamRestartLimit > 0)
+            {
+                _teamRestartCount[playerToStart.TeamNumber] += 1;
+                if (_teamRestartCount[playerToStart.TeamNumber] >= _teamRestartLimit)
+                {
+                    Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
+                    _gameplayManager.ForEach(player =>
+                    {
+                        var startPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(player.PlayerPos);
+                        player.SetPlayMode(BattlePlayMode.Normal);
+                        player.SetCharacterPose(0);
+                        player.SetShieldResistance(player.CharacterModel.Resistance);
+                        player.MoveTo(startPosition);
+                    });
+                    yield return null;
+                    if (_onGuiWindow == null)
+                    {
+                        _onGuiWindow = gameObject.AddComponent<OnGuiWindowTest>();
+                        _onGuiWindow._windowTitle = "Restart the GAME when ALL players are ready";
+                        _onGuiWindow._buttonCaption = $" \r\nRestart the GAME ({_onGuiWindow._controlKey})\r\n ";
+                        _onGuiWindow.OnKeyPressed = () =>
+                        {
+                            Debug.Log("game restarted");
+                        };
+                    }
+                    _onGuiWindow.Show();
+                    yield return null;
+                    yield return new WaitUntil(() => !_onGuiWindow.IsVisible);
+                }
+            }
             _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
-            yield return null;
-
+            StartCoroutine(StartBallWorkRoutine(playerToStart));
+        }
+        
+        private IEnumerator StartBallWorkRoutine(IPlayerDriver playerToStart)
+        {
             BattleTeam startTeam;
             BattleTeam otherTeam;
             float speed;
             var delay = new WaitForSeconds(_delayToStart);
             if (playerToStart != null)
             {
-                _teamRestartCount[playerToStart.TeamNumber] += 1;
                 var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 yield return delay;
 
