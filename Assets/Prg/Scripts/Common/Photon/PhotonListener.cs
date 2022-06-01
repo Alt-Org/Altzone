@@ -162,8 +162,9 @@ namespace Prg.Scripts.Common.Photon
              * https://doc.photonengine.com/en-us/pun/v2/getting-started/feature-overview#versioning_by_gameversion
              * https://forum.photonengine.com/discussion/16543/how-to-prevent-older-versions-of-the-client-from-connecting-to-photonnetwork
              */
-            LogPhotonStatus(
-                $"AppVersion={PhotonNetwork.AppVersion} GameVersion={PhotonNetwork.GameVersion} scene={SceneManager.GetActiveScene().name}");
+            LogPhotonStatus(PhotonNetwork.OfflineMode
+                ? $"OfflineMode scene={SceneManager.GetActiveScene().name}"
+                : $"AppVersion={PhotonNetwork.AppVersion} GameVersion={PhotonNetwork.GameVersion} scene={SceneManager.GetActiveScene().name}");
         }
 
         public void OnDisconnected(DisconnectCause cause)
@@ -247,7 +248,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnJoinedRoom()
         {
-            LogPhotonStatus(PhotonNetwork.CurrentRoom.GetDebugLabel());
+            LogPhotonStatus($"{PhotonNetwork.CurrentRoom.GetDebugLabel()} IsMasterClient={PhotonNetwork.IsMasterClient}");
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
