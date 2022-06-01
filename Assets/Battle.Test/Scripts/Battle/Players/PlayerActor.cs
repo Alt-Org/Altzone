@@ -54,8 +54,8 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
-            public bool _isShowMoveTo;
-            public bool _isInterfaceEvents;
+            public bool _isLogEvents;
+            public bool _isLogMoveTo;
             public bool _isShowPlayerText;
             public TextMeshPro _playerText;
             public char _playerModeOrBuff = '?';
@@ -183,7 +183,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 var tracker = shield.AddComponent<ColliderTracker>();
                 tracker.Callback = (collision, component) => { collisionDriver.OnShieldCollision(collision, component); };
             }
-            if (_debug._isShowMoveTo)
+            if (_debug._isLogMoveTo)
             {
                 StartCoroutine(ThrottledLogger());
             }
@@ -292,7 +292,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.Rotate(bool isUpsideDown)
         {
-            if (_debug._isInterfaceEvents)
+            if (_debug._isLogEvents)
             {
                 Debug.Log($"{name} isUpsideDown {isUpsideDown}");
             }
@@ -324,7 +324,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
-            if (_debug._isInterfaceEvents)
+            if (_debug._isLogEvents)
             {
                 Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
             }
@@ -343,17 +343,14 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {
-            if (!_playMode.CanTransition(playMode))
+            var canTransition = _playMode.CanTransition(playMode);
+            if (_debug._isLogEvents)
             {
-                if (_debug._isInterfaceEvents)
-                {
-                    Debug.Log($"{name} {_playMode} <- {playMode} IGNORED");
-                }
-                return;
+                Debug.Log($"{name} {_playMode} <- {playMode}{(canTransition ? string.Empty : " No_Can_Transition")}");
             }
-            if (_debug._isInterfaceEvents)
+            if (!canTransition)
             {
-                Debug.Log($"{name} {_playMode} <- {playMode}");
+                return;
             }
             _playMode = playMode;
             _shieldPose.SetPlayMode(playMode);
@@ -363,7 +360,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetShieldVisibility(bool state)
         {
-            if (_debug._isInterfaceEvents)
+            if (_debug._isLogEvents)
             {
                 Debug.Log($"{name} {_shieldPose.IsVisible} <- {state}");
             }
@@ -373,7 +370,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IPlayerActor.SetBuff(PlayerBuff buff, float duration)
         {
-            if (_debug._isInterfaceEvents)
+            if (_debug._isLogEvents)
             {
                 Debug.Log($"{name} start {buff} {duration:0.0}s");
             }
