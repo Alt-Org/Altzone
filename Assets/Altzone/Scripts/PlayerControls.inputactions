@@ -19,7 +19,7 @@
                     "type": "Value",
                     "id": "4917987f-d03f-438d-ab3d-11795ee9cd10",
                     "expectedControlType": "Vector2",
-                    "processors": "",
+                    "processors": "NormalizeVector2",
                     "interactions": "",
                     "initialStateCheck": true
                 }
@@ -30,7 +30,7 @@
                     "id": "834f79df-46d2-489e-b12d-1e2aa3f1e72c",
                     "path": "2DVector(mode=2)",
                     "interactions": "",
-                    "processors": "NormalizeVector2",
+                    "processors": "",
                     "groups": "",
                     "action": "Move",
                     "isComposite": true,
@@ -85,18 +85,18 @@
                     "id": "ac26aa87-f8d8-477e-a56a-06c9e8bff40c",
                     "path": "<Gamepad>/dpad",
                     "interactions": "",
-                    "processors": "NormalizeVector2",
+                    "processors": "",
                     "groups": "",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
-                  {
+                {
                     "name": "Arrow",
                     "id": "53c7b82d-3af6-416e-b8aa-26a1631fd43a",
                     "path": "2DVector(mode=2)",
                     "interactions": "",
-                    "processors": "NormalizeVector2",
+                    "processors": "",
                     "groups": "",
                     "action": "Move",
                     "isComposite": true,
