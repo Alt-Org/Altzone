@@ -11,6 +11,10 @@ namespace Battle.Test.Scripts.Test
         public string _buttonCaption = nameof(_buttonCaption);
         public Action OnKeyPressed;
 
+        public bool IsVisible => enabled;
+
+        public void Show() => enabled = true;
+        
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         private int _windowId;
         private Rect _windowRect;
