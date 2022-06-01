@@ -138,23 +138,23 @@ namespace Battle.Test.Scripts.Battle.Ball
         private IEnumerator StartBallCoroutinesAndLogic()
         {
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
-            Debug.Log($"{name} IsMasterClient {PhotonNetwork.IsMasterClient}");
+            Debug.Log($"{name} IsMasterClient {PhotonNetwork.IsMasterClient} state {_ballState} collider {_ballCollider.enabled}");
             _SetBallState(_ballState);
             if (_rigidbody.isKinematic != !PhotonNetwork.IsMasterClient)
             {
                 Debug.Log($"{name} SET isKinematic {_rigidbody.isKinematic} <- {!PhotonNetwork.IsMasterClient}");
                 _rigidbody.isKinematic = !PhotonNetwork.IsMasterClient;
             }
+            var stateIndex = (int)_ballState;
+            SetBallCollider(ColliderStates[stateIndex]);
             if (PhotonNetwork.IsMasterClient)
             {
                 StartCoroutine(OnMasterClientFixedUpdate());
-                _ballColliderParent.SetActive(true);
                 _ballCollider.isTrigger = false;
             }
             else
             {
                 StartCoroutine(OnRemoteBallNetworkUpdate());
-                _ballColliderParent.SetActive(true);
                 _ballCollider.isTrigger = true;
             }
             UpdateBallText();
@@ -224,11 +224,17 @@ namespace Battle.Test.Scripts.Battle.Ball
             }
         }
 
+        private void SetBallCollider(bool state)
+        {
+            _ballColliderParent.SetActive(state);
+            _ballCollider.enabled = state;
+        }
+        
         private void _SetBallState(BallState ballState)
         {
             _ballState = ballState;
             var stateIndex = (int)ballState;
-            _ballColliderParent.SetActive(ColliderStates[stateIndex]);
+            SetBallCollider(ColliderStates[stateIndex]);
             if (StopStates[stateIndex])
             {
                 InternalSetRigidbodyVelocity(0, Vector2.zero);
