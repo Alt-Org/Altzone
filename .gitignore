@@ -87,11 +87,34 @@ crashlytics-build.properties
 /ProjectSettings/RiderScriptEditorPersistedState.asset
 
 # Project Auditor (https://github.com/Unity-Technologies/ProjectAuditor)
-/Assets/BuildReports/*
-/Assets/BuildReports.meta
+/[Aa]ssets/BuildReports/*
+/[Aa]ssets/BuildReports.meta
 
-# FMOD cache
-FMOD/**/.cache
+# FMOD https://fmod.com/resources/documentation-unity?version=2.00&page=user-guide.html#using-source-control
+
+# Never ignore DLLs in the FMOD subfolder.
+!/[Aa]ssets/Plugins/FMOD/libs/*
+
+# Don't ignore images and gizmos used by FMOD in the Unity Editor.
+!/[Aa]ssets/Gizmos/FMOD/*
+!/[Aa]ssets/Editor Default Resources/FMOD/*
+
+# Ignore the Cache folder since it is updated locally.
+/[Aa]ssets/Plugins/FMOD/Cache/*
+
+# Ignore bank files in the StreamingAssets folder.
+/[Aa]ssets/StreamingAssets/**/*.bank
+/[Aa]ssets/StreamingAssets/**/*.bank.meta
+# If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
+
+# Log files can be ignored.
+fmod_editor.log
+
+# FMODStudioCache is a cache file used to speed up the plugin UI.
+[Aa]ssets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
+[Aa]ssets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset.meta
+
+# FMOD end
 
 # --- This Project
 
