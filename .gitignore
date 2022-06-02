@@ -1,6 +1,6 @@
-# This .gitignore file should be placed at the root of your Unity project directory
-#
 # See Wiki: https://github.com/Alt-Org/Altzone/wiki/.gitignore-ja-.gitattributes
+# --- Unity.gitignore
+# This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
@@ -75,7 +75,7 @@ crashlytics-build.properties
 
 # end of Unity.gitignore
 
-# Third party
+# --- Third party
 
 # Intellij products project files directory
 .idea/
@@ -93,7 +93,7 @@ crashlytics-build.properties
 # FMOD cache
 FMOD/**/.cache
 
-# This Project
+# --- This Project
 
 # Local settings override folder: XxxTest
 **/[Rr]esources/*[Tt]est/
