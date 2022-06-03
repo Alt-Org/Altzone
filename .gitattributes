@@ -66,3 +66,5 @@ https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-d
 *.tiff filter=lfs diff=lfs merge=lfs -text
 # FMOD
 *.bank filter=lfs diff=lfs merge=lfs -text
+# FMOD wants to keep MAC plist files with LF line endings (even on Windows)
+*.plist binary
