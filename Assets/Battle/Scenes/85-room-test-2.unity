@@ -1122,7 +1122,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1173892367}
-  - component: {fileID: 1173892366}
   - component: {fileID: 1173892368}
   m_Layer: 0
   m_Name: Audiotest
@@ -1131,18 +1130,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1173892366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173892365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba232474675fef540b49a7c899234dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1173892367
 Transform:
   m_ObjectHideFlags: 0
@@ -1180,7 +1167,7 @@ MonoBehaviour:
     Path: event:/JazzBGM
   Event: 
   PlayEvent: 1
-  StopEvent: 0
+  StopEvent: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
