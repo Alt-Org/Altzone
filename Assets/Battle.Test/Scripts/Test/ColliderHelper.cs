@@ -4,8 +4,9 @@ namespace Battle.Test.Scripts.Test
 {
     internal class ColliderHelper : MonoBehaviour
     {
-        [SerializeField] private bool _isShowTriggers;
-        [SerializeField] private bool _isShowColliders;
+        [SerializeField] 
+        private bool _isShowTriggers;
+        private bool _isShowColliders;
 
         private void OnEnable()
         {
