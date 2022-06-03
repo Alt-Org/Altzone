@@ -4,9 +4,8 @@ namespace Battle.Test.Scripts.Test
 {
     internal class ColliderHelper : MonoBehaviour
     {
-        [SerializeField] 
-        private bool _isShowTriggers;
-        private bool _isShowColliders;
+        [SerializeField] private bool _isShowTriggers;
+        [SerializeField] private bool _isShowColliders;
 
         private void OnEnable()
         {
@@ -17,7 +16,7 @@ namespace Battle.Test.Scripts.Test
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!enabled ||!_isShowTriggers)
+            if (!enabled || !_isShowTriggers)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
@@ -28,7 +27,7 @@ namespace Battle.Test.Scripts.Test
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!enabled ||!_isShowTriggers)
+            if (!enabled || !_isShowTriggers)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
