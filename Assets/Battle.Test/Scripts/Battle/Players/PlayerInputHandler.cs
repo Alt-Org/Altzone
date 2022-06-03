@@ -19,12 +19,14 @@ namespace Battle.Test.Scripts.Battle.Players
         public static IPlayerInputHandler Get() => FindObjectOfType<PlayerInputHandler>();
 
         [Header("Settings"), SerializeField] private float _unReachableDistance = 100;
-        [SerializeField] private InputActionReference _clickInputAction;
-        [SerializeField] private InputActionReference _moveInputAction;
+        [SerializeField] 
+        private InputActionReference _clickInputAction;
+        private InputActionReference _moveInputAction;
 
         [Header("Live Data"), SerializeField] private Camera _camera;
-        [SerializeField] private Rect _playerArea = DefaultPlayerArea;
-        [SerializeField] private Transform _playerTransform;
+        [SerializeField] 
+        private Rect _playerArea = DefaultPlayerArea;
+        private Transform _playerTransform;
 
         private IPlayerDriver _playerDriver;
         private Vector2 _inputClick;
