@@ -21,7 +21,7 @@ namespace Prg.Scripts.FMODManager.FMODManager
         EventInstance musicState;
 
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        // this script is obsolete [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
 
