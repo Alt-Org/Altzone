@@ -378,13 +378,14 @@ namespace Battle.Scripts.Battle.Players2
                 // Check _playerResistance here!
                 if (_playerResistance >= 1)
                 {
-                    _playerResistance = _playerResistance - 1;
+                   --_playerResistance;
                 }
                 else if (_playerResistance <= 0)
                 {
                     _shield.SetRotation(rotationIndex);
                     _playerResistance = _playerResitanceOnStart;
                 }
+                OnSetPlayMode(BattlePlayMode.Ghosted);
             }
             else
             {
