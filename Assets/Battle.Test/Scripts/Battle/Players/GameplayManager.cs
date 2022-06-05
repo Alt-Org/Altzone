@@ -429,7 +429,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var delay = new WaitForSeconds(0.1f);
             const float debugInterval = 0.5f;
-            var debugLogTIme = Time.time + debugInterval;
+            var debugLogTime = Time.time + debugInterval;
             _sqrSqrDistance = 0;
             _prevSqrSqrDistance = _sqrSqrDistance;
             while (!_isStopped)
@@ -440,9 +440,9 @@ namespace Battle.Test.Scripts.Battle.Players
                     yield break;
                 }
                 CalculateDistance();
-                if (Time.time > debugLogTIme && _prevSqrSqrDistance != _sqrSqrDistance)
+                if (Time.time > debugLogTime && _prevSqrSqrDistance != _sqrSqrDistance)
                 {
-                    debugLogTIme = Time.time + debugInterval;
+                    debugLogTime = Time.time + debugInterval;
                     _prevSqrSqrDistance = _sqrSqrDistance;
                     Debug.Log($"team {_teamNumber} sqr distance {_sqrSqrDistance:0.00}");
                 }
