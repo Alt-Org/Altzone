@@ -128,7 +128,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 SetDebugPlayer(player);
                 yield return delay;
             }
-            PlayerDriverPhoton.InstantiateLocalPlayer(player, _photonPrefab.name);
+            InstantiateLocalPlayer(player, _photonPrefab.name);
             enabled = false;
         }
 
@@ -140,6 +140,13 @@ namespace Battle.Test.Scripts.Battle.Players
                 _debug._playerMainSkill = (Defence)Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
             }
             PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, (int)_debug._playerMainSkill);
+        }
+
+        private static void InstantiateLocalPlayer(Player player, string networkPrefabName)
+        {
+            Assert.IsTrue(player.IsLocal, "player.IsLocal");
+            Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
+            PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
         }
     }
 }

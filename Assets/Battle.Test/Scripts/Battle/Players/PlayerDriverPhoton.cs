@@ -42,13 +42,6 @@ namespace Battle.Test.Scripts.Battle.Players
         
         private bool IsLocalPlayerSynchronize => photonView.Owner.IsLocal;
 
-        public static void InstantiateLocalPlayer(Player player, string networkPrefabName)
-        {
-            Assert.IsTrue(player.IsLocal, "player.IsLocal");
-            Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
-            PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
-        }
-
         private void Awake()
         {
             print("++");
