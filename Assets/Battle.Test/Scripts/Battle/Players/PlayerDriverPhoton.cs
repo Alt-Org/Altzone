@@ -5,17 +5,15 @@ using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Test;
 using Photon.Pun;
-using Photon.Realtime;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : MonoBehaviourPunCallbacks, IPlayerDriver, IPlayerActorCollision
+    internal class PlayerDriverPhoton : MonoBehaviour, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class DebugSettings
@@ -28,6 +26,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
+        private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
         private char _playerPosChar;
@@ -40,15 +39,16 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
         
-        private bool IsLocalPlayerSynchronize => photonView.Owner.IsLocal;
+        private bool IsLocalPlayerSynchronize => _photonView.Owner.IsLocal;
 
         private void Awake()
         {
             print("++");
-            var player = photonView.Owner;
+            _photonView = PhotonView.Get(this);
+            var player = _photonView.Owner;
             _isLocal = player.IsLocal;
-            Debug.Log($"{player.GetDebugLabel()} {photonView}");
-            _playerPos = PhotonBattle.GetPlayerPos(photonView.Owner);
+            Debug.Log($"{player.GetDebugLabel()} {_photonView}");
+            _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
             _playerPosChar = new[] { '?', 'A', 'B', 'C', 'D' }[_playerPos];
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
@@ -56,11 +56,10 @@ namespace Battle.Test.Scripts.Battle.Players
             Application.quitting += () => _isApplicationQuitting = true;
         }
 
-        public override void OnEnable()
+        private void OnEnable()
         {
-            base.OnEnable();
-            var player = photonView.Owner;
-            Debug.Log($"{player.GetDebugLabel()} {photonView}");
+            var player = _photonView.Owner;
+            Debug.Log($"{player.GetDebugLabel()} {_photonView}");
             if (!PhotonBattle.IsRealPlayer(player))
             {
                 enabled = false;
@@ -150,9 +149,9 @@ namespace Battle.Test.Scripts.Battle.Players
 
         #region IPlayerDriver
 
-        string IPlayerDriver.NickName => photonView.Owner.NickName;
+        string IPlayerDriver.NickName => _photonView.Owner.NickName;
 
-        int IPlayerDriver.ActorNumber => photonView.Owner.ActorNumber;
+        int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
@@ -160,7 +159,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
-        bool IPlayerDriver.IsLocal => photonView.Owner.IsLocal;
+        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
@@ -174,7 +173,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             // NO IsNetworkSynchronize check!
             // - rotation is based on initial player position Y coordinate.
-            photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
+            _photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
         }
 
         void IPlayerDriver.FixCameraRotation(Camera gameCamera)
@@ -187,7 +186,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             // NO IsNetworkSynchronize check!
             // - If input is configured to us, lets do it!
-            photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
+            _photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
@@ -197,7 +196,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
+            _photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
@@ -207,7 +206,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
+            _photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
         }
 
         void IPlayerDriver.SetShieldVisibility(bool state)
@@ -217,7 +216,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
+            _photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
         }
 
         void IPlayerDriver.SetShieldResistance(int resistance)
@@ -226,7 +225,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            photonView.RPC(nameof(TestSetShieldResistanceRpc), RpcTarget.All, resistance);
+            _photonView.RPC(nameof(TestSetShieldResistanceRpc), RpcTarget.All, resistance);
         }
 
         void IPlayerDriver.SetStunned(float duration)
@@ -236,7 +235,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
+            _photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
         }
 
         void IPlayerDriver.StopAndRestartBall()
