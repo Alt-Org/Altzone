@@ -12,7 +12,10 @@ using UnityEngine.Assertions;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver, IPlayerActorCollision
+    /// <summary>
+    /// Static <c>PlayerDriver</c> implementation.
+    /// </summary>
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class Settings
@@ -189,10 +192,5 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
-
-        public override string ToString()
-        {
-            return $"{name}";
-        }
-    }
+   }
 }

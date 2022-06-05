@@ -13,7 +13,7 @@ namespace Battle.Test.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : MonoBehaviour, IPlayerDriver, IPlayerActorCollision
+    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class DebugSettings
@@ -297,10 +297,5 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
- 
-        public override string ToString()
-        {
-            return $"{name}";
-        }
     }
 }

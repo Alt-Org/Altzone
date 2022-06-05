@@ -126,7 +126,7 @@ namespace Battle.Test.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
-            public List<MonoBehaviour> _playerList;
+            public List<PlayerDriver> _playerList;
             public List<GameObject> _abandonedPlayerList;
         }
 
@@ -370,7 +370,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             var playerList = _players.ToList();
             playerList.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
-            _debug._playerList = playerList.Cast<MonoBehaviour>().ToList();
+            _debug._playerList = playerList.Cast<PlayerDriver>().ToList();
             _debug._abandonedPlayerList = _abandonedPlayersByPlayerPos.Values.ToList();
         }
 
