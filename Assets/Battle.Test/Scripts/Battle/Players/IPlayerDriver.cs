@@ -61,4 +61,15 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void OnHeadCollision(Collision2D collision);
     }
+
+    /// <summary>
+    /// Helper interface to manage more complex player state separately.
+    /// </summary>
+    internal interface IPlayerDriverState
+    {
+        void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel);
+        void CheckRotation(Vector2 position);
+        string OnShieldCollision();
+        void OnHeadCollision();
+    }
 }

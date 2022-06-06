@@ -22,7 +22,8 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
-        [SerializeField] private PlayerDriverState _state;
+        [SerializeField] private PlayerDriverState _stateInstance;
+        private IPlayerDriverState _state;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -76,7 +77,8 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
             _playerActor.CurrentResistance = _characterModel.Resistance;
-            _state = gameObject.AddComponent<PlayerDriverState>();
+            _stateInstance = gameObject.AddComponent<PlayerDriverState>();
+            _state = _stateInstance;
             _state.ResetState(this, _characterModel);
             _state.CheckRotation(_playerActorTransform.position);
             GameplayManager.Get().RegisterPlayer(this);

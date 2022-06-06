@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Players
 {
-    internal class PlayerDriverState : MonoBehaviour
+    internal class PlayerDriverState : MonoBehaviour, IPlayerDriverState
     {
         [SerializeField, ReadOnly] private int _currentPoseIndex;
         [SerializeField, ReadOnly] private int _currentShieldResistance;
