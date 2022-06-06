@@ -18,6 +18,7 @@ namespace Altzone.Scripts.Battle
         public const string PlayerMainSkillKey = "mk";
         public const string TeamBlueNameKey = "tb";
         public const string TeamRedNameKey = "tr";
+        public const string TeamWinTypeKey = "wt";
         public const string TeamWinKey = "tw";
         public const string TeamBlueScoreKey = "t1";
         public const string TeamRedScoreKey = "t2";
@@ -45,6 +46,11 @@ namespace Altzone.Scripts.Battle
         public const int NoTeamValue = 0;
         public const int TeamBlueValue = 1;
         public const int TeamRedValue = 2;
+
+        public const int WinTypeNone = 0;
+        public const int WinTypeScore = 1;
+        public const int WinTypeResign  = 2;
+        public const int WinTypeDraw = 3;
 
         private const string NoPlayerName = "noname";
 
@@ -178,7 +184,7 @@ namespace Altzone.Scripts.Battle
             }
             return true;
         }
-        
+
         /// <summary>
         /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
         /// </summary>
@@ -194,10 +200,11 @@ namespace Altzone.Scripts.Battle
             return character;
         }
 
-        public static void SetRoomScores(Room room, int winningTeam, int blueScore, int redScore)
+        public static void SetRoomScores(Room room, int winType, int winningTeam, int blueScore, int redScore)
         {
             var props = new Hashtable
             {
+                { TeamWinTypeKey, winType },
                 { TeamWinKey, winningTeam },
                 { TeamBlueScoreKey, blueScore },
                 { TeamRedScoreKey, redScore },
@@ -209,6 +216,7 @@ namespace Altzone.Scripts.Battle
         {
             var props = new Hashtable
             {
+                { TeamWinTypeKey, WinTypeNone },
                 { TeamWinKey, NoTeamValue },
                 { TeamBlueScoreKey, 0 },
                 { TeamRedScoreKey, 0 },

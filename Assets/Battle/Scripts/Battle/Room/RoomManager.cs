@@ -82,7 +82,8 @@ namespace Battle.Scripts.Battle.Room
             var redScore = data.TeamRedHeadScore + data.TeamRedWallScore;
             Debug.Log($"GameOver win {winningTeam} : blue {blueScore} : red {redScore}");
             var room = PhotonNetwork.CurrentRoom;
-            PhotonBattle.SetRoomScores(room, winningTeam, blueScore, redScore);
+            var winType = blueScore == redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+            PhotonBattle.SetRoomScores(room, winType, winningTeam, blueScore, redScore);
             // Unsubscribe now to be on the safe side
             this.Unsubscribe<ScoreManager.GameScoreEvent>(OnGameScoreEvent);
 
