@@ -22,8 +22,6 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
-        [SerializeField] private PlayerDriverState _stateInstance;
-        private IPlayerDriverState _state;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -34,12 +32,13 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
+        private IPlayerDriverState _state;
         private Transform _playerActorTransform;
         private bool _isLocal;
         private bool _isApplicationQuitting;
 
         private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
-        
+
         private bool IsLocalPlayerSynchronize => _photonView.Owner.IsLocal;
 
         private void Awake()
@@ -77,8 +76,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
             _playerActor.CurrentResistance = _characterModel.Resistance;
-            _stateInstance = gameObject.AddComponent<PlayerDriverState>();
-            _state = _stateInstance;
+            _state = GetPlayerDriverState();
             _state.ResetState(this, _characterModel);
             _state.CheckRotation(_playerActorTransform.position);
             GameplayManager.Get().RegisterPlayer(this);
@@ -91,7 +89,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
-        
+
         private void OnDestroy()
         {
             if (_isApplicationQuitting)
@@ -166,7 +164,7 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActorTransform.position;
-        
+
         Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
 
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;

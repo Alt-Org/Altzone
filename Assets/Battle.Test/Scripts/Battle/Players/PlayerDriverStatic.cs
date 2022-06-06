@@ -32,13 +32,12 @@ namespace Battle.Test.Scripts.Battle.Players
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
         [SerializeField] private PlayerActor _playerActorInstance;
-        [SerializeField] private PlayerDriverState _stateInstance;
-        private IPlayerDriverState _state;
 
-        private CharacterModel _characterModel;
         private char _playerPosChar;
 
+        private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
+        private IPlayerDriverState _state;
         private Transform _playerActorTransform;
         private bool _isApplicationQuitting;
 
@@ -48,7 +47,6 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
             _playerPosChar = new[] { '?', 'A', 'B', 'C', 'D' }[_settings._playerPos];
-
         }
 
         private void OnEnable()
@@ -66,8 +64,7 @@ namespace Battle.Test.Scripts.Battle.Players
             _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
             _playerActor.CurrentResistance = _characterModel.Resistance;
-            _stateInstance = gameObject.AddComponent<PlayerDriverState>();
-            _state = _stateInstance;
+            _state = GetPlayerDriverState();
             _state.ResetState(this, _characterModel);
             _state.CheckRotation(_playerActorTransform.position);
             gameplayManager.RegisterPlayer(this);
@@ -138,7 +135,7 @@ namespace Battle.Test.Scripts.Battle.Players
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
         Vector2 IPlayerDriver.Position => _playerActorTransform.position;
-        
+
         Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
 
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
@@ -177,7 +174,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             _playerActor.CurrentResistance = resistance;
         }
-        
+
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
@@ -194,5 +191,5 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         #endregion
-   }
+    }
 }
