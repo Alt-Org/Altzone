@@ -178,7 +178,8 @@ namespace Battle.Scripts.Battle.Room
             _debug._playerPos = GetPlayerPosFromPlayerCount(room.PlayerCount);
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
-            var playerMainSkill = (int)RuntimeGameConfig.Get().PlayerDataCache.CharacterModel.MainDefence;
+            var model = PhotonBattle.GetCharacterModelForRoom(player);
+            var playerMainSkill = (int)model.MainDefence;
             PhotonBattle.SetDebugPlayerProps(player, _debug._playerPos, playerMainSkill);
             Debug.Log($"OnJoinedRoom {player.GetDebugLabel()}");
             StartCoroutine(WaitForPlayersToArrive());

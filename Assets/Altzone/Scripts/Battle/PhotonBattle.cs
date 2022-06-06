@@ -188,7 +188,7 @@ namespace Altzone.Scripts.Battle
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (skillId == -1)
             {
-                skillId = (int)RuntimeGameConfig.Get().PlayerDataCache.CharacterModel.MainDefence;
+                skillId = (int)RuntimeGameConfig.Get().PlayerDataCache.GetCharacterModelForUi().MainDefence;
             }
             var character = Storefront.Get().GetCharacterModel(skillId);
             return character;

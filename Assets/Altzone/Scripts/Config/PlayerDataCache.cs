@@ -57,7 +57,7 @@ namespace Altzone.Scripts.Config
         /// <remarks>
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
-        public CharacterModel CharacterModel =>
+        public CharacterModel GetCharacterModelForUi() =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
             Storefront.Get().GetCharacterModel(DefaultModelId) ??
             new CharacterModel(-1, "Ö", Defence.Desensitisation, 1, 1, 1, 1);
@@ -142,15 +142,16 @@ namespace Altzone.Scripts.Config
 
         public string GetPlayerInfoLabel()
         {
+            var characterModelName = GetCharacterModelForUi().Name;
             if (ClanId > 0)
             {
                 var clan = Storefront.Get().GetClanModel(ClanId);
                 if (clan != null)
                 {
-                    return $"{PlayerName}[{clan.Tag}] {CharacterModel.Name}";
+                    return $"{PlayerName}[{clan.Tag}] {characterModelName}";
                 }
             }
-            return $"{PlayerName} {CharacterModel.Name}";
+            return $"{PlayerName} {characterModelName}";
         }
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.

@@ -92,7 +92,7 @@ namespace Lobby.Scripts.InRoom
             player.CustomProperties.Clear();
             // Guest by default
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            var defence = playerDataCache.CharacterModel.MainDefence;
+            var defence = playerDataCache.GetCharacterModelForUi().MainDefence;
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, PlayerPositionGuest },
