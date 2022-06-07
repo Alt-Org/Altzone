@@ -50,6 +50,7 @@ namespace Battle.Scripts.Battle.Ball
         private Rigidbody2D _rigidbody;
 
         [Header("Live Data"), SerializeField] private float _currentSpeed;
+        [SerializeField] private float _AttackMultiplier;
         private bool _isCheckVelocityAfterCollision;
         private float _checkVelocityTime;
 
@@ -65,7 +66,7 @@ namespace Battle.Scripts.Battle.Ball
         private int _shieldMaskValue;
         private int _brickMaskValue;
         private int _wallMaskValue;
-
+      
         private Action<Collision2D> _onHeadCollision;
         private Action<Collision2D> _onShieldCollision;
         private Action<Collision2D> _onBrickCollision;
@@ -75,6 +76,7 @@ namespace Battle.Scripts.Battle.Ball
 
         private float _minBallSpeed;
         private float _maxBallSpeed;
+        private float _ballSpeedMultiplier;
         
         private void Awake()
         {
@@ -99,11 +101,14 @@ namespace Battle.Scripts.Battle.Ball
             _minBallSpeed = variables._ballMinMoveSpeed;
             _maxBallSpeed = variables._ballMaxMoveSpeed;
             _debugInfoParent = _debugInfoText.gameObject;
+            _ballSpeedMultiplier = variables._ballMoveSpeedMultiplier;
+            _AttackMultiplier = 1;
             if (!_isDebugInfoText)
             {
                 _debugInfoParent.SetActive(false);
             }
             PhotonSetup();
+
         }
 
         private void PhotonSetup()
@@ -345,7 +350,7 @@ namespace Battle.Scripts.Battle.Ball
                 _settings._ballCollider.SetActive(true);
 
                 _rigidbody.position = position;
-                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _minBallSpeed, _maxBallSpeed);
+                var speed = Mathf.Clamp(Mathf.Abs(velocity.magnitude), _minBallSpeed, _maxBallSpeed) * _ballSpeedMultiplier * _AttackMultiplier;
                 _rigidbody.velocity = velocity.normalized * speed;
                 _currentSpeed = _rigidbody.velocity.magnitude;
             }
@@ -360,6 +365,11 @@ namespace Battle.Scripts.Battle.Ball
             Assert.IsTrue(_state._isMoving, "_state._isMoving");
             Assert.IsTrue(speed > 0, "speed > 0");
             Debug.Log($"{_state._isMoving} position {_rigidbody.position} speed {_currentSpeed} <- {speed}");
+            _currentSpeed = speed * _AttackMultiplier;
+            if (_currentSpeed > _maxBallSpeed)
+            {
+                _currentSpeed = _maxBallSpeed;
+            }
         }
         
         void IBall.SetColor(BallColor ballColor)
