@@ -4,8 +4,8 @@ using Battle.Test.Scripts.Battle.Players;
 using Battle.Test.Scripts.Battle.Room;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Test

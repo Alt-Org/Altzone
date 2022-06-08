@@ -4,7 +4,7 @@ using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.Common.Unity.ToastMessages
 {
     /// <summary>
     /// Networked version of <c>ScoreFlash</c>.

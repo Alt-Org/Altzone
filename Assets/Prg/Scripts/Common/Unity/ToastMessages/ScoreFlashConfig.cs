@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.Common.Unity.ToastMessages
 {
     [CreateAssetMenu(menuName = "ALT-Zone/ScoreFlashConfig", fileName = "ScoreFlashConfig")]
     public class ScoreFlashConfig : ScriptableObject

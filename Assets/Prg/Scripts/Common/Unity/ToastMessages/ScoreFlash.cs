@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.Common.Unity.ToastMessages
 {
     /// <summary>
     /// Flash message system
@@ -37,11 +37,6 @@ namespace Prg.Scripts.Common.Unity
             _instance = null;
         }
 
-        public static void RegisterEventListener()
-        {
-            // ScoreFlashNet compatibility
-        }
-        
         public static void Push(string message)
         {
             Get().Push(message, 0f, 0f);

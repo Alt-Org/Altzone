@@ -4,7 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg.Scripts.Common.Unity;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
