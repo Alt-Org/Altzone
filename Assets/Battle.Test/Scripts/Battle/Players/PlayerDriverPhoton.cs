@@ -35,6 +35,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
         private Transform _playerActorTransform;
+        private IGameplayManager _gameplayManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
 
@@ -80,8 +81,15 @@ namespace Battle.Test.Scripts.Battle.Players
             _state = GetPlayerDriverState();
             _state.ResetState(this, _characterModel);
             _state.CheckRotation(_playerActorTransform.position);
-            GameplayManager.Get().RegisterPlayer(this);
+            _gameplayManager = GameplayManager.Get();
+            _gameplayManager.RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
+            this.ExecuteOnNextFrame(() =>
+            {
+                // PeerCount handshake protocol
+                Debug.Log($"SEND SendMyPeerCountRpc {this} pos {_playerPos} local {_isLocal} : {_peerCount} ->");
+                _photonView.RPC(nameof(TestSendMyPeerCountRpc), RpcTarget.All);
+            });
             if (!_isLocal)
             {
                 return;
@@ -89,7 +97,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
-        }
+       }
 
         private void OnDestroy()
         {
@@ -99,7 +107,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             print("xx");
             Debug.Log($"{name}");
-            GameplayManager.Get().UnregisterPlayer(this, _playerActorInstance.gameObject);
+            _gameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_playerActor == null)
             {
                 // Did not manage to initialize properly?
@@ -297,6 +305,18 @@ namespace Battle.Test.Scripts.Battle.Players
         private void TestSetStunnedRpc(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+
+        #endregion
+
+        #region Photon RPC for PeerCount handshake protocol
+
+        [PunRPC]
+        private void TestSendMyPeerCountRpc()
+        {
+            Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount+1}");
+            _peerCount +=1;
+            _gameplayManager.UpdatePeerCount(this);
         }
 
         #endregion

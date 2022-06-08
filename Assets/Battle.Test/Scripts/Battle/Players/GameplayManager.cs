@@ -8,6 +8,7 @@ using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Factory;
 using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Ball;
+using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -35,6 +36,8 @@ namespace Battle.Test.Scripts.Battle.Players
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 
         void RegisterPlayer(IPlayerDriver playerDriver);
+
+        void UpdatePeerCount(IPlayerDriver playerDriver);
 
         void UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot);
     }
@@ -237,17 +240,18 @@ namespace Battle.Test.Scripts.Battle.Players
 
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
-            Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} local {playerDriver.IsLocal}");
+            Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} " +
+                      $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal}");
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
             _players.Add(playerDriver);
             if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
             {
-                _abandonedPlayersByPlayerPos.Remove(playerDriver.PlayerPos); 
+                _abandonedPlayersByPlayerPos.Remove(playerDriver.PlayerPos);
                 deletePreviousInstance.SetActive(false);
                 Destroy(deletePreviousInstance);
             }
-            
+
             // Publish PlayerJoined first, then TeamCreated
             this.Publish(new PlayerJoined(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
@@ -291,6 +295,38 @@ namespace Battle.Test.Scripts.Battle.Players
             UpdateDebugPlayerList();
         }
 
+        void IGameplayManager.UpdatePeerCount(IPlayerDriver playerDriver)
+        {
+            if (_isApplicationQuitting)
+            {
+                return;
+            }
+            var realPlayers = PhotonBattle.CountRealPlayers();
+            if (realPlayers == 0)
+            {
+                return;
+            }
+            var roomPlayerCount = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
+            if (realPlayers < roomPlayerCount)
+            {
+                return;
+            }
+            var readyPeers = 0;
+            foreach (var player in _players)
+            {
+                if (player.PeerCount == realPlayers)
+                {
+                    readyPeers += 1;
+                }
+            }
+            var gameCanStart = realPlayers == readyPeers;
+            Debug.Log($"readyPeers {readyPeers} realPlayers {realPlayers} gameCanStart {gameCanStart}");
+            if (gameCanStart)
+            {
+                print("++ >>");
+            }
+        }
+
         void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot)
         {
             if (_isApplicationQuitting)
@@ -305,7 +341,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 Destroy(deletePreviousInstance);
             }
             _abandonedPlayersByPlayerPos[playerDriver.PlayerPos] = playerInstanceRoot;
-            
+
             // Publish events in reverse order: TeamBroken first, then PlayerLeft
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {

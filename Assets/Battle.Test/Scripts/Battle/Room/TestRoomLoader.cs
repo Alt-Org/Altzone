@@ -4,8 +4,8 @@ using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
-using Prg.Scripts.Common.Unity;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Battle.Test.Scripts.Battle.Room
 {
@@ -22,6 +22,7 @@ namespace Battle.Test.Scripts.Battle.Room
             private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
 
             [Tooltip(Tooltip1)] public bool _isOfflineMode;
+            [Range(1, 4)] public int _roomPlayerCount = 1;
         }
 
         [SerializeField, Header("Debug Settings")] private DebugSettings _debug;
@@ -35,7 +36,8 @@ namespace Battle.Test.Scripts.Battle.Room
             {
                 if (PhotonNetwork.InRoom)
                 {
-                    // We are in a room and that's it.
+                    // We are in a room.
+                    SetRoomPropertiesForTesting(PhotonNetwork.CurrentRoom, _debug._roomPlayerCount);
                     ShowRoomJoinedMessage();
                     enabled = false;
                     yield break;
@@ -69,6 +71,16 @@ namespace Battle.Test.Scripts.Battle.Room
         {
             Debug.LogError($"{PhotonNetwork.NetworkClientState} Error {returnCode} {message}");
             enabled = false;
+        }
+
+        private static void SetRoomPropertiesForTesting(Photon.Realtime.Room room, int playerCount)
+        {
+            room.SetCustomProperties(new Hashtable
+            {
+                { PhotonBattle.TeamBlueNameKey, "Blue" },
+                { PhotonBattle.TeamRedNameKey, "Red" },
+                { PhotonBattle.PlayerCountKey, playerCount }
+            });
         }
 
         private static void ShowRoomJoinedMessage()
