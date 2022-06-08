@@ -22,6 +22,7 @@ namespace Battle.Test.Scripts.Battle.Room
             private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
 
             [Tooltip(Tooltip1)] public bool _isOfflineMode;
+            public bool _isSetRoomProperties;
             [Range(1, 4)] public int _roomPlayerCount = 1;
         }
 
@@ -37,7 +38,10 @@ namespace Battle.Test.Scripts.Battle.Room
                 if (PhotonNetwork.InRoom)
                 {
                     // We are in a room.
-                    SetRoomPropertiesForTesting(PhotonNetwork.CurrentRoom, _debug._roomPlayerCount);
+                    if (_debug._isSetRoomProperties)
+                    {
+                        SetRoomPropertiesForTesting(PhotonNetwork.CurrentRoom, _debug._roomPlayerCount);
+                    }
                     ShowRoomJoinedMessage();
                     enabled = false;
                     yield break;

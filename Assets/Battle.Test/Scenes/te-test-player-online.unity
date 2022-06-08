@@ -353,6 +353,7 @@ MonoBehaviour:
   _requiredPlayerCount: 2
   _realPlayerCount: 0
   _startTheBall: {fileID: 6945955451045268624}
+  _isListenEvents: 0
   _timer: {fileID: 107868040}
 --- !u!1 &468236314
 GameObject:
@@ -848,6 +849,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _debug:
     _isOfflineMode: 0
+    _isSetRoomProperties: 1
     _roomPlayerCount: 4
 --- !u!114 &1107679315
 MonoBehaviour:
@@ -1061,6 +1063,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _testDelay
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 672911969852709495, guid: 87f5af0e91135264480fffdd50b52a0b,
+        type: 3}
+      propertyPath: _isListenEvents
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 672911969852709495, guid: 87f5af0e91135264480fffdd50b52a0b,
         type: 3}

@@ -85,6 +85,15 @@ namespace Battle.Test.Scripts.Battle.Players
                     return null;
             }
         }
+
+        public override string ToString()
+        {
+            if (SecondPlayer == null)
+            {
+                return $"Team:{TeamNumber}[{FirstPlayer.PlayerPos}]";
+            }
+            return $"Team:{TeamNumber}[{FirstPlayer.PlayerPos}+{SecondPlayer.PlayerPos}]";
+        }
     }
 
     internal class PlayerJoined
@@ -121,6 +130,18 @@ namespace Battle.Test.Scripts.Battle.Players
         public TeamBroken(IPlayerDriver playerWhoLeft)
         {
             PlayerWhoLeft = playerWhoLeft;
+        }
+    }
+
+    internal class TeamsAreReadyForGameplay
+    {
+        public readonly BattleTeam TeamBlue;
+        public readonly BattleTeam TeamRed;
+
+        public TeamsAreReadyForGameplay(BattleTeam teamBlue, BattleTeam teamRed)
+        {
+            TeamBlue = teamBlue;
+            TeamRed = teamRed;
         }
     }
 
@@ -324,6 +345,10 @@ namespace Battle.Test.Scripts.Battle.Players
             if (gameCanStart)
             {
                 print("++ >>");
+                var teamBlue = CreateBattleTeam(PhotonBattle.TeamBlueValue);
+                var teamRed = CreateBattleTeam(PhotonBattle.TeamRedValue);
+                Debug.Log($"{teamBlue} vs {teamRed?.ToString() ?? "null"}");
+                this.Publish(new TeamsAreReadyForGameplay(teamBlue, teamRed));
             }
         }
 

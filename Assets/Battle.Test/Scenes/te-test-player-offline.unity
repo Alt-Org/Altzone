@@ -882,6 +882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _debug:
     _isOfflineMode: 1
+    _isSetRoomProperties: 0
     _roomPlayerCount: 1
 --- !u!114 &1107679315
 MonoBehaviour:
@@ -1135,6 +1136,7 @@ MonoBehaviour:
   _requiredPlayerCount: 0
   _realPlayerCount: 0
   _startTheBall: {fileID: 196159525}
+  _isListenEvents: 0
   _timer: {fileID: 1496629963}
 --- !u!1 &1360003051
 GameObject:

@@ -1,12 +1,12 @@
-using System;
 using System.Collections;
 using Battle.Test.Scripts.Battle.Ball;
 using Battle.Test.Scripts.Battle.Players;
 using Battle.Test.Scripts.Battle.Room;
 using Photon.Pun;
+using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Battle.Test.Scripts.Test
 {
@@ -33,13 +33,40 @@ namespace Battle.Test.Scripts.Test
 
         [Header("Start The Ball")] public StartTheBallTest _startTheBall;
 
+        [Header("Event Settings"), SerializeField] private bool _isListenEvents;
+
         [Header("Timer")] public SimpleRoomTimer _timer;
 
         private IBallManager _ballManager;
+        private bool _isKeyPressed;
+        private bool _isGamePlayStarted;
 
         private void Awake()
         {
             Debug.Log($"IsMasterClient {PhotonNetwork.IsMasterClient} OfflineMode {PhotonNetwork.OfflineMode}");
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log($"{name}");
+            ScoreFlashNet.RegisterEventListener();
+            if (_isListenEvents)
+            {
+                Debug.Log($"{name} listen for TeamsAreReadyForGameplay event");
+                _isGamePlayStarted = false;
+                this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+            }
+        }
+
+        private void OnDisable()
+        {
+            this.Unsubscribe();
+        }
+
+        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
+        {
+            Debug.Log($"{data.TeamBlue} and {data.TeamRed?.ToString() ?? "null"}");
+            _isGamePlayStarted = true;
         }
 
         private void Update()
@@ -120,6 +147,16 @@ namespace Battle.Test.Scripts.Test
                 guiStart._windowTitle = "Start the Ball when ALL players are ready";
                 guiStart._buttonCaption = $" \r\nStart the Ball ({guiStart._controlKey})\r\n ";
                 guiStart.OnKeyPressed = TestAutoStart;
+                if (_isListenEvents)
+                {
+                    yield return new WaitUntil(() => _isKeyPressed || _isGamePlayStarted);
+                    if (!_isKeyPressed && _isGamePlayStarted)
+                    {
+                        guiStart.Hide();
+                        ScoreFlashNet.Push("AUTOSTART");
+                        TestAutoStart();
+                    }
+                }
                 yield break;
             }
             if (PhotonNetwork.InRoom)
@@ -129,7 +166,7 @@ namespace Battle.Test.Scripts.Test
             }
         }
 
-        public void TestAutoStart()
+        private void TestAutoStart()
         {
             if (_timer != null)
             {
@@ -140,6 +177,7 @@ namespace Battle.Test.Scripts.Test
                 _startTheBall.StartBallFirstTime();
                 return;
             }
+            _isKeyPressed = true;
             _setBallState = true;
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
