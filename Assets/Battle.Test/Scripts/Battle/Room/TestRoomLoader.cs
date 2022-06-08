@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -90,6 +91,7 @@ namespace Battle.Test.Scripts.Battle.Room
         private static void ShowRoomJoinedMessage()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ScoreFlash.RegisterEventListener();
 #else
             ScoreFlash.Push("DEVELOPMENT\r\nBUILD\r\nREQUIRED\r\nFOR TESTING");
 #endif

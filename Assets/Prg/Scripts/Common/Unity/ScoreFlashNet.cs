@@ -18,7 +18,7 @@ namespace Prg.Scripts.Common.Unity
 
         private static IScoreFlash Get()
         {
-            return _instance ?? (_instance = new ScoreFlasherNet());
+            return _instance ??= new ScoreFlasherNet();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

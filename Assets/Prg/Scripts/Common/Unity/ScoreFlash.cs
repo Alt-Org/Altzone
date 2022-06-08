@@ -37,6 +37,11 @@ namespace Prg.Scripts.Common.Unity
             _instance = null;
         }
 
+        public static void RegisterEventListener()
+        {
+            // ScoreFlashNet compatibility
+        }
+        
         public static void Push(string message)
         {
             Get().Push(message, 0f, 0f);
