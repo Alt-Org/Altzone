@@ -14,7 +14,9 @@ namespace Battle.Test.Scripts.Test
         public bool IsVisible => enabled;
 
         public void Show() => enabled = true;
-        
+
+        public void Hide() => enabled = false;
+
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         private int _windowId;
         private Rect _windowRect;
