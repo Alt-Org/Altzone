@@ -124,6 +124,8 @@ namespace Battle.Test.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => _actorNumber;
 
+        int IPlayerDriver.PeerCount => 0;
+
         int IPlayerDriver.PlayerPos => _settings._playerPos;
 
         int IPlayerDriver.TeamNumber => _settings._teamNumber;

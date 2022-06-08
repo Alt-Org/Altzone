@@ -22,6 +22,11 @@ namespace Battle.Test.Scripts.Battle.Players
         /// Currently Photon uses positive and static player negative values.
         /// </remarks>
         int ActorNumber { get; }
+        
+        /// <summary>
+        /// Number of "our" other instances that have reported.
+        /// </summary>
+        int PeerCount { get; }
 
         int PlayerPos { get; }
         int TeamNumber { get; }

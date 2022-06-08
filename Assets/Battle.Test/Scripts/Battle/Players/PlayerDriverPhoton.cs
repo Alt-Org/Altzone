@@ -22,6 +22,7 @@ namespace Battle.Test.Scripts.Battle.Players
         }
 
         [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
+        [SerializeField] private int _peerCount;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -152,6 +153,8 @@ namespace Battle.Test.Scripts.Battle.Players
         string IPlayerDriver.NickName => _photonView.Owner.NickName;
 
         int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
+
+        int IPlayerDriver.PeerCount => _peerCount;
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
