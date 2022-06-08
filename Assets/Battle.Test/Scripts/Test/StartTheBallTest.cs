@@ -68,7 +68,8 @@ namespace Battle.Test.Scripts.Test
         public void StartBallFirstTime()
         {
             Debug.Log($"{name} delayToStart {_delayToStart}");
-            Array.Clear(_teamRestartCount, 0 , _teamRestartCount.Length);
+            Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
+            print("~~");
             StartCoroutine(StartBallRoutinePreload(null));
         }
 
@@ -84,9 +85,8 @@ namespace Battle.Test.Scripts.Test
 
         private IEnumerator StartBallRoutinePreload(IPlayerDriver playerToStart)
         {
-            // I must admit that this and below methods are not easiest to write or read afterwards.
+            // I must admit that this and below methods might not be easiest to write or read afterwards.
             LoadDependencies();
-            print("~~");
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
 
@@ -114,10 +114,7 @@ namespace Battle.Test.Scripts.Test
                         _onGuiWindow = gameObject.AddComponent<OnGuiWindowTest>();
                         _onGuiWindow._windowTitle = "Restart the GAME when ALL players are ready";
                         _onGuiWindow._buttonCaption = $" \r\nRestart the GAME ({_onGuiWindow._controlKey})\r\n ";
-                        _onGuiWindow.OnKeyPressed = () =>
-                        {
-                            Debug.Log("game restarted");
-                        };
+                        _onGuiWindow.OnKeyPressed = () => { Debug.Log("game restarted"); };
                     }
                     _onGuiWindow.Show();
                     yield return null;
@@ -127,7 +124,7 @@ namespace Battle.Test.Scripts.Test
             _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             StartCoroutine(StartBallWorkRoutine(playerToStart));
         }
-        
+
         private IEnumerator StartBallWorkRoutine(IPlayerDriver playerToStart)
         {
             BattleTeam startTeam;
@@ -193,7 +190,7 @@ namespace Battle.Test.Scripts.Test
             _ballManager.SetBallPosition(ballDropPosition);
             _ballManager.SetBallState(BallState.NoTeam);
             _ballManager.SetBallSpeed(speed, direction);
-            print("~~");
+            Debug.Log($"{name} DONE");
         }
 
         private static int GetStatingTeamByDistance(ITeamSnapshotTracker blueTracker, ITeamSnapshotTracker redTracker, out float startDistance,
