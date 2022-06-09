@@ -229,7 +229,7 @@ namespace Battle.Test.Scripts.Battle.Ball
             _ballColliderParent.SetActive(state);
             _ballCollider.enabled = state;
         }
-        
+
         private void _SetBallState(BallState ballState)
         {
             _ballState = ballState;
@@ -360,18 +360,18 @@ namespace Battle.Test.Scripts.Battle.Ball
         {
             if (speed == 0)
             {
+                // When ball is stopped, it will "forget" its current direction and can not start moving without new direction!
                 _ballRequiredMoveSpeed = 0;
                 _rigidbody.velocity = Vector2.zero;
                 _rigidbodyVelocitySqrMagnitude = 0;
                 return Vector2.zero;
             }
             _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
-            var rigidbodyVelocity = direction != Vector2.zero
-                ? direction.normalized * _ballRequiredMoveSpeed
-                : _rigidbody.velocity.normalized * _ballRequiredMoveSpeed;
-            _rigidbody.velocity = rigidbodyVelocity;
-            _rigidbodyVelocitySqrMagnitude = rigidbodyVelocity.sqrMagnitude;
-            return rigidbodyVelocity;
+            var velocity = (direction != Vector2.zero ? direction.normalized : _rigidbody.velocity.normalized) * _ballRequiredMoveSpeed;
+            Assert.IsTrue(velocity != Vector2.zero, "velocity != Vector2.zero");
+            _rigidbody.velocity = velocity;
+            _rigidbodyVelocitySqrMagnitude = velocity.sqrMagnitude;
+            return velocity;
         }
 
         void IBallManager.SetBallState(BallState ballState)
