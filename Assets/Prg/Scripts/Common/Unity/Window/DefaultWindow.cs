@@ -19,7 +19,7 @@ namespace Prg.Scripts.Common.Unity.Window
             {
                 FindWindow();
             }
-            Debug.Log($"OnEnable {_window}");
+            Debug.Log($"{_window}");
             var windowManager = WindowManager.Get();
             windowManager.SetWindowsParent(gameObject);
             Assert.IsNotNull(_window.WindowPrefab, "_window.WindowPrefab != null");
@@ -39,8 +39,9 @@ namespace Prg.Scripts.Common.Unity.Window
                 while (--index >= 0)
                 {
                     var child = rootGameObjects[index];
-                    if (child.GetComponent<Canvas>() != null)
+                    if (child.GetComponentInChildren<Canvas>() != null)
                     {
+                        Debug.Log($"found {child.GetFullPath()}");
                         return child;
                     }
                 }
