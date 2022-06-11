@@ -27,7 +27,7 @@ namespace Prg.Scripts.Common.Unity.Window
         }
 
         /// <summary>
-        /// Create new window for first <c>Canvas</c> in current scene.
+        /// Create new window for the last <c>Canvas</c> found in current scene.
         /// </summary>
         private void FindWindow()
         {
