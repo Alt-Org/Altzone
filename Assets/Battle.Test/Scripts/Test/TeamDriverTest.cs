@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Battle.Test.Scripts.Battle.Players;
 using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Test
@@ -15,7 +18,9 @@ namespace Battle.Test.Scripts.Test
             public MonoBehaviour _player2;
         }
 
-        [SerializeField] private TeamSettings _teamBlue;
+        [Header("Settings"), SerializeField] private bool _isShowCountdown;
+        
+        [Header("Live Data"), SerializeField] private TeamSettings _teamBlue;
         [SerializeField] private TeamSettings _teamRed;
 
         private void OnEnable()
@@ -66,6 +71,24 @@ namespace Battle.Test.Scripts.Test
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"}");
+            if (!_isShowCountdown)
+            {
+                return;
+            }
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            var countdownDelay = variables._roomStartDelay;
+            StartCoroutine(SimulateCountdown(countdownDelay));
+        }
+
+        private static IEnumerator SimulateCountdown(int countdownDelay)
+        {
+            var delay = new WaitForSeconds(1f);
+            while (--countdownDelay >= 0)
+            {
+                yield return delay;
+                ScoreFlashNet.Push(countdownDelay.ToString());
+            }
         }
     }
 }

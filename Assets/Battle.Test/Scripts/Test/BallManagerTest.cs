@@ -28,7 +28,7 @@ namespace Battle.Test.Scripts.Test
         public bool _isStartOnGui;
         public bool _isAutoStartTest;
         public bool _useAttackSpeed;
-        public int _requiredPlayerCount;
+        [Range(0, 4)] public int _requiredPlayerCount;
         [ReadOnly] public int _realPlayerCount;
 
         [Header("Start The Ball")] public StartTheBallTest _startTheBall;
@@ -153,7 +153,6 @@ namespace Battle.Test.Scripts.Test
                     if (!_isKeyPressed && _isGamePlayStarted)
                     {
                         guiStart.Hide();
-                        ScoreFlashNet.Push("AUTOSTART");
                         TestAutoStart();
                     }
                 }
@@ -174,6 +173,7 @@ namespace Battle.Test.Scripts.Test
             }
             if (_isStartTheBallStart)
             {
+                ScoreFlashNet.Push("AUTOSTART");
                 _startTheBall.StartBallFirstTime();
                 return;
             }
