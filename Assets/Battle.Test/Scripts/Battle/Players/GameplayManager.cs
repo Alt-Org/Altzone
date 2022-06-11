@@ -347,8 +347,9 @@ namespace Battle.Test.Scripts.Battle.Players
                 print("++ >>");
                 var teamBlue = CreateBattleTeam(PhotonBattle.TeamBlueValue);
                 var teamRed = CreateBattleTeam(PhotonBattle.TeamRedValue);
-                Debug.Log($"{teamBlue} vs {teamRed?.ToString() ?? "null"}");
-                this.Publish(new TeamsAreReadyForGameplay(teamBlue, teamRed));
+                var message = new TeamsAreReadyForGameplay(teamBlue, teamRed);
+                Debug.Log($"TeamsAreReadyForGameplay {message.TeamBlue} vs {message.TeamRed?.ToString() ?? "null"}");
+                this.ExecuteOnNextFrame(() => this.Publish(message));
             }
         }
 

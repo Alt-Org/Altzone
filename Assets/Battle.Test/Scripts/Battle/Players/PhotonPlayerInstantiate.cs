@@ -43,7 +43,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Assert.IsNotNull(_photonPrefab, "_photonPrefab != null");
             base.OnEnable();
             var player = PhotonNetwork.LocalPlayer;
-            Debug.Log($"{PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
+            Debug.Log($"work start {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
             if (PhotonNetwork.InRoom)
             {
                 OnLocalPlayerReady();
@@ -54,7 +54,7 @@ namespace Battle.Test.Scripts.Battle.Players
         {
             base.OnDisable();
             var player = PhotonNetwork.LocalPlayer;
-            Debug.Log($"{PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
+            Debug.Log($"work done {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
         }
 
         public override void OnJoinedRoom()
