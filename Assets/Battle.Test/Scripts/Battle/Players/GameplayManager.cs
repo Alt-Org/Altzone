@@ -323,13 +323,11 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             var realPlayers = PhotonBattle.CountRealPlayers();
-            if (realPlayers == 0)
+            Assert.IsTrue(realPlayers > 0, "realPlayers > 0");
+            var roomPlayers = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
+            if (realPlayers < roomPlayers)
             {
-                return;
-            }
-            var roomPlayerCount = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
-            if (realPlayers < roomPlayerCount)
-            {
+                Debug.Log($"WAIT more realPlayers {realPlayers} : roomPlayers {roomPlayers}");
                 return;
             }
             var readyPeers = 0;
