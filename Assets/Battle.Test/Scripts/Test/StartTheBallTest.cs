@@ -130,11 +130,12 @@ namespace Battle.Test.Scripts.Test
             BattleTeam startTeam;
             BattleTeam otherTeam;
             float speed;
-            var delay = new WaitForSeconds(_delayToStart);
+            // During count down period players can move freely
+            var countDownDelay = new WaitForSeconds(_delayToStart);
             if (playerToStart != null)
             {
                 var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
-                yield return delay;
+                yield return countDownDelay;
 
                 tracker.StopTracking();
                 yield return null;
@@ -154,7 +155,7 @@ namespace Battle.Test.Scripts.Test
             {
                 var blueTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
-                yield return delay;
+                yield return countDownDelay;
 
                 blueTracker.StopTracking();
                 redTracker.StopTracking();
@@ -170,6 +171,8 @@ namespace Battle.Test.Scripts.Test
                 speed = startAttack * startDistance - otherAttack * otherDistance;
                 if (speed == 0)
                 {
+                    // Use only winning teams data
+                    // if both teams have exactly the same attack value and distance to each other - only possible if nobody moves
                     speed = startAttack * startDistance;
                 }
                 Debug.Log(
