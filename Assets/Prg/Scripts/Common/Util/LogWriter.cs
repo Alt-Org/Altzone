@@ -82,7 +82,7 @@ namespace Prg.Scripts.Common.Util
 
         private void OnDestroy()
         {
-            // OnApplicationQuit() comes before OnDestroy() so we are interested to listen it.
+            // OnApplicationQuit() comes before OnDestroy() so we are *not* interested to listen it.
 
             Application.logMessageReceivedThreaded -= UnityLogCallback;
             UnityEngine.Debug.Log($"LogWriter OnDestroy Close file {_fileName}");

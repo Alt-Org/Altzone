@@ -100,7 +100,7 @@ namespace Battle.Test.Scripts.Test
 
         private IEnumerator Start()
         {
-            // Start flag priorities
+            // Start flag priorities - BTW it is (almost) impossible to understand what this code is meant to do!
             if (_startTheBall == null)
             {
                 _isStartTheBallStart = false;
