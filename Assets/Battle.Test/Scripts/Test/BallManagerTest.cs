@@ -20,11 +20,8 @@ namespace Battle.Test.Scripts.Test
         public BallState _state;
 
         [Header("Photon Master Client")] public bool _isAutoStartBall;
-        public bool _isUseStartTheBall;
         public bool _isStartOnGui;
         public float _autoStartDelay;
-
-        [Header("Start The Ball")] public StartTheBallTest _startTheBall;
 
         private IBallManager _ballManager;
 
@@ -72,7 +69,7 @@ namespace Battle.Test.Scripts.Test
         {
             yield return new WaitUntil(() => (_ballManager ??= BallManager.Get()) != null);
             yield return null;
-            if (!(_isAutoStartBall || _isUseStartTheBall || _isStartOnGui))
+            if (!(_isAutoStartBall || _isStartOnGui))
             {
                 yield break;
             }
@@ -80,7 +77,7 @@ namespace Battle.Test.Scripts.Test
             {
                 yield return new WaitForSeconds(_autoStartDelay);
             }
-            if (PhotonNetwork.OfflineMode && (_isAutoStartBall || _isUseStartTheBall))
+            if (PhotonNetwork.OfflineMode && _isAutoStartBall)
             {
                 TestAutoStart();
                 yield break;
@@ -90,7 +87,7 @@ namespace Battle.Test.Scripts.Test
             {
                 yield break;
             }
-            if (_isAutoStartBall || _isUseStartTheBall)
+            if (_isAutoStartBall)
             {
                 TestAutoStart();
                 yield break;
@@ -103,11 +100,6 @@ namespace Battle.Test.Scripts.Test
 
         private void TestAutoStart()
         {
-            if (_isUseStartTheBall)
-            {
-                _startTheBall.StartBallFirstTime();
-                return;
-            }
             _setBallState = true;
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
