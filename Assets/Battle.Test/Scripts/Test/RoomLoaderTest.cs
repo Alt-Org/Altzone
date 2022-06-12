@@ -90,12 +90,7 @@ namespace Battle.Test.Scripts.Test
 
         private static void ShowRoomJoinedMessage()
         {
-            var isEditor = Application.platform.ToString().ToLower().EndsWith("editor");
-            if (isEditor)
-            {
-                return;
-            }
-            if (Debug.isDebugBuild)
+            if (AppPlatform.IsDevelopmentBuild)
             {
                 return;
             }

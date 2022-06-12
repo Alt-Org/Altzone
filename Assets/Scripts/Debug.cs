@@ -99,13 +99,6 @@ public static class Debug
         _suffixTag = null;
     }
 
-    /// <summary>
-    /// In the Build Settings dialog there is a check box called "Development Build"<br />
-    /// https://docs.unity3d.com/ScriptReference/Debug-isDebugBuild.html
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public static bool isDebugBuild => UnityEngine.Debug.isDebugBuild;
-
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void Log(string message, Object context = null, [CallerMemberName] string memberName = null)
     {
