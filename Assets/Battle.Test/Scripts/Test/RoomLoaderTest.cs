@@ -4,19 +4,16 @@ using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-#else
-using Prg.Scripts.Common.Unity.ToastMessages;
-#endif
 
-namespace Battle.Test.Scripts.Battle.Room
+namespace Battle.Test.Scripts.Test
 {
     /// <summary>
     /// <c>TestRoomLoader</c> creates a new test room unless it is in a room already.
     /// </summary>
-    internal class TestRoomLoader : MonoBehaviourPunCallbacks
+    internal class RoomLoaderTest : MonoBehaviourPunCallbacks
     {
         [Serializable]
         internal class DebugSettings
@@ -81,7 +78,7 @@ namespace Battle.Test.Scripts.Battle.Room
             enabled = false;
         }
 
-        private static void SetRoomPropertiesForTesting(Photon.Realtime.Room room, int playerCount)
+        private static void SetRoomPropertiesForTesting(Room room, int playerCount)
         {
             room.SetCustomProperties(new Hashtable
             {
@@ -93,10 +90,16 @@ namespace Battle.Test.Scripts.Battle.Room
 
         private static void ShowRoomJoinedMessage()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-#else
+            var isEditor = Application.platform.ToString().ToLower().EndsWith("editor");
+            if (isEditor)
+            {
+                return;
+            }
+            if (Debug.isDebugBuild)
+            {
+                return;
+            }
             ScoreFlash.Push("DEVELOPMENT\r\nBUILD\r\nREQUIRED\r\nFOR TESTING");
-#endif
         }
     }
 }

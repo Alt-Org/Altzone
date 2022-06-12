@@ -4,10 +4,10 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Test.Scripts.Test
 {
-    internal class OnGuiWindowTest : MonoBehaviour
+    internal class OnGuiWindowHelper : MonoBehaviour
     {
         public Key _controlKey = Key.F4;
-        public string _windowTitle = nameof(OnGuiWindowTest);
+        public string _windowTitle = nameof(OnGuiWindowHelper);
         public string _buttonCaption = nameof(_buttonCaption);
         public Action OnKeyPressed;
 

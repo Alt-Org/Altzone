@@ -9,7 +9,7 @@ namespace Battle.Test.Scripts.Test
 
         private void OnEnable()
         {
-            // Just to be able to disable us to disable debug logging.
+            // Just to be able to enable/disable us from Editor conveniently.
         }
 
         #region Collisions

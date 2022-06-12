@@ -29,7 +29,7 @@ namespace Battle.Test.Scripts.Test
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
-        private OnGuiWindowTest _onGuiWindow;
+        private OnGuiWindowHelper _onGuiWindow;
         private float _delayToStart;
 
         private void Awake()
@@ -78,6 +78,11 @@ namespace Battle.Test.Scripts.Test
             if (_instance == null)
             {
                 _instance = FindObjectOfType<StartTheBallTest>();
+                if (_instance == null)
+                {
+                    Debug.LogWarning($"{nameof(StartTheBallTest)} NOT FOUND");
+                    return;
+                }
             }
             Debug.Log($"{_instance.name} delayToStart {_instance._delayToStart} player pos  {playerToStart.Position}");
             _instance.StartCoroutine(_instance.StartBallRoutinePreload(playerToStart));
@@ -111,7 +116,7 @@ namespace Battle.Test.Scripts.Test
                     yield return null;
                     if (_onGuiWindow == null)
                     {
-                        _onGuiWindow = gameObject.AddComponent<OnGuiWindowTest>();
+                        _onGuiWindow = gameObject.AddComponent<OnGuiWindowHelper>();
                         _onGuiWindow._windowTitle = "Restart the GAME when ALL players are ready";
                         _onGuiWindow._buttonCaption = $" \r\nRestart the GAME ({_onGuiWindow._controlKey})\r\n ";
                         _onGuiWindow.OnKeyPressed = () => { Debug.Log("game restarted"); };

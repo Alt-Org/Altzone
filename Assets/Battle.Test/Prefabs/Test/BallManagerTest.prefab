@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5601946857894714655
+--- !u!1 &478136274551193638
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5601946857894714653}
-  - component: {fileID: 5601946857894714654}
+  - component: {fileID: 7060749013550812872}
+  - component: {fileID: 5211344391042529616}
   m_Layer: 0
-  m_Name: GameplayManager
+  m_Name: BallManagerTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5601946857894714653
+--- !u!4 &7060749013550812872
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5601946857894714655}
+  m_GameObject: {fileID: 478136274551193638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,18 +32,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5601946857894714654
+--- !u!114 &5211344391042529616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5601946857894714655}
+  m_GameObject: {fileID: 478136274551193638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f42bea5bdcf467d95a0b3f57bde59da, type: 3}
+  m_Script: {fileID: 11500000, guid: b5d4fc598910482383654c1d6746427b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _debug:
-    _playerList: []
-    _abandonedPlayerList: []
+  _setBallState: 0
+  _setBallPosition: 0
+  _setBallSpeed: 0
+  _setBallSpeedAndDir: 0
+  _stopBall: 0
+  _position: {x: 0, y: 0}
+  _speed: 1
+  _direction: {x: 1, y: 1}
+  _state: 1
+  _isAutoStartBall: 0
+  _isUseStartTheBall: 0
+  _isStartOnGui: 0
+  _autoStartDelay: 0
+  _startTheBall: {fileID: 0}

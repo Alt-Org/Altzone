@@ -27,11 +27,12 @@ namespace Battle.Test.Scripts.Test
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;
 
+        [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
         private IPlayerDriver _playerDriver;
 
         private void Awake()
         {
-            _playerDriver = GetComponent<IPlayerDriver>();
+            _playerDriver = _playerDriverInstance as IPlayerDriver;
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
             if (_stunDuration == 0)

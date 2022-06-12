@@ -3,9 +3,9 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
-namespace Battle.Test.Scripts.Battle.Room
+namespace Battle.Test.Scripts.Test
 {
-    public class SimpleRoomTimer : MonoBehaviour
+    public class SimpleTimerHelper : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
 
