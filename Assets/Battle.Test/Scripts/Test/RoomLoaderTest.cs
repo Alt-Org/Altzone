@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Photon.Pun;
@@ -6,7 +5,6 @@ using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Battle.Test.Scripts.Test
 {
@@ -15,39 +13,27 @@ namespace Battle.Test.Scripts.Test
     /// </summary>
     internal class RoomLoaderTest : MonoBehaviourPunCallbacks
     {
-        [Serializable]
-        internal class DebugSettings
-        {
-            public const string TestRoomName = "TestBattle";
+        private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
 
-            private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
+        private const string TestRoomName = "TestBattle";
 
-            [Tooltip(Tooltip1)] public bool _isOfflineMode;
-            public bool _isSetRoomProperties;
-            [Range(1, 4)] public int _roomPlayerCount = 1;
-        }
-
-        [SerializeField, Header("Debug Settings")] private DebugSettings _debug;
+        [Header("Debug Settings"), Tooltip(Tooltip1), SerializeField] private bool _isOfflineMode;
 
         private IEnumerator Start()
         {
             PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-            PhotonNetwork.OfflineMode = _debug._isOfflineMode;
+            PhotonNetwork.OfflineMode = _isOfflineMode;
             for (; enabled;)
             {
                 if (PhotonNetwork.InRoom)
                 {
                     // We are in a room.
-                    if (_debug._isSetRoomProperties)
-                    {
-                        SetRoomPropertiesForTesting(PhotonNetwork.CurrentRoom, _debug._roomPlayerCount);
-                    }
                     ShowRoomJoinedMessage();
                     enabled = false;
                     yield break;
                 }
-                if (_debug._isOfflineMode)
+                if (_isOfflineMode)
                 {
                     // JoinRandomRoom -> OnJoinedRoom
                     PhotonNetwork.JoinRandomRoom();
@@ -69,23 +55,13 @@ namespace Battle.Test.Scripts.Test
         public override void OnJoinedLobby()
         {
             Debug.Log($"JoinOrCreateRoom {PhotonNetwork.NetworkClientState}");
-            PhotonLobby.JoinOrCreateRoom(DebugSettings.TestRoomName);
+            PhotonLobby.JoinOrCreateRoom(TestRoomName);
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.LogError($"{PhotonNetwork.NetworkClientState} Error {returnCode} {message}");
             enabled = false;
-        }
-
-        private static void SetRoomPropertiesForTesting(Room room, int playerCount)
-        {
-            room.SetCustomProperties(new Hashtable
-            {
-                { PhotonBattle.TeamBlueNameKey, "Blue" },
-                { PhotonBattle.TeamRedNameKey, "Red" },
-                { PhotonBattle.PlayerCountKey, playerCount }
-            });
         }
 
         private static void ShowRoomJoinedMessage()

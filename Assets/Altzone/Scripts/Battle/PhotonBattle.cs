@@ -49,7 +49,7 @@ namespace Altzone.Scripts.Battle
 
         public const int WinTypeNone = 0;
         public const int WinTypeScore = 1;
-        public const int WinTypeResign  = 2;
+        public const int WinTypeResign = 2;
         public const int WinTypeDraw = 3;
 
         private const string NoPlayerName = "noname";
@@ -225,6 +225,18 @@ namespace Altzone.Scripts.Battle
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        public static void SetDebugRoomProperties(Room room, int playerCount, string teamBlueName = "Blue", string teamRedName = "Red")
+        {
+            room.SetCustomProperties(new Hashtable
+            {
+                { TeamBlueNameKey, teamBlueName },
+                { TeamRedNameKey, teamRedName },
+                { PlayerCountKey, playerCount }
+            });
+            Debug.LogWarning($"{room.GetDebugLabel()} players {playerCount} blue {teamBlueName} red {teamRedName}");
+        }
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void SetDebugPlayer(Player player, int wantedPlayerPos, bool isAllocateByTeams, int playerMainSkill)
         {
             var usedPlayerPositions = new HashSet<int>();
@@ -278,7 +290,7 @@ namespace Altzone.Scripts.Battle
                 { PlayerPositionKey, playerPos },
                 { PlayerMainSkillKey, playerMainSkill }
             });
-            Debug.LogWarning($"setDebugPlayerProps {player.GetDebugLabel()} playerPos {playerPos} skill {playerMainSkill}");
+            Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} skill {playerMainSkill}");
         }
     }
 }

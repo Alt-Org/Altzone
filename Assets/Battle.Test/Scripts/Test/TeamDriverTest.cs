@@ -3,6 +3,7 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Test.Scripts.Battle.Players;
+using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
@@ -18,8 +19,11 @@ namespace Battle.Test.Scripts.Test
             public MonoBehaviour _player2;
         }
 
+        [Header("Autostart"), SerializeField] private bool _isAutoStartBall;
+        [SerializeField] private int _roomPlayersOverride;
+
         [Header("Settings"), SerializeField] private bool _isShowCountdown;
-        
+
         [Header("Live Data"), SerializeField] private TeamSettings _teamBlue;
         [SerializeField] private TeamSettings _teamRed;
 
@@ -29,8 +33,19 @@ namespace Battle.Test.Scripts.Test
             this.Subscribe<TeamCreated>(OnTeamCreated);
             this.Subscribe<TeamBroken>(OnTeamBroken);
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+            StartCoroutine(ConfigureRoom(_roomPlayersOverride));
         }
 
+        private static IEnumerator ConfigureRoom(int roomPlayersCount)
+        {
+            yield return new WaitUntil(() => PhotonNetwork.InRoom);
+            var room = PhotonNetwork.CurrentRoom;
+            if (roomPlayersCount > 0)
+            {
+                PhotonBattle.SetDebugRoomProperties(room, roomPlayersCount);
+            }
+        }
+        
         private void OnDisable()
         {
             Debug.Log($"");
@@ -71,6 +86,15 @@ namespace Battle.Test.Scripts.Test
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"}");
+            if (_isAutoStartBall)
+            {
+                var startTheBallTest = FindObjectOfType<StartTheBallTest>();
+                if (startTheBallTest != null)
+                {
+                    ScoreFlashNet.Push("AUTOSTART");
+                    startTheBallTest.StartBallFirstTime();
+                }
+            }
             if (!_isShowCountdown)
             {
                 return;

@@ -188,8 +188,12 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            ScoreFlash.Push("RESTART");
-            StartTheBallTest.RestartBallInGame(this);
+            var startTheBallTest = FindObjectOfType<StartTheBallTest>();
+            ScoreFlash.Push(startTheBallTest != null ? "RESTART" : "CAN NOT RESTART");
+            if (startTheBallTest != null)
+            {
+                startTheBallTest.RestartBallInGame(this);
+            }
         }
 
         #endregion
