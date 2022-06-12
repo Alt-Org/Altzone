@@ -156,7 +156,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         public static IGameplayManager Get() => FindObjectOfType<GameplayManager>();
 
-        [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
+        [SerializeField] private DebugSettings _debug;
 
         private readonly HashSet<IPlayerDriver> _players = new();
         private readonly Dictionary<int, GameObject> _abandonedPlayersByPlayerPos = new();
@@ -218,7 +218,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var team = CreateBattleTeam(teamNumber);
             if (team == null)
             {
-                return new NullTeamSnapshotTracker();
+                return new NullTeamSnapshotTracker(teamNumber);
             }
             var tracker = new TeamSnapshotTracker(team);
             StartCoroutine(tracker.TrackTheTeam());
@@ -324,7 +324,7 @@ namespace Battle.Test.Scripts.Battle.Players
             }
             var realPlayers = PhotonBattle.CountRealPlayers();
             Assert.IsTrue(realPlayers > 0, "realPlayers > 0");
-            var roomPlayers = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
+            var roomPlayers = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, int.MaxValue);
             if (realPlayers < roomPlayers)
             {
                 Debug.Log($"WAIT more realPlayers {realPlayers} : roomPlayers {roomPlayers}");
@@ -339,7 +339,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 }
             }
             var gameCanStart = realPlayers == readyPeers;
-            Debug.Log($"readyPeers {readyPeers} realPlayers {realPlayers} gameCanStart {gameCanStart}");
+            Debug.Log($"readyPeers {readyPeers} realPlayers {realPlayers} roomPlayers {roomPlayers} gameCanStart {gameCanStart}");
             if (gameCanStart)
             {
                 print("++ >>");
@@ -446,10 +446,18 @@ namespace Battle.Test.Scripts.Battle.Players
 
     internal class NullTeamSnapshotTracker : ITeamSnapshotTracker
     {
+        private readonly int _teamNumber;
+
+        public NullTeamSnapshotTracker(int teamNumber)
+        {
+            _teamNumber = teamNumber;
+        }
+
         public float GetSqrDistance => 0;
 
         public void StopTracking()
         {
+            Debug.Log($"team {_teamNumber} sqr distance {GetSqrDistance:0.00}");
         }
     }
 

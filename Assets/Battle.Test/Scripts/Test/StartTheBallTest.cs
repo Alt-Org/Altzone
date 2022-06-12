@@ -20,17 +20,19 @@ namespace Battle.Test.Scripts.Test
     /// </remarks>
     internal class StartTheBallTest : MonoBehaviour
     {
-        private static StartTheBallTest _instance;
+        private const string Tooltip = "Simulate Battle game restart after 'game over'";
 
-        [Header("Debug Settings"), SerializeField] private float _testDelay;
+        [Header("Debug Settings"), SerializeField] private float _countDownDelayOverride;
         [SerializeField] private float _forceSpeedOverride;
-        [SerializeField] private int _teamRestartLimit;
+
+        [Header("Restart Game Simulation"), Tooltip(Tooltip), SerializeField] private bool _isRestartGameSimulation;
+        [Min(1), SerializeField] private int _teamRestartLimit = 1;
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
         private OnGuiWindowHelper _onGuiWindow;
-        private float _delayToStart;
+        private float _countDownDelay;
 
         private void Awake()
         {
@@ -42,10 +44,10 @@ namespace Battle.Test.Scripts.Test
             Debug.Log($"{name}");
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
-            _delayToStart = variables._roomStartDelay;
-            if (_testDelay > 0)
+            _countDownDelay = variables._roomStartDelay;
+            if (_countDownDelayOverride > 0)
             {
-                _delayToStart = _testDelay;
+                _countDownDelay = _countDownDelayOverride;
             }
         }
 
@@ -67,25 +69,16 @@ namespace Battle.Test.Scripts.Test
 
         public void StartBallFirstTime()
         {
-            Debug.Log($"{name} delayToStart {_delayToStart}");
+            Debug.Log($"{name} delayToStart {_countDownDelay}");
             Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
             print("~~");
             StartCoroutine(StartBallRoutinePreload(null));
         }
 
-        public static void RestartBallInGame(IPlayerDriver playerToStart)
+        public void RestartBallInGame(IPlayerDriver playerToStart)
         {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<StartTheBallTest>();
-                if (_instance == null)
-                {
-                    Debug.LogWarning($"{nameof(StartTheBallTest)} NOT FOUND");
-                    return;
-                }
-            }
-            Debug.Log($"{_instance.name} delayToStart {_instance._delayToStart} player pos  {playerToStart.Position}");
-            _instance.StartCoroutine(_instance.StartBallRoutinePreload(playerToStart));
+            Debug.Log($"{name} delayToStart {_countDownDelay} player pos  {playerToStart.Position}");
+            StartCoroutine(StartBallRoutinePreload(playerToStart));
         }
 
         private IEnumerator StartBallRoutinePreload(IPlayerDriver playerToStart)
@@ -99,7 +92,7 @@ namespace Battle.Test.Scripts.Test
             _ballManager.SetBallPosition(Vector2.zero);
             yield return null;
 
-            if (playerToStart != null && _teamRestartLimit > 0)
+            if (playerToStart != null && _isRestartGameSimulation)
             {
                 _teamRestartCount[playerToStart.TeamNumber] += 1;
                 if (_teamRestartCount[playerToStart.TeamNumber] >= _teamRestartLimit)
@@ -136,7 +129,7 @@ namespace Battle.Test.Scripts.Test
             BattleTeam otherTeam;
             float speed;
             // During count down period players can move freely
-            var countDownDelay = new WaitForSeconds(_delayToStart);
+            var countDownDelay = new WaitForSeconds(_countDownDelay);
             if (playerToStart != null)
             {
                 var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
@@ -158,6 +151,7 @@ namespace Battle.Test.Scripts.Test
             }
             else
             {
+                Debug.Log($"{name} WAIT {_countDownDelay}");
                 var blueTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
                 yield return countDownDelay;

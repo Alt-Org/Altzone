@@ -97,7 +97,7 @@ namespace Battle.Test.Scripts.Battle.Players
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
-       }
+        }
 
         private void OnDestroy()
         {
@@ -255,8 +255,12 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return;
             }
-            ScoreFlashNet.Push("RESTART");
-            StartTheBallTest.RestartBallInGame(this);
+            var startTheBallTest = FindObjectOfType<StartTheBallTest>();
+            ScoreFlashNet.Push(startTheBallTest != null ? "RESTART" : "CAN NOT RESTART");
+            if (startTheBallTest != null)
+            {
+                startTheBallTest.RestartBallInGame(this);
+            }
         }
 
         #endregion
@@ -314,8 +318,8 @@ namespace Battle.Test.Scripts.Battle.Players
         [PunRPC]
         private void TestSendMyPeerCountRpc()
         {
-            Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount+1}");
-            _peerCount +=1;
+            Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount + 1}");
+            _peerCount += 1;
             _gameplayManager.UpdatePeerCount(this);
         }
 
