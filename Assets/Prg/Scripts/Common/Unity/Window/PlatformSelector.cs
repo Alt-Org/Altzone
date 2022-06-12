@@ -21,13 +21,13 @@ namespace Prg.Scripts.Common.Unity.Window
         private void OnEnable()
         {
             Debug.Log(
-                $"{name} on {Application.platform} is: editor {IsEditor()}, dev build {IsRuntimeDevelopmentBuild()}, platform {IsValidPlatform()}");
-            if (IsEditor())
+                $"{name} on {Application.platform} is: editor {AppPlatform.IsEditor}, dev build {AppPlatform.IsDevelopmentBuild}, platform {IsValidPlatform()}");
+            if (AppPlatform.IsEditor)
             {
                 HandleComponents(_isAllowInEditor);
                 return;
             }
-            if (IsRuntimeDevelopmentBuild())
+            if (AppPlatform.IsDevelopmentBuild)
             {
                 HandleComponents(_isAllowDevelopmentBuild);
                 return;
@@ -61,20 +61,6 @@ namespace Prg.Scripts.Common.Unity.Window
                 }
             }
             return false;
-        }
-
-        private static bool IsEditor()
-        {
-            return Application.platform.ToString().ToLower().EndsWith("editor");
-        }
-
-        private static bool IsRuntimeDevelopmentBuild()
-        {
-#if DEVELOPMENT_BUILD
-            return true;
-#else
-            return false;
-#endif
         }
     }
 }

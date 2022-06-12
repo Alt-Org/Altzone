@@ -41,7 +41,7 @@ namespace Prg.Scripts.Common.Util
             {
                 CreateLogWriter();
             }
-            if (Application.platform.ToString().EndsWith("Editor"))
+            if (AppPlatform.IsEditor)
             {
                 // Log color for Editor log.
                 var trimmed = string.IsNullOrEmpty(config._colorForClassName) ? string.Empty : config._colorForClassName.Trim();

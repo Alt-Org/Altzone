@@ -166,9 +166,9 @@ namespace Prg.Scripts.Common.Unity.Localization
             }
             var text = builder.ToString();
             var path = Path.Combine(Application.dataPath, $"_dirty_words_{Locale}_tsv.txt");
-            if (Application.platform.ToString().ToLower().Contains("windows"))
+            if (AppPlatform.IsWindows)
             {
-                path = path.Replace(Path.AltDirectorySeparatorChar.ToString(), Path.DirectorySeparatorChar.ToString());
+                path = AppPlatform.ConvertToWindowsPath(path);
             }
             Debug.Log($"Save {_debugWords.Count} NEW 'dirty' words to {path}");
             File.WriteAllText(path, text);
