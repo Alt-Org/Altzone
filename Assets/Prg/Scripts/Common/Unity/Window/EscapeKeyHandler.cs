@@ -24,7 +24,7 @@ namespace Prg.Scripts.Common.Unity.Window
             var escapeInputAction = Resources.Load<EscapeInputAction>(nameof(EscapeInputAction));
             Assert.IsNotNull(escapeInputAction, "escapeInputAction != null");
             _escapeInputActionRef = escapeInputAction._escapeInputAction;
-            Debug.Log($"Awake escapeInputActionRef {_escapeInputActionRef}");
+            Debug.Log($"escapeInputActionRef {_escapeInputActionRef}", _escapeInputActionRef);
         }
 
         private void OnEnable()
@@ -44,13 +44,13 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void OnEscapeActionPerformed(InputAction.CallbackContext ctx)
         {
-            Debug.Log($"OnEscapeActionPerformed {_callback?.Method} {ctx.action}");
+            Debug.Log($"{_callback?.Method} {ctx.action.name}", _escapeInputActionRef);
             _callback?.Invoke();
         }
 
         public void SetCallback(Action callback)
         {
-            Debug.Log($"SetCallback {_callback?.Method} <- {callback.Method}");
+            Debug.Log($"{_callback?.Method} <- {callback.Method}");
             _callback = callback;
         }
     }
