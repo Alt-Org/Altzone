@@ -242,10 +242,12 @@ namespace Battle.Scripts.Battle.Players2
             {
                 return;
             }
-            Debug.Log($"{name}");
+            Debug.Log($"{name} team {_state._teamNumber}");
             // Just stop doing anything if we loose our controlling player instance.
             this.Unsubscribe();
             OnSetPlayMode(BattlePlayMode.Ghosted);
+            // Detach us from the team.
+            _state._teamNumber = PhotonBattle.NoTeamValue;
         }
 
         private void OnActiveTeamEvent(BallManager.ActiveTeamEvent data)
