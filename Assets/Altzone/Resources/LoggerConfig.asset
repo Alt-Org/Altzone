@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
   _isLogToFile: 0
-  _isShowMethodName: 1
-  _colorForClassName: White
+  _colorForClassName: white
+  _colorForContextTagName: orange
   _loggerRules: '.*PhotonListener.*=1
 
     .*SceneLoader.*=1

@@ -23,7 +23,8 @@ namespace Prg.Scripts.Common.Util
         }
 
         [Header("Settings")] public bool _isLogToFile;
-        public string _colorForClassName;
+        public string _colorForClassName = "white";
+        public string _colorForContextTagName = "orange";
 
         [Header("Class Filter"), TextArea(5, 20)] public string _loggerRules;
 
@@ -44,6 +45,7 @@ namespace Prg.Scripts.Common.Util
             if (AppPlatform.IsEditor)
             {
                 // Log color for Editor log.
+                // https://docs.unity3d.com/560/Documentation/Manual/StyledText.html
                 var trimmed = string.IsNullOrEmpty(config._colorForClassName) ? string.Empty : config._colorForClassName.Trim();
                 if (trimmed.Length > 0)
                 {
@@ -54,6 +56,10 @@ namespace Prg.Scripts.Common.Util
                     _suffixTag = "</color>]";
                     Debug.SetTagsForClassName(_prefixTag, _suffixTag);
                     LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
+                }
+                if (!string.IsNullOrWhiteSpace(config._colorForContextTagName))
+                {
+                    Debug.SetContextTag($"<color={config._colorForContextTagName}>*</color>");
                 }
             }
             var filterList = config.BuildFilter();
