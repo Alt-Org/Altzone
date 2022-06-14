@@ -9,7 +9,6 @@ namespace Prg.Scripts.Common.Unity.Window
     public class EscapeKeyRedirect : MonoBehaviour
     {
         [SerializeField] private WindowDef _redirectWindow;
-        [SerializeField] private bool _isUiProtoHack;
 
         private void OnEnable()
         {
@@ -24,15 +23,10 @@ namespace Prg.Scripts.Common.Unity.Window
         private WindowManager.GoBackAction DoRedirect()
         {
             var windowManager = WindowManager.Get();
-            if (_isUiProtoHack && windowManager.WindowCount > 1)
-            {
-                WindowManager.Get().RegisterGoBackHandlerOnce(DoRedirect);
-                return WindowManager.GoBackAction.Continue;
-            }
-            Debug.Log($"DoRedirect start {_redirectWindow} WindowCount {windowManager.WindowCount}");
+            Debug.Log($"start {_redirectWindow} WindowCount {windowManager.WindowCount}");
             windowManager.PopCurrentWindow();
             windowManager.ShowWindow(_redirectWindow);
-            Debug.Log($"DoRedirect done {_redirectWindow}");
+            Debug.Log($"done {_redirectWindow}");
             return WindowManager.GoBackAction.Abort;
         }
     }

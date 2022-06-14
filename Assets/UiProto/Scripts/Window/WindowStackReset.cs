@@ -10,9 +10,7 @@ namespace UiProto.Scripts.Window
     {
         private void OnEnable()
         {
-            var stackManager = WindowStack.Instance;
-            Debug.Log($"Destroy WindowStack {stackManager}");
-            Destroy(stackManager.gameObject);
+            throw new UnityException($"{nameof(WindowStackReset)} is obsolete");
         }
     }
 }
