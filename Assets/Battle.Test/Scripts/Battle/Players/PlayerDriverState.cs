@@ -1,6 +1,5 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Ball;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;

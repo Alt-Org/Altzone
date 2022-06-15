@@ -1,4 +1,3 @@
-using Battle.Scripts.Battle.Factory;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -35,7 +34,7 @@ namespace Battle.Test.Scripts.Battle.Players
         private void Awake()
         {
             Assert.IsNull(_camera);
-            _camera = Context.GetGameCamera.Camera;
+            _camera = Context.GetBattleCamera.Camera;
             _isLimitMouseXYOnDesktop = !Application.isMobilePlatform;
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");

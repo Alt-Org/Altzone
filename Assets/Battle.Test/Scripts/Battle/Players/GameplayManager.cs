@@ -5,8 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Factory;
-using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Battle.Ball;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
@@ -74,7 +72,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 return player.PlayerTransform;
             }
-            var playArea = Context.GetPlayerPlayArea;
+            var playArea = Context.GetBattlePlayArea;
             switch (TeamNumber)
             {
                 case PhotonBattle.TeamBlueValue:
@@ -176,7 +174,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             Application.quitting += () => _isApplicationQuitting = true;
-            var playArea = Context.GetPlayerPlayArea;
+            var playArea = Context.GetBattlePlayArea;
             _teamBluePlayModeTrigger = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
             _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
             _teamRedPlayModeTrigger = playArea.RedTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
@@ -299,7 +297,7 @@ namespace Battle.Test.Scripts.Battle.Players
             {
                 throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
             }
-            var gameCamera = Context.GetGameCamera;
+            var gameCamera = Context.GetBattleCamera;
             if (playerDriver.IsLocal)
             {
                 CheckLocalPlayerSettings(gameCamera.Camera, playerDriver);
@@ -389,7 +387,7 @@ namespace Battle.Test.Scripts.Battle.Players
 
         private static void CheckLocalPlayerSettings(Camera gameCamera, IPlayerDriver playerDriver)
         {
-            var gameBackground = Context.GetGameBackground;
+            var gameBackground = Context.GetBattleBackground;
             gameBackground.SetBackgroundImageByIndex(0);
 
             var teamNumber = PhotonBattle.GetTeamNumber(playerDriver.PlayerPos);

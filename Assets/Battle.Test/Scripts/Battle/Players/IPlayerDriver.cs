@@ -1,5 +1,4 @@
 using Altzone.Scripts.Model;
-using Battle.Scripts.Battle.interfaces;
 using UnityEngine;
 
 namespace Battle.Test.Scripts.Battle.Players

@@ -1,5 +1,5 @@
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle;
 using Battle.Test.Scripts.Battle.Players;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;

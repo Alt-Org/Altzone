@@ -1,8 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
-using Battle.Scripts.Battle.Factory;
-using Battle.Scripts.Battle.interfaces;
 using Battle.Test.Scripts.Test;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
@@ -73,7 +71,7 @@ namespace Battle.Test.Scripts.Battle.Players
                 return;
             }
             var playerInputHandler = PlayerInputHandler.Get();
-            var playArea = Context.GetPlayerPlayArea.GetPlayerPlayArea(_settings._playerPos);
+            var playArea = Context.GetBattlePlayArea.GetPlayerPlayArea(_settings._playerPos);
             playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
         }
 

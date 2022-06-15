@@ -2,8 +2,7 @@ using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Factory;
-using Battle.Scripts.Battle.interfaces;
+using Battle.Test.Scripts.Battle;
 using Battle.Test.Scripts.Battle.Ball;
 using Battle.Test.Scripts.Battle.Players;
 using Photon.Pun;
@@ -100,7 +99,7 @@ namespace Battle.Test.Scripts.Test
                     Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
                     _gameplayManager.ForEach(player =>
                     {
-                        var startPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(player.PlayerPos);
+                        var startPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(player.PlayerPos);
                         player.SetPlayMode(BattlePlayMode.Normal);
                         player.SetCharacterPose(0);
                         player.SetShieldResistance(player.CharacterModel.Resistance);

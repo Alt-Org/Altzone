@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Battle.Scripts.Battle.Factory;
-using Battle.Scripts.Battle.interfaces;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -111,7 +109,7 @@ namespace Battle.Test.Scripts.Battle.Players
             Debug.Log($"prefab {playerPrefab.name}");
 
             var playerPos = playerDriver.PlayerPos;
-            var instantiationPosition = Context.GetPlayerPlayArea.GetPlayerStartPosition(playerPos);
+            var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
 
             var playerActor = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
             var playerTag = $"{playerPos}:{playerDriver.NickName}:{PlayerPosChars[playerPos]}";
