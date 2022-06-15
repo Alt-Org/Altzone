@@ -20,7 +20,7 @@ namespace Battle.Scripts.Test
         }
 
         [Header("Autostart"), SerializeField] private bool _isAutoStartBall;
-        [SerializeField] private int _roomPlayersOverride;
+        [Range(0, 4), SerializeField] private int _roomPlayersOverride;
 
         [Header("Settings"), SerializeField] private bool _isShowCountdown;
 
@@ -45,7 +45,7 @@ namespace Battle.Scripts.Test
                 PhotonBattle.SetDebugRoomProperties(room, roomPlayersCount);
             }
         }
-        
+
         private void OnDisable()
         {
             Debug.Log($"");
