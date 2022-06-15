@@ -28,7 +28,7 @@ namespace Battle.Scripts.Battle.Players
             [Range(1, 4)] public int _playerPos = 1;
             public bool _isAllocateByTeams;
             public bool _isRandomSKill;
-            public Defence _playerMainSkill = Defence.Deflection;
+            public Defence _playerMainSkill = Defence.Projection;
         }
 
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
