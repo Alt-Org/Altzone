@@ -70,7 +70,7 @@ namespace Battle.Scripts.Test
 
         public void StartBallFirstTime()
         {
-            Debug.Log($"{name} delayToStart {_countDownDelay}");
+            Debug.Log($"{name} delayToStart {_countDownDelay} IsMasterClient {PhotonNetwork.IsMasterClient}");
             Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
             print("~~");
             StartCoroutine(StartBallRoutinePreload(null));

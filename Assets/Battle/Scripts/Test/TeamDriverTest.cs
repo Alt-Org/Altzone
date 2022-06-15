@@ -85,7 +85,12 @@ namespace Battle.Scripts.Test
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"}");
+            Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"} " +
+                      $"IsMasterClient {PhotonNetwork.IsMasterClient}");
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
             if (_isAutoStartBall)
             {
                 var startTheBallTest = FindObjectOfType<StartTheBallTest>();
