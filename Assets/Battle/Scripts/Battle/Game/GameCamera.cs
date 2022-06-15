@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace Battle0.Scripts.Battle.Room
+namespace Battle.Scripts.Battle.Game
 {
     /// <summary>
     /// Helper for game main camera to find it and change it if required.
     /// </summary>
-    public class GameCamera : MonoBehaviour
+    public class GameCamera : MonoBehaviour, IBattleCamera
     {
         [SerializeField] private Camera _gameCamera;
 

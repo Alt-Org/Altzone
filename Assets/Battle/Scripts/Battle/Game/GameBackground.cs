@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Battle0.Scripts.Battle.Room
+namespace Battle.Scripts.Battle.Game
 {
     /// <summary>
     /// Helper for game background to find it and change it if required.
     /// </summary>
-    public class GameBackground : MonoBehaviour
+    public class GameBackground : MonoBehaviour, IBattleBackground
     {
         [Header("Settings"), SerializeField] private GameObject _gameBackground;
         [SerializeField] private Sprite[] _backgroundSprites;

@@ -1,9 +1,9 @@
 using Altzone.Scripts.Battle;
 using UnityEngine;
 
-namespace Battle0.Scripts.Battle.Room
+namespace Battle.Scripts.Battle.Game
 {
-    internal class PlayerPlayArea : MonoBehaviour
+    public class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
         [Header("Player Areas"), SerializeField] private Rect _playAreaP1;
         [SerializeField] private Rect _playAreaP2;
@@ -27,7 +27,7 @@ namespace Battle0.Scripts.Battle.Room
 
         public Collider2D BlueTeamCollider => _teamBlueCollider;
         public Collider2D RedTeamCollider => _teamRedCollider;
-        
+
         public Rect GetPlayerPlayArea(int playerPos)
         {
             Rect playArea;

@@ -8,10 +8,10 @@ namespace Battle.Scripts.Battle
     /// </summary>
     internal static class Context
     {
-        internal static IBattleCamera GetBattleCamera => Object.FindObjectOfType<BattleCamera>();
+        internal static IBattleCamera GetBattleCamera => Object.FindObjectOfType<GameCamera>();
 
-        internal static IBattleBackground GetBattleBackground => Object.FindObjectOfType<BattleBackground>();
+        internal static IBattleBackground GetBattleBackground => Object.FindObjectOfType<GameBackground>();
 
-        internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<BattlePlayArea>();
+        internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
     }
 }
