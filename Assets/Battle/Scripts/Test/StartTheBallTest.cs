@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Ball;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Photon.Pun;
 using UnityEngine;
@@ -58,12 +59,12 @@ namespace Battle.Scripts.Test
             // are not called on same instance.
             if (_gameplayManager == null)
             {
-                _gameplayManager = GameplayManager.Get();
+                _gameplayManager = Context.GameplayManager;
                 Assert.IsNotNull(_gameplayManager, "_gameplayManager != null");
             }
             if (_ballManager == null)
             {
-                _ballManager = BallManager.Get();
+                _ballManager = Context.BallManager;
                 Assert.IsNotNull(_ballManager, "_ballManager != null");
             }
         }

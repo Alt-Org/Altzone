@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battle.Scripts.Battle.Players
+namespace Battle.Scripts.Battle
 {
     internal enum PlayerBuff
     {

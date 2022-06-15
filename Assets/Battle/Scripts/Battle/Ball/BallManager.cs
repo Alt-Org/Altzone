@@ -30,8 +30,6 @@ namespace Battle.Scripts.Battle.Ball
         // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
         private static readonly bool[] StopStates = { true, false, false, false, true, true };
 
-        public static IBallManager Get() => FindObjectOfType<BallManager>();
-
         [Header("Settings"), SerializeField] private GameObject _ballColliderParent;
         [SerializeField] private GameObject _spriteStopped;
         [SerializeField] private GameObject _spriteNoTeam;

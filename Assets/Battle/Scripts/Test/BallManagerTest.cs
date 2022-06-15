@@ -1,4 +1,5 @@
 using System.Collections;
+using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Ball;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.ToastMessages;
@@ -67,7 +68,7 @@ namespace Battle.Scripts.Test
 
         private IEnumerator Start()
         {
-            yield return new WaitUntil(() => (_ballManager ??= BallManager.Get()) != null);
+            yield return new WaitUntil(() => (_ballManager ??= Context.BallManager) != null);
             yield return null;
             if (!(_isAutoStartBall || _isStartOnGui))
             {

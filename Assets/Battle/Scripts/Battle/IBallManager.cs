@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Battle.Scripts.Battle.Ball
+namespace Battle.Scripts.Battle
 {
     internal enum BallState : byte
     {

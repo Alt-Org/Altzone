@@ -23,7 +23,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _playerDriver = playerDriver;
             _characterModel = characterModel;
-            _ballManager = BallManager.Get();
+            _ballManager = Context.BallManager;
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;

@@ -5,41 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Ball;
+using Battle.Scripts.Battle.Players;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Battle.Scripts.Battle.Players
+namespace Battle.Scripts.Battle.Game
 {
-    /// <summary>
-    /// Manager for gameplay activities where one or more players are involved.<br />
-    /// Requires player's registration in order to participate.
-    /// </summary>
-    internal interface IGameplayManager
-    {
-        int PlayerCount { get; }
-
-        IPlayerDriver LocalPlayer { get; }
-
-        void ForEach(Action<IPlayerDriver> action);
-
-        BattleTeam GetBattleTeam(int teamNumber);
-
-        BattleTeam GetOppositeTeam(int teamNumber);
-
-        ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber);
-
-        IPlayerDriver GetPlayerByActorNumber(int actorNumber);
-
-        void RegisterPlayer(IPlayerDriver playerDriver);
-
-        void UpdatePeerCount(IPlayerDriver playerDriver);
-
-        void UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot);
-    }
-
     internal class BattleTeam
     {
         public readonly int TeamNumber;
@@ -151,8 +124,6 @@ namespace Battle.Scripts.Battle.Players
             public List<PlayerDriver> _playerList;
             public List<GameObject> _abandonedPlayerList;
         }
-
-        public static IGameplayManager Get() => FindObjectOfType<GameplayManager>();
 
         [SerializeField] private DebugSettings _debug;
 
@@ -309,7 +280,7 @@ namespace Battle.Scripts.Battle.Players
                 {
                     player.FixCameraRotation(gameCamera.Camera);
                 }
-                BallManager.Get().FixCameraRotation(gameCamera.Camera);
+                Context.BallManager.FixCameraRotation(gameCamera.Camera);
             }
             UpdateDebugPlayerList();
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Players;
+using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.ToastMessages;

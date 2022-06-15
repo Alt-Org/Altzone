@@ -50,11 +50,11 @@ namespace Battle.Scripts.Battle.Players
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            var gameplayManager = GameplayManager.Get();
             if (string.IsNullOrWhiteSpace(_settings._nickName))
             {
                 _settings._nickName = name;
             }
+            var gameplayManager = Context.GameplayManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
             _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
@@ -82,7 +82,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             print("xx");
-            GameplayManager.Get().UnregisterPlayer(this, _playerActorInstance.gameObject);
+            Context.GameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_settings._isLocal)
             {
                 var playerInputHandler = PlayerInputHandler.Get();

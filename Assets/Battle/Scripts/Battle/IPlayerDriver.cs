@@ -1,7 +1,7 @@
 using Altzone.Scripts.Model;
 using UnityEngine;
 
-namespace Battle.Scripts.Battle.Players
+namespace Battle.Scripts.Battle
 {
     /// <summary>
     /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />

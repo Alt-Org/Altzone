@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Test;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.ToastMessages;
@@ -79,7 +80,7 @@ namespace Battle.Scripts.Battle.Players
             _state = GetPlayerDriverState();
             _state.ResetState(this, _characterModel);
             _state.CheckRotation(_playerActorTransform.position);
-            _gameplayManager = GameplayManager.Get();
+            _gameplayManager = Context.GameplayManager;
             _gameplayManager.RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             this.ExecuteOnNextFrame(() =>
