@@ -1,6 +1,5 @@
 using System;
 using Battle.Scripts.Battle.Game;
-using Battle.Scripts.Battle.Players;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle

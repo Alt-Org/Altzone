@@ -1,7 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
-using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Test;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.ToastMessages;

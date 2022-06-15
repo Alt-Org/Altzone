@@ -1,6 +1,5 @@
 using System.Collections;
 using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Ball;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
