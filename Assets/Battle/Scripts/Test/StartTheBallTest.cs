@@ -18,13 +18,13 @@ namespace Battle.Scripts.Test
     /// </remarks>
     internal class StartTheBallTest : MonoBehaviour
     {
-        private const string Tooltip = "Simulate Battle game restart after 'game over'";
+        private const string Tooltip = "Simulate Battle game restart after 'game over' \"Restart Limit\"";
 
         [Header("Debug Settings"), SerializeField] private float _countDownDelayOverride;
         [SerializeField] private float _forceSpeedOverride;
 
         [Header("Restart Game Simulation"), Tooltip(Tooltip), SerializeField] private bool _isRestartGameSimulation;
-        [Min(1), SerializeField] private int _teamRestartLimit = 1;
+        [Min(1), SerializeField] private int _gameOverRestartLimit = 1;
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
         [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
@@ -99,8 +99,9 @@ namespace Battle.Scripts.Test
 
             if (playerToStart != null && _isRestartGameSimulation)
             {
+                // This code block roughly simulates what "Game Over" scene does when it reloads Battle level to restart a game. 
                 _teamRestartCount[playerToStart.TeamNumber] += 1;
-                if (_teamRestartCount[playerToStart.TeamNumber] >= _teamRestartLimit)
+                if (_teamRestartCount[playerToStart.TeamNumber] >= _gameOverRestartLimit)
                 {
                     Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
                     _gameplayManager.ForEach(player =>
