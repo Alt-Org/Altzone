@@ -612,6 +612,9 @@ if not exist ""%DROPBOX_DIR%"" (
 if ""%LOGFILE%""  == """" (
     set LOGFILE=%0.log
 )
+if exist %LOGFILE% (
+    del /Q %LOGFILE%
+)
 robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
 set RESULT=%ERRORLEVEL%
 echo ROBOCOPY result %RESULT%
@@ -632,6 +635,9 @@ if not exist %DROPBOX_DIR% (
 )
 if ""%LOGFILE%""  == """" (
     set LOGFILE=%0.log
+)
+if exist %LOGFILE% (
+    del /Q %LOGFILE%
 )
 robocopy %BUILD_DIR% %DROPBOX_DIR% /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
 goto :eof
