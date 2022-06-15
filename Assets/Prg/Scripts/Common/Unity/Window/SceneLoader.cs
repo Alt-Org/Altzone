@@ -36,7 +36,7 @@ namespace Prg.Scripts.Common.Unity.Window
                 var scenePath = SceneUtility.GetScenePathByBuildIndex(index);
                 if (scenePath.EndsWith(unitySceneNameMatcher))
                 {
-                    Debug.Log($"LoadScene LOCAL {scene.SceneName} ({index})");
+                    Debug.Log($"LoadScene LOCAL {scene.SceneName} ({index})", windowDef);
                     SceneManager.LoadScene(index);
                     return;
                 }

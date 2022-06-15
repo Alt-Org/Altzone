@@ -354,7 +354,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private static void Show(MyWindow window)
         {
-            Debug.Log($"Show {window._windowDef}");
+            Debug.Log($"Show {window._windowDef}", window._windowDef);
             window._window.SetActive(true);
         }
 
