@@ -137,6 +137,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 672911969852709495, guid: 87f5af0e91135264480fffdd50b52a0b,
         type: 3}
+      propertyPath: _simpleTimer
+      value: 
+      objectReference: {fileID: 1197986623}
+    - target: {fileID: 672911969852709495, guid: 87f5af0e91135264480fffdd50b52a0b,
+        type: 3}
       propertyPath: _isAutoStartBall
       value: 1
       objectReference: {fileID: 0}
@@ -789,6 +794,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44bff6ee1cfd62a4bb6534dd2fafb5e5, type: 3}
+--- !u!114 &1197986623 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 742951651788575273, guid: 25d94baa93a3e1c4f9688ef5b06fa4a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 107868036}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99e0fdda4fe04ac4b9b22693a5f75c75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1360003051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1080,7 +1097,7 @@ PrefabInstance:
     - target: {fileID: 1473768787839897196, guid: c876b2381707a8b4b86a08698f01fb80,
         type: 3}
       propertyPath: _roomPlayersOverride
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4041867340723893479, guid: c876b2381707a8b4b86a08698f01fb80,
         type: 3}

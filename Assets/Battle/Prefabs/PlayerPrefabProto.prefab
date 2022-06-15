@@ -724,7 +724,7 @@ GameObject:
   - component: {fileID: 4878496965620720662}
   - component: {fileID: 701812890770915198}
   m_Layer: 0
-  m_Name: PlayerPrefab
+  m_Name: PlayerPrefabProto
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -777,7 +777,7 @@ MonoBehaviour:
   _debug:
     _isLogEvents: 0
     _isLogMoveTo: 0
-    _isShowPlayerText: 1
+    _isShowPlayerText: 0
     _playerText: {fileID: 9038109967812753919}
     _playerModeOrBuff: 63
   _colors:
