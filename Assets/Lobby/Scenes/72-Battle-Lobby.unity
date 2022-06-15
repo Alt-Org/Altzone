@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 1549162293}
   - component: {fileID: 1549162298}
   m_Layer: 0
-  m_Name: LobbyManagement
+  m_Name: LobbyManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -435,6 +435,7 @@ MonoBehaviour:
   _lobbyWindow: {fileID: 11400000, guid: 49456bc2e3f05254bb9bf031f48128d4, type: 2}
   _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
   _gameWindow: {fileID: 11400000, guid: 788f9d753ce503045bfe455e66f76270, type: 2}
+  _isCloseRoomOnGameStart: 1
   _blueTeamName: Alpha
   _redTeamName: Beta
 --- !u!1 &1556160748

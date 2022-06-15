@@ -33,6 +33,7 @@ namespace Lobby.Scripts
         [Header("Settings"), SerializeField] private WindowDef _lobbyWindow;
         [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private WindowDef _gameWindow;
+        [SerializeField] private bool _isCloseRoomOnGameStart;
 
         [Header("Team Names"), SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
@@ -78,10 +79,10 @@ namespace Lobby.Scripts
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_gameWindow, _blueTeamName, _redTeamName));
+            StartCoroutine(StartTheGameplay(_gameWindow, _isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
-        private static IEnumerator StartTheGameplay(WindowDef gameWindow, string blueTeamName, string redTeamName)
+        private static IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonNetwork.IsMasterClient)
@@ -124,6 +125,12 @@ namespace Lobby.Scripts
                     { TeamRedNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
                 });
+                yield return null;
+                if (isCloseRoom)
+                {
+                    room.IsOpen = false;
+                    yield return null;
+                }
             }
             WindowManager.Get().ShowWindow(gameWindow);
         }
