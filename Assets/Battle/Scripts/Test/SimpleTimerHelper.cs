@@ -19,6 +19,7 @@ namespace Battle.Scripts.Test
 
         public void ResetTimer()
         {
+            StopTimer();
             _timerText.text = string.Empty;
         }
 
@@ -31,7 +32,7 @@ namespace Battle.Scripts.Test
             StartCoroutine(TimerRoutine());
         }
 
-        public void StopTimer()
+        private void StopTimer()
         {
             _isStopped = true;
         }

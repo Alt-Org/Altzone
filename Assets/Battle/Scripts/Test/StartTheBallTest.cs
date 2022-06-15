@@ -28,6 +28,8 @@ namespace Battle.Scripts.Test
         [Min(1), SerializeField] private int _teamRestartLimit = 1;
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
+        [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
+        
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
         private OnGuiWindowHelper _onGuiWindow;
@@ -72,6 +74,11 @@ namespace Battle.Scripts.Test
             Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
             print("~~");
             StartCoroutine(StartBallRoutinePreload(null));
+            if (_simpleTimer != null)
+            {
+                _simpleTimer.ResetTimer();
+                _simpleTimer.StartTimer();
+            }
         }
 
         public void RestartBallInGame(IPlayerDriver playerToStart)
