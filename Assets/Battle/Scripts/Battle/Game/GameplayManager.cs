@@ -146,9 +146,14 @@ namespace Battle.Scripts.Battle.Game
             }
             Application.quitting += () => _isApplicationQuitting = true;
             var playArea = Context.GetBattlePlayArea;
-            _teamBluePlayModeTrigger = playArea.BlueTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
+            var blueCollider = playArea.BlueTeamCollider;
+            var redCollider = playArea.RedTeamCollider;
+            Assert.IsTrue(blueCollider.isTrigger, "blueCollider.isTrigger");
+            Assert.IsTrue(redCollider.isTrigger, "redCollider.isTrigger");
+            
+            _teamBluePlayModeTrigger = blueCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
             _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
-            _teamRedPlayModeTrigger = playArea.RedTeamCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
+            _teamRedPlayModeTrigger = redCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
             _teamRedPlayModeTrigger.TeamMembers = _teamRed;
         }
 
