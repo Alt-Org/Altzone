@@ -13,6 +13,9 @@ using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Game
 {
+    /// <summary>
+    /// Container for team members, first player has always lower player position. Second player can be null.
+    /// </summary>
     internal class BattleTeam
     {
         public readonly int TeamNumber;
@@ -25,8 +28,16 @@ namespace Battle.Scripts.Battle.Game
         {
             Assert.IsNotNull(firstPlayer, "firstPlayer != null");
             TeamNumber = teamNumber;
-            FirstPlayer = firstPlayer;
-            SecondPlayer = secondPlayer;
+            if (secondPlayer != null && secondPlayer.PlayerPos < firstPlayer.PlayerPos)
+            {
+                FirstPlayer = secondPlayer;
+                SecondPlayer = firstPlayer;
+            }
+            else
+            {
+                FirstPlayer = firstPlayer;
+                SecondPlayer = secondPlayer;
+            }
             PlayerCount = SecondPlayer == null ? 1 : 2;
         }
 
@@ -88,17 +99,24 @@ namespace Battle.Scripts.Battle.Game
     {
         public readonly BattleTeam BattleTeam;
 
-        public TeamCreated(int teamNumber, IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
+        public TeamCreated(BattleTeam battleTeam)
         {
-            BattleTeam = new BattleTeam(teamNumber, firstPlayer, secondPlayer);
+            BattleTeam = battleTeam;
         }
     }
 
-    internal class TeamBroken
+    internal class TeamUpdated : TeamCreated
+    {
+        public TeamUpdated(BattleTeam battleTeam) : base(battleTeam)
+        {
+        }
+    }
+
+    internal class TeamBroken : TeamCreated
     {
         public readonly IPlayerDriver PlayerWhoLeft;
 
-        public TeamBroken(IPlayerDriver playerWhoLeft)
+        public TeamBroken(BattleTeam battleTeam, IPlayerDriver playerWhoLeft) : base(battleTeam)
         {
             PlayerWhoLeft = playerWhoLeft;
         }
@@ -150,7 +168,7 @@ namespace Battle.Scripts.Battle.Game
             var redCollider = playArea.RedTeamCollider;
             Assert.IsTrue(blueCollider.isTrigger, "blueCollider.isTrigger");
             Assert.IsTrue(redCollider.isTrigger, "redCollider.isTrigger");
-            
+
             _teamBluePlayModeTrigger = blueCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
             _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
             _teamRedPlayModeTrigger = redCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
@@ -253,21 +271,17 @@ namespace Battle.Scripts.Battle.Game
             {
                 _teamBlue.Add(playerDriver);
                 Assert.IsTrue(_teamBlue.Count <= 2, "_teamBlue.Count <= 2");
-                if (_teamBlue.Count == 2)
-                {
-                    _teamBlue.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
-                    this.Publish(new TeamCreated(PhotonBattle.TeamBlueValue, _teamBlue[0], _teamBlue[1]));
-                }
+                this.Publish(_teamBlue.Count == 1
+                    ? new TeamCreated(CreateBattleTeam(playerDriver.TeamNumber))
+                    : new TeamUpdated(CreateBattleTeam(playerDriver.TeamNumber)));
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
             {
                 _teamRed.Add(playerDriver);
                 Assert.IsTrue(_teamRed.Count <= 2, "_teamRed.Count <= 2");
-                if (_teamRed.Count == 2)
-                {
-                    _teamRed.Sort((a, b) => a.PlayerPos.CompareTo(b.PlayerPos));
-                    this.Publish(new TeamCreated(PhotonBattle.TeamRedValue, _teamRed[0], _teamRed[1]));
-                }
+                this.Publish(_teamBlue.Count == 1
+                    ? new TeamCreated(CreateBattleTeam(playerDriver.TeamNumber))
+                    : new TeamUpdated(CreateBattleTeam(playerDriver.TeamNumber)));
             }
             else
             {
@@ -346,7 +360,7 @@ namespace Battle.Scripts.Battle.Game
                 _teamBlue.Remove(playerDriver);
                 if (_teamBlue.Count == 1)
                 {
-                    this.Publish(new TeamBroken(_teamBlue[0]));
+                    this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
@@ -354,7 +368,7 @@ namespace Battle.Scripts.Battle.Game
                 _teamRed.Remove(playerDriver);
                 if (_teamRed.Count == 1)
                 {
-                    this.Publish(new TeamBroken(_teamRed[0]));
+                    this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
             }
             this.Publish(new PlayerLeft(playerDriver));
@@ -482,6 +496,7 @@ namespace Battle.Scripts.Battle.Game
                     yield break;
                 }
                 CalculateDistance();
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (Time.time > debugLogTime && _prevSqrSqrDistance != _sqrSqrDistance)
                 {
                     debugLogTime = Time.time + debugInterval;

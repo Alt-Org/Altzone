@@ -31,6 +31,7 @@ namespace Battle.Scripts.Test
         {
             Debug.Log($"");
             this.Subscribe<TeamCreated>(OnTeamCreated);
+            this.Subscribe<TeamUpdated>(OnTeamUpdated);
             this.Subscribe<TeamBroken>(OnTeamBroken);
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
             StartCoroutine(ConfigureRoom(_roomPlayersOverride));
@@ -55,7 +56,26 @@ namespace Battle.Scripts.Test
         private void OnTeamCreated(TeamCreated data)
         {
             var team = data.BattleTeam;
-            Debug.Log($"team {team.TeamNumber} first {team.FirstPlayer.NickName} second {team.SecondPlayer.NickName}");
+            Debug.Log($"team {team} first {team.FirstPlayer.NickName} second {team.SecondPlayer?.NickName}");
+            UpdateTeam(team);
+        }
+
+        private void OnTeamUpdated(TeamUpdated data)
+        {
+            var team = data.BattleTeam;
+            Debug.Log($"team {team} first {team.FirstPlayer.NickName} second {team.SecondPlayer.NickName}");
+            UpdateTeam(team);
+        }
+
+        private void OnTeamBroken(TeamBroken data)
+        {
+            var team = data.BattleTeam;
+            Debug.Log($"team {team} first {team.FirstPlayer.NickName} LEFT {data.PlayerWhoLeft.NickName}");
+            UpdateTeam(team);
+        }
+
+        private void UpdateTeam(BattleTeam team)
+        {
             if (team.FirstPlayer.TeamNumber == PhotonBattle.TeamBlueValue)
             {
                 _teamBlue._player1 = team.FirstPlayer as MonoBehaviour;
@@ -67,22 +87,7 @@ namespace Battle.Scripts.Test
                 _teamRed._player2 = team.SecondPlayer as MonoBehaviour;
             }
         }
-
-        private void OnTeamBroken(TeamBroken data)
-        {
-            Debug.Log($"team {data.PlayerWhoLeft.TeamNumber} player left {data.PlayerWhoLeft.NickName}");
-            if (data.PlayerWhoLeft.TeamNumber == PhotonBattle.TeamBlueValue)
-            {
-                _teamBlue._player1 = null;
-                _teamBlue._player2 = null;
-            }
-            else if (data.PlayerWhoLeft.TeamNumber == PhotonBattle.TeamRedValue)
-            {
-                _teamRed._player1 = null;
-                _teamRed._player2 = null;
-            }
-        }
-
+        
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"} " +
