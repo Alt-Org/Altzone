@@ -2,12 +2,18 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
+    /// <summary>
+    /// BallState combines ball behaviour and visual state into one for convenience (or confusion).
+    /// </summary>
+    /// <remarks>
+    /// NoTeam, BlueTeam and RedTeam are alias for "Moving" state but can different visual state.
+    /// </remarks>
     internal enum BallState : byte
     {
         Stopped = 0,
         NoTeam = 1,
-        RedTeam = 2,
-        BlueTeam = 3,
+        BlueTeam = 2,
+        RedTeam = 3,
         Ghosted = 4,
         Hidden = 5,
     }
