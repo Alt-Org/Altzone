@@ -90,15 +90,22 @@ namespace Lobby.Scripts.InRoom
 
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
-            // Guest by default
+            // Get first free position.
+            var playerPos = GetFirstFreePlayerPosition(player);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             var defence = playerDataCache.GetCharacterModelForUi().MainDefence;
             player.SetCustomProperties(new Hashtable
             {
-                { PlayerPositionKey, PlayerPositionGuest },
+                { PlayerPositionKey, playerPos },
                 { PlayerMainSkillKey, (int)defence }
             });
             UpdateStatus();
+        }
+
+        private int GetFirstFreePlayerPosition(Player player)
+        {
+            //return PlayerPosition1;
+            return PlayerPositionGuest;
         }
 
         private void UpdateStatus()
