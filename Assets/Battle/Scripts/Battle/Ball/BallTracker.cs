@@ -16,6 +16,11 @@ namespace Battle.Scripts.Battle.Ball
             IsOnBlueTeamArea = isOnBlueTeamArea;
             IsOnRedTeamArea = isOnRedTeamArea;
         }
+
+        public override string ToString()
+        {
+            return $"IsOnBlueTeamArea: {IsOnBlueTeamArea}, IsOnRedTeamArea: {IsOnRedTeamArea}";
+        }
     }
 
     /// <summary>
@@ -64,18 +69,24 @@ namespace Battle.Scripts.Battle.Ball
             {
                 return;
             }
-            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            // Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
             _lastTeamTag = otherGameObject.tag;
+            if (otherGameObject.CompareTag(Tags.BlueTeam))
+            {
+                _isOnBlueTeamArea = true;
+            }
+            else if (otherGameObject.CompareTag(Tags.RedTeam))
+            {
+                _isOnRedTeamArea = true;
+            }
             if (_isSetBallState)
             {
                 if (otherGameObject.CompareTag(Tags.BlueTeam))
                 {
-                    _isOnBlueTeamArea = true;
                     _ballManager.SetBallState(_isOnRedTeamArea ? BallState.NoTeam : BallState.BlueTeam);
                 }
                 else if (otherGameObject.CompareTag(Tags.RedTeam))
                 {
-                    _isOnRedTeamArea = true;
                     _ballManager.SetBallState(_isOnBlueTeamArea ? BallState.NoTeam : BallState.RedTeam);
                 }
             }
@@ -98,10 +109,18 @@ namespace Battle.Scripts.Battle.Ball
             {
                 return;
             }
-            Debug.Log($"exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            // Debug.Log($"exit {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            if (otherGameObject.CompareTag(Tags.BlueTeam))
+            {
+                _isOnBlueTeamArea = false;
+            }
+            else if (otherGameObject.CompareTag(Tags.RedTeam))
+            {
+                _isOnRedTeamArea = false;
+            }
             if (_isSetBallState)
             {
-                // We have to wait one frame because "overlapping" ball state changes can not happen on same frame.
+                // We have to wait for one frame because "overlapping" ball state changes can not happen on the same frame.
                 StartCoroutine(HandleTriggerExit2D(otherGameObject));
             }
             if (_isSendEvents)
@@ -115,12 +134,10 @@ namespace Battle.Scripts.Battle.Ball
             yield return null;
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
-                _isOnBlueTeamArea = false;
                 _ballManager.SetBallState(_isOnRedTeamArea ? BallState.RedTeam : BallState.NoTeam);
             }
             else if (otherGameObject.CompareTag(Tags.RedTeam))
             {
-                _isOnRedTeamArea = false;
                 _ballManager.SetBallState(_isOnBlueTeamArea ? BallState.BlueTeam : BallState.NoTeam);
             }
         }
