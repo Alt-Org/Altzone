@@ -46,7 +46,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         public static IWindowManager Get()
         {
-            Assert.IsNotNull(_windowManager, "windowManager != null");
+            Assert.IsNotNull(_windowManager, "_windowManager != null");
             return _windowManager;
         }
 
