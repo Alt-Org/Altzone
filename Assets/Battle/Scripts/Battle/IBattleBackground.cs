@@ -5,7 +5,7 @@ namespace Battle.Scripts.Battle
     /// <summary>
     /// Game background.
     /// </summary>
-    public interface IBattleBackground
+    internal interface IBattleBackground
     {
         GameObject Background { get; }
         bool IsRotated { get; }
