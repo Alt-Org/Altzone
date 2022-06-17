@@ -54,6 +54,8 @@ namespace Battle.Scripts.Battle
         void SetStunned(float duration);
 
         void StopAndRestartBall();
+
+        void PlayerActorDestroyed();
     }
 
     /// <summary>

@@ -103,7 +103,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnDestroy()
         {
-            if (_isApplicationQuitting)
+            if (_isApplicationQuitting || _playerActorInstance == null)
             {
                 return;
             }
@@ -263,6 +263,11 @@ namespace Battle.Scripts.Battle.Players
             {
                 startTheBallTest.RestartBallInGame(this);
             }
+        }
+
+        void IPlayerDriver.PlayerActorDestroyed()
+        {
+            _playerActorInstance = null;
         }
 
         #endregion

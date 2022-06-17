@@ -138,6 +138,11 @@ namespace Battle.Scripts.Battle.Players
             enabled = false;
         }
 
+        private void OnDestroy()
+        {
+            Debug.Log($"{name}");
+        }
+
         private void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             // Now we are good to go.

@@ -81,11 +81,12 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnDestroy()
         {
-            if (_isApplicationQuitting)
+            if (_isApplicationQuitting || _playerActorInstance == null)
             {
                 return;
             }
             print("xx");
+            Debug.Log($"{name}");
             Context.GameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_settings._isLocal)
             {
@@ -196,6 +197,11 @@ namespace Battle.Scripts.Battle.Players
             {
                 startTheBallTest.RestartBallInGame(this);
             }
+        }
+
+        void IPlayerDriver.PlayerActorDestroyed()
+        {
+            _playerActorInstance = null;
         }
 
         #endregion
