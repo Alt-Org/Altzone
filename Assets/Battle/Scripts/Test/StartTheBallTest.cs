@@ -7,6 +7,7 @@ using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 
 namespace Battle.Scripts.Test
 {
@@ -169,22 +170,30 @@ namespace Battle.Scripts.Test
             var countDownDelay = new WaitForSeconds(_countDownDelay);
             if (playerToStart != null)
             {
+                var startingTeam = playerToStart.TeamNumber;
                 var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 yield return countDownDelay;
 
                 tracker.StopTracking();
                 yield return null;
 
-                var startingTeam = playerToStart.TeamNumber;
                 startTeam = _gameplayManager.GetBattleTeam(startingTeam);
-                otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
-
-                var startAttack = startTeam.Attack;
-                var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
-                // Official formula for ball speed (continue gameplay)
-                speed = startAttack * startDistance;
-                Debug.Log(
-                    $"{name} RESTART attack {startAttack} dist {startDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+                otherTeam = null;
+                speed = 0;
+                if (startTeam != null)
+                {
+                    var startAttack = startTeam.Attack;
+                    var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
+                    // Official formula for ball speed (continue gameplay)
+                    speed = startAttack * startDistance;
+                    Debug.Log(
+                        $"{name} RESTART attack {startAttack} dist {startDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+                }
+                if (speed == 0)
+                {
+                    Debug.LogWarning("SOMETHING WENT WRONG - DID A PLAYER LEAVE THE GAME?");
+                    speed = 1f;
+                }
             }
             else
             {
@@ -222,7 +231,8 @@ namespace Battle.Scripts.Test
             {
                 speed = _forceSpeedOverride;
             }
-            startTeam.SetPlayMode(BattlePlayMode.SuperGhosted);
+            // We can lose start team during the time it takes to (re)start the ball!
+            startTeam?.SetPlayMode(BattlePlayMode.SuperGhosted);
             otherTeam?.SetPlayMode(BattlePlayMode.Ghosted);
             yield return null;
 
@@ -250,6 +260,16 @@ namespace Battle.Scripts.Test
 
         private static void GetDirectionAndPosition(BattleTeam startTeam, out Vector2 direction, out Vector2 ballDropPosition)
         {
+            if (startTeam == null)
+            {
+                do
+                {
+                    direction = Random.insideUnitCircle;
+                } while (direction.x == 0 || direction.y == 0);
+
+                ballDropPosition = Vector2.zero;
+                return;
+            }
             var center = Vector3.zero;
 
             var transform1 = startTeam.FirstPlayer.PlayerTransform;

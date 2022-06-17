@@ -164,6 +164,8 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
 
+        bool IPlayerDriver.IsValid => _playerActorInstance != null;
+        
         int IPlayerDriver.PeerCount => _peerCount;
 
         int IPlayerDriver.PlayerPos => _playerPos;

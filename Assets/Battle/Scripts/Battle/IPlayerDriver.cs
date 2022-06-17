@@ -27,6 +27,7 @@ namespace Battle.Scripts.Battle
         /// </summary>
         int PeerCount { get; }
 
+        bool IsValid { get; }
         int PlayerPos { get; }
         int TeamNumber { get; }
         int MaxPoseIndex { get; }
