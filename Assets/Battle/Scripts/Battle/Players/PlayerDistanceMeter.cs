@@ -1,7 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private bool _currentVisibility;
 
         private IPlayerDriver _playerDriver;
+        private bool _isSinglePlayerShieldOn;
 
         public void SetPlayerDriver(IPlayerDriver playerDriver)
         {
@@ -23,21 +23,22 @@ namespace Battle.Scripts.Battle.Players
 
             _playerDriver = playerDriver;
             _playerTransform1 = playerDriver.PlayerTransform;
-            _playerTransform2 = _playerTransform1;
-            Debug.Log($"me {_playerDriver} @ {(Vector2)_playerTransform1.position}");
+            Debug.Log($"{_playerDriver} @ {(Vector2)_playerTransform1.position}");
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
-            var features = runtimeGameConfig.Features;
-            var isSinglePlayerShieldOn = features._isSinglePlayerShieldOn;
-            playerDriver.SetShieldVisibility(isSinglePlayerShieldOn);
 
             var defence = playerDriver.CharacterModel.Defence;
             var variables = runtimeGameConfig.Variables;
             var multiplier = variables._shieldDistanceMultiplier;
             _sqrMinVisibleDistance = (defence * multiplier) * (defence * multiplier);
 
+            var features = runtimeGameConfig.Features;
+            _isSinglePlayerShieldOn = features._isSinglePlayerShieldOn;
+
             this.Subscribe<PlayerJoined>(OnPlayerJoined);
             this.Subscribe<PlayerLeft>(OnPlayerLeft);
+
+            CheckMyTeam();
         }
 
         private void OnDisable()
@@ -48,36 +49,50 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnPlayerJoined(PlayerJoined data)
         {
-            Debug.Log($"me {_playerDriver} {data}");
             var player = data.Player;
-            if (player.ActorNumber == _playerDriver.ActorNumber)
-            {
-                return;
-            }
             if (player.TeamNumber != _playerDriver.TeamNumber)
             {
                 return;
             }
-            _playerTransform2 = player.PlayerTransform;
-            StartCoroutine(TrackPlayers());
+            CheckMyTeam();
         }
 
         private void OnPlayerLeft(PlayerLeft data)
         {
-            Debug.Log($"me {_playerDriver} {data}");
             var player = data.Player;
             if (player.TeamNumber != _playerDriver.TeamNumber)
             {
                 return;
             }
-            _sqrCurrentDistance = 0;
+            CheckMyTeam();
+        }
+
+        private void CheckMyTeam()
+        {
             StopAllCoroutines();
+            var gameplayManager = Context.GameplayManager;
+            var team = gameplayManager.GetBattleTeam(_playerDriver.TeamNumber);
+            Debug.Log($"{_playerDriver} team {team}");
+            if (team == null || team.PlayerCount < 2)
+            {
+                _playerTransform2 = null;
+                _sqrCurrentDistance = 0;
+                _currentVisibility = _isSinglePlayerShieldOn;
+                _playerDriver.SetShieldVisibility(_currentVisibility);
+                return;
+            }
+            var otherPlayer = team.GetMyTeamMember(_playerDriver.ActorNumber);
+            _playerTransform2 = otherPlayer.PlayerTransform;
+            StartCoroutine(TrackPlayers());
         }
 
         private IEnumerator TrackPlayers()
         {
             var delay = new WaitForFixedUpdate();
-            while (PhotonNetwork.InRoom)
+            _sqrCurrentDistance = Mathf.Abs((_playerTransform1.position - _playerTransform2.position).sqrMagnitude);
+            _currentVisibility = _sqrCurrentDistance < _sqrMinVisibleDistance;
+            _playerDriver.SetShieldVisibility(_currentVisibility);
+            while (enabled)
             {
                 _sqrCurrentDistance = Mathf.Abs((_playerTransform1.position - _playerTransform2.position).sqrMagnitude);
                 var isVisible = _sqrCurrentDistance < _sqrMinVisibleDistance;

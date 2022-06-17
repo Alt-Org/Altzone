@@ -12,9 +12,8 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private PlayerDriverState _stateInstance;
 
-        protected static void ConnectDistanceMeter(IPlayerDriver playerDriver)
+        protected static void ConnectDistanceMeter(IPlayerDriver playerDriver, PlayerDistanceMeter distanceMeter)
         {
-            var distanceMeter = FindObjectOfType<PlayerDistanceMeter>();
             if (distanceMeter == null)
             {
                 return;
