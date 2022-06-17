@@ -73,7 +73,7 @@ namespace Battle.Scripts.Battle
     {
         void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel);
         void CheckRotation(Vector2 position);
-        string OnShieldCollision();
+        void OnShieldCollision(out string debugString);
         void OnHeadCollision();
     }
 }

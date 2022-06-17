@@ -131,7 +131,7 @@ namespace Battle.Scripts.Battle.Players
             var contactCount = collision.contactCount;
             var point = collision.GetContact(0).point;
             // This call can invalidate current collider!
-            var hitType = _state.OnShieldCollision();
+            _state.OnShieldCollision(out var hitType);
             var message = $"{hitType} {_playerPosChar}";
             ScoreFlashNet.Push(message, point);
             Debug.Log($"{hitType} {name} {component.name} contacts {contactCount} {point}");

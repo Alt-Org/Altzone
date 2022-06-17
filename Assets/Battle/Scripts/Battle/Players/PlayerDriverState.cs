@@ -44,8 +44,8 @@ namespace Battle.Scripts.Battle.Players
                 _playerDriver.Rotate(true);
             }
         }
-        
-        public string OnShieldCollision()
+
+        public void OnShieldCollision(out string debugString)
         {
             if (!_isDisableBallSpeedChanges)
             {
@@ -56,7 +56,8 @@ namespace Battle.Scripts.Battle.Players
             }
             if (_isDisableShieldStateChanges)
             {
-                return string.Empty;
+                debugString = string.Empty;
+                return;
             }
             if (_currentShieldResistance > 0)
             {
@@ -64,14 +65,16 @@ namespace Battle.Scripts.Battle.Players
                 Debug.Log($"hit pose {_currentPoseIndex} shield {_currentShieldResistance}");
                 _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 _playerDriver.SetShieldResistance(_currentShieldResistance);
-                return "HIT";
+                debugString = "HIT";
+                return;
             }
             if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
             {
                 Debug.Log($"stun pose {_currentPoseIndex} shield {_currentShieldResistance}");
                 _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 _playerDriver.SetStunned(_stunDuration);
-                return "STUN";
+                debugString = "STUN";
+                return;
             }
             _currentShieldResistance = _characterModel.Resistance;
             _currentPoseIndex += 1;
@@ -79,7 +82,7 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
             _playerDriver.SetCharacterPose(_currentPoseIndex);
             _playerDriver.SetShieldResistance(_currentShieldResistance);
-            return "BEND";
+            debugString = "BEND";
         }
 
         public void OnHeadCollision()
@@ -87,7 +90,7 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
             _playerDriver.StopAndRestartBall();
         }
- 
+
         public override string ToString()
         {
             return $"{name}";
