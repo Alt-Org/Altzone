@@ -28,7 +28,7 @@ namespace Battle.Scripts.Test
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
         [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
-        
+
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
         private OnGuiWindowHelper _onGuiWindow;
@@ -94,7 +94,6 @@ namespace Battle.Scripts.Test
             Assert.IsTrue(PhotonNetwork.IsMasterClient, "PhotonNetwork.IsMasterClient");
 
             _ballManager.SetBallState(BallState.Hidden);
-            _ballManager.SetBallPosition(Vector2.zero);
             yield return null;
 
             if (playerToStart != null && _isRestartGameSimulation)
@@ -196,7 +195,7 @@ namespace Battle.Scripts.Test
             yield return null;
 
             _ballManager.SetBallPosition(ballDropPosition);
-            _ballManager.SetBallState(BallState.NoTeam);
+            _ballManager.SetBallState(BallState.Moving);
             _ballManager.SetBallSpeed(speed, direction);
             Debug.Log($"{name} DONE");
         }
