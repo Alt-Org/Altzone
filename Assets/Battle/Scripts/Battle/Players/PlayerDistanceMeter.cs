@@ -13,15 +13,13 @@ namespace Battle.Scripts.Battle.Players
 
         private IPlayerDriver _playerDriver;
 
-        private void Awake()
+        public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform)
         {
+            // IPlayerDriver might get instantiated, awoken and enabled before we are called at all - not even Awake() is called!
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var features = runtimeGameConfig.Features;
             _isSinglePlayerShieldOn = features._isSinglePlayerShieldOn;
-        }
-
-        public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform)
-        {
+            
             Debug.Log($"me {playerDriver} @ {(Vector2)playerTransform.position}");
             _playerDriver = playerDriver;
             _playerTransform = playerTransform;
