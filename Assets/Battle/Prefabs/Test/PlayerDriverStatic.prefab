@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2719212202528904770}
   - component: {fileID: 2719212202528904773}
+  - component: {fileID: 5503383708654797993}
   m_Layer: 0
   m_Name: PlayerDriverStatic
   m_TagString: Untagged
@@ -44,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e840eaa5524245a4f298be7a179f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stateInstance: {fileID: 0}
   _settings:
     _nickName: Player
     _playerPos: 1
@@ -53,4 +55,18 @@ MonoBehaviour:
     _isLocal: 0
   _actorNumber: 0
   _playerActorInstance: {fileID: 0}
-  _state: {fileID: 0}
+--- !u!114 &5503383708654797993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719212202528904772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2227128641f4ab28c0f00d25df2662a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isSinglePlayerShieldOn: 0
+  _playerTransform: {fileID: 0}
+  _sqrDistance: 0

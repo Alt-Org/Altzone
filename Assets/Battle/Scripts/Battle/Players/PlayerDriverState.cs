@@ -93,7 +93,7 @@ namespace Battle.Scripts.Battle.Players
 
         public override string ToString()
         {
-            return $"{name}";
+            return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
     }
 }

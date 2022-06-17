@@ -58,13 +58,17 @@ namespace Battle.Scripts.Battle.Players
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
             _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
-            _playerActor = _playerActorInstance;
-            _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
-            _playerActor.Speed = _characterModel.Speed;
-            _playerActor.CurrentResistance = _characterModel.Resistance;
-            _state = GetPlayerDriverState();
-            _state.ResetState(this, _characterModel);
-            _state.CheckRotation(_playerActorTransform.position);
+            {
+                // This code block should be shared with all PlayerDriver implementations
+                _playerActor = _playerActorInstance;
+                _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
+                _playerActor.Speed = _characterModel.Speed;
+                _playerActor.CurrentResistance = _characterModel.Resistance;
+                _state = GetPlayerDriverState(this);
+                _state.ResetState(this, _characterModel);
+                _state.CheckRotation(_playerActorTransform.position);
+                ConnectDistanceMeter(this, _playerActorTransform);
+            }
             gameplayManager.RegisterPlayer(this);
             if (!_settings._isLocal)
             {

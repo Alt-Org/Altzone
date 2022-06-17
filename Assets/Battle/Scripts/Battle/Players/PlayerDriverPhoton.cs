@@ -72,13 +72,17 @@ namespace Battle.Scripts.Battle.Players
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
             _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
-            _playerActor = _playerActorInstance;
-            _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
-            _playerActor.Speed = _characterModel.Speed;
-            _playerActor.CurrentResistance = _characterModel.Resistance;
-            _state = GetPlayerDriverState();
-            _state.ResetState(this, _characterModel);
-            _state.CheckRotation(_playerActorTransform.position);
+            {
+                // This code block should be shared with all PlayerDriver implementations
+                _playerActor = _playerActorInstance;
+                _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
+                _playerActor.Speed = _characterModel.Speed;
+                _playerActor.CurrentResistance = _characterModel.Resistance;
+                _state = GetPlayerDriverState(this);
+                _state.ResetState(this, _characterModel);
+                _state.CheckRotation(_playerActorTransform.position);
+                ConnectDistanceMeter(this, _playerActorTransform);
+            }
             _gameplayManager = Context.GameplayManager;
             _gameplayManager.RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();

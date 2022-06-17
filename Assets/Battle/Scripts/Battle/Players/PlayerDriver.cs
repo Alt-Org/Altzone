@@ -11,19 +11,29 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerDriver : MonoBehaviour
     {
         [SerializeField] private PlayerDriverState _stateInstance;
-        
-        protected IPlayerDriverState GetPlayerDriverState()
+
+        protected static void ConnectDistanceMeter(IPlayerDriver playerDriver, Transform playerActorTransform)
         {
-            if (_stateInstance == null)
+            var distanceMeter = FindObjectOfType<PlayerDistanceMeter>();
+            if (distanceMeter == null)
             {
-                _stateInstance = gameObject.AddComponent<PlayerDriverState>();
+                return;
             }
-            return _stateInstance;
+            distanceMeter.SetPlayerDriver(playerDriver, playerActorTransform);
+        }
+
+        protected static IPlayerDriverState GetPlayerDriverState(PlayerDriver playerDriver)
+        {
+            if (playerDriver._stateInstance == null)
+            {
+                playerDriver._stateInstance = playerDriver.gameObject.AddComponent<PlayerDriverState>();
+            }
+            return playerDriver._stateInstance;
         }
 
         public override string ToString()
         {
-            return $"{name}";
+            return $"{name} {_stateInstance}";
         }
     }
 }
