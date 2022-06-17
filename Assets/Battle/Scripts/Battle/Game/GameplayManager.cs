@@ -41,6 +41,20 @@ namespace Battle.Scripts.Battle.Game
             PlayerCount = SecondPlayer == null ? 1 : 2;
         }
 
+        public IPlayerDriver GetMyTeamMember(int actorNumber)
+        {
+            Assert.IsTrue(PlayerCount == 2, "PlayerCount == 2");
+            if (FirstPlayer.ActorNumber == actorNumber)
+            {
+                return SecondPlayer;
+            }
+            if (SecondPlayer.ActorNumber == actorNumber)
+            {
+                return FirstPlayer;
+            }
+            return null;
+        }
+
         public int Attack => FirstPlayer.CharacterModel.Attack + (SecondPlayer?.CharacterModel.Attack ?? 0);
 
         public void SetPlayMode(BattlePlayMode playMode)
@@ -271,6 +285,8 @@ namespace Battle.Scripts.Battle.Game
                       $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal}");
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
+            
+            // Update state
             _players.Add(playerDriver);
             if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
             {
@@ -278,21 +294,31 @@ namespace Battle.Scripts.Battle.Game
                 deletePreviousInstance.SetActive(false);
                 Destroy(deletePreviousInstance);
             }
+            if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
+            {
+                Assert.IsTrue(_teamBlue.Count < 2, "_teamBlue.Count < 2");
+                _teamBlue.Add(playerDriver);
+            }
+            else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
+            {
+                Assert.IsTrue(_teamRed.Count < 2, "_teamRed.Count < 2");
+                _teamRed.Add(playerDriver);
+            }
+            else
+            {
+                throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
+            }
 
-            // Publish PlayerJoined first, then TeamCreated
+            // Publish (after we have stable state): PlayerJoined first, then TeamCreated or TeamUpdated
             this.Publish(new PlayerJoined(playerDriver));
             if (playerDriver.TeamNumber == PhotonBattle.TeamBlueValue)
             {
-                _teamBlue.Add(playerDriver);
-                Assert.IsTrue(_teamBlue.Count <= 2, "_teamBlue.Count <= 2");
                 this.Publish(_teamBlue.Count == 1
                     ? new TeamCreated(CreateBattleTeam(playerDriver.TeamNumber))
                     : new TeamUpdated(CreateBattleTeam(playerDriver.TeamNumber)));
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
             {
-                _teamRed.Add(playerDriver);
-                Assert.IsTrue(_teamRed.Count <= 2, "_teamRed.Count <= 2");
                 this.Publish(_teamBlue.Count == 1
                     ? new TeamCreated(CreateBattleTeam(playerDriver.TeamNumber))
                     : new TeamUpdated(CreateBattleTeam(playerDriver.TeamNumber)));
@@ -301,6 +327,9 @@ namespace Battle.Scripts.Battle.Game
             {
                 throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
             }
+            
+            // This is related to how camera and game objects are rotated.
+            // - there is not really good place for this stuff, so it is now here.
             var gameCamera = Context.GetBattleCamera;
             if (playerDriver.IsLocal)
             {
