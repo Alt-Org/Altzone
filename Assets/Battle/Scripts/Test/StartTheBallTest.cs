@@ -23,7 +23,8 @@ namespace Battle.Scripts.Test
         [Header("Debug Settings"), SerializeField] private float _countDownDelayOverride;
         [SerializeField] private float _forceSpeedOverride;
 
-        [Header("Restart Game Simulation"), Tooltip(Tooltip), SerializeField] private bool _isRestartGameSimulation;
+        [Header("Restart Game"), Tooltip(Tooltip), SerializeField] private bool _isRestartGameSimulation;
+        [SerializeField] private bool _isRestartGameOverLevel;
         [Min(1), SerializeField] private int _gameOverRestartLimit = 1;
         [SerializeField] private int[] _teamRestartCount = new int[3];
 
@@ -96,33 +97,64 @@ namespace Battle.Scripts.Test
             _ballManager.SetBallState(BallState.Hidden);
             yield return null;
 
-            if (playerToStart != null && _isRestartGameSimulation)
+            if (playerToStart != null && (_isRestartGameSimulation || _isRestartGameOverLevel))
             {
-                // This code block roughly simulates what "Game Over" scene does when it reloads Battle level to restart a game. 
                 _teamRestartCount[playerToStart.TeamNumber] += 1;
                 if (_teamRestartCount[playerToStart.TeamNumber] >= _gameOverRestartLimit)
                 {
-                    Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
-                    _gameplayManager.ForEach(player =>
-                    {
-                        var startPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(player.PlayerPos);
-                        player.SetPlayMode(BattlePlayMode.Normal);
-                        player.SetCharacterPose(0);
-                        player.SetShieldResistance(player.CharacterModel.Resistance);
-                        player.MoveTo(startPosition);
-                    });
-                    yield return null;
-                    if (_onGuiWindow == null)
-                    {
-                        _onGuiWindow = gameObject.AddComponent<OnGuiWindowHelper>();
-                        _onGuiWindow._windowTitle = "Restart the GAME when ALL players are ready";
-                        _onGuiWindow._buttonCaption = $" \r\nRestart the GAME ({_onGuiWindow._controlKey})\r\n ";
-                        _onGuiWindow.OnKeyPressed = () => { Debug.Log("game restarted"); };
-                    }
-                    _onGuiWindow.Show();
-                    yield return null;
-                    yield return new WaitUntil(() => !_onGuiWindow.IsVisible);
+                    StartCoroutine(StartGameOver(playerToStart));
+                    yield break;
                 }
+            }
+            _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
+            StartCoroutine(StartBallWorkRoutine(playerToStart));
+        }
+
+        private IEnumerator StartGameOver(IPlayerDriver playerToStart)
+        {
+            if (_isRestartGameOverLevel)
+            {
+                var gameScoreManager = Context.GetGameScoreManager;
+                if (gameScoreManager != null)
+                {
+                    _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Frozen));
+                    yield return null;
+                    var room = PhotonNetwork.CurrentRoom;
+                    var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue];
+                    var redScore = _teamRestartCount[PhotonBattle.TeamRedValue];
+                    var winningTeam = blueScore > redScore ? PhotonBattle.TeamBlueValue
+                        : redScore > blueScore ? PhotonBattle.TeamRedValue
+                        : PhotonBattle.NoTeamValue;
+                    var winType = blueScore == 0 && redScore == 0 ? PhotonBattle.WinTypeNone
+                        : blueScore == redScore ? PhotonBattle.WinTypeDraw
+                        : PhotonBattle.WinTypeScore;
+                    gameScoreManager.ShowGameOverWindow(room, winType, winningTeam, blueScore, redScore);
+                    yield break;
+                }
+            }
+            // This code block roughly simulates what "Game Over" scene does when it reloads Battle level to restart a game. 
+            if (_isRestartGameSimulation)
+            {
+                Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
+                _gameplayManager.ForEach(player =>
+                {
+                    var startPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(player.PlayerPos);
+                    player.SetPlayMode(BattlePlayMode.Normal);
+                    player.SetCharacterPose(0);
+                    player.SetShieldResistance(player.CharacterModel.Resistance);
+                    player.MoveTo(startPosition);
+                });
+                yield return null;
+                if (_onGuiWindow == null)
+                {
+                    _onGuiWindow = gameObject.AddComponent<OnGuiWindowHelper>();
+                    _onGuiWindow._windowTitle = "Restart the GAME when ALL players are ready";
+                    _onGuiWindow._buttonCaption = $" \r\nRestart the GAME ({_onGuiWindow._controlKey})\r\n ";
+                    _onGuiWindow.OnKeyPressed = () => { Debug.Log("game restarted"); };
+                }
+                _onGuiWindow.Show();
+                yield return null;
+                yield return new WaitUntil(() => !_onGuiWindow.IsVisible);
             }
             _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             StartCoroutine(StartBallWorkRoutine(playerToStart));

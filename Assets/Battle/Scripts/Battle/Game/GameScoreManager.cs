@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Collects local scores (from master client) and synchronizes them over network.
     /// </summary>
-    public class GameScoreManager : MonoBehaviour
+    public class GameScoreManager : MonoBehaviour, IGameScoreManager
     {
         [Header("Settings"), SerializeField] private WindowDef _gameOverWindow;
 

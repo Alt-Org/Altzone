@@ -17,6 +17,8 @@ namespace Battle.Scripts.Battle
 
         internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
 
+        internal static IGameScoreManager GetGameScoreManager => Object.FindObjectOfType<GameScoreManager>();
+
         #endregion
 
         #region Static Actors
@@ -29,7 +31,6 @@ namespace Battle.Scripts.Battle
 
         public static IGameplayManager GameplayManager => Object.FindObjectOfType<GameplayManager>();
 
-        
         #endregion
     }
 }
