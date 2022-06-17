@@ -202,6 +202,10 @@ namespace Altzone.Scripts.Battle
 
         public static void SetRoomScores(Room room, int winType, int winningTeam, int blueScore, int redScore)
         {
+            Assert.IsTrue(winType >= 0 && winType <= 3, "winType >= 0 && winType <= 3");
+            Assert.IsTrue(winningTeam >= 0 && winningTeam <= 2, "winningTeam >= 0 && winningTeam <= 2");
+            Assert.IsTrue(blueScore >= 0, "blueScore >= 0");
+            Assert.IsTrue(redScore >= 0, "redScore >= 0");
             var props = new Hashtable
             {
                 { TeamWinTypeKey, winType },
