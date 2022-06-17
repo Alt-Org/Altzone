@@ -15,6 +15,7 @@ namespace Battle.Scripts.Battle.Ball
         [Serializable]
         internal class DebugSettings
         {
+            public bool _isApiCalls;
             public bool _isShowBallText;
             public TextMeshPro _ballText;
             public bool _isShowTrailRenderer;
@@ -224,12 +225,20 @@ namespace Battle.Scripts.Battle.Ball
 
         private void SetBallCollider(bool state)
         {
+            if (_debug._isApiCalls && _ballCollider.enabled != state)
+            {
+                Debug.Log($"{_ballCollider.enabled} <- {state}");
+            }
             _ballColliderParent.SetActive(state);
             _ballCollider.enabled = state;
         }
 
         private void _SetBallState(BallState ballState)
         {
+            if (_debug._isApiCalls && _ballState != ballState)
+            {
+                Debug.Log($"{_ballState} <- {ballState}");
+            }
             _ballState = ballState;
             var stateIndex = (int)ballState;
             SetBallCollider(ColliderStates[stateIndex]);
@@ -331,6 +340,10 @@ namespace Battle.Scripts.Battle.Ball
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
+            if (_debug._isApiCalls)
+            {
+                Debug.Log($"{_rigidbody.position} <- {position}");
+            }
             _rigidbody.position = position;
             UpdateBallText();
             _photonView.RPC(nameof(TestBallPositionRpc), RpcTarget.Others, position);
@@ -356,6 +369,10 @@ namespace Battle.Scripts.Battle.Ball
 
         private Vector2 InternalSetRigidbodyVelocity(float speed, Vector2 direction)
         {
+            if (_debug._isApiCalls)
+            {
+                Debug.Log($"{_ballRequiredMoveSpeed} <- {speed} : {_rigidbody.velocity.normalized} <- {direction.normalized}");
+            }
             if (speed == 0)
             {
                 // When ball is stopped, it will "forget" its current direction and can not start moving without new direction!
