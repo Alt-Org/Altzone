@@ -6,7 +6,8 @@ namespace Battle.Scripts.Battle
     /// BallState combines ball behaviour and visual state into one for convenience (or confusion).
     /// </summary>
     /// <remarks>
-    /// NoTeam, BlueTeam and RedTeam are alias for "Moving" state but can different visual state.
+    /// NoTeam, BlueTeam and RedTeam are all aliases for "Moving" state but can different visual state.<br />
+    /// <c>BallManager</c> implementation relies that enum values have these specific values (used as indexes)!
     /// </remarks>
     internal enum BallState : byte
     {
@@ -16,6 +17,7 @@ namespace Battle.Scripts.Battle
         RedTeam = 3,
         Ghosted = 4,
         Hidden = 5,
+        Moving = 1,
     }
 
     /// <summary>
