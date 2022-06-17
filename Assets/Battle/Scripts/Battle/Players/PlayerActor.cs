@@ -104,7 +104,7 @@ namespace Battle.Scripts.Battle.Players
 
         private bool IsBuffedOrDeBuffed => _isStunned;
 
-        public static PlayerActor Instantiate(IPlayerDriver playerDriver, PlayerActor playerPrefab)
+        public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, PlayerActor playerPrefab)
         {
             Debug.Log($"prefab {playerPrefab.name}");
 

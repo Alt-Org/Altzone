@@ -57,7 +57,7 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.GameplayManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
-            _playerActorInstance = PlayerActor.Instantiate(this, _settings._playerPrefab);
+            _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;

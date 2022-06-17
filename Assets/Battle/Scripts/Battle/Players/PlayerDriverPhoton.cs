@@ -71,7 +71,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
-            _playerActorInstance = PlayerActor.Instantiate(this, _debug._playerPrefab);
+            _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
             _playerActor = _playerActorInstance;
             _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
             _playerActor.Speed = _characterModel.Speed;
