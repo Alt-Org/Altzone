@@ -67,7 +67,7 @@ namespace Battle.Scripts.Battle.Players
                 _state = GetPlayerDriverState(this);
                 _state.ResetState(this, _characterModel);
                 _state.CheckRotation(_playerActorTransform.position);
-                ConnectDistanceMeter(this, _playerActorTransform);
+                ConnectDistanceMeter(this);
             }
             gameplayManager.RegisterPlayer(this);
             if (!_settings._isLocal)
