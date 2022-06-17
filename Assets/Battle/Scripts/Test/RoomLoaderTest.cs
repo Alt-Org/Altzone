@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Photon.Pun;
@@ -15,9 +16,8 @@ namespace Battle.Scripts.Test
     {
         private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
 
-        private const string TestRoomName = "TestBattle";
-
         [Header("Debug Settings"), Tooltip(Tooltip1), SerializeField] private bool _isOfflineMode;
+        [SerializeField] private string _roomName;
 
         private IEnumerator Start()
         {
@@ -54,8 +54,12 @@ namespace Battle.Scripts.Test
 
         public override void OnJoinedLobby()
         {
-            Debug.Log($"JoinOrCreateRoom {PhotonNetwork.NetworkClientState}");
-            PhotonLobby.JoinOrCreateRoom(TestRoomName);
+            if (string.IsNullOrWhiteSpace(_roomName))
+            {
+                _roomName = Environment.MachineName;
+            }
+            Debug.Log($"JoinOrCreateRoom {PhotonNetwork.NetworkClientState} room {_roomName}");
+            PhotonLobby.JoinOrCreateRoom(_roomName);
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
@@ -66,6 +70,7 @@ namespace Battle.Scripts.Test
 
         private static void ShowRoomJoinedMessage()
         {
+            Debug.Log($"room {PhotonNetwork.CurrentRoom.Name}");
             if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
             {
                 return;
