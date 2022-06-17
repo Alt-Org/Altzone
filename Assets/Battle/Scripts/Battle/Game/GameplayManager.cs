@@ -86,6 +86,11 @@ namespace Battle.Scripts.Battle.Game
         {
             Player = player;
         }
+
+        public override string ToString()
+        {
+            return $"{Player}";
+        }
     }
 
     internal class PlayerLeft : PlayerJoined
@@ -103,6 +108,11 @@ namespace Battle.Scripts.Battle.Game
         {
             BattleTeam = battleTeam;
         }
+
+        public override string ToString()
+        {
+            return $"{BattleTeam}";
+        }
     }
 
     internal class TeamUpdated : TeamCreated
@@ -119,6 +129,10 @@ namespace Battle.Scripts.Battle.Game
         public TeamBroken(BattleTeam battleTeam, IPlayerDriver playerWhoLeft) : base(battleTeam)
         {
             PlayerWhoLeft = playerWhoLeft;
+        }
+        public override string ToString()
+        {
+            return $"{base.ToString()} left {PlayerWhoLeft}";
         }
     }
 

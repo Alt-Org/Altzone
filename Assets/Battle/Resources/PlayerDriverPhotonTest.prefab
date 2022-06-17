@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8515706434229322689}
   - component: {fileID: 6964329712909252541}
   - component: {fileID: 3022018102379483262}
+  - component: {fileID: -6050001277161981344}
   m_Layer: 0
   m_Name: PlayerDriverPhotonTest
   m_TagString: Untagged
@@ -74,3 +75,18 @@ MonoBehaviour:
   _debug:
     _playerPrefab: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
       type: 3}
+--- !u!114 &-6050001277161981344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8607368454165204979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2227128641f4ab28c0f00d25df2662a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isSinglePlayerShieldOn: 0
+  _playerTransform: {fileID: 0}
+  _sqrDistance: 0

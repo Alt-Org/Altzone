@@ -22,31 +22,28 @@ namespace Battle.Scripts.Battle.Players
 
         public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform)
         {
+            Debug.Log($"me {playerDriver} @ {(Vector2)playerTransform.position}");
             _playerDriver = playerDriver;
             _playerTransform = playerTransform;
             playerDriver.SetShieldVisibility(_isSinglePlayerShieldOn);
-        }
-
-        private void OnEnable()
-        {
-            Debug.Log($"{name}");
             this.Subscribe<PlayerJoined>(OnPlayerJoined);
             this.Subscribe<PlayerLeft>(OnPlayerLeft);
         }
 
         private void OnDisable()
         {
+            StopAllCoroutines();
             this.Unsubscribe();
         }
 
         private void OnPlayerJoined(PlayerJoined data)
         {
-            Debug.Log($"{name} {data}");
+            Debug.Log($"me {_playerDriver} {data}");
         }
 
         private void OnPlayerLeft(PlayerLeft data)
         {
-            Debug.Log($"{name} {data}");
+            Debug.Log($"me {_playerDriver} {data}");
         }
     }
 }
