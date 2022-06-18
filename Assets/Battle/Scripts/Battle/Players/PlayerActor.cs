@@ -141,6 +141,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnDestroy()
         {
             Debug.Log($"{name}");
+            _playerDriver?.PlayerActorDestroyed();
         }
 
         private void SetPlayerDriver(IPlayerDriver playerDriver)
@@ -274,6 +275,10 @@ namespace Battle.Scripts.Battle.Players
 
         private float _speed;
         private int _resistance;
+
+        GameObject IPlayerActor.GameObject => gameObject;
+
+        Transform IPlayerActor.Transform => _transform;
 
         int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 

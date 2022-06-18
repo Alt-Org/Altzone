@@ -19,8 +19,7 @@ namespace Battle.Scripts.Battle.Players
             public PlayerActor _playerPrefab;
         }
 
-        [Header("Live Data"), SerializeField] private PlayerActor _playerActorInstance;
-        [SerializeField] private int _peerCount;
+        [Header("Live Data"), SerializeField] private int _peerCount;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -32,7 +31,6 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
-        private Transform _playerActorTransform;
         private IGameplayManager _gameplayManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
@@ -71,16 +69,15 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
-            _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
+            var playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor = _playerActorInstance;
-                _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
+                _playerActor = playerActorInstance;
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
                 _state.ResetState(this, _characterModel);
-                _state.CheckRotation(_playerActorTransform.position);
+                _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
             _gameplayManager = Context.GameplayManager;
@@ -98,24 +95,19 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetBattlePlayArea.GetPlayerPlayArea(_playerPos);
-            playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
+            playerInputHandler.SetPlayerDriver(this, _playerActor.Transform, playArea);
         }
 
         private void OnDestroy()
         {
-            if (_isApplicationQuitting || _playerActorInstance == null)
+            if (_isApplicationQuitting || _playerActor == null)
             {
                 return;
             }
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            _gameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
-            if (_playerActor == null)
-            {
-                // Did not manage to initialize properly?
-                return;
-            }
+            _gameplayManager.UnregisterPlayer(this, _playerActor.GameObject);
             _playerActor.ResetPlayerDriver();
             if (!_isLocal)
             {
@@ -165,7 +157,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
 
-        bool IPlayerDriver.IsValid => _playerActorInstance != null;
+        bool IPlayerDriver.IsValid => _playerActor != null;
         
         int IPlayerDriver.PeerCount => _peerCount;
 
@@ -179,9 +171,9 @@ namespace Battle.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
-        Vector2 IPlayerDriver.Position => _playerActorTransform.position;
+        Vector2 IPlayerDriver.Position => _playerActor.Transform.position;
 
-        Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
+        Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
 
@@ -270,7 +262,9 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.PlayerActorDestroyed()
         {
-            _playerActorInstance = null;
+            Debug.Log($"{name}");
+            _playerActor = null;
+            DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
         #endregion

@@ -27,6 +27,7 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver = playerDriver;
             if (playerDriver == null)
             {
+                Reset();
                 enabled = false;
                 return;
             }
@@ -50,10 +51,15 @@ namespace Battle.Scripts.Battle.Players
             enabled = true;
         }
 
-        private void OnDisable()
+        private void Reset()
         {
             StopAllCoroutines();
             this.Unsubscribe();
+        }
+
+        private void OnDisable()
+        {
+            Reset();
         }
 
         private void OnPlayerJoined(PlayerJoined data)

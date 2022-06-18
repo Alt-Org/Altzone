@@ -16,6 +16,16 @@ namespace Battle.Scripts.Battle
     /// </remarks>
     internal interface IPlayerActor
     {
+        /// <summary>
+        /// <c>IPlayerActor</c> game object instance root.
+        /// </summary>
+        GameObject GameObject { get; }
+        
+        /// <summary>
+        /// <c>IPlayerActor</c> game object <c>Transform</c> for all measurements.
+        /// </summary>
+        Transform Transform { get; }
+
         int MaxPoseIndex { get; }
         
         float Speed { get; set; }

@@ -69,8 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4362c26c7198460fa659bd2142bf21b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stateInstance: {fileID: 0}
-  _playerActorInstance: {fileID: 0}
+  _state: {fileID: 0}
   _peerCount: 0
   _debug:
     _playerPrefab: {fileID: 701812890770915198, guid: 36e951a516a90cf46b7483730be851c5,
@@ -87,6 +86,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2227128641f4ab28c0f00d25df2662a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isSinglePlayerShieldOn: 0
-  _playerTransform: {fileID: 0}
-  _sqrDistance: 0
+  _playerTransform1: {fileID: 0}
+  _playerTransform2: {fileID: 0}
+  _sqrMinVisibleDistance: 0
+  _sqrCurrentDistance: 0
+  _currentVisibility: 0

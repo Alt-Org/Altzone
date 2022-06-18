@@ -29,14 +29,13 @@ namespace Battle.Scripts.Battle.Players
         [Header("Settings"), SerializeField] private Settings _settings;
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
-        [SerializeField] private PlayerActor _playerActorInstance;
+        [SerializeField] private Transform _playerActorTransform;
 
         private char _playerPosChar;
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
-        private Transform _playerActorTransform;
         private bool _isApplicationQuitting;
 
         private void Awake()
@@ -57,11 +56,11 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.GameplayManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
-            _playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
+            var playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor = _playerActorInstance;
-                _playerActorTransform = _playerActorInstance.GetComponent<Transform>();
+                _playerActor = playerActorInstance;
+                _playerActorTransform = playerActorInstance.GetComponent<Transform>();
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
@@ -76,24 +75,25 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetBattlePlayArea.GetPlayerPlayArea(_settings._playerPos);
-            playerInputHandler.SetPlayerDriver(this, _playerActorInstance.GetComponent<Transform>(), playArea);
+            playerInputHandler.SetPlayerDriver(this, _playerActorTransform, playArea);
         }
 
         private void OnDestroy()
         {
-            if (_isApplicationQuitting || _playerActorInstance == null)
+            if (_isApplicationQuitting || _playerActor == null)
             {
                 return;
             }
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            Context.GameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
-            if (_settings._isLocal)
+            Context.GameplayManager.UnregisterPlayer(this, _playerActor.GameObject);
+            if (!_settings._isLocal)
             {
-                var playerInputHandler = PlayerInputHandler.Get();
-                playerInputHandler?.ResetPlayerDriver();
+                return;
             }
+            var playerInputHandler = PlayerInputHandler.Get();
+            playerInputHandler?.ResetPlayerDriver();
         }
 
         #region IPlayerActorCollision
@@ -130,7 +130,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.PeerCount => 0;
 
-        bool IPlayerDriver.IsValid => _playerActorInstance != null;
+        bool IPlayerDriver.IsValid => _playerActor != null;
         
         int IPlayerDriver.PlayerPos => _settings._playerPos;
 
@@ -204,7 +204,10 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.PlayerActorDestroyed()
         {
-            _playerActorInstance = null;
+            Debug.Log($"{name}");
+            _playerActor = null;
+            _playerActorTransform = null;
+            DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
         #endregion
