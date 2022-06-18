@@ -109,6 +109,7 @@ namespace Battle.Scripts.Battle.Players
             }
             print("xx");
             Debug.Log($"{name}");
+            DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             _gameplayManager.UnregisterPlayer(this, _playerActorInstance.gameObject);
             if (_playerActor == null)
             {

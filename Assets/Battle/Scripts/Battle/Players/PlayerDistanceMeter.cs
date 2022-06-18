@@ -17,11 +17,19 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerDriver _playerDriver;
         private bool _isSinglePlayerShieldOn;
 
+        /// <summary>
+        /// Manages <c>IPlayerDriver</c> connection.
+        /// </summary>
         public void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             // IPlayerDriver might get instantiated, awoken and enabled before we are called at all - not even Awake() is called!
 
             _playerDriver = playerDriver;
+            if (playerDriver == null)
+            {
+                enabled = false;
+                return;
+            }
             _playerTransform1 = playerDriver.PlayerTransform;
             Debug.Log($"{_playerDriver} @ {(Vector2)_playerTransform1.position}");
 
@@ -39,6 +47,7 @@ namespace Battle.Scripts.Battle.Players
             this.Subscribe<PlayerLeft>(OnPlayerLeft);
 
             CheckMyTeam();
+            enabled = true;
         }
 
         private void OnDisable()

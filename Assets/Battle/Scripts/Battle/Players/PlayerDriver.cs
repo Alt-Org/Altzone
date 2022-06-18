@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerDriver : MonoBehaviour
     {
-        [SerializeField] private PlayerDriverState _stateInstance;
+        [SerializeField] private PlayerDriverState _state;
 
         protected static void ConnectDistanceMeter(IPlayerDriver playerDriver, PlayerDistanceMeter distanceMeter)
         {
@@ -21,18 +21,27 @@ namespace Battle.Scripts.Battle.Players
             distanceMeter.SetPlayerDriver(playerDriver);
         }
 
+        protected static void DisconnectDistanceMeter(IPlayerDriver playerDriver, PlayerDistanceMeter distanceMeter)
+        {
+            if (distanceMeter == null)
+            {
+                return;
+            }
+            distanceMeter.SetPlayerDriver(null);
+        }
+
         protected static IPlayerDriverState GetPlayerDriverState(PlayerDriver playerDriver)
         {
-            if (playerDriver._stateInstance == null)
+            if (playerDriver._state == null)
             {
-                playerDriver._stateInstance = playerDriver.gameObject.AddComponent<PlayerDriverState>();
+                playerDriver._state = playerDriver.gameObject.AddComponent<PlayerDriverState>();
             }
-            return playerDriver._stateInstance;
+            return playerDriver._state;
         }
 
         public override string ToString()
         {
-            return $"{name} {_stateInstance}";
+            return $"{name} {_state}";
         }
     }
 }
