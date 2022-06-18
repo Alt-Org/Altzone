@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using Altzone.Scripts.Battle;
 using TMPro;
+using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -176,12 +178,13 @@ namespace Battle.Scripts.Battle.Players
             var model = _playerDriver.CharacterModel;
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
-            _avatarPose = new PoseManager(_settings._avatar.Avatars);
+            var avatarHeadTag = _playerDriver.TeamNumber == PhotonBattle.TeamBlueValue ? Tags.BlueTeam : Tags.RedTeam;
+            _avatarPose = new PoseManager(_settings._avatar.Avatars, avatarHeadTag);
             // Last pose is reserved for disconnected pose
             _maxPoseIndex = _settings._avatar.Avatars.Length - 2;
             _disconnectedPoseIndex = _maxPoseIndex + 1;
             _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _maxPoseIndex);
-            _shieldPose = new PoseManager(_settings._shield.Shields);
+            _shieldPose = new PoseManager(_settings._shield.Shields, null);
             _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, 0);
             UpdatePlayerText();
             // We have to add ColliderTracker for every collider there is
@@ -477,15 +480,20 @@ namespace Battle.Scripts.Battle.Players
         private Transform _parentTransform;
         private int _childCount;
 
-        public PoseManager(GameObject[] avatars)
+        public PoseManager(GameObject[] avatars, string tag)
         {
             _state = new PoseState();
             _avatars = avatars;
             _colliders = new Collider2D[avatars.Length];
             var index = -1;
+            var isSetTag = !string.IsNullOrWhiteSpace(tag);
             foreach (var avatar in _avatars)
             {
                 _colliders[++index] = avatar.GetComponentsInChildren<Collider2D>(true)[0];
+                if (isSetTag)
+                {
+                    avatar.tag = tag;
+                }
             }
         }
 
