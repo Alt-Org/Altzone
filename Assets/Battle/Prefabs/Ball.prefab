@@ -496,6 +496,7 @@ MonoBehaviour:
   _networkPosition: {x: 0, y: 0}
   _networkLag: 0
   _debug:
+    _isApiCalls: 0
     _isShowBallText: 0
     _ballText: {fileID: 1331194194009747703}
     _isShowTrailRenderer: 0
@@ -515,7 +516,12 @@ MonoBehaviour:
   _teamAreaMask:
     serializedVersion: 2
     m_Bits: 8192
-  _isSendEvents: 1
+  _headMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  _wallMask:
+    serializedVersion: 2
+    m_Bits: 2048
   _isSetBallState: 0
   _isOnBlueTeamArea: 0
   _isOnRedTeamArea: 0
