@@ -1,4 +1,5 @@
 using System.Collections;
+using Altzone.Scripts.Battle;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace Battle.Scripts.Battle.Ball
         private int _teamAreaMaskValue;
         private int _headMaskValue;
         private int _wallMaskValue;
-        private YieldInstruction _waitForFixedUpdate = new WaitForFixedUpdate();
+        private readonly YieldInstruction _waitForFixedUpdate = new WaitForFixedUpdate();
 
         private void Awake()
         {
@@ -124,11 +125,11 @@ namespace Battle.Scripts.Battle.Ball
             {
                 if (otherGameObject.CompareTag(Tags.BlueTeam))
                 {
-                    _ballManager.SetBallState(_isOnRedTeamArea ? BallState.NoTeam : BallState.BlueTeam);
+                    _ballManager.SetBallTeamColor(_isOnRedTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamBlueValue);
                 }
                 else if (otherGameObject.CompareTag(Tags.RedTeam))
                 {
-                    _ballManager.SetBallState(_isOnBlueTeamArea ? BallState.NoTeam : BallState.RedTeam);
+                    _ballManager.SetBallTeamColor(_isOnBlueTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamRedValue);
                 }
             }
             this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
@@ -169,11 +170,11 @@ namespace Battle.Scripts.Battle.Ball
             yield return _waitForFixedUpdate;
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
-                _ballManager.SetBallState(_isOnRedTeamArea ? BallState.RedTeam : BallState.NoTeam);
+                _ballManager.SetBallTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
             }
             else if (otherGameObject.CompareTag(Tags.RedTeam))
             {
-                _ballManager.SetBallState(_isOnBlueTeamArea ? BallState.BlueTeam : BallState.NoTeam);
+                _ballManager.SetBallTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
             }
         }
 

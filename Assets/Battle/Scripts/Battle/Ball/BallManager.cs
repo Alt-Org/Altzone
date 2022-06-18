@@ -22,20 +22,26 @@ namespace Battle.Scripts.Battle.Ball
             public TrailRenderer _trailRenderer;
         }
 
+        [Serializable]
+        internal class ColorSettings
+        {
+            public Color _colorNoTeam;
+            public Color _colorBlueTeam;
+            public Color _colorRedTeam;
+        }
+
         private static readonly BallState[] BallStates =
-            { BallState.Stopped, BallState.NoTeam, BallState.RedTeam, BallState.BlueTeam, BallState.Ghosted, BallState.Hidden };
+            { BallState.Stopped, BallState.Moving, BallState.Ghosted, BallState.Hidden };
 
         // ColliderStates controls when ball collider is active based on ball state.
-        private static readonly bool[] ColliderStates = { false, true, true, true, false, false };
+        private static readonly bool[] ColliderStates = { false, true, false, false };
 
         // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
-        private static readonly bool[] StopStates = { true, false, false, false, true, true };
+        private static readonly bool[] StopStates = { true, false, true, true };
 
         [Header("Settings"), SerializeField] private GameObject _ballColliderParent;
         [SerializeField] private GameObject _spriteStopped;
-        [SerializeField] private GameObject _spriteNoTeam;
-        [SerializeField] private GameObject _spriteRedTeam;
-        [SerializeField] private GameObject _spriteBlueTeam;
+        [SerializeField] private GameObject _spriteMoving;
         [SerializeField] private GameObject _spriteGhosted;
         [SerializeField] private GameObject _spriteHidden;
 
@@ -48,10 +54,13 @@ namespace Battle.Scripts.Battle.Ball
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
+        [Header("Color Settings"), SerializeField] private ColorSettings _colors;
+
         private PhotonView _photonView;
         private Rigidbody2D _rigidbody;
         private GameObject[] _sprites;
         private Collider2D _ballCollider;
+        private Color[] _teamColors;
 
         private float _ballMoveSpeedMultiplier;
         private float _ballMinMoveSpeed;
@@ -74,7 +83,8 @@ namespace Battle.Scripts.Battle.Ball
             _ballMaxMoveSpeed = variables._ballMaxMoveSpeed;
             _ballLerpSmoothingFactor = variables._ballLerpSmoothingFactor;
             _ballTeleportDistance = variables._ballTeleportDistance;
-            _sprites = new[] { _spriteStopped, _spriteNoTeam, _spriteRedTeam, _spriteBlueTeam, _spriteGhosted, _spriteHidden };
+            _sprites = new[] { _spriteStopped, _spriteMoving, _spriteGhosted, _spriteHidden };
+            _teamColors = new[] { _colors._colorNoTeam, _colors._colorBlueTeam, _colors._colorRedTeam };
             SetDebug();
             _SetBallState(BallState.Stopped);
             UpdateBallText();
@@ -399,6 +409,11 @@ namespace Battle.Scripts.Battle.Ball
             _SetBallState(ballState);
             UpdateBallText();
             _photonView.RPC(nameof(TestSetBallStateRpc), RpcTarget.Others, ballState);
+        }
+
+        void IBallManager.SetBallTeamColor(int teamNumber)
+        {
+            _spriteMoving.GetComponent<SpriteRenderer>().color = _teamColors[teamNumber];
         }
 
         #endregion
