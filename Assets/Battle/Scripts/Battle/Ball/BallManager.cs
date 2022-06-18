@@ -351,7 +351,7 @@ namespace Battle.Scripts.Battle.Ball
 
         void IBallManager.SetBallSpeed(float speed)
         {
-            ((IBallManager)this).SetBallSpeed(speed, Vector2.zero);
+            ((IBallManager)this).SetBallSpeed(speed, _rigidbody.velocity);
         }
 
         void IBallManager.SetBallSpeed(float speed, Vector2 direction)
@@ -382,7 +382,7 @@ namespace Battle.Scripts.Battle.Ball
                 return Vector2.zero;
             }
             _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
-            var velocity = (direction != Vector2.zero ? direction.normalized : _rigidbody.velocity.normalized) * _ballRequiredMoveSpeed;
+            var velocity = direction.normalized * _ballRequiredMoveSpeed;
             Assert.IsTrue(velocity != Vector2.zero, "velocity != Vector2.zero");
             _rigidbody.velocity = velocity;
             _rigidbodyVelocitySqrMagnitude = velocity.sqrMagnitude;
