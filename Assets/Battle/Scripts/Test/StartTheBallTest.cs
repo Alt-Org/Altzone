@@ -27,7 +27,7 @@ namespace Battle.Scripts.Test
         [Header("Restart Game"), Tooltip(Tooltip), SerializeField] private bool _isRestartGameSimulation;
         [SerializeField] private bool _isRestartGameOverLevel;
         [Min(1), SerializeField] private int _gameOverRestartLimit = 1;
-        [SerializeField] private int[] _teamRestartCount = new int[3];
+        [SerializeField] private int[] _teamRestartCount = new int[2];
 
         [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
 
@@ -100,8 +100,8 @@ namespace Battle.Scripts.Test
 
             if (playerToStart != null && (_isRestartGameSimulation || _isRestartGameOverLevel))
             {
-                _teamRestartCount[playerToStart.TeamNumber] += 1;
-                if (_teamRestartCount[playerToStart.TeamNumber] >= _gameOverRestartLimit)
+                _teamRestartCount[playerToStart.TeamNumber - 1] += 1;
+                if (_teamRestartCount[playerToStart.TeamNumber - 1] >= _gameOverRestartLimit)
                 {
                     StartCoroutine(StartGameOver(playerToStart));
                     yield break;
@@ -121,8 +121,8 @@ namespace Battle.Scripts.Test
                     _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Frozen));
                     yield return null;
                     var room = PhotonNetwork.CurrentRoom;
-                    var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue];
-                    var redScore = _teamRestartCount[PhotonBattle.TeamRedValue];
+                    var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue-1];
+                    var redScore = _teamRestartCount[PhotonBattle.TeamRedValue-1];
                     var winningTeam = blueScore > redScore ? PhotonBattle.TeamBlueValue
                         : redScore > blueScore ? PhotonBattle.TeamRedValue
                         : PhotonBattle.NoTeamValue;

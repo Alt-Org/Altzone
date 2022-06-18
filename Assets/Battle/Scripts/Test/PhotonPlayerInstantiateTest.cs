@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
+using Battle.Scripts.Battle.Players;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Unity.ToastMessages;
@@ -10,12 +11,12 @@ using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Random = UnityEngine.Random;
 
-namespace Battle.Scripts.Battle.Players
+namespace Battle.Scripts.Test
 {
     /// <summary>
     /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
     /// </summary>
-    internal class PhotonPlayerInstantiate : MonoBehaviourPunCallbacks
+    internal class PhotonPlayerInstantiateTest : MonoBehaviourPunCallbacks
     {
         [Serializable]
         internal class DebugSettings
@@ -106,7 +107,7 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"{player.GetDebugLabel()}");
 
             var delay = new WaitForSeconds(_debug._waitForPlayerPropertiesToUpdate);
-            if (PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
+            if (!PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
             {
                 SetDebugPlayer(player);
                 yield return delay;
