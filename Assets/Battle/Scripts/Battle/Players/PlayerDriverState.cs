@@ -87,6 +87,7 @@ namespace Battle.Scripts.Battle.Players
 
         public void OnHeadCollision()
         {
+            Debug.Log($"pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
             _playerDriver.StopAndRestartBall();
         }
