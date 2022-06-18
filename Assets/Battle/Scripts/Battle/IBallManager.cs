@@ -31,7 +31,7 @@ namespace Battle.Scripts.Battle
 
         void SetBallState(BallState ballState);
         
-        void SetBallTeamColor(int teamNumber);
+        void SetBallLocalTeamColor(int teamNumber);
     }
 
 }

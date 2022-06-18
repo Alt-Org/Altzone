@@ -411,7 +411,7 @@ namespace Battle.Scripts.Battle.Ball
             _photonView.RPC(nameof(TestSetBallStateRpc), RpcTarget.Others, ballState);
         }
 
-        void IBallManager.SetBallTeamColor(int teamNumber)
+        void IBallManager.SetBallLocalTeamColor(int teamNumber)
         {
             _spriteMoving.GetComponent<SpriteRenderer>().color = _teamColors[teamNumber];
         }

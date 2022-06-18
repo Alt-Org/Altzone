@@ -125,11 +125,11 @@ namespace Battle.Scripts.Battle.Ball
             {
                 if (otherGameObject.CompareTag(Tags.BlueTeam))
                 {
-                    _ballManager.SetBallTeamColor(_isOnRedTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamBlueValue);
+                    _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamBlueValue);
                 }
                 else if (otherGameObject.CompareTag(Tags.RedTeam))
                 {
-                    _ballManager.SetBallTeamColor(_isOnBlueTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamRedValue);
+                    _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamRedValue);
                 }
             }
             this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
@@ -170,11 +170,11 @@ namespace Battle.Scripts.Battle.Ball
             yield return _waitForFixedUpdate;
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
-                _ballManager.SetBallTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
+                _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
             }
             else if (otherGameObject.CompareTag(Tags.RedTeam))
             {
-                _ballManager.SetBallTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
+                _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
             }
         }
 
