@@ -31,10 +31,9 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
-        private IGameplayManager _gameplayManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
-
+        private bool _isDestroyed;
         private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         private bool IsLocalPlayerSynchronize => _photonView.Owner.IsLocal;
@@ -80,8 +79,8 @@ namespace Battle.Scripts.Battle.Players
                 _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
-            _gameplayManager = Context.GameplayManager;
-            _gameplayManager.RegisterPlayer(this);
+            var gameplayManager = Context.GameplayManager;
+            gameplayManager.RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             this.ExecuteOnNextFrame(() =>
             {
@@ -104,10 +103,12 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
+            _isDestroyed = true;
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            _gameplayManager.UnregisterPlayer(this, _playerActor.GameObject);
+            var gameplayManager = Context.GameplayManager;
+            gameplayManager?.UnregisterPlayer(this, _playerActor.GameObject);
             _playerActor.ResetPlayerDriver();
             if (!_isLocal)
             {
@@ -157,7 +158,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
 
-        bool IPlayerDriver.IsValid => _playerActor != null;
+        bool IPlayerDriver.IsValid => !_isDestroyed && _playerActor != null;
         
         int IPlayerDriver.PeerCount => _peerCount;
 
@@ -262,6 +263,10 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.PlayerActorDestroyed()
         {
+            if (_isDestroyed)
+            {
+                return;
+            }
             Debug.Log($"{name}");
             _playerActor = null;
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
@@ -324,7 +329,8 @@ namespace Battle.Scripts.Battle.Players
         {
             Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount + 1}");
             _peerCount += 1;
-            _gameplayManager.UpdatePeerCount(this);
+            var gameplayManager = Context.GameplayManager;
+            gameplayManager.UpdatePeerCount(this);
         }
 
         #endregion

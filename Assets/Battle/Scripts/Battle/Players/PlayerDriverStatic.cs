@@ -37,6 +37,7 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
         private bool _isApplicationQuitting;
+        private bool _isDestroyed;
 
         private void Awake()
         {
@@ -84,10 +85,12 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
+            _isDestroyed = true;
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            Context.GameplayManager.UnregisterPlayer(this, _playerActor.GameObject);
+            var gameplayManager = Context.GameplayManager;
+            gameplayManager?.UnregisterPlayer(this, _playerActor.GameObject);
             if (!_settings._isLocal)
             {
                 return;
@@ -130,7 +133,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.PeerCount => 0;
 
-        bool IPlayerDriver.IsValid => _playerActor != null;
+        bool IPlayerDriver.IsValid => !_isDestroyed && _playerActor != null;
         
         int IPlayerDriver.PlayerPos => _settings._playerPos;
 
@@ -204,6 +207,10 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.PlayerActorDestroyed()
         {
+            if (_isDestroyed)
+            {
+                return;
+            }
             Debug.Log($"{name}");
             _playerActor = null;
             _playerActorTransform = null;

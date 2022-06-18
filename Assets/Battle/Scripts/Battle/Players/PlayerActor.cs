@@ -141,7 +141,17 @@ namespace Battle.Scripts.Battle.Players
         private void OnDestroy()
         {
             Debug.Log($"{name}");
-            _playerDriver?.PlayerActorDestroyed();
+            try
+            {
+                if (_playerDriver != null && _playerDriver.IsValid)
+                {
+                    _playerDriver.PlayerActorDestroyed();
+                }
+            }
+            catch (MissingReferenceException)
+            {
+                Debug.LogWarning($"{name} <color=red>MissingReferenceException</color>");
+            }
         }
 
         private void SetPlayerDriver(IPlayerDriver playerDriver)
