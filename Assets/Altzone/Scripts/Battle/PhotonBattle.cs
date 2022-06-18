@@ -206,6 +206,25 @@ namespace Altzone.Scripts.Battle
             Assert.IsTrue(winningTeam >= 0 && winningTeam <= 2, "winningTeam >= 0 && winningTeam <= 2");
             Assert.IsTrue(blueScore >= 0, "blueScore >= 0");
             Assert.IsTrue(redScore >= 0, "redScore >= 0");
+            if (winType == WinTypeDraw)
+            {
+                Assert.IsTrue(winningTeam == NoTeamValue, "winningTeam == NoTeamValue");
+                Assert.IsTrue(blueScore == redScore, "blueScore == redScore");
+            }
+            else if (winType == WinTypeScore)
+            {
+                Assert.IsTrue(winningTeam == TeamBlueValue || winningTeam == TeamRedValue,
+                    "winningTeam == TeamBlueValue || winningTeam == TeamRedValue");
+                Assert.IsTrue(blueScore != redScore, "blueScore != redScore");
+                if (winningTeam == TeamBlueValue)
+                {
+                    Assert.IsTrue(blueScore > redScore, "blueScore > redScore");
+                }
+                else
+                {
+                    Assert.IsTrue(redScore > blueScore, "redScore > blueScore");
+                }
+            }
             var props = new Hashtable
             {
                 { TeamWinTypeKey, winType },
