@@ -1,5 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
+using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
@@ -20,6 +22,20 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private int _redHeadScore;
         [SerializeField] private int _redWallScore;
 
+        private int _blueScore => _blueHeadScore + _blueWallScore;
+        private int _redScore => _redHeadScore + _redWallScore;
+
+        private int _headScoreToWin;
+        private int _wallScoreToWin;
+
+        private void Awake()
+        {
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _headScoreToWin = variables._headScoreToWin;
+            _wallScoreToWin = variables._wallScoreToWin;
+        }
+
         public void Reset()
         {
             _blueHeadScore = 0;
@@ -34,11 +50,23 @@ namespace Battle.Scripts.Battle.Game
             if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _blueHeadScore += 1;
+                if (_blueHeadScore >= _headScoreToWin && PhotonNetwork.InRoom)
+                {
+                    var room = PhotonNetwork.CurrentRoom;
+                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    ShowGameOverWindow(room, winType, PhotonBattle.TeamBlueValue, _blueScore, _redScore);
+                }
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _redHeadScore += 1;
+                if (_redHeadScore >= _headScoreToWin && PhotonNetwork.InRoom)
+                {
+                    var room = PhotonNetwork.CurrentRoom;
+                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    ShowGameOverWindow(room, winType, PhotonBattle.TeamRedValue, _blueScore, _redScore);
+                }
                 return;
             }
             throw new UnityException($"invalid collision with {otherGameObject.name} {otherGameObject.tag}");
@@ -50,11 +78,23 @@ namespace Battle.Scripts.Battle.Game
             if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _blueWallScore += 1;
+                if (_blueWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
+                {
+                    var room = PhotonNetwork.CurrentRoom;
+                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    ShowGameOverWindow(room, winType, PhotonBattle.TeamBlueValue, _blueScore, _redScore);
+                }
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _redWallScore += 1;
+                if (_redWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
+                {
+                    var room = PhotonNetwork.CurrentRoom;
+                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    ShowGameOverWindow(room, winType, PhotonBattle.TeamRedValue, _blueScore, _redScore);
+                }
                 return;
             }
             throw new UnityException($"invalid collision with {otherGameObject.name} {otherGameObject.tag}");
