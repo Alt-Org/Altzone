@@ -92,6 +92,8 @@ namespace Battle.Scripts.Battle.Game
         }
     }
 
+    #region Gameplay events
+
     internal class PlayerJoined
     {
         public readonly IPlayerDriver Player;
@@ -144,6 +146,7 @@ namespace Battle.Scripts.Battle.Game
         {
             PlayerWhoLeft = playerWhoLeft;
         }
+
         public override string ToString()
         {
             return $"{base.ToString()} left {PlayerWhoLeft}";
@@ -161,6 +164,8 @@ namespace Battle.Scripts.Battle.Game
             TeamRed = teamRed;
         }
     }
+
+    #endregion
 
     internal class GameplayManager : MonoBehaviour, IGameplayManager
     {
@@ -180,7 +185,7 @@ namespace Battle.Scripts.Battle.Game
 
         private TeamColliderPlayAreaTracker _teamBluePlayAreaTracker;
         private TeamColliderPlayAreaTracker _teamRedPlayAreaTracker;
-        
+
         private bool _isApplicationQuitting;
 
         private void Awake()
@@ -208,7 +213,7 @@ namespace Battle.Scripts.Battle.Game
             _teamRedPlayAreaTracker = redCollider.gameObject.AddComponent<TeamColliderPlayAreaTracker>();
             _teamRedPlayAreaTracker.TeamMembers = _teamRed;
         }
-        
+
         private void OnDestroy()
         {
             StopAllCoroutines();
@@ -291,7 +296,7 @@ namespace Battle.Scripts.Battle.Game
                       $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal}");
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
-            
+
             // Update state
             _players.Add(playerDriver);
             if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
@@ -333,7 +338,7 @@ namespace Battle.Scripts.Battle.Game
             {
                 throw new UnityException($"Invalid team number {playerDriver.TeamNumber}");
             }
-            
+
             // This is related to how camera and game objects are rotated.
             // - there is not really good place for this stuff, so it is now here.
             var gameCamera = Context.GetBattleCamera;
