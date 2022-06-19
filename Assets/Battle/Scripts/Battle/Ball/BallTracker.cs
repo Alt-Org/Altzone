@@ -1,4 +1,3 @@
-using System.Collections;
 using Altzone.Scripts.Battle;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;
@@ -75,25 +74,17 @@ namespace Battle.Scripts.Battle.Ball
             {
                 return;
             }
-            // We have to wait for fixed update because "overlapping" ball state changes should not happen inside physics engine callback.
-            StartCoroutine(HandleCollisionEnter2D(collision));
-        }
-
-        private IEnumerator HandleCollisionEnter2D(Collision2D collision)
-        {
-            yield return _waitForFixedUpdate;
-            var otherGameObject = collision.gameObject;
             var layer = otherGameObject.layer;
             var colliderMask = 1 << layer;
             if (_headMaskValue == (_headMaskValue | colliderMask))
             {
                 _scoreManager.OnHeadCollision(collision);
-                yield break;
+                return;
             }
             if (_wallMaskValue == (_wallMaskValue | colliderMask))
             {
                 _scoreManager.OnWallCollision(collision);
-                yield break;
+                return;
             }
             Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }
@@ -159,23 +150,16 @@ namespace Battle.Scripts.Battle.Ball
             }
             if (_isSetBallState)
             {
-                // We have to wait for fixed update because "overlapping" ball state changes should not happen inside physics engine callback.
-                StartCoroutine(HandleTriggerExit2D(otherGameObject));
+                if (otherGameObject.CompareTag(Tags.BlueTeam))
+                {
+                    _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
+                }
+                else if (otherGameObject.CompareTag(Tags.RedTeam))
+                {
+                    _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
+                }
             }
             this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
-        }
-
-        private IEnumerator HandleTriggerExit2D(GameObject otherGameObject)
-        {
-            yield return _waitForFixedUpdate;
-            if (otherGameObject.CompareTag(Tags.BlueTeam))
-            {
-                _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
-            }
-            else if (otherGameObject.CompareTag(Tags.RedTeam))
-            {
-                _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
-            }
         }
 
         #endregion
