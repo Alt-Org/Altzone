@@ -393,7 +393,12 @@ namespace Battle.Scripts.Battle.Ball
             }
             _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
             var velocity = direction.normalized * _ballRequiredMoveSpeed;
-            Assert.IsTrue(velocity != Vector2.zero, "velocity != Vector2.zero");
+            if (direction != Vector2.zero && velocity == Vector2.zero)
+            {
+                // When ball bounces from shield its velocity can be changed, but it should not stop moving.
+                Debug.LogError($"ZERO VELOCITY: speed {speed} direction {direction} : " +
+                               $"ballRequiredMoveSpeed {_ballRequiredMoveSpeed} cur velocity {_rigidbody.velocity}");
+            }
             _rigidbody.velocity = velocity;
             _rigidbodyVelocitySqrMagnitude = velocity.sqrMagnitude;
             return velocity;
