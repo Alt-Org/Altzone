@@ -5,7 +5,10 @@ namespace Battle.Scripts.Battle
 {
     internal interface IGameScoreManager
     {
-        void Reset();
+        Vector2 BlueScore { get; }
+        Vector2 RedScore { get; }
+        
+        void ResetScores();
         
         void OnHeadCollision(Collision2D collision);
 

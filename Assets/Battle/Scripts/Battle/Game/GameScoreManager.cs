@@ -36,7 +36,11 @@ namespace Battle.Scripts.Battle.Game
             _wallScoreToWin = variables._wallScoreToWin;
         }
 
-        public void Reset()
+        public Vector2 BlueScore => new Vector2(_blueHeadScore, _blueWallScore);
+
+        public Vector2 RedScore => new Vector2(_redHeadScore, _redWallScore);
+
+        public void ResetScores()
         {
             _blueHeadScore = 0;
             _blueWallScore = 0;
@@ -54,7 +58,8 @@ namespace Battle.Scripts.Battle.Game
                 {
                     var room = PhotonNetwork.CurrentRoom;
                     var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    ShowGameOverWindow(room, winType, PhotonBattle.TeamBlueValue, _blueScore, _redScore);
+                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
+                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
                 }
                 return;
             }
@@ -65,7 +70,8 @@ namespace Battle.Scripts.Battle.Game
                 {
                     var room = PhotonNetwork.CurrentRoom;
                     var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    ShowGameOverWindow(room, winType, PhotonBattle.TeamRedValue, _blueScore, _redScore);
+                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
+                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
                 }
                 return;
             }
@@ -82,7 +88,8 @@ namespace Battle.Scripts.Battle.Game
                 {
                     var room = PhotonNetwork.CurrentRoom;
                     var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    ShowGameOverWindow(room, winType, PhotonBattle.TeamBlueValue, _blueScore, _redScore);
+                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
+                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
                 }
                 return;
             }
@@ -93,7 +100,8 @@ namespace Battle.Scripts.Battle.Game
                 {
                     var room = PhotonNetwork.CurrentRoom;
                     var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    ShowGameOverWindow(room, winType, PhotonBattle.TeamRedValue, _blueScore, _redScore);
+                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
+                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
                 }
                 return;
             }
@@ -111,6 +119,19 @@ namespace Battle.Scripts.Battle.Game
             yield return null;
             Debug.Log($"LoadGameOverWindow {_gameOverWindow}");
             WindowManager.Get().ShowWindow(_gameOverWindow);
+        }
+
+        private static int GetWinningTeam(int blueScore, int redScore)
+        {
+            if (blueScore > redScore)
+            {
+                return PhotonBattle.TeamBlueValue;
+            }
+            if (redScore > blueScore)
+            {
+                return PhotonBattle.TeamRedValue;
+            }
+            return PhotonBattle.NoTeamValue;
         }
     }
 }
