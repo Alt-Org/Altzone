@@ -28,6 +28,7 @@ namespace Battle.Scripts.Battle.Ball
             public Color _colorNoTeam;
             public Color _colorBlueTeam;
             public Color _colorRedTeam;
+            public Color _colorTwoTeam;
         }
 
         private static readonly BallState[] BallStates =
@@ -84,7 +85,7 @@ namespace Battle.Scripts.Battle.Ball
             _ballLerpSmoothingFactor = variables._ballLerpSmoothingFactor;
             _ballTeleportDistance = variables._ballTeleportDistance;
             _sprites = new[] { _spriteStopped, _spriteMoving, _spriteGhosted, _spriteHidden };
-            _teamColors = new[] { _colors._colorNoTeam, _colors._colorBlueTeam, _colors._colorRedTeam };
+            _teamColors = new[] { _colors._colorNoTeam, _colors._colorBlueTeam, _colors._colorRedTeam, _colors._colorTwoTeam };
             SetDebug();
             _SetBallState(BallState.Stopped);
             UpdateBallText();
@@ -416,9 +417,10 @@ namespace Battle.Scripts.Battle.Ball
             _photonView.RPC(nameof(TestSetBallStateRpc), RpcTarget.Others, ballState);
         }
 
-        void IBallManager.SetBallLocalTeamColor(int teamNumber)
+        void IBallManager.SetBallLocalTeamColor(int colorIndex)
         {
-            _spriteMoving.GetComponent<SpriteRenderer>().color = _teamColors[teamNumber];
+            Assert.IsTrue(colorIndex >= 0 && colorIndex < _teamColors.Length, "colorIndex >= 0 && colorIndex < _teamColors.Length");
+            _spriteMoving.GetComponent<SpriteRenderer>().color = _teamColors[colorIndex];
         }
 
         #endregion

@@ -29,6 +29,8 @@ namespace Battle.Scripts.Battle.Ball
     [RequireComponent(typeof(BallManager))]
     internal class BallTracker : MonoBehaviour
     {
+        private const int TwoTeamValue = 3;
+
         [Header("Settings"), SerializeField] private LayerMask _teamAreaMask;
         [SerializeField] private LayerMask _headMask;
         [SerializeField] private LayerMask _wallMask;
@@ -114,14 +116,10 @@ namespace Battle.Scripts.Battle.Ball
             }
             if (_isSetBallState)
             {
-                if (otherGameObject.CompareTag(Tags.BlueTeam))
-                {
-                    _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamBlueValue);
-                }
-                else if (otherGameObject.CompareTag(Tags.RedTeam))
-                {
-                    _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.NoTeamValue : PhotonBattle.TeamRedValue);
-                }
+                _ballManager.SetBallLocalTeamColor(
+                    _isOnBlueTeamArea && _isOnRedTeamArea ? TwoTeamValue :
+                    _isOnBlueTeamArea ? PhotonBattle.TeamBlueValue :
+                    PhotonBattle.TeamRedValue);
             }
             this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
         }
@@ -150,14 +148,10 @@ namespace Battle.Scripts.Battle.Ball
             }
             if (_isSetBallState)
             {
-                if (otherGameObject.CompareTag(Tags.BlueTeam))
-                {
-                    _ballManager.SetBallLocalTeamColor(_isOnRedTeamArea ? PhotonBattle.TeamRedValue : PhotonBattle.NoTeamValue);
-                }
-                else if (otherGameObject.CompareTag(Tags.RedTeam))
-                {
-                    _ballManager.SetBallLocalTeamColor(_isOnBlueTeamArea ? PhotonBattle.TeamBlueValue : PhotonBattle.NoTeamValue);
-                }
+                _ballManager.SetBallLocalTeamColor(
+                    _isOnBlueTeamArea ? PhotonBattle.TeamBlueValue :
+                    _isOnRedTeamArea ? PhotonBattle.TeamRedValue :
+                    PhotonBattle.NoTeamValue);
             }
             this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
         }
