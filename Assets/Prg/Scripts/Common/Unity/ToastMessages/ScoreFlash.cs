@@ -8,33 +8,31 @@ using Object = UnityEngine.Object;
 namespace Prg.Scripts.Common.Unity.ToastMessages
 {
     /// <summary>
-    /// Flash message system
+    /// Flash message system for current level. It will destroy itself when scene is unloaded!
     /// </summary>
     public static class ScoreFlash
     {
-        private static IScoreFlash _instance;
-
         private static IScoreFlash Get()
         {
-            if (_instance == null)
+            if (ScoreFlasher.ScoreFlash == null)
             {
-                _instance = Object.FindObjectOfType<ScoreFlasher>();
-                if (_instance == null)
+                ScoreFlasher.ScoreFlash = Object.FindObjectOfType<ScoreFlasher>();
+                if (ScoreFlasher.ScoreFlash == null)
                 {
                     var instance = UnityExtensions.CreateGameObjectAndComponent<ScoreFlasher>(nameof(ScoreFlasher), false);
-                    _instance = instance;
+                    ScoreFlasher.ScoreFlash = instance;
                     var config = Resources.Load<ScoreFlashConfig>(nameof(ScoreFlashConfig));
-                    instance.Setup(config, Camera.main, () => { _instance = null; });
+                    instance.Setup(config, Camera.main);
                 }
             }
-            return _instance;
+            return ScoreFlasher.ScoreFlash;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
-            _instance = null;
+            ScoreFlasher.ScoreFlash = null;
         }
 
         public static void Push(string message)
@@ -157,6 +155,11 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
     internal class ScoreFlasher : MonoBehaviour, IScoreFlash
     {
+        /// <summary>
+        /// Reference to static <c>IScoreFlash</c> instance during our own lifetime to ensure that is is set to null when level is unloaded.
+        /// </summary>
+        public static IScoreFlash ScoreFlash;
+
         private const float InflateScreenX = -0.20f;
         private const float InflateScreenY = -0.10f;
 
@@ -171,13 +174,13 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         private bool _isClampToScreen;
         private Rect _messageAreaScreen;
-        private Action _destroyedCallback;
         private Vector3 _worldPos;
         private Vector3 _screenPos;
         private Vector2 _localPos;
 
-        public void Setup(ScoreFlashConfig config, Camera screenCamera, Action destroyed)
+        public void Setup(ScoreFlashConfig config, Camera screenCamera)
         {
+            Assert.IsNotNull(screenCamera, "screenCamera != null");
             _camera = screenCamera;
             _isClampToScreen = config._isClampToScreen;
             if (_isClampToScreen)
@@ -186,15 +189,15 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
                 var height = Screen.height;
                 var screenRect = Rect.MinMaxRect(0, 0, width, height);
                 _messageAreaScreen = screenRect.Inflate(new Vector2(width * InflateScreenX, height * InflateScreenY));
-                Debug.Log($"Setup screenRect {screenRect} -> _messageAreaScreen {_messageAreaScreen}");
-                Debug.Log($"Setup _messageAreaScreen x [{_messageAreaScreen.xMin} .. {_messageAreaScreen.xMax}] y [{_messageAreaScreen.yMin} .. {_messageAreaScreen.yMax}]");
+                Debug.Log($"screenRect {screenRect} -> _messageAreaScreen {_messageAreaScreen}");
+                Debug.Log($"_messageAreaScreen x [{_messageAreaScreen.xMin} .. {_messageAreaScreen.xMax}] y [{_messageAreaScreen.yMin} .. {_messageAreaScreen.yMax}]");
             }
             _canvas = Instantiate(config._canvasPrefab, Vector3.zero, Quaternion.identity);
             Assert.IsTrue(_canvas.isRootCanvas, "_canvas.isRootCanvas");
             _canvasRectTransform = _canvas.GetComponent<RectTransform>();
 
             var children = _canvas.GetComponentsInChildren<TMP_Text>(true);
-            Debug.Log($"Setup children {children.Length}");
+            Debug.Log($"children {children.Length}");
             _entries = new ScoreFlashItem[children.Length];
             _animators = new Animator[children.Length];
             _routines = new Coroutine[children.Length];
@@ -207,17 +210,16 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
                 _routines[i] = null;
             }
             _curIndex = -1;
-            _destroyedCallback = destroyed;
         }
 
         private void OnDestroy()
         {
-            Debug.Log($"OnDestroy");
+            Debug.Log($"{name}");
             for (var i = 0; i < _entries.Length; ++i)
             {
                 StopCoroutine(i);
             }
-            _destroyedCallback?.Invoke();
+            ScoreFlash = null;
         }
 
         private void SetText(string text, float x, float y)
@@ -236,7 +238,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
             var routine = _routines[index];
             if (routine != null)
             {
-                Debug.Log($"StopCoroutine {index}");
+                Debug.Log($"index {index}");
                 StopCoroutine(routine);
                 _routines[index] = null;
             }
@@ -292,7 +294,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         private void MoveAway(ScoreFlashItem current, ScoreFlashItem previous)
         {
-            Debug.Log($"MoveAway current {current.Index} {current.Position} previous {previous.Index} {previous.Position}");
+            Debug.Log($"current {current.Index} {current.Position} previous {previous.Index} {previous.Position}");
             var animator = _animators[previous.Index];
             animator.MoveAway();
         }
@@ -313,7 +315,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
             var hit = RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _canvasRectTransform, _screenPos, null, out _localPos);
             Assert.IsTrue(hit, "RectTransformUtility.ScreenPointToLocalPointInRectangle was hit");
-            Debug.Log($"Push {message} @ WorldToScreenPoint {(Vector2)_worldPos} -> {(Vector2)_screenPos} -> rect {_localPos}");
+            Debug.Log($"{message} @ WorldToScreenPoint {(Vector2)_worldPos} -> {(Vector2)_screenPos} -> rect {_localPos}");
 
             SetText(message, _localPos.x, _localPos.y);
         }
