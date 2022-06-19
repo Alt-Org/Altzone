@@ -178,31 +178,37 @@ namespace Battle.Scripts.Battle.Game
         private readonly List<IPlayerDriver> _teamBlue = new();
         private readonly List<IPlayerDriver> _teamRed = new();
 
-        private TeamColliderPlayModeTrigger _teamBluePlayModeTrigger;
-        private TeamColliderPlayModeTrigger _teamRedPlayModeTrigger;
+        private TeamColliderPlayAreaTracker _teamBluePlayAreaTracker;
+        private TeamColliderPlayAreaTracker _teamRedPlayAreaTracker;
+        
         private bool _isApplicationQuitting;
 
         private void Awake()
         {
             Debug.Log($"{name}");
+            Application.quitting += () => _isApplicationQuitting = true;
             var features = RuntimeGameConfig.Get().Features;
             if (features._isDisablePlayModeChanges)
             {
                 return;
             }
-            Application.quitting += () => _isApplicationQuitting = true;
+            SetPlayAreaTracking();
+        }
+
+        private void SetPlayAreaTracking()
+        {
             var playArea = Context.GetBattlePlayArea;
             var blueCollider = playArea.BlueTeamCollider;
             var redCollider = playArea.RedTeamCollider;
             Assert.IsTrue(blueCollider.isTrigger, "blueCollider.isTrigger");
             Assert.IsTrue(redCollider.isTrigger, "redCollider.isTrigger");
 
-            _teamBluePlayModeTrigger = blueCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
-            _teamBluePlayModeTrigger.TeamMembers = _teamBlue;
-            _teamRedPlayModeTrigger = redCollider.gameObject.AddComponent<TeamColliderPlayModeTrigger>();
-            _teamRedPlayModeTrigger.TeamMembers = _teamRed;
+            _teamBluePlayAreaTracker = blueCollider.gameObject.AddComponent<TeamColliderPlayAreaTracker>();
+            _teamBluePlayAreaTracker.TeamMembers = _teamBlue;
+            _teamRedPlayAreaTracker = redCollider.gameObject.AddComponent<TeamColliderPlayAreaTracker>();
+            _teamRedPlayAreaTracker.TeamMembers = _teamRed;
         }
-
+        
         private void OnDestroy()
         {
             StopAllCoroutines();
@@ -550,7 +556,7 @@ namespace Battle.Scripts.Battle.Game
         }
     }
 
-    internal class TeamColliderPlayModeTrigger : MonoBehaviour
+    internal class TeamColliderPlayAreaTracker : MonoBehaviour
     {
         public List<IPlayerDriver> TeamMembers { get; set; }
 
