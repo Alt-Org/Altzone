@@ -1,3 +1,4 @@
+using System;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -5,8 +6,8 @@ namespace Battle.Scripts.Battle
 {
     internal interface IGameScoreManager
     {
-        Vector2 BlueScore { get; }
-        Vector2 RedScore { get; }
+        Tuple<int,int> BlueScore { get; }
+        Tuple<int,int> RedScore { get; }
         
         void ResetScores();
         

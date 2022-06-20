@@ -22,12 +22,12 @@ namespace Battle.Scripts.Test
             if (_teamNumber == PhotonBattle.TeamBlueValue)
             {
                 var score = _scoreManager.BlueScore;
-                _scoreText.text = $"{score.x:0}-{score.y:0}";
+                _scoreText.text = $"{score.Item1}-{score.Item2}";
             }
             else if (_teamNumber == PhotonBattle.TeamRedValue)
             {
                 var score = _scoreManager.RedScore;
-                _scoreText.text = $"{score.x:0}-{score.y:0}";
+                _scoreText.text = $"{score.Item1}-{score.Item2}";
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
@@ -22,8 +23,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private int _redHeadScore;
         [SerializeField] private int _redWallScore;
 
-        private int _blueScore => _blueHeadScore + _blueWallScore;
-        private int _redScore => _redHeadScore + _redWallScore;
+        private int BlueScoreTotal => _blueHeadScore + _blueWallScore;
+        private int RedScoreTotal => _redHeadScore + _redWallScore;
 
         private int _headScoreToWin;
         private int _wallScoreToWin;
@@ -34,11 +35,12 @@ namespace Battle.Scripts.Battle.Game
             var variables = runtimeGameConfig.Variables;
             _headScoreToWin = variables._headScoreToWin;
             _wallScoreToWin = variables._wallScoreToWin;
+            ResetScores();
         }
 
-        public Vector2 BlueScore => new Vector2(_blueHeadScore, _blueWallScore);
+        public Tuple<int,int> BlueScore => new (_blueHeadScore, _blueWallScore);
 
-        public Vector2 RedScore => new Vector2(_redHeadScore, _redWallScore);
+        public Tuple<int,int> RedScore => new (_redHeadScore, _redWallScore);
 
         public void ResetScores()
         {
@@ -57,9 +59,9 @@ namespace Battle.Scripts.Battle.Game
                 if (_blueHeadScore >= _headScoreToWin && PhotonNetwork.InRoom)
                 {
                     var room = PhotonNetwork.CurrentRoom;
-                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
-                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
+                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
+                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
                 }
                 return;
             }
@@ -69,9 +71,9 @@ namespace Battle.Scripts.Battle.Game
                 if (_redHeadScore >= _headScoreToWin && PhotonNetwork.InRoom)
                 {
                     var room = PhotonNetwork.CurrentRoom;
-                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
-                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
+                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
+                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
                 }
                 return;
             }
@@ -87,9 +89,9 @@ namespace Battle.Scripts.Battle.Game
                 if (_blueWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
                 {
                     var room = PhotonNetwork.CurrentRoom;
-                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
-                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
+                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
+                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
                 }
                 return;
             }
@@ -99,9 +101,9 @@ namespace Battle.Scripts.Battle.Game
                 if (_redWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
                 {
                     var room = PhotonNetwork.CurrentRoom;
-                    var winType = _blueScore == _redScore ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(_blueScore, _redScore);
-                    ShowGameOverWindow(room, winType, winningTeam, _blueScore, _redScore);
+                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
+                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
+                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
                 }
                 return;
             }
