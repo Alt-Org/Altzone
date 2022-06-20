@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
@@ -99,6 +100,10 @@ namespace Battle.Scripts.Battle.Players
         private PoseManager _shieldPose;
         private int _maxPoseIndex;
         private int _disconnectedPoseIndex;
+        
+        private float _speed;
+        private float _playerMoveSpeedMultiplier;
+        private int _resistance;
 
         private bool CanMove => _hasTarget && !_isStunned && _playMode.CanMove();
 
@@ -136,6 +141,9 @@ namespace Battle.Scripts.Battle.Players
                 Color.black, _colors._colorForDes, _colors._colorForDef, _colors._colorForInt,
                 _colors._colorForPro, _colors._colorForRet, _colors._colorForEgo, _colors._colorForCon
             };
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             // Wait until PlayerDriver is assigned.
             enabled = false;
         }
@@ -217,7 +225,8 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, _speed * Time.deltaTime);
+            var maxDistanceDelta = _speed * _playerMoveSpeedMultiplier * Time.deltaTime;
+            _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;
             _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
         }
@@ -286,9 +295,6 @@ namespace Battle.Scripts.Battle.Players
 
         #region IPlayerActor Interface
 
-        private float _speed;
-        private int _resistance;
-
         GameObject IPlayerActor.GameObject => gameObject;
 
         Transform IPlayerActor.Transform => _transform;
@@ -298,7 +304,7 @@ namespace Battle.Scripts.Battle.Players
         float IPlayerActor.Speed
         {
             get => _speed;
-            set => _speed = value;
+            set => _speed = value; 
         }
 
         int IPlayerActor.CurrentResistance

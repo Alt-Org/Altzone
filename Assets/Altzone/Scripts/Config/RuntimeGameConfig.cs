@@ -100,8 +100,6 @@ namespace Altzone.Scripts.Config
         [Min(1)] public int _ballRestartDelay;
 
         [Header("Player")] public float _playerMoveSpeedMultiplier;
-        public float _playerSqrMinRotationDistance;
-        public float _playerSqrMaxRotationDistance;
 
         [Header("Shield")] public float _shieldDistanceMultiplier;
 
