@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6914860164716773947
+--- !u!1 &7712766947437853441
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2731730176357849179}
-  - component: {fileID: 8023154143883893015}
-  - component: {fileID: 6771996967762116171}
-  - component: {fileID: 5175829652630941082}
-  - component: {fileID: 7255045984843946122}
+  - component: {fileID: 8812445276297525788}
+  - component: {fileID: 6718396619497853420}
+  - component: {fileID: 222875293331365466}
+  - component: {fileID: 6027235594757314634}
+  - component: {fileID: 3972913586753670838}
   m_Layer: 5
-  m_Name: KAUPPA_NAPPULA
+  m_Name: PELAAJA PROFIILI_NAPPULA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2731730176357849179
+--- !u!224 &8812445276297525788
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6914860164716773947}
+  m_GameObject: {fileID: 7712766947437853441}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -38,23 +38,23 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 150}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8023154143883893015
+--- !u!222 &6718396619497853420
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6914860164716773947}
+  m_GameObject: {fileID: 7712766947437853441}
   m_CullTransparentMesh: 1
---- !u!114 &6771996967762116171
+--- !u!114 &222875293331365466
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6914860164716773947}
+  m_GameObject: {fileID: 7712766947437853441}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -789978273, guid: b669264b599b5bd43a3be052b6ba9ade, type: 3}
+  m_Sprite: {fileID: -392923998, guid: b669264b599b5bd43a3be052b6ba9ade, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -78,13 +78,13 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5175829652630941082
+--- !u!114 &6027235594757314634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6914860164716773947}
+  m_GameObject: {fileID: 7712766947437853441}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -118,21 +118,21 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 6771996967762116171}
+  m_TargetGraphic: {fileID: 222875293331365466}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7255045984843946122
+--- !u!114 &3972913586753670838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6914860164716773947}
+  m_GameObject: {fileID: 7712766947437853441}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 1d6eb000ab3c5b24f93084b6d59b0dc2, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 1fff23e50793f8842abc5f329389d473, type: 2}
   _isCurrentPopOutWindow: 0
