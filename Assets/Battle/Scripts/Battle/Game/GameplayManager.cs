@@ -426,7 +426,30 @@ namespace Battle.Scripts.Battle.Game
                 }
             }
             this.Publish(new PlayerLeft(playerDriver));
+            TeamForfeit();
             UpdateDebugPlayerList();
+        }
+
+        // Is called when a player leaves/disconnects from the room 
+        private void TeamForfeit()
+        {
+            var t = PhotonBattle.TeamBlueValue;
+            int[] s = { 1, 0 };
+            var gameScoreManager = Context.GetGameScoreManager;
+            if (_teamBlue.Count <= 0)
+            {
+                t = PhotonBattle.TeamRedValue;
+                s[0] = 0;
+                s[1] = 1;
+                
+                gameScoreManager.ShowGameOverWindow(Photon.Pun.PhotonNetwork.CurrentRoom, PhotonBattle.WinTypeResign, t, s[0], s[1]);
+                return;
+            }
+            else if (_teamRed.Count <= 0)
+            {
+                gameScoreManager.ShowGameOverWindow(Photon.Pun.PhotonNetwork.CurrentRoom, PhotonBattle.WinTypeResign, t, s[0], s[1]);
+                return;
+            }
         }
 
         private static void CheckLocalPlayerSettings(Camera gameCamera, IPlayerDriver playerDriver)
