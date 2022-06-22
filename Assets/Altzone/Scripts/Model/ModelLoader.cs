@@ -30,16 +30,14 @@
 
             // HAHMOT ja niiden kuvaukset (+ värit)
             // https://docs.google.com/spreadsheets/d/1GBlkKJia89lFvEspTzrq_IJ3XXfCTRDQmB4NrZs-Npo/edit#gid=0
-
-            // Last edit was made on 18 January, 17:24 Helena Pavloff-Pelkonen
             
-            AddCharacterModel("Koulukiusaaja", Defence.Desensitisation, 1, 9, 8, 3);
-            AddCharacterModel("Vitsiniekka", Defence.Deflection, 9, 3, 4, 4);
-            AddCharacterModel("Pappi", Defence.Introjection, 5, 5, 5, 5);
-            AddCharacterModel("Taiteilija", Defence.Projection, 3, 2, 9, 6);
-            AddCharacterModel("Hodariläski", Defence.Retroflection, 2, 7, 2, 9);
-            AddCharacterModel("Älykkö", Defence.Egotism, 4, 2, 7, 7);
-            AddCharacterModel("Tytöt", Defence.Confluence, 7, 7, 1, 5);
+            AddCharacterModel("Koulukiusaaja", Defence.Desensitisation, 2, 9, 7, 3);
+            AddCharacterModel("Vitsiniekka", Defence.Deflection, 9, 3, 3, 4);
+            AddCharacterModel("Pappi", Defence.Introjection, 5, 5, 4, 4);
+            AddCharacterModel("Taiteilija", Defence.Projection, 4, 2, 9, 5);
+            AddCharacterModel("Hodariläski", Defence.Retroflection, 3, 7, 2, 9);
+            AddCharacterModel("Älykkö", Defence.Egotism, 6, 2, 6, 5);
+            AddCharacterModel("Tytöt", Defence.Confluence, 5, 6, 2, 6);
 
             AddModel("Alpha", new ClanModel(1, "Alpha", "ALPHA"));
             AddModel("Beta", new ClanModel(2, "Beta", "BETA"));

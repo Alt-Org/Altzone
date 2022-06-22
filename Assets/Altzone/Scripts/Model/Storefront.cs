@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model
     {
         public static IStorefront Get()
         {
-            return _instance ??= new Storefront();
+            return _instance = new Storefront();
         }
 
         private static Storefront _instance;
