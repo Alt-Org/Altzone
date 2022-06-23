@@ -14,7 +14,7 @@ public class BrickRemove : MonoBehaviour
             --_shieldHP;
             return;
         }
-        if (col.gameObject.name == "Ball" && _shieldHP == 0)
+        if (col.gameObject && _shieldHP == 0)
         {
            PhotonNetwork.Destroy(this.gameObject);
         }
