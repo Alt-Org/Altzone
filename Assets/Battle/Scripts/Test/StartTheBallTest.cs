@@ -33,6 +33,7 @@ namespace Battle.Scripts.Test
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
+        private float _playerAttackMultiplier;
         private OnGuiWindowHelper _onGuiWindow;
         private float _countDownDelay;
 
@@ -46,6 +47,7 @@ namespace Battle.Scripts.Test
             Debug.Log($"{name}");
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
+            _playerAttackMultiplier = variables._playerAttackMultiplier;
             _countDownDelay = variables._roomStartDelay;
             if (_countDownDelayOverride > 0)
             {
@@ -121,8 +123,8 @@ namespace Battle.Scripts.Test
                     _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Frozen));
                     yield return null;
                     var room = PhotonNetwork.CurrentRoom;
-                    var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue-1];
-                    var redScore = _teamRestartCount[PhotonBattle.TeamRedValue-1];
+                    var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue - 1];
+                    var redScore = _teamRestartCount[PhotonBattle.TeamRedValue - 1];
                     var winningTeam = blueScore > redScore ? PhotonBattle.TeamBlueValue
                         : redScore > blueScore ? PhotonBattle.TeamRedValue
                         : PhotonBattle.NoTeamValue;
@@ -182,7 +184,7 @@ namespace Battle.Scripts.Test
                 speed = 0;
                 if (startTeam != null)
                 {
-                    var startAttack = startTeam.Attack;
+                    var startAttack = startTeam.Attack * _playerAttackMultiplier;
                     var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
                     // Official formula for ball speed (continue gameplay)
                     speed = startAttack * startDistance;
@@ -210,8 +212,8 @@ namespace Battle.Scripts.Test
                 startTeam = _gameplayManager.GetBattleTeam(startingTeam);
                 otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
 
-                var startAttack = startTeam.Attack;
-                var otherAttack = otherTeam?.Attack ?? 0;
+                var startAttack = startTeam.Attack * _playerAttackMultiplier;
+                var otherAttack = (otherTeam?.Attack ?? 0) * _playerAttackMultiplier;
                 // Official formula for ball speed (start gameplay)
                 speed = startAttack * startDistance - otherAttack * otherDistance;
                 if (speed == 0)

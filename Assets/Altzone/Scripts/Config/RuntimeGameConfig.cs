@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 
 namespace Altzone.Scripts.Config
 {
+    #region RuntimeGameConfig "Parts"
+
     /// <summary>
     /// Game features that can be toggled on and off.
     /// </summary>
@@ -94,8 +96,9 @@ namespace Altzone.Scripts.Config
         public float _ballMaxMoveSpeed;
         public float _ballLerpSmoothingFactor;
         public float _ballTeleportDistance;
-        
+
         [Header("Player")] public float _playerMoveSpeedMultiplier;
+        public float _playerAttackMultiplier;
 
         [Header("Shield")] public float _shieldDistanceMultiplier;
 
@@ -189,6 +192,8 @@ namespace Altzone.Scripts.Config
         public InputActionReference _moveInputAction;
     }
 
+    #endregion
+
     /// <summary>
     /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
     /// </summary>
@@ -199,7 +204,7 @@ namespace Altzone.Scripts.Config
     {
         private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
-        public static RuntimeGameConfig Get([CallerFilePath] string callerFilePath  = null)
+        public static RuntimeGameConfig Get([CallerFilePath] string callerFilePath = null)
         {
             var instance = FindObjectOfType<RuntimeGameConfig>();
             if (instance == null)
@@ -221,7 +226,7 @@ namespace Altzone.Scripts.Config
             var path = callerFilePath.Substring(callerFilePath.IndexOf("Assets", StringComparison.Ordinal));
             Debug.LogWarning($"CHECK THIS CALL {path}");
         }
-        
+
         public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
 
         public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(IsFirstTimePlayingKey, 0);
