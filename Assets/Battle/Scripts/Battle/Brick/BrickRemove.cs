@@ -1,22 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
+using UnityConstants;
 using UnityEngine;
 
-public class BrickRemove : MonoBehaviour
+namespace Battle.Scripts.Battle.Brick
 {
-    private int _shieldHP = 0;
-
-    void OnCollisionEnter2D(Collision2D col)
+    [RequireComponent(typeof(PhotonView))]
+    public class BrickRemove : MonoBehaviour
     {
-        if(_shieldHP > 0)
+        private int _viewId;
+
+        private void Awake()
         {
-            --_shieldHP;
-            return;
+            _viewId = PhotonView.Get(this).ViewID;
         }
-        if (col.gameObject && _shieldHP == 0)
+
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-           PhotonNetwork.Destroy(this.gameObject);
+            var otherGameObject = collision.gameObject;
+            if (otherGameObject.CompareTag(Tags.Ball))
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{name} view {_viewId}");
         }
     }
 }
