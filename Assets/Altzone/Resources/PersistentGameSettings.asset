@@ -24,17 +24,17 @@ MonoBehaviour:
     _minPlayerNameLength: 2
     _maxPlayerNameLength: 16
   _variables:
-    _roomStartDelay: 3
+    _roomStartDelay: 6
     _headScoreToWin: 5
     _wallScoreToWin: 1
     _playerShieldHitStunDuration: 2
     _ballMoveSpeedMultiplier: 1
     _ballMinMoveSpeed: 1
-    _ballMaxMoveSpeed: 11
+    _ballMaxMoveSpeed: 12
     _ballLerpSmoothingFactor: 0.5
     _ballTeleportDistance: 1
     _playerMoveSpeedMultiplier: 1
-    _playerAttackMultiplier: 1
+    _playerAttackMultiplier: 1.25
     _shieldDistanceMultiplier: 1
   _prefabs:
     _playerForDes: {fileID: 946557873978984302, guid: a458db9fe4927f14682ea8a08a7a62dc,
