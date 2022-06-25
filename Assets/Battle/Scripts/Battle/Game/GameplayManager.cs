@@ -6,6 +6,8 @@ using System.Linq;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Players;
+using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
@@ -416,6 +418,11 @@ namespace Battle.Scripts.Battle.Game
                 {
                     this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
+                else if (_teamBlue.Count == 0 && PhotonNetwork.InRoom)
+                {
+                    TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
+                    return;
+                }
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
             {
@@ -424,31 +431,31 @@ namespace Battle.Scripts.Battle.Game
                 {
                     this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
+                else if (_teamRed.Count == 0 && PhotonNetwork.InRoom)
+                {
+                    TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
+                    return;
+                }
             }
             this.Publish(new PlayerLeft(playerDriver));
-            TeamForfeit();
             UpdateDebugPlayerList();
         }
 
-        // Is called when a player leaves/disconnects from the room 
-        private void TeamForfeit()
+        private void TeamForfeitAndGameOver(Room room)
         {
-            var t = PhotonBattle.TeamBlueValue;
-            int[] s = { 1, 0 };
             var gameScoreManager = Context.GetGameScoreManager;
-            if (_teamBlue.Count <= 0)
+            if (_teamBlue.Count == 0)
             {
-                t = PhotonBattle.TeamRedValue;
-                s[0] = 0;
-                s[1] = 1;
-                
-                gameScoreManager.ShowGameOverWindow(Photon.Pun.PhotonNetwork.CurrentRoom, PhotonBattle.WinTypeResign, t, s[0], s[1]);
+                var score = gameScoreManager.RedScore;
+                var scoreTotal = score.Item1 + score.Item2;
+                gameScoreManager.ShowGameOverWindow(room, PhotonBattle.WinTypeResign, PhotonBattle.TeamRedValue, 0, scoreTotal);
                 return;
             }
-            else if (_teamRed.Count <= 0)
+            if (_teamRed.Count == 0)
             {
-                gameScoreManager.ShowGameOverWindow(Photon.Pun.PhotonNetwork.CurrentRoom, PhotonBattle.WinTypeResign, t, s[0], s[1]);
-                return;
+                var score = gameScoreManager.BlueScore;
+                var scoreTotal = score.Item1 + score.Item2;
+                gameScoreManager.ShowGameOverWindow(room, PhotonBattle.WinTypeResign, PhotonBattle.TeamBlueValue, scoreTotal, 0);
             }
         }
 
