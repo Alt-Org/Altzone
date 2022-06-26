@@ -92,7 +92,6 @@ namespace Battle.Scripts.Battle.Ball
             }
             if (_wallMaskValue == (_wallMaskValue | colliderMask))
             {
-                Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
                 _scoreManager.OnWallCollision(collision);
                 if (_useScoreFlashNet && PhotonNetwork.IsMasterClient)
                 {
@@ -101,7 +100,7 @@ namespace Battle.Scripts.Battle.Ball
                 }
                 return;
             }
-            Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
+            Debug.Log($"UNHANDLED {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }
 
         private void OnTriggerEnter2D(Collider2D other)
