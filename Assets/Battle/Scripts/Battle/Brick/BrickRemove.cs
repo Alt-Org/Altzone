@@ -1,3 +1,4 @@
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using UnityConstants;
 using UnityEngine;
@@ -7,6 +8,16 @@ namespace Battle.Scripts.Battle.Brick
     [RequireComponent(typeof(PhotonView))]
     public class BrickRemove : MonoBehaviour
     {
+        private void Awake()
+        {
+            var isBricksVisible = RuntimeGameConfig.Get().Features._isBricksVisible;
+            if (isBricksVisible)
+            {
+                return;
+            }
+            gameObject.SetActive(false);
+        }
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (!enabled)
