@@ -80,6 +80,7 @@ namespace Battle.Scripts.Battle.Players
             _currentPoseIndex += 1;
             Debug.Log($"bend pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
+            _playerDriver.SetStunned(_stunDuration);
             _playerDriver.SetCharacterPose(_currentPoseIndex);
             _playerDriver.SetShieldResistance(_currentShieldResistance);
             debugString = "BEND";
