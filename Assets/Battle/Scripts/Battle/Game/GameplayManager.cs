@@ -295,7 +295,7 @@ namespace Battle.Scripts.Battle.Game
         void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
             Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} " +
-                      $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal}");
+                      $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal} players #{_players.Count}");
             Assert.IsFalse(_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber),
                 "_players.Count > 0 && _players.Any(x => x.ActorNumber == playerDriver.ActorNumber)");
 
@@ -401,7 +401,8 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
-            Debug.Log($"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber}");
+            Debug.Log(
+                $"remove {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} players #{_players.Count}");
             _players.Remove(playerDriver);
             if (_abandonedPlayersByPlayerPos.TryGetValue(playerDriver.PlayerPos, out var deletePreviousInstance))
             {
@@ -444,6 +445,10 @@ namespace Battle.Scripts.Battle.Game
         private void TeamForfeitAndGameOver(Room room)
         {
             var gameScoreManager = Context.GetGameScoreManager;
+            if (gameScoreManager == null)
+            {
+                return;
+            }
             if (_teamBlue.Count == 0)
             {
                 var score = gameScoreManager.RedScore;
