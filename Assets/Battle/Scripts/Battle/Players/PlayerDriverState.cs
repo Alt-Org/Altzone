@@ -59,6 +59,14 @@ namespace Battle.Scripts.Battle.Players
                 debugString = string.Empty;
                 return;
             }
+            if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
+            {
+                Debug.Log($"stun pose {_currentPoseIndex} shield {_currentShieldResistance}");
+                _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
+                _playerDriver.SetStunned(_stunDuration);
+                debugString = "STUN";
+                return;
+            }
             if (_currentShieldResistance > 0)
             {
                 _currentShieldResistance -= 1;
@@ -66,14 +74,6 @@ namespace Battle.Scripts.Battle.Players
                 _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
                 _playerDriver.SetShieldResistance(_currentShieldResistance);
                 debugString = "HIT";
-                return;
-            }
-            if (_currentPoseIndex == _playerDriver.MaxPoseIndex)
-            {
-                Debug.Log($"stun pose {_currentPoseIndex} shield {_currentShieldResistance}");
-                _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
-                _playerDriver.SetStunned(_stunDuration);
-                debugString = "STUN";
                 return;
             }
             _currentShieldResistance = _characterModel.Resistance;
