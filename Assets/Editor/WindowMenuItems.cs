@@ -4,7 +4,6 @@ using Editor.Prg.GameDebug;
 using Editor.Prg.Localization;
 using Editor.Prg.Logging;
 using Editor.Prg.Util;
-using Editor.UiProto;
 using UnityEditor;
 
 namespace Editor
@@ -144,13 +143,6 @@ namespace Editor
 
         [MenuItem(Build + "Test Android Build Config", false, 12)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
-
-        #endregion
-
-        #region UiProto
-
-        [MenuItem(UiProto + "Window Report", false, 10)]
-        private static void WindowReport() => MenuWindowReport.WindowReport();
 
         #endregion
     }
