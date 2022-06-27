@@ -87,6 +87,7 @@ namespace Altzone.Scripts.Config
     public class GameVariables
     {
         [Header("Battle"), Min(1)] public int _roomStartDelay;
+        [Min(1)] public int _slingshotDelay;
         [Min(0)] public int _headScoreToWin;
         [Min(0)] public int _wallScoreToWin;
         [Min(0)] public float _playerShieldHitStunDuration;
