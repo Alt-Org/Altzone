@@ -97,7 +97,6 @@ namespace Battle.Scripts.Test
             {
                 return;
             }
-            PhotonLobby.CloseRoom();
             if (_isAutoStartBall)
             {
                 var startTheBallTest = FindObjectOfType<StartTheBallTest>();
