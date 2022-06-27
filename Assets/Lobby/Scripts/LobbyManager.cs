@@ -128,7 +128,7 @@ namespace Lobby.Scripts
                 yield return null;
                 if (isCloseRoom)
                 {
-                    room.IsOpen = false;
+                    PhotonLobby.CloseRoom();
                     yield return null;
                 }
             }
