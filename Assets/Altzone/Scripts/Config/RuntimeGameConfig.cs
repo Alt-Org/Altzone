@@ -90,17 +90,18 @@ namespace Altzone.Scripts.Config
         [Min(0)] public int _headScoreToWin;
         [Min(0)] public int _wallScoreToWin;
         [Min(0)] public float _playerShieldHitStunDuration;
+        [Min(0)] public float _ballSlingshotPower;
 
-        [Header("Ball")] public float _ballMoveSpeedMultiplier;
-        public float _ballMinMoveSpeed;
-        public float _ballMaxMoveSpeed;
-        public float _ballLerpSmoothingFactor;
-        public float _ballTeleportDistance;
+        [Header("Ball"), Min(0)] public float _ballMoveSpeedMultiplier;
+        [Min(0)] public float _ballMinMoveSpeed;
+        [Min(0)] public float _ballMaxMoveSpeed;
+        [Min(0)] public float _ballLerpSmoothingFactor;
+        [Min(0)] public float _ballTeleportDistance;
 
-        [Header("Player")] public float _playerMoveSpeedMultiplier;
-        public float _playerAttackMultiplier;
+        [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Min(0)] public float _playerAttackMultiplier;
 
-        [Header("Shield")] public float _shieldDistanceMultiplier;
+        [Header("Shield"), Min(0)] public float _shieldDistanceMultiplier;
 
         public void CopyFrom(GameVariables other)
         {

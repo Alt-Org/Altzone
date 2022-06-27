@@ -33,6 +33,7 @@ namespace Battle.Scripts.Test
 
         private IGameplayManager _gameplayManager;
         private IBallManager _ballManager;
+        private float _ballSlingshotPower;
         private float _playerAttackMultiplier;
         private OnGuiWindowHelper _onGuiWindow;
         private float _countDownDelay;
@@ -47,6 +48,7 @@ namespace Battle.Scripts.Test
             Debug.Log($"{name}");
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
+            _ballSlingshotPower = variables._ballSlingshotPower; 
             _playerAttackMultiplier = variables._playerAttackMultiplier;
             _countDownDelay = variables._roomStartDelay;
             if (_countDownDelayOverride > 0)
@@ -184,12 +186,12 @@ namespace Battle.Scripts.Test
                 speed = 0;
                 if (startTeam != null)
                 {
-                    var startAttack = startTeam.Attack * _playerAttackMultiplier;
+                    var slingshotPower = _ballSlingshotPower * startTeam.Attack * _playerAttackMultiplier;
                     var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
                     // Official formula for ball speed (continue gameplay)
-                    speed = startAttack * startDistance;
-                    Debug.Log(
-                        $"{name} RESTART attack {startAttack} dist {startDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+                    speed = slingshotPower * startDistance;
+                    Debug.Log($"{name} RESTART slingshotPower {slingshotPower} dist {startDistance:0.00} " +
+                              $"TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
                 }
                 if (speed == 0)
                 {
@@ -212,18 +214,19 @@ namespace Battle.Scripts.Test
                 startTeam = _gameplayManager.GetBattleTeam(startingTeam);
                 otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
 
-                var startAttack = startTeam.Attack * _playerAttackMultiplier;
-                var otherAttack = (otherTeam?.Attack ?? 0) * _playerAttackMultiplier;
+                var startSlingshotPower = _ballSlingshotPower * startTeam.Attack * _playerAttackMultiplier;
+                var otherSlingshotPower = _ballSlingshotPower * (otherTeam?.Attack ?? 0) * _playerAttackMultiplier;
                 // Official formula for ball speed (start gameplay)
-                speed = startAttack * startDistance - otherAttack * otherDistance;
+                speed = startSlingshotPower * startDistance - otherSlingshotPower * otherDistance;
                 if (speed == 0)
                 {
-                    // Use only winning teams data
-                    // if both teams have exactly the same attack value and distance to each other - only possible if nobody moves
-                    speed = startAttack * startDistance;
+                    // Use only winning teams data if both teams have exactly the same attack value and distance to each other.
+                    // - only possible if nobody moves!
+                    speed = startSlingshotPower * startDistance;
                 }
-                Debug.Log(
-                    $"{name} START attack {startAttack} dist {startDistance:0.00} - OTHER attack {otherAttack} dist {otherDistance:0.00} TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
+                Debug.Log($"{name} START slingshotPower {startSlingshotPower} dist {startDistance:0.00} - " +
+                          $"OTHER slingshotPower {otherSlingshotPower} dist {otherDistance:0.00} " +
+                          $"TEAM {startingTeam} players {startTeam.PlayerCount} speed {speed:0.00}");
             }
 
             GetDirectionAndPosition(startTeam, out var direction, out var ballDropPosition);
