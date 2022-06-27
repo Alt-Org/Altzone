@@ -20,10 +20,17 @@ namespace Prg.Scripts.Common.Photon
 
         private static bool _isApplicationQuitting;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            GetGameVersion = () => DefaultGameVersion;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            _isApplicationQuitting = false;
+           _isApplicationQuitting = false;
             Application.quitting += () => _isApplicationQuitting = true;
         }
 
@@ -33,9 +40,11 @@ namespace Prg.Scripts.Common.Photon
         public static string GameVersion => GetGameVersion();
 
         /// <summary>
-        /// To override default <c>PhotonNetwork.GameVersion</c> that is alias for <c>Application.version</c>.
+        /// To override default <c>PhotonNetwork.GameVersion</c> (that is alias for <c>Application.version</c>).
         /// </summary>
-        public static Func<string> GetGameVersion = () => Application.version;
+        public static Func<string> GetGameVersion = () => DefaultGameVersion;
+
+        private static string DefaultGameVersion => Application.version;
 
         public static void Connect(string playerName)
         {
