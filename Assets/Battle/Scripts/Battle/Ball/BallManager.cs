@@ -224,7 +224,7 @@ namespace Battle.Scripts.Battle.Ball
                     var isMoving = deltaX > BallMinMoveDistance || deltaY > BallMinMoveDistance;
                     if (isMoving)
                     {
-                        _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                        _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.fixedDeltaTime * _ballLerpSmoothingFactor);
                         _networkUpdateCount += 1;
                     }
                     else if (_networkUpdateCount > 0)
