@@ -419,7 +419,7 @@ namespace Battle.Scripts.Battle.Game
                 {
                     this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
-                else if (_teamBlue.Count == 0 && PhotonNetwork.InRoom)
+                else if (_teamBlue.Count == 0 && PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
                 {
                     TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
                     return;
@@ -432,7 +432,7 @@ namespace Battle.Scripts.Battle.Game
                 {
                     this.Publish(new TeamBroken(CreateBattleTeam(playerDriver.TeamNumber), playerDriver));
                 }
-                else if (_teamRed.Count == 0 && PhotonNetwork.InRoom)
+                else if (_teamRed.Count == 0 && PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
                 {
                     TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
                     return;
