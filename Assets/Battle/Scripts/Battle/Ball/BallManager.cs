@@ -40,6 +40,8 @@ namespace Battle.Scripts.Battle.Ball
         // StopStates control when ball is stopped implicitly when state changes - in practice state without active collider => stop the ball!
         private static readonly bool[] StopStates = { true, false, true, true };
 
+        private const float BallMinMoveDistance = 0.01f;
+
         [Header("Settings"), SerializeField] private GameObject _ballColliderParent;
         [SerializeField] private GameObject _spriteStopped;
         [SerializeField] private GameObject _spriteMoving;
@@ -68,7 +70,6 @@ namespace Battle.Scripts.Battle.Ball
         private float _ballMaxMoveSpeed;
         private float _ballLerpSmoothingFactor;
         private float _ballTeleportDistance;
-        private float _ballMoveDistance = 0.01f;
 
         private float _rigidbodyVelocitySqrMagnitude;
 
@@ -219,7 +220,7 @@ namespace Battle.Scripts.Battle.Ball
                 }
                 else
                 {
-                    var isMoving = deltaX > _ballMoveDistance || deltaY > _ballMoveDistance;
+                    var isMoving = deltaX > BallMinMoveDistance || deltaY > BallMinMoveDistance;
                     if (isMoving)
                     {
                         _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
