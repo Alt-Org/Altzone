@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Photon.Pun;
+using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
@@ -96,6 +97,7 @@ namespace Battle.Scripts.Test
             {
                 return;
             }
+            PhotonLobby.CloseRoom();
             if (_isAutoStartBall)
             {
                 var startTheBallTest = FindObjectOfType<StartTheBallTest>();
