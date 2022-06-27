@@ -226,7 +226,7 @@ namespace Battle.Scripts.Battle.Ball
                         _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
                         _networkUpdateCount += 1;
                     }
-                    else
+                    else if (_networkUpdateCount > 0)
                     {
                         _networkUpdateCount = 0;
                     }
