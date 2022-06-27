@@ -165,7 +165,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             else
             {
-                StartCoroutine(OnRemoteBallNetworkUpdate());
+                StartCoroutine(OnRemoteBallNetworkFixedUpdate());
                 _ballCollider.isTrigger = true;
             }
             UpdateBallText();
@@ -186,16 +186,16 @@ namespace Battle.Scripts.Battle.Ball
                         yield return delay;
                         continue;
                     }
-                    if (velocity == Vector2.zero && _ballRequiredMoveSpeed > 0)
-                    {
-                        // We are badly stuck and can not move :-(
-                        ((IBallManager)this).SetBallState(BallState.Stopped);
-                        ((IBallManager)this).SetBallSpeed(0);
-                        yield return delay;
-                        continue;
-                    }
                     if (_ballRequiredMoveSpeed > 0)
                     {
+                        if (velocity == Vector2.zero)
+                        {
+                            // We are badly stuck and can not move :-(
+                            ((IBallManager)this).SetBallState(BallState.Stopped);
+                            ((IBallManager)this).SetBallSpeed(0);
+                            yield return delay;
+                            continue;
+                        }
                         Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyVelocitySqrMagnitude} vs {sqrMagnitude}");
                         _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
                     }
@@ -204,9 +204,10 @@ namespace Battle.Scripts.Battle.Ball
             }
         }
 
-        private IEnumerator OnRemoteBallNetworkUpdate()
+        private IEnumerator OnRemoteBallNetworkFixedUpdate()
         {
             Debug.Log($"{name}");
+            var delay = new WaitForFixedUpdate();
             for (;;)
             {
                 var rigidbodyPosition = _rigidbody.position;
@@ -231,7 +232,7 @@ namespace Battle.Scripts.Battle.Ball
                         _networkUpdateCount = 0;
                     }
                 }
-                yield return null;
+                yield return delay;
             }
         }
 
@@ -430,6 +431,9 @@ namespace Battle.Scripts.Battle.Ball
 
         void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
+            // https://doc.photonengine.com/en-us/pun/current/gameplay/lagcompensation
+            // - rigidbody.position is set on FixedUpdate (coroutine)
+            // - rigidbody.velocity is set here
             if (stream.IsWriting)
             {
                 stream.SendNext(_rigidbody.position);
