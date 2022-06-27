@@ -122,7 +122,7 @@ namespace Prg.Scripts.Test
                     }
                 }
             }
-            label += $"\r\nPhoton v='{PhotonLobby.GameVersion}'";
+            label += $"\r\nPhoton v={PhotonLobby.GameVersion} r={PhotonNetwork.CloudRegion}";
             label += $"\r\nSend rate={PhotonNetwork.SendRate} ser rate={PhotonNetwork.SerializationRate}";
             if (PhotonNetwork.OfflineMode || PhotonNetwork.AutomaticallySyncScene)
             {
@@ -138,6 +138,8 @@ namespace Prg.Scripts.Test
             }
             GUILayout.Label(label, _guiLabelStyle);
         }
+
+        #region Type names
 
         private static readonly Dictionary<Type, string> TypeMap = new Dictionary<Type, string>()
         {
@@ -162,71 +164,9 @@ namespace Prg.Scripts.Test
         {
             return TypeMap.TryGetValue(type, out var name) ? name : type.Name;
         }
-#if false
-        /// <summary>
-        /// Ring buffer for average lag compensation calculation, not exactly exact!
-        /// </summary>
-        /// <remarks>
-        /// Values are updated once per buffer fill and can be seen in Editor.
-        /// </remarks>
-        [Serializable]
-        public class LagCompensation
-        {
-            public string status;
-            public double samplingStart;
-            public double samplingDuration;
-            public int sampleCount;
-            public int sampleIndexCur;
-            public int sampleIndexMax;
-            public float[] samples;
 
-            public LagCompensation(int sampleCount)
-            {
-                this.sampleCount = sampleCount;
-                sampleIndexMax = sampleCount - 1;
-                samples = new float[sampleCount];
-                reset();
-            }
+        #endregion
 
-            public void reset()
-            {
-                status = string.Empty;
-                samplingStart = 0;
-                samplingDuration = 0;
-                sampleIndexCur = 0;
-            }
-
-            public void addSample(float lagValue)
-            {
-                samples[sampleIndexCur] = lagValue;
-                if (sampleIndexCur == 0)
-                {
-                    samplingStart = Time.time;
-                    sampleIndexCur += 1;
-                }
-                else if (sampleIndexCur == sampleIndexMax)
-                {
-                    samplingDuration = Time.time - samplingStart;
-                    sampleIndexCur = 0;
-                    status = ToString();
-                }
-                else
-                {
-                    sampleIndexCur += 1;
-                }
-            }
-
-            public override string ToString()
-            {
-                var sum = 0f;
-                for (var i = 0; i < sampleCount; ++i)
-                {
-                    sum += samples[i];
-                }
-                return $"avg lag {sum / sampleCount:0.000} s ({sampleCount}) : {sampleCount / samplingDuration: 0.0} msg/s";
-            }
-        }
-#endif
 #endif
     }
 }
