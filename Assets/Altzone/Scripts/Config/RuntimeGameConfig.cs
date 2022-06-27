@@ -48,6 +48,12 @@ namespace Altzone.Scripts.Config
         public bool _isDisableBallSpeedChanges;
 
         /// <summary>
+        /// Disable team forfeit when last team player leaves the room.
+        /// </summary>
+        [Tooltip("Disable team forfeit when last team player leaves the room")]
+        public bool _isDisableTeamForfeit;
+
+        /// <summary>
         /// Is shield always on when team has only one player.
         /// </summary>
         [Tooltip("Is shield always on when team has only one player")]

@@ -449,6 +449,11 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
+            var isDisableTeamForfeit = RuntimeGameConfig.Get().Features._isDisableTeamForfeit;
+            if (isDisableTeamForfeit)
+            {
+                return;
+            }
             if (_teamBlue.Count == 0)
             {
                 var score = gameScoreManager.RedScore;
