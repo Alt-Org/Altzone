@@ -21,11 +21,15 @@ namespace Lobby.Scripts.InLobby
         {
             Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
             _view.Reset();
-            _view.TitleText = $"Welcome to {Application.productName} {PhotonLobby.GameVersion}";
+            UpdateTitle();
             _view.LobbyText = string.Empty;
             StartCoroutine(StartLobby());
         }
 
+        private void UpdateTitle()
+        {
+            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonNetwork.CloudRegion}";
+        }
         private IEnumerator StartLobby()
         {
             var delay = new WaitForSeconds(0.1f);
@@ -47,6 +51,7 @@ namespace Lobby.Scripts.InLobby
                 }
                 yield return delay;
             }
+            UpdateTitle();
             _view.EnableButtons();
         }
 
