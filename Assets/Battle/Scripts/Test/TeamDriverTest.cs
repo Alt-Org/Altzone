@@ -22,8 +22,6 @@ namespace Battle.Scripts.Test
         [Header("Autostart"), SerializeField] private bool _isAutoStartBall;
         [Range(0, 4), SerializeField] private int _roomPlayersOverride;
 
-        [Header("Settings"), SerializeField] private bool _isShowCountdown;
-
         [Header("Live Data"), SerializeField] private TeamSettings _teamBlue;
         [SerializeField] private TeamSettings _teamRed;
 
@@ -121,24 +119,6 @@ namespace Battle.Scripts.Test
                     ScoreFlashNet.Push("AUTOSTART");
                     startTheBallTest.StartBallFirstTime();
                 }
-            }
-            if (!_isShowCountdown)
-            {
-                return;
-            }
-            var runtimeGameConfig = RuntimeGameConfig.Get();
-            var variables = runtimeGameConfig.Variables;
-            var countdownDelay = variables._roomStartDelay;
-            StartCoroutine(SimulateCountdown(countdownDelay));
-        }
-
-        private static IEnumerator SimulateCountdown(int countdownDelay)
-        {
-            var delay = new WaitForSeconds(1f);
-            while (--countdownDelay >= 0)
-            {
-                yield return delay;
-                ScoreFlashNet.Push(countdownDelay.ToString());
             }
         }
     }
