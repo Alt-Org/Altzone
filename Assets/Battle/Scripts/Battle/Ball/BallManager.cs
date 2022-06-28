@@ -10,6 +10,12 @@ using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Ball
 {
+    /// <summary>
+    /// Manages <c>Ball</c> local and remote physical and visual state.
+    /// </summary>
+    /// <remarks>
+    /// <c>Ball</c> rigidbody and collider setup and behaviour if different on local and remote clients.
+    /// </remarks>
     internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IPunObservable
     {
         [Serializable]
@@ -50,10 +56,11 @@ namespace Battle.Scripts.Battle.Ball
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
         [SerializeField] private float _ballRequiredMoveSpeed;
+        private float _rigidbodyRequiredVelocitySqrMagnitude;
 
         [Header("Photon Networking"), SerializeField] private Vector2 _networkPosition;
         [SerializeField] private float _networkLag;
-        private int _networkUpdateCount;
+        private int _networkUpdateDebugCount;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
@@ -70,8 +77,6 @@ namespace Battle.Scripts.Battle.Ball
         private float _ballMaxMoveSpeed;
         private float _ballLerpSmoothingFactor;
         private float _ballTeleportDistance;
-
-        private float _rigidbodyVelocitySqrMagnitude;
 
         private void Awake()
         {
@@ -160,26 +165,27 @@ namespace Battle.Scripts.Battle.Ball
             SetBallCollider(ColliderStates[stateIndex]);
             if (PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(OnMasterClientFixedUpdate());
+                StartCoroutine(OnMasterClientFixedUpdateKeepBallVelocity());
                 _ballCollider.isTrigger = false;
             }
             else
             {
-                StartCoroutine(OnRemoteBallNetworkFixedUpdate());
+                StartCoroutine(LagCompensationForNonPhysicObjects());
                 _ballCollider.isTrigger = true;
             }
             UpdateBallText();
         }
 
-        private IEnumerator OnMasterClientFixedUpdate()
+        private IEnumerator OnMasterClientFixedUpdateKeepBallVelocity()
         {
             Debug.Log($"{name}");
+            Assert.IsFalse(_rigidbody.isKinematic, "_rigidbody.isKinematic");
             var delay = new WaitForFixedUpdate();
-            for (;;)
+            for (; enabled;)
             {
                 var velocity = _rigidbody.velocity;
                 var sqrMagnitude = velocity.sqrMagnitude;
-                if (!Mathf.Approximately(_rigidbodyVelocitySqrMagnitude, sqrMagnitude))
+                if (!Mathf.Approximately(_rigidbodyRequiredVelocitySqrMagnitude, sqrMagnitude))
                 {
                     if (_ballState == BallState.Stopped)
                     {
@@ -196,7 +202,7 @@ namespace Battle.Scripts.Battle.Ball
                             yield return delay;
                             continue;
                         }
-                        Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyVelocitySqrMagnitude} vs {sqrMagnitude}");
+                        Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyRequiredVelocitySqrMagnitude} vs {sqrMagnitude}");
                         _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
                     }
                 }
@@ -204,11 +210,14 @@ namespace Battle.Scripts.Battle.Ball
             }
         }
 
-        private IEnumerator OnRemoteBallNetworkFixedUpdate()
+        private IEnumerator LagCompensationForNonPhysicObjects()
         {
+            // https://doc.photonengine.com/en-us/pun/current/gameplay/lagcompensation
             Debug.Log($"{name}");
-            var delay = new WaitForFixedUpdate();
-            for (;;)
+            Assert.IsTrue(_rigidbody.isKinematic, "_rigidbody.isKinematic");
+            _currentDebugVelocity = _rigidbody.velocity;
+            _networkUpdateDebugCount = 0;
+            for (; enabled;)
             {
                 var rigidbodyPosition = _rigidbody.position;
                 var deltaX = Mathf.Abs(rigidbodyPosition.x - _networkPosition.x);
@@ -217,22 +226,29 @@ namespace Battle.Scripts.Battle.Ball
                 if (isTeleport)
                 {
                     _rigidbody.position = _networkPosition;
-                    _networkUpdateCount = 0;
+                    _networkUpdateDebugCount = 0;
                 }
                 else
                 {
                     var isMoving = deltaX > BallMinMoveDistance || deltaY > BallMinMoveDistance;
                     if (isMoving)
                     {
-                        _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.fixedDeltaTime * _ballLerpSmoothingFactor);
-                        _networkUpdateCount += 1;
+                        _rigidbody.position = Vector2.MoveTowards(rigidbodyPosition, _networkPosition, Time.deltaTime * _ballLerpSmoothingFactor);
+                        if (_currentDebugVelocity == _rigidbody.velocity)
+                        {
+                            _networkUpdateDebugCount += 1;
+                        }
+                        else
+                        {
+                            _networkUpdateDebugCount = 0;
+                        }
                     }
-                    else if (_networkUpdateCount > 0)
+                    else if (_networkUpdateDebugCount > 0)
                     {
-                        _networkUpdateCount = 0;
+                        _networkUpdateDebugCount = 0;
                     }
                 }
-                yield return delay;
+                yield return null;
             }
         }
 
@@ -289,7 +305,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             else
             {
-                _debug._ballText.text = $"{_networkUpdateCount}:{_networkLag * 100:000}";
+                _debug._ballText.text = $"{_networkUpdateDebugCount}:{_networkLag * 100:000}";
             }
         }
 
@@ -391,7 +407,7 @@ namespace Battle.Scripts.Battle.Ball
                 // When ball is stopped, it will "forget" its current direction and can not start moving without new direction!
                 _ballRequiredMoveSpeed = 0;
                 _rigidbody.velocity = Vector2.zero;
-                _rigidbodyVelocitySqrMagnitude = 0;
+                _rigidbodyRequiredVelocitySqrMagnitude = 0;
                 return Vector2.zero;
             }
             _ballRequiredMoveSpeed = Mathf.Clamp(speed, _ballMinMoveSpeed, _ballMaxMoveSpeed) * _ballMoveSpeedMultiplier;
@@ -403,7 +419,7 @@ namespace Battle.Scripts.Battle.Ball
                                $"ballRequiredMoveSpeed {_ballRequiredMoveSpeed} cur velocity {_rigidbody.velocity}");
             }
             _rigidbody.velocity = velocity;
-            _rigidbodyVelocitySqrMagnitude = velocity.sqrMagnitude;
+            _rigidbodyRequiredVelocitySqrMagnitude = velocity.sqrMagnitude;
             return velocity;
         }
 
@@ -432,7 +448,7 @@ namespace Battle.Scripts.Battle.Ball
         void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             // https://doc.photonengine.com/en-us/pun/current/gameplay/lagcompensation
-            // - rigidbody.position is set on FixedUpdate (coroutine)
+            // - rigidbody.position is set every frame (Update) using coroutine
             // - rigidbody.velocity is set here
             if (stream.IsWriting)
             {
