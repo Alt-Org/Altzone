@@ -63,12 +63,12 @@ namespace Prg.Scripts.Test
 
         private void DebugWindow(int windowId)
         {
-            string label;
+            string title;
             var inRoom = PhotonNetwork.InRoom;
             if (inRoom)
             {
                 var room = PhotonNetwork.CurrentRoom;
-                label = $"{PhotonNetwork.LocalPlayer.NickName} | {room.Name}" +
+                title = $"{PhotonNetwork.LocalPlayer.NickName} | {room.Name}" +
                         $"{(room.IsVisible ? string.Empty : ",hidden")}" +
                         $"{(room.IsOpen ? string.Empty : ",closed")} " +
                         $"{(room.PlayerCount == 1 ? "1 player" : $"{room.PlayerCount} players")}" +
@@ -76,20 +76,21 @@ namespace Prg.Scripts.Test
             }
             else if (PhotonNetwork.InLobby)
             {
-                label = $"Lobby: rooms {PhotonNetwork.CountOfRooms}, players {PhotonNetwork.CountOfPlayers}";
+                title = $"Lobby: rooms {PhotonNetwork.CountOfRooms}, players {PhotonNetwork.CountOfPlayers}";
             }
             else
             {
-                label = $"Photon: {PhotonNetwork.NetworkClientState}";
+                title = $"Photon: {PhotonNetwork.NetworkClientState}";
             }
-            if (GUILayout.Button(label, _guiButtonStyle))
+            if (GUILayout.Button(title, _guiButtonStyle))
             {
                 ToggleWindowState();
             }
             var space = "  ";
+            var label = $"v={PhotonLobby.GameVersion} r={PhotonNetwork.CloudRegion} ping={PhotonNetwork.GetPing()}";
             if (inRoom)
             {
-                label = "--Props--";
+                label += $"\r\n--Room--";
                 var room = PhotonNetwork.CurrentRoom;
                 var props = room.CustomProperties;
                 var keys = props.Keys.ToList();
@@ -122,8 +123,7 @@ namespace Prg.Scripts.Test
                     }
                 }
             }
-            label += $"\r\nPhoton v={PhotonLobby.GameVersion} r={PhotonNetwork.CloudRegion}";
-            label += $"\r\nSend rate={PhotonNetwork.SendRate} ser rate={PhotonNetwork.SerializationRate}";
+            label += $"\r\nsend rate={PhotonNetwork.SendRate} ser rate={PhotonNetwork.SerializationRate}";
             if (PhotonNetwork.OfflineMode || PhotonNetwork.AutomaticallySyncScene)
             {
                 label += $"\r\n";
@@ -133,7 +133,7 @@ namespace Prg.Scripts.Test
                 }
                 if (PhotonNetwork.AutomaticallySyncScene)
                 {
-                    label += $"AutomaticallySyncScene ";
+                    label += $"AutoSyncScene ";
                 }
             }
             GUILayout.Label(label, _guiLabelStyle);
