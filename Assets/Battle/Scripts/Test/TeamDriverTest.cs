@@ -4,7 +4,6 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Photon.Pun;
-using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
@@ -38,9 +37,26 @@ namespace Battle.Scripts.Test
             StartCoroutine(ConfigureRoom(_roomPlayersOverride));
         }
 
-        private static IEnumerator ConfigureRoom(int roomPlayersCount)
+        private IEnumerator ConfigureRoom(int roomPlayersCount)
         {
-            yield return new WaitUntil(() => PhotonNetwork.InRoom);
+            Debug.Log($"roomPlayersCount {roomPlayersCount}");
+            for (;;)
+            {
+                // Safety measure if app exists before we enter a room!
+                if (!enabled)
+                {
+                    yield break;
+                }
+                if (PhotonNetwork.InRoom)
+                {
+                    break;
+                }
+                yield return null;
+            }
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                yield break;
+            }
             var room = PhotonNetwork.CurrentRoom;
             if (roomPlayersCount > 0)
             {
