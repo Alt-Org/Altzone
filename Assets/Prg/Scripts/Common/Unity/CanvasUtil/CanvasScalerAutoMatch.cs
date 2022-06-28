@@ -20,8 +20,7 @@ namespace Prg.Scripts.Common.Unity.CanvasUtil
 
         private void OnEnable()
         {
-            var canvas = GetComponent<Canvas>();
-            _canvasScaler = canvas.GetComponent<CanvasScaler>();
+            _canvasScaler = gameObject.GetComponent<CanvasScaler>();
             if (_canvasScaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize)
             {
                 enabled = false;
@@ -37,7 +36,7 @@ namespace Prg.Scripts.Common.Unity.CanvasUtil
 
         private IEnumerator ScreenResolutionPoller()
         {
-            YieldInstruction delay = _pollingInterval > 0 ? new WaitForSeconds(_pollingInterval) : new WaitForFixedUpdate();
+            YieldInstruction delay = _pollingInterval > 0 ? new WaitForSeconds(_pollingInterval) : null;
             for (; enabled;)
             {
                 yield return delay;
@@ -48,11 +47,12 @@ namespace Prg.Scripts.Common.Unity.CanvasUtil
                 _width = Screen.width;
                 _height = Screen.height;
                 var match = _width > _height ? _landscapeMatch : _portraitMatch;
-                Debug.Log($"matchWidthOrHeight w {_width} h {_height} : {_canvasScaler.matchWidthOrHeight} <- {match}");
                 if (Mathf.Approximately(_canvasScaler.matchWidthOrHeight, match))
                 {
                     continue;
                 }
+                Debug.Log($"matchWidthOrHeight w {_width} h {_height} : {_canvasScaler.matchWidthOrHeight} <- {match}",
+                    _canvasScaler.gameObject);
                 _canvasScaler.matchWidthOrHeight = match;
             }
         }
