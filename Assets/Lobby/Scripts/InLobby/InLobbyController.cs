@@ -54,13 +54,24 @@ namespace Lobby.Scripts.InLobby
         {
             if (!PhotonNetwork.InLobby)
             {
+                _view.LobbyText = "Wait";
                 return;
             }
             var playerCount = PhotonNetwork.CountOfPlayers;
-            _view.LobbyText = playerCount == 1
-                ? "You are the only player here"
-                : $"There is {playerCount} players online";
-            ;
+            string text;
+            switch (playerCount)
+            {
+                case 0:
+                    text = "Wait";
+                    break;
+                case 1:
+                    text = "You are the only player";
+                    break;
+                default:
+                    text = $"There are {playerCount} players";
+                    break;
+            }
+            _view.LobbyText = $"{text}, ping {PhotonNetwork.GetPing()}";
         }
 
         private void CharacterButtonOnClick()
