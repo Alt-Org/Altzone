@@ -28,7 +28,7 @@ namespace Lobby.Scripts.InLobby
 
         private void UpdateTitle()
         {
-            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonNetwork.CloudRegion}";
+            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonLobby.GetRegion()}";
         }
         private IEnumerator StartLobby()
         {

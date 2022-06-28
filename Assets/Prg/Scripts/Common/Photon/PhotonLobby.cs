@@ -30,7 +30,7 @@ namespace Prg.Scripts.Common.Photon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-           _isApplicationQuitting = false;
+            _isApplicationQuitting = false;
             Application.quitting += () => _isApplicationQuitting = true;
         }
 
@@ -192,6 +192,21 @@ namespace Prg.Scripts.Common.Photon
                 return;
             }
             throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
+        }
+
+        public static string GetRegion()
+        {
+            var region = PhotonNetwork.CloudRegion;
+            if (region == null)
+            {
+                return string.Empty;
+            }
+            var index = region.IndexOf('/');
+            if (index > 1)
+            {
+                region = region.Substring(0, index);
+            }
+            return region;
         }
 
         private static void ConnectUsingSettings(AppSettings appSettings, string playerName)
