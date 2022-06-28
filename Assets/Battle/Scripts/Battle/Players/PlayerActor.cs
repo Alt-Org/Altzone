@@ -191,7 +191,7 @@ namespace Battle.Scripts.Battle.Players
             // Last pose is reserved for disconnected pose
             _maxPoseIndex = _settings._avatar.Avatars.Length - 2;
             _disconnectedPoseIndex = _maxPoseIndex + 1;
-            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _maxPoseIndex);
+            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _settings._avatar.Avatars.Length - 1);
             _shieldPose = new PoseManager(_settings._shield.Shields, null);
             _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, 0);
             UpdatePlayerText();
@@ -525,7 +525,7 @@ namespace Battle.Scripts.Battle.Players
             SetVisible(IsVisible);
         }
 
-        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, int setAvatarColor)
+        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, int avatarColorCount)
         {
             _currentAvatar = _avatars[0];
             _currentCollider = _colliders[0];
@@ -535,7 +535,7 @@ namespace Battle.Scripts.Battle.Players
             for (var i = 0; i < _childCount; ++i)
             {
                 var child = _avatars[i];
-                if (setAvatarColor-- > 0)
+                if (--avatarColorCount >= 0)
                 {
                     var spriteRenderer = child.GetComponent<SpriteRenderer>();
                     spriteRenderer.color = avatarColor;
