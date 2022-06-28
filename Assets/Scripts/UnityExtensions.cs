@@ -103,8 +103,9 @@ public static class UnityExtensions
             trailRenderer.time = 0;
             trailRenderer.emitting = false;
             yield return null;
-            // It seems that at least two frames is required for physics engine to catch up after Rigidbody has been teleported.
-            var delay = new WaitForFixedUpdate();
+            // It seems that at least two frames are required for physics engine to catch up after Rigidbody has been teleported.
+            // - note that this was tested using WaitForFixedUpdate which was *totally wrong* in this context!
+            var delay = new WaitForEndOfFrame();
             while (--skipFrames >= 0)
             {
                 yield return delay;
