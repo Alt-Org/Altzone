@@ -91,6 +91,8 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _tempPosition;
 
         private BattlePlayMode _playMode;
+        private bool _isPendingPlayMode;
+        private BattlePlayMode _pendingPlayMode;
         private int _poseIndex;
         private bool _isStunned;
         private Coroutine _stunnedCoroutine;
@@ -100,7 +102,7 @@ namespace Battle.Scripts.Battle.Players
         private PoseManager _shieldPose;
         private int _maxPoseIndex;
         private int _disconnectedPoseIndex;
-        
+
         private float _speed;
         private float _playerMoveSpeedMultiplier;
         private int _resistance;
@@ -234,7 +236,7 @@ namespace Battle.Scripts.Battle.Players
         #region Debugging
 
         private static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
-        private static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', '-' };
+        private static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', 'R', 'o', '-' };
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()
@@ -304,7 +306,7 @@ namespace Battle.Scripts.Battle.Players
         float IPlayerActor.Speed
         {
             get => _speed;
-            set => _speed = value; 
+            set => _speed = value;
         }
 
         int IPlayerActor.CurrentResistance
@@ -370,14 +372,34 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
         {
+            Assert.IsTrue(playMode < BattlePlayMode.Disconnected, "playMode < BattlePlayMode.Disconnected");
             var canTransition = _playMode.CanTransition(playMode);
             if (_debug._isLogEvents)
             {
-                Debug.Log($"{name} {_playMode} <- {playMode}{(canTransition ? string.Empty : " No_Can_Transition")}");
+                Debug.Log($"{name} {_playMode} <- {playMode} {(canTransition ? "OK" : "NO CAN TRANSITION")}");
             }
             if (!canTransition)
             {
+                if (_playMode == BattlePlayMode.RaidGhosted)
+                {
+                    Debug.Log($"{name} {playMode} SAVE PENDING");
+                    _isPendingPlayMode = true;
+                    _pendingPlayMode = playMode;
+                }
+                else
+                {
+                    _isPendingPlayMode = false;
+                }
                 return;
+            }
+            if (playMode == BattlePlayMode.RaidReturn && _isPendingPlayMode)
+            {
+                _isPendingPlayMode = false;
+                playMode = _pendingPlayMode;
+                if (_debug._isLogEvents)
+                {
+                    Debug.Log($"{name} {_playMode} <- {playMode} FROM PENDING");
+                }
             }
             _playMode = playMode;
             _shieldPose.SetPlayMode(playMode);

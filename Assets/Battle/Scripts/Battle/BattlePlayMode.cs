@@ -15,22 +15,30 @@ namespace Battle.Scripts.Battle
         Frozen = 1,
         Ghosted = 2,
         SuperGhosted = 3,
-        Disconnected = 4,
+        RaidGhosted = 4,
+        RaidReturn = 5,
+        Disconnected = 6,
     }
 
     internal static class BattlePlayModeExtensions
     {
         public static bool CanTransition(this BattlePlayMode currentPlayMode, BattlePlayMode newPlayMode)
         {
-            // Can not enter Frozen from SuperGhosted state.
-            // Simplify expression refactoring - original is below and it is human readable and understandable!
-            // return currentPlayMode == BattlePlayMode.SuperGhosted && newPlayMode == BattlePlayMode.Frozen ? false : true;
-            return currentPlayMode != BattlePlayMode.SuperGhosted || newPlayMode != BattlePlayMode.Frozen;
+            switch (currentPlayMode)
+            {
+                case BattlePlayMode.SuperGhosted:
+                    // Can not enter Frozen from SuperGhosted - this is for putting the ball in the game without collisions on starting team's side.
+                    return newPlayMode != BattlePlayMode.Frozen;
+                case BattlePlayMode.RaidGhosted:
+                    return newPlayMode == BattlePlayMode.RaidReturn;
+                default:
+                    return true;
+            }
         }
 
         public static bool CanMove(this BattlePlayMode playMode)
         {
-            return playMode == BattlePlayMode.Normal || playMode >= BattlePlayMode.Ghosted;
+            return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
         }
 
         public static bool CanCollide(this BattlePlayMode playMode)

@@ -31,25 +31,27 @@ namespace Battle.Scripts.Test
             }
             _isRaiding = true;
             _playerTransform = player.PlayerTransform;
-            StartCoroutine(StartRaid(player, _raidSimulationTime, ReturnFromRaid));
+            StartCoroutine(StartRaid(player));
         }
 
-        private static IEnumerator StartRaid(IPlayerDriver player, float raidSimulationTime, Action<IPlayerDriver> returnAction)
+        private IEnumerator StartRaid(IPlayerDriver player)
         {
-            Debug.Log($"{player.NickName} raidSimulationTime {raidSimulationTime}");
+            Debug.Log($"{player.NickName} raidSimulationTime {_raidSimulationTime}");
             yield return null;
             // Simulate RAID start - player can not move in Battle
-            player.SetPlayMode(BattlePlayMode.Ghosted);
-            player.SetStunned(raidSimulationTime);
-            yield return new WaitForSeconds(raidSimulationTime);
+            player.SetPlayMode(BattlePlayMode.RaidGhosted);
+            yield return new WaitForSeconds(_raidSimulationTime);
             // Simulate RAID end - set player "movable" again in Battle
-            returnAction(player);
+            StartCoroutine(ReturnFromRaid(player));
         }
 
-        private void ReturnFromRaid(IPlayerDriver player)
+        private IEnumerator ReturnFromRaid(IPlayerDriver player)
         {
             Debug.Log($"{player.NickName}");
-            player.SetPlayMode(BattlePlayMode.Ghosted);
+            player.SetPlayMode(BattlePlayMode.RaidReturn);
+            yield return null;
+            // TODO: Check if the ball is on our team gameplay are or not and set play mode accordingly ghosted or normal!
+            yield return null;
             _isRaiding = false;
             _playerTransform = null;
         }
