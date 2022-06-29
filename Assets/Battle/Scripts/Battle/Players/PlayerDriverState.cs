@@ -10,6 +10,7 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField, ReadOnly] private int _currentPoseIndex;
         [SerializeField, ReadOnly] private int _currentShieldResistance;
+        [SerializeField, ReadOnly] private double _lastBallHitTime;
 
         private IPlayerDriver _playerDriver;
         private CharacterModel _characterModel;
@@ -17,6 +18,8 @@ namespace Battle.Scripts.Battle.Players
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
+
+        public double LastBallHitTime => _lastBallHitTime;
 
         public void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel)
         {
@@ -33,6 +36,7 @@ namespace Battle.Scripts.Battle.Players
 
             _currentPoseIndex = 0;
             _currentShieldResistance = characterModel.Resistance;
+            _lastBallHitTime = PhotonNetwork.Time;
         }
 
         public void CheckRotation(Vector2 position)
@@ -89,6 +93,7 @@ namespace Battle.Scripts.Battle.Players
         public void OnHeadCollision()
         {
             Debug.Log($"pose {_currentPoseIndex} shield {_currentShieldResistance}");
+            _lastBallHitTime = PhotonNetwork.Time;
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
         }
 

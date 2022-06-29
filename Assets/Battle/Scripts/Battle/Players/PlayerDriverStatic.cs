@@ -121,6 +121,8 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerInfo.ActorNumber => _actorNumber;
 
+        double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
+
         #endregion
 
         #region IPlayerDriver

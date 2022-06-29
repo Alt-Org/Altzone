@@ -149,6 +149,8 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerInfo.ActorNumber => _photonView.Owner.ActorNumber;
 
+        double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
+        
         #endregion
 
         #region IPlayerDriver

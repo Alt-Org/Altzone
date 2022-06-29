@@ -15,6 +15,8 @@ namespace Battle.Scripts.Battle
         /// Currently Photon uses positive and static player negative values.
         /// </remarks>
         int ActorNumber { get; }
+
+        double LastBallHitTime { get; }
     }
     
     /// <summary>
@@ -78,6 +80,7 @@ namespace Battle.Scripts.Battle
     /// </summary>
     internal interface IPlayerDriverState
     {
+        double LastBallHitTime { get; }
         void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
