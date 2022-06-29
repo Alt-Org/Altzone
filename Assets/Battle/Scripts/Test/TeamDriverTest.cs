@@ -3,6 +3,7 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
+using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.ToastMessages;
@@ -113,12 +114,7 @@ namespace Battle.Scripts.Test
             }
             if (_isAutoStartBall)
             {
-                var startTheBallTest = FindObjectOfType<StartTheBallTest>();
-                if (startTheBallTest != null)
-                {
-                    ScoreFlashNet.Push("AUTOSTART");
-                    startTheBallTest.StartBallFirstTime();
-                }
+                this.Publish(new UiEvents.StartBattle());
             }
         }
     }

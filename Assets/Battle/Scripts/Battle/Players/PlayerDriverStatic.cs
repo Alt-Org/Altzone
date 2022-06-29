@@ -112,6 +112,7 @@ namespace Battle.Scripts.Battle.Players
             // This call can invalidate current collider!
             _state.OnHeadCollision();
             this.Publish(new UiEvents.HeadCollision(collision, this));
+            this.Publish(new UiEvents.RestartBattle(this));
         }
 
         #endregion
@@ -184,20 +185,6 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerDriver.SetStunned(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
-        }
-
-        void IPlayerDriver.StopAndRestartBall()
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                return;
-            }
-            var startTheBallTest = FindObjectOfType<StartTheBallTest>();
-            ScoreFlash.Push(startTheBallTest != null ? "RESTART" : "CAN NOT RESTART");
-            if (startTheBallTest != null)
-            {
-                startTheBallTest.RestartBallInGame(this);
-            }
         }
 
         void IPlayerDriver.PlayerActorDestroyed()

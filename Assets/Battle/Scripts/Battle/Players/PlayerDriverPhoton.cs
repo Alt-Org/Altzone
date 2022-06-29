@@ -140,6 +140,7 @@ namespace Battle.Scripts.Battle.Players
             // This call can invalidate current collider!
             _state.OnHeadCollision();
             this.Publish(new UiEvents.HeadCollision(collision, this));
+            this.Publish(new UiEvents.RestartBattle(this));
         }
 
         #endregion
@@ -241,20 +242,6 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             _photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
-        }
-
-        void IPlayerDriver.StopAndRestartBall()
-        {
-            if (!IsNetworkSynchronize)
-            {
-                return;
-            }
-            var startTheBallTest = FindObjectOfType<StartTheBallTest>();
-            ScoreFlashNet.Push(startTheBallTest != null ? "RESTART" : "CAN NOT RESTART");
-            if (startTheBallTest != null)
-            {
-                startTheBallTest.RestartBallInGame(this);
-            }
         }
 
         void IPlayerDriver.PlayerActorDestroyed()

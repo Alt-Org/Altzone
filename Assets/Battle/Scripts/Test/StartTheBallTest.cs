@@ -29,8 +29,6 @@ namespace Battle.Scripts.Test
         [Min(1), SerializeField] private int _gameOverRestartLimit = 1;
         [SerializeField] private int[] _teamRestartCount = new int[2];
 
-        [Header("Optional Countdown"), SerializeField] private bool _isShowCountdown;
-
         [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
 
         private IGameplayManager _gameplayManager;
@@ -175,10 +173,6 @@ namespace Battle.Scripts.Test
                 ? _slingshotDelay
                 : _roomStartDelay;
             var countDownDelay = new WaitForSeconds(countdownSeconds);
-            if (_isShowCountdown)
-            {
-                StartCoroutine(SimulateCountdown(countdownSeconds));
-            }
             Debug.Log($"{name} WAIT {countDownDelay}");
             if (playerToStart != null)
             {
@@ -305,16 +299,6 @@ namespace Battle.Scripts.Test
             {
                 direction = pos2 - pos1;
                 ballDropPosition = pos2;
-            }
-        }
-
-        private static IEnumerator SimulateCountdown(int countdownDelay)
-        {
-            var delay = new WaitForSeconds(1f);
-            while (--countdownDelay >= 0)
-            {
-                yield return delay;
-                ScoreFlashNet.Push(countdownDelay.ToString());
             }
         }
     }

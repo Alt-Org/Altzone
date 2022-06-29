@@ -5,6 +5,26 @@ namespace Battle.Scripts.Ui
 {
     internal static class UiEvents
     {
+        #region Gameplay events
+
+        internal class StartBattle
+        {
+        }
+
+        internal class RestartBattle
+        {
+            public readonly IPlayerDriver PlayerToStart;
+
+            public RestartBattle(IPlayerDriver playerToStart)
+            {
+                PlayerToStart = playerToStart;
+            }
+        }
+
+        #endregion
+
+        #region Informational events
+
         internal class HeadCollision : PlayerCollisionEvent
         {
             public HeadCollision(Collision2D collision, IPlayerInfo player) : base(collision, player)
@@ -28,6 +48,8 @@ namespace Battle.Scripts.Ui
             {
             }
         }
+
+        #endregion
 
         #region base classes
 

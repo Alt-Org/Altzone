@@ -90,7 +90,6 @@ namespace Battle.Scripts.Battle.Players
         {
             Debug.Log($"pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
-            _playerDriver.StopAndRestartBall();
         }
 
         public override string ToString()
