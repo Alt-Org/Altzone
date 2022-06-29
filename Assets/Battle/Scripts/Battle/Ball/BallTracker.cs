@@ -1,7 +1,5 @@
 using Altzone.Scripts.Battle;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -40,10 +38,7 @@ namespace Battle.Scripts.Battle.Ball
 
         [Header("Live Data"), SerializeField] private bool _isOnBlueTeamArea;
         [SerializeField] private bool _isOnRedTeamArea;
-        [SerializeField] private string _lastTeamTag;
 
-        [Header("Debug Settings"), SerializeField] private bool _useScoreFlashNet;
-        
         private IGameScoreManager _scoreManager;
         private IBallManager _ballManager;
         private int _teamAreaMaskValue;
@@ -64,10 +59,6 @@ namespace Battle.Scripts.Battle.Ball
             var playArea = Context.GetBattlePlayArea;
             Assert.IsTrue(playArea.BlueTeamCollider.isTrigger, "playArea.BlueTeamCollider.isTrigger");
             Assert.IsTrue(playArea.RedTeamCollider.isTrigger, "playArea.RedTeamCollider.isTrigger");
-            if (_useScoreFlashNet)
-            {
-                ScoreFlashNet.RegisterEventListener();
-            }
         }
 
         #region Collisions
@@ -93,12 +84,7 @@ namespace Battle.Scripts.Battle.Ball
             if (_wallMaskValue == (_wallMaskValue | colliderMask))
             {
                 _scoreManager.OnWallCollision(collision);
-                if (_useScoreFlashNet && PhotonNetwork.IsMasterClient)
-                {
-                    var contactPoint = collision.GetFirstContactPoint();
-                    ScoreFlashNet.Push("WALL", contactPoint.point);
-                }
-                return;
+               return;
             }
             Debug.Log($"UNHANDLED {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }
@@ -117,7 +103,6 @@ namespace Battle.Scripts.Battle.Ball
                 return;
             }
             // Debug.Log($"enter {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
-            _lastTeamTag = otherGameObject.tag;
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _isOnBlueTeamArea = true;
@@ -125,6 +110,10 @@ namespace Battle.Scripts.Battle.Ball
             else if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _isOnRedTeamArea = true;
+            }
+            else
+            {
+                return;
             }
             if (_isSetBallState)
             {

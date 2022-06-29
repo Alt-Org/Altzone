@@ -4,16 +4,10 @@ using UnityEngine;
 namespace Battle.Scripts.Battle
 {
     /// <summary>
-    /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />
-    /// Player visual state can be managed locally and/or remotely.
+    /// Readonly player info.
     /// </summary>
-    /// <remarks>
-    /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Player-Prefab
-    /// </remarks>
-    internal interface IPlayerDriver
+    internal interface IPlayerInfo
     {
-        string NickName { get; }
-
         /// <summary>
         /// ActorNumber is unique identifier for any player.
         /// </summary>
@@ -21,7 +15,19 @@ namespace Battle.Scripts.Battle
         /// Currently Photon uses positive and static player negative values.
         /// </remarks>
         int ActorNumber { get; }
-        
+    }
+    
+    /// <summary>
+    /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />
+    /// Player visual state can be managed locally and/or remotely.
+    /// </summary>
+    /// <remarks>
+    /// WIKI page: https://github.com/Alt-Org/Altzone/wiki/Player-Prefab
+    /// </remarks>
+    internal interface IPlayerDriver : IPlayerInfo
+    {
+        string NickName { get; }
+
         /// <summary>
         /// Number of "our" other instances that have reported.
         /// </summary>

@@ -2,7 +2,9 @@ using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Test;
+using Battle.Scripts.Ui;
 using Photon.Pun;
+using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Attributes;
 using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
@@ -13,7 +15,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Static <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerActorCollision
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerInfo, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class Settings
@@ -31,8 +33,6 @@ namespace Battle.Scripts.Battle.Players
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
         [SerializeField] private Transform _playerActorTransform;
 
-        private char _playerPosChar;
-
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
@@ -44,7 +44,6 @@ namespace Battle.Scripts.Battle.Players
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
-            _playerPosChar = new[] { '?', 'A', 'B', 'C', 'D' }[_settings._playerPos];
         }
 
         private void OnEnable()
@@ -103,25 +102,23 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
         {
-            var contactCount = collision.contactCount;
-            var point = collision.GetContact(0).point;
             // This call can invalidate current collider!
             _state.OnShieldCollision(out var hitType);
-            var message = $"{hitType} {_playerPosChar}";
-            ScoreFlash.Push(message, point);
-            Debug.Log($"{hitType} {name} {component.name} contacts {contactCount} {point}");
+            this.Publish(new UiEvents.ShieldCollision(collision, this, hitType));
         }
 
         void IPlayerActorCollision.OnHeadCollision(Collision2D collision)
         {
-            var contactCount = collision.contactCount;
-            var point = collision.GetContact(0).point;
             // This call can invalidate current collider!
             _state.OnHeadCollision();
-            var message = $"HEAD {_playerPosChar}";
-            ScoreFlash.Push(message, point);
-            Debug.Log($"HEAD {name} contacts {contactCount} {point}");
+            this.Publish(new UiEvents.HeadCollision(collision, this));
         }
+
+        #endregion
+
+        #region IPlayerInfo (readonly)
+
+        int IPlayerInfo.ActorNumber => _actorNumber;
 
         #endregion
 
@@ -129,12 +126,10 @@ namespace Battle.Scripts.Battle.Players
 
         string IPlayerDriver.NickName => _settings._nickName;
 
-        int IPlayerDriver.ActorNumber => _actorNumber;
-
         int IPlayerDriver.PeerCount => 0;
 
         bool IPlayerDriver.IsValid => !_isDestroyed && _playerActor != null;
-        
+
         int IPlayerDriver.PlayerPos => _settings._playerPos;
 
         int IPlayerDriver.TeamNumber => _settings._teamNumber;

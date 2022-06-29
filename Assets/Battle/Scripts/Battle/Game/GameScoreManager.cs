@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Ui;
 using Photon.Pun;
 using Photon.Realtime;
+using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityConstants;
@@ -62,6 +64,7 @@ namespace Battle.Scripts.Battle.Game
                     var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
                     var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
                     ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
+                    return;
                 }
                 return;
             }
@@ -92,7 +95,9 @@ namespace Battle.Scripts.Battle.Game
                     var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
                     var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
                     ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
+                    return;
                 }
+                this.Publish(new UiEvents.WallCollision(collision));
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
@@ -104,7 +109,9 @@ namespace Battle.Scripts.Battle.Game
                     var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
                     var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
                     ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
+                    return;
                 }
+                this.Publish(new UiEvents.WallCollision(collision));
                 return;
             }
             throw new UnityException($"invalid collision with {otherGameObject.name} {otherGameObject.tag}");
