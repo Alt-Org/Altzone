@@ -1,7 +1,6 @@
 using System.Collections;
 using Battle.Scripts.Battle;
 using Photon.Pun;
-using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 
 namespace Battle.Scripts.Test
@@ -33,7 +32,6 @@ namespace Battle.Scripts.Test
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            ScoreFlashNet.RegisterEventListener();
         }
 
         private void Update()

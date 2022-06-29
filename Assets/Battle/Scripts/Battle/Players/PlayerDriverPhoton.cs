@@ -1,11 +1,9 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
-using Battle.Scripts.Test;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -81,8 +79,7 @@ namespace Battle.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             gameplayManager.RegisterPlayer(this);
-            ScoreFlashNet.RegisterEventListener();
-            this.ExecuteOnNextFrame(() =>
+           this.ExecuteOnNextFrame(() =>
             {
                 // PeerCount handshake protocol
                 Debug.Log($"SEND SendMyPeerCountRpc {this} pos {_playerPos} local {_isLocal} : {_peerCount} ->");
