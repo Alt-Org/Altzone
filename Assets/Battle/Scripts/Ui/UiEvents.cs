@@ -3,9 +3,13 @@ using UnityEngine;
 
 namespace Battle.Scripts.Ui
 {
+    /// <summary>
+    /// UI Events from core battle game to UI layer that is responsible for UI management
+    /// and partially responsible game state management (Active Gameplay events).
+    /// </summary>
     internal static class UiEvents
     {
-        #region Gameplay events
+        #region Active Gameplay events
 
         internal class StartBattle
         {
