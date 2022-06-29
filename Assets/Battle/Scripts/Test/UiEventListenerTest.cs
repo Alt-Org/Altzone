@@ -30,6 +30,7 @@ namespace Battle.Scripts.Test
             this.Subscribe<UiEvents.HeadCollision>(OnHeadCollision);
             this.Subscribe<UiEvents.ShieldCollision>(OnShieldCollision);
             this.Subscribe<UiEvents.WallCollision>(OnWallCollision);
+            this.Subscribe<UiEvents.TeamActivation>(OnTeamActivation);
         }
 
         private void OnDisable()
@@ -108,6 +109,11 @@ namespace Battle.Scripts.Test
             var collision = data.Collision;
             var contactPoint = collision.GetFirstContactPoint();
             ScoreFlashNet.Push("WALL", contactPoint.point);
+        }
+
+        private static void OnTeamActivation(UiEvents.TeamActivation data)
+        {
+            Debug.Log($"{data}");
         }
 
         private static IEnumerator SimulateCountdown(int countdownDelay)

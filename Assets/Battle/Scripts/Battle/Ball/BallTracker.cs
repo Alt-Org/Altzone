@@ -1,4 +1,5 @@
 using Altzone.Scripts.Battle;
+using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
@@ -6,23 +7,6 @@ using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Ball
 {
-    internal class BallMoved
-    {
-        public readonly bool IsOnBlueTeamArea;
-        public readonly bool IsOnRedTeamArea;
-
-        public BallMoved(bool isOnBlueTeamArea, bool isOnRedTeamArea)
-        {
-            IsOnBlueTeamArea = isOnBlueTeamArea;
-            IsOnRedTeamArea = isOnRedTeamArea;
-        }
-
-        public override string ToString()
-        {
-            return $"IsOnBlueTeamArea: {IsOnBlueTeamArea}, IsOnRedTeamArea: {IsOnRedTeamArea}";
-        }
-    }
-
     /// <summary>
     /// Tracks ball around gameplay area.
     /// </summary>
@@ -113,6 +97,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             else
             {
+                // No state change.
                 return;
             }
             if (_isSetBallState)
@@ -122,7 +107,7 @@ namespace Battle.Scripts.Battle.Ball
                     _isOnBlueTeamArea ? PhotonBattle.TeamBlueValue :
                     PhotonBattle.TeamRedValue);
             }
-            this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
+            this.Publish(new UiEvents.TeamActivation(_isOnBlueTeamArea, _isOnRedTeamArea));
         }
 
         private void OnTriggerExit2D(Collider2D other)
@@ -147,6 +132,11 @@ namespace Battle.Scripts.Battle.Ball
             {
                 _isOnRedTeamArea = false;
             }
+            else
+            {
+                // No state change.
+                return;
+            }
             if (_isSetBallState)
             {
                 _ballManager.SetBallLocalTeamColor(
@@ -154,7 +144,7 @@ namespace Battle.Scripts.Battle.Ball
                     _isOnRedTeamArea ? PhotonBattle.TeamRedValue :
                     PhotonBattle.NoTeamValue);
             }
-            this.Publish(new BallMoved(_isOnBlueTeamArea, _isOnRedTeamArea));
+            this.Publish(new UiEvents.TeamActivation(_isOnBlueTeamArea, _isOnRedTeamArea));
         }
 
         #endregion

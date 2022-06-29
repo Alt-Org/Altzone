@@ -1,4 +1,4 @@
-using Battle.Scripts.Battle.Ball;
+using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ namespace Battle.Scripts.Test
 
         private void OnEnable()
         {
-            this.Subscribe<BallMoved>(OnBallMoved);
+            this.Subscribe<UiEvents.TeamActivation>(OnBallMoved);
         }
 
         private void OnDisable()
@@ -18,14 +18,14 @@ namespace Battle.Scripts.Test
             this.Unsubscribe();
         }
 
-        private void OnBallMoved(BallMoved data)
+        private void OnBallMoved(UiEvents.TeamActivation data)
         {
             Debug.Log($"{data}");
             if (!_isPauseOnNoMansLand)
             {
                 return;
             }
-            if (data.IsOnBlueTeamArea || data.IsOnRedTeamArea)
+            if (data.IsBallOnBlueTeamArea || data.IsBallOnRedTeamArea)
             {
                 return;
             }

@@ -49,6 +49,23 @@ namespace Battle.Scripts.Ui
             }
         }
 
+        internal class TeamActivation
+        {
+            public readonly bool IsBallOnBlueTeamArea;
+            public readonly bool IsBallOnRedTeamArea;
+
+            public TeamActivation(bool isBallOnBlueTeamArea, bool isBallOnRedTeamArea)
+            {
+                IsBallOnBlueTeamArea = isBallOnBlueTeamArea;
+                IsBallOnRedTeamArea = isBallOnRedTeamArea;
+            }
+
+            public override string ToString()
+            {
+                return $"IsBallOnBlueTeamArea: {IsBallOnBlueTeamArea}, IsBallOnRedTeamArea: {IsBallOnRedTeamArea}";
+            }
+        }
+
         #endregion
 
         #region base classes
