@@ -29,14 +29,12 @@ namespace Battle.Scripts.Battle.Game
         private int RedScoreTotal => _redHeadScore + _redWallScore;
 
         private int _headScoreToWin;
-        private int _wallScoreToWin;
 
         private void Awake()
         {
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _headScoreToWin = variables._headScoreToWin;
-            _wallScoreToWin = variables._wallScoreToWin;
             ResetScores();
         }
 
@@ -89,28 +87,12 @@ namespace Battle.Scripts.Battle.Game
             if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _blueWallScore += 1;
-                if (_blueWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
-                {
-                    var room = PhotonNetwork.CurrentRoom;
-                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
-                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
-                    return;
-                }
                 this.Publish(new UiEvents.WallCollision(collision));
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _redWallScore += 1;
-                if (_redWallScore >= _wallScoreToWin && PhotonNetwork.InRoom)
-                {
-                    var room = PhotonNetwork.CurrentRoom;
-                    var winType = BlueScoreTotal == RedScoreTotal ? PhotonBattle.WinTypeDraw : PhotonBattle.WinTypeScore;
-                    var winningTeam = GetWinningTeam(BlueScoreTotal, RedScoreTotal);
-                    ShowGameOverWindow(room, winType, winningTeam, BlueScoreTotal, RedScoreTotal);
-                    return;
-                }
                 this.Publish(new UiEvents.WallCollision(collision));
                 return;
             }
