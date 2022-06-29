@@ -5,19 +5,21 @@ using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Test
 {
-    internal class StartTheRaidTest : MonoBehaviour, IBattleBridge
+    internal class StartTheRaidTest : MonoBehaviour, IBattleBridge, IRaidBridge
     {
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private int _actorNumber;
+        [SerializeField, ReadOnly] private int _teamNumber;
         [SerializeField, ReadOnly] private Transform _playerTransform;
 
         public bool IsRaiding => _isRaiding;
 
         public int ActorNumber => _actorNumber;
+
+        public int TeamNumber => _teamNumber;
 
         private IPlayerManager _playerManager;
         private RaidBridge _raidBridge;
@@ -49,61 +51,84 @@ namespace Battle.Scripts.Test
         {
             _isRaiding = false;
             _actorNumber = 0;
+            _teamNumber = PhotonBattle.NoTeamValue;
             _playerTransform = null;
         }
 
-        public void ClosedRaid(int actorNumber)
+        #region Incoming: IBattleBridge officially registered for the bridge
+
+        public void CloseRaid()
         {
-            Debug.Log($"actorNumber  {_actorNumber} <- {actorNumber}");
+            HideRaid();
+        }
+
+        #endregion
+
+        #region Outgoing: IRaidBridge test implementation
+
+        public void ShowRaid(int actorNumber)
+        {
+            if (_isRaiding)
+            {
+                return;
+            }
+            Debug.Log($"actorNumber {actorNumber}");
             var player = _playerManager.GetPlayerByActorNumber(actorNumber);
+            if (player == null)
+            {
+                return;
+            }
+            StartCoroutine(OnShowRaid(player));
+        }
+
+        public void AddRaidBonus()
+        {
+            if (!_isRaiding)
+            {
+                return;
+            }
+            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber}");
+            if (_raidBridge != null)
+            {
+                _raidBridge.AddRaidBonus();
+            }
+        }
+
+        public void HideRaid()
+        {
+            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding}");
+            var player = _playerManager.GetPlayerByActorNumber(_actorNumber);
             if (player == null)
             {
                 ResetState();
                 return;
             }
-            StartCoroutine(OnClosedRaid(player));
+            StartCoroutine(OnCloseRaid(player));
         }
 
-        public void StartTheRaid(IPlayerDriver player)
+        #endregion
+
+        private IEnumerator OnShowRaid(IPlayerDriver player)
         {
-            Assert.IsFalse(_isRaiding, "_isRaiding");
             _isRaiding = true;
             _actorNumber = player.ActorNumber;
+            _teamNumber = player.TeamNumber;
             _playerTransform = player.PlayerTransform;
-            StartCoroutine(StartRaid(player));
-        }
-
-        public void ContinueTheRaid(int actorNumber)
-        {
-            if (!_isRaiding || _actorNumber != actorNumber)
-            {
-                return;
-            }
             Debug.Log($"actorNumber {_actorNumber}");
-            if (_raidBridge != null)
-            {
-                _raidBridge.AddRaidBonus(_actorNumber);
-            }
-        }
-
-        private IEnumerator StartRaid(IPlayerDriver player)
-        {
-            Debug.Log($"actorNumber {_actorNumber}");
-            yield return null;
-            // Simulate RAID start - player can not move in Battle
             player.SetPlayMode(BattlePlayMode.RaidGhosted);
+            yield return null;
             if (_raidBridge != null)
             {
                 _raidBridge.ShowRaid(player.ActorNumber);
             }
         }
 
-        private IEnumerator OnClosedRaid(IPlayerDriver player)
+        private IEnumerator OnCloseRaid(IPlayerDriver player)
         {
             Debug.Log($"actorNumber {_actorNumber}");
             player.SetPlayMode(BattlePlayMode.RaidReturn);
-            yield return null;
             ResetState();
+            yield return null;
             this.Publish(new UiEvents.ExitRaid(player));
         }
     }

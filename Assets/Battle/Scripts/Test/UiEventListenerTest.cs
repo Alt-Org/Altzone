@@ -16,6 +16,10 @@ namespace Battle.Scripts.Test
         private int _slingshotDelay;
         private bool _isDisableRaid;
 
+        private int _noComponentStart;
+        private int _noComponentRestart;
+        private int _noComponentRaid;
+
         private void Awake()
         {
             ScoreFlashNet.RegisterEventListener();
@@ -30,6 +34,10 @@ namespace Battle.Scripts.Test
 
         private void OnEnable()
         {
+            _noComponentStart = 3;
+            _noComponentRestart = 3;
+            _noComponentRaid = 3;
+
             this.Subscribe<UiEvents.StartBattle>(OnStartBattle);
             this.Subscribe<UiEvents.RestartBattle>(OnRestartBattle);
             this.Subscribe<UiEvents.StartRaid>(OnStartRaid);
@@ -56,7 +64,10 @@ namespace Battle.Scripts.Test
             var startTheBallTest = FindObjectOfType<StartTheBallTest>();
             if (startTheBallTest == null)
             {
-                ScoreFlashNet.Push("NO START COMPONENT");
+                if (--_noComponentStart >= 0)
+                {
+                    ScoreFlashNet.Push("NO START COMPONENT");
+                }
                 return;
             }
             ScoreFlashNet.Push("START THE GAME");
@@ -74,7 +85,11 @@ namespace Battle.Scripts.Test
             var startTheBallTest = FindObjectOfType<StartTheBallTest>();
             if (startTheBallTest == null)
             {
-                ScoreFlashNet.Push("NO RESTART COMPONENT");
+                if (--_noComponentRestart >= 0)
+                {
+                    ScoreFlashNet.Push("NO RESTART COMPONENT");
+                }
+
                 return;
             }
             ScoreFlashNet.Push("RESTART");
@@ -96,25 +111,29 @@ namespace Battle.Scripts.Test
             var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
             if (startTheRaidTest == null)
             {
-                ScoreFlashNet.Push("NO RAID COMPONENT");
+                if (--_noComponentRaid >= 0)
+                {
+                    ScoreFlashNet.Push("NO RAID COMPONENT");
+                }
                 return;
             }
             var player = data.PlayerToStart;
             var isRaiding = startTheRaidTest.IsRaiding;
             if (isRaiding)
             {
-                if (startTheRaidTest.ActorNumber != player.ActorNumber)
+                if (startTheRaidTest.TeamNumber != player.TeamNumber)
                 {
-                    ScoreFlashNet.Push($"RAID IN USE", player.Position);
+                    ScoreFlashNet.Push($"CANCEL RAID", player.Position);
+                    startTheRaidTest.HideRaid();
                     return;
                 }
                 ScoreFlashNet.Push($"RAID BONUS", player.Position);
-                startTheRaidTest.ContinueTheRaid(player.ActorNumber);
+                startTheRaidTest.AddRaidBonus();
                 return;
             }
             var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
             ScoreFlashNet.Push($"RAID {info}", player.Position);
-            startTheRaidTest.StartTheRaid(data.PlayerToStart);
+            startTheRaidTest.ShowRaid(data.PlayerToStart.ActorNumber);
         }
 
         private void OnExitRaid(UiEvents.ExitRaid data)

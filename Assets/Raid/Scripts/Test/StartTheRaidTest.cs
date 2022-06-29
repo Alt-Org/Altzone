@@ -9,7 +9,7 @@ namespace Raid.Scripts.Test
 {
     public class StartTheRaidTest : MonoBehaviour, IRaidBridge
     {
-        [Header("Debug Settings"), SerializeField] Key _controlKey = Key.F5;
+        [Header("Debug Settings"), SerializeField] private Key _controlKey = Key.F5;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private int _actorNumber;
@@ -42,6 +42,8 @@ namespace Raid.Scripts.Test
             }
         }
 
+        #region IRaidBridge
+
         public void ShowRaid(int actorNumber)
         {
             Debug.Log($"actorNumber {_actorNumber} <- {actorNumber} isRaiding {_isRaiding}");
@@ -50,13 +52,13 @@ namespace Raid.Scripts.Test
             _actorNumber = actorNumber;
         }
 
-        public void AddRaidBonus(int actorNumber)
+        public void AddRaidBonus()
         {
-            if (!_isRaiding || actorNumber != _actorNumber)
+            if (!_isRaiding)
             {
                 return;
             }
-            Debug.Log($"actorNumber {_actorNumber} <- {actorNumber} isRaiding {_isRaiding}");
+            Debug.Log($"actorNumber {_actorNumber} isRaiding {_isRaiding}");
         }
 
         public void HideRaid()
@@ -64,10 +66,12 @@ namespace Raid.Scripts.Test
             Debug.Log($"actorNumber {_actorNumber} isRaiding {_isRaiding}");
             if (_isRaiding && _raidBridge != null)
             {
-                _raidBridge.ClosedRaid(_actorNumber);
+                _raidBridge.CloseRaid();
             }
             _isRaiding = false;
             _actorNumber = 0;
         }
+
+        #endregion
     }
 }

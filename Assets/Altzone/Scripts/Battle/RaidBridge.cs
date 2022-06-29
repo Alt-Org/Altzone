@@ -7,13 +7,13 @@ namespace Altzone.Scripts.Battle
     public interface IRaidBridge
     {
         void ShowRaid(int actorNumber);
-        void AddRaidBonus(int actorNumber);
+        void AddRaidBonus();
         void HideRaid();
     }
 
     public interface IBattleBridge
     {
-        void ClosedRaid(int actorNumber);
+        void CloseRaid();
     }
 
     /// <summary>
@@ -45,10 +45,10 @@ namespace Altzone.Scripts.Battle
             _raidBridge.ShowRaid(actorNumber);
         }
 
-        public void AddRaidBonus(int actorNumber)
+        public void AddRaidBonus()
         {
             Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.AddRaidBonus(actorNumber);
+            _raidBridge.AddRaidBonus();
         }
 
         public void HideRaid()
@@ -57,10 +57,10 @@ namespace Altzone.Scripts.Battle
             _raidBridge.HideRaid();
         }
 
-        public void ClosedRaid(int actorNumber)
+        public void CloseRaid()
         {
             Assert.IsNotNull(_battleBridge, "_battleBridge != null");
-            _battleBridge.ClosedRaid(actorNumber);
+            _battleBridge.CloseRaid();
         }
     }
 }
