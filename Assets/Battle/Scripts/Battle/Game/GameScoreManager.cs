@@ -90,13 +90,13 @@ namespace Battle.Scripts.Battle.Game
             if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _blueWallScore += 1;
-                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamRedValue));
+                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamBlueValue));
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _redWallScore += 1;
-                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamBlueValue));
+                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamRedValue));
                 return;
             }
             throw new UnityException($"invalid collision with {otherGameObject.name} {otherGameObject.tag}");

@@ -292,6 +292,20 @@ namespace Battle.Scripts.Battle.Game
             return _players.FirstOrDefault(x => x.ActorNumber == actorNumber);
         }
 
+        IPlayerDriver IPlayerManager.GetPlayerByLastBallHitTime(int teamNumber)
+        {
+            var team = CreateBattleTeam(teamNumber);
+            if (team == null)
+            {
+                return null;
+            }
+            if (team.PlayerCount == 1)
+            {
+                return team.FirstPlayer;
+            }
+            return team.FirstPlayer.LastBallHitTime > team.SecondPlayer.LastBallHitTime ? team.FirstPlayer : team.SecondPlayer;
+        }
+
         void IPlayerManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
             Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} " +

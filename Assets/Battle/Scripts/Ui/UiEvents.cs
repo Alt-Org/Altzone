@@ -53,16 +53,16 @@ namespace Battle.Scripts.Ui
 
         internal class WallCollision : CollisionEvent
         {
-            public readonly int TeamAffected;
+            public readonly int RaidTeam;
             
-            public WallCollision(Collision2D collision, int teamAffected) : base(collision)
+            public WallCollision(Collision2D collision, int raidTeam) : base(collision)
             {
-                TeamAffected = teamAffected;
+                RaidTeam = raidTeam;
             }
 
             public override string ToString()
             {
-                return $"{nameof(TeamAffected)}: {TeamAffected}";
+                return $"{nameof(RaidTeam)}: {RaidTeam}";
             }
         }
 

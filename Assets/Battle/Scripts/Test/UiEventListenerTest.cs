@@ -49,7 +49,7 @@ namespace Battle.Scripts.Test
             var startTheBallTest = FindObjectOfType<StartTheBallTest>();
             if (startTheBallTest == null)
             {
-                ScoreFlashNet.Push("CAN NOT START");
+                ScoreFlashNet.Push("NO START COMPONENT");
                 return;
             }
             ScoreFlashNet.Push("START THE GAME");
@@ -67,7 +67,7 @@ namespace Battle.Scripts.Test
             var startTheBallTest = FindObjectOfType<StartTheBallTest>();
             if (startTheBallTest == null)
             {
-                ScoreFlashNet.Push("CAN NOT RESTART");
+                ScoreFlashNet.Push("NO RESTART COMPONENT");
                 return;
             }
             ScoreFlashNet.Push("RESTART");
@@ -109,8 +109,20 @@ namespace Battle.Scripts.Test
             Debug.Log($"{data}");
             var collision = data.Collision;
             var contactPoint = collision.GetFirstContactPoint();
-            var info = data.TeamAffected == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
+            var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
+            if (startTheRaidTest == null)
+            {
+                ScoreFlashNet.Push("NO RAID COMPONENT");
+                return;
+            }
+            if (!startTheRaidTest.CanRaid)
+            {
+                ScoreFlashNet.Push("CAN NOT RAID");
+                return;
+            }
+            var info = data.RaidTeam == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
             ScoreFlashNet.Push($"RAID {info}", contactPoint.point);
+            startTheRaidTest.StartTheRaid(data.RaidTeam);
         }
 
         private static void OnTeamActivation(UiEvents.TeamActivation data)

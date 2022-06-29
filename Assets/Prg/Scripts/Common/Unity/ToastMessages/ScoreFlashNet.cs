@@ -72,7 +72,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
     {
         private const int MsgScoreFlash = PhotonEventDispatcher.EventCodeBase + 6;
         private const int MsgBufferFixedLength = 4 + 4 + 1;
-        private const int MaxStringMessageLength = 16;
+        private const int MaxStringMessageLength = 24;
 
         private readonly PhotonEventDispatcher _photonEventDispatcher;
 

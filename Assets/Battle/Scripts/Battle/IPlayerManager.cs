@@ -24,6 +24,8 @@ namespace Battle.Scripts.Battle
 
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 
+        IPlayerDriver GetPlayerByLastBallHitTime(int teamNumber);
+        
         void RegisterPlayer(IPlayerDriver playerDriver);
 
         void UpdatePeerCount(IPlayerDriver playerDriver);
