@@ -135,7 +135,10 @@ namespace Prg.Scripts.Common.Unity.Window
             {
                 _goBackOnceHandler = new List<Func<GoBackAction>>();
             }
-            _goBackOnceHandler.Add(handler);
+            if (!_goBackOnceHandler.Contains(handler))
+            {
+                _goBackOnceHandler.Add(handler);
+            }
         }
 
         void IWindowManager.UnRegisterGoBackHandlerOnce(Func<GoBackAction> handler)
