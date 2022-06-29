@@ -4,6 +4,9 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Battle
 {
+    /// <summary>
+    /// Raid gameplay mode interface for Battle.
+    /// </summary>
     public interface IRaidBridge
     {
         void ShowRaid(int actorNumber);
@@ -11,6 +14,9 @@ namespace Altzone.Scripts.Battle
         void HideRaid();
     }
 
+    /// <summary>
+    /// Battle gameplay mode interface for Raid.
+    /// </summary>
     public interface IBattleBridge
     {
         void CloseRaid();
@@ -19,6 +25,11 @@ namespace Altzone.Scripts.Battle
     /// <summary>
     /// Bridge between <c>Battle</c> and <c>Raid</c> gameplay modes.
     /// </summary>
+    /// <remarks>
+    /// Because Battle and Raid are in separate assemblies due to our selected architecture of separation of concerns
+    /// and can not access each other we need this bridge that provides two way access
+    /// to required functionality on both gameplay modes and implementations. 
+    /// </remarks>
     public class RaidBridge : MonoBehaviour, IRaidBridge, IBattleBridge
     {
         [Header("Live Data"), SerializeField, ReadOnly] private bool _hasRaid;
