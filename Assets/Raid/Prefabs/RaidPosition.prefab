@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2156813284687083293}
   - component: {fileID: 5012497614923666526}
   - component: {fileID: 769267370180668621}
+  - component: {fileID: 7008427672206858791}
+  - component: {fileID: 3341095094754658109}
   m_Layer: 0
   m_Name: RaidPosition
   m_TagString: Untagged
@@ -75,3 +77,29 @@ MonoBehaviour:
   _areaBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+--- !u!114 &7008427672206858791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8098492196370242576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5fbcb3f69e57945b196fc52fe6c3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hasRaid: 0
+  _hasBattle: 0
+--- !u!114 &3341095094754658109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8098492196370242576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e74d9dee274d0fbbac3f26c261774c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

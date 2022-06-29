@@ -88,23 +88,35 @@ namespace Battle.Scripts.Test
             {
                 return;
             }
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            Debug.Log($"{data}");
             var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
             if (startTheRaidTest == null)
             {
                 ScoreFlashNet.Push("NO RAID COMPONENT");
                 return;
             }
-            if (!startTheRaidTest.CanRaid)
+            var player = data.PlayerToStart;
+            var isRaiding = startTheRaidTest.IsRaiding;
+            if (isRaiding)
             {
-                ScoreFlashNet.Push("CAN NOT RAID");
+                if (startTheRaidTest.ActorNumber != player.ActorNumber)
+                {
+                    ScoreFlashNet.Push($"RAID IN USE", player.Position);
+                    return;
+                }
+                ScoreFlashNet.Push($"RAID BONUS", player.Position);
+                startTheRaidTest.ContinueTheRaid(player.ActorNumber);
                 return;
             }
-            var player = data.PlayerToStart;
             var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
             ScoreFlashNet.Push($"RAID {info}", player.Position);
             startTheRaidTest.StartTheRaid(data.PlayerToStart);
         }
-        
+
         private void OnExitRaid(UiEvents.ExitRaid data)
         {
             if (_isDisableRaid)
@@ -118,7 +130,7 @@ namespace Battle.Scripts.Test
             Debug.Log($"{data}");
             ScoreFlashNet.Push("EXIT RAID", data.PlayerToExit.Position);
         }
-        
+
         private static void OnHeadCollision(UiEvents.HeadCollision data)
         {
             if (!PhotonNetwork.IsMasterClient)
