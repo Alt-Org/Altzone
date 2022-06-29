@@ -25,6 +25,16 @@ namespace Battle.Scripts.Ui
             }
         }
 
+        internal class StartRaid
+        {
+            public readonly IPlayerDriver PlayerToStart;
+
+            public StartRaid(IPlayerDriver playerToStart)
+            {
+                PlayerToStart = playerToStart;
+            }
+        }
+
         #endregion
 
         #region Informational events
@@ -80,6 +90,16 @@ namespace Battle.Scripts.Ui
             public override string ToString()
             {
                 return $"{nameof(IsBallOnBlueTeamArea)}: {IsBallOnBlueTeamArea}, {nameof(IsBallOnRedTeamArea)}: {IsBallOnRedTeamArea}";
+            }
+        }
+
+        internal class ExitRaid
+        {
+            public readonly IPlayerDriver PlayerToExit;
+
+            public ExitRaid(IPlayerDriver playerToExit)
+            {
+                PlayerToExit = playerToExit;
             }
         }
 

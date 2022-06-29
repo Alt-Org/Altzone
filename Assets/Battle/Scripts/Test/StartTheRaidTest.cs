@@ -1,11 +1,12 @@
-using System;
 using System.Collections;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Ui;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class StartTheRaidTest : MonoBehaviour
+    internal class StartTheRaidTest : MonoBehaviour
     {
         [Header("Debug Settings"), SerializeField] private float _raidSimulationTime = 10f;
 
@@ -21,14 +22,9 @@ namespace Battle.Scripts.Test
             _playerManager = Context.PlayerManager;
         }
 
-        public void StartTheRaid(int teamNumber)
+        public void StartTheRaid(IPlayerDriver player)
         {
-            Debug.Log($"{teamNumber}");
-            var player = _playerManager.GetPlayerByLastBallHitTime(teamNumber);
-            if (player == null)
-            {
-                return;
-            }
+            Debug.Log($"{player}");
             _isRaiding = true;
             _playerTransform = player.PlayerTransform;
             StartCoroutine(StartRaid(player));
@@ -50,10 +46,9 @@ namespace Battle.Scripts.Test
             Debug.Log($"{player.NickName}");
             player.SetPlayMode(BattlePlayMode.RaidReturn);
             yield return null;
-            // TODO: Check if the ball is on our team gameplay are or not and set play mode accordingly ghosted or normal!
-            yield return null;
             _isRaiding = false;
             _playerTransform = null;
+            this.Publish(new UiEvents.ExitRaid(player));
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
@@ -13,6 +14,7 @@ namespace Battle.Scripts.Test
     {
         private int _roomStartDelay;
         private int _slingshotDelay;
+        private bool _isDisableRaid;
 
         private void Awake()
         {
@@ -22,12 +24,17 @@ namespace Battle.Scripts.Test
             var variables = runtimeGameConfig.Variables;
             _roomStartDelay = variables._roomStartDelay;
             _slingshotDelay = variables._slingshotDelay;
+            var features = runtimeGameConfig.Features;
+            _isDisableRaid = features._isDisableRaid;
         }
 
         private void OnEnable()
         {
             this.Subscribe<UiEvents.StartBattle>(OnStartBattle);
             this.Subscribe<UiEvents.RestartBattle>(OnRestartBattle);
+            this.Subscribe<UiEvents.StartRaid>(OnStartRaid);
+            this.Subscribe<UiEvents.ExitRaid>(OnExitRaid);
+
             this.Subscribe<UiEvents.HeadCollision>(OnHeadCollision);
             this.Subscribe<UiEvents.ShieldCollision>(OnShieldCollision);
             this.Subscribe<UiEvents.WallCollision>(OnWallCollision);
@@ -75,6 +82,43 @@ namespace Battle.Scripts.Test
             StartCoroutine(SimulateCountdown(_slingshotDelay));
         }
 
+        private void OnStartRaid(UiEvents.StartRaid data)
+        {
+            if (_isDisableRaid)
+            {
+                return;
+            }
+            var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
+            if (startTheRaidTest == null)
+            {
+                ScoreFlashNet.Push("NO RAID COMPONENT");
+                return;
+            }
+            if (!startTheRaidTest.CanRaid)
+            {
+                ScoreFlashNet.Push("CAN NOT RAID");
+                return;
+            }
+            var player = data.PlayerToStart;
+            var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
+            ScoreFlashNet.Push($"RAID {info}", player.Position);
+            startTheRaidTest.StartTheRaid(data.PlayerToStart);
+        }
+        
+        private void OnExitRaid(UiEvents.ExitRaid data)
+        {
+            if (_isDisableRaid)
+            {
+                return;
+            }
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            Debug.Log($"{data}");
+            ScoreFlashNet.Push("EXIT RAID", data.PlayerToExit.Position);
+        }
+        
         private static void OnHeadCollision(UiEvents.HeadCollision data)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -100,29 +144,23 @@ namespace Battle.Scripts.Test
             ScoreFlashNet.Push($"SHIELD {info}", contactPoint.point);
         }
 
-        private static void OnWallCollision(UiEvents.WallCollision data)
+        private void OnWallCollision(UiEvents.WallCollision data)
         {
             if (!PhotonNetwork.IsMasterClient)
             {
                 return;
             }
             Debug.Log($"{data}");
-            var collision = data.Collision;
-            var contactPoint = collision.GetFirstContactPoint();
-            var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
-            if (startTheRaidTest == null)
+            if (_isDisableRaid)
             {
-                ScoreFlashNet.Push("NO RAID COMPONENT");
                 return;
             }
-            if (!startTheRaidTest.CanRaid)
+            var player = Context.PlayerManager.GetPlayerByLastBallHitTime(data.RaidTeam);
+            if (player == null)
             {
-                ScoreFlashNet.Push("CAN NOT RAID");
                 return;
             }
-            var info = data.RaidTeam == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
-            ScoreFlashNet.Push($"RAID {info}", contactPoint.point);
-            startTheRaidTest.StartTheRaid(data.RaidTeam);
+            this.Publish(new UiEvents.StartRaid(player));
         }
 
         private static void OnTeamActivation(UiEvents.TeamActivation data)

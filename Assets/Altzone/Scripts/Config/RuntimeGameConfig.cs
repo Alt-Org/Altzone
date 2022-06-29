@@ -60,6 +60,12 @@ namespace Altzone.Scripts.Config
         public bool _isSinglePlayerShieldOn;
 
         /// <summary>
+        /// Disable RAID gameplay from BATTLE.
+        /// </summary>
+        [Tooltip("Disable RAID gameplay from BATTLE")]
+        public bool _isDisableRaid;
+
+        /// <summary>
         /// Is bricks visible.
         /// </summary>
         [Tooltip("Is bricks visible")]
