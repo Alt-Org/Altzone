@@ -44,12 +44,25 @@ namespace Battle.Scripts.Ui
             {
                 HitType = hitType;
             }
+
+            public override string ToString()
+            {
+                return $"{nameof(HitType)}: {HitType}";
+            }
         }
 
         internal class WallCollision : CollisionEvent
         {
-            public WallCollision(Collision2D collision) : base(collision)
+            public readonly int TeamAffected;
+            
+            public WallCollision(Collision2D collision, int teamAffected) : base(collision)
             {
+                TeamAffected = teamAffected;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(TeamAffected)}: {TeamAffected}";
             }
         }
 
@@ -66,7 +79,7 @@ namespace Battle.Scripts.Ui
 
             public override string ToString()
             {
-                return $"IsBallOnBlueTeamArea: {IsBallOnBlueTeamArea}, IsBallOnRedTeamArea: {IsBallOnRedTeamArea}";
+                return $"{nameof(IsBallOnBlueTeamArea)}: {IsBallOnBlueTeamArea}, {nameof(IsBallOnRedTeamArea)}: {IsBallOnRedTeamArea}";
             }
         }
 
@@ -88,9 +101,14 @@ namespace Battle.Scripts.Ui
         {
             public readonly IPlayerInfo Player;
 
-            public PlayerCollisionEvent(Collision2D collision, IPlayerInfo player) : base(collision)
+            protected PlayerCollisionEvent(Collision2D collision, IPlayerInfo player) : base(collision)
             {
                 Player = player;
+            }
+
+            public override string ToString()
+            {
+                return $"ActorNumber: {Player.ActorNumber}";
             }
         }
 

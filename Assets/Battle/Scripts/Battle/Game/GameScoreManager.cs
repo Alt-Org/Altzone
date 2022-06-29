@@ -16,6 +16,9 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Collects local scores (from master client) and synchronizes them over network.
     /// </summary>
+    /// <remarks>
+    /// Note that wall scores are internally counted but they are never sent outside!
+    /// </remarks>
     public class GameScoreManager : MonoBehaviour, IGameScoreManager
     {
         [Header("Settings"), SerializeField] private WindowDef _gameOverWindow;
@@ -25,8 +28,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private int _redHeadScore;
         [SerializeField] private int _redWallScore;
 
-        private int BlueScoreTotal => _blueHeadScore + _blueWallScore;
-        private int RedScoreTotal => _redHeadScore + _redWallScore;
+        private int BlueScoreTotal => _blueHeadScore + 0;
+        private int RedScoreTotal => _redHeadScore + 0;
 
         private int _headScoreToWin;
 
@@ -38,9 +41,9 @@ namespace Battle.Scripts.Battle.Game
             ResetScores();
         }
 
-        public Tuple<int,int> BlueScore => new (_blueHeadScore, _blueWallScore);
+        public Tuple<int,int> BlueScore => new (_blueHeadScore, 0);
 
-        public Tuple<int,int> RedScore => new (_redHeadScore, _redWallScore);
+        public Tuple<int,int> RedScore => new (_redHeadScore, 0);
 
         public void ResetScores()
         {
@@ -87,13 +90,13 @@ namespace Battle.Scripts.Battle.Game
             if (otherGameObject.CompareTag(Tags.RedTeam))
             {
                 _blueWallScore += 1;
-                this.Publish(new UiEvents.WallCollision(collision));
+                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamRedValue));
                 return;
             }
             if (otherGameObject.CompareTag(Tags.BlueTeam))
             {
                 _redWallScore += 1;
-                this.Publish(new UiEvents.WallCollision(collision));
+                this.Publish(new UiEvents.WallCollision(collision, PhotonBattle.TeamBlueValue));
                 return;
             }
             throw new UnityException($"invalid collision with {otherGameObject.name} {otherGameObject.tag}");
