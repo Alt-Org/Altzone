@@ -1,4 +1,5 @@
 using System.Collections;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Ui;
 using Photon.Pun;
@@ -16,7 +17,7 @@ namespace Battle.Scripts.Test
         private void Awake()
         {
             ScoreFlashNet.RegisterEventListener();
-            
+
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _roomStartDelay = variables._roomStartDelay;
@@ -108,7 +109,8 @@ namespace Battle.Scripts.Test
             Debug.Log($"{data}");
             var collision = data.Collision;
             var contactPoint = collision.GetFirstContactPoint();
-            ScoreFlashNet.Push("WALL", contactPoint.point);
+            var info = data.TeamAffected == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
+            ScoreFlashNet.Push($"RAID {info}", contactPoint.point);
         }
 
         private static void OnTeamActivation(UiEvents.TeamActivation data)
