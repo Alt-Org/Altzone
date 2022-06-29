@@ -201,12 +201,12 @@ namespace Battle.Scripts.Battle.Players
             foreach (var avatar in _settings._avatar.Avatars)
             {
                 var tracker = avatar.AddComponent<ColliderTracker>();
-                tracker.Callback = (collision, _) => { collisionDriver.OnHeadCollision(collision); };
+                tracker.Callback = collision => { collisionDriver.OnHeadCollision(collision); };
             }
             foreach (var shield in _settings._shield.Shields)
             {
                 var tracker = shield.AddComponent<ColliderTracker>();
-                tracker.Callback = (collision, component) => { collisionDriver.OnShieldCollision(collision, component); };
+                tracker.Callback = collision => { collisionDriver.OnShieldCollision(collision); };
             }
             if (_debug._isLogMoveTo)
             {
@@ -555,7 +555,7 @@ namespace Battle.Scripts.Battle.Players
 
     internal class ColliderTracker : MonoBehaviour
     {
-        public Action<Collision2D, MonoBehaviour> Callback;
+        public Action<Collision2D> Callback;
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -567,7 +567,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            Callback(collision, this);
+            Callback(collision);
         }
     }
 }

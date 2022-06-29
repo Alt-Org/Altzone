@@ -120,7 +120,7 @@ namespace Battle.Scripts.Battle.Players
 
         #region IPlayerActorCollision
 
-        void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
         {
             if (!IsNetworkSynchronize)
             {

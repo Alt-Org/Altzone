@@ -100,7 +100,7 @@ namespace Battle.Scripts.Battle.Players
 
         #region IPlayerActorCollision
 
-        void IPlayerActorCollision.OnShieldCollision(Collision2D collision, MonoBehaviour component)
+        void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
         {
             // This call can invalidate current collider!
             _state.OnShieldCollision(out var hitType);
