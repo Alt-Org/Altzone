@@ -29,7 +29,7 @@ namespace Battle.Scripts.Battle
 
         #region Dynamic Actors
 
-        public static IGameplayManager GameplayManager => Object.FindObjectOfType<GameplayManager>();
+        public static IPlayerManager PlayerManager => Object.FindObjectOfType<PlayerManager>();
 
         #endregion
     }

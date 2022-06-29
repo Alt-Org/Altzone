@@ -85,7 +85,7 @@ namespace Battle.Scripts.Battle.Players
         private void CheckMyTeam()
         {
             StopAllCoroutines();
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             var team = gameplayManager.GetBattleTeam(_playerDriver.TeamNumber);
             Debug.Log($"{_playerDriver} team {team}");
             if (team == null || team.PlayerCount < 2)

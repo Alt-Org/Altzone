@@ -31,7 +31,7 @@ namespace Battle.Scripts.Test
 
         [Header("Optional Timer"), SerializeField] private SimpleTimerHelper _simpleTimer;
 
-        private IGameplayManager _gameplayManager;
+        private IPlayerManager _playerManager;
         private IBallManager _ballManager;
         private float _ballSlingshotPower;
         private float _playerAttackMultiplier;
@@ -59,10 +59,10 @@ namespace Battle.Scripts.Test
         {
             // If master client is switched during gameplay it might be that StartBallFirstTime and RestartBallInGame
             // are not called on same instance.
-            if (_gameplayManager == null)
+            if (_playerManager == null)
             {
-                _gameplayManager = Context.GameplayManager;
-                Assert.IsNotNull(_gameplayManager, "_gameplayManager != null");
+                _playerManager = Context.PlayerManager;
+                Assert.IsNotNull(_playerManager, "_gameplayManager != null");
             }
             if (_ballManager == null)
             {
@@ -109,7 +109,7 @@ namespace Battle.Scripts.Test
                     yield break;
                 }
             }
-            _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
+            _playerManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             StartCoroutine(StartBallWorkRoutine(playerToStart));
         }
 
@@ -120,7 +120,7 @@ namespace Battle.Scripts.Test
                 var gameScoreManager = Context.GetGameScoreManager;
                 if (gameScoreManager != null)
                 {
-                    _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Frozen));
+                    _playerManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Frozen));
                     yield return null;
                     var room = PhotonNetwork.CurrentRoom;
                     var blueScore = _teamRestartCount[PhotonBattle.TeamBlueValue - 1];
@@ -139,7 +139,7 @@ namespace Battle.Scripts.Test
             if (_isRestartGameSimulation)
             {
                 Array.Clear(_teamRestartCount, 0, _teamRestartCount.Length);
-                _gameplayManager.ForEach(player =>
+                _playerManager.ForEach(player =>
                 {
                     var startPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(player.PlayerPos);
                     player.SetPlayMode(BattlePlayMode.Normal);
@@ -159,7 +159,7 @@ namespace Battle.Scripts.Test
                 yield return null;
                 yield return new WaitUntil(() => !_onGuiWindow.IsVisible);
             }
-            _gameplayManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
+            _playerManager.ForEach(player => player.SetPlayMode(BattlePlayMode.Normal));
             StartCoroutine(StartBallWorkRoutine(playerToStart));
         }
 
@@ -177,13 +177,13 @@ namespace Battle.Scripts.Test
             if (playerToStart != null)
             {
                 var startingTeam = playerToStart.TeamNumber;
-                var tracker = _gameplayManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
+                var tracker = _playerManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 yield return countDownDelay;
 
                 tracker.StopTracking();
                 yield return null;
 
-                startTeam = _gameplayManager.GetBattleTeam(startingTeam);
+                startTeam = _playerManager.GetBattleTeam(startingTeam);
                 otherTeam = null;
                 speed = 0;
                 if (startTeam != null)
@@ -203,8 +203,8 @@ namespace Battle.Scripts.Test
             }
             else
             {
-                var blueTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
-                var redTracker = _gameplayManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
+                var blueTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
+                var redTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
                 yield return countDownDelay;
 
                 blueTracker.StopTracking();
@@ -212,8 +212,8 @@ namespace Battle.Scripts.Test
                 yield return null;
 
                 var startingTeam = GetStatingTeamByDistance(blueTracker, redTracker, out var startDistance, out var otherDistance);
-                startTeam = _gameplayManager.GetBattleTeam(startingTeam);
-                otherTeam = _gameplayManager.GetOppositeTeam(startingTeam);
+                startTeam = _playerManager.GetBattleTeam(startingTeam);
+                otherTeam = _playerManager.GetOppositeTeam(startingTeam);
 
                 var startSlingshotPower = _ballSlingshotPower * startTeam.Attack * _playerAttackMultiplier;
                 var otherSlingshotPower = _ballSlingshotPower * (otherTeam?.Attack ?? 0) * _playerAttackMultiplier;

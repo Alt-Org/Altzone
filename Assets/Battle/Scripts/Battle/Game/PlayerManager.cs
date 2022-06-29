@@ -169,7 +169,7 @@ namespace Battle.Scripts.Battle.Game
 
     #endregion
 
-    internal class GameplayManager : MonoBehaviour, IGameplayManager
+    internal class PlayerManager : MonoBehaviour, IPlayerManager
     {
         [Serializable]
         internal class DebugSettings
@@ -260,11 +260,11 @@ namespace Battle.Scripts.Battle.Game
 
         #region IGameplayManager
 
-        int IGameplayManager.PlayerCount => _players.Count;
+        int IPlayerManager.PlayerCount => _players.Count;
 
-        IPlayerDriver IGameplayManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
+        IPlayerDriver IPlayerManager.LocalPlayer => _players.FirstOrDefault(x => x.IsLocal);
 
-        void IGameplayManager.ForEach(Action<IPlayerDriver> action)
+        void IPlayerManager.ForEach(Action<IPlayerDriver> action)
         {
             foreach (var playerDriver in _players)
             {
@@ -272,27 +272,27 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        BattleTeam IGameplayManager.GetBattleTeam(int teamNumber)
+        BattleTeam IPlayerManager.GetBattleTeam(int teamNumber)
         {
             return CreateBattleTeam(teamNumber);
         }
 
-        BattleTeam IGameplayManager.GetOppositeTeam(int teamNumber)
+        BattleTeam IPlayerManager.GetOppositeTeam(int teamNumber)
         {
             return CreateBattleTeam(PhotonBattle.GetOppositeTeamNumber(teamNumber));
         }
 
-        ITeamSnapshotTracker IGameplayManager.GetTeamSnapshotTracker(int teamNumber)
+        ITeamSnapshotTracker IPlayerManager.GetTeamSnapshotTracker(int teamNumber)
         {
             return GetTeamSnapshotTracker(teamNumber);
         }
 
-        IPlayerDriver IGameplayManager.GetPlayerByActorNumber(int actorNumber)
+        IPlayerDriver IPlayerManager.GetPlayerByActorNumber(int actorNumber)
         {
             return _players.FirstOrDefault(x => x.ActorNumber == actorNumber);
         }
 
-        void IGameplayManager.RegisterPlayer(IPlayerDriver playerDriver)
+        void IPlayerManager.RegisterPlayer(IPlayerDriver playerDriver)
         {
             Debug.Log($"add {playerDriver.NickName} pos {playerDriver.PlayerPos} actor {playerDriver.ActorNumber} " +
                       $"peers {playerDriver.PeerCount} local {playerDriver.IsLocal} players #{_players.Count}");
@@ -360,7 +360,7 @@ namespace Battle.Scripts.Battle.Game
             UpdateDebugPlayerList();
         }
 
-        void IGameplayManager.UpdatePeerCount(IPlayerDriver playerDriver)
+        void IPlayerManager.UpdatePeerCount(IPlayerDriver playerDriver)
         {
             if (_isApplicationQuitting)
             {
@@ -395,7 +395,7 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        void IGameplayManager.UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot)
+        void IPlayerManager.UnregisterPlayer(IPlayerDriver playerDriver, GameObject playerInstanceRoot)
         {
             if (_isApplicationQuitting)
             {

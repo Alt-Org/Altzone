@@ -79,7 +79,7 @@ namespace Battle.Scripts.Battle.Players
                 _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             gameplayManager.RegisterPlayer(this);
             ScoreFlashNet.RegisterEventListener();
             this.ExecuteOnNextFrame(() =>
@@ -107,7 +107,7 @@ namespace Battle.Scripts.Battle.Players
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             gameplayManager?.UnregisterPlayer(this, _playerActor.GameObject);
             _playerActor.ResetPlayerDriver();
             if (!_isLocal)
@@ -314,7 +314,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount + 1}");
             _peerCount += 1;
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             gameplayManager.UpdatePeerCount(this);
         }
 

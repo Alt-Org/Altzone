@@ -53,7 +53,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 _settings._nickName = name;
             }
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
             var playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
@@ -88,7 +88,7 @@ namespace Battle.Scripts.Battle.Players
             print("xx");
             Debug.Log($"{name}");
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
-            var gameplayManager = Context.GameplayManager;
+            var gameplayManager = Context.PlayerManager;
             gameplayManager?.UnregisterPlayer(this, _playerActor.GameObject);
             if (!_settings._isLocal)
             {

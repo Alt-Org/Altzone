@@ -8,7 +8,7 @@ namespace Battle.Scripts.Battle
     /// Manager for gameplay activities where one or more players are involved.<br />
     /// Requires player's registration in order to participate.
     /// </summary>
-    internal interface IGameplayManager
+    internal interface IPlayerManager
     {
         int PlayerCount { get; }
 
