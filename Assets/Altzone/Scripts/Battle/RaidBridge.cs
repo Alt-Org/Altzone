@@ -9,7 +9,7 @@ namespace Altzone.Scripts.Battle
     /// </summary>
     public interface IRaidBridge
     {
-        void ShowRaid(int actorNumber);
+        void ShowRaid(IPlayerInfo playerInfo);
         void AddRaidBonus();
         void HideRaid();
     }
@@ -50,10 +50,10 @@ namespace Altzone.Scripts.Battle
             _hasBattle = _battleBridge != null;
         }
 
-        public void ShowRaid(int actorNumber)
+        public void ShowRaid(IPlayerInfo playerInfo)
         {
             Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.ShowRaid(actorNumber);
+            _raidBridge.ShowRaid(playerInfo);
         }
 
         public void AddRaidBonus()

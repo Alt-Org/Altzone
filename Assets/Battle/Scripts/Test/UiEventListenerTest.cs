@@ -136,7 +136,7 @@ namespace Battle.Scripts.Test
             }
             var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
             ScoreFlashNet.Push($"RAID {info}", player.Position);
-            raidManager.ShowRaid(data.PlayerToStart.ActorNumber);
+            raidManager.ShowRaid(data.PlayerToStart);
         }
 
         private void OnExitRaid(UiEvents.ExitRaidNotification data)

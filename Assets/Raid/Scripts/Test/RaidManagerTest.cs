@@ -1,11 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
-using Photon.Pun;
-using Photon.Realtime;
 using Prg.Scripts.Common.Unity.Attributes;
-using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
 namespace Raid.Scripts.Test
@@ -23,8 +19,18 @@ namespace Raid.Scripts.Test
 
         private RaidBridge _raidBridge;
 
+        private void ResetState()
+        {
+            _isLocal = false;
+            _actorNumber = 0;
+            _isRaiding = false;
+            _fullRaidOverlay.SetActive(false);
+            _miniRaidIndicator.SetActive(false);
+        }
+        
         private IEnumerator Start()
         {
+            ResetState();
             var failureTime = Time.time + 2f;
             yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
             if (_raidBridge != null)
@@ -51,22 +57,11 @@ namespace Raid.Scripts.Test
 
         #region IRaidBridge
 
-        public void ShowRaid(int actorNumber)
+        public void ShowRaid(IPlayerInfo playerInfo)
         {
-            Debug.Log($"actorNumber {_actorNumber} <- {actorNumber} isRaiding {_isRaiding}");
-            Assert.IsFalse(actorNumber == 0, "actorNumber == 0");
-            var player = GetPhotonPlayer(actorNumber);
-            if (player == null)
-            {
-                ScoreFlash.Push(PhotonNetwork.OfflineMode ? "NO OFFLINE RAID" : "NO PHOTON PLAYER");
-                _isLocal = false;
-                _actorNumber = actorNumber;
-            }
-            else
-            {
-                _isLocal = player.IsLocal;
-                _actorNumber = player.ActorNumber;
-            }
+            Debug.Log($"playerInfo {playerInfo} isRaiding {_isRaiding}");
+            _isLocal = playerInfo.IsLocal;
+            _actorNumber = playerInfo.ActorNumber;
             _isRaiding = true;
             _fullRaidOverlay.SetActive(_isLocal);
             _miniRaidIndicator.SetActive(!_isLocal);
@@ -88,29 +83,9 @@ namespace Raid.Scripts.Test
             {
                 _raidBridge.PlayerClosedRaid();
             }
-            _isLocal = false;
-            _actorNumber = 0;
-            _isRaiding = false;
-            _fullRaidOverlay.SetActive(false);
-            _miniRaidIndicator.SetActive(false);
+            ResetState();
         }
 
         #endregion
-
-        private static Player GetPhotonPlayer(int actorNumber)
-        {
-            if (!PhotonNetwork.InRoom)
-            {
-                return null;
-            }
-            foreach (var player in PhotonNetwork.PlayerList)
-            {
-                if (player.ActorNumber == actorNumber)
-                {
-                    return player;
-                }
-            }
-            return null;
-        }
     }
 }
