@@ -1,6 +1,9 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -9,11 +12,15 @@ namespace Raid.Scripts.Test
 {
     public class StartTheRaidTest : MonoBehaviour, IRaidBridge
     {
-        [Header("Debug Settings"), SerializeField] private SpriteRenderer _sprite;
-        [SerializeField] private Key _controlKey = Key.F5;
+        [Header("Settings"), SerializeField] private SpriteRenderer _fullRaidOverlaySprite;
+        [SerializeField] private SpriteRenderer _miniRaidIndicatorSprite;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
+        [SerializeField, ReadOnly] private bool _isRaidVisible;
         [SerializeField, ReadOnly] private int _actorNumber;
+        [SerializeField, ReadOnly] private bool _isLocal;
+
+        [Header("Debug Settings"), SerializeField] private Key _controlKey = Key.F5;
 
         private RaidBridge _raidBridge;
 
@@ -49,9 +56,22 @@ namespace Raid.Scripts.Test
         {
             Debug.Log($"actorNumber {_actorNumber} <- {actorNumber} isRaiding {_isRaiding}");
             Assert.IsFalse(actorNumber == 0, "actorNumber == 0");
+            var player = GetPhotonPlayer(actorNumber);
+            if (player == null)
+            {
+                ScoreFlash.Push(PhotonNetwork.OfflineMode ? "NO OFFLINE RAID" : "NO PHOTON PLAYER");
+                _isLocal = false;
+                _actorNumber = actorNumber;
+            }
+            else
+            {
+                _isLocal = player.IsLocal;
+                _actorNumber = player.ActorNumber;
+            }
             _isRaiding = true;
-            _actorNumber = actorNumber;
-            _sprite.enabled = true;
+            _isRaidVisible = _isLocal;
+            _fullRaidOverlaySprite.enabled = _isLocal;
+            _miniRaidIndicatorSprite.enabled = !_isLocal;
         }
 
         public void AddRaidBonus()
@@ -71,10 +91,28 @@ namespace Raid.Scripts.Test
                 _raidBridge.CloseRaid();
             }
             _isRaiding = false;
+            _isRaidVisible = false;
             _actorNumber = 0;
-            _sprite.enabled = false;
+            _fullRaidOverlaySprite.enabled = false;
+            _miniRaidIndicatorSprite.enabled = false;
         }
 
         #endregion
+
+        private static Player GetPhotonPlayer(int actorNumber)
+        {
+            if (!PhotonNetwork.InRoom)
+            {
+                return null;
+            }
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                if (player.ActorNumber == actorNumber)
+                {
+                    return player;
+                }
+            }
+            return null;
+        }
     }
 }
