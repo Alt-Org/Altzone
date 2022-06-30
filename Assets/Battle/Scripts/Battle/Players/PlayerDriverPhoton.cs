@@ -146,6 +146,8 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerInfo.ActorNumber => _photonView.Owner.ActorNumber;
 
+        bool IPlayerInfo.IsLocal => _photonView.Owner.IsLocal;
+
         double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
         
         #endregion
@@ -163,8 +165,6 @@ namespace Battle.Scripts.Battle.Players
         int IPlayerDriver.TeamNumber => _teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
-
-        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 

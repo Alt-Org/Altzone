@@ -1,24 +1,9 @@
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
-    /// <summary>
-    /// Readonly player info.
-    /// </summary>
-    internal interface IPlayerInfo
-    {
-        /// <summary>
-        /// ActorNumber is unique identifier for any player.
-        /// </summary>
-        /// <remarks>
-        /// Currently Photon uses positive and static player negative values.
-        /// </remarks>
-        int ActorNumber { get; }
-
-        double LastBallHitTime { get; }
-    }
-    
     /// <summary>
     /// General player management interface to manipulate player state without concerns how (or where) it is represented visually.<br />
     /// Player visual state can be managed locally and/or remotely.
@@ -39,7 +24,6 @@ namespace Battle.Scripts.Battle
         int PlayerPos { get; }
         int TeamNumber { get; }
         int MaxPoseIndex { get; }
-        bool IsLocal { get; }
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
         Transform PlayerTransform { get; }

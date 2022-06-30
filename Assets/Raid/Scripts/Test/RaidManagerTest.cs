@@ -16,7 +16,6 @@ namespace Raid.Scripts.Test
         [SerializeField] private GameObject _miniRaidIndicator;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
-        [SerializeField, ReadOnly] private bool _isRaidVisible;
         [SerializeField, ReadOnly] private int _actorNumber;
         [SerializeField, ReadOnly] private bool _isLocal;
 
@@ -69,7 +68,6 @@ namespace Raid.Scripts.Test
                 _actorNumber = player.ActorNumber;
             }
             _isRaiding = true;
-            _isRaidVisible = _isLocal;
             _fullRaidOverlay.SetActive(_isLocal);
             _miniRaidIndicator.SetActive(!_isLocal);
         }
@@ -90,9 +88,9 @@ namespace Raid.Scripts.Test
             {
                 _raidBridge.PlayerClosedRaid();
             }
-            _isRaiding = false;
-            _isRaidVisible = false;
+            _isLocal = false;
             _actorNumber = 0;
+            _isRaiding = false;
             _fullRaidOverlay.SetActive(false);
             _miniRaidIndicator.SetActive(false);
         }
