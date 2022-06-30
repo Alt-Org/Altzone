@@ -19,7 +19,7 @@ namespace Altzone.Scripts.Battle
     /// </summary>
     public interface IBattleBridge
     {
-        void CloseRaid();
+        void PlayerClosedRaid();
     }
 
     /// <summary>
@@ -68,10 +68,10 @@ namespace Altzone.Scripts.Battle
             _raidBridge.HideRaid();
         }
 
-        public void CloseRaid()
+        public void PlayerClosedRaid()
         {
             Assert.IsNotNull(_battleBridge, "_battleBridge != null");
-            _battleBridge.CloseRaid();
+            _battleBridge.PlayerClosedRaid();
         }
     }
 }

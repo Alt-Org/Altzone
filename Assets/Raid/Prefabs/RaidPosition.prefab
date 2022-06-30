@@ -156,7 +156,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 90
+  m_SortingOrder: 91
   m_Sprite: {fileID: 21300000, guid: 940bd3861b52d224f9e569cf2926a552, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.9019608}
   m_FlipX: 0
@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 5012497614923666526}
   - component: {fileID: 769267370180668621}
   - component: {fileID: 7008427672206858791}
+  - component: {fileID: 2360106891859870042}
   - component: {fileID: 3341095094754658109}
   m_Layer: 0
   m_Name: RaidPosition
@@ -261,6 +262,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hasRaid: 0
   _hasBattle: 0
+--- !u!114 &2360106891859870042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8098492196370242576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eea45e7346442299a803d46d561c4b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isRaiding: 0
+  _actorNumber: 0
+  _teamNumber: 0
 --- !u!114 &3341095094754658109
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -88,7 +88,7 @@ namespace Raid.Scripts.Test
             Debug.Log($"actorNumber {_actorNumber} isRaiding {_isRaiding}");
             if (_isRaiding && _raidBridge != null)
             {
-                _raidBridge.CloseRaid();
+                _raidBridge.PlayerClosedRaid();
             }
             _isRaiding = false;
             _isRaidVisible = false;

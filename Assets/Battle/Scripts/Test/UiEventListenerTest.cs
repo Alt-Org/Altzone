@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
@@ -44,7 +45,7 @@ namespace Battle.Scripts.Test
             this.Subscribe<UiEvents.StartBattle>(OnStartBattle);
             this.Subscribe<UiEvents.RestartBattle>(OnRestartBattle);
             this.Subscribe<UiEvents.StartRaid>(OnStartRaid);
-            this.Subscribe<UiEvents.ExitRaid>(OnExitRaid);
+            this.Subscribe<UiEvents.ExitRaidNotification>(OnExitRaid);
 
             this.Subscribe<UiEvents.HeadCollision>(OnHeadCollision);
             this.Subscribe<UiEvents.ShieldCollision>(OnShieldCollision);
@@ -111,8 +112,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            var startTheRaidTest = FindObjectOfType<StartTheRaidTest>();
-            if (startTheRaidTest == null)
+            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidManager raidManager)
             {
                 if (--_noComponentRaid >= 0)
                 {
@@ -121,25 +121,25 @@ namespace Battle.Scripts.Test
                 return;
             }
             var player = data.PlayerToStart;
-            var isRaiding = startTheRaidTest.IsRaiding;
+            var isRaiding = raidManager.IsRaiding;
             if (isRaiding)
             {
-                if (startTheRaidTest.TeamNumber != player.TeamNumber)
+                if (raidManager.TeamNumber != player.TeamNumber)
                 {
                     ScoreFlashNet.Push($"CANCEL RAID", player.Position);
-                    startTheRaidTest.HideRaid();
+                    raidManager.HideRaid();
                     return;
                 }
                 ScoreFlashNet.Push($"RAID BONUS", player.Position);
-                startTheRaidTest.AddRaidBonus();
+                raidManager.AddRaidBonus();
                 return;
             }
             var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
             ScoreFlashNet.Push($"RAID {info}", player.Position);
-            startTheRaidTest.ShowRaid(data.PlayerToStart.ActorNumber);
+            raidManager.ShowRaid(data.PlayerToStart.ActorNumber);
         }
 
-        private void OnExitRaid(UiEvents.ExitRaid data)
+        private void OnExitRaid(UiEvents.ExitRaidNotification data)
         {
             if (_isDisableRaid)
             {
