@@ -62,7 +62,7 @@ namespace Battle0.Scripts.Battle.Room
         {
             Debug.Log($"OnGameScoreEvent {data}");
 
-            var variables = RuntimeGameConfig.Get().Variables;
+            /*var variables = RuntimeGameConfig.Get().Variables;
             if (data.TeamBlueHeadScore >= variables._headScoreToWin ||
                 data.TeamBlueWallScore >= variables._wallScoreToWin)
             {
@@ -73,7 +73,7 @@ namespace Battle0.Scripts.Battle.Room
                 data.TeamRedWallScore >= variables._wallScoreToWin)
             {
                 GameOver(PhotonBattle.TeamRedValue, data);
-            }
+            }*/
         }
 
         private void GameOver(int winningTeam, ScoreManager.GameScoreEvent data)
