@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 namespace Raid.Scripts.Test
 {
-    public class StartTheRaidTest : MonoBehaviour, IRaidBridge
+    public class RaidManagerTest : MonoBehaviour, IRaidBridge
     {
         [Header("Settings"), SerializeField] private SpriteRenderer _fullRaidOverlaySprite;
         [SerializeField] private SpriteRenderer _miniRaidIndicatorSprite;
