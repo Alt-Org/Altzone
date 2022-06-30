@@ -18,7 +18,8 @@ namespace UnityConstants
         // Project specific tags
         public const string RedTeam = "RedTeam";
         public const string BlueTeam = "BlueTeam";
-        public const string PalloPeliAlue = "PalloPeliAlue";
+        public const string Bomb = "Bomb";
+        public const string Neutral = "Neutral";
         public const string Ball = "Ball";
     }
 
