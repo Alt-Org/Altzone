@@ -65,7 +65,7 @@ namespace Altzone.Scripts
             Advertisement.SetMetaData(metaData);
         }
 
-        [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void SetEditorStatus()
         {
             // This is just for debugging to get strings (numbers) formatted consistently
