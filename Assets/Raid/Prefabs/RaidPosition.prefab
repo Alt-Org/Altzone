@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 486117050721771819}
   - component: {fileID: 8960625050294065246}
   m_Layer: 0
-  m_Name: WhiteRaidOverlaySprite
+  m_Name: WhiteRaidOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2156813284687083293}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8960625050294065246
 SpriteRenderer:
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 2491526233721684215}
   - component: {fileID: 6667127812857621066}
   m_Layer: 0
-  m_Name: WhiteMiniIndicatorSprite
+  m_Name: WhiteMiniIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2156813284687083293}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6667127812857621066
 SpriteRenderer:
@@ -197,7 +197,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2156813284687083293}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8098492196370242576
 GameObject:
@@ -232,9 +232,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8315951916643375495}
   - {fileID: 486117050721771819}
   - {fileID: 2491526233721684215}
-  - {fileID: 8315951916643375495}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -323,8 +323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e74d9dee274d0fbbac3f26c261774c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fullRaidOverlaySprite: {fileID: 8960625050294065246}
-  _miniRaidIndicatorSprite: {fileID: 6667127812857621066}
+  _fullRaidOverlay: {fileID: 4603118658324958929}
+  _miniRaidIndicator: {fileID: 6207363151960619539}
   _isRaiding: 0
   _isRaidVisible: 0
   _actorNumber: 0

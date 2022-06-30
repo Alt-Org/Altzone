@@ -12,8 +12,8 @@ namespace Raid.Scripts.Test
 {
     public class RaidManagerTest : MonoBehaviour, IRaidBridge
     {
-        [Header("Settings"), SerializeField] private SpriteRenderer _fullRaidOverlaySprite;
-        [SerializeField] private SpriteRenderer _miniRaidIndicatorSprite;
+        [Header("Settings"), SerializeField] private GameObject _fullRaidOverlay;
+        [SerializeField] private GameObject _miniRaidIndicator;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private bool _isRaidVisible;
@@ -70,8 +70,8 @@ namespace Raid.Scripts.Test
             }
             _isRaiding = true;
             _isRaidVisible = _isLocal;
-            _fullRaidOverlaySprite.enabled = _isLocal;
-            _miniRaidIndicatorSprite.enabled = !_isLocal;
+            _fullRaidOverlay.SetActive(_isLocal);
+            _miniRaidIndicator.SetActive(!_isLocal);
         }
 
         public void AddRaidBonus()
@@ -93,8 +93,8 @@ namespace Raid.Scripts.Test
             _isRaiding = false;
             _isRaidVisible = false;
             _actorNumber = 0;
-            _fullRaidOverlaySprite.enabled = false;
-            _miniRaidIndicatorSprite.enabled = false;
+            _fullRaidOverlay.SetActive(false);
+            _miniRaidIndicator.SetActive(false);
         }
 
         #endregion
