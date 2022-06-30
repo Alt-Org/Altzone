@@ -1616,17 +1616,17 @@ PrefabInstance:
     - target: {fileID: 2156813284687083293, guid: a9b0f104544af1e44874cf42df0a8da9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.66929376
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2156813284687083293, guid: a9b0f104544af1e44874cf42df0a8da9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.6429238
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2156813284687083293, guid: a9b0f104544af1e44874cf42df0a8da9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.031962495
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2156813284687083293, guid: a9b0f104544af1e44874cf42df0a8da9,
         type: 3}
@@ -1667,6 +1667,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RaidPosition
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960625050294065246, guid: a9b0f104544af1e44874cf42df0a8da9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9b0f104544af1e44874cf42df0a8da9, type: 3}

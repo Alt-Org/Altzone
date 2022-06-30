@@ -9,7 +9,8 @@ namespace Raid.Scripts.Test
 {
     public class StartTheRaidTest : MonoBehaviour, IRaidBridge
     {
-        [Header("Debug Settings"), SerializeField] private Key _controlKey = Key.F5;
+        [Header("Debug Settings"), SerializeField] private SpriteRenderer _sprite;
+        [SerializeField] private Key _controlKey = Key.F5;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private int _actorNumber;
@@ -50,6 +51,7 @@ namespace Raid.Scripts.Test
             Assert.IsFalse(actorNumber == 0, "actorNumber == 0");
             _isRaiding = true;
             _actorNumber = actorNumber;
+            _sprite.enabled = true;
         }
 
         public void AddRaidBonus()
@@ -70,6 +72,7 @@ namespace Raid.Scripts.Test
             }
             _isRaiding = false;
             _actorNumber = 0;
+            _sprite.enabled = false;
         }
 
         #endregion
