@@ -12,6 +12,8 @@ namespace Battle.Scripts.Test
 {
     internal class UiEventListenerTest : MonoBehaviour
     {
+        [Header("Debug Settings"), SerializeField] private bool _isDisableShowComponentErrors;
+        
         private int _roomStartDelay;
         private int _slingshotDelay;
         private bool _isDisableRaid;
@@ -34,9 +36,10 @@ namespace Battle.Scripts.Test
 
         private void OnEnable()
         {
-            _noComponentStart = 3;
-            _noComponentRestart = 3;
-            _noComponentRaid = 3;
+            var counter = _isDisableShowComponentErrors ? 0 : 3;
+            _noComponentStart = counter;
+            _noComponentRestart = counter;
+            _noComponentRaid = counter;
 
             this.Subscribe<UiEvents.StartBattle>(OnStartBattle);
             this.Subscribe<UiEvents.RestartBattle>(OnRestartBattle);
