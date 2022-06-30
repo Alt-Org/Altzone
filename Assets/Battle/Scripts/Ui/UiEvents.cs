@@ -37,6 +37,9 @@ namespace Battle.Scripts.Ui
 
         internal class ExitRaidNotification
         {
+            /// <summary>
+            /// Currently exiting player, can be <c>null</c>.
+            /// </summary>
             public readonly IPlayerDriver PlayerToExit;
 
             public ExitRaidNotification(IPlayerDriver playerToExit)

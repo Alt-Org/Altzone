@@ -14,7 +14,7 @@ namespace Battle.Scripts.Test
     internal class UiEventListenerTest : MonoBehaviour
     {
         [Header("Debug Settings"), SerializeField] private bool _isDisableShowComponentErrors;
-        
+
         private int _roomStartDelay;
         private int _slingshotDelay;
         private bool _isDisableRaid;
@@ -150,7 +150,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            ScoreFlashNet.Push("EXIT RAID", data.PlayerToExit.Position);
+            ScoreFlashNet.Push("EXIT RAID", data.PlayerToExit?.Position ?? Vector2.zero);
         }
 
         private static void OnHeadCollision(UiEvents.HeadCollision data)
