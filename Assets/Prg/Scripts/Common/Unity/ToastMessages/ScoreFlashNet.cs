@@ -97,7 +97,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         private static void OnScoreFlash(string message, float x, float y)
         {
-            Debug.Log($"{message} x {x} y {y}");
+            Debug.Log($"{x:0.0},{y:0.0}: {message}");
             ScoreFlash.Push(message, x, y);
         }
 
