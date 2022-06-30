@@ -1,3 +1,4 @@
+using Editor.Altzone;
 using Editor.Prg.Build;
 using Editor.Prg.Dependencies;
 using Editor.Prg.GameDebug;
@@ -18,6 +19,7 @@ namespace Editor
         
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string GameDebug = MenuRoot + "Game Debug/";
+        private const string GameUtil = MenuRoot + "Game util/";
         private const string Localization = MenuRoot + "Localization/";
         private const string Dependencies = MenuRoot + "Dependencies/";
         private const string MissingReferences = Dependencies + "Missing References : ";
@@ -44,6 +46,12 @@ namespace Editor
         private static void DeleteLocalAllData() => DebugMenu.DeleteLocalAllData();
 
         #endregion
+        #region Gameutil
+
+        [MenuItem(GameUtil + "Dump Models to Wiki", false, 10)]
+        private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
+        #endregion
+
 
         #region Localization
 
