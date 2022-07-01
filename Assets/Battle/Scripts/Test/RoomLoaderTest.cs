@@ -23,6 +23,10 @@ namespace Battle.Scripts.Test
         {
             PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
+            if (_isOfflineMode && !AppPlatform.IsEditor)
+            {
+                ScoreFlash.Push("NOTE\r\nPHOTON NETWORK\r\nOFFLINE MODE");
+            }
             PhotonNetwork.OfflineMode = _isOfflineMode;
             for (; enabled;)
             {
