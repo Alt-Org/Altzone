@@ -118,6 +118,8 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerInfo.ActorNumber => _actorNumber;
 
+        int IPlayerInfo.TeamNumber => _settings._teamNumber;
+
         bool IPlayerInfo.IsLocal => _settings._isLocal;
 
         double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
@@ -133,8 +135,6 @@ namespace Battle.Scripts.Battle.Players
         bool IPlayerDriver.IsValid => !_isDestroyed && _playerActor != null;
 
         int IPlayerDriver.PlayerPos => _settings._playerPos;
-
-        int IPlayerDriver.TeamNumber => _settings._teamNumber;
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 

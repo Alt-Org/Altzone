@@ -22,7 +22,6 @@ namespace Battle.Scripts.Battle
 
         bool IsValid { get; }
         int PlayerPos { get; }
-        int TeamNumber { get; }
         int MaxPoseIndex { get; }
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }

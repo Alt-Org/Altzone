@@ -13,6 +13,8 @@ namespace Altzone.Scripts.Battle
         /// </remarks>
         int ActorNumber { get; }
 
+        int TeamNumber { get; }
+        
         /// <summary>
         /// Is this <c>Player</c> a local or remote instance.
         /// </summary>
