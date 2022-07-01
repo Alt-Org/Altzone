@@ -23,14 +23,6 @@ namespace Battle0.Scripts.Battle.Room
 
         private void Awake()
         {
-            var isBricksVisible = RuntimeGameConfig.Get().Features._isBricksVisible;
-            Debug.Log($"Awake isBricksVisible {isBricksVisible}");
-            if (!isBricksVisible)
-            {
-                _upperBricks.SetActive(false);
-                _lowerBricks.SetActive(false);
-                return;
-            }
             _upperBricks.SetActive(true);
             _lowerBricks.SetActive(true);
             CreateBrickMarkersFrom(_upperBricks.transform, _bricks);
