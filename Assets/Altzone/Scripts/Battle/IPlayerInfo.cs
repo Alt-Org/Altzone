@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Altzone.Scripts.Battle
 {
     /// <summary>
@@ -20,6 +22,8 @@ namespace Altzone.Scripts.Battle
         /// </summary>
         bool IsLocal { get; }
 
+        Vector2 Position { get; }
+        
         double LastBallHitTime { get; }
     }
 }

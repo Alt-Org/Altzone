@@ -150,6 +150,8 @@ namespace Battle.Scripts.Battle.Players
 
         bool IPlayerInfo.IsLocal => _photonView.Owner.IsLocal;
 
+        Vector2 IPlayerInfo.Position => _playerActor.Transform.position;
+
         double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
         
         #endregion
@@ -167,8 +169,6 @@ namespace Battle.Scripts.Battle.Players
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
-
-        Vector2 IPlayerDriver.Position => _playerActor.Transform.position;
 
         Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 

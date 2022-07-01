@@ -24,7 +24,6 @@ namespace Battle.Scripts.Battle
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
         CharacterModel CharacterModel { get; }
-        Vector2 Position { get; }
         Transform PlayerTransform { get; }
         BattlePlayMode BattlePlayMode{ get; }
 
