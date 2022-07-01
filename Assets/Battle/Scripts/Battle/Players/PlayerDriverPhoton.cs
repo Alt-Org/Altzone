@@ -172,6 +172,8 @@ namespace Battle.Scripts.Battle.Players
 
         Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 
+        BattlePlayMode IPlayerDriver.BattlePlayMode => _playerActor.BattlePlayMode;
+
         IPlayerActorCollision IPlayerDriver.PlayerActorCollision => this;
 
         void IPlayerDriver.Rotate(bool isUpsideDown)

@@ -107,7 +107,13 @@ namespace Battle.Scripts.Test
             _teamNumber = PhotonBattle.NoTeamValue;
             _actorNumber = 0;
             yield return null;
-            exitingPlayer?.SetPlayMode(BattlePlayMode.RaidReturn);
+            _playerManager.ForEach(player =>
+            {
+                if (player.BattlePlayMode == BattlePlayMode.RaidGhosted)
+                {
+                    player.SetPlayMode(BattlePlayMode.RaidReturn);
+                }
+            });
             yield return null;
             this.Publish(new UiEvents.ExitRaidNotification(exitingPlayer));
         }

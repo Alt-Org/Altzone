@@ -20,32 +20,34 @@ namespace Battle.Scripts.Battle
         /// <c>IPlayerActor</c> game object instance root.
         /// </summary>
         GameObject GameObject { get; }
-        
+
         /// <summary>
         /// <c>IPlayerActor</c> game object <c>Transform</c> for all measurements.
         /// </summary>
         Transform Transform { get; }
 
+        BattlePlayMode BattlePlayMode { get; }
+
         int MaxPoseIndex { get; }
-        
+
         float Speed { get; set; }
-        
+
         int CurrentResistance { get; set; }
 
         void Rotate(bool isUpsideDown);
-        
+
         void FixCameraRotation(Camera gameCamera);
-        
+
         void MoveTo(Vector2 targetPosition);
 
         void SetCharacterPose(int poseIndex);
-        
+
         void SetPlayMode(BattlePlayMode playMode);
-        
+
         void SetShieldVisibility(bool state);
 
         void SetBuff(PlayerBuff buff, float duration);
-        
+
         void ResetPlayerDriver();
     }
 }

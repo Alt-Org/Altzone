@@ -301,6 +301,8 @@ namespace Battle.Scripts.Battle.Players
 
         Transform IPlayerActor.Transform => _transform;
 
+        BattlePlayMode IPlayerActor.BattlePlayMode => _playMode;
+            
         int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 
         float IPlayerActor.Speed

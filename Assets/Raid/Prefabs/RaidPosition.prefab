@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 90
   m_Sprite: {fileID: 21300000, guid: 940bd3861b52d224f9e569cf2926a552, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.9019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -308,9 +308,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eea45e7346442299a803d46d561c4b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isRaiding: 0
-  _actorNumber: 0
-  _teamNumber: 0
 --- !u!114 &3341095094754658109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +323,7 @@ MonoBehaviour:
   _fullRaidOverlay: {fileID: 4603118658324958929}
   _miniRaidIndicator: {fileID: 6207363151960619539}
   _isRaiding: 0
+  _teamNumber: 0
   _actorNumber: 0
   _isLocal: 0
   _controlKey: 98

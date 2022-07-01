@@ -26,6 +26,7 @@ namespace Battle.Scripts.Battle
         CharacterModel CharacterModel { get; }
         Vector2 Position { get; }
         Transform PlayerTransform { get; }
+        BattlePlayMode BattlePlayMode{ get; }
 
         IPlayerActorCollision PlayerActorCollision { get; }
 
