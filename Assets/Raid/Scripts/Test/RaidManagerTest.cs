@@ -12,6 +12,7 @@ namespace Raid.Scripts.Test
         [SerializeField] private GameObject _miniRaidIndicator;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
+        [SerializeField, ReadOnly] private int _teamNumber;
         [SerializeField, ReadOnly] private int _actorNumber;
         [SerializeField, ReadOnly] private bool _isLocal;
 
@@ -19,15 +20,6 @@ namespace Raid.Scripts.Test
 
         private RaidBridge _raidBridge;
 
-        private void ResetState()
-        {
-            _isLocal = false;
-            _actorNumber = 0;
-            _isRaiding = false;
-            _fullRaidOverlay.SetActive(false);
-            _miniRaidIndicator.SetActive(false);
-        }
-        
         private IEnumerator Start()
         {
             ResetState();
@@ -57,33 +49,51 @@ namespace Raid.Scripts.Test
 
         #region IRaidBridge
 
-        public void ShowRaid(IPlayerInfo playerInfo)
+        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
         {
-            Debug.Log($"playerInfo {playerInfo} isRaiding {_isRaiding}");
+            Debug.Log($"teamNumber {teamNumber} playerInfo {playerInfo} isRaiding {_isRaiding}");
+            if (_isRaiding)
+            {
+                if (teamNumber == _teamNumber)
+                {
+                    _actorNumber = playerInfo?.ActorNumber ?? 0;
+                    AddRaidBonus();
+                    return;
+                }
+                ResetState();
+                HideRaid();
+                return;
+            }
             _isLocal = playerInfo.IsLocal;
+            _teamNumber = teamNumber;
             _actorNumber = playerInfo.ActorNumber;
             _isRaiding = true;
             _fullRaidOverlay.SetActive(_isLocal);
             _miniRaidIndicator.SetActive(!_isLocal);
         }
 
-        public void AddRaidBonus()
+        private void ResetState()
         {
-            if (!_isRaiding)
-            {
-                return;
-            }
-            Debug.Log($"actorNumber {_actorNumber} isRaiding {_isRaiding}");
+            _isLocal = false;
+            _teamNumber = PhotonBattle.NoTeamValue;
+            _actorNumber = 0;
+            _isRaiding = false;
+            _fullRaidOverlay.SetActive(false);
+            _miniRaidIndicator.SetActive(false);
         }
 
-        public void HideRaid()
+        private void AddRaidBonus()
         {
-            Debug.Log($"actorNumber {_actorNumber} isRaiding {_isRaiding}");
-            if (_isRaiding && _raidBridge != null)
+            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber}");
+        }
+
+        private void HideRaid()
+        {
+            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber}");
+            if (_raidBridge != null)
             {
-                _raidBridge.PlayerClosedRaid();
+                ((IBattleBridge)_raidBridge).PlayerClosedRaid();
             }
-            ResetState();
         }
 
         #endregion

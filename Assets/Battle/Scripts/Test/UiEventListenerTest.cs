@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
@@ -112,7 +113,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidManager raidManager)
+            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidBridge raidManager)
             {
                 if (--_noComponentRaid >= 0)
                 {
@@ -121,22 +122,10 @@ namespace Battle.Scripts.Test
                 return;
             }
             var player = data.PlayerToStart;
-            var isRaiding = raidManager.IsRaiding;
-            if (isRaiding)
-            {
-                if (raidManager.TeamNumber != player.TeamNumber)
-                {
-                    ScoreFlashNet.Push($"CANCEL RAID", player.Position);
-                    raidManager.HideRaid();
-                    return;
-                }
-                ScoreFlashNet.Push($"RAID BONUS", player.Position);
-                raidManager.AddRaidBonus();
-                return;
-            }
-            var info = player.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
-            ScoreFlashNet.Push($"RAID {info}", player.Position);
-            raidManager.ShowRaid(data.PlayerToStart);
+            var position = player?.Position ?? Vector2.zero;
+            var info = data.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
+            ScoreFlashNet.Push($"RAID {info}", position);
+            raidManager.ShowRaid(data.TeamNumber, data.PlayerToStart);
         }
 
         private void OnExitRaid(UiEvents.ExitRaidNotification data)
@@ -150,7 +139,8 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            ScoreFlashNet.Push("EXIT RAID", data.PlayerToExit?.Position ?? Vector2.zero);
+            var position = data.PlayerToExit?.Position ?? Vector2.zero;
+            ScoreFlashNet.Push("RAID EXIT", position);
         }
 
         private static void OnHeadCollision(UiEvents.HeadCollision data)
@@ -190,11 +180,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             var player = Context.PlayerManager.GetPlayerByLastBallHitTime(data.RaidTeam);
-            if (player == null)
-            {
-                return;
-            }
-            this.Publish(new UiEvents.StartRaid(player));
+            this.Publish(new UiEvents.StartRaid(data.RaidTeam, player));
         }
 
         private static void OnTeamActivation(UiEvents.TeamActivation data)

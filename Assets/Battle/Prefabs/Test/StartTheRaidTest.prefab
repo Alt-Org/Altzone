@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7482016139994673151}
-  - component: {fileID: 6858632969615111421}
+  - component: {fileID: 4332783789201692583}
   m_Layer: 0
   m_Name: StartTheRaidTest
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6858632969615111421
+--- !u!114 &4332783789201692583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,4 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462241b89750446aa7773b9e94052869, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _raidSimulationTime: 10
+  _isRaiding: 0
+  _teamNumber: 0
+  _actorNumber: 0
+  _isExitRaidModeCalled: 0

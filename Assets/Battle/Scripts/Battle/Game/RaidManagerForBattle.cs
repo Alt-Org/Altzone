@@ -1,38 +1,20 @@
+using System.Collections;
 using Altzone.Scripts.Battle;
 using Battle.Scripts.Test;
+using Photon.Pun;
 using Prg.Scripts.Common.Photon;
-using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Game
 {
-    internal enum RaidOperation
-    {
-        Start = 1,
-        Bonus = 2,
-        Exit = 3,
-    }
-
-    internal interface IRaidManager : IRaidBridge
-    {
-        bool IsRaiding { get; }
-
-        int ActorNumber { get; }
-
-        int TeamNumber { get; }
-    }
-
-    internal class RaidManagerForBattle : MonoBehaviour, IRaidManager
+    internal class RaidManagerForBattle : MonoBehaviour, IRaidBridge
     {
         private const int MsgRaidEvent = PhotonEventDispatcher.EventCodeBase + 1;
 
-        [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
-        [SerializeField, ReadOnly] private int _actorNumber;
-        [SerializeField, ReadOnly] private int _teamNumber;
-
         private PhotonEventDispatcher _photonEventDispatcher;
         private IRaidBridge _raidBridge;
+        private IRaidBridge _localRaidBridge;
 
         private readonly short[] _messageBuffer = { MsgRaidEvent, 0x0, 0x0 };
 
@@ -41,82 +23,39 @@ namespace Battle.Scripts.Battle.Game
             Debug.Log($"");
             _photonEventDispatcher = PhotonEventDispatcher.Get();
             _photonEventDispatcher.RegisterEventListener(MsgRaidEvent, data => { OnRaidEvent((short[])data.CustomData); });
-
-            _raidBridge = FindObjectOfType<RaidBridgeTest>();
-            Assert.IsNotNull(_raidBridge, "_raidBridge != null");
         }
 
-        private void OnRaidEvent(RaidOperation operation, int actorNumber)
+        private IEnumerator Start()
         {
-            switch (operation)
+            var failureTime = Time.time + 2f;
+            yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
+
+            _localRaidBridge = FindObjectOfType<BattleBridgeTest>();
+        }
+
+        private void OnRaidEvent(int teamNumber, int actorNumber)
+        {
+            var player = Context.PlayerManager.GetPlayerByActorNumber(actorNumber);
+            Debug.Log($"teamNumber {teamNumber} player {player}");
+            _raidBridge.ShowRaid(teamNumber, player);
+            // Duplicate events to local Battle IRaidBridge which manages player state during "raid event"
+            if (player != null && player.IsLocal)
             {
-                case RaidOperation.Start:
-                    OnShowRaid(actorNumber);
-                    return;
-                case RaidOperation.Bonus:
-                    OnAddRaidBonus();
-                    return;
-                case RaidOperation.Exit:
-                    OnHideRaid();
-                    return;
-                default:
-                    throw new UnityException($"invalid operation {operation}");
+                _localRaidBridge.ShowRaid(teamNumber, player);
             }
         }
 
-        #region Local Battle to Raid integration implementation
+        #region IRaidBridge
 
-        private void OnShowRaid(int actorNumber)
+        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
         {
-            var player = Context.PlayerManager.GetPlayerByActorNumber(actorNumber);
-            _isRaiding = true;
-            _actorNumber = player?.ActorNumber ?? actorNumber;
-            _teamNumber = player?.TeamNumber ?? PhotonBattle.NoTeamValue;
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} player {player}");
-            _raidBridge.ShowRaid(player);
-        }
-
-        private void OnAddRaidBonus()
-        {
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding}");
-            _raidBridge.AddRaidBonus();
-        }
-
-        private void OnHideRaid()
-        {
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding}");
-            _isRaiding = false;
-            _actorNumber = 0;
-            _teamNumber = PhotonBattle.NoTeamValue;
-            _raidBridge.HideRaid();
-        }
-
-        #endregion
-
-        #region IRaidManager (extended IRaidBridge)
-
-        public bool IsRaiding => _isRaiding;
-
-        public int ActorNumber => _actorNumber;
-
-        public int TeamNumber => _teamNumber;
-
-        void IRaidBridge.ShowRaid(IPlayerInfo playerInfo)
-        {
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding} playerInfo {playerInfo}");
-            SendRaidEvent(RaidOperation.Start, playerInfo.ActorNumber);
-        }
-
-        void IRaidBridge.AddRaidBonus()
-        {
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding}");
-            SendRaidEvent(RaidOperation.Bonus);
-        }
-
-        void IRaidBridge.HideRaid()
-        {
-            Debug.Log($"actorNumber {_actorNumber} teamNumber {_teamNumber} isRaiding {_isRaiding}");
-            SendRaidEvent(RaidOperation.Exit);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            var actorNumber = playerInfo?.ActorNumber ?? 0;
+            Debug.Log($"teamNumber {teamNumber} actorNumber {actorNumber} playerInfo {playerInfo}");
+            SendRaidEvent(teamNumber, actorNumber);
         }
 
         #endregion
@@ -127,19 +66,19 @@ namespace Battle.Scripts.Battle.Game
         {
             Assert.AreEqual(3, payload.Length, "Invalid message length");
             Assert.AreEqual((short)MsgRaidEvent, payload[0], "Invalid message id");
-            var operation = payload[1];
+            var teamNumber = payload[1];
             var actorNumber = payload[2];
-            OnRaidEvent((RaidOperation)operation, actorNumber);
+            OnRaidEvent(teamNumber, actorNumber);
         }
 
-        private void SendRaidEvent(RaidOperation operation, int actorNumber = 0)
+        private void SendRaidEvent(int teamNumber, int actorNumber = 0)
         {
             if (actorNumber != 0)
             {
                 Assert.IsTrue(actorNumber > short.MinValue && actorNumber < short.MaxValue,
                     "actorNumber > short.MinValue && actorNumber < short.MaxValue");
             }
-            _messageBuffer[1] = (short)operation;
+            _messageBuffer[1] = (short)teamNumber;
             _messageBuffer[2] = (short)actorNumber;
             _photonEventDispatcher.RaiseEvent(MsgRaidEvent, _messageBuffer);
         }

@@ -9,9 +9,7 @@ namespace Altzone.Scripts.Battle
     /// </summary>
     public interface IRaidBridge
     {
-        void ShowRaid(IPlayerInfo playerInfo);
-        void AddRaidBonus();
-        void HideRaid();
+        void ShowRaid(int teamNumber, IPlayerInfo playerInfo);
     }
 
     /// <summary>
@@ -34,7 +32,7 @@ namespace Altzone.Scripts.Battle
     {
         [Header("Live Data"), SerializeField, ReadOnly] private bool _hasRaid;
         [SerializeField, ReadOnly] private bool _hasBattle;
-        
+
         private IRaidBridge _raidBridge;
         private IBattleBridge _battleBridge;
 
@@ -50,25 +48,13 @@ namespace Altzone.Scripts.Battle
             _hasBattle = _battleBridge != null;
         }
 
-        public void ShowRaid(IPlayerInfo playerInfo)
+        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
         {
             Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.ShowRaid(playerInfo);
+            _raidBridge.ShowRaid(teamNumber, playerInfo);
         }
 
-        public void AddRaidBonus()
-        {
-            Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.AddRaidBonus();
-        }
-
-        public void HideRaid()
-        {
-            Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.HideRaid();
-        }
-
-        public void PlayerClosedRaid()
+        void IBattleBridge.PlayerClosedRaid()
         {
             Assert.IsNotNull(_battleBridge, "_battleBridge != null");
             _battleBridge.PlayerClosedRaid();

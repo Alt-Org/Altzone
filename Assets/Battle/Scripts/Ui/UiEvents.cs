@@ -28,11 +28,18 @@ namespace Battle.Scripts.Ui
 
         internal class StartRaid
         {
+            public readonly int TeamNumber;
             public readonly IPlayerDriver PlayerToStart;
 
-            public StartRaid(IPlayerDriver playerToStart)
+            public StartRaid(int teamNumber, IPlayerDriver playerToStart)
             {
+                TeamNumber = teamNumber;
                 PlayerToStart = playerToStart;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(TeamNumber)}: {TeamNumber}, {nameof(PlayerToStart)}: {PlayerToStart}";
             }
         }
 
