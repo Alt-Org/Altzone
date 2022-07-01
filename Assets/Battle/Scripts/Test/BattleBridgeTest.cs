@@ -75,7 +75,14 @@ namespace Battle.Scripts.Test
                 return;
             }
             _isRaiding = true;
+            _isExitRaidModeCalled = false;
             _teamNumber = teamNumber;
+            if (playerInfo == null)
+            {
+                // During testing it is possible that all teams do not have all (if any) players!
+                _actorNumber = 0;
+                return;
+            }
             _actorNumber = playerInfo.ActorNumber;
             var player = _playerManager.GetPlayerByActorNumber(playerInfo.ActorNumber);
             StartCoroutine(OnStartRaidMode(player));
@@ -85,17 +92,9 @@ namespace Battle.Scripts.Test
 
         private IEnumerator OnStartRaidMode(IPlayerDriver player)
         {
-            _isRaiding = true;
-            _isExitRaidModeCalled = false;
-            _teamNumber = player.TeamNumber;
-            _actorNumber = player.ActorNumber;
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber}");
-            player.SetPlayMode(BattlePlayMode.RaidGhosted);
             yield return null;
-            if (_raidBridge != null)
-            {
-                ((IRaidBridge)_raidBridge).ShowRaid(_teamNumber, player);
-            }
+            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber} player {player}");
+            player.SetPlayMode(BattlePlayMode.RaidGhosted);
         }
 
         private IEnumerator OnExitRaidMode()
@@ -106,7 +105,6 @@ namespace Battle.Scripts.Test
             _isExitRaidModeCalled = true;
             _teamNumber = PhotonBattle.NoTeamValue;
             _actorNumber = 0;
-            yield return null;
             _playerManager.ForEach(player =>
             {
                 if (player.BattlePlayMode == BattlePlayMode.RaidGhosted)

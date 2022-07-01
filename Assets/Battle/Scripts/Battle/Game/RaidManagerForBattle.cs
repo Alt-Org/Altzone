@@ -39,10 +39,7 @@ namespace Battle.Scripts.Battle.Game
             Debug.Log($"teamNumber {teamNumber} player {player}");
             _raidBridge.ShowRaid(teamNumber, player);
             // Duplicate events to local Battle IRaidBridge which manages player state during "raid event"
-            if (player != null && player.IsLocal)
-            {
-                _localRaidBridge.ShowRaid(teamNumber, player);
-            }
+            _localRaidBridge.ShowRaid(teamNumber, player);
         }
 
         #region IRaidBridge

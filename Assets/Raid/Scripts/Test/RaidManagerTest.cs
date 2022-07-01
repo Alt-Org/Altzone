@@ -1,6 +1,8 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,6 +24,7 @@ namespace Raid.Scripts.Test
 
         private IEnumerator Start()
         {
+            ScoreFlashNet.RegisterEventListener();
             ResetState();
             var failureTime = Time.time + 2f;
             yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
@@ -43,7 +46,9 @@ namespace Raid.Scripts.Test
         {
             if (Keyboard.current[_controlKey].wasPressedThisFrame && _isRaiding)
             {
-                HideRaid();
+                // We do not have cache player available for now.
+                ResetState();
+                HideRaid(_raidBridge, null);
             }
         }
 
@@ -57,11 +62,11 @@ namespace Raid.Scripts.Test
                 if (teamNumber == _teamNumber)
                 {
                     _actorNumber = playerInfo?.ActorNumber ?? 0;
-                    AddRaidBonus();
+                    AddRaidBonus(playerInfo);
                     return;
                 }
                 ResetState();
-                HideRaid();
+                HideRaid(_raidBridge, playerInfo);
                 return;
             }
             _isLocal = playerInfo.IsLocal;
@@ -70,6 +75,14 @@ namespace Raid.Scripts.Test
             _isRaiding = true;
             _fullRaidOverlay.SetActive(_isLocal);
             _miniRaidIndicator.SetActive(!_isLocal);
+
+            var info = _teamNumber == PhotonBattle.TeamBlueValue ? "RED"
+                : _teamNumber == PhotonBattle.TeamRedValue ? "BLUE"
+                : $"({teamNumber})";
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ScoreFlashNet.Push($"RAID {info}", playerInfo.Position);
+            }
         }
 
         private void ResetState()
@@ -82,17 +95,23 @@ namespace Raid.Scripts.Test
             _miniRaidIndicator.SetActive(false);
         }
 
-        private void AddRaidBonus()
+        private void AddRaidBonus(IPlayerInfo playerInfo)
         {
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber}");
+            Debug.Log($"playerInfo {playerInfo}");
+            if (PhotonNetwork.IsMasterClient)
+            {
+                var position = playerInfo?.Position ?? Vector2.zero;
+                ScoreFlashNet.Push($"RAID BONUS", position);
+            }
         }
 
-        private void HideRaid()
+        private static void HideRaid(IBattleBridge battleBridge, IPlayerInfo playerInfo)
         {
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber}");
-            if (_raidBridge != null)
+            Debug.Log($"playerInfo {playerInfo}");
+            if (PhotonNetwork.IsMasterClient)
             {
-                ((IBattleBridge)_raidBridge).PlayerClosedRaid();
+                ScoreFlashNet.Push("RAID EXIT", Vector2.zero);
+                battleBridge?.PlayerClosedRaid();
             }
         }
 

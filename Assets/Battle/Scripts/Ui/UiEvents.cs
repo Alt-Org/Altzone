@@ -54,6 +54,11 @@ namespace Battle.Scripts.Ui
             {
                 PlayerToExit = playerToExit;
             }
+
+            public override string ToString()
+            {
+                return $"{nameof(PlayerToExit)}: {PlayerToExit}";
+            }
         }
 
         #endregion

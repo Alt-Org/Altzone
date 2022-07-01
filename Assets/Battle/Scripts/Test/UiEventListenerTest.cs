@@ -121,10 +121,6 @@ namespace Battle.Scripts.Test
                 }
                 return;
             }
-            var player = data.PlayerToStart;
-            var position = player?.Position ?? Vector2.zero;
-            var info = data.TeamNumber == PhotonBattle.TeamBlueValue ? "RED" : "BLUE";
-            ScoreFlashNet.Push($"RAID {info}", position);
             raidManager.ShowRaid(data.TeamNumber, data.PlayerToStart);
         }
 
@@ -139,8 +135,6 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            var position = data.PlayerToExit?.Position ?? Vector2.zero;
-            ScoreFlashNet.Push("RAID EXIT", position);
         }
 
         private static void OnHeadCollision(UiEvents.HeadCollision data)
