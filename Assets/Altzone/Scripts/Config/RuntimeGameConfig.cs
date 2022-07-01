@@ -68,8 +68,8 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Is bricks visible.
         /// </summary>
-        [Tooltip("Is bricks visible")]
-        public bool _isBricksVisible;
+        [Tooltip("Disable bricks")]
+        public bool _isDisableBricks;
 
         public void CopyFrom(GameFeatures other)
         {

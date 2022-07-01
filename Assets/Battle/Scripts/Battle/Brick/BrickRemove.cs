@@ -10,12 +10,11 @@ namespace Battle.Scripts.Battle.Brick
     {
         private void Awake()
         {
-            var isBricksVisible = RuntimeGameConfig.Get().Features._isBricksVisible;
-            if (isBricksVisible)
+            var isDisableBricks = RuntimeGameConfig.Get().Features._isDisableBricks;
+            if (isDisableBricks)
             {
-                return;
+                gameObject.SetActive(false);
             }
-            gameObject.SetActive(false);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
