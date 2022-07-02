@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Test;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
@@ -42,6 +44,17 @@ namespace Battle.Scripts.Battle.Game
         private IRaidEvent _localRaidEvent;
 
         private readonly short[] _messageBuffer = { MsgRaidEvent, 0x0, 0x0, 0x0 };
+
+        private void Awake()
+        {
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var features = runtimeGameConfig.Features;
+            var isDisableRaid = features._isDisableRaid;
+            if (isDisableRaid)
+            {
+                enabled = false;
+            }
+        }
 
         private void OnEnable()
         {

@@ -1,5 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 
@@ -23,6 +24,14 @@ namespace Raid.Scripts.Test
 
         private IEnumerator Start()
         {
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var features = runtimeGameConfig.Features;
+            var isDisableRaid = features._isDisableRaid;
+            if (isDisableRaid)
+            {
+                enabled = false;
+                yield break;
+            }
             var failureTime = Time.time + 2f;
             yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
             if (_raidBridge == null)
