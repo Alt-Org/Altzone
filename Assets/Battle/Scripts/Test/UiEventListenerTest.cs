@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Text;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
@@ -113,7 +111,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidBridge raidManager)
+            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidManagerForBattle raidManager)
             {
                 if (--_noComponentRaid >= 0)
                 {
@@ -121,7 +119,7 @@ namespace Battle.Scripts.Test
                 }
                 return;
             }
-            raidManager.ShowRaid(data.TeamNumber, data.PlayerToStart);
+            raidManager.RaidWallEvent(data.TeamNumber, data.PlayerToStart);
         }
 
         private void OnExitRaid(UiEvents.ExitRaidNotification data)

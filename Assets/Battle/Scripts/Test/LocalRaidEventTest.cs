@@ -4,11 +4,13 @@ using Battle.Scripts.Battle;
 using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Test
 {
-    internal class BattleBridgeTest : MonoBehaviour, IBattleBridge, IRaidBridge
+    internal class LocalRaidEventTest : MonoBehaviour, IRaidEvent
     {
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private int _teamNumber;
@@ -16,16 +18,10 @@ namespace Battle.Scripts.Test
         [SerializeField, ReadOnly] private bool _isExitRaidModeCalled;
 
         private IPlayerManager _playerManager;
-        private RaidBridge _raidBridge;
 
-        private IEnumerator Start()
+        private void Awake()
         {
-            var failureTime = Time.time + 2f;
-            yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
-            if (_raidBridge != null)
-            {
-                _raidBridge.SetBattleBridge(this);
-            }
+            ScoreFlashNet.RegisterEventListener();
         }
 
         private void OnEnable()
@@ -33,47 +29,11 @@ namespace Battle.Scripts.Test
             _playerManager = Context.PlayerManager;
         }
 
-        private void OnDestroy()
+        #region IRaidEvent implementation for "local internal" Battle <-> Raid testing
+
+        void IRaidEvent.RaidStart(int teamNumber, IPlayerInfo playerInfo)
         {
-            if (_raidBridge != null)
-            {
-                _raidBridge.SetBattleBridge(null);
-            }
-        }
-
-        #region IBattleBridge implementation for external Raid testing
-
-        public void PlayerClosedRaid()
-        {
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber} isExitRaidModeCalled {_isExitRaidModeCalled}");
-            if (!_isExitRaidModeCalled)
-            {
-                StartCoroutine(OnExitRaidMode());
-            }
-        }
-
-        #endregion
-
-        #region IRaidBridge implementation for internal Battle testing
-
-        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
-        {
-            Debug.Log($"teamNumber {teamNumber} playerInfo {playerInfo} isRaiding {_isRaiding}");
-            if (_isRaiding)
-            {
-                if (teamNumber == _teamNumber)
-                {
-                    _actorNumber = playerInfo?.ActorNumber ?? 0;
-                    // AddRaidBonus -> UI event
-                    return;
-                }
-                // HideRaid -> UI event
-                if (!_isExitRaidModeCalled)
-                {
-                    StartCoroutine(OnExitRaidMode());
-                }
-                return;
-            }
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
             _isRaiding = true;
             _isExitRaidModeCalled = false;
             _teamNumber = teamNumber;
@@ -88,19 +48,39 @@ namespace Battle.Scripts.Test
             StartCoroutine(OnStartRaidMode(player));
         }
 
+        void IRaidEvent.RaidBonus(int teamNumber, IPlayerInfo playerInfo)
+        {
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
+            Assert.IsTrue(_isRaiding, "_isRaiding");
+            Assert.AreEqual(_teamNumber, teamNumber);
+            var info = $"{_teamNumber}";
+            ScoreFlashNet.Push($"RAID BONUS {info}");
+        }
+
+        void IRaidEvent.RaidStop(int teamNumber, IPlayerInfo playerInfo)
+        {
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
+            Assert.IsTrue(_isRaiding, "_isRaiding");
+            Assert.IsFalse(_isExitRaidModeCalled, "_isExitRaidModeCalled");
+            StartCoroutine(OnExitRaidMode());
+        }
+
         #endregion
 
         private IEnumerator OnStartRaidMode(IPlayerDriver player)
         {
-            yield return null;
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber} player {player}");
+            Debug.Log($"team {_teamNumber} actor {_actorNumber} player {player}");
             player.SetPlayMode(BattlePlayMode.RaidGhosted);
+            yield return null;
+            var info = $"{_teamNumber}:{player.NickName.ToUpper()}";
+            ScoreFlashNet.Push($"RAID START {info}");
         }
 
         private IEnumerator OnExitRaidMode()
         {
             var exitingPlayer = _playerManager.GetPlayerByActorNumber(_actorNumber);
-            Debug.Log($"teamNumber {_teamNumber} actorNumber {_actorNumber} isRaiding {_isRaiding} player {exitingPlayer}");
+            Debug.Log($"team {_teamNumber} actor {_actorNumber} isRaiding {_isRaiding} player {exitingPlayer}");
+            var info = $"{_teamNumber}";
             _isRaiding = false;
             _isExitRaidModeCalled = true;
             _teamNumber = PhotonBattle.NoTeamValue;
@@ -114,6 +94,8 @@ namespace Battle.Scripts.Test
             });
             yield return null;
             this.Publish(new UiEvents.ExitRaidNotification(exitingPlayer));
+            yield return null;
+            ScoreFlashNet.Push($"RAID EXIT {info}");
         }
     }
 }

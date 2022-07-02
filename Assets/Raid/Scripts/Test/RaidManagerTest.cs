@@ -1,44 +1,49 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
-using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
-using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Raid.Scripts.Test
 {
-    public class RaidManagerTest : MonoBehaviour, IRaidBridge
+    /// <summary>
+    /// Raid gameplay test implementation.
+    /// </summary>
+    public class RaidManagerTest : MonoBehaviour, IRaidEvent
     {
         [Header("Settings"), SerializeField] private GameObject _fullRaidOverlay;
         [SerializeField] private GameObject _miniRaidIndicator;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
+        [SerializeField, ReadOnly] private bool _isLocal;
         [SerializeField, ReadOnly] private int _teamNumber;
         [SerializeField, ReadOnly] private int _actorNumber;
-        [SerializeField, ReadOnly] private bool _isLocal;
+        [SerializeField, ReadOnly] private int _bonusCounter;
 
         [Header("Debug Settings"), SerializeField] private Key _controlKey = Key.F5;
 
         private RaidBridge _raidBridge;
+        private IBattleEvent _externalBattleEvent;
 
         private IEnumerator Start()
         {
-            ScoreFlashNet.RegisterEventListener();
-            ResetState();
             var failureTime = Time.time + 2f;
             yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
-            if (_raidBridge != null)
+            if (_raidBridge == null)
             {
-                _raidBridge.SetRaidBridge(this);
+                enabled = false;
+                yield break;
             }
+            _raidBridge.SetRaidEventHandler(this);
+            _externalBattleEvent = _raidBridge;
+            ResetState();
         }
 
         private void OnDestroy()
         {
             if (_raidBridge != null)
             {
-                _raidBridge.SetRaidBridge(null);
+                _raidBridge.SetRaidEventHandler(null);
             }
         }
 
@@ -46,75 +51,59 @@ namespace Raid.Scripts.Test
         {
             if (Keyboard.current[_controlKey].wasPressedThisFrame && _isRaiding)
             {
-                // We do not have cache player available for now.
-                ResetState();
-                HideRaid(_raidBridge, null);
+                // Eventually IRaidEvent.RaidStop will be called to actually stop and hide raiding.
+                _externalBattleEvent.PlayerClosedRaid();
             }
         }
 
         #region IRaidBridge
 
-        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
+        void IRaidEvent.RaidStart(int teamNumber, IPlayerInfo playerInfo)
         {
-            Debug.Log($"teamNumber {teamNumber} playerInfo {playerInfo} isRaiding {_isRaiding}");
-            if (_isRaiding)
-            {
-                if (teamNumber == _teamNumber)
-                {
-                    _actorNumber = playerInfo?.ActorNumber ?? 0;
-                    AddRaidBonus(playerInfo);
-                    return;
-                }
-                ResetState();
-                HideRaid(_raidBridge, playerInfo);
-                return;
-            }
-            _isLocal = playerInfo.IsLocal;
-            _teamNumber = teamNumber;
-            _actorNumber = playerInfo.ActorNumber;
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
+
             _isRaiding = true;
-            _fullRaidOverlay.SetActive(_isLocal);
-            _miniRaidIndicator.SetActive(!_isLocal);
-
-            var info = _teamNumber == PhotonBattle.TeamBlueValue ? "RED"
-                : _teamNumber == PhotonBattle.TeamRedValue ? "BLUE"
-                : $"({teamNumber})";
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ScoreFlashNet.Push($"RAID {info}", playerInfo.Position);
-            }
+            _isLocal = playerInfo?.IsLocal ?? true;
+            _teamNumber = teamNumber;
+            _actorNumber = playerInfo?.ActorNumber ?? 0;
+            _bonusCounter = 0;
+            ShowRaid();
         }
 
-        private void ResetState()
+        void IRaidEvent.RaidBonus(int teamNumber, IPlayerInfo playerInfo)
         {
-            _isLocal = false;
-            _teamNumber = PhotonBattle.NoTeamValue;
-            _actorNumber = 0;
-            _isRaiding = false;
-            _fullRaidOverlay.SetActive(false);
-            _miniRaidIndicator.SetActive(false);
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
+            _bonusCounter += 1;
         }
 
-        private void AddRaidBonus(IPlayerInfo playerInfo)
+        void IRaidEvent.RaidStop(int teamNumber, IPlayerInfo playerInfo)
         {
-            Debug.Log($"playerInfo {playerInfo}");
-            if (PhotonNetwork.IsMasterClient)
-            {
-                var position = playerInfo?.Position ?? Vector2.zero;
-                ScoreFlashNet.Push($"RAID BONUS", position);
-            }
-        }
-
-        private static void HideRaid(IBattleBridge battleBridge, IPlayerInfo playerInfo)
-        {
-            Debug.Log($"playerInfo {playerInfo}");
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ScoreFlashNet.Push("RAID EXIT", Vector2.zero);
-                battleBridge?.PlayerClosedRaid();
-            }
+            Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
+            HideRaid();
+            ResetState();
         }
 
         #endregion
+
+        private void ResetState()
+        {
+            _isRaiding = false;
+            _isLocal = false;
+            _teamNumber = PhotonBattle.NoTeamValue;
+            _actorNumber = 0;
+            _bonusCounter = 0;
+       }
+
+        private void ShowRaid()
+        {
+            _fullRaidOverlay.SetActive(_isLocal);
+            _miniRaidIndicator.SetActive(!_isLocal);
+        }
+
+        private void HideRaid()
+        {
+            _fullRaidOverlay.SetActive(false);
+            _miniRaidIndicator.SetActive(false);
+        }
     }
 }

@@ -5,22 +5,6 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts.Battle
 {
     /// <summary>
-    /// Raid gameplay mode interface for Battle.
-    /// </summary>
-    public interface IRaidBridge
-    {
-        void ShowRaid(int teamNumber, IPlayerInfo playerInfo);
-    }
-
-    /// <summary>
-    /// Battle gameplay mode interface for Raid.
-    /// </summary>
-    public interface IBattleBridge
-    {
-        void PlayerClosedRaid();
-    }
-
-    /// <summary>
     /// Bridge between <c>Battle</c> and <c>Raid</c> gameplay modes.
     /// </summary>
     /// <remarks>
@@ -28,36 +12,48 @@ namespace Altzone.Scripts.Battle
     /// and can not access each other we need this bridge that provides two way access
     /// to required functionality on both gameplay modes and implementations. 
     /// </remarks>
-    public class RaidBridge : MonoBehaviour, IRaidBridge, IBattleBridge
+    public class RaidBridge : MonoBehaviour, IRaidEvent, IBattleEvent
     {
         [Header("Live Data"), SerializeField, ReadOnly] private bool _hasRaid;
         [SerializeField, ReadOnly] private bool _hasBattle;
 
-        private IRaidBridge _raidBridge;
-        private IBattleBridge _battleBridge;
+        private IRaidEvent _raidEventHandler;
+        private IBattleEvent _battleEventHandler;
 
-        public void SetRaidBridge(IRaidBridge bridge)
+        public void SetRaidEventHandler(IRaidEvent eventHandler)
         {
-            _raidBridge = bridge;
-            _hasRaid = _raidBridge != null;
+            _raidEventHandler = eventHandler;
+            _hasRaid = _raidEventHandler != null;
         }
 
-        public void SetBattleBridge(IBattleBridge bridge)
+        public void SetBattleEventHandler(IBattleEvent eventHandler)
         {
-            _battleBridge = bridge;
-            _hasBattle = _battleBridge != null;
+            _battleEventHandler = eventHandler;
+            _hasBattle = _battleEventHandler != null;
         }
 
-        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
+        void IRaidEvent.RaidStart(int teamNumber, IPlayerInfo playerInfo)
         {
-            Assert.IsNotNull(_raidBridge, "_raidBridge != null");
-            _raidBridge.ShowRaid(teamNumber, playerInfo);
+            Assert.IsNotNull(_raidEventHandler, "_raidEventHandler != null");
+            _raidEventHandler.RaidStart(teamNumber, playerInfo);
         }
 
-        void IBattleBridge.PlayerClosedRaid()
+        void IRaidEvent.RaidBonus(int teamNumber, IPlayerInfo playerInfo)
         {
-            Assert.IsNotNull(_battleBridge, "_battleBridge != null");
-            _battleBridge.PlayerClosedRaid();
+            Assert.IsNotNull(_raidEventHandler, "_raidEventHandler != null");
+            _raidEventHandler.RaidBonus(teamNumber, playerInfo);
+        }
+
+        void IRaidEvent.RaidStop(int teamNumber, IPlayerInfo playerInfo)
+        {
+            Assert.IsNotNull(_raidEventHandler, "_raidEventHandler != null");
+            _raidEventHandler.RaidStop(teamNumber, playerInfo);
+        }
+
+        void IBattleEvent.PlayerClosedRaid()
+        {
+            Assert.IsNotNull(_battleEventHandler, "_battleEventHandler != null");
+            _battleEventHandler.PlayerClosedRaid();
         }
     }
 }

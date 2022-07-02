@@ -3,20 +3,39 @@ using Altzone.Scripts.Battle;
 using Battle.Scripts.Test;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Game
 {
-    internal class RaidManagerForBattle : MonoBehaviour, IRaidBridge
+    internal interface IRaidManagerForBattle
     {
+        void RaidWallEvent(int teamNumber, IPlayerDriver playerDriver);
+    }
+
+    internal class RaidManagerForBattle : MonoBehaviour, IRaidManagerForBattle, IBattleEvent
+    {
+        private enum RaidOperation
+        {
+            Start = 1,
+            Continue = 2,
+            Stop = 3
+        }
+
         private const int MsgRaidEvent = PhotonEventDispatcher.EventCodeBase + 1;
 
-        private PhotonEventDispatcher _photonEventDispatcher;
-        private IRaidBridge _raidBridge;
-        private IRaidBridge _localRaidBridge;
+        [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
+        [SerializeField, ReadOnly] private int _teamNumber;
+        [SerializeField, ReadOnly] private int _actorNumber;
 
-        private readonly short[] _messageBuffer = { MsgRaidEvent, 0x0, 0x0 };
+        private PhotonEventDispatcher _photonEventDispatcher;
+
+        private RaidBridge _raidBridge;
+        private IRaidEvent _externalRaidEvent;
+        private IRaidEvent _localRaidEvent;
+
+        private readonly short[] _messageBuffer = { MsgRaidEvent, 0x0, 0x0, 0x0 };
 
         private void OnEnable()
         {
@@ -29,30 +48,78 @@ namespace Battle.Scripts.Battle.Game
         {
             var failureTime = Time.time + 2f;
             yield return new WaitUntil(() => (_raidBridge ??= FindObjectOfType<RaidBridge>()) != null || Time.time > failureTime);
-
-            _localRaidBridge = FindObjectOfType<BattleBridgeTest>();
+            _raidBridge.SetBattleEventHandler(this);
+            _externalRaidEvent = _raidBridge;
+            yield return new WaitUntil(() => (_localRaidEvent ??= FindObjectOfType<LocalRaidEventTest>()) != null || Time.time > failureTime);
         }
 
-        private void OnRaidEvent(int teamNumber, int actorNumber)
+        private void OnRaidEvent(RaidOperation operation, int teamNumber, int actorNumber)
         {
             var player = Context.PlayerManager.GetPlayerByActorNumber(actorNumber);
-            Debug.Log($"teamNumber {teamNumber} player {player}");
-            _raidBridge.ShowRaid(teamNumber, player);
-            // Duplicate events to local Battle IRaidBridge which manages player state during "raid event"
-            _localRaidBridge.ShowRaid(teamNumber, player);
+            Debug.Log($"operation {operation} team {teamNumber} actor {actorNumber} player {player}");
+            // Duplicate events to both local (Battle) and external (Raid) event handlers. 
+            switch (operation)
+            {
+                case RaidOperation.Start:
+                    _localRaidEvent.RaidStart(teamNumber, player);
+                    _externalRaidEvent.RaidStart(teamNumber, player);
+                    return;
+                case RaidOperation.Continue:
+                    _localRaidEvent.RaidBonus(teamNumber, player);
+                    _externalRaidEvent.RaidBonus(teamNumber, player);
+                    return;
+                case RaidOperation.Stop:
+                    _localRaidEvent.RaidStop(teamNumber, player);
+                    _externalRaidEvent.RaidStop(teamNumber, player);
+                    return;
+                default:
+                    throw new UnityException($"invalid RaidOperation {operation}");
+            }
         }
 
-        #region IRaidBridge
+        #region IRaidManagerForBattle
 
-        void IRaidBridge.ShowRaid(int teamNumber, IPlayerInfo playerInfo)
+        /// <summary>
+        /// Manages internal <c>Raid</c> state for <c>Battle</c>.
+        /// </summary>
+        void IRaidManagerForBattle.RaidWallEvent(int teamNumber, IPlayerDriver playerDriver)
         {
             if (!PhotonNetwork.IsMasterClient)
             {
                 return;
             }
-            var actorNumber = playerInfo?.ActorNumber ?? 0;
-            Debug.Log($"teamNumber {teamNumber} actorNumber {actorNumber} playerInfo {playerInfo}");
-            SendRaidEvent(teamNumber, actorNumber);
+            var actorNumber = playerDriver?.ActorNumber ?? 0;
+            Debug.Log($"team {teamNumber} <- {_teamNumber} actor {actorNumber} <- {_actorNumber} " +
+                      $"player {playerDriver} isRaiding {_isRaiding}");
+            if (!_isRaiding)
+            {
+                _isRaiding = true;
+                _teamNumber = teamNumber;
+                _actorNumber = actorNumber;
+                SendRaidEvent(RaidOperation.Start, _teamNumber, _actorNumber);
+                return;
+            }
+            if (_teamNumber == teamNumber)
+            {
+                _actorNumber = actorNumber;
+                SendRaidEvent(RaidOperation.Continue, _teamNumber, _actorNumber);
+                return;
+            }
+            // Close Raid can be called from both "sides"!
+            ((IBattleEvent)this).PlayerClosedRaid();
+      }
+
+        #endregion
+
+        #region IBattleEvent
+
+        void IBattleEvent.PlayerClosedRaid()
+        {
+            // Anybody can call this - not only master client!
+            _isRaiding = false;
+            SendRaidEvent(RaidOperation.Stop, _teamNumber, _actorNumber);
+            _teamNumber = PhotonBattle.NoTeamValue;
+            _actorNumber = 0;
         }
 
         #endregion
@@ -61,22 +128,27 @@ namespace Battle.Scripts.Battle.Game
 
         private void OnRaidEvent(short[] payload)
         {
-            Assert.AreEqual(3, payload.Length, "Invalid message length");
+            Assert.AreEqual(4, payload.Length, "Invalid message length");
             Assert.AreEqual((short)MsgRaidEvent, payload[0], "Invalid message id");
-            var teamNumber = payload[1];
-            var actorNumber = payload[2];
-            OnRaidEvent(teamNumber, actorNumber);
+            var index = 0;
+            var operation = payload[++index];
+            var teamNumber = payload[++index];
+            var actorNumber = payload[++index];
+            OnRaidEvent((RaidOperation)operation, teamNumber, actorNumber);
         }
 
-        private void SendRaidEvent(int teamNumber, int actorNumber = 0)
+        private void SendRaidEvent(RaidOperation operation, int teamNumber, int actorNumber = 0)
         {
+            Debug.Log($"operation {operation} team {teamNumber} actor {actorNumber}");
             if (actorNumber != 0)
             {
                 Assert.IsTrue(actorNumber > short.MinValue && actorNumber < short.MaxValue,
                     "actorNumber > short.MinValue && actorNumber < short.MaxValue");
             }
-            _messageBuffer[1] = (short)teamNumber;
-            _messageBuffer[2] = (short)actorNumber;
+            var index = 0;
+            _messageBuffer[++index] = (short)operation;
+            _messageBuffer[++index] = (short)teamNumber;
+            _messageBuffer[++index] = (short)actorNumber;
             _photonEventDispatcher.RaiseEvent(MsgRaidEvent, _messageBuffer);
         }
 
