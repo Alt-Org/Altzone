@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Ui;
+using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Attributes;
 using Prg.Scripts.Common.Unity.ToastMessages;
@@ -54,6 +55,10 @@ namespace Battle.Scripts.Test
             Assert.IsTrue(_isRaiding, "_isRaiding");
             Assert.AreEqual(_teamNumber, teamNumber);
             var info = $"{_teamNumber}";
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
             ScoreFlashNet.Push($"RAID BONUS {info}");
         }
 
@@ -71,6 +76,10 @@ namespace Battle.Scripts.Test
         {
             Debug.Log($"team {_teamNumber} actor {_actorNumber} player {player}");
             player.SetPlayMode(BattlePlayMode.RaidGhosted);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                yield break;
+            }
             yield return null;
             var info = $"{_teamNumber}:{player.NickName.ToUpper()}";
             ScoreFlashNet.Push($"RAID START {info}");
@@ -94,6 +103,10 @@ namespace Battle.Scripts.Test
             });
             yield return null;
             this.Publish(new UiEvents.ExitRaidNotification(exitingPlayer));
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                yield break;
+            }
             yield return null;
             ScoreFlashNet.Push($"RAID EXIT {info}");
         }
