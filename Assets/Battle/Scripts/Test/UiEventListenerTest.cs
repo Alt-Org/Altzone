@@ -175,8 +175,10 @@ namespace Battle.Scripts.Test
             this.Publish(new UiEvents.StartRaid(data.RaidTeam, player));
         }
 
-        private static void OnTeamActivation(UiEvents.TeamActivation data)
+        private void OnTeamActivation(UiEvents.TeamActivation data)
         {
+            var arena = FindObjectOfType<ArenaStatusHandler>();
+            arena.ChangeArenaState(data.IsBallOnRedTeamArea, data.IsBallOnBlueTeamArea);
             Debug.Log($"{data}");
         }
 
