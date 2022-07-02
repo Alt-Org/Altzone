@@ -1,12 +1,12 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Battle.Scripts.Test
+namespace Battle.Scripts.Battle.Ui
 {
     public class ArenaStatusHandler : MonoBehaviour
     {
         [Header("TeamAreaStatus"), SerializeField] private Sprite _frozen;
+
         [Header("TeamAreas"), SerializeField] private GameObject _redArea;
         [SerializeField] private GameObject _blueArea;
 
@@ -14,6 +14,7 @@ namespace Battle.Scripts.Test
         {
             SetSprite();
         }
+
         private void SetSprite()
         {
             _redArea.GetComponent<Image>().sprite = _frozen;
@@ -21,11 +22,11 @@ namespace Battle.Scripts.Test
             _redArea.SetActive(false);
             _blueArea.SetActive(false);
         }
+
         public void ChangeArenaState(bool red, bool blue)
         {
             _redArea.SetActive(red);
             _blueArea.SetActive(blue);
         }
     }
-
 }
