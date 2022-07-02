@@ -5,6 +5,7 @@ using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
+using Prg.Scripts.Common.Unity.ToastMessages;
 using UnityEngine;
 
 namespace Battle.Scripts.Test
@@ -58,6 +59,10 @@ namespace Battle.Scripts.Test
             if (roomPlayersCount > 0)
             {
                 PhotonBattle.SetDebugRoomProperties(room, roomPlayersCount);
+                if (roomPlayersCount > 1)
+                {
+                    ScoreFlash.Push($"PLAYERS TO WAIT:  {roomPlayersCount}");
+                }
             }
         }
 
@@ -101,7 +106,7 @@ namespace Battle.Scripts.Test
                 _teamRed._player2 = team.SecondPlayer as MonoBehaviour;
             }
         }
-        
+
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"} " +
