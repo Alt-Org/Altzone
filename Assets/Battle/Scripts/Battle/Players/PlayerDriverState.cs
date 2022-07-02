@@ -15,6 +15,7 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerDriver _playerDriver;
         private CharacterModel _characterModel;
         private IBallManager _ballManager;
+        private float _playerAttackMultiplier;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
@@ -29,6 +30,7 @@ namespace Battle.Scripts.Battle.Players
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
+            _playerAttackMultiplier = variables._playerAttackMultiplier;
             _stunDuration = variables._playerShieldHitStunDuration;
             var features = runtimeGameConfig.Features;
             _isDisableShieldStateChanges = features._isDisableShieldStateChanges;
@@ -55,7 +57,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    _ballManager.SetBallSpeed(_characterModel.Attack);
+                    _ballManager.SetBallSpeed(_characterModel.Attack * _playerAttackMultiplier);
                 }
             }
             if (_isDisableShieldStateChanges)
