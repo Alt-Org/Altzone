@@ -9,11 +9,17 @@ using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Game
 {
+    /// <summary>
+    /// Event interface for <c>RaidManagerForBattle</c>.
+    /// </summary>
     internal interface IRaidManagerForBattle
     {
         void RaidWallEvent(int teamNumber, IPlayerDriver playerDriver);
     }
 
+    /// <summary>
+    /// <c>RaidManagerForBattle</c> manages Raid gameplay state during bBattle gameplay.
+    /// </summary>
     internal class RaidManagerForBattle : MonoBehaviour, IRaidManagerForBattle, IBattleEvent
     {
         private enum RaidOperation

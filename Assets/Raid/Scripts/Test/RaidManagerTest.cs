@@ -2,7 +2,6 @@ using System.Collections;
 using Altzone.Scripts.Battle;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Raid.Scripts.Test
 {
@@ -11,16 +10,13 @@ namespace Raid.Scripts.Test
     /// </summary>
     public class RaidManagerTest : MonoBehaviour, IRaidEvent
     {
-        [Header("Settings"), SerializeField] private GameObject _fullRaidOverlay;
-        [SerializeField] private GameObject _miniRaidIndicator;
+        [Header("Settings"), SerializeField] private RaidImplementationTest _raidUi;
 
         [Header("Live Data"), SerializeField, ReadOnly] private bool _isRaiding;
         [SerializeField, ReadOnly] private bool _isLocal;
         [SerializeField, ReadOnly] private int _teamNumber;
         [SerializeField, ReadOnly] private int _actorNumber;
         [SerializeField, ReadOnly] private int _bonusCounter;
-
-        [Header("Debug Settings"), SerializeField] private Key _controlKey = Key.F5;
 
         private RaidBridge _raidBridge;
         private IBattleEvent _externalBattleEvent;
@@ -44,16 +40,14 @@ namespace Raid.Scripts.Test
             if (_raidBridge != null)
             {
                 _raidBridge.SetRaidEventHandler(null);
+                _externalBattleEvent = null;
             }
         }
 
-        private void Update()
+        private void UiClosedCallback()
         {
-            if (Keyboard.current[_controlKey].wasPressedThisFrame && _isRaiding)
-            {
-                // Eventually IRaidEvent.RaidStop will be called to actually stop and hide raiding.
-                _externalBattleEvent.PlayerClosedRaid();
-            }
+            // Eventually our IRaidEvent.RaidStop will be called to actually stop and hide raiding.
+            _externalBattleEvent?.PlayerClosedRaid();
         }
 
         #region IRaidBridge
@@ -67,7 +61,7 @@ namespace Raid.Scripts.Test
             _teamNumber = teamNumber;
             _actorNumber = playerInfo?.ActorNumber ?? 0;
             _bonusCounter = 0;
-            ShowRaid();
+            _raidUi.ShowRaid(_isLocal, UiClosedCallback);
         }
 
         void IRaidEvent.RaidBonus(int teamNumber, IPlayerInfo playerInfo)
@@ -79,7 +73,7 @@ namespace Raid.Scripts.Test
         void IRaidEvent.RaidStop(int teamNumber, IPlayerInfo playerInfo)
         {
             Debug.Log($"team {teamNumber} player {playerInfo} isRaiding {_isRaiding}");
-            HideRaid();
+            _raidUi.HideRaid();
             ResetState();
         }
 
@@ -93,17 +87,5 @@ namespace Raid.Scripts.Test
             _actorNumber = 0;
             _bonusCounter = 0;
        }
-
-        private void ShowRaid()
-        {
-            _fullRaidOverlay.SetActive(_isLocal);
-            _miniRaidIndicator.SetActive(!_isLocal);
-        }
-
-        private void HideRaid()
-        {
-            _fullRaidOverlay.SetActive(false);
-            _miniRaidIndicator.SetActive(false);
-        }
     }
 }
