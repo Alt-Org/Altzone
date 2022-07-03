@@ -178,9 +178,9 @@ namespace Battle.Scripts.Test
 
         private void OnTeamActivation(UiEvents.TeamActivation data)
         {
+            Debug.Log($"{data}");
             var arena = FindObjectOfType<ArenaStatusHandler>();
             arena.ChangeArenaState(data.IsBallOnRedTeamArea, data.IsBallOnBlueTeamArea);
-            Debug.Log($"{data}");
         }
 
         private static IEnumerator SimulateCountdown(int countdownDelay)
