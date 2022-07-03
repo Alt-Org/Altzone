@@ -210,9 +210,9 @@ namespace Battle.Scripts.Battle.Players
                 var tracker = shield.AddComponent<ColliderTracker>();
                 tracker.Callback = collision => { collisionDriver.OnShieldCollision(collision); };
             }
-            if (_debug._isLogMoveTo)
+            if (_debug._isLogMoveTo && Application.isEditor)
             {
-                StartCoroutine(ThrottledLogger());
+                StartCoroutine(ThrottledDebugLogger());
             }
         }
 
@@ -267,27 +267,24 @@ namespace Battle.Scripts.Battle.Players
             _debugLogMessage = debugLogMessage;
         }
 
-        private float _debugLogTime;
         private string _debugLogMessage;
 
-        private IEnumerator ThrottledLogger()
+        /// <summary>
+        /// Throttles debug log messages printing them only on every N seconds after first message is detected.
+        /// </summary>
+        private IEnumerator ThrottledDebugLogger()
         {
-            if (!Application.isEditor)
-            {
-                yield break;
-            }
-            _debugLogTime = Time.time;
+            const float samplingInterval = 1.0f;
+            Assert.IsTrue(Application.isEditor);
+            var nextDebugLogTime = 0f;
             _debugLogMessage = null;
             for (;;)
             {
-                if (Time.time > _debugLogTime)
+                if (_debugLogMessage != null && Time.time > nextDebugLogTime)
                 {
-                    if (_debugLogMessage != null)
-                    {
-                        Debug.Log(_debugLogMessage);
-                        _debugLogMessage = null;
-                        _debugLogTime = Time.time + 1f;
-                    }
+                    Debug.Log(_debugLogMessage);
+                    _debugLogMessage = null;
+                    nextDebugLogTime = Time.time + samplingInterval;
                 }
                 yield return null;
             }
