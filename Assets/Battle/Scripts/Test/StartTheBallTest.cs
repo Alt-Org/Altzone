@@ -4,6 +4,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
+using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
@@ -12,30 +13,6 @@ using Random = UnityEngine.Random;
 
 namespace Battle.Scripts.Test
 {
-    internal class SlingshotStart
-    {
-        public readonly ITeamSnapshotTracker TeamTracker1;
-        public readonly ITeamSnapshotTracker TeamTracker2;
-
-        public SlingshotStart(ITeamSnapshotTracker teamTracker1, ITeamSnapshotTracker teamTracker2)
-        {
-            TeamTracker1 = teamTracker1;
-            TeamTracker2 = teamTracker2;
-        }
-    }
-
-    internal class SlingshotEnd
-    {
-        public readonly ITeamSnapshotTracker TeamTracker1;
-        public readonly ITeamSnapshotTracker TeamTracker2;
-
-        public SlingshotEnd(ITeamSnapshotTracker teamTracker1, ITeamSnapshotTracker teamTracker2)
-        {
-            TeamTracker1 = teamTracker1;
-            TeamTracker2 = teamTracker2;
-        }
-    }
-
     /// <summary>
     /// Starts the ball into gameplay
     /// </summary>
@@ -202,11 +179,11 @@ namespace Battle.Scripts.Test
             {
                 var startingTeam = playerToStart.TeamNumber;
                 var tracker = _playerManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
-                this.Publish(new SlingshotStart(tracker, null));
+                this.Publish(new UiEvents.SlingshotStart(tracker, null));
                 yield return countDownDelay;
 
                 tracker.StopTracking();
-                this.Publish(new SlingshotEnd(tracker, null));
+                this.Publish(new UiEvents.SlingshotEnd(tracker, null));
                 yield return null;
 
                 startTeam = _playerManager.GetBattleTeam(startingTeam);
@@ -231,12 +208,12 @@ namespace Battle.Scripts.Test
             {
                 var blueTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
-                this.Publish(new SlingshotStart(redTracker, blueTracker));
+                this.Publish(new UiEvents.SlingshotStart(redTracker, blueTracker));
                 yield return countDownDelay;
 
                 blueTracker.StopTracking();
                 redTracker.StopTracking();
-                this.Publish(new SlingshotEnd(redTracker, blueTracker));
+                this.Publish(new UiEvents.SlingshotEnd(redTracker, blueTracker));
                 yield return null;
 
                 var startingTeam = GetStatingTeamByDistance(blueTracker, redTracker, out var startDistance, out var otherDistance);
@@ -276,7 +253,7 @@ namespace Battle.Scripts.Test
             Debug.Log($"{name} DONE");
         }
 
-        private static int GetStatingTeamByDistance(ITeamSnapshotTracker blueTracker, ITeamSnapshotTracker redTracker, out float startDistance,
+        private static int GetStatingTeamByDistance(ITeamSlingshotTracker blueTracker, ITeamSlingshotTracker redTracker, out float startDistance,
             out float otherDistance)
         {
             var blueDistance = Mathf.Sqrt(blueTracker.GetSqrDistance);

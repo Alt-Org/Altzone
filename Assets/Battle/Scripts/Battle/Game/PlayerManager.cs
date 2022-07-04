@@ -246,14 +246,14 @@ namespace Battle.Scripts.Battle.Game
             return null;
         }
 
-        private ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber)
+        private ITeamSlingshotTracker GetTeamSnapshotTracker(int teamNumber)
         {
             var team = CreateBattleTeam(teamNumber);
             if (team == null)
             {
-                return new NullTeamSnapshotTracker(teamNumber);
+                return new NullTeamSlingshotTracker(teamNumber);
             }
-            var tracker = new TeamSnapshotTracker(team);
+            var tracker = new TeamSlingshotTracker(team);
             StartCoroutine(tracker.TrackTheTeam());
             return tracker;
         }
@@ -282,7 +282,7 @@ namespace Battle.Scripts.Battle.Game
             return CreateBattleTeam(PhotonBattle.GetOppositeTeamNumber(teamNumber));
         }
 
-        ITeamSnapshotTracker IPlayerManager.GetTeamSnapshotTracker(int teamNumber)
+        ITeamSlingshotTracker IPlayerManager.GetTeamSnapshotTracker(int teamNumber)
         {
             return GetTeamSnapshotTracker(teamNumber);
         }
@@ -533,21 +533,11 @@ namespace Battle.Scripts.Battle.Game
         #endregion
     }
 
-    internal interface ITeamSnapshotTracker
-    {
-        float GetSqrDistance { get; }
-        
-        Transform Player1Transform { get; }
-        Transform Player2Transform { get; }
-
-        public void StopTracking();
-    }
-
-    internal class NullTeamSnapshotTracker : ITeamSnapshotTracker
+    internal class NullTeamSlingshotTracker : ITeamSlingshotTracker
     {
         private readonly int _teamNumber;
 
-        public NullTeamSnapshotTracker(int teamNumber)
+        public NullTeamSlingshotTracker(int teamNumber)
         {
             _teamNumber = teamNumber;
         }
@@ -563,7 +553,7 @@ namespace Battle.Scripts.Battle.Game
         }
     }
 
-    internal class TeamSnapshotTracker : ITeamSnapshotTracker
+    internal class TeamSlingshotTracker : ITeamSlingshotTracker
     {
         public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);
 
@@ -578,7 +568,7 @@ namespace Battle.Scripts.Battle.Game
         private float _sqrSqrDistance;
         private float _prevSqrSqrDistance;
 
-        public TeamSnapshotTracker(BattleTeam battleTeam)
+        public TeamSlingshotTracker(BattleTeam battleTeam)
         {
             _teamNumber = battleTeam.TeamNumber;
             _player1 = battleTeam.SafeTransform(battleTeam.FirstPlayer);

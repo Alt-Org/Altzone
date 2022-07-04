@@ -20,7 +20,7 @@ namespace Battle.Scripts.Battle
 
         BattleTeam GetOppositeTeam(int teamNumber);
 
-        ITeamSnapshotTracker GetTeamSnapshotTracker(int teamNumber);
+        ITeamSlingshotTracker GetTeamSnapshotTracker(int teamNumber);
 
         IPlayerDriver GetPlayerByActorNumber(int actorNumber);
 

@@ -90,7 +90,7 @@ namespace Battle.Scripts.Ui
         internal class WallCollision : CollisionEvent
         {
             public readonly int RaidTeam;
-            
+
             public WallCollision(Collision2D collision, int raidTeam) : base(collision)
             {
                 RaidTeam = raidTeam;
@@ -116,6 +116,20 @@ namespace Battle.Scripts.Ui
             public override string ToString()
             {
                 return $"{nameof(IsBallOnBlueTeamArea)}: {IsBallOnBlueTeamArea}, {nameof(IsBallOnRedTeamArea)}: {IsBallOnRedTeamArea}";
+            }
+        }
+
+        internal class SlingshotStart : SlingshotTrackerEvent
+        {
+            public SlingshotStart(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
+            {
+            }
+        }
+
+        internal class SlingshotEnd : SlingshotTrackerEvent
+        {
+            public SlingshotEnd(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
+            {
             }
         }
 
@@ -145,6 +159,18 @@ namespace Battle.Scripts.Ui
             public override string ToString()
             {
                 return $"ActorNumber: {Player.ActorNumber}";
+            }
+        }
+
+        internal class SlingshotTrackerEvent
+        {
+            public readonly ITeamSlingshotTracker TeamTracker1;
+            public readonly ITeamSlingshotTracker TeamTracker2;
+
+            protected SlingshotTrackerEvent(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2)
+            {
+                TeamTracker1 = teamTracker1;
+                TeamTracker2 = teamTracker2;
             }
         }
 
