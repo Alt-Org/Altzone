@@ -11,6 +11,13 @@ namespace Battle.Scripts.Ui
         [Header("TeamAreas"), SerializeField] private GameObject _redArea;
         [SerializeField] private GameObject _blueArea;
 
+        [Header("Duration"), SerializeField] private float _dur;
+        // The Alpha channel for the image put i
+
+        private Image _redImg;
+        private Image _blueImg;
+
+
         private void Awake()
         {
             SetSprite();
@@ -33,16 +40,30 @@ namespace Battle.Scripts.Ui
         
         private void SetSprite()
         {
-            _redArea.GetComponent<Image>().sprite = _frozen;
-            _blueArea.GetComponent<Image>().sprite = _frozen;
-            _redArea.SetActive(false);
-            _blueArea.SetActive(false);
+            _redImg = _redArea.GetComponent<Image>();
+            _blueImg = _blueArea.GetComponent<Image>();
+            _redImg.sprite = _frozen;
+            _blueImg.sprite = _frozen;
+            _redImg.CrossFadeAlpha(0f, 0f, false);
+            _blueImg.CrossFadeAlpha(0f, 0f, false);
+            //_redArea.SetActive(false);
+            //_blueArea.SetActive(false);
         }
 
         private void ChangeArenaState(bool red, bool blue)
         {
-            _redArea.SetActive(red);
-            _blueArea.SetActive(blue);
+            var rVal = 0f;
+            var bVal = 0f;
+            if(red)
+            {
+                rVal = 1f;
+            }
+            if(blue)
+            {
+                bVal = 1f;
+            }
+            _redImg.CrossFadeAlpha(rVal, _dur, false);
+            _blueImg.CrossFadeAlpha(bVal, _dur, false);
         }
     }
 }
