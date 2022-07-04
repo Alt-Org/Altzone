@@ -4,11 +4,12 @@ namespace Battle.Scripts.Battle
 {
     internal interface ITeamSlingshotTracker
     {
-        float GetSqrDistance { get; }
+        int TeamNumber { get; }
+        float SqrDistance { get; }
 
         Transform Player1Transform { get; }
         Transform Player2Transform { get; }
 
-        public void StopTracking();
+        public float StopTracking();
     }
 }

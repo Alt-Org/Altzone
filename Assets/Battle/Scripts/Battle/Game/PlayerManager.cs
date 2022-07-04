@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -249,13 +248,7 @@ namespace Battle.Scripts.Battle.Game
         private ITeamSlingshotTracker GetTeamSnapshotTracker(int teamNumber)
         {
             var team = CreateBattleTeam(teamNumber);
-            if (team == null)
-            {
-                return new NullTeamSlingshotTracker(teamNumber);
-            }
-            var tracker = new TeamSlingshotTracker(team);
-            StartCoroutine(tracker.TrackTheTeam());
-            return tracker;
+            return team != null ? new TeamSlingshotTracker(team) : new NullTeamSlingshotTracker(teamNumber);
         }
 
         #region IGameplayManager
@@ -535,82 +528,59 @@ namespace Battle.Scripts.Battle.Game
 
     internal class NullTeamSlingshotTracker : ITeamSlingshotTracker
     {
-        private readonly int _teamNumber;
+        public int TeamNumber { get; }
 
         public NullTeamSlingshotTracker(int teamNumber)
         {
-            _teamNumber = teamNumber;
+            TeamNumber = teamNumber;
         }
 
-        public float GetSqrDistance => 0;
+        public float SqrDistance => 0;
 
         public Transform Player1Transform => null;
         public Transform Player2Transform => null;
 
-        public void StopTracking()
+        public float StopTracking()
         {
-            Debug.Log($"team {_teamNumber} sqr distance {GetSqrDistance:0.00}");
+            Debug.Log($"team {TeamNumber} sqr distance {SqrDistance:0.00}");
+            return SqrDistance;
         }
     }
 
     internal class TeamSlingshotTracker : ITeamSlingshotTracker
     {
-        public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);
+        public int TeamNumber { get; }
+        public float SqrDistance => CalculateDistance();
 
-        public Transform Player1Transform => _player1;
-        public Transform Player2Transform => _player2;
-
-        private readonly int _teamNumber;
-        private readonly Transform _player1;
-        private readonly Transform _player2;
+        public Transform Player1Transform { get; }
+        public Transform Player2Transform { get; }
 
         private bool _isStopped;
-        private float _sqrSqrDistance;
-        private float _prevSqrSqrDistance;
+        private float _sqrDistance;
 
         public TeamSlingshotTracker(BattleTeam battleTeam)
         {
-            _teamNumber = battleTeam.TeamNumber;
-            _player1 = battleTeam.SafeTransform(battleTeam.FirstPlayer);
-            _player2 = battleTeam.SafeTransform(battleTeam.SecondPlayer);
-            Debug.Log($"team {_teamNumber} p1 {_player1.position} p2 {_player2.position}");
+            TeamNumber = battleTeam.TeamNumber;
+            Player1Transform = battleTeam.SafeTransform(battleTeam.FirstPlayer);
+            Player2Transform = battleTeam.SafeTransform(battleTeam.SecondPlayer);
+            Debug.Log($"team {TeamNumber} p1 {Player1Transform.position} p2 {Player2Transform.position}");
         }
 
-        public void StopTracking()
+        public float StopTracking()
         {
-            _isStopped = true;
             CalculateDistance();
-            Debug.Log($"team {_teamNumber} sqr distance {_sqrSqrDistance:0.00}");
+            _isStopped = true;
+            Debug.Log($"team {TeamNumber} sqr distance {SqrDistance:0.00}");
+            return SqrDistance;
         }
 
-        private void CalculateDistance()
+        private float CalculateDistance()
         {
-            _sqrSqrDistance = (_player1.position - _player2.position).sqrMagnitude;
-        }
-
-        public IEnumerator TrackTheTeam()
-        {
-            var delay = new WaitForSeconds(0.1f);
-            const float debugInterval = 0.5f;
-            var debugLogTime = Time.time + debugInterval;
-            _sqrSqrDistance = 0;
-            _prevSqrSqrDistance = _sqrSqrDistance;
-            while (!_isStopped)
+            if (!_isStopped)
             {
-                yield return delay;
-                if (_isStopped)
-                {
-                    yield break;
-                }
-                CalculateDistance();
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (Time.time > debugLogTime && _prevSqrSqrDistance != _sqrSqrDistance)
-                {
-                    debugLogTime = Time.time + debugInterval;
-                    _prevSqrSqrDistance = _sqrSqrDistance;
-                    Debug.Log($"team {_teamNumber} sqr distance {_sqrSqrDistance:0.00}");
-                }
+                _sqrDistance = Mathf.Abs((Player1Transform.position - Player2Transform.position).sqrMagnitude);
             }
+            return _sqrDistance;
         }
     }
 

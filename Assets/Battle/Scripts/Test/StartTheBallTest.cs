@@ -192,7 +192,7 @@ namespace Battle.Scripts.Test
                 if (startTeam != null)
                 {
                     var slingshotPower = _ballSlingshotPower * startTeam.Attack * _playerAttackMultiplier;
-                    var startDistance = Mathf.Sqrt(tracker.GetSqrDistance);
+                    var startDistance = Mathf.Sqrt(tracker.SqrDistance);
                     // Official formula for ball speed (continue gameplay)
                     speed = slingshotPower * startDistance;
                     Debug.Log($"{name} RESTART slingshotPower {slingshotPower} dist {startDistance:0.00} " +
@@ -256,8 +256,8 @@ namespace Battle.Scripts.Test
         private static int GetStatingTeamByDistance(ITeamSlingshotTracker blueTracker, ITeamSlingshotTracker redTracker, out float startDistance,
             out float otherDistance)
         {
-            var blueDistance = Mathf.Sqrt(blueTracker.GetSqrDistance);
-            var redDistance = Mathf.Sqrt(redTracker.GetSqrDistance);
+            var blueDistance = Mathf.Sqrt(blueTracker.SqrDistance);
+            var redDistance = Mathf.Sqrt(redTracker.SqrDistance);
             if (blueDistance < redDistance)
             {
                 startDistance = redDistance;
