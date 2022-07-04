@@ -46,8 +46,6 @@ namespace Battle.Scripts.Ui
             _blueImg.sprite = _frozen;
             _redImg.CrossFadeAlpha(0f, 0f, false);
             _blueImg.CrossFadeAlpha(0f, 0f, false);
-            //_redArea.SetActive(false);
-            //_blueArea.SetActive(false);
         }
 
         private void ChangeArenaState(bool red, bool blue)
