@@ -79,6 +79,7 @@ namespace Battle.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             gameplayManager.RegisterPlayer(this);
+            _peerCount = 0;
            this.ExecuteOnNextFrame(() =>
             {
                 // PeerCount handshake protocol
