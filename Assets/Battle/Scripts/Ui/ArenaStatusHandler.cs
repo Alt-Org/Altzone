@@ -39,7 +39,7 @@ namespace Battle.Scripts.Ui
             _blueArea.SetActive(false);
         }
 
-        public void ChangeArenaState(bool red, bool blue)
+        private void ChangeArenaState(bool red, bool blue)
         {
             _redArea.SetActive(red);
             _blueArea.SetActive(blue);
