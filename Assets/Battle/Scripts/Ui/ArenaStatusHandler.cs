@@ -1,7 +1,8 @@
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Battle.Scripts.Battle.Ui
+namespace Battle.Scripts.Ui
 {
     public class ArenaStatusHandler : MonoBehaviour
     {
@@ -15,6 +16,21 @@ namespace Battle.Scripts.Battle.Ui
             SetSprite();
         }
 
+        private void OnEnable()
+        {
+            this.Subscribe<UiEvents.TeamActivation>(OnTeamActivation);
+        }
+
+        private void OnDisable()
+        {
+            this.Unsubscribe();
+        }
+
+        private void OnTeamActivation(UiEvents.TeamActivation data)
+        {
+            ChangeArenaState(data.IsBallOnRedTeamArea, data.IsBallOnBlueTeamArea);
+        }
+        
         private void SetSprite()
         {
             _redArea.GetComponent<Image>().sprite = _frozen;

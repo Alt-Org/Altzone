@@ -2,7 +2,6 @@ using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
-using Battle.Scripts.Battle.Ui;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
@@ -22,8 +21,6 @@ namespace Battle.Scripts.Test
         private int _noComponentStart;
         private int _noComponentRestart;
         private int _noComponentRaid;
-
-        private ArenaStatusHandler _arenaStatus;
 
         private void Awake()
         {
@@ -53,8 +50,6 @@ namespace Battle.Scripts.Test
             this.Subscribe<UiEvents.ShieldCollision>(OnShieldCollision);
             this.Subscribe<UiEvents.WallCollision>(OnWallCollision);
             this.Subscribe<UiEvents.TeamActivation>(OnTeamActivation);
-            
-            _arenaStatus = FindObjectOfType<ArenaStatusHandler>();
         }
 
         private void OnDisable()
@@ -183,11 +178,6 @@ namespace Battle.Scripts.Test
         private void OnTeamActivation(UiEvents.TeamActivation data)
         {
             Debug.Log($"{data}");
-            if (_arenaStatus == null)
-            {
-                return;
-            }
-            _arenaStatus.ChangeArenaState(data.IsBallOnRedTeamArea, data.IsBallOnBlueTeamArea);
         }
 
         private static IEnumerator SimulateCountdown(int countdownDelay)
