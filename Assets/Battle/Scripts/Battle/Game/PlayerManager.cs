@@ -536,6 +536,9 @@ namespace Battle.Scripts.Battle.Game
     internal interface ITeamSnapshotTracker
     {
         float GetSqrDistance { get; }
+        
+        Transform Player1Transform { get; }
+        Transform Player2Transform { get; }
 
         public void StopTracking();
     }
@@ -551,6 +554,9 @@ namespace Battle.Scripts.Battle.Game
 
         public float GetSqrDistance => 0;
 
+        public Transform Player1Transform => null;
+        public Transform Player2Transform => null;
+
         public void StopTracking()
         {
             Debug.Log($"team {_teamNumber} sqr distance {GetSqrDistance:0.00}");
@@ -560,6 +566,9 @@ namespace Battle.Scripts.Battle.Game
     internal class TeamSnapshotTracker : ITeamSnapshotTracker
     {
         public float GetSqrDistance => Mathf.Abs(_sqrSqrDistance);
+
+        public Transform Player1Transform => _player1;
+        public Transform Player2Transform => _player2;
 
         private readonly int _teamNumber;
         private readonly Transform _player1;
