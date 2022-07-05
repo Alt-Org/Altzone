@@ -1,5 +1,6 @@
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 namespace Battle.Scripts.Ui
@@ -11,16 +12,23 @@ namespace Battle.Scripts.Ui
         [Header("TeamAreas"), SerializeField] private GameObject _redArea;
         [SerializeField] private GameObject _blueArea;
 
-        [Header("Duration"), SerializeField] private float _dur;
-        // The Alpha channel for the image put i
+        [Header("Duration"), SerializeField] private float _crossFadeAlphaDuration;
 
-        private Image _redImg;
-        private Image _blueImg;
-
+        private Image _redImage;
+        private Image _blueImage;
 
         private void Awake()
         {
-            SetSprite();
+            _redImage = _redArea.GetComponent<Image>();
+            _blueImage = _blueArea.GetComponent<Image>();
+            Assert.IsNotNull(_redImage, "_redImage != null");
+            Assert.IsNotNull(_blueImage, "_blueImage != null");
+            if (_frozen != null)
+            {
+                _redImage.sprite = _frozen;
+                _blueImage.sprite = _frozen;
+            }
+            HideArenaState();
         }
 
         private void OnEnable()
@@ -37,31 +45,17 @@ namespace Battle.Scripts.Ui
         {
             ChangeArenaState(data.IsBallOnRedTeamArea, data.IsBallOnBlueTeamArea);
         }
-        
-        private void SetSprite()
+
+        private void HideArenaState()
         {
-            _redImg = _redArea.GetComponent<Image>();
-            _blueImg = _blueArea.GetComponent<Image>();
-            _redImg.sprite = _frozen;
-            _blueImg.sprite = _frozen;
-            _redImg.CrossFadeAlpha(0f, 0f, false);
-            _blueImg.CrossFadeAlpha(0f, 0f, false);
+            _redImage.CrossFadeAlpha(0f, 0f, false);
+            _blueImage.CrossFadeAlpha(0f, 0f, false);
         }
 
         private void ChangeArenaState(bool red, bool blue)
         {
-            var rVal = 0f;
-            var bVal = 0f;
-            if(red)
-            {
-                rVal = 1f;
-            }
-            if(blue)
-            {
-                bVal = 1f;
-            }
-            _redImg.CrossFadeAlpha(rVal, _dur, false);
-            _blueImg.CrossFadeAlpha(bVal, _dur, false);
+            _redImage.CrossFadeAlpha(red ? 1f : 0f, _crossFadeAlphaDuration, false);
+            _blueImage.CrossFadeAlpha(blue ? 1f : 0f, _crossFadeAlphaDuration, false);
         }
     }
 }
