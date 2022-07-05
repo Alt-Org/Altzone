@@ -35,7 +35,7 @@ namespace Altzone.Scripts
             }
             GeoLocation.Load(data =>
             {
-                UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data}");
+                UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data} IsSimulator {AppPlatform.IsSimulator}");
                 SetConsentMetaData(data);
             });
         }

@@ -46,6 +46,29 @@ public static class AppPlatform
     }
 
     /// <summary>
+    /// Check if we are running inside a device simulator inside UNITY Editor.
+    /// </summary>
+    public static bool IsSimulator
+    {
+        get
+        {
+            if (UnityEngine.Device.Application.installMode != ApplicationInstallMode.Editor)
+            {
+                // Simulator can run only inside Editor.
+                return false;
+            }
+            if (UnityEngine.Device.SystemInfo.deviceType != DeviceType.Handheld)
+            {
+                // Simulator simulates handheld devices (for now).
+                return false;
+            }
+            // Anything but Editor platforms are simulated!
+            var platform = UnityEngine.Device.Application.platform;
+            return platform is not (RuntimePlatform.WindowsEditor or RuntimePlatform.LinuxEditor or RuntimePlatform.OSXEditor);
+        }
+    }
+
+    /// <summary>
     /// Windows platform can be editor, player and server.
     /// </summary>
     public static bool IsWindows { get; } = Application.platform.ToString().ToLower().StartsWith("windows");
