@@ -16,9 +16,9 @@ namespace Battle.Scripts.Battle
 
         void ForEach(Action<IPlayerDriver> action);
 
-        BattleTeam GetBattleTeam(int teamNumber);
+        IBattleTeam GetBattleTeam(int teamNumber);
 
-        BattleTeam GetOppositeTeam(int teamNumber);
+        IBattleTeam GetOppositeTeam(int teamNumber);
 
         ITeamSlingshotTracker GetTeamSnapshotTracker(int teamNumber);
 

@@ -166,8 +166,8 @@ namespace Battle.Scripts.Test
 
         private IEnumerator StartBallWorkRoutine(IPlayerDriver playerToStart)
         {
-            BattleTeam startTeam;
-            BattleTeam otherTeam;
+            IBattleTeam startTeam;
+            IBattleTeam otherTeam;
             float speed;
             // During count down period players can move freely
             var countdownSeconds = playerToStart != null
@@ -269,7 +269,7 @@ namespace Battle.Scripts.Test
             return PhotonBattle.TeamBlueValue;
         }
 
-        private static void GetDirectionAndPosition(BattleTeam startTeam, out Vector2 direction, out Vector2 ballDropPosition)
+        private static void GetDirectionAndPosition(IBattleTeam startTeam, out Vector2 direction, out Vector2 ballDropPosition)
         {
             if (startTeam == null)
             {

@@ -17,13 +17,12 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Container for team members, first player has always lower player position. Second player can be null.
     /// </summary>
-    internal class BattleTeam
+    internal class BattleTeam : IBattleTeam
     {
-        public readonly int TeamNumber;
-        public readonly IPlayerDriver FirstPlayer;
-        public readonly IPlayerDriver SecondPlayer;
-
-        public readonly int PlayerCount;
+        public int TeamNumber { get; }
+        public IPlayerDriver FirstPlayer { get; }
+        public IPlayerDriver SecondPlayer { get; }
+        public int PlayerCount { get; }
 
         public BattleTeam(int teamNumber, IPlayerDriver firstPlayer, IPlayerDriver secondPlayer)
         {
@@ -79,7 +78,7 @@ namespace Battle.Scripts.Battle.Game
                 case PhotonBattle.TeamRedValue:
                     return playArea.RedTeamMiddlePosition;
                 default:
-                    return null;
+                    throw new UnityException($"invalid team number {TeamNumber}");
             }
         }
 
@@ -265,12 +264,12 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        BattleTeam IPlayerManager.GetBattleTeam(int teamNumber)
+        IBattleTeam IPlayerManager.GetBattleTeam(int teamNumber)
         {
             return CreateBattleTeam(teamNumber);
         }
 
-        BattleTeam IPlayerManager.GetOppositeTeam(int teamNumber)
+        IBattleTeam IPlayerManager.GetOppositeTeam(int teamNumber)
         {
             return CreateBattleTeam(PhotonBattle.GetOppositeTeamNumber(teamNumber));
         }
