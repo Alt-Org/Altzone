@@ -74,9 +74,9 @@ namespace Battle.Scripts.Battle.Game
             switch (TeamNumber)
             {
                 case PhotonBattle.TeamBlueValue:
-                    return playArea.BlueTeamMiddlePosition;
+                    return playArea.BlueTeamTransform;
                 case PhotonBattle.TeamRedValue:
-                    return playArea.RedTeamMiddlePosition;
+                    return playArea.RedTeamTransform;
                 default:
                     throw new UnityException($"invalid team number {TeamNumber}");
             }

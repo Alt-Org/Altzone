@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle
         public Collider2D BlueTeamCollider { get; }
         public Collider2D RedTeamCollider { get; }
 
-        public Transform BlueTeamMiddlePosition { get; }
-        public Transform RedTeamMiddlePosition { get; }
+        public Transform BlueTeamTransform { get; }
+        public Transform RedTeamTransform { get; }
     }
 }

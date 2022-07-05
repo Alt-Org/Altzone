@@ -22,8 +22,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private Collider2D _teamBlueCollider;
         [SerializeField] private Collider2D _teamRedCollider;
 
-        public Transform BlueTeamMiddlePosition => _blueTeam;
-        public Transform RedTeamMiddlePosition => _redTeam;
+        public Transform BlueTeamTransform => _blueTeam;
+        public Transform RedTeamTransform => _redTeam;
 
         public Collider2D BlueTeamCollider => _teamBlueCollider;
         public Collider2D RedTeamCollider => _teamRedCollider;
