@@ -16,6 +16,7 @@ namespace Battle.Scripts.Battle.Ball
     /// <remarks>
     /// <c>Ball</c> rigidbody and collider setup and behaviour if different on local and remote clients.
     /// </remarks>
+    [RequireComponent(typeof(PhotonView))]
     internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IPunObservable
     {
         [Serializable]
