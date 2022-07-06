@@ -376,7 +376,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             _rigidbody.position = position;
             UpdateBallText();
-            _photonView.RPC(nameof(TestBallPositionRpc), RpcTarget.Others, position);
+            _photonView.RPC(nameof(SetBallPositionRpc), RpcTarget.Others, position);
         }
 
         void IBallManager.SetBallSpeed(float speed)
@@ -393,7 +393,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             var actualVelocity = InternalSetRigidbodyVelocity(speed, direction);
             UpdateBallText();
-            _photonView.RPC(nameof(TestBallVelocityRpc), RpcTarget.Others, actualVelocity);
+            _photonView.RPC(nameof(SetBallVelocityRpc), RpcTarget.Others, actualVelocity);
             StartBallVelocityTracker();
         }
 
@@ -433,7 +433,7 @@ namespace Battle.Scripts.Battle.Ball
             }
             _SetBallState(ballState);
             UpdateBallText();
-            _photonView.RPC(nameof(TestSetBallStateRpc), RpcTarget.Others, ballState);
+            _photonView.RPC(nameof(SetBallStateRpc), RpcTarget.Others, ballState);
         }
 
         void IBallManager.SetBallLocalTeamColor(int colorIndex)
@@ -488,7 +488,7 @@ namespace Battle.Scripts.Battle.Ball
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetBallStateRpc), RpcTarget.Others, _ballState);
+            _photonView.RPC(nameof(SetBallStateRpc), RpcTarget.Others, _ballState);
         }
 
         #endregion
@@ -498,21 +498,21 @@ namespace Battle.Scripts.Battle.Ball
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
 
         [PunRPC]
-        private void TestBallPositionRpc(Vector2 position)
+        private void SetBallPositionRpc(Vector2 position)
         {
             _rigidbody.position = position;
             UpdateBallText();
         }
 
         [PunRPC]
-        private void TestBallVelocityRpc(Vector2 velocity)
+        private void SetBallVelocityRpc(Vector2 velocity)
         {
             _rigidbody.velocity = velocity;
             UpdateBallText();
         }
 
         [PunRPC]
-        private void TestSetBallStateRpc(BallState ballState)
+        private void SetBallStateRpc(BallState ballState)
         {
             _SetBallState(ballState);
             UpdateBallText();

@@ -84,7 +84,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 // PeerCount handshake protocol
                 Debug.Log($"SEND SendMyPeerCountRpc {this} pos {_playerPos} local {_isLocal} : {_peerCount} ->");
-                _photonView.RPC(nameof(TestSendMyPeerCountRpc), RpcTarget.All);
+                _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All);
             });
             if (!_isLocal)
             {
@@ -181,7 +181,7 @@ namespace Battle.Scripts.Battle.Players
         {
             // NO IsNetworkSynchronize check!
             // - rotation is based on initial player position Y coordinate.
-            _photonView.RPC(nameof(TestRotateRpc), RpcTarget.All, isUpsideDown);
+            _photonView.RPC(nameof(RotatePlayerRpc), RpcTarget.All, isUpsideDown);
         }
 
         void IPlayerDriver.FixCameraRotation(Camera gameCamera)
@@ -194,37 +194,37 @@ namespace Battle.Scripts.Battle.Players
         {
             // NO IsNetworkSynchronize check!
             // - If input is configured to us, lets do it!
-            _photonView.RPC(nameof(TestMoveToRpc), RpcTarget.All, targetPosition);
+            _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
-            TestSetCharacterPoseRpc(poseIndex);
+            SetPlayerCharacterPoseRpc(poseIndex);
             if (!IsNetworkSynchronize)
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetCharacterPoseRpc), RpcTarget.Others, poseIndex);
+            _photonView.RPC(nameof(SetPlayerCharacterPoseRpc), RpcTarget.Others, poseIndex);
         }
 
         void IPlayerDriver.SetPlayMode(BattlePlayMode playMode)
         {
-            TestSetPlayModeRpc(playMode);
+            SetPlayerPlayModeRpc(playMode);
             if (!IsNetworkSynchronize)
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetPlayModeRpc), RpcTarget.Others, playMode);
+            _photonView.RPC(nameof(SetPlayerPlayModeRpc), RpcTarget.Others, playMode);
         }
 
         void IPlayerDriver.SetShieldVisibility(bool state)
         {
-            TestSetShieldVisibilityRpc(state);
+            SetPlayerShieldVisibilityRpc(state);
             if (!IsNetworkSynchronize)
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetShieldVisibilityRpc), RpcTarget.Others, state);
+            _photonView.RPC(nameof(SetPlayerShieldVisibilityRpc), RpcTarget.Others, state);
         }
 
         void IPlayerDriver.SetShieldResistance(int resistance)
@@ -233,17 +233,17 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetShieldResistanceRpc), RpcTarget.All, resistance);
+            _photonView.RPC(nameof(SetPlayerShieldResistanceRpc), RpcTarget.All, resistance);
         }
 
         void IPlayerDriver.SetStunned(float duration)
         {
-            TestSetStunnedRpc(duration);
+            SetPlayerStunnedRpc(duration);
             if (!IsNetworkSynchronize)
             {
                 return;
             }
-            _photonView.RPC(nameof(TestSetStunnedRpc), RpcTarget.Others, duration);
+            _photonView.RPC(nameof(SetPlayerStunnedRpc), RpcTarget.Others, duration);
         }
 
         void IPlayerDriver.PlayerActorDestroyed()
@@ -264,43 +264,43 @@ namespace Battle.Scripts.Battle.Players
         // NOTE! When adding new RPC method check that the name is unique in PhotonServerSettings Rpc List!
 
         [PunRPC]
-        private void TestRotateRpc(bool isUpsideDown)
+        private void RotatePlayerRpc(bool isUpsideDown)
         {
             _playerActor.Rotate(isUpsideDown);
         }
 
         [PunRPC]
-        private void TestMoveToRpc(Vector2 targetPosition)
+        private void MovePlayerToRpc(Vector2 targetPosition)
         {
             _playerActor.MoveTo(targetPosition);
         }
 
         [PunRPC]
-        private void TestSetCharacterPoseRpc(int poseIndex)
+        private void SetPlayerCharacterPoseRpc(int poseIndex)
         {
             _playerActor.SetCharacterPose(poseIndex);
         }
 
         [PunRPC]
-        private void TestSetPlayModeRpc(BattlePlayMode playMode)
+        private void SetPlayerPlayModeRpc(BattlePlayMode playMode)
         {
             _playerActor.SetPlayMode(playMode);
         }
 
         [PunRPC]
-        private void TestSetShieldVisibilityRpc(bool state)
+        private void SetPlayerShieldVisibilityRpc(bool state)
         {
             _playerActor.SetShieldVisibility(state);
         }
 
         [PunRPC]
-        void TestSetShieldResistanceRpc(int resistance)
+        void SetPlayerShieldResistanceRpc(int resistance)
         {
             _playerActor.CurrentResistance = resistance;
         }
 
         [PunRPC]
-        private void TestSetStunnedRpc(float duration)
+        private void SetPlayerStunnedRpc(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
         }
@@ -310,7 +310,7 @@ namespace Battle.Scripts.Battle.Players
         #region Photon RPC for PeerCount handshake protocol
 
         [PunRPC]
-        private void TestSendMyPeerCountRpc()
+        private void SendPlayerPeerCountRpc()
         {
             Debug.Log($"{this} pos {_playerPos} local {_isLocal} : {_peerCount} <- {_peerCount + 1}");
             _peerCount += 1;
