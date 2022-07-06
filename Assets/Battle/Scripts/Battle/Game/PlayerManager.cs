@@ -9,6 +9,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
+using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -63,11 +64,13 @@ namespace Battle.Scripts.Battle.Game
             SecondPlayer?.SetPlayMode(playMode);
         }
 
-        public Transform SafeTransform(IPlayerDriver player)
+        public Transform SafePlayerTransform(IPlayerDriver player)
         {
-            Assert.IsTrue(player == FirstPlayer || player == SecondPlayer, "player == FirstPlayer || player == SecondPlayer");
+            // Note that SafePlayerTransform is not published via our public interface because currently only TeamSlingshotTracker needs this. 
             if (player != null)
             {
+                Assert.IsTrue(player.ActorNumber == FirstPlayer.ActorNumber || player.ActorNumber == SecondPlayer.ActorNumber,
+                    "player == FirstPlayer || player == SecondPlayer");
                 return player.PlayerTransform;
             }
             var playArea = Context.GetBattlePlayArea;
@@ -546,6 +549,9 @@ namespace Battle.Scripts.Battle.Game
         }
     }
 
+    /// <summary>
+    /// Helper to safely calculate distance between two players while gameplay is (re)starting.
+    /// </summary>
     internal class TeamSlingshotTracker : ITeamSlingshotTracker
     {
         public int TeamNumber { get; }
@@ -560,8 +566,8 @@ namespace Battle.Scripts.Battle.Game
         public TeamSlingshotTracker(BattleTeam battleTeam)
         {
             TeamNumber = battleTeam.TeamNumber;
-            Player1Transform = battleTeam.SafeTransform(battleTeam.FirstPlayer);
-            Player2Transform = battleTeam.SafeTransform(battleTeam.SecondPlayer);
+            Player1Transform = battleTeam.SafePlayerTransform(battleTeam.FirstPlayer);
+            Player2Transform = battleTeam.SafePlayerTransform(battleTeam.SecondPlayer);
             Debug.Log($"team {TeamNumber} p1 {Player1Transform.position} p2 {Player2Transform.position}");
         }
 
@@ -583,8 +589,14 @@ namespace Battle.Scripts.Battle.Game
         }
     }
 
+    /// <summary>
+    /// Helper to track ball movement inside team gameplay area.
+    /// </summary>
     internal class TeamColliderPlayAreaTracker : MonoBehaviour
     {
+        /// <summary>
+        /// Hard reference to the list of team members we are tracking.
+        /// </summary>
         public List<IPlayerDriver> TeamMembers { get; set; }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -592,6 +604,11 @@ namespace Battle.Scripts.Battle.Game
             if (!enabled)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            var otherGameObject = other.gameObject;
+            if (!otherGameObject.CompareTag(Tags.Ball))
+            {
+                return;
             }
             foreach (var playerDriver in TeamMembers)
             {
@@ -604,6 +621,11 @@ namespace Battle.Scripts.Battle.Game
             if (!enabled)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
+            }
+            var otherGameObject = other.gameObject;
+            if (!otherGameObject.CompareTag(Tags.Ball))
+            {
+                return;
             }
             foreach (var playerDriver in TeamMembers)
             {
