@@ -16,18 +16,18 @@ namespace Battle.Scripts.Test
     {
         private const string Tooltip1 = "If 'Is Offline Mode' only one player can play";
 
-        [Header("Debug Settings"), Tooltip(Tooltip1), SerializeField] private bool _isOfflineModeInEditor;
+        [Header("Debug Settings"), Tooltip(Tooltip1), SerializeField] private bool _isOfflineMode;
         [SerializeField] private string _roomName;
 
         private IEnumerator Start()
         {
             PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-            if (_isOfflineModeInEditor && !AppPlatform.IsEditor)
+            if (_isOfflineMode && !AppPlatform.IsEditor)
             {
                 ScoreFlash.Push("NOTE\r\nPHOTON NETWORK\r\nOFFLINE MODE");
             }
-            PhotonNetwork.OfflineMode = _isOfflineModeInEditor;
+            PhotonNetwork.OfflineMode = _isOfflineMode;
             for (; enabled;)
             {
                 if (PhotonNetwork.InRoom)
@@ -37,7 +37,7 @@ namespace Battle.Scripts.Test
                     enabled = false;
                     yield break;
                 }
-                if (_isOfflineModeInEditor && AppPlatform.IsEditor)
+                if (_isOfflineMode)
                 {
                     // JoinRandomRoom -> OnJoinedRoom
                     PhotonNetwork.JoinRandomRoom();
