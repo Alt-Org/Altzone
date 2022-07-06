@@ -380,7 +380,7 @@ namespace Battle0.Scripts.Battle.Ball
             }
         }
 
-        [PunRPC]
+        /*[PunRPC]*/
         private void SetBallColorRpc(byte ballColor)
         {
             _setBallColorLocal((BallColor)ballColor);

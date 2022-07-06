@@ -53,19 +53,19 @@ namespace Battle0.Scripts.Battle.Players2
             _photonView.RPC(nameof(SendShieldRotationRpc), RpcTarget.All, rotationIndex);
         }
 
-        [PunRPC]
+        /*[PunRPC]*/
         private void SendPlayModeRpc(BattlePlayMode playMode)
         {
             _onSendPlayMode(playMode);
         }
 
-        [PunRPC]
+        /*[PunRPC]*/
         private void SendShieldVisibilityRpc(bool isVisible)
         {
             _onSendShieldVisibility(isVisible);
         }
 
-        [PunRPC]
+        /*[PunRPC]*/
         private void SendShieldRotationRpc(int rotationIndex)
         {
             _onSendShieldRotation(rotationIndex);
