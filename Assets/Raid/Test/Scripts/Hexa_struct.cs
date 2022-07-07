@@ -8,14 +8,15 @@ public struct Hexa_struct
     {
         //Types of hexas on the grid
 
-        Empty,
+        Neutral,
         Bomb,
         Number,
     }
     public Vector3Int position;
     public Type type;
     public bool detonated;
-    public bool hidden;
+    public bool revealed;
     public int number_of_bombs;
+    public int number;
 
 }

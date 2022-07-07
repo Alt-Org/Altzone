@@ -304,6 +304,7 @@ GameObject:
   - component: {fileID: 522443532}
   - component: {fileID: 522443534}
   - component: {fileID: 522443533}
+  - component: {fileID: 522443535}
   m_Layer: 0
   m_Name: Tilemap
   m_TagString: Untagged
@@ -383,47 +384,36 @@ Tilemap:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522443531}
   m_Enabled: 1
-  m_Tiles:
-  - first: {x: -1, y: 1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 0
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+  m_Tiles: {}
   m_AnimatedTiles: {}
   m_TileAssetArray:
-  - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 395396b50265cf74297ac49ed805c50c, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
-  - m_RefCount: 1
-    m_Data: {fileID: 2747690628134850419, guid: 28d5e52adcccf694f8888acdc0d24a29,
-      type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileMatrixArray:
-  - m_RefCount: 1
+  - m_RefCount: 0
     m_Data:
-      e00: 1
+      e00: 0
       e01: 0
-      e02: 0
-      e03: 0
+      e02: 1.2911389e-30
+      e03: 1.2911389e-30
       e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
+      e11: 0
+      e12: 2e-43
+      e13: 2e-43
+      e20: -65473984
+      e21: 1.24501885e+11
+      e22: -4.9673994e-29
+      e23: -8.642658e+9
+      e30: 4.5904e-41
+      e31: 5.94e-43
+      e32: 5.91e-43
+      e33: 5.94e-43
   m_TileColorArray:
-  - m_RefCount: 1
-    m_Data: {r: 0.05660379, g: 0.009291562, b: 0.009291562, a: 1}
+  - m_RefCount: 0
+    m_Data: {r: 4.802e-41, g: 4.802e-41, b: 4.802e-41, a: 4.802e-41}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -448,6 +438,28 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &522443535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522443531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22e849f4b9c7e33498b1d1e8e19d5c6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileUnrevealed: {fileID: 11400000, guid: 2568dcf717621a245be85372bb7c32d2, type: 2}
+  tileBomb: {fileID: 11400000, guid: 395396b50265cf74297ac49ed805c50c, type: 2}
+  tileNeutral: {fileID: 11400000, guid: 56c41c4a14de5084aa781d106f051139, type: 2}
+  tileNumber1: {fileID: 11400000, guid: a0754451f2a65c344b89b28d81ccdd54, type: 2}
+  tileNumber2: {fileID: 11400000, guid: bb38882978d60324cbd34ba7e8e9b25d, type: 2}
+  tileNumber3: {fileID: 11400000, guid: 835b8721416023b439c729fcc282a30e, type: 2}
+  tileNumber4: {fileID: 11400000, guid: 5cbe84d720e15b1478f77193b03bc198, type: 2}
+  tileNumber5: {fileID: 11400000, guid: b56fb49b3295cda49b098ab6ef3e63b5, type: 2}
+  tileNumber6: {fileID: 11400000, guid: d512962ba2f4d4e4e80286476b8e4c0e, type: 2}
+  tileLootTest: {fileID: 11400000, guid: 705580f9c777ed0459a01579291beda5, type: 2}
 --- !u!1 &796619067
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,7 +675,7 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: -0.6
+    x: 0
     y: 0
     width: 1
     height: 1
@@ -1239,6 +1251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2020619279}
   - component: {fileID: 2020619278}
+  - component: {fileID: 2020619280}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -1274,3 +1287,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020619280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020619277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc21c185e029934da97a8e29590485b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minefieldWidth: 16
+  minefieldHeight: 16
+  numberOfBombs: 10
