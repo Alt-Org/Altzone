@@ -98,8 +98,8 @@ namespace Battle.Scripts.Battle.Players
         private Coroutine _stunnedCoroutine;
 
         private Color[] _skillColors;
-        private PoseManager _avatarPose;
-        private PoseManager _shieldPose;
+        private IPoseManager _avatarPose;
+        private IPoseManager _shieldPose;
         private int _maxPoseIndex;
         private int _disconnectedPoseIndex;
 
@@ -189,14 +189,15 @@ namespace Battle.Scripts.Battle.Players
             var model = _playerDriver.CharacterModel;
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
-            var avatarHeadTag = _playerDriver.TeamNumber == PhotonBattle.TeamBlueValue ? Tags.BlueTeam : Tags.RedTeam;
-            _avatarPose = new PoseManager(_settings._avatar.Avatars, avatarHeadTag);
+            var avatarColorCount = _settings._avatar.Avatars.Length - 1;
+            _avatarPose = new PoseManager(_settings._avatar.Avatars, skillColor, avatarColorCount);
             // Last pose is reserved for disconnected pose
             _maxPoseIndex = _settings._avatar.Avatars.Length - 2;
             _disconnectedPoseIndex = _maxPoseIndex + 1;
-            _avatarPose.Reset(BattlePlayMode.Normal, true, skillColor, _settings._avatar.Avatars.Length - 1);
-            _shieldPose = new PoseManager(_settings._shield.Shields, null);
-            _shieldPose.Reset(BattlePlayMode.Normal, true, skillColor, 0);
+            var avatarHeadTag = _playerDriver.TeamNumber == PhotonBattle.TeamBlueValue ? Tags.BlueTeam : Tags.RedTeam;
+            _avatarPose.Reset(0, BattlePlayMode.Normal, true, avatarHeadTag);
+            _shieldPose = new PoseManager(_settings._shield.Shields, skillColor);
+            _shieldPose.Reset(0, BattlePlayMode.Normal, true, null);
             UpdatePlayerText();
             // We have to add ColliderTracker for every collider there is
             // - if we add it to upper level in hierarchy (which would be nice) it does not receive collision events :-(
@@ -279,7 +280,7 @@ namespace Battle.Scripts.Battle.Players
             Assert.IsTrue(Application.isEditor);
             var nextDebugLogTime = 0f;
             _debugLogMessage = null;
-            for (;;)
+            for (; enabled;)
             {
                 if (_debugLogMessage != null && Time.time > nextDebugLogTime)
                 {
@@ -300,7 +301,7 @@ namespace Battle.Scripts.Battle.Players
         Transform IPlayerActor.Transform => _transform;
 
         BattlePlayMode IPlayerActor.BattlePlayMode => _playMode;
-            
+
         int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 
         float IPlayerActor.Speed
@@ -483,7 +484,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor</c> (shields and avatars).
     /// </summary>
-    internal class PoseManager
+    internal class PoseManager : IPoseManager
     {
         /// <summary>
         /// Internal state that defines how this pose behaves.
@@ -500,28 +501,26 @@ namespace Battle.Scripts.Battle.Players
 
         public bool IsVisible => _state.IsVisible;
 
-        public int MaxPoseIndex => _childCount - 1;
-
         private GameObject _currentAvatar;
         private Collider2D _currentCollider;
 
         private Transform _parentTransform;
         private int _childCount;
 
-        public PoseManager(GameObject[] avatars, string tag)
+        public PoseManager(GameObject[] avatars, Color avatarColor, int avatarColorCount = 0)
         {
             _state = new PoseState();
             _avatars = avatars;
             _colliders = new Collider2D[avatars.Length];
             var index = -1;
-            var isSetTag = !string.IsNullOrWhiteSpace(tag);
             foreach (var avatar in _avatars)
             {
-                _colliders[++index] = avatar.GetComponentsInChildren<Collider2D>(true)[0];
-                if (isSetTag)
+                if (--avatarColorCount >= 0)
                 {
-                    avatar.tag = tag;
+                    var spriteRenderer = avatar.GetComponent<SpriteRenderer>();
+                    spriteRenderer.color = avatarColor;
                 }
+                _colliders[++index] = avatar.GetComponentsInChildren<Collider2D>(true)[0];
             }
         }
 
@@ -547,20 +546,20 @@ namespace Battle.Scripts.Battle.Players
             SetVisible(IsVisible);
         }
 
-        public void Reset(BattlePlayMode playMode, bool isVisible, Color avatarColor, int avatarColorCount)
+        public void Reset(int poseIndex, BattlePlayMode playMode, bool isVisible, string tag)
         {
             _currentAvatar = _avatars[0];
             _currentCollider = _colliders[0];
 
             _childCount = _avatars.Length;
             var firstPosition = _currentAvatar.transform.position;
+            var isSetTag = !string.IsNullOrWhiteSpace(tag);
             for (var i = 0; i < _childCount; ++i)
             {
                 var child = _avatars[i];
-                if (--avatarColorCount >= 0)
+                if (isSetTag)
                 {
-                    var spriteRenderer = child.GetComponent<SpriteRenderer>();
-                    spriteRenderer.color = avatarColor;
+                    child.tag = tag;
                 }
                 if (i > 0)
                 {
@@ -571,7 +570,7 @@ namespace Battle.Scripts.Battle.Players
 
             _state.PlayMode = playMode;
             _state.IsVisible = isVisible;
-            SetPose(0);
+            SetPose(poseIndex);
         }
     }
 
