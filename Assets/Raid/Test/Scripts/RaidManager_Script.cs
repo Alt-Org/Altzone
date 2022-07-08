@@ -9,6 +9,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private Field_Script field;
     private Hexa_struct[,] state;
+    private bool raidIsOver;
 
     private void Awake()
     {
@@ -17,14 +18,31 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Start()
     {
-        StartRaid();
-        
+        StartRaid();      
+    }
+    private void Update()
+    {
+        // (DEV) Bugi inputissa: Kokeile Project Settings > Player > Active Input > Both!!!
+
+        if(!raidIsOver) //(DEV) Vaihda jos ei toimi, kuten esim. == false. Tai kokeile tuplanegatiivi booleania. (Kts.MTISUMB isOutOfFlashlight)
+        {
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    Reveal();
+            //}
+            //else if (Input.GetMouseButtonDown(1))
+            //{
+            //    Flag();
+            //}
+        }
     }
 
     private void StartRaid()
     {
+        //(DEV) Kovakoodataan minefieldHeight/Width kun gridien koot varmistuvat (pienenee mit‰ v‰hemm‰n pelaajia klaanissa)
         state = new Hexa_struct[minefieldWidth, minefieldHeight];
-        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //Default camera when testing! Remove this when integrating into the real game scene!
+        raidIsOver = false;
+        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Kameran testi default. Siirt‰‰ sen vastaamaan ruutuja. Poistetaan kun siirryt‰‰n oikeaan Sceneen.
         GenerateHexas();
         GenerateBombs();
         GenerateNumbers();
@@ -49,7 +67,7 @@ public class RaidManager_Script : MonoBehaviour
     {
         for(int i = 0; i < numberOfBombs; i++)
         {
-            //Random bomb position, change when testing Loot!
+            //(DEV) Randomoitu pommien sijoittelu. T‰ytyy vaihtaa kun Loot asettelu testiin!
             int x = Random.Range(0, minefieldWidth);
             int y = Random.Range(0, minefieldHeight);
 
@@ -69,7 +87,7 @@ public class RaidManager_Script : MonoBehaviour
                 }
             }
             state[x, y].type = Hexa_struct.Type.Bomb;
-            state[x, y].revealed = true; //Paljastaa kaikki pommit (dev)
+            state[x, y].revealed = true; // (DEV) Paljastaa kaikki pommit
         }
     }
 
@@ -90,7 +108,7 @@ public class RaidManager_Script : MonoBehaviour
                 {
                     hexa.type = Hexa_struct.Type.Number;
                 }
-                hexa.revealed = true; // Paljastaa kaikki numerot (dev)
+                hexa.revealed = true; // (DEV) Paljastaa kaikki numerot
                 state[x, y] = hexa;
             }
         }
@@ -113,20 +131,95 @@ public class RaidManager_Script : MonoBehaviour
                 int x = hexaX + neighborX;
                 int y = hexaY + neighborY;
 
-                //Checks if neighbor tiles are out of bounds (no more hexas)
-                if(x < 0 || x >= minefieldWidth || y < 0 || y >= minefieldHeight)
-                {
-                    continue;
-                }
+                ////Checks if neighbor tiles are out of bounds (no more hexas)
+                //if(x < 0 || x >= minefieldWidth || y < 0 || y >= minefieldHeight)
+                //{
+                //    continue;
+                //}
 
                 //Checks if a hexa is indeed a bomb hexa, and add it to count
-                if(state[x, y].type == Hexa_struct.Type.Bomb)
+                if (GetHexa(x, y).type == Hexa_struct.Type.Bomb)
                 {
                     count++;
                 }
 
+                ////Checks if a hexa is indeed a bomb hexa, and add it to count
+                //if(state[x, y].type == Hexa_struct.Type.Bomb)
+                //{
+                //    count++;
+                //}
             }
         }
             return count;
+    }
+
+    private void Flag()
+    {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
+        Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
+
+        if(hexa.type == Hexa_struct.Type.Invalid || hexa.revealed)
+        {
+            return;
+        }
+        hexa.flagged = !hexa.flagged;
+        state[hexaPosition.x, hexaPosition.y] = hexa;
+        field.Draw(state);
+    }
+
+    private void Reveal()
+    {
+        //(DEV) T‰ytyy vaihtaa kun Android build!
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
+        Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
+
+        if (hexa.type == Hexa_struct.Type.Invalid || hexa.revealed || hexa.flagged)
+        {
+            return;
+        }
+
+        switch (hexa.type)
+        {
+            case Hexa_struct.Type.Bomb:
+                Detonate(hexa);
+                break;
+
+            default:
+                hexa.revealed = true;
+                state[hexaPosition.x, hexaPosition.y] = hexa;
+                break;
+        }
+        //hexa.revealed = true;
+        //state[hexaPosition.x, hexaPosition.y] = hexa;
+        field.Draw(state);
+    }
+
+    private void Detonate(Hexa_struct hexa)
+    {
+        raidIsOver = true;
+        hexa.revealed = true;
+        hexa.detonated = true;
+
+        state[hexa.position.x, hexa.position.y] = hexa;
+
+    }
+
+    private Hexa_struct GetHexa(int x, int y)
+    {
+        if(IsValid(x, y))
+        {
+            return state[x, y];
+        }
+        else
+        {
+            return new Hexa_struct();
+        }
+    }
+
+    private bool IsValid(int x, int y)
+    {
+        return x >= 0 && x < minefieldWidth && y >= 0 && y < minefieldHeight;
     }
 }

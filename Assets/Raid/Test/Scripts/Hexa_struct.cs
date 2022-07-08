@@ -7,10 +7,10 @@ public struct Hexa_struct
     public enum Type
     {
         //Types of hexas on the grid
-
+        Invalid,
         Neutral,
         Bomb,
-        Number,
+        Number,        
     }
     public Vector3Int position;
     public Type type;
@@ -18,5 +18,6 @@ public struct Hexa_struct
     public bool revealed;
     public int number_of_bombs;
     public int number;
+    public bool flagged;
 
 }

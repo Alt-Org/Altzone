@@ -46,7 +46,7 @@ public class Field_Script : MonoBehaviour
         {
             case Hexa_struct.Type.Neutral: return tileNeutral;
             case Hexa_struct.Type.Number: return GetNumberTile(hexa);
-            case Hexa_struct.Type.Bomb: return tileBomb;
+            case Hexa_struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Poista detonated tarvittaessa, jos normi pelitila jatkuu automaattisesti Raidin loputtua.
             default: return null;
         }
 
@@ -81,5 +81,6 @@ public class Field_Script : MonoBehaviour
     public Tile tileNumber5;
     public Tile tileNumber6;
     public Tile tileLootTest;
-    //public Tile tileDetonated;
+    public Tile tileFlag;
+    public Tile tileDetonated;
 }
