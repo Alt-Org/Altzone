@@ -16,7 +16,7 @@ namespace Battle.Scripts.Battle.Players
     /// <remarks>
     /// This class manages local visual representation of the player actor.
     /// </remarks>
-    internal class PlayerActor2 : MonoBehaviour, IPlayerActor
+    internal class PlayerActor2 : PlayerActorBase, IPlayerActor
     {
         [Serializable]
         internal class DebugSettings
@@ -64,20 +64,6 @@ namespace Battle.Scripts.Battle.Players
 
         private bool IsBuffedOrDeBuffed => _isStunned;
 
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, PlayerActor2 playerPrefab)
-        {
-            Debug.Log($"prefab {playerPrefab.name}");
-
-            var playerPos = playerDriver.PlayerPos;
-            var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-
-            var playerActor = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            var playerTag = $"{playerPos}:{playerDriver.NickName}:{PlayerPosChars[playerPos]}";
-            playerActor.name = playerActor.name.Replace("Clone", playerTag);
-            playerActor.SetPlayerDriver(playerDriver);
-            return playerActor;
-        }
-
         private void Awake()
         {
             Debug.Log($"{name}");
@@ -113,7 +99,7 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        private void SetPlayerDriver(IPlayerDriver playerDriver)
+        protected override void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             // Now we are good to go.
             _playerDriver = playerDriver;
@@ -164,9 +150,6 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #region Debugging
-
-        private static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
-        private static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', 'R', 'o', '-' };
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void UpdatePlayerText()

@@ -4,12 +4,16 @@ namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerSettings2 : MonoBehaviour
     {
-        [SerializeField] private Transform _geometryRoot;
+        [Header("Settings"), SerializeField] private Transform _geometryRoot;
+        [SerializeField] private Transform _avatarsRoot;
+        [SerializeField] private Transform _shieldsRoot;
+        [SerializeField] private PlayerCollider2 _avatarsCollider;
+        [SerializeField] private PlayerCollider2 _shieldsCollider;
 
         public IPoseManager GetAvatarPoseManager => new DummyPoseManager();
-        
+
         public IPoseManager GetShieldPoseManager => new DummyPoseManager();
-        
+
         public void Rotate(bool isUpsideDown)
         {
             _geometryRoot.Rotate(isUpsideDown);
