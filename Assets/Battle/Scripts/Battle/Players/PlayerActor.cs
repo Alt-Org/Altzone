@@ -163,7 +163,7 @@ namespace Battle.Scripts.Battle.Players
             catch (MissingReferenceException)
             {
                 // Scene is unloading and destroying all related object-graph without errors was too hard to accomplish for now :-(
-                Debug.LogWarning($"{name} <color=white>MissingReferenceException</color>");
+                Debug.LogWarning($"<color=white>MissingReferenceException</color> {name}");
             }
         }
 
