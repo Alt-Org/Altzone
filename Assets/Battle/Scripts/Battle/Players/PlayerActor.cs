@@ -176,13 +176,13 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"{name} {model.Name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
             var avatarColorCount = _settings._avatar.Avatars.Length - 1;
-            _avatarPose = new PoseManager(_settings._avatar.Avatars, skillColor, avatarColorCount);
+            _avatarPose = new TestPoseManager(_settings._avatar.Avatars, skillColor, avatarColorCount);
             // Last pose is reserved for disconnected pose
             _maxPoseIndex = _settings._avatar.Avatars.Length - 2;
             _disconnectedPoseIndex = _maxPoseIndex + 1;
             var avatarHeadTag = _playerDriver.TeamNumber == PhotonBattle.TeamBlueValue ? Tags.BlueTeam : Tags.RedTeam;
             _avatarPose.Reset(0, BattlePlayMode.Normal, true, avatarHeadTag);
-            _shieldPose = new PoseManager(_settings._shield.Shields, skillColor);
+            _shieldPose = new TestPoseManager(_settings._shield.Shields, skillColor);
             _shieldPose.Reset(0, BattlePlayMode.Normal, true, null);
             UpdatePlayerText();
             // We have to add ColliderTracker for every collider there is
@@ -467,17 +467,8 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor</c> (shields and avatars).
     /// </summary>
-    internal class PoseManager : IPoseManager
+    internal class TestPoseManager : IPoseManager
     {
-        /// <summary>
-        /// Internal state that defines how this pose behaves.
-        /// </summary>
-        private class PoseState
-        {
-            public bool IsVisible;
-            public BattlePlayMode PlayMode;
-        }
-
         private readonly PoseState _state;
         private readonly GameObject[] _avatars;
         private readonly Collider2D[] _colliders;
@@ -490,7 +481,7 @@ namespace Battle.Scripts.Battle.Players
         private Transform _parentTransform;
         private int _childCount;
 
-        public PoseManager(GameObject[] avatars, Color avatarColor, int avatarColorCount = 0)
+        public TestPoseManager(GameObject[] avatars, Color avatarColor, int avatarColorCount = 0)
         {
             _state = new PoseState();
             _avatars = avatars;
