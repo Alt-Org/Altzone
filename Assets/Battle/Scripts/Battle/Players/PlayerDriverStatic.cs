@@ -28,8 +28,7 @@ namespace Battle.Scripts.Battle.Players
         [Header("Settings"), SerializeField] private Settings _settings;
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
-        [SerializeField] private Transform _playerActorTransform;
-
+        
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
@@ -53,16 +52,14 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
-            var playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
+            _playerActor = PlayerActor.InstantiatePrefabFor(this, _settings._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor = playerActorInstance;
-                _playerActorTransform = playerActorInstance.GetComponent<Transform>();
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
                 _state.ResetState(this, _characterModel);
-                _state.CheckRotation(_playerActorTransform.position);
+                _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
             gameplayManager.RegisterPlayer(this);
@@ -72,7 +69,7 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetBattlePlayArea.GetPlayerPlayArea(_settings._playerPos);
-            playerInputHandler.SetPlayerDriver(this, _playerActorTransform, playArea);
+            playerInputHandler.SetPlayerDriver(this, _playerActor.Transform, playArea);
         }
 
         private void OnDestroy()
@@ -122,7 +119,7 @@ namespace Battle.Scripts.Battle.Players
 
         bool IPlayerInfo.IsLocal => _settings._isLocal;
 
-        Vector2 IPlayerInfo.Position => _playerActorTransform.position;
+        Vector2 IPlayerInfo.Position => _playerActor.Transform.position;
 
         double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
 
@@ -142,7 +139,7 @@ namespace Battle.Scripts.Battle.Players
 
         CharacterModel IPlayerDriver.CharacterModel => _characterModel;
 
-        Transform IPlayerDriver.PlayerTransform => _playerActorTransform;
+        Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 
         BattlePlayMode IPlayerDriver.BattlePlayMode => _playerActor.BattlePlayMode;
 
@@ -196,7 +193,6 @@ namespace Battle.Scripts.Battle.Players
             }
             Debug.Log($"{name}");
             _playerActor = null;
-            _playerActorTransform = null;
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 

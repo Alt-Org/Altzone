@@ -66,10 +66,9 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
-            var playerActorInstance = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
+            _playerActor = PlayerActor.InstantiatePrefabFor(this, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor = playerActorInstance;
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
