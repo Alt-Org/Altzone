@@ -474,6 +474,7 @@ namespace Battle.Scripts.Battle.Players
         private readonly Collider2D[] _colliders;
 
         public bool IsVisible => _state.IsVisible;
+        public int MaxPoseIndex => throw new NotSupportedException();
 
         private GameObject _currentAvatar;
         private Collider2D _currentCollider;

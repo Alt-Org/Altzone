@@ -125,16 +125,28 @@ namespace Battle.Scripts.Battle.Players
             _avatarPose.Reset(0, BattlePlayMode.Normal, true, avatarHeadTag);
             _shieldPose = _settings.GetShieldPoseManager;
             _shieldPose.Reset(0, BattlePlayMode.Normal, true, null);
+            var collisionDriver = _playerDriver.PlayerActorCollision;
+            _settings.SetAvatarsColliderCallback(collision => { collisionDriver.OnHeadCollision(collision); });
+            _settings.SetShieldsColliderCallback(collision => { collisionDriver.OnShieldCollision(collision); });
             UpdatePlayerText();
-            if (_debug._isLogMoveTo && Application.isEditor)
+            // Avatar should have one "extra" pose for disconnected state.
+            _maxPoseIndex = _avatarPose.MaxPoseIndex;
+            if (_maxPoseIndex > _shieldPose.MaxPoseIndex)
             {
-                StartCoroutine(ThrottledDebugLogger());
+                _disconnectedPoseIndex = _maxPoseIndex;
+                _maxPoseIndex -= 1;
+            }
+            else
+            {
+                _disconnectedPoseIndex = -1;
             }
         }
 
         private void OnDisable()
         {
             StopAllCoroutines();
+            _settings.SetAvatarsColliderCallback(null);
+            _settings.SetShieldsColliderCallback(null);
         }
 
         private void Update()
@@ -267,19 +279,19 @@ namespace Battle.Scripts.Battle.Players
         {
             if (_debug._isLogEvents)
             {
-                Debug.Log($"{name} {_poseIndex} <- {poseIndex}");
+                Debug.Log($"{name} max {_maxPoseIndex} : {_poseIndex} <- {poseIndex}");
             }
             _poseIndex = poseIndex;
-            StartCoroutine(SetPoseOnNextFrame());
+            StartCoroutine(SetPoseOnNextFrame(_poseIndex));
             UpdatePlayerText();
         }
 
-        private IEnumerator SetPoseOnNextFrame()
+        private IEnumerator SetPoseOnNextFrame(int poseIndex)
         {
             // We have a problem with colliders when character pose is changed during a collision!
             yield return null;
-            _shieldPose.SetPose(_poseIndex);
-            _avatarPose.SetPose(_poseIndex);
+            _shieldPose.SetPose(poseIndex);
+            _avatarPose.SetPose(poseIndex);
         }
 
         void IPlayerActor.SetPlayMode(BattlePlayMode playMode)
@@ -373,7 +385,14 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver = null;
             _hasPlayer = false;
             UpdatePlayerText();
-            _avatarPose.SetPose(_disconnectedPoseIndex);
+            if (_disconnectedPoseIndex != -1)
+            {
+                _avatarPose.SetPose(_disconnectedPoseIndex);
+            }
+            else
+            {
+                _avatarPose.SetVisible(false);
+            }
             _shieldPose.SetVisible(false);
 
             // Brute force way to disable everything (that is still active)!

@@ -17,9 +17,6 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            var otherGameObject = collision.gameObject;
-            var layer = otherGameObject.layer;
-            Debug.Log($"collision_enter {otherGameObject.name} {otherGameObject.tag} layer {layer} {LayerMask.LayerToName(layer)}");
             Callback?.Invoke(collision);
         }
     }

@@ -9,8 +9,6 @@ namespace Battle.Scripts.Battle.Players
         [Header("Settings"), SerializeField] private Transform _geometryRoot;
         [SerializeField] private Transform _avatarsRoot;
         [SerializeField] private Transform _shieldsRoot;
-        [SerializeField] private PlayerCollider2 _avatarsCollider;
-        [SerializeField] private PlayerCollider2 _shieldsCollider;
 
         private SimplePoseManager _avatar;
         private SimplePoseManager _shield;
@@ -27,6 +25,16 @@ namespace Battle.Scripts.Battle.Players
         public void Rotate(bool isUpsideDown)
         {
             _geometryRoot.Rotate(isUpsideDown);
+        }
+
+        public void SetAvatarsColliderCallback(Action<Collision2D> callback)
+        {
+            _avatar.SetColliderCallback(callback);
+        }
+
+        public void SetShieldsColliderCallback(Action<Collision2D> callback)
+        {
+            _shield.SetColliderCallback(callback);
         }
     }
 
@@ -50,6 +58,7 @@ namespace Battle.Scripts.Battle.Players
         private readonly Collider2D[][] _colliders;
 
         public bool IsVisible => _state.IsVisible;
+        public int MaxPoseIndex { get; }
 
         private GameObject _currentAvatar;
         private Collider2D[] _currentColliders;
@@ -67,6 +76,34 @@ namespace Battle.Scripts.Battle.Players
                 var child = root.GetChild(index).gameObject;
                 _avatar[index] = child;
                 _colliders[index] = child.GetComponentsInChildren<Collider2D>(true);
+            }
+            MaxPoseIndex = _avatar.Length - 1;
+        }
+
+        public void SetColliderCallback(Action<Collision2D> callback)
+        {
+            foreach (var colliderArray in _colliders)
+            {
+                foreach (var collider in colliderArray)
+                {
+                    var parent = collider.gameObject;
+                    var playerCollider = parent.GetComponent<PlayerCollider2>();
+                    if (callback != null)
+                    {
+                        if (playerCollider == null)
+                        {
+                            playerCollider = parent.AddComponent<PlayerCollider2>();
+                        }
+                        playerCollider.Callback = callback;
+                    }
+                    else
+                    {
+                        if (playerCollider != null)
+                        {
+                            playerCollider.Callback = null;
+                        }
+                    }
+                }
             }
         }
 
