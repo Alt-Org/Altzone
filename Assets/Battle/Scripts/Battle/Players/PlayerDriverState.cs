@@ -88,7 +88,10 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
             _playerDriver.SetStunned(_stunDuration);
             _playerDriver.SetCharacterPose(_currentPoseIndex);
-            _playerDriver.SetShieldResistance(_currentShieldResistance);
+            if (_currentPoseIndex < _playerDriver.MaxPoseIndex)
+            {
+                _playerDriver.SetShieldResistance(_currentShieldResistance);
+            }
             debugString = "BEND";
         }
 
