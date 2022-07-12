@@ -51,6 +51,7 @@ namespace Battle.Scripts.Battle.Players
 
         private IPoseManager _avatarPose;
         private IPoseManager _shieldPose;
+        private int _lastShieldCollisionFrame;
         private int _maxPoseIndex;
         private int _disconnectedPoseIndex;
 
@@ -127,8 +128,9 @@ namespace Battle.Scripts.Battle.Players
             _shieldPose.Reset(0, BattlePlayMode.Normal, true, null);
             var collisionDriver = _playerDriver.PlayerActorCollision;
             _settings.SetAvatarsColliderCallback(collision => { collisionDriver.OnHeadCollision(collision); });
-            _settings.SetShieldsColliderCallback(collision => { collisionDriver.OnShieldCollision(collision); });
+            _settings.SetShieldsColliderCallback(OnShieldCollisionFilter);
             UpdatePlayerText();
+            _lastShieldCollisionFrame = -1;
             // Avatar should have one "extra" pose for disconnected state.
             _maxPoseIndex = _avatarPose.MaxPoseIndex;
             if (_maxPoseIndex > _shieldPose.MaxPoseIndex)
@@ -139,6 +141,16 @@ namespace Battle.Scripts.Battle.Players
             else
             {
                 _disconnectedPoseIndex = -1;
+            }
+
+            void OnShieldCollisionFilter(Collision2D collision)
+            {
+                if (Time.frameCount == _lastShieldCollisionFrame)
+                {
+                    return;
+                }
+                _lastShieldCollisionFrame = Time.frameCount;
+                collisionDriver.OnShieldCollision(collision);
             }
         }
 
