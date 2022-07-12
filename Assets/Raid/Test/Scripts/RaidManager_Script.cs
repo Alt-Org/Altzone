@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RaidManager_Script : MonoBehaviour
 {
@@ -6,6 +7,12 @@ public class RaidManager_Script : MonoBehaviour
     public int minefieldHeight;
     public int numberOfBombs;
     //public int number;
+
+    /*(DEV) N‰yt‰ pommit*/
+    public bool n‰yt‰Pommit;
+    /*(DEV) N‰yt‰ hexat*/
+    public bool n‰yt‰Hexat;
+
 
     private Field_Script field;
     private Hexa_struct[,] state;
@@ -18,18 +25,29 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Start()
     {
-        StartRaid();      
+        StartRaid();
+        n‰yt‰Pommit = true; //(DEV) Poistetaan kun valmis
+        n‰yt‰Hexat = true; //(DEV) Poistetaan kun valmis
     }
     private void Update()
     {
         // (DEV) Bugi inputissa: Kokeile Project Settings > Player > Active Input > Both!!!
 
-        if(!raidIsOver) //(DEV) Vaihda jos ei toimi, kuten esim. == false. Tai kokeile tuplanegatiivi booleania. (Kts.MTISUMB isOutOfFlashlight)
+        if (!raidIsOver) //(DEV) Vaihda jos ei toimi, kuten esim. == false. Tai kokeile tuplanegatiivi booleania. (Kts.MTISUMB isOutOfFlashlight)
         {
             //if (Input.GetMouseButtonDown(0))
             //{
             //    Reveal();
             //}
+            if (Mouse.current.leftButton.isPressed)
+            {
+                Reveal();
+            }
+            else if(Mouse.current.rightButton.isPressed)
+            {
+                Flag();
+            }
+            
             //else if (Input.GetMouseButtonDown(1))
             //{
             //    Flag();
@@ -87,7 +105,14 @@ public class RaidManager_Script : MonoBehaviour
                 }
             }
             state[x, y].type = Hexa_struct.Type.Bomb;
-            state[x, y].revealed = true; // (DEV) Paljastaa kaikki pommit
+
+            //(DEV) N‰ytt‰‰ pommit
+            if (n‰yt‰Pommit)
+            {
+                state[x, y].revealed = true;
+            }
+            
+            /*state[x, y].revealed = true;*/ // (DEV) Paljastaa kaikki pommit
         }
     }
 
@@ -108,7 +133,14 @@ public class RaidManager_Script : MonoBehaviour
                 {
                     hexa.type = Hexa_struct.Type.Number;
                 }
-                hexa.revealed = true; // (DEV) Paljastaa kaikki numerot
+
+                //(DEV) Paljastaa hexat
+                if(n‰yt‰Hexat)
+                {
+                    hexa.revealed = true;
+                }
+                
+                /*hexa.revealed = true;*/ // (DEV) Paljastaa kaikki numerot
                 state[x, y] = hexa;
             }
         }
@@ -155,7 +187,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Flag()
     {
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
@@ -171,7 +203,8 @@ public class RaidManager_Script : MonoBehaviour
     private void Reveal()
     {
         //(DEV) T‰ytyy vaihtaa kun Android build!
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
