@@ -15,7 +15,7 @@ public class RaidManager_Script : MonoBehaviour
 
 
     private Field_Script field;
-    private Hexa_struct[,] state;
+    private Hexa_Struct[,] state;
     private bool raidIsOver;
 
     private void Awake()
@@ -26,8 +26,8 @@ public class RaidManager_Script : MonoBehaviour
     private void Start()
     {
         StartRaid();
-        n‰yt‰Pommit = true; //(DEV) Poistetaan kun valmis
-        n‰yt‰Hexat = true; //(DEV) Poistetaan kun valmis
+        //n‰yt‰Pommit = false; //(DEV) Poistetaan kun valmis
+        //n‰yt‰Hexat = false; //(DEV) Poistetaan kun valmis
     }
     private void Update()
     {
@@ -39,15 +39,17 @@ public class RaidManager_Script : MonoBehaviour
             //{
             //    Reveal();
             //}
+
             if (Mouse.current.leftButton.isPressed)
             {
                 Reveal();
             }
-            else if(Mouse.current.rightButton.isPressed)
+
+            else if (Mouse.current.rightButton.isPressed)
             {
                 Flag();
             }
-            
+
             //else if (Input.GetMouseButtonDown(1))
             //{
             //    Flag();
@@ -58,7 +60,7 @@ public class RaidManager_Script : MonoBehaviour
     private void StartRaid()
     {
         //(DEV) Kovakoodataan minefieldHeight/Width kun gridien koot varmistuvat (pienenee mit‰ v‰hemm‰n pelaajia klaanissa)
-        state = new Hexa_struct[minefieldWidth, minefieldHeight];
+        state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
         Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Kameran testi default. Siirt‰‰ sen vastaamaan ruutuja. Poistetaan kun siirryt‰‰n oikeaan Sceneen.
         GenerateHexas();
@@ -73,9 +75,9 @@ public class RaidManager_Script : MonoBehaviour
         {
             for(int y = 0; y <minefieldHeight; y++)
             {
-                Hexa_struct hexa = new Hexa_struct();
+                Hexa_Struct hexa = new Hexa_Struct();
                 hexa.position = new Vector3Int(x, y, 0);
-                hexa.type = Hexa_struct.Type.Neutral;
+                hexa.type = Hexa_Struct.Type.Neutral;
                 state[x, y] = hexa;
             }
         }
@@ -90,7 +92,7 @@ public class RaidManager_Script : MonoBehaviour
             int y = Random.Range(0, minefieldHeight);
 
             //Check if hexa already has an Bomb. Use this for other checking!!!
-            while(state[x, y].type == Hexa_struct.Type.Bomb)
+            while(state[x, y].type == Hexa_Struct.Type.Bomb)
             {
                 x++;
                 if(x >= minefieldWidth)
@@ -104,7 +106,7 @@ public class RaidManager_Script : MonoBehaviour
                     }
                 }
             }
-            state[x, y].type = Hexa_struct.Type.Bomb;
+            state[x, y].type = Hexa_Struct.Type.Bomb;
 
             //(DEV) N‰ytt‰‰ pommit
             if (n‰yt‰Pommit)
@@ -122,8 +124,8 @@ public class RaidManager_Script : MonoBehaviour
         {
             for (int y = 0; y < minefieldHeight; y++)
             {
-                Hexa_struct hexa = state[x, y];
-                if(hexa.type == Hexa_struct.Type.Bomb)
+                Hexa_Struct hexa = state[x, y];
+                if(hexa.type == Hexa_Struct.Type.Bomb)
                 {
                     continue;
                 }
@@ -131,7 +133,7 @@ public class RaidManager_Script : MonoBehaviour
 
                 if(hexa.number > 0)
                 {
-                    hexa.type = Hexa_struct.Type.Number;
+                    hexa.type = Hexa_Struct.Type.Number;
                 }
 
                 //(DEV) Paljastaa hexat
@@ -170,7 +172,7 @@ public class RaidManager_Script : MonoBehaviour
                 //}
 
                 //Checks if a hexa is indeed a bomb hexa, and add it to count
-                if (GetHexa(x, y).type == Hexa_struct.Type.Bomb)
+                if (GetHexa(x, y).type == Hexa_Struct.Type.Bomb)
                 {
                     count++;
                 }
@@ -189,9 +191,9 @@ public class RaidManager_Script : MonoBehaviour
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
-        Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
+        Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
-        if(hexa.type == Hexa_struct.Type.Invalid || hexa.revealed)
+        if(hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed)
         {
             return;
         }
@@ -206,16 +208,17 @@ public class RaidManager_Script : MonoBehaviour
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
-        Hexa_struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
+        Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
-        if (hexa.type == Hexa_struct.Type.Invalid || hexa.revealed || hexa.flagged)
+        if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
         }
+        
 
         switch (hexa.type)
         {
-            case Hexa_struct.Type.Bomb:
+            case Hexa_Struct.Type.Bomb:
                 Detonate(hexa);
                 break;
 
@@ -229,7 +232,7 @@ public class RaidManager_Script : MonoBehaviour
         field.Draw(state);
     }
 
-    private void Detonate(Hexa_struct hexa)
+    private void Detonate(Hexa_Struct hexa)
     {
         raidIsOver = true;
         hexa.revealed = true;
@@ -239,7 +242,7 @@ public class RaidManager_Script : MonoBehaviour
 
     }
 
-    private Hexa_struct GetHexa(int x, int y)
+    private Hexa_Struct GetHexa(int x, int y)
     {
         if(IsValid(x, y))
         {
@@ -247,7 +250,7 @@ public class RaidManager_Script : MonoBehaviour
         }
         else
         {
-            return new Hexa_struct();
+            return new Hexa_Struct();
         }
     }
 

@@ -13,7 +13,7 @@ public class Field_Script : MonoBehaviour
         tilemap = GetComponent<Tilemap>();
     }
 
-    public void Draw(Hexa_struct[,] state)
+    public void Draw(Hexa_Struct[,] state)
     {
         int width = state.GetLength(0);
         int height = state.GetLength(1);
@@ -22,13 +22,13 @@ public class Field_Script : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                Hexa_struct hexa = state[x, y];
+                Hexa_Struct hexa = state[x, y];
                 tilemap.SetTile(hexa.position, GetTile(hexa));
             }
         }      
     }
 
-    private Tile GetTile(Hexa_struct hexa)
+    private Tile GetTile(Hexa_Struct hexa)
     {
         if(hexa.revealed)
         {
@@ -40,19 +40,19 @@ public class Field_Script : MonoBehaviour
         }
     }
 
-    private Tile GetRevealedTile(Hexa_struct hexa)
+    private Tile GetRevealedTile(Hexa_Struct hexa)
     {
         switch(hexa.type)
         {
-            case Hexa_struct.Type.Neutral: return tileNeutral;
-            case Hexa_struct.Type.Number: return GetNumberTile(hexa);
-            case Hexa_struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Poista detonated tarvittaessa, jos normi pelitila jatkuu automaattisesti Raidin loputtua.
+            case Hexa_Struct.Type.Neutral: return tileNeutral;
+            case Hexa_Struct.Type.Number: return GetNumberTile(hexa);
+            case Hexa_Struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Poista detonated tarvittaessa, jos normi pelitila jatkuu automaattisesti Raidin loputtua.
             default: return null;
         }
 
     }
 
-    private Tile GetNumberTile(Hexa_struct hexa)
+    private Tile GetNumberTile(Hexa_Struct hexa)
     {
         switch(hexa.number)
         {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Hexa_struct
+public struct Hexa_Struct
 {
     public enum Type
     {
