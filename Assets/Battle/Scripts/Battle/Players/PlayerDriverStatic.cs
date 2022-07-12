@@ -12,7 +12,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Static <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverStatic : PlayerDriver, IPlayerInfo, IPlayerDriver, IPlayerActorCollision
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class Settings

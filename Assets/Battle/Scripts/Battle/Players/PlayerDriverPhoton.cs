@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : PlayerDriver, IPlayerInfo, IPlayerDriver, IPlayerActorCollision
+    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
         internal class DebugSettings
@@ -33,9 +33,7 @@ namespace Battle.Scripts.Battle.Players
         private bool _isLocal;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
-        private bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
-
-        private bool IsLocalPlayerSynchronize => _photonView.Owner.IsLocal;
+        private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         private void Awake()
         {
