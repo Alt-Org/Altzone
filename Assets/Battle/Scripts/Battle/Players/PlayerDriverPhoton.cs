@@ -16,7 +16,7 @@ namespace Battle.Scripts.Battle.Players
         [Serializable]
         internal class DebugSettings
         {
-            public PlayerActor _playerPrefab;
+            public PlayerActorBase _playerPrefab;
         }
 
         [Header("Live Data"), SerializeField] private int _peerCount;
@@ -64,7 +64,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _debug._playerPrefab, _characterModel.MainDefence);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
                 _playerActor.Speed = _characterModel.Speed;

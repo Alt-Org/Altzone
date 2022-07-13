@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players
             public int _playerPos = PhotonBattle.PlayerPosition1;
             public int _teamNumber = PhotonBattle.TeamBlueValue;
             public Defence _playerMainSkill = Defence.Deflection;
-            public PlayerActor _playerPrefab;
+            public PlayerActorBase _playerPrefab;
             public bool _isLocal;
         }
 
@@ -52,7 +52,7 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _settings._playerPrefab, _characterModel.MainDefence);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _settings._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
                 _playerActor.Speed = _characterModel.Speed;
