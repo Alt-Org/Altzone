@@ -248,7 +248,6 @@ namespace Prg.Scripts.Common.Unity.Localization
             PlayerPrefs.SetInt(LanguageCodeKey, (int)language);
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void LoadTranslations()
         {
             var config = Resources.Load<LocalizationConfig>(nameof(LocalizationConfig));

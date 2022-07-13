@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Service.Audio
 {
@@ -8,12 +7,6 @@ namespace Altzone.Scripts.Service.Audio
     /// </summary>
     public static class AudioManager
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void BeforeSceneLoad()
-        {
-            _audioManager = UnityExtensions.CreateGameObjectAndComponent<FmodAudioManager>(nameof(FmodAudioManager), true);
-        }
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
@@ -25,7 +18,10 @@ namespace Altzone.Scripts.Service.Audio
 
         public static IAudioManager Get()
         {
-            Assert.IsNotNull(_audioManager, "_audioManager != null");
+            if (_audioManager == null)
+            {
+                _audioManager = UnityExtensions.CreateGameObjectAndComponent<FmodAudioManager>(nameof(FmodAudioManager), true);
+            }
             return _audioManager;
         }
     }

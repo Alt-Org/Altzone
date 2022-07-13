@@ -44,23 +44,20 @@ namespace Prg.Scripts.Common.Unity.Window
             }
         }
 
-        public static IWindowManager Get()
-        {
-            Assert.IsNotNull(_windowManager, "_windowManager != null");
-            return _windowManager;
-        }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void BeforeSceneLoad()
-        {
-            _windowManager = UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
-        }
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _windowManager = null;
+        }
+
+        public static IWindowManager Get()
+        {
+            if (_windowManager == null)
+            {
+                _windowManager = UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
+            }
+            return _windowManager;
         }
 
         private static IWindowManager _windowManager;
