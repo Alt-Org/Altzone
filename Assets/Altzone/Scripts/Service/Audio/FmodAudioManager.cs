@@ -1,5 +1,8 @@
 using System;
+using FMOD;
+using FMODUnity;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Service.Audio
 {
@@ -34,7 +37,13 @@ namespace Altzone.Scripts.Service.Audio
 
         private void Awake()
         {
-            Debug.Log($"{name}");
+            var result = RuntimeManager.CoreSystem.getVersion(out var version);
+            Assert.AreEqual(RESULT.OK, result);
+            Assert.IsTrue(RuntimeManager.IsInitialized, "FMODUnity.RuntimeManager.IsInitialized");
+            var verMajor = version >> 16;
+            var verMinor = (version >> 8) & 0xF;
+            var verDev = version & 0xF;
+            Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00}");
         }
     }
 }
