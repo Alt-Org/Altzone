@@ -16,7 +16,7 @@ namespace Editor
     {
         // https://riptutorial.com/unity3d/example/10475/menu-items
         // You can add a separator in between two menu items by making sure there is at least 10 digits in between the priority of the menu items.
-        
+
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string GameDebug = MenuRoot + "Game Debug/";
         private const string GameUtil = MenuRoot + "Game util/";
@@ -26,7 +26,6 @@ namespace Editor
         private const string Build = MenuRoot + "Build/";
         private const string Logging = MenuRoot + "Logging/";
         private const string Util = MenuRoot + "Util/";
-        private const string UiProto = MenuRoot + "UiProto/";
 
         #region GameDebug
 
@@ -46,12 +45,13 @@ namespace Editor
         private static void DeleteLocalAllData() => DebugMenu.DeleteLocalAllData();
 
         #endregion
+
         #region Gameutil
 
         [MenuItem(GameUtil + "Dump Models to Wiki", false, 10)]
         private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
-        #endregion
 
+        #endregion
 
         #region Localization
 
