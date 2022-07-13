@@ -7,12 +7,12 @@ https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-d
 # Set default behavior to automatically normalize line endings.
 * text=auto
 #
-# Collapse Unity-generated files on GitHub
-*.asset linguist-generated
+# Collapse Unity-generated files on GitHub (and try to keep line endings consistent)
+*.asset linguist-generated eol=lf
 *.mat linguist-generated
-*.meta linguist-generated
-*.prefab linguist-generated
-*.unity linguist-generated
+*.meta linguist-generated eol=lf
+*.prefab linguist-generated eol=lf
+*.unity linguist-generated eol=lf
 #
 # JetUML state diagrams
 *.state.jet linguist-generated
