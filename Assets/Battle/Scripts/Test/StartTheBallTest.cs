@@ -213,13 +213,14 @@ namespace Battle.Scripts.Test
 
                 blueTracker.StopTracking();
                 redTracker.StopTracking();
-                this.Publish(new UiEvents.SlingshotEnd(redTracker, blueTracker));
+                var startingTeam = GetStatingTeamByDistance(blueTracker, redTracker, out var startDistance, out var otherDistance);
+                this.Publish(startingTeam == blueTracker.TeamNumber
+                    ? new UiEvents.SlingshotEnd(blueTracker, redTracker)
+                    : new UiEvents.SlingshotEnd(redTracker, blueTracker));
                 yield return null;
 
-                var startingTeam = GetStatingTeamByDistance(blueTracker, redTracker, out var startDistance, out var otherDistance);
                 startTeam = _playerManager.GetBattleTeam(startingTeam);
                 otherTeam = _playerManager.GetOppositeTeam(startingTeam);
-
                 var startSlingshotPower = _ballSlingshotPower * startTeam.Attack * _playerAttackMultiplier;
                 var otherSlingshotPower = _ballSlingshotPower * (otherTeam?.Attack ?? 0) * _playerAttackMultiplier;
                 // Official formula for ball speed (start gameplay)

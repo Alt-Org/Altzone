@@ -121,6 +121,9 @@ namespace Battle.Scripts.Ui
 
         internal class SlingshotStart : SlingshotTrackerEvent
         {
+            public new ITeamSlingshotTracker TeamTracker1 => base.TeamTracker1;
+            public new ITeamSlingshotTracker TeamTracker2 => base.TeamTracker2;
+            
             public SlingshotStart(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
             {
             }
@@ -128,7 +131,10 @@ namespace Battle.Scripts.Ui
 
         internal class SlingshotEnd : SlingshotTrackerEvent
         {
-            public SlingshotEnd(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
+            public ITeamSlingshotTracker StartingTracker => base.TeamTracker1;
+            public ITeamSlingshotTracker OtherTracker => base.TeamTracker2;
+            
+            public SlingshotEnd(ITeamSlingshotTracker startingTracker, ITeamSlingshotTracker otherTracker) : base(startingTracker, otherTracker)
             {
             }
         }
@@ -164,8 +170,8 @@ namespace Battle.Scripts.Ui
 
         internal class SlingshotTrackerEvent
         {
-            public readonly ITeamSlingshotTracker TeamTracker1;
-            public readonly ITeamSlingshotTracker TeamTracker2;
+            protected readonly ITeamSlingshotTracker TeamTracker1;
+            protected readonly ITeamSlingshotTracker TeamTracker2;
 
             protected SlingshotTrackerEvent(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2)
             {
