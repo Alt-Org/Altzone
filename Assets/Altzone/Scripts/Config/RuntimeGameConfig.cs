@@ -109,6 +109,9 @@ namespace Altzone.Scripts.Config
         [Min(0)] public float _ballMaxMoveSpeed;
         [Min(0)] public float _ballLerpSmoothingFactor;
         [Min(0)] public float _ballTeleportDistance;
+        [Min(0)] public float _ballIdleAccelerationStartDelay;
+        [Min(0)] public float _ballIdleAccelerationInterval;
+        [Min(0)] public float _ballIdleAccelerationMultiplier;
 
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;

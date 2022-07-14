@@ -18,6 +18,7 @@ namespace Battle.Scripts.Battle.Ball
         [Header("Settings"), SerializeField] private LayerMask _teamAreaMask;
         [SerializeField] private LayerMask _headMask;
         [SerializeField] private LayerMask _wallMask;
+        [SerializeField] private LayerMask _brickMask;
         [SerializeField] private bool _isSetBallState;
 
         [Header("Live Data"), SerializeField] private bool _isOnBlueTeamArea;
@@ -25,17 +26,21 @@ namespace Battle.Scripts.Battle.Ball
 
         private IGameScoreManager _scoreManager;
         private IBallManager _ballManager;
+        private IBallCollision _ballCollision;
         private int _teamAreaMaskValue;
         private int _headMaskValue;
         private int _wallMaskValue;
+        private int _brickMaskValue;
 
         private void Awake()
         {
             _scoreManager = Context.GetGameScoreManager;
             _ballManager = Context.BallManager;
+            _ballCollision = _ballManager.BallCollision;
             _teamAreaMaskValue = _teamAreaMask.value;
             _headMaskValue = _headMask.value;
             _wallMaskValue = _wallMask.value;
+            _brickMaskValue = _brickMask.value;
         }
 
         private void OnEnable()
@@ -54,21 +59,29 @@ namespace Battle.Scripts.Battle.Ball
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
             }
             var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Untagged))
-            {
-                return;
-            }
             var layer = otherGameObject.layer;
             var colliderMask = 1 << layer;
             if (_headMaskValue == (_headMaskValue | colliderMask))
             {
-                _scoreManager.OnHeadCollision(collision);
+                if (!otherGameObject.CompareTag(Tags.Untagged))
+                {
+                    _scoreManager.OnHeadCollision(collision);
+                    _ballCollision.OnHeadCollision(collision);
+                }
                 return;
             }
             if (_wallMaskValue == (_wallMaskValue | colliderMask))
             {
-                _scoreManager.OnWallCollision(collision);
-               return;
+                if (!otherGameObject.CompareTag(Tags.Untagged))
+                {
+                    _scoreManager.OnWallCollision(collision);
+                }
+                return;
+            }
+            if (_brickMaskValue == (_brickMaskValue | colliderMask))
+            {
+                _ballCollision.OnBrickCollision(collision);
+                return;
             }
             Debug.Log($"UNHANDLED {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
         }

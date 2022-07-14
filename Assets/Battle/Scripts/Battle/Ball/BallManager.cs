@@ -17,7 +17,7 @@ namespace Battle.Scripts.Battle.Ball
     /// <c>Ball</c> rigidbody and collider setup and behaviour if different on local and remote clients.
     /// </remarks>
     [RequireComponent(typeof(PhotonView))]
-    internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IPunObservable
+    internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IBallCollision, IPunObservable
     {
         [Serializable]
         internal class DebugSettings
@@ -56,6 +56,7 @@ namespace Battle.Scripts.Battle.Ball
         [SerializeField] private GameObject _spriteHidden;
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
+        [SerializeField] private float _ballExternalMoveSpeed;
         [SerializeField] private float _ballRequiredMoveSpeed;
         private float _rigidbodyRequiredVelocitySqrMagnitude;
 
@@ -78,6 +79,11 @@ namespace Battle.Scripts.Battle.Ball
         private float _ballMaxMoveSpeed;
         private float _ballLerpSmoothingFactor;
         private float _ballTeleportDistance;
+        private float _ballIdleAccelerationStartDelay;
+        private float _ballIdleAccelerationInterval;
+        private float _ballIdleAccelerationMultiplier;
+        private bool _isBallIdle;
+        private float _ballIdleAccelerationUpdateTime;
 
         private void Awake()
         {
@@ -91,6 +97,9 @@ namespace Battle.Scripts.Battle.Ball
             _ballMaxMoveSpeed = variables._ballMaxMoveSpeed;
             _ballLerpSmoothingFactor = variables._ballLerpSmoothingFactor;
             _ballTeleportDistance = variables._ballTeleportDistance;
+            _ballIdleAccelerationStartDelay = variables._ballIdleAccelerationStartDelay;
+            _ballIdleAccelerationInterval = variables._ballIdleAccelerationInterval;
+            _ballIdleAccelerationMultiplier = variables._ballIdleAccelerationMultiplier;
             _sprites = new[] { _spriteStopped, _spriteMoving, _spriteGhosted, _spriteHidden };
             _teamColors = new[] { _colors._colorNoTeam, _colors._colorBlueTeam, _colors._colorRedTeam, _colors._colorTwoTeam };
             SetDebug();
@@ -203,9 +212,25 @@ namespace Battle.Scripts.Battle.Ball
                             yield return delay;
                             continue;
                         }
-                        Debug.Log($"fix {_rigidbody.velocity} : {_rigidbodyRequiredVelocitySqrMagnitude} vs {sqrMagnitude}");
+                        Debug.Log($"fix {velocity} : {_rigidbodyRequiredVelocitySqrMagnitude} vs {sqrMagnitude}");
                         _rigidbody.velocity = velocity.normalized * _ballRequiredMoveSpeed;
+                        yield return delay;
+                        continue;
                     }
+                }
+                if (_isBallIdle)
+                {
+                    if (Time.time > _ballIdleAccelerationUpdateTime && _ballRequiredMoveSpeed > 0)
+                    {
+                        _ballIdleAccelerationUpdateTime = Time.time + _ballIdleAccelerationInterval;
+                        var speed = _rigidbody.velocity.magnitude * _ballIdleAccelerationMultiplier;
+                        InternalSetRigidbodyVelocity(speed, velocity);
+                    }
+                }
+                else if (_ballRequiredMoveSpeed > 0 && _ballIdleAccelerationMultiplier > 0)
+                {
+                    _isBallIdle = true;
+                    _ballIdleAccelerationUpdateTime = Time.time + _ballIdleAccelerationStartDelay;
                 }
                 yield return delay;
             }
@@ -355,6 +380,8 @@ namespace Battle.Scripts.Battle.Ball
 
         #region IBallManager
 
+        IBallCollision IBallManager.BallCollision => this;
+
         void IBallManager.FixCameraRotation(Camera gameCamera)
         {
             if (_debug._isShowBallText)
@@ -391,6 +418,7 @@ namespace Battle.Scripts.Battle.Ball
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
+            _ballExternalMoveSpeed = speed;
             var actualVelocity = InternalSetRigidbodyVelocity(speed, direction);
             UpdateBallText();
             _photonView.RPC(nameof(SetBallVelocityRpc), RpcTarget.Others, actualVelocity);
@@ -440,6 +468,20 @@ namespace Battle.Scripts.Battle.Ball
         {
             Assert.IsTrue(colorIndex >= 0 && colorIndex < _teamColors.Length, "colorIndex >= 0 && colorIndex < _teamColors.Length");
             _spriteMoving.GetComponent<SpriteRenderer>().color = _teamColors[colorIndex];
+        }
+
+        #endregion
+
+        #region IBallCollision
+
+        void IBallCollision.OnBrickCollision(Collision2D collision)
+        {
+            _isBallIdle = false;
+        }
+
+        void IBallCollision.OnHeadCollision(Collision2D collision)
+        {
+            _isBallIdle = false;
         }
 
         #endregion

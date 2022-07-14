@@ -21,6 +21,8 @@ namespace Battle.Scripts.Battle
     /// </remarks>
     internal interface IBallManager
     {
+        IBallCollision BallCollision { get; }
+        
         void FixCameraRotation(Camera gameCamera);
 
         void SetBallPosition(Vector2 position);
@@ -34,4 +36,13 @@ namespace Battle.Scripts.Battle
         void SetBallLocalTeamColor(int teamNumber);
     }
 
+    /// <summary>
+    /// Local player callback interface for collision handling.
+    /// </summary>
+    internal interface IBallCollision
+    {
+        void OnBrickCollision(Collision2D collision);
+
+        void OnHeadCollision(Collision2D collision);
+    }
 }
