@@ -56,7 +56,7 @@ namespace Battle.Scripts.Battle.Ball
         [SerializeField] private GameObject _spriteHidden;
 
         [Header("Live Data"), SerializeField] private BallState _ballState;
-        [SerializeField] private float _ballExternalMoveSpeed;
+        [SerializeField] private float _ballLastExternalMoveSpeed;
         [SerializeField] private float _ballRequiredMoveSpeed;
         private float _rigidbodyRequiredVelocitySqrMagnitude;
 
@@ -418,7 +418,7 @@ namespace Battle.Scripts.Battle.Ball
                 Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
                 return;
             }
-            _ballExternalMoveSpeed = speed;
+            _ballLastExternalMoveSpeed = speed;
             var actualVelocity = InternalSetRigidbodyVelocity(speed, direction);
             UpdateBallText();
             _photonView.RPC(nameof(SetBallVelocityRpc), RpcTarget.Others, actualVelocity);
@@ -477,6 +477,7 @@ namespace Battle.Scripts.Battle.Ball
         void IBallCollision.OnBrickCollision(Collision2D collision)
         {
             _isBallIdle = false;
+            ((IBallManager)this).SetBallSpeed(_ballLastExternalMoveSpeed, _rigidbody.velocity);
         }
 
         void IBallCollision.OnHeadCollision(Collision2D collision)
