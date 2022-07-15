@@ -98,23 +98,23 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class GameVariables
     {
-        [Header("Battle"), Min(1)] public int _roomStartDelay;
-        [Min(1)] public int _slingshotDelay;
-        [Min(0)] public int _headScoreToWin;
-        [Min(0)] public float _playerShieldHitStunDuration;
-        [Min(0)] public float _ballSlingshotPower;
+        [Header("Battle"), Min(1)] public int _battleRoomStartDelay;
+        [Min(1)] public int _battleSlingshotDelay;
+        [Min(0)] public int _battleHeadScoreToWin;
 
         [Header("Ball"), Min(0)] public float _ballMoveSpeedMultiplier;
         [Min(0)] public float _ballMinMoveSpeed;
         [Min(0)] public float _ballMaxMoveSpeed;
         [Min(0)] public float _ballLerpSmoothingFactor;
         [Min(0)] public float _ballTeleportDistance;
+        [Min(0)] public float _ballSlingshotPower;
         [Min(0)] public float _ballIdleAccelerationStartDelay;
         [Min(0)] public float _ballIdleAccelerationInterval;
         [Min(0)] public float _ballIdleAccelerationMultiplier;
 
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
+        [Min(0)] public float _playerShieldHitStunDuration;
 
         [Header("Shield"), Min(0)] public float _shieldDistanceMultiplier;
 

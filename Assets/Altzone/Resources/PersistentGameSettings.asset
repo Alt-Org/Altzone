@@ -26,21 +26,21 @@ MonoBehaviour:
     _minPlayerNameLength: 2
     _maxPlayerNameLength: 16
   _variables:
-    _roomStartDelay: 6
-    _slingshotDelay: 6
-    _headScoreToWin: 5
-    _playerShieldHitStunDuration: 0.5
-    _ballSlingshotPower: 1
+    _battleRoomStartDelay: 6
+    _battleSlingshotDelay: 6
+    _battleHeadScoreToWin: 5
     _ballMoveSpeedMultiplier: 1
     _ballMinMoveSpeed: 1
     _ballMaxMoveSpeed: 50
     _ballLerpSmoothingFactor: 0.1
     _ballTeleportDistance: 5
+    _ballSlingshotPower: 1
     _ballIdleAccelerationStartDelay: 1
     _ballIdleAccelerationInterval: 1
     _ballIdleAccelerationMultiplier: 1.1
     _playerMoveSpeedMultiplier: 2
     _playerAttackMultiplier: 2
+    _playerShieldHitStunDuration: 0.5
     _shieldDistanceMultiplier: 1
   _prefabs:
     _playerForDes: {fileID: 4878496965620720667, guid: 7e0ac59bdb0cf2246a3741c79b821217,

@@ -37,7 +37,7 @@ namespace Battle.Scripts.Battle.Game
         {
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
-            _headScoreToWin = variables._headScoreToWin;
+            _headScoreToWin = variables._battleHeadScoreToWin;
             ResetScores();
         }
 

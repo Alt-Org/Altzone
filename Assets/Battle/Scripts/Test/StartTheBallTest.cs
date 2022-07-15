@@ -52,8 +52,8 @@ namespace Battle.Scripts.Test
             var variables = runtimeGameConfig.Variables;
             _ballSlingshotPower = variables._ballSlingshotPower;
             _playerAttackMultiplier = variables._playerAttackMultiplier;
-            _roomStartDelay = variables._roomStartDelay;
-            _slingshotDelay = variables._slingshotDelay;
+            _roomStartDelay = variables._battleRoomStartDelay;
+            _slingshotDelay = variables._battleSlingshotDelay;
         }
 
         private void LoadDependencies()

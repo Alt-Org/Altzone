@@ -28,8 +28,8 @@ namespace Battle.Scripts.Test
 
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
-            _roomStartDelay = variables._roomStartDelay;
-            _slingshotDelay = variables._slingshotDelay;
+            _roomStartDelay = variables._battleRoomStartDelay;
+            _slingshotDelay = variables._battleSlingshotDelay;
             var features = runtimeGameConfig.Features;
             _isDisableRaid = features._isDisableRaid;
         }
