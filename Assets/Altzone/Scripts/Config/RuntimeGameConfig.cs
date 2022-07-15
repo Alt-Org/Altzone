@@ -102,6 +102,8 @@ namespace Altzone.Scripts.Config
         [Min(1)] public int _battleSlingshotDelay;
         [Min(0)] public int _battleHeadScoreToWin;
 
+        [Header("Raid"), Min(0)] public float _raidMaxLootCapacity;
+
         [Header("Ball"), Min(0)] public float _ballMoveSpeedMultiplier;
         [Min(0)] public float _ballMinMoveSpeed;
         [Min(0)] public float _ballMaxMoveSpeed;
