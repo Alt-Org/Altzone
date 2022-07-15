@@ -1,4 +1,5 @@
 using Prg.Scripts.Common.PubSub;
+using Battle.Scripts.Battle.Game;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -12,7 +13,8 @@ namespace Battle.Scripts.Ui
         private float _distance;
         private Vector2 _startPos;
         private Vector2 _endpos = new Vector2(0,0);
-        [SerializeField]private Transform _playerTransform;
+        private IBattleTeam _player;
+        [SerializeField] private Transform _playerTransform;
 
 
         private void Awake()
@@ -38,7 +40,8 @@ namespace Battle.Scripts.Ui
 
         private void LateUpdate()
         {
-            
+            _player.GetBallDropPositionAndDirection(out var ballDropPosition, out var direction);
+            _line.SetPosition(0, ballDropPosition);
         }
 
         private void SlingStart(UiEvents.SlingshotStart start)
@@ -46,7 +49,6 @@ namespace Battle.Scripts.Ui
             _playerTransform = start.TeamTracker1.Player1Transform;
             _startPos = _playerTransform.position;
             _line.SetPosition(1, _endpos);
-            _line.SetPosition(0, _startPos);
             _lineObject.SetActive(true);
         }
 
