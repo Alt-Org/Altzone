@@ -814,9 +814,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: SlingshotUI
       objectReference: {fileID: 0}
+    - target: {fileID: 472744071238202702, guid: 968b41c7e386bbf41a798b52cad0f365,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 472744071238202703, guid: 968b41c7e386bbf41a798b52cad0f365,
+        type: 3}
+      propertyPath: m_Parameters.textureMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 472744071238202703, guid: 968b41c7e386bbf41a798b52cad0f365,
         type: 3}
       propertyPath: m_Positions.Array.data[1].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 472744071238202703, guid: 968b41c7e386bbf41a798b52cad0f365,
+        type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 472744071238202703, guid: 968b41c7e386bbf41a798b52cad0f365,
+        type: 3}
+      propertyPath: m_Parameters.numCornerVertices
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
