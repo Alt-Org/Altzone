@@ -1,6 +1,8 @@
 using System.Collections;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Ui;
 using Photon.Pun;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
 namespace Battle.Scripts.Test
@@ -8,6 +10,7 @@ namespace Battle.Scripts.Test
     internal class BallManagerTest : MonoBehaviour
     {
         const string Tooltip1 = "Set ball moving using IBallManager interface after level has been loaded";
+        const string Tooltip2 = "Set ball moving using StartBattle event after level has been loaded";
 
         [Header("Test Actions")] public bool _setBallState;
         public bool _setBallPosition;
@@ -22,8 +25,10 @@ namespace Battle.Scripts.Test
 
         [Header("Photon Master Client"), Tooltip(Tooltip1)] public bool _isAutoStartBall;
         public bool _isStartOnGui;
-        public float _autoStartDelay;
+        [Tooltip(Tooltip2)]public bool _isStartTheBallTest;
 
+        [Header("Auto Start Delay")] public float _autoStartDelay;
+        
         private IBallManager _ballManager;
 
         private void Awake()
@@ -69,7 +74,8 @@ namespace Battle.Scripts.Test
         {
             yield return new WaitUntil(() => (_ballManager ??= Context.BallManager) != null);
             yield return null;
-            if (!(_isAutoStartBall || _isStartOnGui))
+            var isAutoStart = _isAutoStartBall || _isStartOnGui || _isStartTheBallTest;
+            if (!isAutoStart)
             {
                 yield break;
             }
@@ -92,10 +98,12 @@ namespace Battle.Scripts.Test
                 TestAutoStart();
                 yield break;
             }
-            var guiStart = gameObject.AddComponent<OnGuiWindowHelper>();
-            guiStart._windowTitle = "Start the Ball when ALL players are ready";
-            guiStart._buttonCaption = $" \r\nStart the Ball ({guiStart._controlKey})\r\n ";
-            guiStart.OnKeyPressed = TestAutoStart;
+            if (_isStartOnGui)
+            {
+                StartOnGui();
+                yield break;
+            }
+            StartTheBallTest();
         }
 
         private void TestAutoStart()
@@ -103,6 +111,19 @@ namespace Battle.Scripts.Test
             _setBallState = true;
             _setBallPosition = true;
             _setBallSpeedAndDir = true;
+        }
+
+        private void StartOnGui()
+        {
+            var guiStart = gameObject.AddComponent<OnGuiWindowHelper>();
+            guiStart._windowTitle = "Start the Ball when ALL players are ready";
+            guiStart._buttonCaption = $" \r\nStart the Ball ({guiStart._controlKey})\r\n ";
+            guiStart.OnKeyPressed = TestAutoStart;
+        }
+
+        private void StartTheBallTest()
+        {
+            this.Publish(new UiEvents.StartBattle());
         }
     }
 }
