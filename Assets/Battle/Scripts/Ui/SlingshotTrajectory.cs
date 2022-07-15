@@ -11,23 +11,19 @@ namespace Battle.Scripts.Ui
 
         [Header("Line"), SerializeField] private GameObject _lineObject;
         private LineRenderer _line;
-        private float _distance;
-        private Vector2 _startPos;
-        private Vector2 _endpos = new Vector2(0,0);
-        private IPlayerManager _player;
-        private IBattleTeam _startTeam;
-        [SerializeField] private UiEvents.SlingshotTrackerEvent _test;
         [SerializeField] private Transform _playerTransform;
+        private bool _playerIsOn = false;
 
 
         private void Awake()
         {
             _line = _lineObject.GetComponent<LineRenderer>();
+            _line.SetPosition(0, new Vector2(0f, 0f));
+            _line.SetPosition(1, new Vector2(0f, 0f));
         }
 
         private void OnEnable()
         {
-            this.Subscribe<UiEvents.SlingshotTrackerEvent>(SlingshotTracking);
             this.Subscribe<UiEvents.SlingshotStart>(SlingStart);
             this.Subscribe<UiEvents.SlingshotEnd>(SlingEnd);
         }
@@ -36,36 +32,29 @@ namespace Battle.Scripts.Ui
         {
             this.Unsubscribe();
         }
-        private void SlingshotTracking(UiEvents.SlingshotTrackerEvent data)
-        {
-            print(data);
-        }
 
-        /*
         private void LateUpdate()
         {
-            _startTeam.GetBallDropPositionAndDirection(out var ballDropPosition, out var direction);
-            _line.SetPosition(0,ballDropPosition);
+            // This'll need to be improved upon, and might be replaced with a coroutine
+            if(_playerIsOn)
+            {
+                _line.SetPosition(0, _playerTransform.position);
+            }
         }
-        */
 
         private void SlingStart(UiEvents.SlingshotStart start)
         {
-            _test = start;
-            //var startingTeam = _player.GetBattleTeam(start.TeamTracker1.TeamNumber);
-            //_lineObject.SetActive(true);
+            // This needs to be re-done, This only works if there is at least a player
+            // that occupies the first position on the list
+            _playerTransform = start.TeamTrackers[0].Player1Transform;
+            _playerIsOn = true;
+            _lineObject.SetActive(true);
         }
 
         private void SlingEnd(UiEvents.SlingshotEnd end)
         {
-            //print("Info: " + end.StartingTracker.ToString());
-            //_startTeam = _player.GetBattleTeam(end.TeamTracker1.TeamNumber);
-            //_lineObject.SetActive(false);
+            _playerIsOn = false;
+            _lineObject.SetActive(false);
         }
-
-       private void GetDirAndPos()
-       {
-
-       }
     }
 }
