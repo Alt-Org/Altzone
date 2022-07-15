@@ -28,6 +28,8 @@ namespace Battle.Scripts.Battle.Game
         public Collider2D BlueTeamCollider => _teamBlueCollider;
         public Collider2D RedTeamCollider => _teamRedCollider;
 
+        public Vector2 GetPlayAreaMiddlePosition => Vector2.zero;
+        
         public Rect GetPlayerPlayArea(int playerPos)
         {
             Rect playArea;
