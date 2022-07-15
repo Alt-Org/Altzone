@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Ui
 {
@@ -28,7 +30,7 @@ namespace Battle.Scripts.Ui
             {
                 PlayerToStart = playerToStart;
             }
-            
+
             public override string ToString()
             {
                 return $"{nameof(PlayerToStart)}: {PlayerToStart}";
@@ -128,28 +130,37 @@ namespace Battle.Scripts.Ui
             }
         }
 
-        internal class SlingshotStart : SlingshotTrackerEvent
+        internal class SlingshotStart
         {
-            public new ITeamSlingshotTracker TeamTracker1 => base.TeamTracker1;
-            public new ITeamSlingshotTracker TeamTracker2 => base.TeamTracker2;
-            
-            public SlingshotStart(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
+            public List<ITeamSlingshotTracker> TeamTrackers { get; }
+
+            public SlingshotStart(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2)
             {
+                Assert.IsNotNull(teamTracker1, "teamTracker1 != null");
+                var trackers = new List<ITeamSlingshotTracker> { teamTracker1 };
+                if (teamTracker2 != null)
+                {
+                    trackers.Add(teamTracker2);
+                    trackers.Sort((a, b) => a.TeamNumber.CompareTo(b.TeamNumber));
+                }
+                TeamTrackers = trackers;
             }
 
             public override string ToString()
             {
-                return $"{nameof(TeamTracker1)}: {TeamTracker1}, {nameof(TeamTracker2)}: {TeamTracker2}";
+                return $"{nameof(TeamTrackers)}: {string.Join(',', TeamTrackers)}";
             }
         }
 
-        internal class SlingshotEnd : SlingshotTrackerEvent
+        internal class SlingshotEnd
         {
-            public ITeamSlingshotTracker StartingTracker => base.TeamTracker1;
-            public ITeamSlingshotTracker OtherTracker => base.TeamTracker2;
-            
-            public SlingshotEnd(ITeamSlingshotTracker startingTracker, ITeamSlingshotTracker otherTracker) : base(startingTracker, otherTracker)
+            public ITeamSlingshotTracker StartingTracker { get; }
+            public ITeamSlingshotTracker OtherTracker { get; }
+
+            public SlingshotEnd(ITeamSlingshotTracker startingTracker, ITeamSlingshotTracker otherTracker)
             {
+                StartingTracker = startingTracker;
+                OtherTracker = otherTracker;
             }
 
             public override string ToString()
@@ -184,18 +195,6 @@ namespace Battle.Scripts.Ui
             public override string ToString()
             {
                 return $"ActorNumber: {Player.ActorNumber}";
-            }
-        }
-
-        internal class SlingshotTrackerEvent
-        {
-            protected readonly ITeamSlingshotTracker TeamTracker1;
-            protected readonly ITeamSlingshotTracker TeamTracker2;
-
-            protected SlingshotTrackerEvent(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2)
-            {
-                TeamTracker1 = teamTracker1;
-                TeamTracker2 = teamTracker2;
             }
         }
 

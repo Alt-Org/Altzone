@@ -209,9 +209,7 @@ namespace Battle.Scripts.Test
             {
                 var blueTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
-                var trackers = new List<ITeamSlingshotTracker>() {blueTracker, redTracker};
-                trackers.Sort((a,b) => a.TeamNumber.CompareTo(b.TeamNumber));
-                this.Publish(new UiEvents.SlingshotStart(trackers[0], trackers[1]));
+                this.Publish(new UiEvents.SlingshotStart(blueTracker, redTracker));
                 yield return countDownDelay;
 
                 blueTracker.StopTracking();
