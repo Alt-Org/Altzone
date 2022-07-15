@@ -7,6 +7,8 @@ namespace Battle.Scripts.Test
 {
     internal class BallManagerTest : MonoBehaviour
     {
+        const string Tooltip1 = "Set ball moving using IBallManager interface after level has been loaded";
+
         [Header("Test Actions")] public bool _setBallState;
         public bool _setBallPosition;
         public bool _setBallSpeed;
@@ -18,7 +20,7 @@ namespace Battle.Scripts.Test
         public Vector2 _direction = Vector2.one;
         public BallState _state;
 
-        [Header("Photon Master Client")] public bool _isAutoStartBall;
+        [Header("Photon Master Client"), Tooltip(Tooltip1)] public bool _isAutoStartBall;
         public bool _isStartOnGui;
         public float _autoStartDelay;
 

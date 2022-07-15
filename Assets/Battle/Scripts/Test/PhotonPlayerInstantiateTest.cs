@@ -23,11 +23,13 @@ namespace Battle.Scripts.Test
         {
             const string Tooltip1 = "Polling delay for Photon Custom Player propeties update";
             const string Tooltip2 = "Timeout to find free player position quickly";
+            const string Tooltip3 = "Preferred player start position for first player to come";
+            const string Tooltip4 = "Allocate new players for one team at a time, default is to use alternating teams";
 
             [Min(0.1f), Tooltip(Tooltip1)] public float _waitForPlayerPropertiesToUpdate = 1f;
             [Min(1), Tooltip(Tooltip2)] public float _timeoutFastWait = 3f;
-            [Range(1, 4)] public int _playerPos = 1;
-            public bool _isAllocateByTeams;
+            [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
+            [Tooltip(Tooltip4)] public bool _isAllocateByTeams;
             public bool _isRandomSKill;
             public Defence _playerMainSkill = Defence.Projection;
         }

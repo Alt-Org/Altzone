@@ -12,6 +12,8 @@ namespace Battle.Scripts.Test
 {
     public class TeamDriverTest : MonoBehaviour
     {
+        const string Tooltip1 = "Set ball moving using StartBattle event when all players are registered";
+
         [Serializable]
         internal class TeamSettings
         {
@@ -19,7 +21,7 @@ namespace Battle.Scripts.Test
             public MonoBehaviour _player2;
         }
 
-        [Header("Autostart"), SerializeField] private bool _isAutoStartBall;
+        [Header("Autostart"), Tooltip(Tooltip1), SerializeField] private bool _isAutoStartBall;
         [Range(0, 4), SerializeField] private int _roomPlayersOverride;
 
         [Header("Live Data"), SerializeField] private TeamSettings _teamBlue;
