@@ -531,10 +531,12 @@ namespace Battle.Scripts.Battle.Game
     internal class NullTeamSlingshotTracker : ITeamSlingshotTracker
     {
         public int TeamNumber { get; }
+        public int PlayerCount { get; }
 
         public NullTeamSlingshotTracker(int teamNumber)
         {
             TeamNumber = teamNumber;
+            PlayerCount = 0;
         }
 
         public float SqrDistance => 0;
@@ -547,6 +549,11 @@ namespace Battle.Scripts.Battle.Game
             Debug.Log($"team {TeamNumber} sqr distance {SqrDistance:0.00}");
             return SqrDistance;
         }
+
+        public override string ToString()
+        {
+            return $"Team:{TeamNumber}[#{PlayerCount}]";
+        }
     }
 
     /// <summary>
@@ -555,6 +562,7 @@ namespace Battle.Scripts.Battle.Game
     internal class TeamSlingshotTracker : ITeamSlingshotTracker
     {
         public int TeamNumber { get; }
+        public int PlayerCount { get; }
         public float SqrDistance => CalculateDistance();
 
         public Transform Player1Transform { get; }
@@ -566,6 +574,7 @@ namespace Battle.Scripts.Battle.Game
         public TeamSlingshotTracker(BattleTeam battleTeam)
         {
             TeamNumber = battleTeam.TeamNumber;
+            PlayerCount = battleTeam.PlayerCount;
             Player1Transform = battleTeam.SafePlayerTransform(battleTeam.FirstPlayer);
             Player2Transform = battleTeam.SafePlayerTransform(battleTeam.SecondPlayer);
             Debug.Log($"team {TeamNumber} p1 {Player1Transform.position} p2 {Player2Transform.position}");
@@ -586,6 +595,11 @@ namespace Battle.Scripts.Battle.Game
                 _sqrDistance = Mathf.Abs((Player1Transform.position - Player2Transform.position).sqrMagnitude);
             }
             return _sqrDistance;
+        }
+
+        public override string ToString()
+        {
+            return $"Team:{TeamNumber}[#{PlayerCount}]";
         }
     }
 

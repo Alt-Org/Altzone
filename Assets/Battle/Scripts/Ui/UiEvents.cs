@@ -14,6 +14,10 @@ namespace Battle.Scripts.Ui
 
         internal class StartBattle
         {
+            public override string ToString()
+            {
+                return $"{nameof(StartBattle)}";
+            }
         }
 
         internal class RestartBattle
@@ -23,6 +27,11 @@ namespace Battle.Scripts.Ui
             public RestartBattle(IPlayerDriver playerToStart)
             {
                 PlayerToStart = playerToStart;
+            }
+            
+            public override string ToString()
+            {
+                return $"{nameof(PlayerToStart)}: {PlayerToStart}";
             }
         }
 
@@ -127,6 +136,11 @@ namespace Battle.Scripts.Ui
             public SlingshotStart(ITeamSlingshotTracker teamTracker1, ITeamSlingshotTracker teamTracker2) : base(teamTracker1, teamTracker2)
             {
             }
+
+            public override string ToString()
+            {
+                return $"{nameof(TeamTracker1)}: {TeamTracker1}, {nameof(TeamTracker2)}: {TeamTracker2}";
+            }
         }
 
         internal class SlingshotEnd : SlingshotTrackerEvent
@@ -136,6 +150,11 @@ namespace Battle.Scripts.Ui
             
             public SlingshotEnd(ITeamSlingshotTracker startingTracker, ITeamSlingshotTracker otherTracker) : base(startingTracker, otherTracker)
             {
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(StartingTracker)}: {StartingTracker}, {nameof(OtherTracker)}: {OtherTracker}";
             }
         }
 

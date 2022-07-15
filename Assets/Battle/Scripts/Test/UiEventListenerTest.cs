@@ -46,6 +46,9 @@ namespace Battle.Scripts.Test
             this.Subscribe<UiEvents.StartRaid>(OnStartRaid);
             this.Subscribe<UiEvents.ExitRaidNotification>(OnExitRaid);
 
+            this.Subscribe<UiEvents.SlingshotStart>(OnSlingshotStart);
+            this.Subscribe<UiEvents.SlingshotEnd>(OnSlingshotEnd);
+            
             this.Subscribe<UiEvents.HeadCollision>(OnHeadCollision);
             this.Subscribe<UiEvents.ShieldCollision>(OnShieldCollision);
             this.Subscribe<UiEvents.WallCollision>(OnWallCollision);
@@ -135,6 +138,16 @@ namespace Battle.Scripts.Test
             Debug.Log($"{data}");
         }
 
+        private void OnSlingshotStart(UiEvents.SlingshotStart data)
+        {
+            Debug.Log($"{data}");
+        }
+        
+        private void OnSlingshotEnd(UiEvents.SlingshotEnd data)
+        {
+            Debug.Log($"{data}");
+        }
+        
         private static void OnHeadCollision(UiEvents.HeadCollision data)
         {
             if (!PhotonNetwork.IsMasterClient)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
@@ -208,7 +209,9 @@ namespace Battle.Scripts.Test
             {
                 var blueTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
-                this.Publish(new UiEvents.SlingshotStart(redTracker, blueTracker));
+                var trackers = new List<ITeamSlingshotTracker>() {blueTracker, redTracker};
+                trackers.Sort((a,b) => a.TeamNumber.CompareTo(b.TeamNumber));
+                this.Publish(new UiEvents.SlingshotStart(trackers[0], trackers[1]));
                 yield return countDownDelay;
 
                 blueTracker.StopTracking();
