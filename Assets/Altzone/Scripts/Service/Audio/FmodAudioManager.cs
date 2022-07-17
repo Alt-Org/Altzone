@@ -35,15 +35,6 @@ namespace Altzone.Scripts.Service.Audio
             set => throw new NotImplementedException();
         }
 
-        [AOT.MonoPInvokeCallback(typeof(SYSTEM_CALLBACK))]
-        private static RESULT IgnoreDeviceLostCallback(IntPtr system, SYSTEM_CALLBACK_TYPE type, IntPtr commandData1, IntPtr commandData2, IntPtr userdata)
-        {
-            // Try to avoid error messages by installing this callback.
-            // - when running DEVELOPMENT_BUILD we can have unnecessary error messages in devices which is not nice :-(
-            // [FMOD] OutputWASAPI::mixerThread : GetCurrentPadding returned 0x88890004. Device was unplugged!
-            return RESULT.OK;
-        }
-
         private void Awake()
         {
             var result = RuntimeManager.CoreSystem.getVersion(out var version);
@@ -53,9 +44,6 @@ namespace Altzone.Scripts.Service.Audio
             var verMinor = (version >> 8) & 0xF;
             var verDev = version & 0xF;
             Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00}");
-            
-            result = RuntimeManager.CoreSystem.setCallback(IgnoreDeviceLostCallback, SYSTEM_CALLBACK_TYPE.DEVICELOST);
-            Assert.AreEqual(RESULT.OK, result);
         }
     }
 }

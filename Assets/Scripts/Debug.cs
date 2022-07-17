@@ -97,7 +97,7 @@ public static class Debug
     {
         _contextTag = $" {contextTag}";
     }
-    
+
     private static void RemoveTags()
     {
         _isClassNamePrefix = false;
@@ -153,6 +153,15 @@ public static class Debug
 
     public static void LogError(string message, Object context = null)
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // [FMOD] OutputWASAPI::mixerThread : GetCurrentPadding returned 0x88890004. Device was unplugged!
+        if (message.StartsWith("[FMOD]") && message.Contains("unplugged"))
+        {
+            // Downgrade to warning in order to prevent annoying FMOD messages (or pause on error) during testing!
+            UnityEngine.Debug.LogWarning(message, context);
+            return;
+        }
+#endif
         UnityEngine.Debug.LogError(message, context);
     }
 
