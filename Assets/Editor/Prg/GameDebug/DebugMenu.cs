@@ -18,12 +18,9 @@ namespace Editor.Prg.GameDebug
         public static void CreateDummyPlayerData()
         {
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
-            playerData.BatchSave(() =>
-            {
-                playerData.PlayerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
-                playerData.Language = Application.systemLanguage;
-                playerData.CharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
-            });
+            playerData.PlayerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
+            playerData.Language = Application.systemLanguage;
+            playerData.CharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
             Debug.Log(playerData.ToString());
         }
 

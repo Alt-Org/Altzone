@@ -250,7 +250,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Used by Editor classes with <c>MenuItem</c> to pre-load <c>PlayerDataCache</c> as it is not otherwise available.
         /// </summary>
-        public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache();
+        public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache(null);
 #endif
 
         [SerializeField] private GameFeatures _permanentFeatures;
@@ -315,13 +315,13 @@ namespace Altzone.Scripts.Config
             instance._permanentConstraints = gameSettings._constraints;
             instance.Variables = gameSettings._variables;
             instance.Prefabs = gameSettings._prefabs;
-            instance._playerDataCache = LoadPlayerDataCache();
+            instance._playerDataCache = LoadPlayerDataCache(instance);
             instance._gameInput = gameSettings._input;
         }
 
-        private static PlayerDataCache LoadPlayerDataCache()
+        private static PlayerDataCache LoadPlayerDataCache(MonoBehaviour host)
         {
-            return new PlayerDataCacheLocal();
+            return new PlayerDataCacheLocal(host);
         }
     }
 }

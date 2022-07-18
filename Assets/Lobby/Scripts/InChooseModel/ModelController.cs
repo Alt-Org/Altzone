@@ -36,12 +36,8 @@ namespace Lobby.Scripts.InChooseModel
             if (_view.PlayerName != playerDataCache.PlayerName ||
                 _view.CurrentCharacterId != playerDataCache.CharacterModelId)
             {
-                Debug.Log("player.BatchSave");
-                playerDataCache.BatchSave(() =>
-                {
-                    playerDataCache.PlayerName = _view.PlayerName;
-                    playerDataCache.CharacterModelId = _view.CurrentCharacterId;
-                });
+                playerDataCache.PlayerName = _view.PlayerName;
+                playerDataCache.CharacterModelId = _view.CurrentCharacterId;
             }
             if (PhotonNetwork.NickName != playerDataCache.PlayerName)
             {
