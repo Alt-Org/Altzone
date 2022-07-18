@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Battle.Scripts.Battle.Brick
 {
     [RequireComponent(typeof(PhotonView))]
-    public class BrickRemove : MonoBehaviour
+    internal class BrickRemove : MonoBehaviour
     {
         private void Awake()
         {

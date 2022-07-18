@@ -5,7 +5,7 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Helper for game main camera to find it and change it if required.
     /// </summary>
-    public class GameCamera : MonoBehaviour, IBattleCamera
+    internal class GameCamera : MonoBehaviour, IBattleCamera
     {
         [SerializeField] private Camera _gameCamera;
 

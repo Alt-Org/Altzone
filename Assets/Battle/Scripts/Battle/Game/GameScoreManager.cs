@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle.Game
     /// <remarks>
     /// Note that wall scores are internally counted but they are never sent outside!
     /// </remarks>
-    public class GameScoreManager : MonoBehaviour, IGameScoreManager
+    internal class GameScoreManager : MonoBehaviour, IGameScoreManager
     {
         [Header("Settings"), SerializeField] private WindowDef _gameOverWindow;
 

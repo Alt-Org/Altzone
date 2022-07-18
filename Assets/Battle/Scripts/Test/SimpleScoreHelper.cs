@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class SimpleScoreHelper : MonoBehaviour
+    internal class SimpleScoreHelper : MonoBehaviour
     {
         [Range(1, 2), SerializeField] private int _teamNumber;
         [SerializeField] private TMP_Text _scoreText;

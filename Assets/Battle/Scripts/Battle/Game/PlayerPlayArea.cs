@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
-    public class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
+    internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
         [Header("Player Areas"), SerializeField] private Rect _playAreaP1;
         [SerializeField] private Rect _playAreaP2;

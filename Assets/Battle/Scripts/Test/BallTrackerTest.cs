@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class BallTrackerTest : MonoBehaviour
+    internal class BallTrackerTest : MonoBehaviour
     {
         public bool _isPauseOnNoMansLand;
 

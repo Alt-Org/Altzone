@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class SimplePingHelper : MonoBehaviour
+    internal class SimplePingHelper : MonoBehaviour
     {
         [SerializeField] private string _pingFormat = "ping\r\n{0}";
         [SerializeField] private TMP_Text _pingText;

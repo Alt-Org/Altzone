@@ -1,12 +1,9 @@
 using Prg.Scripts.Common.PubSub;
-using Battle.Scripts.Battle.Game;
 using UnityEngine;
-using UnityEngine.Assertions;
-using Battle.Scripts.Battle;
 
 namespace Battle.Scripts.Ui
 {
-    public class SlingshotTrajectory : MonoBehaviour
+    internal class SlingshotTrajectory : MonoBehaviour
     {
 
         [Header("Line"), SerializeField] private GameObject _lineObject;

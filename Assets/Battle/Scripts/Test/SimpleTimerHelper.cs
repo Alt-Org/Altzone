@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class SimpleTimerHelper : MonoBehaviour
+    internal class SimpleTimerHelper : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
 
