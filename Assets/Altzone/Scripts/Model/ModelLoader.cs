@@ -3,23 +3,10 @@
     /// <summary>
     /// Utility class to load all models for runtime.
     /// </summary>
-    public static class ModelLoader
+    internal static class ModelLoader
     {
-        private static bool _isModelsLoaded;
-
         public static void LoadModels()
         {
-            if (!_isModelsLoaded)
-            {
-                LoadAndClearModels();
-            }
-        }
-
-        public static void LoadAndClearModels()
-        {
-            _isModelsLoaded = true;
-            Models.Clear();
-
             AddModel(Defence.Desensitisation.ToString(), new DefenceModel((int)Defence.Desensitisation, Defence.Desensitisation));
             AddModel(Defence.Deflection.ToString(), new DefenceModel((int)Defence.Deflection, Defence.Deflection));
             AddModel(Defence.Introjection.ToString(), new DefenceModel((int)Defence.Introjection, Defence.Introjection));

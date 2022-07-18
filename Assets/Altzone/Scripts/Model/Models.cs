@@ -6,15 +6,16 @@ using UnityEngine;
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Container for named model objects.
+    /// Container for application model objects.
     /// </summary>
     public static class Models
     {
-        private static readonly Dictionary<string, AbstractModel> ModelsMap = new Dictionary<string, AbstractModel>();
+        private static readonly Dictionary<string, AbstractModel> ModelsMap = new();
 
-        public static void Clear()
+        public static void Load()
         {
             ModelsMap.Clear();
+            ModelLoader.LoadModels();
         }
 
         public static void Add(AbstractModel model, string modelName)
@@ -36,7 +37,7 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"model not found for key: {key}");
             }
-            if (!(anyModel is T exactModel))
+            if (anyModel is not T exactModel)
             {
                 throw new UnityException(
                     $"model type {anyModel.GetType().Name} is different than excepted type {modelType.Name}for key: {key}");
