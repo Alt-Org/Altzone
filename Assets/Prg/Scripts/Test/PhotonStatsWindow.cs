@@ -136,6 +136,7 @@ namespace Prg.Scripts.Test
                     label += $"AutoSyncScene ";
                 }
             }
+            label += $"\r\nnick={PhotonNetwork.NickName}";
             GUILayout.Label(label, _guiLabelStyle);
         }
 
