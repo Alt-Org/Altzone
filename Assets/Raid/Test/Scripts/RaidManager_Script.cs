@@ -42,12 +42,12 @@ public class RaidManager_Script : MonoBehaviour
 
             if (Mouse.current.leftButton.isPressed)
             {
-                Reveal();
+                Reveal(Mouse.current.position.ReadValue());
             }
 
             else if (Mouse.current.rightButton.isPressed)
             {
-                Flag();
+                Flag(Mouse.current.position.ReadValue());
             }
 
             //else if (Input.GetMouseButtonDown(1))
@@ -187,9 +187,9 @@ public class RaidManager_Script : MonoBehaviour
             return count;
     }
 
-    private void Flag()
+    private void Flag(Vector3 position)
     {
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
@@ -202,10 +202,10 @@ public class RaidManager_Script : MonoBehaviour
         field.Draw(state);
     }
 
-    private void Reveal()
+    private void Reveal(Vector3 position)
     {
         //(DEV) Täytyy vaihtaa kun Android build!
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
