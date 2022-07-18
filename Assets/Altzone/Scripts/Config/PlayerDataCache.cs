@@ -163,6 +163,14 @@ namespace Altzone.Scripts.Config
             // Placeholder for actual implementation in derived class.
         }
 
+        /// <summary>
+        /// Protected <c>InternalSave</c> to handle actual saving somewhere.
+        /// </summary>
+        protected virtual void InternalSave()
+        {
+            // Placeholder for actual implementation in derived class.
+        }
+
         [Conditional("UNITY_EDITOR")]
         public void DebugResetPlayer()
         {
@@ -171,8 +179,15 @@ namespace Altzone.Scripts.Config
             CharacterModelId = DefaultModelId;
             ClanId = -1;
             IsTosAccepted = false;
+            InternalSave();
         }
 
+        [Conditional("UNITY_EDITOR")]
+        public void DebugSavePlayer()
+        {
+            InternalSave();
+        }
+        
         public override string ToString()
         {
             // This is required for actual implementation to detect changes in our changeable properties!
@@ -214,7 +229,7 @@ namespace Altzone.Scripts.Config
             _isDebugFlag = PlayerPrefs.GetInt(IsDebugFlagKey, 0) == 1;
         }
 
-        private void InternalSave()
+        protected override void InternalSave()
         {
             PlayerPrefs.SetString(PlayerNameKey, PlayerName);
             PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
@@ -247,6 +262,7 @@ namespace Altzone.Scripts.Config
             {
                 // Save all changed player prefs on next frame.
                 _delayedSave = _host.StartCoroutine(DelayedSave());
+                return;
             }
         }
 
