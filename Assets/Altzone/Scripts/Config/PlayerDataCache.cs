@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using Altzone.Scripts.Model;
-using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config
@@ -16,6 +15,7 @@ namespace Altzone.Scripts.Config
     public class PlayerDataCache
     {
         protected const int DefaultModelId = (int)Defence.Introjection;
+        protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
         [SerializeField] protected string _playerName;
 
@@ -96,6 +96,8 @@ namespace Altzone.Scripts.Config
             }
         }
 
+        [SerializeField] protected SystemLanguage _language;
+
         /// <summary>
         /// Player's UNITY language.
         /// </summary>
@@ -104,8 +106,12 @@ namespace Altzone.Scripts.Config
         /// </remarks>
         public SystemLanguage Language
         {
-            get => Localizer.Language;
-            set => Localizer.SetLanguage(value);
+            get => _language;
+            set
+            {
+                _language = value;
+                Save();
+            }
         }
 
         [SerializeField] protected bool _isTosAccepted;
@@ -187,7 +193,7 @@ namespace Altzone.Scripts.Config
         {
             InternalSave();
         }
-        
+
         public override string ToString()
         {
             // This is required for actual implementation to detect changes in our changeable properties!
@@ -205,6 +211,7 @@ namespace Altzone.Scripts.Config
         private const string PlayerGuidKey = "PlayerData.PlayerGuid";
         private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
         private const string ClanIdKey = "PlayerData.ClanId";
+        private const string LanguageCodeKey = "PlayerData.LanguageCode";
         private const string TermsOfServiceKey = "PlayerData.TermsOfService";
         private const string IsDebugFlagKey = "PlayerData.IsDebugFlag";
 
@@ -225,6 +232,7 @@ namespace Altzone.Scripts.Config
                 PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
                 PlayerPrefs.Save();
             }
+            _language = (SystemLanguage)PlayerPrefs.GetInt(LanguageCodeKey, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(TermsOfServiceKey, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(IsDebugFlagKey, 0) == 1;
         }
@@ -235,10 +243,11 @@ namespace Altzone.Scripts.Config
             PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
             PlayerPrefs.SetInt(ClanIdKey, ClanId);
             PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
+            PlayerPrefs.SetInt(TermsOfServiceKey, (int)_language);
             PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
             PlayerPrefs.SetInt(IsDebugFlagKey, IsDebugFlag ? 1 : 0);
         }
-        
+
         private static string CreatePlayerHandle()
         {
             // Create same GUID for same device if possible

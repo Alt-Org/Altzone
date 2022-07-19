@@ -18,10 +18,13 @@ namespace Editor.Prg.GameDebug
 
         public static void CreateDummyPlayerData()
         {
-            Localizer.LoadTranslations();
+            Debug.Log("*");
+            var language = Application.systemLanguage;
+            Localizer.LoadTranslations(language);
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
             playerData.PlayerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
-            playerData.Language = Application.systemLanguage;
+            playerData.Language = language;
+            Localizer.SetLanguage(language);
             playerData.CharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
@@ -30,8 +33,11 @@ namespace Editor.Prg.GameDebug
         public static void SetLanguageToEn()
         {
             Debug.Log("*");
+            const SystemLanguage language = SystemLanguage.English;
+            Localizer.LoadTranslations(language);
             var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
-            playerData.Language = SystemLanguage.English;
+            playerData.Language = language;
+            Localizer.SetLanguage(language);
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
         }

@@ -12,6 +12,8 @@ using UnityEngine.UI;
 
 namespace Prg.Scripts.Common.Unity.Localization
 {
+    #region Language implementation
+
     /// <summary>
     /// Dictionary for single localized language.
     /// </summary>
@@ -56,12 +58,12 @@ namespace Prg.Scripts.Common.Unity.Localization
             : _altWords.TryGetValue(key, out var altValue) ? altValue
             : $"[{key}]";
 #endif
-        public Language(SystemLanguage language, string localeName,
+        public Language(SystemLanguage language, string localeName = null,
             Dictionary<string, string> words = null,
             Dictionary<string, string> altWords = null)
         {
             LanguageName = language;
-            Locale = localeName;
+            Locale = localeName ?? "xx";
             _words = words ?? new Dictionary<string, string>();
             _altWords = altWords ?? new Dictionary<string, string>();
         }
@@ -185,7 +187,7 @@ namespace Prg.Scripts.Common.Unity.Localization
     /// </summary>
     internal class Languages
     {
-        private readonly List<Language> _languages = new List<Language>();
+        private readonly List<Language> _languages = new();
 
         internal ReadOnlyCollection<Language> GetLanguages => _languages.AsReadOnly();
 
@@ -196,80 +198,83 @@ namespace Prg.Scripts.Common.Unity.Localization
             _languages.Add(language);
         }
 
-        internal bool HasLanguage(SystemLanguage language)
+        internal bool TryGetLanguage(SystemLanguage systemLanguage, out Language language)
         {
-            return _languages.FindIndex(x => x.LanguageName == language) != -1;
+            var index = _languages.FindIndex(x => x.LanguageName == systemLanguage);
+            if (index == -1)
+            {
+                language = null;
+                return false;
+            }
+            language = _languages[index];
+            return true;
         }
 
-        internal Language GetLanguage(SystemLanguage language)
+        internal bool HasLanguage(SystemLanguage systemLanguage)
         {
-            var index = _languages.FindIndex(x => x.LanguageName == language);
+            return _languages.FindIndex(x => x.LanguageName == systemLanguage) != -1;
+        }
+
+        internal Language GetLanguage(SystemLanguage systemLanguage)
+        {
+            var index = _languages.FindIndex(x => x.LanguageName == systemLanguage);
             if (index == -1)
             {
                 if (_languages.Count > 0)
                 {
                     return _languages[0];
                 }
-                return new Language(language, "xx");
+                return new Language(systemLanguage);
             }
             return _languages[index];
         }
     }
+
+    #endregion
+
+    #region Localizer implementation
 
     /// <summary>
     /// Simple <c>I18N</c> implementation to localize words and phrases.
     /// </summary>
     public static class Localizer
     {
-        private const string LanguageCodeKey = "Localizer.LanguageCode";
-
         private static Languages _languages;
         private static Language _curLanguage;
+        private static SystemLanguage _curSystemLanguage = SystemLanguage.Unknown;
 
-        public static SystemLanguage Language => GetLanguage();
+        public static SystemLanguage Language => _curSystemLanguage;
 
         public static string Localize(string key) => _curLanguage.Word(key);
 
-        public static bool HasLanguage(SystemLanguage language)
-        {
-            return _languages?.HasLanguage(language) ?? false;
-        }
-
-        private static SystemLanguage GetLanguage()
-        {
-            var language = (SystemLanguage)PlayerPrefs.GetInt(LanguageCodeKey, (int)SystemLanguage.Finnish);
-            return language;
-        }
-
         public static void SetLanguage(SystemLanguage language)
         {
-            _curLanguage = _languages.GetLanguage(language);
-            Debug.Log($"SetLanguage {_curLanguage}");
-            PlayerPrefs.SetInt(LanguageCodeKey, (int)language);
+            Debug.Log($"SetLanguage {_curLanguage} : {_curSystemLanguage} <- {language}");
+            if (!_languages.TryGetLanguage(language, out _curLanguage))
+            {
+                _curLanguage = _languages.GetLanguages[0];
+            }
+            _curSystemLanguage = _curLanguage.LanguageName;
         }
 
-        public static void LoadTranslations()
+        public static void LoadTranslations(SystemLanguage language)
         {
             var config = Resources.Load<LocalizationConfig>(nameof(LocalizationConfig));
             if (config == null)
             {
                 Debug.LogWarning($"{nameof(LocalizationConfig)} is missing");
             }
-            var languagesBinFile = config != null ?  config.LanguagesBinFile : null;
+            var languagesBinFile = config != null ? config.LanguagesBinFile : null;
             if (languagesBinFile == null)
             {
                 _languages = new Languages();
-                _languages.Add(new Language(SystemLanguage.Unknown, "en"));
+                _languages.Add(new Language(language));
             }
             else
             {
                 _languages = BinAsset.Load(config.LanguagesBinFile, false);
             }
-            var language = GetLanguage();
-            if (!HasLanguage(language))
-            {
-                language = _languages.GetLanguages[0].LanguageName;
-            }
+            Assert.IsTrue(_languages.GetLanguages.Count > 0, "_languages.GetLanguages.Count > 0");
             SetLanguage(language);
             LocalizerHelper.SetEditorStatus();
         }
@@ -387,6 +392,10 @@ namespace Prg.Scripts.Common.Unity.Localization
             }
         }
     }
+
+    #endregion
+
+    #region Language file management
 
     /// <summary>
     /// Content loader for localized words and phrases in Tab Separated Values (.tsv) format.
@@ -644,4 +653,6 @@ namespace Prg.Scripts.Common.Unity.Localization
             Debug.Log($"Language {language.Locale} {language.LanguageName} words {language.Words.Count} alt words {language.AltWords.Count}");
         }
     }
+
+    #endregion
 }
