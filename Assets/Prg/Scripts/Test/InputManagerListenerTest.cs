@@ -8,6 +8,9 @@ namespace Prg.Scripts.Test
     {
         public bool _isPointerDown;
 
+        private ThrottledDebugLogger _panLogger;
+        private ThrottledDebugLogger _zoomLogger;
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         protected void Awake()
         {
@@ -15,6 +18,9 @@ namespace Prg.Scripts.Test
 
         private void OnEnable()
         {
+            _panLogger = new ThrottledDebugLogger(this);
+            _zoomLogger = new ThrottledDebugLogger(this);
+
             this.Subscribe<InputManager.ClickDownEvent>(OnClickDownEvent);
             this.Subscribe<InputManager.ClickUpEvent>(OnClickUpEvent);
             this.Subscribe<InputManager.PanEvent>(OnPanEvent);
@@ -25,6 +31,8 @@ namespace Prg.Scripts.Test
         private void OnDisable()
         {
             this.Unsubscribe();
+            _panLogger.IsStopped = true;
+            _zoomLogger.IsStopped = true;
         }
 
         private void OnClickDownEvent(InputManager.ClickDownEvent data)
@@ -45,12 +53,12 @@ namespace Prg.Scripts.Test
 
         private void OnPanEvent(InputManager.PanEvent data)
         {
-            Debug.Log($"{data}");
+            ThrottledDebugLogger.Log(_panLogger, $"OnPanEvent {data}");
         }
 
         private void OnZoomEvent(InputManager.ZoomEvent data)
         {
-            Debug.Log($"{data}");
+            ThrottledDebugLogger.Log(_zoomLogger, $"OnZoomEvent {data}");
         }
 
         private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
@@ -62,7 +70,6 @@ namespace Prg.Scripts.Test
             {
                 target.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
             }
-
         }
 #endif
     }
