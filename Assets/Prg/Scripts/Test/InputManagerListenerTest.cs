@@ -56,6 +56,13 @@ namespace Prg.Scripts.Test
         private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
         {
             Debug.Log($"{data}");
+            // Pick a random, saturated and not-too-dark color
+            var target = data.GameObject.GetComponent<Renderer>();
+            if (target != null)
+            {
+                target.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            }
+
         }
 #endif
     }
