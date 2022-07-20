@@ -215,6 +215,7 @@ GameObject:
   - component: {fileID: 371051776}
   - component: {fileID: 371051775}
   - component: {fileID: 371051778}
+  - component: {fileID: 371051779}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -308,6 +309,23 @@ MonoBehaviour:
     height: 28.809998
   _myCameraLimitsSource: {fileID: 1514332989}
   _isDrawDebugGizmos: 1
+--- !u!114 &371051779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371051774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3676340a351d403b93cb66fa4e9e4e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isZoomEnabled: 1
+  _minZoom: 5
+  _maxZoom: 18
+  _isPanEnabled: 1
+  _currentZoom: 0
 --- !u!1 &1514332988
 GameObject:
   m_ObjectHideFlags: 0

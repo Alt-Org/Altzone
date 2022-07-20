@@ -16,8 +16,8 @@ namespace Prg.Scripts.Common.Unity.Input
     public class TouchHandler : BaseHandler
     {
         [Header("Debug"),SerializeField]  private int _touchCount;
-        [SerializeField] private Vector3 _firstPanPosition;
-        [SerializeField] private Vector3 _lastPanPosition;
+        [SerializeField] private Vector2 _firstPanPosition;
+        [SerializeField] private Vector2 _lastPanPosition;
         [SerializeField] private int _panFingerId;
         [SerializeField] private bool _isFingerDown;
         [SerializeField] private bool _zoomActive;

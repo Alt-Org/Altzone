@@ -7,9 +7,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
     public interface ICamera2dZoomAndPan
     {
         void MoveCamera(Vector2 deltaPosition);
-        void MoveCamera(Vector3 deltaPosition);
         void MoveCameraTo(Vector2 position);
-        void MoveCameraTo(Vector3 position);
         void Zoom(float deltaZoom);
         void SetZoomTo(float zoomSize);
     }
@@ -58,28 +56,10 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
             _camera2D.Position2D += deltaPosition;
         }
 
-        public void MoveCamera(Vector3 deltaPosition)
-        {
-            if (!_isPanEnabled) return;
-            Vector2 input;
-            input.x = deltaPosition.x;
-            input.y = deltaPosition.y;
-            MoveCamera(input);
-        }
-
         public void MoveCameraTo(Vector2 position)
         {
             if (!_isPanEnabled) return;
             _camera2D.Position2D = position;
-        }
-
-        public void MoveCameraTo(Vector3 position)
-        {
-            if (!_isPanEnabled) return;
-            Vector2 input;
-            input.x = position.x;
-            input.y = position.y;
-            MoveCameraTo(input);
         }
 
         public void Zoom(float deltaZoom)

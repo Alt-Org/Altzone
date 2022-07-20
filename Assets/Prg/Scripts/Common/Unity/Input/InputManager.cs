@@ -32,8 +32,8 @@ namespace Prg.Scripts.Common.Unity.Input
         {
             if (_config != null)
             {
-                _mouse = _config._mouse;
-                _touch = _config._touch;
+                Mouse = _config._mouse;
+                Touch = _config._touch;
             }
             if (Handler == null)
             {
@@ -61,12 +61,8 @@ namespace Prg.Scripts.Common.Unity.Input
         {
             public bool _isZoom;
             public float _zoomSpeed;
-            public float _minZoomSpeed;
-            public float _maxZoomSpeed;
             public bool _isPan;
             public float _panSpeed;
-            public float _minPanSpeed;
-            public float _maxPanSpeed;
 
             public ZoomAndPan Clone()
             {
@@ -76,10 +72,10 @@ namespace Prg.Scripts.Common.Unity.Input
 
         public class ClickDownEvent
         {
-            public readonly Vector3 ScreenPosition;
+            public readonly Vector2 ScreenPosition;
             public readonly int ClickCount;
 
-            public ClickDownEvent(Vector3 screenPosition, int clickCount)
+            public ClickDownEvent(Vector2 screenPosition, int clickCount)
             {
                 ScreenPosition = screenPosition;
                 ClickCount = clickCount;
@@ -88,7 +84,7 @@ namespace Prg.Scripts.Common.Unity.Input
 
         public class ClickUpEvent : ClickDownEvent
         {
-            public ClickUpEvent(Vector3 screenPosition, int clickCount) : base(screenPosition, clickCount)
+            public ClickUpEvent(Vector2 screenPosition, int clickCount) : base(screenPosition, clickCount)
             {
             }
         }
@@ -101,6 +97,11 @@ namespace Prg.Scripts.Common.Unity.Input
             {
                 DeltaZoom = deltaZoom;
             }
+
+            public override string ToString()
+            {
+                return $"{nameof(DeltaZoom)}: {DeltaZoom}";
+            }
         }
 
         public class PanEvent // Aka drag or swipe
@@ -110,6 +111,11 @@ namespace Prg.Scripts.Common.Unity.Input
             public PanEvent(Vector2 deltaMove)
             {
                 DeltaMove = deltaMove;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(DeltaMove)}: {DeltaMove}";
             }
         }
     }

@@ -11,8 +11,8 @@ namespace Prg.Scripts.Common.Unity.Input
     public class MouseHandler : BaseHandler
     {
         [SerializeField] private int _clickCount;
-        [SerializeField] private Vector3 _curPanPosition;
-        [SerializeField] private Vector3 _prevPanPosition;
+        [SerializeField] private Vector2 _curPanPosition;
+        [SerializeField] private Vector2 _prevPanPosition;
         [SerializeField] private InputActionReference _scrollWheelRef;
 
         private Vector2 _scrollWheel;
@@ -79,8 +79,8 @@ namespace Prg.Scripts.Common.Unity.Input
             {
                 // End mouse down, report last mouse position
                 _clickCount = 0;
-                _curPanPosition = Vector3.zero;
-                _prevPanPosition = Vector3.zero;
+                _curPanPosition = Vector2.zero;
+                _prevPanPosition = Vector2.zero;
                 SendMouseUp(Mouse.current.position.ReadValue());
             }
         }
