@@ -9,9 +9,9 @@ namespace Prg.Scripts.Common.Unity.Input
         [Header("Settings"), SerializeField] private InputManagerConfig _config; // For manual Editor config
         [SerializeField] private InputActionReference _scrollWheelActionRef;
 
-        [Header("Live Data"),SerializeField] private ZoomAndPan _mouse;
+        [Header("Live Data"), SerializeField] private ZoomAndPan _mouse;
         [SerializeField] private ZoomAndPan _touch;
-        [SerializeField] private  BaseHandler _handler;
+        [SerializeField] private BaseHandler _handler;
 
         // We create clones because objects can be "in" ScriptableObject and we do not want to change original values on disk!
         public ZoomAndPan Mouse
@@ -80,12 +80,25 @@ namespace Prg.Scripts.Common.Unity.Input
                 ScreenPosition = screenPosition;
                 ClickCount = clickCount;
             }
+
+            public override string ToString()
+            {
+                return $"{nameof(ScreenPosition)}: {ScreenPosition}, {nameof(ClickCount)}: {ClickCount}";
+            }
         }
 
-        public class ClickUpEvent : ClickDownEvent
+        public class ClickUpEvent
         {
-            public ClickUpEvent(Vector2 screenPosition, int clickCount) : base(screenPosition, clickCount)
+            public readonly Vector2 ScreenPosition;
+            public readonly int ClickCount;
+
+            public ClickUpEvent(Vector2 screenPosition, int clickCount)
             {
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(ScreenPosition)}: {ScreenPosition}, {nameof(ClickCount)}: {ClickCount}";
             }
         }
 

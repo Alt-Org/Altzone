@@ -14,19 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mouse:
     _isZoom: 1
-    _zoomSpeed: 1
-    _minZoomSpeed: 0
-    _maxZoomSpeed: 0
+    _zoomSpeed: 0.01
     _isPan: 1
-    _panSpeed: 0
-    _minPanSpeed: 0
-    _maxPanSpeed: 0
+    _panSpeed: 0.1
   _touch:
     _isZoom: 1
     _zoomSpeed: 1
-    _minZoomSpeed: 0
-    _maxZoomSpeed: 0
     _isPan: 1
     _panSpeed: 1
-    _minPanSpeed: 0
-    _maxPanSpeed: 0

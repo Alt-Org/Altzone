@@ -7,7 +7,7 @@ namespace Prg.Scripts.Test
     public class InputManagerListenerTest : MonoBehaviour
     {
         public bool _isPointerDown;
-        
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         protected void Awake()
         {
@@ -19,6 +19,7 @@ namespace Prg.Scripts.Test
             this.Subscribe<InputManager.ClickUpEvent>(OnClickUpEvent);
             this.Subscribe<InputManager.PanEvent>(OnPanEvent);
             this.Subscribe<InputManager.ZoomEvent>(OnZoomEvent);
+            this.Subscribe<ClickListener.ClickObjectEvent>(OnClickObjectEvent);
         }
 
         private void OnDisable()
@@ -48,6 +49,11 @@ namespace Prg.Scripts.Test
         }
 
         private void OnZoomEvent(InputManager.ZoomEvent data)
+        {
+            Debug.Log($"{data}");
+        }
+
+        private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
         {
             Debug.Log($"{data}");
         }
