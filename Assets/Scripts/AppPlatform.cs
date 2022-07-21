@@ -46,7 +46,7 @@ public static class AppPlatform
     }
 
     /// <summary>
-    /// Check if we are running inside a device simulator inside UNITY Editor.
+    /// Check if we are running a device simulator mode inside UNITY Editor.
     /// </summary>
     public static bool IsSimulator
     {
@@ -62,16 +62,17 @@ public static class AppPlatform
                 // Simulator simulates handheld devices (for now).
                 return false;
             }
-            // Anything but Editor platforms are simulated!
-            var platform = UnityEngine.Device.Application.platform;
-            return platform is not (RuntimePlatform.WindowsEditor or RuntimePlatform.LinuxEditor or RuntimePlatform.OSXEditor);
+            // Only Editor platforms can be simulated!
+            return UnityEngine.Device.Application.platform is not
+                (RuntimePlatform.WindowsEditor or RuntimePlatform.LinuxEditor or RuntimePlatform.OSXEditor);
         }
     }
 
     /// <summary>
-    /// Windows platform can be editor, player and server.
+    /// Windows platform can be editor, player or server.
     /// </summary>
-    public static bool IsWindows { get; } = Application.platform.ToString().ToLower().StartsWith("windows");
+    public static bool IsWindows { get; } = UnityEngine.Device.Application.platform is
+        RuntimePlatform.WindowsEditor or RuntimePlatform.WindowsPlayer or RuntimePlatform.WindowsServer;
 
     /// <summary>
     /// Converts (UNITY) path separators to windows style (only on windows platform where we can have two directory separators).
