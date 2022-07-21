@@ -31,8 +31,6 @@ namespace Prg.Scripts.Test
         private void OnDisable()
         {
             this.Unsubscribe();
-            _panLogger.IsStopped = true;
-            _zoomLogger.IsStopped = true;
         }
 
         private void OnClickDownEvent(InputManager.ClickDownEvent data)
@@ -53,12 +51,12 @@ namespace Prg.Scripts.Test
 
         private void OnPanEvent(InputManager.PanEvent data)
         {
-            ThrottledDebugLogger.Log(_panLogger, $"OnPanEvent {data}");
+            ThrottledDebugLogger.Log(_panLogger, $"{data}");
         }
 
         private void OnZoomEvent(InputManager.ZoomEvent data)
         {
-            ThrottledDebugLogger.Log(_zoomLogger, $"OnZoomEvent {data}");
+            ThrottledDebugLogger.Log(_zoomLogger, $"{data}");
         }
 
         private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)

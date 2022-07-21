@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Prg.Scripts.Test
@@ -8,16 +9,17 @@ namespace Prg.Scripts.Test
     {
         private readonly MonoBehaviour _host;
         private readonly float _samplingInterval;
+        private readonly float _idleInterval;
 
         private bool _hasCoroutine;
         private string _logMessage;
-
-        public bool IsStopped { set; get; }
+        private string _memberName;
 
         [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-        public static void Log(ThrottledDebugLogger logger, string message)
+        public static void Log(ThrottledDebugLogger logger, string message, [CallerMemberName] string memberName = null)
         {
             logger._logMessage = message;
+            logger._memberName = memberName;
             if (!logger._hasCoroutine)
             {
                 logger._hasCoroutine = true;
@@ -25,22 +27,35 @@ namespace Prg.Scripts.Test
             }
         }
 
-        public ThrottledDebugLogger(MonoBehaviour host, float samplingInterval = 1.0f)
+        public ThrottledDebugLogger(MonoBehaviour host, float samplingInterval = 1.0f, float idleInterval = 5.0f)
         {
             _host = host;
             _samplingInterval = samplingInterval;
+            _idleInterval = idleInterval;
         }
 
         private IEnumerator Logger()
         {
             var nextDebugLogTime = 0f;
-            for (; !IsStopped;)
+            var time = Time.time;
+            var exitCoroutineTime = time + _idleInterval;
+            for (;;)
             {
-                if (_logMessage != null && Time.time > nextDebugLogTime)
+                time = Time.time;
+                if (_logMessage != null)
                 {
-                    Debug.Log(_logMessage);
-                    _logMessage = null;
-                    nextDebugLogTime = Time.time + _samplingInterval;
+                    if (time > nextDebugLogTime)
+                    {
+                        Debug.Log($"{_memberName}:{_logMessage}");
+                        _logMessage = null;
+                        nextDebugLogTime = time + _samplingInterval;
+                        exitCoroutineTime = time + _idleInterval;
+                    }
+                }
+                else if (time > exitCoroutineTime)
+                {
+                    _hasCoroutine = false;
+                    yield break;
                 }
                 yield return null;
             }
