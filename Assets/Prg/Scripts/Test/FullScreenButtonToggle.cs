@@ -2,8 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Prg.Tests
+namespace Prg.Scripts.Test
 {
+    /// <summary>
+    /// Test script to toggle <c>Screen.fullScreen</c> state (which controls Android/IOS navigation bar and status bar).<br />
+    /// https://zehfernando.com/2015/unity-tidbits-changing-the-visibility-of-androids-navigation-and-status-bars-and-implementing-immersive-mode/
+    /// </summary>
+    /// <remarks>
+    /// Requires simulator or mobile device to work.
+    /// </remarks>
     [RequireComponent(typeof(Button))]
     public class FullScreenButtonToggle : MonoBehaviour
     {
