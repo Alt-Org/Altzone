@@ -11,6 +11,7 @@ namespace Prg.Scripts.Common.Unity.Input
     /// Touch handler implementation using <c>EnhancedTouchSupport</c> and polling in <c>Update</c> loop.
     /// </summary>
     /// <remarks>
+    /// Pinch to Zoom Detection https://www.youtube.com/watch?v=5LEVj3PLufE <br />
     /// https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/api/UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.html
     /// </remarks>
     public class TouchHandler : BaseHandler
