@@ -22,8 +22,10 @@ namespace Prg.Scripts.Common.Unity.Input
         [SerializeField] private bool _isFingerDown;
         [SerializeField] private bool _zoomActive;
 
-        private readonly Vector2[] _lastZoomPositions = new Vector2[2];
-        private readonly Vector2[] _newPositions = new Vector2[2];
+        private Vector2 _newPrimaryPosition;
+        private Vector2 _newSecondaryPosition;
+        private float _newDistance;
+        private float _previousDistance;
 
         private void OnEnable()
         {
@@ -41,7 +43,8 @@ namespace Prg.Scripts.Common.Unity.Input
             Assert.IsTrue(EnhancedTouchSupport.enabled, "EnhancedTouchSupport.enabled");
             switch (Touch.activeTouches.Count)
             {
-                case 1: // Panning
+                case 1: 
+                    // Clicking + Panning
                     // If the touch began, capture its position and its finger ID.
                     // Otherwise, if the finger ID of the touch doesn't match, skip it.
                     _zoomActive = false;
@@ -72,31 +75,31 @@ namespace Prg.Scripts.Common.Unity.Input
                     }
                     break;
 
-                case 2: // Zooming
+                case 2:
+                    // Zooming
                     if (_isZoom)
                     {
-                        _newPositions[0] = Touch.activeTouches[0].screenPosition;
-                        _newPositions[1] = Touch.activeTouches[1].screenPosition;
+                        _newPrimaryPosition = Touch.activeTouches[0].screenPosition;
+                        _newSecondaryPosition = Touch.activeTouches[1].screenPosition;
                         if (!_zoomActive)
                         {
-                            _lastZoomPositions[0] = _newPositions[0];
-                            _lastZoomPositions[1] = _newPositions[1];
+                            _newDistance = Vector2.Distance(_newPrimaryPosition, _newSecondaryPosition);
+                            _previousDistance = _newDistance;
                             _zoomActive = true;
                         }
                         else
                         {
                             // Zoom based on the distance between the new positions compared to the distance between the previous positions.
-                            var newDistance = Vector2.Distance(_newPositions[0], _newPositions[1]);
-                            var oldDistance = Vector2.Distance(_lastZoomPositions[0], _lastZoomPositions[1]);
-                            var offset = newDistance - oldDistance;
-                            ZoomCamera(offset * _zoomSpeed);
-                            _lastZoomPositions[0] = _newPositions[0];
-                            _lastZoomPositions[1] = _newPositions[1];
+                            _previousDistance = _newDistance;
+                            _newDistance = Vector2.Distance(_newPrimaryPosition, _newSecondaryPosition);
+                            var deltaDistance = _newDistance - _previousDistance;
+                            ZoomCamera(deltaDistance * _zoomSpeed);
                         }
                     }
                     break;
 
                 default:
+                    // Exit
                     if (_zoomActive)
                     {
                         _zoomActive = false;
