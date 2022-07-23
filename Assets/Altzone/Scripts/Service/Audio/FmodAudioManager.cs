@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Config;
 using FMOD;
 using FMODUnity;
 using UnityEngine;
@@ -43,7 +44,11 @@ namespace Altzone.Scripts.Service.Audio
             var verMajor = version >> 16;
             var verMinor = (version >> 8) & 0xF;
             var verDev = version & 0xF;
-            Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00}");
+            var features = RuntimeGameConfig.Get().Features;
+            var isMuted = features._isMuteAllSounds;
+            Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00} mute {isMuted}");
+
+            RuntimeManager.MuteAllEvents(isMuted);
         }
     }
 }

@@ -86,6 +86,12 @@ namespace Altzone.Scripts.Config
         [Tooltip("Disable bricks")]
         public bool _isDisableBricks;
 
+        /// <summary>
+        /// Is sounds enabled.
+        /// </summary>
+        [Tooltip("Disable (mute) all sounds")]
+        public bool _isMuteAllSounds;
+
         public void CopyFrom(GameFeatures other)
         {
             PropertyCopier<GameFeatures, GameFeatures>.CopyFields(other, this);
