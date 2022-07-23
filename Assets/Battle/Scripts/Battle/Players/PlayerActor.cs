@@ -200,9 +200,16 @@ namespace Battle.Scripts.Battle.Players
                 var tracker = shield.AddComponent<ColliderTracker>();
                 tracker.Callback = collision => { collisionDriver.OnShieldCollision(collision); };
             }
-            if (_debug._isLogMoveTo && Application.isEditor)
+            if (_debug._isLogMoveTo)
             {
-                _moveLogger = new ThrottledDebugLogger(this);
+                if (Application.isEditor)
+                {
+                    _moveLogger = new ThrottledDebugLogger(this);
+                }
+                else
+                {
+                    _debug._isLogMoveTo = false;
+                }
             }
         }
 
@@ -295,7 +302,7 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             var canDo = CanAcceptMove;
-            if (_playerDriver.IsLocal)
+            if (_playerDriver.IsLocal && _debug._isLogMoveTo)
             {
                 ThrottledDebugLogger.Log(_moveLogger, $"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed} canDo {canDo}");
             }
