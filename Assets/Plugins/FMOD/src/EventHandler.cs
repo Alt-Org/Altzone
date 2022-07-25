@@ -82,6 +82,7 @@ namespace FMODUnity
             HandleGameEvent(EmitterGameEvent.CollisionExit2D);
         }
 
+#if !UNITY_ANDROID
         private void OnMouseEnter()
         {
             HandleGameEvent(EmitterGameEvent.MouseEnter);
@@ -101,6 +102,7 @@ namespace FMODUnity
         {
             HandleGameEvent(EmitterGameEvent.MouseUp);
         }
+#endif
 
         protected abstract void HandleGameEvent(EmitterGameEvent gameEvent);
     }

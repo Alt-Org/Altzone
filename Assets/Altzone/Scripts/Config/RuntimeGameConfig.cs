@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Util;
@@ -9,6 +7,23 @@ using UnityEngine.InputSystem;
 
 namespace Altzone.Scripts.Config
 {
+    /// <summary>
+    /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
+    /// </summary>
+    /// <remarks>
+    /// Note that some parts of <c>RuntimeGameConfig</c> can be synchronized over network.
+    /// </remarks>
+    public interface IRuntimeGameConfig
+    {
+        GameFeatures Features { get; set; }
+        GameConstraints GameConstraints { get; }
+        GameVariables Variables { get; set; }
+        GamePrefabs Prefabs { get; }
+        GameInput Input { get; }
+        
+        PlayerDataCache PlayerDataCache { get; }
+    }
+
     #region RuntimeGameConfig "Parts"
 
     /// <summary>
@@ -70,6 +85,12 @@ namespace Altzone.Scripts.Config
         /// </summary>
         [Tooltip("Disable bricks")]
         public bool _isDisableBricks;
+
+        /// <summary>
+        /// Is sounds enabled.
+        /// </summary>
+        [Tooltip("Disable (mute) all sounds")]
+        public bool _isMuteAllSounds;
 
         public void CopyFrom(GameFeatures other)
         {
@@ -212,17 +233,11 @@ namespace Altzone.Scripts.Config
 
     #endregion
 
-    /// <summary>
-    /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
-    /// </summary>
-    /// <remarks>
-    /// Note that some parts of <c>RuntimeGameConfig</c> can be synchronized over network.
-    /// </remarks>
-    public class RuntimeGameConfig : MonoBehaviour
+    public class RuntimeGameConfig : MonoBehaviour, IRuntimeGameConfig
     {
         private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
-        public static RuntimeGameConfig Get([CallerFilePath] string callerFilePath = null)
+        public static IRuntimeGameConfig Get()
         {
             var instance = FindObjectOfType<RuntimeGameConfig>();
             if (instance == null)
@@ -230,19 +245,7 @@ namespace Altzone.Scripts.Config
                 instance = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
                 LoadGameConfig(instance);
             }
-            //CallerFilePathWarning(callerFilePath);
             return instance;
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        private static void CallerFilePathWarning(string callerFilePath)
-        {
-            if (callerFilePath == null || !callerFilePath.Contains("Battle"))
-            {
-                return;
-            }
-            var path = callerFilePath.Substring(callerFilePath.IndexOf("Assets", StringComparison.Ordinal));
-            Debug.LogWarning($"CHECK THIS CALL {path}");
         }
 
         public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
@@ -253,7 +256,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Used by Editor classes with <c>MenuItem</c> to pre-load <c>PlayerDataCache</c> as it is not otherwise available.
         /// </summary>
-        public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache();
+        public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache(null);
 #endif
 
         [SerializeField] private GameFeatures _permanentFeatures;
@@ -273,13 +276,9 @@ namespace Altzone.Scripts.Config
         }
 
         /// <summary>
-        /// Game constraints that that control the workings of the game.
+        /// Unmodifiable Game constraints that that control the workings of the game.
         /// </summary>
-        public GameConstraints GameConstraints
-        {
-            get => _permanentConstraints;
-            set => _permanentConstraints.CopyFrom(value);
-        }
+        public GameConstraints GameConstraints => _permanentConstraints;
 
         /// <summary>
         /// Game variables that control game play somehow.
@@ -322,13 +321,13 @@ namespace Altzone.Scripts.Config
             instance._permanentConstraints = gameSettings._constraints;
             instance.Variables = gameSettings._variables;
             instance.Prefabs = gameSettings._prefabs;
-            instance._playerDataCache = LoadPlayerDataCache();
+            instance._playerDataCache = LoadPlayerDataCache(instance);
             instance._gameInput = gameSettings._input;
         }
 
-        private static PlayerDataCache LoadPlayerDataCache()
+        private static PlayerDataCache LoadPlayerDataCache(MonoBehaviour host)
         {
-            return new PlayerDataCacheLocal();
+            return new PlayerDataCacheLocal(host);
         }
     }
 }

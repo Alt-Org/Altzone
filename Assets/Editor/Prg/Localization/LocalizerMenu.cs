@@ -18,7 +18,7 @@ namespace Editor.Prg.Localization
         public static void LoadTranslations()
         {
             Debug.Log("*");
-            Localizer.LoadTranslations();
+            Localizer.LoadTranslations(Application.systemLanguage);
         }
 
         public static void SaveTranslations()

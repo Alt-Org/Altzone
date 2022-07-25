@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerCollider2 : MonoBehaviour
+    internal class PlayerCollider2 : MonoBehaviour
     {
         public Action<Collision2D> Callback;
 

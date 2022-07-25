@@ -1,56 +1,46 @@
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Prg.Scripts.Common.Unity.Input
 {
     public class BaseHandler : MonoBehaviour, InputManager.IInputHandler
     {
-        [Header("Settings")] public float zoomSpeed;
-        public float minZoomSpeed;
-        public float maxZoomSpeed;
-        public float panSpeed;
-        public float minPanSpeed;
-        public float maxPanSpeed;
+        [Header("Settings")] public bool _isZoom;
+        public float _zoomSpeed;
+        public bool _isPan;
+        public float _panSpeed;
 
-        [Header("Debug")] public bool IsPointerOverGameObject;
-
-        private Vector2 panDelta;
+        [Header("Live Data")] public bool _isPointerOverGameObject;
 
         public BaseHandler Configure(InputManager.ZoomAndPan settings)
         {
-            zoomSpeed = settings.zoomSpeed;
-            minZoomSpeed = settings.minZoomSpeed;
-            maxZoomSpeed = settings.maxZoomSpeed;
-            panSpeed = settings.panSpeed;
-            minPanSpeed = settings.minPanSpeed;
-            maxPanSpeed = settings.maxPanSpeed;
+            _isZoom = settings._isZoom;
+            _zoomSpeed = settings._zoomSpeed;
+            _isPan = settings._isPan;
+            _panSpeed = settings._panSpeed;
             return this;
         }
 
-        protected void SendMouseDown(Vector3 screenPosition, int clickCount)
+        protected void SendMouseDown(Vector2 screenPosition, int clickCount)
         {
             this.Publish(new InputManager.ClickDownEvent(screenPosition, clickCount));
         }
 
-        protected void SendMouseUp(Vector3 screenPosition)
+        protected void SendMouseUp(Vector2 screenPosition)
         {
             this.Publish(new InputManager.ClickUpEvent(screenPosition, 0));
         }
 
         protected void ZoomCamera(float delta)
         {
+            Assert.IsTrue(_isZoom, "_isZoom");
             this.Publish(new InputManager.ZoomEvent(delta));
         }
 
-        protected void PanCamera(Vector3 delta)
+        protected void PanCamera(Vector2 delta)
         {
-            panDelta.x = delta.x;
-            panDelta.y = delta.y;
-            PanCamera(panDelta);
-        }
-
-        private void PanCamera(Vector2 delta)
-        {
+            Assert.IsTrue(_isPan, "_isPan");
             this.Publish(new InputManager.PanEvent(delta));
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Battle.Scripts.Ui
 {
-    public class ArenaStatusHandler : MonoBehaviour
+    internal class ArenaStatusHandler : MonoBehaviour
     {
         [Header("TeamAreaStatus"), SerializeField] private Sprite _frozen;
 

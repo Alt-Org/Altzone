@@ -5,28 +5,28 @@ namespace Prg.Scripts.Common.Unity.Input
 {
     public class ClickListener : MonoBehaviour
     {
-        [Header("Settings"),SerializeField]  private Camera _camera;
-        [SerializeField] private string clickableTagName;
-        [SerializeField] private LayerMask clickableLayers;
+        [Header("Settings"), SerializeField] private Camera _camera;
+        [SerializeField] private string _clickableTagName;
+        [SerializeField] private LayerMask _clickableLayers;
 
-        [Header("Debug"),SerializeField]  private int layerMask;
+        [Header("Debug"), SerializeField] private int _layerMask;
 
         private void OnEnable()
         {
-            layerMask = clickableLayers.value;
+            _layerMask = _clickableLayers.value;
             if (_camera == null)
             {
                 _camera = Camera.main;
             }
-            this.Subscribe<InputManager.ClickDownEvent>(onClickDownEvent);
+            this.Subscribe<InputManager.ClickDownEvent>(OnClickDownEvent);
         }
 
         private void OnDisable()
         {
-            this.Unsubscribe<InputManager.ClickDownEvent>(onClickDownEvent);
+            this.Unsubscribe();
         }
 
-        private void onClickDownEvent(InputManager.ClickDownEvent data)
+        private void OnClickDownEvent(InputManager.ClickDownEvent data)
         {
             if (data.ClickCount > 1)
             {
@@ -39,9 +39,9 @@ namespace Prg.Scripts.Common.Unity.Input
                 return;
             }
             var hitObject = hit.collider.gameObject;
-            var _layer = hitObject.layer;
-            var hasTag = !string.IsNullOrEmpty(clickableTagName) && hitObject.CompareTag(clickableTagName);
-            var hasLayer = layerMask == (layerMask | (1 << _layer)); // unity3d check if layer mask contains layer
+            var layer = hitObject.layer;
+            var hasTag = !string.IsNullOrEmpty(_clickableTagName) && hitObject.CompareTag(_clickableTagName);
+            var hasLayer = hasTag || _layerMask == (_layerMask | (1 << layer)); // unity3d check if layer mask contains layer
 
             //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} ({hasTag}) layer {_layer} {LayerMask.LayerToName(_layer)} ({hasLayer})");
             if (hasTag || hasLayer)
@@ -52,13 +52,18 @@ namespace Prg.Scripts.Common.Unity.Input
 
         public class ClickObjectEvent
         {
-            public readonly Vector3 ScreenPosition;
+            public readonly Vector2 ScreenPosition;
             public readonly GameObject GameObject;
 
-            public ClickObjectEvent(Vector3 screenPosition, GameObject gameObject)
+            public ClickObjectEvent(Vector2 screenPosition, GameObject gameObject)
             {
                 ScreenPosition = screenPosition;
                 GameObject = gameObject;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(ScreenPosition)}: {ScreenPosition}, {nameof(GameObject)}: {GameObject.GetFullPath()}";
             }
         }
     }

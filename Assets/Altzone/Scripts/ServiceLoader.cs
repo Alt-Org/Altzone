@@ -13,7 +13,7 @@ namespace Altzone.Scripts
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            Localizer.LoadTranslations();
+            Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
             // Start the UI now.
             WindowManager.Get();

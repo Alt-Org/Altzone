@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
-    public class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
+    internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
         [Header("Player Areas"), SerializeField] private Rect _playAreaP1;
         [SerializeField] private Rect _playAreaP2;
@@ -28,6 +28,8 @@ namespace Battle.Scripts.Battle.Game
         public Collider2D BlueTeamCollider => _teamBlueCollider;
         public Collider2D RedTeamCollider => _teamRedCollider;
 
+        public Vector2 GetPlayAreaMiddlePosition => Vector2.zero;
+        
         public Rect GetPlayerPlayArea(int playerPos)
         {
             Rect playArea;

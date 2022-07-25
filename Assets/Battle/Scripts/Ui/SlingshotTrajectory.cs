@@ -1,12 +1,10 @@
+using System.Collections;
 using Prg.Scripts.Common.PubSub;
-using Battle.Scripts.Battle.Game;
 using UnityEngine;
-using UnityEngine.Assertions;
-using Battle.Scripts.Battle;
 
 namespace Battle.Scripts.Ui
 {
-    public class SlingshotTrajectory : MonoBehaviour
+    internal class SlingshotTrajectory : MonoBehaviour
     {
 
         [Header("Line"), SerializeField] private GameObject _lineObject;
@@ -33,28 +31,33 @@ namespace Battle.Scripts.Ui
             this.Unsubscribe();
         }
 
-        private void LateUpdate()
+        private IEnumerator UpdateSling()
         {
-            // This'll need to be improved upon, and might be replaced with a coroutine
-            if(_playerIsOn)
+            _playerIsOn = true;
+            _lineObject.SetActive(true);
+
+            while (_playerIsOn)
             {
                 _line.SetPosition(0, _playerTransform.position);
+                yield return null;
             }
+
+            _lineObject.SetActive(false);
         }
+            
 
         private void SlingStart(UiEvents.SlingshotStart start)
         {
             // This needs to be re-done, This only works if there is at least a player
             // that occupies the first position on the list
             _playerTransform = start.TeamTrackers[0].Player1Transform;
-            _playerIsOn = true;
-            _lineObject.SetActive(true);
+            StartCoroutine(UpdateSling());
         }
 
         private void SlingEnd(UiEvents.SlingshotEnd end)
         {
             _playerIsOn = false;
-            _lineObject.SetActive(false);
+            
         }
     }
 }

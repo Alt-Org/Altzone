@@ -9,8 +9,8 @@ namespace Battle.Scripts.Test
 {
     internal class BallManagerTest : MonoBehaviour
     {
-        const string Tooltip1 = "Set ball moving using IBallManager interface after level has been loaded";
-        const string Tooltip2 = "Set ball moving using StartBattle event after level has been loaded";
+        private const string Tooltip1 = "Set ball moving using IBallManager interface after level has been loaded";
+        private const string Tooltip2 = "Set ball moving using StartBattle event after level has been loaded";
 
         [Header("Test Actions")] public bool _setBallState;
         public bool _setBallPosition;

@@ -10,9 +10,9 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class TeamDriverTest : MonoBehaviour
+    internal class TeamDriverTest : MonoBehaviour
     {
-        const string Tooltip1 = "Set ball moving using StartBattle event when all players are registered";
+        private const string Tooltip1 = "Set ball moving using StartBattle event when all players are registered";
 
         [Serializable]
         internal class TeamSettings

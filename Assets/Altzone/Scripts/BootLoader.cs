@@ -11,7 +11,7 @@ using UnityEngine.Advertisements;
 
 namespace Altzone.Scripts
 {
-    public static class BootLoader
+    internal static class BootLoader
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()

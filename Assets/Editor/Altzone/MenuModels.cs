@@ -9,7 +9,7 @@ namespace Editor.Altzone
         public static void DumpModelsToWikiTable()
         {
             Debug.Log("*");
-            ModelLoader.LoadAndClearModels();
+            Models.Load();
             var models = Models.GetAll<CharacterModel>();
             var builder = new StringBuilder();
             var speedStats = new Stats();

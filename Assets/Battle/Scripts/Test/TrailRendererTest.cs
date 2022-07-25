@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Test
 {
-    public class TrailRendererTest : MonoBehaviour
+    internal class TrailRendererTest : MonoBehaviour
     {
         private static MonoBehaviour _context;
         

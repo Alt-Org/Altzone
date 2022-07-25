@@ -1,9 +1,9 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using Altzone.Scripts.Model;
-using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config
@@ -15,7 +15,8 @@ namespace Altzone.Scripts.Config
     public class PlayerDataCache
     {
         protected const int DefaultModelId = (int)Defence.Introjection;
-        
+        protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
+
         [SerializeField] protected string _playerName;
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace Altzone.Scripts.Config
         public CharacterModel GetCharacterModelForUi() =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
             Storefront.Get().GetCharacterModel(DefaultModelId) ??
-            new CharacterModel(-1, "Ö", Defence.Desensitisation, 1, 1, 1, 1);
+            new CharacterModel(-1, "Ö", Defence.Introjection, 3, 3, 3, 3);
 
         [SerializeField] protected int _clanId;
 
@@ -95,6 +96,8 @@ namespace Altzone.Scripts.Config
             }
         }
 
+        [SerializeField] protected SystemLanguage _language;
+
         /// <summary>
         /// Player's UNITY language.
         /// </summary>
@@ -103,8 +106,12 @@ namespace Altzone.Scripts.Config
         /// </remarks>
         public SystemLanguage Language
         {
-            get => Localizer.Language;
-            set => Localizer.SetLanguage(value);
+            get => _language;
+            set
+            {
+                _language = value;
+                Save();
+            }
         }
 
         [SerializeField] protected bool _isTosAccepted;
@@ -153,6 +160,7 @@ namespace Altzone.Scripts.Config
             }
             return $"{PlayerName} {characterModelName}";
         }
+
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.
         /// </summary>
@@ -162,10 +170,9 @@ namespace Altzone.Scripts.Config
         }
 
         /// <summary>
-        /// Public <c>BatchSave</c> method to save several properties at once.
+        /// Protected <c>InternalSave</c> to handle actual saving somewhere.
         /// </summary>
-        /// <param name="saveSettings">The action to save all properties in one go.</param>
-        public virtual void BatchSave(Action saveSettings)
+        protected virtual void InternalSave()
         {
             // Placeholder for actual implementation in derived class.
         }
@@ -174,13 +181,17 @@ namespace Altzone.Scripts.Config
         public void DebugResetPlayer()
         {
             // Actually can not delete at this level - just invalidate everything!
-            BatchSave(() =>
-            {
-                PlayerName = string.Empty;
-                CharacterModelId = DefaultModelId;
-                ClanId = -1;
-                IsTosAccepted = false;
-            });
+            PlayerName = string.Empty;
+            CharacterModelId = DefaultModelId;
+            ClanId = -1;
+            IsTosAccepted = false;
+            InternalSave();
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        public void DebugSavePlayer()
+        {
+            InternalSave();
         }
 
         public override string ToString()
@@ -200,13 +211,16 @@ namespace Altzone.Scripts.Config
         private const string PlayerGuidKey = "PlayerData.PlayerGuid";
         private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
         private const string ClanIdKey = "PlayerData.ClanId";
+        private const string LanguageCodeKey = "PlayerData.LanguageCode";
         private const string TermsOfServiceKey = "PlayerData.TermsOfService";
         private const string IsDebugFlagKey = "PlayerData.IsDebugFlag";
 
-        private bool _isBatchSave;
+        private readonly MonoBehaviour _host;
+        private Coroutine _delayedSave;
 
-        public PlayerDataCacheLocal()
+        public PlayerDataCacheLocal(MonoBehaviour host)
         {
+            _host = host;
             _playerName = PlayerPrefs.GetString(PlayerNameKey, string.Empty);
             _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, DefaultModelId);
             _clanId = PlayerPrefs.GetInt(ClanIdKey, -1);
@@ -218,8 +232,20 @@ namespace Altzone.Scripts.Config
                 PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
                 PlayerPrefs.Save();
             }
+            _language = (SystemLanguage)PlayerPrefs.GetInt(LanguageCodeKey, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(TermsOfServiceKey, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(IsDebugFlagKey, 0) == 1;
+        }
+
+        protected override void InternalSave()
+        {
+            PlayerPrefs.SetString(PlayerNameKey, PlayerName);
+            PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
+            PlayerPrefs.SetInt(ClanIdKey, ClanId);
+            PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
+            PlayerPrefs.SetInt(TermsOfServiceKey, (int)_language);
+            PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
+            PlayerPrefs.SetInt(IsDebugFlagKey, IsDebugFlag ? 1 : 0);
         }
 
         private static string CreatePlayerHandle()
@@ -241,33 +267,23 @@ namespace Altzone.Scripts.Config
 
         protected override void Save()
         {
-            InternalSave();
-        }
-
-        public override void BatchSave(Action saveSettings)
-        {
-            _isBatchSave = true;
-            saveSettings?.Invoke();
-            _isBatchSave = false;
-            InternalSave();
-            // Writes all modified preferences to disk.
-            PlayerPrefs.Save();
-        }
-
-        private void InternalSave()
-        {
-            if (_isBatchSave)
+            if (_delayedSave == null && _host != null)
             {
-                return; // Defer saving until later
+                // Save all changed player prefs on next frame.
+                _delayedSave = _host.StartCoroutine(DelayedSave());
+                return;
             }
+        }
+
+        private IEnumerator DelayedSave()
+        {
             // By default Unity writes preferences to disk during OnApplicationQuit().
             // - you can force them to disk using PlayerPrefs.Save().
-            PlayerPrefs.SetString(PlayerNameKey, PlayerName);
-            PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
-            PlayerPrefs.SetInt(ClanIdKey, ClanId);
-            PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
-            PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
-            PlayerPrefs.SetInt(IsDebugFlagKey, IsDebugFlag ? 1 : 0);
+            yield return null;
+            Debug.Log("PlayerPrefs.Save");
+            InternalSave();
+            PlayerPrefs.Save();
+            _delayedSave = null;
         }
     }
 }

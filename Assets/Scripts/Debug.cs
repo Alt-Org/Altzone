@@ -97,7 +97,7 @@ public static class Debug
     {
         _contextTag = $" {contextTag}";
     }
-    
+
     private static void RemoveTags()
     {
         _isClassNamePrefix = false;
