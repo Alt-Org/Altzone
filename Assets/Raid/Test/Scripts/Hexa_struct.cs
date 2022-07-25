@@ -10,7 +10,8 @@ public struct Hexa_Struct
         Invalid,
         Neutral,
         Bomb,
-        Number,        
+        Number,
+        Loot,
     }
     public Vector3Int position;
     public Type type;

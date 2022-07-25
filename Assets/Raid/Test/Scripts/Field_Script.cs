@@ -45,6 +45,7 @@ public class Field_Script : MonoBehaviour
         switch(hexa.type)
         {
             case Hexa_Struct.Type.Neutral: return tileNeutral;
+            case Hexa_Struct.Type.Loot: return tileLootTest; //(DEV) Loot tile for testing placement
             case Hexa_Struct.Type.Number: return GetNumberTile(hexa);
             case Hexa_Struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Poista detonated tarvittaessa, jos normi pelitila jatkuu automaattisesti Raidin loputtua.
             default: return null;
