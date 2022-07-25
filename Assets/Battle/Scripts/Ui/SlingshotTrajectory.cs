@@ -1,4 +1,7 @@
 using System.Collections;
+using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
+
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
@@ -9,15 +12,19 @@ namespace Battle.Scripts.Ui
 
         [Header("Line"), SerializeField] private GameObject _lineObject;
         private LineRenderer _line;
-        [SerializeField] private Transform _playerTransform;
+        private Transform[] _playerTransform = new Transform[2];
         private bool _playerIsOn = false;
+        private IPlayerManager _playerManager;
 
 
         private void Awake()
         {
+            _playerManager = FindObjectOfType<PlayerManager>();
             _line = _lineObject.GetComponent<LineRenderer>();
             _line.SetPosition(0, new Vector2(0f, 0f));
             _line.SetPosition(1, new Vector2(0f, 0f));
+
+            
         }
 
         private void OnEnable()
@@ -31,14 +38,21 @@ namespace Battle.Scripts.Ui
             this.Unsubscribe();
         }
 
-        private IEnumerator UpdateSling()
+        private IEnumerator UpdateSling(int num)
         {
+            IBattleTeam startTeam = _playerManager.GetBattleTeam(num);
             _playerIsOn = true;
+
             _lineObject.SetActive(true);
 
             while (_playerIsOn)
             {
-                _line.SetPosition(0, _playerTransform.position);
+                // Because of how this is setup, the line of that shows where the ball will be shot,
+                // changes according to which player will shoot the ball according to the conditions
+                // set within the GetBallDropPositionAndDirection()
+                startTeam.GetBallDropPositionAndDirection(out var ball, out var dir);
+                _line.SetPosition(0, ball);
+                _line.SetPosition(1, ball+dir);
                 yield return null;
             }
 
@@ -48,10 +62,7 @@ namespace Battle.Scripts.Ui
 
         private void SlingStart(UiEvents.SlingshotStart start)
         {
-            // This needs to be re-done, This only works if there is at least a player
-            // that occupies the first position on the list
-            _playerTransform = start.TeamTrackers[0].Player1Transform;
-            StartCoroutine(UpdateSling());
+            StartCoroutine(UpdateSling(start.TeamTrackers[0].TeamNumber));
         }
 
         private void SlingEnd(UiEvents.SlingshotEnd end)
