@@ -14,6 +14,7 @@ namespace Battle.Scripts.Ui
         private LineRenderer _line;
         private bool _playerIsOn = false;
         private IPlayerManager _playerManager;
+        [SerializeField] private float _lineSize = 2.0f;
 
 
         private void Awake()
@@ -51,7 +52,7 @@ namespace Battle.Scripts.Ui
                 // set within the GetBallDropPositionAndDirection()
                 startTeam.GetBallDropPositionAndDirection(out var ball, out var dir);
                 _line.SetPosition(0, ball);
-                _line.SetPosition(1, ball+dir);
+                _line.SetPosition(1, ball+(dir*_lineSize));
                 yield return null;
             }
 
