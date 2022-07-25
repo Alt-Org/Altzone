@@ -90,8 +90,7 @@ namespace Lobby.Scripts.InRoom
 
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
-            // Get first free position.
-            var playerPos = GetFirstFreePlayerPosition(player);
+            var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             var defence = playerDataCache.GetCharacterModelForUi().MainDefence;
             player.SetCustomProperties(new Hashtable
@@ -100,12 +99,6 @@ namespace Lobby.Scripts.InRoom
                 { PlayerMainSkillKey, (int)defence }
             });
             UpdateStatus();
-        }
-
-        private int GetFirstFreePlayerPosition(Player player)
-        {
-            //return PlayerPosition1;
-            return PlayerPositionGuest;
         }
 
         private void UpdateStatus()

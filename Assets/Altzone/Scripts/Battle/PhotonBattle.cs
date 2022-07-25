@@ -60,6 +60,38 @@ namespace Altzone.Scripts.Battle
             return IsValidPlayerPos(playerPos);
         }
 
+        public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
+        {
+            var usedPlayerPositions = new HashSet<int>();
+            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
+            {
+                var otherPlayerPos = GetPlayerPos(otherPlayer);
+                if (IsValidPlayerPos(otherPlayerPos))
+                {
+                    usedPlayerPositions.Add(otherPlayerPos);
+                }
+            }
+            if (usedPlayerPositions.Contains(wantedPlayerPos))
+            {
+                var playerPositions = isAllocateByTeams
+                    ? new[] { PlayerPosition2, PlayerPosition3, PlayerPosition4, PlayerPosition1 }
+                    : new[] { PlayerPosition3, PlayerPosition2, PlayerPosition4, PlayerPosition1 };
+                foreach (var playerPos in playerPositions)
+                {
+                    if (!usedPlayerPositions.Contains(playerPos))
+                    {
+                        wantedPlayerPos = playerPos;
+                        break;
+                    }
+                }
+            }
+            if (!IsValidPlayerPos(wantedPlayerPos))
+            {
+                wantedPlayerPos = PlayerPositionSpectator;
+            }
+            return wantedPlayerPos;
+        }
+
         public static int CountRealPlayers()
         {
             return PhotonNetwork.CurrentRoom.Players.Values.Where(IsRealPlayer).Count();
