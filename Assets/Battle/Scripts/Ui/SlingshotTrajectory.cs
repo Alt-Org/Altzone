@@ -12,7 +12,6 @@ namespace Battle.Scripts.Ui
 
         [Header("Line"), SerializeField] private GameObject _lineObject;
         private LineRenderer _line;
-        private Transform[] _playerTransform = new Transform[2];
         private bool _playerIsOn = false;
         private IPlayerManager _playerManager;
 
