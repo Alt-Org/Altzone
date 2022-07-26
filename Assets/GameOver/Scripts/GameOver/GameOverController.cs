@@ -65,6 +65,22 @@ namespace GameOver.Scripts.GameOver
                     yield return null;
                     continue;
                 }
+                UpdateGameOverTexts(winnerTeam);
+                break;
+            }
+            _view.EnableContinueButton();
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
+            {
+                if (_playerCount == PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    _view.EnableRestartButton();
+                    StartCoroutine(BusyPlayerPolling());
+                }
+            }
+        }
+
+        private void UpdateGameOverTexts(int winnerTeam)
+        {
                 var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
                 var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
                 // It is possible that we can have equal score and winning team - but that can not be true!
@@ -84,17 +100,6 @@ namespace GameOver.Scripts.GameOver
                     _view.WinnerInfo1 = RichText.Yellow("DRAW!");
                     _view.WinnerInfo2 = string.Empty;
                 }
-                break;
-            }
-            _view.EnableContinueButton();
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
-            {
-                if (_playerCount == PhotonNetwork.CurrentRoom.PlayerCount)
-                {
-                    _view.EnableRestartButton();
-                    StartCoroutine(BusyPlayerPolling());
-                }
-            }
         }
 
         private IEnumerator BusyPlayerPolling()
