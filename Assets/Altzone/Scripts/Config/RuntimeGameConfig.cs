@@ -35,7 +35,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Rotate game camera for upper team so they see their own game area in lower part of the screen.
         /// </summary>
-        [Tooltip("Rotate game camera for upper team so they see their own game area in lower part of the screen")]
+        [Header("Core Features"), Tooltip("Rotate game camera for upper team so they see their own game area in lower part of the screen")]
         public bool _isRotateGameCamera;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Disable player <c>SetPlayMode</c> calls when ball goes over team's gameplay area.
         /// </summary>
-        [Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
+        [Header("Testing"), Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
         public bool _isDisablePlayModeChanges;
 
         /// <summary>
