@@ -65,7 +65,25 @@ namespace GameOver.Scripts.GameOver
                     yield return null;
                     continue;
                 }
-                UpdateGameOVerTexts(winnerTeam);
+                var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
+                var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
+                // It is possible that we can have equal score and winning team - but that can not be true!
+                var isScoreValid = blueScore != redScore;
+                if (winnerTeam == PhotonBattle.TeamBlueValue)
+                {
+                    _view.WinnerInfo1 = isScoreValid ? RichText.Blue("Team BLUE") : RichText.Yellow("DRAW!");
+                    _view.WinnerInfo2 = $"{blueScore} - {redScore}";
+                }
+                else if (winnerTeam == PhotonBattle.TeamRedValue)
+                {
+                    _view.WinnerInfo1 = isScoreValid ? RichText.Red("Team RED") : RichText.Yellow("DRAW!");
+                    _view.WinnerInfo2 = $"{redScore} - {blueScore}";
+                }
+                else
+                {
+                    _view.WinnerInfo1 = RichText.Yellow("DRAW!");
+                    _view.WinnerInfo2 = string.Empty;
+                }
                 break;
             }
             _view.EnableContinueButton();
@@ -79,29 +97,6 @@ namespace GameOver.Scripts.GameOver
             }
         }
 
-        private void UpdateGameOVerTexts(int winnerTeam)
-        {
-            var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
-            var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
-            // It is possible that we can have equal score and winning team - but that can not be true!
-            var isScoreValid = blueScore != redScore;
-            if (winnerTeam == PhotonBattle.TeamBlueValue)
-            {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("Team BLUE") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{blueScore} - {redScore}";
-            }
-            else if (winnerTeam == PhotonBattle.TeamRedValue)
-            {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Red("Team RED") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{redScore} - {blueScore}";
-            }
-            else
-            {
-                _view.WinnerInfo1 = RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = string.Empty;
-            }
-        }
-        
         private IEnumerator BusyPlayerPolling()
         {
             var delay = new WaitForSeconds(_pollingInterval);
