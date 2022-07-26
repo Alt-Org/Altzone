@@ -45,17 +45,17 @@ namespace Prg.Scripts.Common.Unity.Input
             switch (Touch.activeTouches.Count)
             {
                 case 1: 
-                    // Clicking + Panning
                     // If the touch began, capture its position and its finger ID.
                     // Otherwise, if the finger ID of the touch doesn't match, skip it.
                     _zoomActive = false;
                     var touch = Touch.activeTouches[0];
                     if (touch.phase == TouchPhase.Began)
                     {
-                        // Check if finger is over a UI element
-                        _isPointerOverGameObject = EventSystem.current.IsPointerOverGameObject(touch.touchId);
-                        if (_isPointerOverGameObject)
+                        // Start touch down (click)
+                        var isPointerOverGameObject = EventSystem.current.IsPointerOverGameObject(touch.touchId);
+                        if (isPointerOverGameObject)
                         {
+                            // Ignore touch start if finger is over a UI element.
                             return;
                         }
                         _isFingerDown = true;
@@ -66,6 +66,7 @@ namespace Prg.Scripts.Common.Unity.Input
                     }
                     else if (touch.touchId == _panFingerId && touch.phase == TouchPhase.Moved)
                     {
+                        // Continue touch down (panning)
                         _lastPanPosition = touch.screenPosition;
                         _touchCount += 1;
                         SendMouseDown(_lastPanPosition, _touchCount);
@@ -77,7 +78,7 @@ namespace Prg.Scripts.Common.Unity.Input
                     break;
 
                 case 2:
-                    // Zooming
+                    // Two finger zooming
                     if (_isZoom)
                     {
                         _newPrimaryPosition = Touch.activeTouches[0].screenPosition;
@@ -107,7 +108,7 @@ namespace Prg.Scripts.Common.Unity.Input
                     }
                     if (_isFingerDown)
                     {
-                        // Report last known touch position
+                        // End touch down, report last touch position
                         _isFingerDown = false;
                         SendMouseUp(_touchCount == 1 ? _firstPanPosition : _lastPanPosition);
                     }

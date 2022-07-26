@@ -11,8 +11,6 @@ namespace Prg.Scripts.Common.Unity.Input
         public bool _isPan;
         public float _panSpeed;
 
-        [Header("Live Data")] public bool _isPointerOverGameObject;
-
         public BaseHandler Configure(InputManager.ZoomAndPan settings)
         {
             _isZoom = settings._isZoom;

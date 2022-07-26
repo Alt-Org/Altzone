@@ -10,6 +10,9 @@ namespace Prg.Scripts.Common.Unity.Input
     /// </summary>
     public class MouseHandler : BaseHandler
     {
+        [Header("Live Data")] [SerializeField] private bool _isPointerOverGameObject;
+        [SerializeField] private bool _isIgnoringPointer;
+        [SerializeField] private bool _isPanning;
         [SerializeField] private int _clickCount;
         [SerializeField] private Vector2 _curPanPosition;
         [SerializeField] private Vector2 _prevPanPosition;
@@ -50,22 +53,45 @@ namespace Prg.Scripts.Common.Unity.Input
         private void Update()
         {
             _isPointerOverGameObject = EventSystem.current.IsPointerOverGameObject(-1);
-            if (_isPointerOverGameObject)
-            {
-                // Ignore UI elements.
-                return;
-            }
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                // Start mouse down
+                if (_isPointerOverGameObject)
+                {
+                    // Ignore mouse down if it is over an UI element.
+                    if (!_isIgnoringPointer)
+                    {
+                        _isIgnoringPointer = true;
+                        Debug.Log("IGNORE click start");
+                    }
+                    return;
+                }
+                Debug.Log("click start");
+                // Start mouse down (click)
                 _clickCount = 1;
                 _curPanPosition = Mouse.current.position.ReadValue();
                 SendMouseDown(_curPanPosition, _clickCount);
                 _prevPanPosition = _curPanPosition;
+                return;
             }
-            else if (Mouse.current.leftButton.isPressed)
+            if (Mouse.current.leftButton.isPressed)
             {
-                // Continue mouse down
+                if (!_isPanning)
+                {
+                    // After panning has been started we never stop it!
+                    if (_isPointerOverGameObject)
+                    {
+                        // Ignore mouse down if it is over an UI element or mouse drag (panning) started from there.
+                        return;
+                    }
+                    if (_isIgnoringPointer)
+                    {
+                        // We went outside of an UI element - start panning now
+                        _isIgnoringPointer = false;
+                        Debug.Log("IGNORE click end");
+                    }
+                    _isPanning = true;
+                }
+                // Continue or start mouse down (panning)
                 _clickCount += 1;
                 _curPanPosition = Mouse.current.position.ReadValue();
                 SendMouseDown(_curPanPosition, _clickCount);
@@ -74,11 +100,20 @@ namespace Prg.Scripts.Common.Unity.Input
                     PanCamera((_curPanPosition - _prevPanPosition) * _panSpeed);
                     _prevPanPosition = _curPanPosition;
                 }
+                return;
             }
-            else if (Mouse.current.leftButton.wasReleasedThisFrame)
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
+                if (_isIgnoringPointer)
+                {
+                    _isIgnoringPointer = false;
+                    Debug.Log("IGNORE click end");
+                    return;
+                }
+                Debug.Log("click end");
                 // End mouse down, report last mouse position
                 _clickCount = 0;
+                _isPanning = false;
                 _curPanPosition = Vector2.zero;
                 _prevPanPosition = Vector2.zero;
                 SendMouseUp(Mouse.current.position.ReadValue());
