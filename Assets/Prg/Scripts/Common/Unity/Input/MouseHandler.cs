@@ -10,7 +10,7 @@ namespace Prg.Scripts.Common.Unity.Input
     /// </summary>
     public class MouseHandler : BaseHandler
     {
-        [Header("Live Data")] [SerializeField] private bool _isPointerOverGameObject;
+        [Header("Live Data"), SerializeField] private bool _isPointerOverGameObject;
         [SerializeField] private bool _isIgnoringPointer;
         [SerializeField] private bool _isPanning;
         [SerializeField] private int _clickCount;
@@ -61,11 +61,9 @@ namespace Prg.Scripts.Common.Unity.Input
                     if (!_isIgnoringPointer)
                     {
                         _isIgnoringPointer = true;
-                        Debug.Log("IGNORE click start");
                     }
                     return;
                 }
-                Debug.Log("click start");
                 // Start mouse down (click)
                 _clickCount = 1;
                 _curPanPosition = Mouse.current.position.ReadValue();
@@ -87,7 +85,6 @@ namespace Prg.Scripts.Common.Unity.Input
                     {
                         // We went outside of an UI element - start panning now
                         _isIgnoringPointer = false;
-                        Debug.Log("IGNORE click end");
                     }
                     _isPanning = true;
                 }
@@ -95,10 +92,15 @@ namespace Prg.Scripts.Common.Unity.Input
                 _clickCount += 1;
                 _curPanPosition = Mouse.current.position.ReadValue();
                 SendMouseDown(_curPanPosition, _clickCount);
-                if (_isPan && (!Approximately(_curPanPosition.x, _prevPanPosition.x) || !Approximately(_curPanPosition.y, _prevPanPosition.y)))
+                if (_isPan)
                 {
-                    PanCamera((_curPanPosition - _prevPanPosition) * _panSpeed);
-                    _prevPanPosition = _curPanPosition;
+                    const float minDelta = 0.00001f;
+                    var delta = _curPanPosition - _prevPanPosition;
+                    if (Mathf.Abs(delta.x) > minDelta || Mathf.Abs(delta.y) > minDelta)
+                    {
+                        PanCamera(delta * _panSpeed);
+                        _prevPanPosition = _curPanPosition;
+                    }
                 }
                 return;
             }
@@ -107,10 +109,8 @@ namespace Prg.Scripts.Common.Unity.Input
                 if (_isIgnoringPointer)
                 {
                     _isIgnoringPointer = false;
-                    Debug.Log("IGNORE click end");
                     return;
                 }
-                Debug.Log("click end");
                 // End mouse down, report last mouse position
                 _clickCount = 0;
                 _isPanning = false;
