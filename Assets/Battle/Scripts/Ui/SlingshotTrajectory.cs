@@ -4,12 +4,14 @@ using Battle.Scripts.Battle.Game;
 
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Ui
 {
     internal class SlingshotTrajectory : MonoBehaviour
     {
 
+        [Header("Team"), SerializeField] private int _teamNum;
         [Header("Line"), SerializeField] private GameObject _lineObject;
         private LineRenderer _line;
         private bool _playerIsOn = false;
@@ -23,8 +25,6 @@ namespace Battle.Scripts.Ui
             _line = _lineObject.GetComponent<LineRenderer>();
             _line.SetPosition(0, new Vector2(0f, 0f));
             _line.SetPosition(1, new Vector2(0f, 0f));
-
-            
         }
 
         private void OnEnable()
@@ -42,7 +42,7 @@ namespace Battle.Scripts.Ui
         {
             IBattleTeam startTeam = _playerManager.GetBattleTeam(num);
             _playerIsOn = true;
-
+            
             _lineObject.SetActive(true);
 
             while (_playerIsOn)
@@ -52,7 +52,7 @@ namespace Battle.Scripts.Ui
                 // set within the GetBallDropPositionAndDirection()
                 startTeam.GetBallDropPositionAndDirection(out var ball, out var dir);
                 _line.SetPosition(0, ball);
-                _line.SetPosition(1, ball+(dir*_lineSize));
+                _line.SetPosition(1, ball + (dir * _lineSize));
                 yield return null;
             }
 
@@ -62,7 +62,12 @@ namespace Battle.Scripts.Ui
 
         private void SlingStart(UiEvents.SlingshotStart start)
         {
-            StartCoroutine(UpdateSling(start.TeamTrackers[0].TeamNumber));
+            // Prevents an index error and limits the amount of lines rendered when the
+            // ball is shot by one team (When the ball hits a player and not their shield)
+            if (start.TeamTrackers.Count > _teamNum)
+            {
+                StartCoroutine(UpdateSling(start.TeamTrackers[_teamNum].TeamNumber));
+            }
         }
 
         private void SlingEnd(UiEvents.SlingshotEnd end)
