@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ namespace Prg.Scripts.Test
     [RequireComponent(typeof(Button))]
     public class FullScreenButtonToggle : MonoBehaviour
     {
+        [SerializeField] private TMP_Text _resolutionLabel;
+        
         private void Awake()
         {
             var button = GetComponent<Button>();
@@ -23,6 +26,10 @@ namespace Prg.Scripts.Test
                 StartCoroutine(UpdateCaption(button));
             });
             StartCoroutine(UpdateCaption(button));
+            if (_resolutionLabel != null)
+            {
+                _resolutionLabel.text = $"{Screen.width}x{Screen.height}";
+            }
         }
 
         private static IEnumerator UpdateCaption(Button button)
