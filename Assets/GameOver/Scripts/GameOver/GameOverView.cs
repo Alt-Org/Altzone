@@ -9,6 +9,7 @@ namespace GameOver.Scripts.GameOver
     {
         [SerializeField] private Text _winnerInfo1;
         [SerializeField] private Text _winnerInfo2;
+        [SerializeField] private Text _loserInfo;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _restartButton;
 
@@ -24,6 +25,11 @@ namespace GameOver.Scripts.GameOver
         {
             get => _winnerInfo2.text;
             set => _winnerInfo2.text = value;
+        }
+          public string LoserInfo
+        {
+            get => _loserInfo.text;
+            set => _loserInfo.text = value;
         }
 
         public Action ContinueButtonOnClick
