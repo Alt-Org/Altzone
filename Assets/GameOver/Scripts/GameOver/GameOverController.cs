@@ -87,14 +87,15 @@ namespace GameOver.Scripts.GameOver
                 var isScoreValid = blueScore != redScore;
                 if (winnerTeam == PhotonBattle.TeamBlueValue)
                 {
-                    _view.WinnerInfo1 = isScoreValid ? RichText.Blue("Team BLUE") : RichText.Yellow("DRAW!");
+                     _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
                     _view.WinnerInfo2 = $"{blueScore} - {redScore}";
+                    _view.LoserInfo = isScoreValid ? RichText.Red("YOUR TEAM LOST") : RichText.Yellow("DRAW");
                 }
                 else if (winnerTeam == PhotonBattle.TeamRedValue)
                 {
-                    _view.WinnerInfo1 = isScoreValid ? RichText.Red("Team RED") : RichText.Yellow("DRAW!");
+                    _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
                     _view.WinnerInfo2 = $"{redScore} - {blueScore}";
-                }
+                    _view.LoserInfo = isScoreValid ? RichText.Blue("YOUR TEAM LOST") : RichText.Yellow("DRAW");
                 else
                 {
                     _view.WinnerInfo1 = RichText.Yellow("DRAW!");
