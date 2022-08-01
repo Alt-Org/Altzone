@@ -6,12 +6,17 @@ public class RaidManager_Script : MonoBehaviour
     public int minefieldWidth;
     public int minefieldHeight;
     public int numberOfBombs;
+    public int numberOfTestLoot;
+    public int lootCollected;
+    public int maxLootCondition;
     //public int number;
 
-    /*(DEV) N‰yt‰ pommit*/
-    public bool n‰yt‰Pommit;
-    /*(DEV) N‰yt‰ hexat*/
-    public bool n‰yt‰Hexat;
+    /*(DEV) Show Bombs*/
+    public bool showBombs;
+    /*(DEV) Show Hexas*/
+    public bool showHexas;
+    /*(DEV) Number of loot*/
+    public bool showTestLoot;
 
 
     private Field_Script field;
@@ -65,6 +70,7 @@ public class RaidManager_Script : MonoBehaviour
         Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Kameran testi default. Siirt‰‰ sen vastaamaan ruutuja. Poistetaan kun siirryt‰‰n oikeaan Sceneen.
         GenerateHexas();
         GenerateBombs();
+        GenerateTestLoot();
         GenerateNumbers();
         field.Draw(state);
     }
@@ -87,12 +93,12 @@ public class RaidManager_Script : MonoBehaviour
     {
         for(int i = 0; i < numberOfBombs; i++)
         {
-            //(DEV) Randomoitu pommien sijoittelu. T‰ytyy vaihtaa kun Loot asettelu testiin!
+            //(DEV) Randomoitu pommien sijoittelu. Must be changed when testing of Loot Placement begins!
             int x = Random.Range(0, minefieldWidth);
             int y = Random.Range(0, minefieldHeight);
 
             //Check if hexa already has an Bomb. Use this for other checking!!!
-            while(state[x, y].type == Hexa_Struct.Type.Bomb)
+            while(state[x, y].type == Hexa_Struct.Type.Bomb )
             {
                 x++;
                 if(x >= minefieldWidth)
@@ -109,7 +115,7 @@ public class RaidManager_Script : MonoBehaviour
             state[x, y].type = Hexa_Struct.Type.Bomb;
 
             //(DEV) N‰ytt‰‰ pommit
-            if (n‰yt‰Pommit)
+            if (showBombs)
             {
                 state[x, y].revealed = true;
             }
@@ -118,6 +124,42 @@ public class RaidManager_Script : MonoBehaviour
         }
     }
 
+    private void GenerateTestLoot()
+    {
+        for (int i = 0; i < numberOfTestLoot; i++)
+        {
+            //(DEV) Randomoitu TestLoot sijoittelu. Change when Loot placement testing!
+            int x = Random.Range(0, minefieldWidth);
+            int y = Random.Range(0, minefieldHeight);
+
+            //Check if hexa already has a TestLoot OR a Bomb. (DEV): Use this everywhere you need hexa checking!!!
+            while (state[x, y].type == Hexa_Struct.Type.Loot || state[x, y].type == Hexa_Struct.Type.Bomb || state[x, y].type == Hexa_Struct.Type.Number)
+            {
+                x++;
+                if (x >= minefieldWidth)
+                {
+                    x = 0;
+                    y++;
+
+                    if (y >= minefieldHeight)
+                    {
+                        y = 0;
+                    }
+                }
+            }
+            state[x, y].type = Hexa_Struct.Type.Loot;
+
+            //(DEV) Shows testloot
+            if (showTestLoot)
+            {
+                state[x, y].revealed = true;
+            }
+
+            /*state[x, y].revealed = true;*/ // (DEV) Paljastaa kaikki pommit
+        }
+    }
+
+
     private void GenerateNumbers()
     {
         for (int x = 0; x < minefieldWidth; x++)
@@ -125,23 +167,22 @@ public class RaidManager_Script : MonoBehaviour
             for (int y = 0; y < minefieldHeight; y++)
             {
                 Hexa_Struct hexa = state[x, y];
-                if(hexa.type == Hexa_Struct.Type.Bomb)
+                if (hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot)
                 {
                     continue;
                 }
                 hexa.number = CalculateBombs(x, y);
 
-                if(hexa.number > 0)
+                if (hexa.number > 0)
                 {
                     hexa.type = Hexa_Struct.Type.Number;
                 }
 
                 //(DEV) Paljastaa hexat
-                if(n‰yt‰Hexat)
+                if (showHexas)
                 {
                     hexa.revealed = true;
                 }
-                
                 /*hexa.revealed = true;*/ // (DEV) Paljastaa kaikki numerot
                 state[x, y] = hexa;
             }
@@ -150,10 +191,9 @@ public class RaidManager_Script : MonoBehaviour
 
     private int CalculateBombs(int hexaX, int hexaY)
     {
-        int count = 0; //Testaa ilman 0
+        int count = 0; //Testaa ilman 0?
 
-        //(DEV) Korjaa v‰likˆn lasku! Laskee oudosti pommit! Tarkista, ett‰ kaikista nelj‰st‰ v‰likˆst‰ tulee luku! Ei laske X v‰likkˆ‰ ollenkaan!
-
+        //(DEV) Fix the calculation! No through corridor calculation.
         for (int neighborX = -1; neighborX <= 1; neighborX++)
         {
             for(int neighborY = -1; neighborY <= 1; neighborY++)
@@ -204,7 +244,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Reveal(Vector3 position)
     {
-        //(DEV) T‰ytyy vaihtaa kun Android build!
+        //(DEV) Change when build for Android!
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
@@ -222,18 +262,32 @@ public class RaidManager_Script : MonoBehaviour
                 Detonate(hexa);
                 break;
 
+            case Hexa_Struct.Type.Loot:
+                lootCollected++;
+                UnityEngine.Debug.Log(lootCollected);
+                break;
+
             default:
                 hexa.revealed = true;
                 state[hexaPosition.x, hexaPosition.y] = hexa;
                 break;
         }
-        //hexa.revealed = true;
-        //state[hexaPosition.x, hexaPosition.y] = hexa;
+        hexa.revealed = true;
+        //UnityEngine.Debug.Log("revealed!");
+        state[hexaPosition.x, hexaPosition.y] = hexa;
         field.Draw(state);
+
+        // Win condition. Change the number when needed!
+        if(lootCollected == maxLootCondition)
+        {
+            UnityEngine.Debug.Log("No more loot. You win!");
+            raidIsOver = true;
+        }
     }
 
     private void Detonate(Hexa_Struct hexa)
     {
+        UnityEngine.Debug.Log("Raid is Over!");
         raidIsOver = true;
         hexa.revealed = true;
         hexa.detonated = true;
