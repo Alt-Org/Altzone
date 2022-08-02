@@ -22,11 +22,20 @@ namespace Prg.Scripts.Common.Util
             public Regex Regex;
         }
 
-        [Header("Settings")] public bool _isLogToFile;
-        public string _colorForClassName = "white";
-        public string _colorForContextTagName = "orange";
+        private const string Tooltip1 = "Default value for non matching debug lines";
+        private const string Tooltip2 = "Is logging files without a namespace forced to be logged always";
+        private const string Tooltip3 = "Is logging to file enabled";
+        private const string Tooltip4 = "Color for logged classname";
+        private const string Tooltip5 = "Color to 'mark' logged context objects";
+        private const string Tooltip6 = "Regular expressions with 1/0 to match logged lines and enable/disable their logging";
 
-        [Header("Class Filter"), TextArea(5, 20)] public string _loggerRules;
+        [Header("Settings"), Tooltip(Tooltip1)] public bool _isDefaultMatchTrue;
+        [Tooltip(Tooltip2)] public bool _isLogNoNamespaceForced;
+        [Tooltip(Tooltip3)] public bool _isLogToFile;
+        [Tooltip(Tooltip4)] public string _colorForClassName = "white";
+        [Tooltip(Tooltip5)] public string _colorForContextTagName = "orange";
+
+        [Header("Class Filter"), TextArea(5, 20), Tooltip(Tooltip6)] public string _loggerRules;
 
         private static string _prefixTag;
         private static string _suffixTag;
@@ -76,13 +85,18 @@ namespace Prg.Scripts.Common.Util
                 var type = isAnonymous.HasValue && isAnonymous.Value
                     ? method.ReflectedType?.DeclaringType
                     : method.ReflectedType;
-                var className = type?.FullName;
-                if (className == null)
+                if (type?.FullName == null)
                 {
-                    return false;
+                    // Should not happen in this context because a method should have a class (even anonymous).
+                    return true;
                 }
-                var match = filterList.FirstOrDefault(x => x.Regex.IsMatch(className));
-                return match?.IsLogged ?? false;
+                if (config._isLogNoNamespaceForced && string.IsNullOrEmpty(type.Namespace))
+                {
+                    // Should not have classes without a namespace but allow logging for them anyways.
+                    return true;
+                }
+                var match = filterList.FirstOrDefault(x => x.Regex.IsMatch(type.FullName));
+                return match?.IsLogged ?? config._isDefaultMatchTrue;
             }
 
             Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
@@ -132,25 +146,22 @@ namespace Prg.Scripts.Common.Util
                 }
                 try
                 {
-                    var isLogged = true;
-                    if (line.EndsWith("=1"))
+                    var parts = line.Split('=');
+                    if (parts.Length != 2)
                     {
-                        line = line.Substring(0, line.Length - 2);
-                    }
-                    else if (line.EndsWith("=0"))
-                    {
-                        isLogged = false;
-                        line = line.Substring(0, line.Length - 2);
-                    }
-                    else if (line.Contains("="))
-                    {
-                        UnityEngine.Debug.LogError($"invalid Regex pattern '{line}', do not use '=' here");
+                        UnityEngine.Debug.LogError($"invalid Regex pattern '{line}', are you missing '=' here");
                         continue;
                     }
+                    if (!int.TryParse(parts[1].Trim(), out var loggedValue))
+                    {
+                        UnityEngine.Debug.LogError($"invalid Regex pattern '{line}', not a valid integer after '=' sign");
+                        continue;
+                    }
+                    var isLogged = loggedValue != 0;
                     const RegexOptions regexOptions = RegexOptions.Singleline | RegexOptions.CultureInvariant;
                     var filter = new RegExpFilter
                     {
-                        Regex = new Regex(line, regexOptions),
+                        Regex = new Regex(parts[0].Trim(), regexOptions),
                         IsLogged = isLogged
                     };
                     list.Add(filter);
