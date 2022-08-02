@@ -207,45 +207,37 @@ namespace Altzone.Scripts.Config
     /// </summary>
     public class PlayerDataCacheLocal : PlayerDataCache
     {
-        private const string PlayerNameKey = "PlayerData.PlayerName";
-        private const string PlayerGuidKey = "PlayerData.PlayerGuid";
-        private const string CharacterModelIdKey = "PlayerData.CharacterModelId";
-        private const string ClanIdKey = "PlayerData.ClanId";
-        private const string LanguageCodeKey = "PlayerData.LanguageCode";
-        private const string TermsOfServiceKey = "PlayerData.TermsOfService";
-        private const string IsDebugFlagKey = "PlayerData.IsDebugFlag";
-
         private readonly MonoBehaviour _host;
         private Coroutine _delayedSave;
 
         public PlayerDataCacheLocal(MonoBehaviour host)
         {
             _host = host;
-            _playerName = PlayerPrefs.GetString(PlayerNameKey, string.Empty);
-            _characterModelId = PlayerPrefs.GetInt(CharacterModelIdKey, DefaultModelId);
-            _clanId = PlayerPrefs.GetInt(ClanIdKey, -1);
-            _playerGuid = PlayerPrefs.GetString(PlayerGuidKey, string.Empty);
+            _playerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
+            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DefaultModelId);
+            _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, -1);
+            _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
             if (string.IsNullOrWhiteSpace(PlayerGuid))
             {
                 _playerGuid = CreatePlayerHandle();
                 // Save GUID immediately on this device!
-                PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
+                PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
                 PlayerPrefs.Save();
             }
-            _language = (SystemLanguage)PlayerPrefs.GetInt(LanguageCodeKey, (int)DefaultLanguage);
-            _isTosAccepted = PlayerPrefs.GetInt(TermsOfServiceKey, 0) == 1;
-            _isDebugFlag = PlayerPrefs.GetInt(IsDebugFlagKey, 0) == 1;
+            _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
+            _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
+            _isDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
         }
 
         protected override void InternalSave()
         {
-            PlayerPrefs.SetString(PlayerNameKey, PlayerName);
-            PlayerPrefs.SetInt(CharacterModelIdKey, CharacterModelId);
-            PlayerPrefs.SetInt(ClanIdKey, ClanId);
-            PlayerPrefs.SetString(PlayerGuidKey, PlayerGuid);
-            PlayerPrefs.SetInt(TermsOfServiceKey, (int)_language);
-            PlayerPrefs.SetInt(TermsOfServiceKey, IsTosAccepted ? 1 : 0);
-            PlayerPrefs.SetInt(IsDebugFlagKey, IsDebugFlag ? 1 : 0);
+            PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
+            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CharacterModelId);
+            PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
+            PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, (int)_language);
+            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, IsTosAccepted ? 1 : 0);
+            PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
         }
 
         private static string CreatePlayerHandle()

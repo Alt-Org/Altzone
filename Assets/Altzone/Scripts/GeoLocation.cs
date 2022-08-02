@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.RestApi;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -29,10 +30,6 @@ namespace Altzone.Scripts
 
         public class LocationData
         {
-            private const string GeoIpCountryKey = "geoip.country";
-            private const string GeoIpCountryCodeKey = "geoip.countryCode";
-            private const string GdprConsentKey = "gdpr.consent";
-
             public readonly string Country;
             public readonly string CountryCode;
             public readonly bool IsGdprApplicable;
@@ -58,22 +55,22 @@ namespace Altzone.Scripts
 
             public static LocationData Load()
             {
-                var country = PlayerPrefs.GetString(GeoIpCountryKey, string.Empty);
-                var countryCode = PlayerPrefs.GetString(GeoIpCountryCodeKey, string.Empty);
+                var country = PlayerPrefs.GetString(PlayerPrefKeys.GeoIpCountry, string.Empty);
+                var countryCode = PlayerPrefs.GetString(PlayerPrefKeys.GeoIpCountryCode, string.Empty);
                 if (string.IsNullOrEmpty(country) || string.IsNullOrEmpty(countryCode))
                 {
                     return null;
                 }
-                var gdprConsent = (GdprConsent)PlayerPrefs.GetInt(GdprConsentKey, (int)GdprConsent.Unknown);
+                var gdprConsent = (GdprConsent)PlayerPrefs.GetInt(PlayerPrefKeys.GdprConsent, (int)GdprConsent.Unknown);
                 var locationData = new LocationData(country, countryCode, gdprConsent);
                 return locationData;
             }
 
             private void Save()
             {
-                PlayerPrefs.SetString(GeoIpCountryKey, Country);
-                PlayerPrefs.SetString(GeoIpCountryCodeKey, CountryCode);
-                PlayerPrefs.SetInt(GdprConsentKey, (int)GdprConsent);
+                PlayerPrefs.SetString(PlayerPrefKeys.GeoIpCountry, Country);
+                PlayerPrefs.SetString(PlayerPrefKeys.GeoIpCountryCode, CountryCode);
+                PlayerPrefs.SetInt(PlayerPrefKeys.GdprConsent, (int)GdprConsent);
             }
 
             private static bool _IsGdprCountry(string code)
