@@ -267,12 +267,18 @@ namespace Altzone.Scripts.Config
 
         protected override void Save()
         {
-            if (_delayedSave == null && _host != null)
+            if (_host == null)
             {
-                // Save all changed player prefs on next frame.
-                _delayedSave = _host.StartCoroutine(DelayedSave());
+                // Can not delay, using UNITY default functionality save on exit
                 return;
             }
+            if (_delayedSave != null)
+            {
+                // NOP - already delayed.
+                return;
+            }
+            // Save all changed player prefs on next frame.
+            _delayedSave = _host.StartCoroutine(DelayedSave());
         }
 
         private IEnumerator DelayedSave()
