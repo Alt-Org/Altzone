@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Altzone.Scripts.Service.Audio;
 
-public class AudioSettings : MonoBehaviour
+namespace MenuUi.Scripts.Settings
 {
-    // Start is called before the first frame update
-    void Start()
+    public class AudioMenuSettings : MonoBehaviour
     {
-        
+
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+        public void SetMasterLevel(float sliderValue)
+        {
+
+        }
+
+
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
