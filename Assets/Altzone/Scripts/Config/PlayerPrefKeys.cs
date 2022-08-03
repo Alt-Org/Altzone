@@ -10,9 +10,9 @@ namespace Altzone.Scripts.Config
         public const string TermsOfService = "PlayerData.TermsOfService";
         public const string IsDebugFlag = "PlayerData.IsDebugFlag";
 
-        public const string GeoIpCountry = "geoip.country";
-        public const string GeoIpCountryCode = "geoip.countryCode";
-        public const string GdprConsent = "gdpr.consent";
+        public const string GeoIpCountry = "GeoIp.Country";
+        public const string GeoIpCountryCode = "GeoIp.CountryCode";
+        public const string GdprConsent = "Gdpr.Consent";
 
     }
 }
