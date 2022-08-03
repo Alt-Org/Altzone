@@ -19,6 +19,7 @@ namespace Battle.Scripts.Battle.Ball
         [SerializeField] private LayerMask _headMask;
         [SerializeField] private LayerMask _wallMask;
         [SerializeField] private LayerMask _brickMask;
+        [SerializeField] private LayerMask _ignoreMask;
         [SerializeField] private bool _isSetBallState;
 
         [Header("Live Data"), SerializeField] private bool _isOnBlueTeamArea;
@@ -31,6 +32,7 @@ namespace Battle.Scripts.Battle.Ball
         private int _headMaskValue;
         private int _wallMaskValue;
         private int _brickMaskValue;
+        private int _ignoreMaskValue;
 
         private void Awake()
         {
@@ -41,6 +43,7 @@ namespace Battle.Scripts.Battle.Ball
             _headMaskValue = _headMask.value;
             _wallMaskValue = _wallMask.value;
             _brickMaskValue = _brickMask.value;
+            _ignoreMaskValue = _ignoreMask.value;
         }
 
         private void OnEnable()
@@ -81,6 +84,11 @@ namespace Battle.Scripts.Battle.Ball
             if (_brickMaskValue == (_brickMaskValue | colliderMask))
             {
                 _ballCollision.OnBrickCollision(collision);
+                return;
+            }
+            if (_ignoreMaskValue == (_ignoreMaskValue | colliderMask))
+            {
+                // We ignore some collisions because they are handled by the other and we do not want to log them here.
                 return;
             }
             Debug.Log($"UNHANDLED {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");
