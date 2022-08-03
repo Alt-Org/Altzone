@@ -23,6 +23,7 @@ namespace Battle.Scripts.Battle.Ball
         internal class DebugSettings
         {
             public bool _isApiCalls;
+            public bool _isSpeedTracking;
             public bool _isShowBallText;
             public TextMeshPro _ballText;
             public bool _isShowTrailRenderer;
@@ -341,10 +342,11 @@ namespace Battle.Scripts.Battle.Ball
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private void StartBallVelocityTracker()
         {
-            if (_ballVelocityTracker == null)
+            if (!_debug._isSpeedTracking)
             {
-                _ballVelocityTracker = StartCoroutine(BallVelocityTracker());
+                return;
             }
+            _ballVelocityTracker ??= StartCoroutine(BallVelocityTracker());
         }
 
         private IEnumerator BallVelocityTracker()
@@ -362,8 +364,8 @@ namespace Battle.Scripts.Battle.Ball
                     if (!Mathf.Approximately(prevSqr, curSqr))
                     {
                         var velocityChange = -(1 - prevSqr / curSqr) * 100;
-                        Debug.Log(
-                            $"{name} speed {_ballRequiredMoveSpeed:0.00} velocity {_currentDebugVelocity} <- {velocity} sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
+                        Debug.Log($"{name} speed {_ballRequiredMoveSpeed:0.00} velocity {_currentDebugVelocity} <- {velocity} " +
+                                  $"sqr {prevSqr:0.00} <- {curSqr:0.00} = {velocityChange:0.00}%");
                     }
                     _currentDebugVelocity = velocity;
                 }

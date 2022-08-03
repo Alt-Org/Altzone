@@ -12,31 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf76c67bdba3d79488064bc73ab3316c, type: 3}
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
+  _isDefaultMatchTrue: 0
+  _isLogNoNamespaceForced: 1
   _isLogToFile: 0
   _colorForClassName: white
   _colorForContextTagName: orange
   _loggerRules: '.*PhotonListener.*=1
 
-    .*SceneLoader.*=1
+    ^Altzone.*=1
 
-    .*ScoreFlash.*=0
+    ^Battle.*=1
 
-    ^Altzone.*=0
+    ^GameOver.*=1
 
-    ^Battle.*=0
+    ^Lobby.*=1
 
-    ^Editor.*=0
+    ^MenuUi.*=1
 
-    ^GameOver.*=0
+    ^Prg.*=1
 
-    ^Lobby.*=0
-
-    ^MainMenu.*=0
-
-    ^Prg.*=0
-
-    ^Scripts.*=0
-
-    ^UiProto.*=0
-
-    ^.*=0'
+    ^Raid.*=1'

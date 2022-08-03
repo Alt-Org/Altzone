@@ -326,6 +326,7 @@ MonoBehaviour:
   _networkLag: 0
   _debug:
     _isApiCalls: 0
+    _isSpeedTracking: 0
     _isShowBallText: 1
     _ballText: {fileID: 1331194194009747703}
     _isShowTrailRenderer: 0
@@ -359,6 +360,9 @@ MonoBehaviour:
   _brickMask:
     serializedVersion: 2
     m_Bits: 16384
+  _ignoreMask:
+    serializedVersion: 2
+    m_Bits: 256
   _isSetBallState: 1
   _isOnBlueTeamArea: 0
   _isOnRedTeamArea: 0
