@@ -14,6 +14,7 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class PlayerDataCache
     {
+        protected const string DefaultPlayerName = "Player";
         protected const int DefaultModelId = (int)Defence.Introjection;
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
@@ -217,16 +218,25 @@ namespace Altzone.Scripts.Config
             _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DefaultModelId);
             _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, -1);
             _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
-            if (string.IsNullOrWhiteSpace(PlayerGuid))
-            {
-                _playerGuid = CreatePlayerHandle();
-                // Save GUID immediately on this device!
-                PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
-                PlayerPrefs.Save();
-            }
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
+            if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(_playerName))
+            {
+                return;
+            }
+            // Save these settings immediately on this device!
+            if (string.IsNullOrWhiteSpace(PlayerGuid))
+            {
+                _playerGuid = CreatePlayerHandle();
+                PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+            }
+            if (string.IsNullOrWhiteSpace(_playerName))
+            {
+                _playerName = DefaultPlayerName;
+                PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
+            }
+            PlayerPrefs.Save();
         }
 
         protected override void InternalSave()
