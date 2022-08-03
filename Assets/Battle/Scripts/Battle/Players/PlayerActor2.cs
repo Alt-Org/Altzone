@@ -278,7 +278,10 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             var canDo = CanAcceptMove;
-            SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed} canDo {canDo}");
+            if (_debug._isLogMoveTo)
+            {
+                SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed} canDo {canDo}");
+            }
             if (!canDo)
             {
                 return;
@@ -312,7 +315,7 @@ namespace Battle.Scripts.Battle.Players
             var canTransition = _playMode.CanTransition(playMode);
             if (_debug._isLogEvents)
             {
-                Debug.Log($"{name} {_playMode} <- {playMode} {(canTransition ? "OK" : "NO CAN TRANSITION")}");
+                Debug.Log($"{name} {_playMode} <- {playMode}{(canTransition ? string.Empty : " CAN NOT TRANSITION")}");
             }
             if (!canTransition)
             {
