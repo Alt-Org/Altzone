@@ -321,7 +321,10 @@ namespace Battle.Scripts.Battle.Players
             {
                 if (_playMode == BattlePlayMode.RaidGhosted)
                 {
-                    Debug.Log($"{name} {playMode} SAVE PENDING");
+                    if (_debug._isLogEvents)
+                    {
+                        Debug.Log($"{name} {playMode} SAVE PENDING");
+                    }
                     _isPendingPlayMode = true;
                     _pendingPlayMode = playMode;
                 }
@@ -390,7 +393,10 @@ namespace Battle.Scripts.Battle.Players
             _isStunned = false;
             _stunnedCoroutine = null;
             UpdatePlayerText();
-            Debug.Log($"{name} expired");
+            if (_debug._isLogEvents)
+            {
+                Debug.Log($"{name} expired");
+            }
         }
 
         void IPlayerActor.ResetPlayerDriver()
