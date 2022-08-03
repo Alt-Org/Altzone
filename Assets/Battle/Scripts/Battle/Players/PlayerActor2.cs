@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Prg.Scripts.Test;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
@@ -48,6 +49,7 @@ namespace Battle.Scripts.Battle.Players
         private int _poseIndex;
         private bool _isStunned;
         private Coroutine _stunnedCoroutine;
+        private ThrottledDebugLogger _moveLogger;
 
         private IPoseManager _avatarPose;
         private IPoseManager _shieldPose;
@@ -142,6 +144,17 @@ namespace Battle.Scripts.Battle.Players
             {
                 _disconnectedPoseIndex = -1;
             }
+            if (_debug._isLogMoveTo)
+            {
+                if (Application.isEditor)
+                {
+                    _moveLogger = new ThrottledDebugLogger(this);
+                }
+                else
+                {
+                    _debug._isLogMoveTo = false;
+                }
+            }
 
             void OnShieldCollisionFilter(Collision2D collision)
             {
@@ -192,39 +205,6 @@ namespace Battle.Scripts.Battle.Players
                 _debug._playerModeOrBuff = PlayModes[(int)_playMode];
             }
             _debug._playerText.text = $"{PlayerPosChars[_playerPos]}{_maxPoseIndex - _poseIndex}{_resistance}{_debug._playerModeOrBuff}";
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        private void SetThrottledDebugLogMessage(string debugLogMessage)
-        {
-            if (!_playerDriver.IsLocal)
-            {
-                return;
-            }
-            _debugLogMessage = debugLogMessage;
-        }
-
-        private string _debugLogMessage;
-
-        /// <summary>
-        /// Throttles debug log messages printing them only on every N seconds after first message is detected.
-        /// </summary>
-        private IEnumerator ThrottledDebugLogger()
-        {
-            const float samplingInterval = 1.0f;
-            Assert.IsTrue(Application.isEditor);
-            var nextDebugLogTime = 0f;
-            _debugLogMessage = null;
-            for (; enabled;)
-            {
-                if (_debugLogMessage != null && Time.time > nextDebugLogTime)
-                {
-                    Debug.Log(_debugLogMessage);
-                    _debugLogMessage = null;
-                    nextDebugLogTime = Time.time + samplingInterval;
-                }
-                yield return null;
-            }
         }
 
         #endregion
@@ -278,9 +258,9 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             var canDo = CanAcceptMove;
-            if (_debug._isLogMoveTo)
+            if (_playerDriver.IsLocal && _debug._isLogMoveTo)
             {
-                SetThrottledDebugLogMessage($"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed} canDo {canDo}");
+                ThrottledDebugLogger.Log(_moveLogger, $"{name} MoveTo {(Vector2)_targetPosition} <- {targetPosition} Speed {_speed} canDo {canDo}");
             }
             if (!canDo)
             {
