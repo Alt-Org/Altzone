@@ -8,8 +8,8 @@ namespace Prg.Scripts.Common.Unity.Input
     [CreateAssetMenu(menuName = "ALT-Zone/" + nameof(InputManagerConfig))]
     public class InputManagerConfig : ScriptableObject
     {
-        [Header("Mouse")] public InputManager.ZoomAndPan _mouse;
+        [Header("Mouse")] public InputManager.ZoomAndPanSettings _mouse;
 
-        [Header("Touch")] public InputManager.ZoomAndPan _touch;
+        [Header("Touch")] public InputManager.ZoomAndPanSettings _touch;
     }
 }

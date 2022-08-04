@@ -9,18 +9,18 @@ namespace Prg.Scripts.Common.Unity.Input
         [Header("Settings"), SerializeField] private InputManagerConfig _config; // For manual Editor config
         [SerializeField] private InputActionReference _scrollWheelActionRef;
 
-        [Header("Live Data"), SerializeField] private ZoomAndPan _mouse;
-        [SerializeField] private ZoomAndPan _touch;
+        [Header("Live Data"), SerializeField] private ZoomAndPanSettings _mouse;
+        [SerializeField] private ZoomAndPanSettings _touch;
         [SerializeField] private BaseHandler _handler;
 
         // We create clones because objects can be "in" ScriptableObject and we do not want to change original values on disk!
-        public ZoomAndPan Mouse
+        public ZoomAndPanSettings Mouse
         {
             get => _mouse;
             set => _mouse = value.Clone();
         }
 
-        public ZoomAndPan Touch
+        public ZoomAndPanSettings Touch
         {
             get => _touch;
             set => _touch = value.Clone();
@@ -52,21 +52,30 @@ namespace Prg.Scripts.Common.Unity.Input
             Debug.Log($"handler {Handler}");
         }
 
+        /// <summary>
+        /// Marker interface for input handlers.
+        /// </summary>
         public interface IInputHandler
         {
         }
 
+        /// <summary>
+        /// Setting for Zoom and Pan.
+        /// </summary>
+        /// <remarks>
+        /// Mouse and touch needs to have separate settings because devices behave differently.
+        /// </remarks>
         [Serializable]
-        public class ZoomAndPan
+        public class ZoomAndPanSettings
         {
             public bool _isZoom;
             public float _zoomSpeed;
             public bool _isPan;
             public float _panSpeed;
 
-            public ZoomAndPan Clone()
+            public ZoomAndPanSettings Clone()
             {
-                return MemberwiseClone() as ZoomAndPan;
+                return MemberwiseClone() as ZoomAndPanSettings;
             }
         }
 
@@ -94,6 +103,8 @@ namespace Prg.Scripts.Common.Unity.Input
 
             public ClickUpEvent(Vector2 screenPosition, int clickCount)
             {
+                ScreenPosition = screenPosition;
+                ClickCount = clickCount;
             }
 
             public override string ToString()
@@ -102,8 +113,14 @@ namespace Prg.Scripts.Common.Unity.Input
             }
         }
 
-        public class ZoomEvent // Aka scroll
+        /// <summary>
+        /// Zoom aka scroll.
+        /// </summary>
+        public class ZoomEvent
         {
+            /// <summary>
+            /// Relative "zoom" positive/negative value compared to previous event.
+            /// </summary>
             public readonly float DeltaZoom;
 
             public ZoomEvent(float deltaZoom)
@@ -117,8 +134,14 @@ namespace Prg.Scripts.Common.Unity.Input
             }
         }
 
-        public class PanEvent // Aka drag or swipe
+        /// <summary>
+        /// Pan aka drag or swipe.
+        /// </summary>
+        public class PanEvent
         {
+            /// <summary>
+            /// Relative "pan" direction compared to previous event.
+            /// </summary>
             public readonly Vector2 DeltaMove;
 
             public PanEvent(Vector2 deltaMove)

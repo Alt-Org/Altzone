@@ -30,8 +30,6 @@ namespace Prg.Scripts.Common.Unity.Input
             return this;
         }
 
-        private static bool Approximately(float a, float b) => Mathf.Abs(b - a) < 0.00001f; // 5 digits is more than enough for mouse precision!
-
         private void OnEnable()
         {
             if (_scrollWheelRef == null)

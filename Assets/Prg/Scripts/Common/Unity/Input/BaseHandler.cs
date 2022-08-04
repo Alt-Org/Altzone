@@ -11,7 +11,7 @@ namespace Prg.Scripts.Common.Unity.Input
         public bool _isPan;
         public float _panSpeed;
 
-        public BaseHandler Configure(InputManager.ZoomAndPan settings)
+        public BaseHandler Configure(InputManager.ZoomAndPanSettings settings)
         {
             _isZoom = settings._isZoom;
             _zoomSpeed = settings._zoomSpeed;
