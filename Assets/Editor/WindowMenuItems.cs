@@ -19,7 +19,6 @@ namespace Editor
 
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string GameDebug = MenuRoot + "Game Debug/";
-        private const string GameUtil = MenuRoot + "Game util/";
         private const string Localization = MenuRoot + "Localization/";
         private const string Dependencies = MenuRoot + "Dependencies/";
         private const string MissingReferences = Dependencies + "Missing References : ";
@@ -41,15 +40,11 @@ namespace Editor
         [MenuItem(GameDebug + "Delete Local Player Data", false, 13)]
         private static void DeleteLocalPlayerData() => DebugMenu.DeleteLocalPlayerData();
 
-        [MenuItem(GameDebug + "Danger Zone/Delete All Local Data", false, 10)]
-        private static void DeleteLocalAllData() => DebugMenu.DeleteLocalAllData();
-
-        #endregion
-
-        #region Gameutil
-
-        [MenuItem(GameUtil + "Dump Models to Wiki", false, 10)]
+        [MenuItem(GameDebug + "Util/Dump Models to Wiki", false, 20)]
         private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
+
+        [MenuItem(GameDebug + "Danger Zone/Delete All Local Data", false, 30)]
+        private static void DeleteLocalAllData() => DebugMenu.DeleteLocalAllData();
 
         #endregion
 
