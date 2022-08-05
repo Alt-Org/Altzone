@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Service.Audio;
@@ -8,9 +6,12 @@ namespace MenuUi.Scripts.Settings
 {
     public class AudioMenuSettings : MonoBehaviour
     {
+        [Header("VolumeSliders"), SerializeField] private Slider _master;
+        [SerializeField] private Slider _menuSFX;
+        [SerializeField] private Slider _gameMusic;
+        [SerializeField] private Slider _gameSFX;
 
-        // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
 
         }
@@ -18,9 +19,18 @@ namespace MenuUi.Scripts.Settings
         {
 
         }
+        public void SetMenuSFXLevel(float sliderValue)
+        {
 
+        }
+        public void SetMusicLevel(float sliderValue)
+        {
 
+        }
+        public void SetGameSFXLevel(float sliderValue)
+        {
 
+        }
     }
 
 }
