@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Altzone.Scripts.Battle;
 using Photon.Pun;
-using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ namespace GameOver.Scripts.GameOver
 
         private void OnEnable()
         {
-            _playerCount = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, 0);
+            _playerCount = PhotonBattle.GetPlayerCountForRoom();
             Debug.Log($"{name}");
             _view.Reset();
             if (!PhotonNetwork.InRoom)
@@ -58,15 +57,15 @@ namespace GameOver.Scripts.GameOver
                     _view.WinnerInfo1 = RichText.Yellow("No scores found");
                     break;
                 }
-                var winnerTeam = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamWinKey, PhotonBattle.NoTeamValue);
-                if (winnerTeam == PhotonBattle.NoTeamValue)
+                var score = PhotonBattle.GetRoomScore();
+                if (!score.IsValid)
                 {
                     yield return null;
                     continue;
                 }
                 var playerPos = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);
                 var myTeam = PhotonBattle.GetTeamNumber(playerPos);
-                UpdateGameOverTexts(myTeam, winnerTeam);
+                UpdateGameOverTexts(myTeam, score);
                 break;
             }
             _view.EnableContinueButton();
@@ -80,25 +79,23 @@ namespace GameOver.Scripts.GameOver
             }
         }
 
-        private void UpdateGameOverTexts(int myTeam, int winnerTeam)
+        private void UpdateGameOverTexts(int myTeam, PhotonBattle.RoomScore score)
         {
-            Debug.Log($"myTeam {myTeam} winnerTeam {winnerTeam}");
-            Debug.Log($"R={PhotonNetwork.CurrentRoom.GetDebugLabel()}");
-            Debug.Log($"P={PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-                var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
-                var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
-                // It is possible that we can have equal score and winning team - but that can not be true!
-                var isScoreValid = blueScore != redScore;
-            if (winnerTeam == PhotonBattle.TeamBlueValue)
+            Debug.Log($"myTeam {myTeam} score {score}");
+            Debug.Log(PhotonNetwork.CurrentRoom.GetDebugLabel());
+            Debug.Log(PhotonNetwork.LocalPlayer.GetDebugLabel());
+            // It is possible that we can have equal score and winning team - but that can not be true!
+            var isScoreValid = score.BlueScore != score.RedScore;
+            if (score.WinningTeam == PhotonBattle.TeamBlueValue)
             {
                 _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{blueScore} - {redScore}";
+                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
                 _view.LoserInfo = isScoreValid ? RichText.Red("YOUR TEAM LOST") : RichText.Yellow("DRAW");
             }
-            else if (winnerTeam == PhotonBattle.TeamRedValue)
+            else if (score.WinningTeam == PhotonBattle.TeamRedValue)
             {
                 _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{redScore} - {blueScore}";
+                _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
                 _view.LoserInfo = isScoreValid ? RichText.Blue("YOUR TEAM LOST") : RichText.Yellow("DRAW");
             }
             else

@@ -377,7 +377,7 @@ namespace Battle.Scripts.Battle.Game
             }
             var realPlayers = PhotonBattle.CountRealPlayers();
             Assert.IsTrue(realPlayers > 0, "realPlayers > 0");
-            var roomPlayers = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, int.MaxValue);
+            var roomPlayers = PhotonBattle.GetPlayerCountForRoom();
             if (realPlayers < roomPlayers)
             {
                 Debug.Log($"WAIT more realPlayers {realPlayers} : roomPlayers {roomPlayers}");

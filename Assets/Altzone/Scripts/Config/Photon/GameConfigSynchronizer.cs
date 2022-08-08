@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace Altzone.Scripts.Config.Photon
         public static void Synchronize(What what)
         {
             //--Debug.Log($"Synchronize {what}");
-            if (!PhotonWrapper.InRoom || !PhotonWrapper.IsMasterClient)
+            if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient)
             {
                 throw new UnityException("only master client can synchronize in a room");
             }

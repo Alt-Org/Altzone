@@ -36,7 +36,7 @@ namespace Lobby.Scripts.InLobby
             while (!PhotonNetwork.InLobby)
             {
                 Debug.Log($"{PhotonNetwork.NetworkClientState}");
-                if (PhotonWrapper.InRoom)
+                if (PhotonNetwork.InRoom)
                 {
                     PhotonLobby.LeaveRoom();
                 }
