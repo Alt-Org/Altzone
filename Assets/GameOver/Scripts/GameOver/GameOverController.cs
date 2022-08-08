@@ -44,7 +44,6 @@ namespace GameOver.Scripts.GameOver
                 CloseRoomForLobby();
                 return WindowManager.GoBackAction.Continue;
             });
-            Debug.Log($"OnEnable {PhotonNetwork.CurrentRoom.GetDebugLabel()}");
             StartCoroutine(WaitForWinner());
         }
 
@@ -65,7 +64,9 @@ namespace GameOver.Scripts.GameOver
                     yield return null;
                     continue;
                 }
-                UpdateGameOverTexts(winnerTeam);
+                var playerPos = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);
+                var myTeam = PhotonBattle.GetTeamNumber(playerPos);
+                UpdateGameOverTexts(myTeam, winnerTeam);
                 break;
             }
             _view.EnableContinueButton();
@@ -79,8 +80,11 @@ namespace GameOver.Scripts.GameOver
             }
         }
 
-        private void UpdateGameOverTexts(int winnerTeam)
+        private void UpdateGameOverTexts(int myTeam, int winnerTeam)
         {
+            Debug.Log($"myTeam {myTeam} winnerTeam {winnerTeam}");
+            Debug.Log($"R={PhotonNetwork.CurrentRoom.GetDebugLabel()}");
+            Debug.Log($"P={PhotonNetwork.LocalPlayer.GetDebugLabel()}");
                 var blueScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamBlueScoreKey, 0);
                 var redScore = PhotonWrapper.GetRoomProperty(PhotonBattle.TeamRedScoreKey, 0);
                 // It is possible that we can have equal score and winning team - but that can not be true!
