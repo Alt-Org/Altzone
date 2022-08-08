@@ -14,7 +14,9 @@ namespace Battle.Scripts.Battle.Ball
     /// Manages <c>Ball</c> local and remote physical and visual state.
     /// </summary>
     /// <remarks>
-    /// <c>Ball</c> rigidbody and collider setup and behaviour if different on local and remote clients.
+    /// This implementation requires that we are in a Photon room (online or offline)!<br />
+    /// <c>Ball</c> rigidbody and collider setup and behaviour is (can be) different on local and remote clients
+    /// even if we use same prefab for both scenarios.
     /// </remarks>
     [RequireComponent(typeof(PhotonView))]
     internal class BallManager : MonoBehaviourPunCallbacks, IBallManager, IBallCollision, IPunObservable
