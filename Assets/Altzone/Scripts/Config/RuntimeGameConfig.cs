@@ -237,15 +237,24 @@ namespace Altzone.Scripts.Config
     {
         private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _runtimeGameConfig = null;
+        }
+
+        private static RuntimeGameConfig _runtimeGameConfig;
+        
         public static IRuntimeGameConfig Get()
         {
-            var instance = FindObjectOfType<RuntimeGameConfig>();
-            if (instance == null)
+            if (_runtimeGameConfig == null)
             {
-                instance = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
-                LoadGameConfig(instance);
+                _runtimeGameConfig = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
+                LoadGameConfig(_runtimeGameConfig);
+                Debug.Log($"{_runtimeGameConfig.name}");
             }
-            return instance;
+            return _runtimeGameConfig;
         }
 
         public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
@@ -265,6 +274,16 @@ namespace Altzone.Scripts.Config
         [SerializeField] private GamePrefabs _permanentPrefabs;
         [SerializeField] private PlayerDataCache _playerDataCache;
         [SerializeField] private GameInput _gameInput;
+
+        private void Awake()
+        {
+            Debug.Log($"{name}");
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{name}");
+        }
 
         /// <summary>
         /// Game features that can be toggled on and off.
