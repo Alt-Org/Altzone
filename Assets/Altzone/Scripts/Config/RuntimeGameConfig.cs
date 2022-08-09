@@ -255,9 +255,9 @@ namespace Altzone.Scripts.Config
             return _runtimeGameConfig;
         }
 
-        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlayingKey, 1) == 1;
+        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
 
-        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlayingKey, 0);
+        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, 0);
 
 #if UNITY_EDITOR
         /// <summary>

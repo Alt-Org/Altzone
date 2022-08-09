@@ -9,11 +9,11 @@ namespace Altzone.Scripts.Config
         public const string LanguageCode = "PlayerData.LanguageCode";
         public const string TermsOfService = "PlayerData.TermsOfService";
         public const string IsDebugFlag = "PlayerData.IsDebugFlag";
-        public const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
+        public const string IsFirstTimePlaying = "PlayerData.IsFirstTimePlaying";
 
+        public const string ConsentFamiliesPrivacyMode = "consent.families.privacy.mode";
         public const string GeoIpCountry = "GeoIp.Country";
         public const string GeoIpCountryCode = "GeoIp.CountryCode";
         public const string GdprConsent = "Gdpr.Consent";
-
     }
 }
