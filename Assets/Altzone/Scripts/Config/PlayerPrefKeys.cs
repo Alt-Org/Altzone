@@ -9,6 +9,7 @@ namespace Altzone.Scripts.Config
         public const string LanguageCode = "PlayerData.LanguageCode";
         public const string TermsOfService = "PlayerData.TermsOfService";
         public const string IsDebugFlag = "PlayerData.IsDebugFlag";
+        public const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
 
         public const string GeoIpCountry = "GeoIp.Country";
         public const string GeoIpCountryCode = "GeoIp.CountryCode";

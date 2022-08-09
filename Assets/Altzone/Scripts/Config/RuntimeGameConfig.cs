@@ -235,8 +235,6 @@ namespace Altzone.Scripts.Config
 
     public class RuntimeGameConfig : MonoBehaviour, IRuntimeGameConfig
     {
-        private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
@@ -257,9 +255,9 @@ namespace Altzone.Scripts.Config
             return _runtimeGameConfig;
         }
 
-        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
+        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlayingKey, 1) == 1;
 
-        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(IsFirstTimePlayingKey, 0);
+        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlayingKey, 0);
 
 #if UNITY_EDITOR
         /// <summary>
