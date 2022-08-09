@@ -94,7 +94,7 @@ namespace Battle.Scripts.Ui
 
             public override string ToString()
             {
-                return $"{nameof(HitType)}: {HitType}";
+                return $"{base.ToString()} {nameof(HitType)}: {HitType}";
             }
         }
 
@@ -171,7 +171,7 @@ namespace Battle.Scripts.Ui
 
         #endregion
 
-        #region base classes
+        #region Base classes
 
         internal class CollisionEvent
         {
