@@ -73,6 +73,15 @@ namespace Battle.Scripts.Ui
 
         private void SlingEnd(UiEvents.SlingshotEnd end)
         {
+            if (!_playerIsOn)
+            {
+                return;
+            }
+            var team = end.TeamTrackers.Find(x => x.TeamNumber == _teamNumber);
+            if (team == null || team.PlayerCount == 0)
+            {
+                return;
+            }
             _playerIsOn = false;
         }
     }
