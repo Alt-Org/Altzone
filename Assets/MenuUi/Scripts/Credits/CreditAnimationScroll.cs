@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,9 +5,8 @@ namespace MenuUi.Scripts.Credits
 {
     public class CreditAnimationScroll : MonoBehaviour
     {
-        public GameObject canvas;
-        bool _ScrollStop;
-        Vector3 _creditPlacement;
+        private bool _scrollStop;
+        private Vector3 _creditPlacement;
 
         private void Start()
         {
@@ -18,13 +15,13 @@ namespace MenuUi.Scripts.Credits
 
         private void Update()
         {
-            _ScrollStop = false;
+            _scrollStop = false;
 
             if (Application.isMobilePlatform || AppPlatform.IsSimulator)
             {
                 if (Touchscreen.current.press.isPressed)
                 {
-                    _ScrollStop = true;
+                    _scrollStop = true;
                 }
                 if (Touchscreen.current.press.wasPressedThisFrame)
                 {
@@ -35,7 +32,7 @@ namespace MenuUi.Scripts.Credits
             {
                 if (Mouse.current.leftButton.isPressed)
                 {
-                    _ScrollStop = true;
+                    _scrollStop = true;
                 }
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
@@ -47,15 +44,15 @@ namespace MenuUi.Scripts.Credits
 
         }
 
-        void StopScrolling()
+        private void StopScrolling()
         {
 
-            if (_ScrollStop == true)
+            if (_scrollStop == true)
             {
                 GetComponent<Animator>().enabled = false;
             }
 
-            if (_ScrollStop == false)
+            if (_scrollStop == false)
             {
                 GetComponent<Animator>().enabled = true;
 
