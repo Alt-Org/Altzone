@@ -11,10 +11,11 @@ namespace MenuUi.Scripts.Credits
     /// </remarks>
     public class CreditAnimationScroll : MonoBehaviour
     {
+        [SerializeField] private InputActionReference _uiClickButtonRef;
         [SerializeField] private Transform _scrollableCreditContent;
         [SerializeField] private Animator _animator;
 
-        private bool _isRestartAnimator;
+        private bool _isMouseHeldDown;
         private Vector3 _savedCreditContentPos;
 
         private void Start()
@@ -22,40 +23,40 @@ namespace MenuUi.Scripts.Credits
             _savedCreditContentPos = _scrollableCreditContent.position;
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            if (Application.isMobilePlatform || AppPlatform.IsSimulator)
+            _uiClickButtonRef.action.performed += OnActionPerformed;
+        }
+
+        private void OnDisable()
+        {
+            _uiClickButtonRef.action.performed -= OnActionPerformed;
+        }
+
+        private void OnDestroy()
+        {
+            OnDisable();
+        }
+
+        private void OnActionPerformed(InputAction.CallbackContext ctx)
+        {
+            var isButtonDown = ctx.ReadValue<float>() != 0;
+            Debug.Log($"{ctx.control} {(isButtonDown ? "down" : "up")}");
+            if (isButtonDown)
             {
-                if (Touchscreen.current.press.isPressed)
+                if (!_isMouseHeldDown)
                 {
-                    if (Touchscreen.current.press.wasPressedThisFrame)
-                    {
-                        _savedCreditContentPos = _scrollableCreditContent.position;
-                        _isRestartAnimator = true;
-                        _animator.enabled = false;
-                    }
-                    return;
+                    // Start mouse/touch down
+                    _isMouseHeldDown = true;
+                    _savedCreditContentPos = _scrollableCreditContent.position;
+                    _animator.enabled = false;
                 }
+                return;
             }
-            else
-            {
-                if (Mouse.current.leftButton.isPressed)
-                {
-                    if (Mouse.current.leftButton.wasPressedThisFrame)
-                    {
-                        _savedCreditContentPos = _scrollableCreditContent.position;
-                        _isRestartAnimator = true;
-                        _animator.enabled = false;
-                    }
-                    return;
-                }
-            }
-            if (_isRestartAnimator)
-            {
-                _scrollableCreditContent.position = _savedCreditContentPos;
-                _isRestartAnimator = false;
-                _animator.enabled = true;
-            }
+            // End mouse/touch down
+            _isMouseHeldDown = false;
+            _scrollableCreditContent.position = _savedCreditContentPos;
+            _animator.enabled = true;
         }
     }
 }

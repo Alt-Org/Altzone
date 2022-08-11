@@ -4204,7 +4204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -11.966, y: -3595}
+  m_AnchoredPosition: {x: -11.966, y: -3500}
   m_SizeDelta: {x: 549.78, y: 1639.711}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &601616044680138604
@@ -4353,6 +4353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652d0b2e1e687cf4997aa6a1ff7581ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiClickButtonRef: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018,
+    type: 3}
   _scrollableCreditContent: {fileID: 3960831737045806270}
   _animator: {fileID: 3609042908048463874}
 --- !u!1 &5728961565502880794
@@ -4822,7 +4824,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 44.866, y: 0.00036621094}
+  m_AnchoredPosition: {x: 44.866, y: 0}
   m_SizeDelta: {x: -44.866, y: 1468.754}
   m_Pivot: {x: 0, y: 1}
 --- !u!23 &7831575324120090644
