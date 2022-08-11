@@ -5,12 +5,15 @@ namespace MenuUi.Scripts.Credits
 {
     public class CreditAnimationScroll : MonoBehaviour
     {
+        [SerializeField] private Transform _creditContent;
+        [SerializeField] private Animator _animator;
+        
         private bool _scrollStop;
         private Vector3 _creditPlacement;
 
         private void Start()
         {
-            _creditPlacement = GameObject.Find("CreditContent").transform.position;
+            _creditPlacement = _creditContent.position;
         }
 
         private void Update()
@@ -25,7 +28,7 @@ namespace MenuUi.Scripts.Credits
                 }
                 if (Touchscreen.current.press.wasPressedThisFrame)
                 {
-                    _creditPlacement = GameObject.Find("CreditContent").transform.position;
+                    _creditPlacement = _creditContent.position;
                 }
             }
             else
@@ -36,7 +39,7 @@ namespace MenuUi.Scripts.Credits
                 }
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    _creditPlacement = GameObject.Find("CreditContent").transform.position;
+                    _creditPlacement = _creditContent.position;
                 }
             }
 
@@ -49,14 +52,14 @@ namespace MenuUi.Scripts.Credits
 
             if (_scrollStop == true)
             {
-                GetComponent<Animator>().enabled = false;
+                _animator.enabled = false;
             }
 
             if (_scrollStop == false)
             {
-                GetComponent<Animator>().enabled = true;
+                _animator.enabled = true;
 
-                GameObject.Find("CreditContent").transform.position = _creditPlacement;
+                _creditContent.position = _creditPlacement;
             }
         }
     }
