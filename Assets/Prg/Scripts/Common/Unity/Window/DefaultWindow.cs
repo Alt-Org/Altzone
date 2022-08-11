@@ -10,8 +10,11 @@ namespace Prg.Scripts.Common.Unity.Window
     /// </summary>
     public class DefaultWindow : MonoBehaviour
     {
-        [SerializeField] private WindowDef _window;
-        [SerializeField] private bool _findWindow;
+        private const string Tooltip1 = "First window to show after scene has been loaded";
+        private const string Tooltip2 = "Find the bottom-most window (Canvas) in the scene (for testing)";
+
+        [SerializeField, Tooltip(Tooltip1)] private WindowDef _window;
+        [SerializeField, Tooltip(Tooltip2)] private bool _findWindow;
 
         private void OnEnable()
         {
