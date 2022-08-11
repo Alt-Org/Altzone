@@ -3,63 +3,58 @@ using UnityEngine.InputSystem;
 
 namespace MenuUi.Scripts.Credits
 {
+    /// <summary>
+    /// Manager for animated scrollable content.
+    /// </summary>
+    /// <remarks>
+    /// When scrolling starts animation is stopped and restarted (where it was) when scrolling ends.
+    /// </remarks>
     public class CreditAnimationScroll : MonoBehaviour
     {
-        [SerializeField] private Transform _creditContent;
+        [SerializeField] private Transform _scrollableCreditContent;
         [SerializeField] private Animator _animator;
-        
-        private bool _scrollStop;
-        private Vector3 _creditPlacement;
+
+        private bool _isRestartAnimator;
+        private Vector3 _savedCreditContentPos;
 
         private void Start()
         {
-            _creditPlacement = _creditContent.position;
+            _savedCreditContentPos = _scrollableCreditContent.position;
         }
 
         private void Update()
         {
-            _scrollStop = false;
-
             if (Application.isMobilePlatform || AppPlatform.IsSimulator)
             {
                 if (Touchscreen.current.press.isPressed)
                 {
-                    _scrollStop = true;
-                }
-                if (Touchscreen.current.press.wasPressedThisFrame)
-                {
-                    _creditPlacement = _creditContent.position;
+                    if (Touchscreen.current.press.wasPressedThisFrame)
+                    {
+                        _savedCreditContentPos = _scrollableCreditContent.position;
+                        _isRestartAnimator = true;
+                        _animator.enabled = false;
+                    }
+                    return;
                 }
             }
             else
             {
                 if (Mouse.current.leftButton.isPressed)
                 {
-                    _scrollStop = true;
-                }
-                if (Mouse.current.leftButton.wasPressedThisFrame)
-                {
-                    _creditPlacement = _creditContent.position;
+                    if (Mouse.current.leftButton.wasPressedThisFrame)
+                    {
+                        _savedCreditContentPos = _scrollableCreditContent.position;
+                        _isRestartAnimator = true;
+                        _animator.enabled = false;
+                    }
+                    return;
                 }
             }
-
-            StopScrolling();
-
-        }
-
-        private void StopScrolling()
-        {
-
-            if (_scrollStop == true)
+            if (_isRestartAnimator)
             {
-                _animator.enabled = false;
-            }
-
-            if (_scrollStop == false)
-            {
+                _scrollableCreditContent.position = _savedCreditContentPos;
+                _isRestartAnimator = false;
                 _animator.enabled = true;
-
-                _creditContent.position = _creditPlacement;
             }
         }
     }
