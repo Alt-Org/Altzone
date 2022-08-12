@@ -2370,8 +2370,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587603bef56d42238af329e97977a119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxScrollSpeed: 100
-  _scrollAcceleration: 0.5
+  _maxScrollSpeed: 150
+  _accelerationTime: 2
+  _accelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _uiClickButtonRef: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
   _scrollRect: {fileID: 794420938992695048}
@@ -2381,6 +2405,7 @@ MonoBehaviour:
   _restartPosition: {fileID: 6612781928648256829}
   _isMouseHeldDown: 0
   _isOverlapping: 0
+  _scrollAccelerationDuration: 0
   _scrollSpeed: 100
   _scrollLimiterRect:
     serializedVersion: 2

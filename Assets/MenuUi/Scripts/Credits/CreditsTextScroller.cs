@@ -11,10 +11,13 @@ namespace MenuUi.Scripts.Credits
     {
         private static readonly Vector3[] WorldCorners = new Vector3[4];
 
-        [Header("Settings"), SerializeField] private float _maxScrollSpeed = 100f;
-        [SerializeField] private float _scrollAcceleration = 100f / 60f;
-        [SerializeField] private InputActionReference _uiClickButtonRef;
-        [SerializeField] private ScrollRect _scrollRect;
+        [Header("Scrolling Settings"), SerializeField] private float _maxScrollSpeed;
+        [SerializeField] private float _accelerationTime;
+        [SerializeField] private AnimationCurve _accelerationCurve;
+
+        [Header("Input Settings"), SerializeField] private InputActionReference _uiClickButtonRef;
+
+        [Header("UI Settings"), SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private RectTransform _scrollLimiter;
         [SerializeField] private RectTransform _contentRoot;
         [SerializeField] private RectTransform _scrollableCreditText;
@@ -22,6 +25,7 @@ namespace MenuUi.Scripts.Credits
 
         [Header("Live Data"), SerializeField] private bool _isMouseHeldDown;
         [SerializeField] private bool _isOverlapping;
+        [SerializeField] private float _scrollAccelerationDuration;
         [SerializeField] private float _scrollSpeed;
         [SerializeField] private Rect _scrollLimiterRect;
         [SerializeField] private Rect _scrollableCreditTextRect;
@@ -47,6 +51,7 @@ namespace MenuUi.Scripts.Credits
         {
             GetRect(_scrollLimiter, ref _scrollLimiterRect);
             _scrollSpeed = 0;
+            _scrollAccelerationDuration = 0;
         }
 
         private void Update()
@@ -60,9 +65,11 @@ namespace MenuUi.Scripts.Credits
                     // User override, no scrolling!
                     return;
                 }
-                if (_scrollSpeed < _maxScrollSpeed)
+                if (_scrollAccelerationDuration < _accelerationTime)
                 {
-                    _scrollSpeed = Mathf.Min(_scrollSpeed + _scrollAcceleration, _maxScrollSpeed);
+                    _scrollAccelerationDuration += Time.deltaTime;
+                    var time = _scrollAccelerationDuration / _accelerationTime;
+                    _scrollSpeed = GetSpeedFromTime(_accelerationCurve, 0, _maxScrollSpeed, time);
                 }
                 var deltaY = _scrollSpeed * Time.deltaTime;
                 var position = _contentRoot.position;
@@ -72,6 +79,7 @@ namespace MenuUi.Scripts.Credits
             else
             {
                 _scrollSpeed = 0;
+                _scrollAccelerationDuration = 0;
                 _scrollRect.StopMovement();
                 _contentRoot.position = _restartPosition.position;
             }
@@ -97,6 +105,7 @@ namespace MenuUi.Scripts.Credits
         {
             _isMouseHeldDown = true;
             _scrollSpeed = 0;
+            _scrollAccelerationDuration = 0;
         }
 
         private void RestartScrolling()
@@ -114,6 +123,12 @@ namespace MenuUi.Scripts.Credits
             rect.y = WorldCorners[0].y;
             rect.width = WorldCorners[2].x - WorldCorners[0].x;
             rect.height = WorldCorners[2].y - WorldCorners[0].y;
+        }
+
+        private static float GetSpeedFromTime(AnimationCurve curve, float minSpeed, float maxSpeed, float timeFraction)
+        {
+            var delta = maxSpeed - minSpeed;
+            return minSpeed + curve.Evaluate(timeFraction) * delta;
         }
     }
 }
