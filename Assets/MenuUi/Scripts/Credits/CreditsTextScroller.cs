@@ -1,6 +1,6 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Credits
 {
@@ -11,9 +11,10 @@ namespace MenuUi.Scripts.Credits
     {
         private static readonly Vector3[] WorldCorners = new Vector3[4];
 
-        [Header("Settings"), SerializeField] private float _scrollSpeed = 100f;
+        [Header("Settings"), SerializeField] private float _maxScrollSpeed = 100f;
         [SerializeField] private float _scrollAcceleration = 100f / 60f;
         [SerializeField] private InputActionReference _uiClickButtonRef;
+        [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private RectTransform _scrollLimiter;
         [SerializeField] private RectTransform _contentRoot;
         [SerializeField] private RectTransform _scrollableCreditText;
@@ -21,19 +22,14 @@ namespace MenuUi.Scripts.Credits
 
         [Header("Live Data"), SerializeField] private bool _isMouseHeldDown;
         [SerializeField] private bool _isOverlapping;
+        [SerializeField] private float _scrollSpeed;
         [SerializeField] private Rect _scrollLimiterRect;
         [SerializeField] private Rect _scrollableCreditTextRect;
-
-        private float _maxScrollSpeed;
-        private Coroutine _scrollerCoroutine;
 
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            _maxScrollSpeed = _scrollSpeed;
             _uiClickButtonRef.action.performed += OnClickActionPerformed;
-
-            _scrollerCoroutine = StartCoroutine(ScrollerCoroutine());
         }
 
         private void OnDisable()
@@ -45,6 +41,40 @@ namespace MenuUi.Scripts.Credits
         private void OnDestroy()
         {
             OnDisable();
+        }
+
+        private void Start()
+        {
+            GetRect(_scrollLimiter, ref _scrollLimiterRect);
+            _scrollSpeed = 0;
+        }
+
+        private void Update()
+        {
+            GetRect(_scrollableCreditText, ref _scrollableCreditTextRect);
+            _isOverlapping = _scrollableCreditTextRect.Overlaps(_scrollLimiterRect);
+            if (_isOverlapping)
+            {
+                if (_isMouseHeldDown)
+                {
+                    // User override, no scrolling!
+                    return;
+                }
+                if (_scrollSpeed < _maxScrollSpeed)
+                {
+                    _scrollSpeed = Mathf.Min(_scrollSpeed + _scrollAcceleration, _maxScrollSpeed);
+                }
+                var deltaY = _scrollSpeed * Time.deltaTime;
+                var position = _contentRoot.position;
+                position.y += deltaY;
+                _contentRoot.position = position;
+            }
+            else
+            {
+                _scrollSpeed = 0;
+                _scrollRect.StopMovement();
+                _contentRoot.position = _restartPosition.position;
+            }
         }
 
         private void OnClickActionPerformed(InputAction.CallbackContext ctx)
@@ -66,45 +96,12 @@ namespace MenuUi.Scripts.Credits
         private void StopScrolling()
         {
             _isMouseHeldDown = true;
-            if (_scrollerCoroutine != null)
-            {
-                StopCoroutine(_scrollerCoroutine);
-            }
+            _scrollSpeed = 0;
         }
 
         private void RestartScrolling()
         {
             _isMouseHeldDown = false;
-            _scrollerCoroutine = StartCoroutine(ScrollerCoroutine());
-        }
-
-        private IEnumerator ScrollerCoroutine()
-        {
-            yield return null;
-            GetRect(_scrollLimiter, ref _scrollLimiterRect);
-            _scrollSpeed = 0;
-            while (enabled)
-            {
-                GetRect(_scrollableCreditText, ref _scrollableCreditTextRect);
-                _isOverlapping = _scrollableCreditTextRect.Overlaps(_scrollLimiterRect);
-                if (_isOverlapping)
-                {
-                    var deltaY = _scrollSpeed * Time.deltaTime;
-                    if (_scrollSpeed < _maxScrollSpeed)
-                    {
-                        _scrollSpeed = Mathf.Min(_scrollSpeed + _scrollAcceleration, _maxScrollSpeed);
-                    }
-                    var position = _contentRoot.position;
-                    position.y += deltaY;
-                    _contentRoot.position = position;
-                }
-                else
-                {
-                    _scrollSpeed = 0;
-                    _contentRoot.position = _restartPosition.position;
-                }
-                yield return null;
-            }
         }
 
         /// <summary>

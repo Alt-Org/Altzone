@@ -2370,7 +2370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587603bef56d42238af329e97977a119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollSpeed: 100
+  _maxScrollSpeed: 100
   _scrollAcceleration: 0.5
   _uiClickButtonRef: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
@@ -2381,7 +2381,8 @@ MonoBehaviour:
   _restartPosition: {fileID: 6612781928648256829}
   _isMouseHeldDown: 0
   _isOverlapping: 0
-  _contentRootRect:
+  _scrollSpeed: 100
+  _scrollLimiterRect:
     serializedVersion: 2
     x: 0
     y: 0
