@@ -11,7 +11,7 @@ namespace Prg.Scripts.Common.Unity.Window
     public class DefaultWindow : MonoBehaviour
     {
         private const string Tooltip1 = "First window to show after scene has been loaded";
-        private const string Tooltip2 = "Find the bottom-most window (Canvas) in the scene (for testing)";
+        private const string Tooltip2 = "Automatically find the bottom-most window (Canvas) in the scene (for testing)";
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _window;
         [SerializeField, Tooltip(Tooltip2)] private bool _findWindow;
@@ -51,8 +51,13 @@ namespace Prg.Scripts.Common.Unity.Window
                 return null;
             }
 
+            var canvas = FindLastCanvas();
+            if (canvas == null)
+            {
+                return;
+            }
             _window = ScriptableObject.CreateInstance<WindowDef>();
-            _window.SetWindowPrefab(FindLastCanvas());
+            _window.SetWindowPrefab(canvas);
         }
     }
 }
