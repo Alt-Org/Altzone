@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Credits
 {
     /// <summary>
-    /// Utility script to manage scrolling text in UNITY Ui component <c>ScrollRect</c>.
+    /// Utility script to manage scrolling text in UNITY Ui component <c>ScrollRect</c>.<br />
+    /// WIKI: https://github.com/Alt-Org/Altzone/wiki/Credits-Prefab
     /// </summary>
     public class CreditsTextScroller : MonoBehaviour
     {
@@ -14,6 +16,8 @@ namespace MenuUi.Scripts.Credits
         [Header("Scrolling Settings"), SerializeField] private float _maxScrollSpeed;
         [SerializeField] private float _accelerationTime;
         [SerializeField] private AnimationCurve _accelerationCurve;
+        [SerializeField] private bool _isStopAfterRestart;
+        [SerializeField] private bool _isStopAfterClickDown;
 
         [Header("Input Settings"), SerializeField] private InputActionReference _uiClickButtonRef;
 
@@ -34,6 +38,10 @@ namespace MenuUi.Scripts.Credits
         {
             Debug.Log($"{name}");
             _uiClickButtonRef.action.performed += OnClickActionPerformed;
+            // Enable Scroll View mask if it has been disable in Editor for easier editing
+            var masks = _scrollRect.gameObject.GetComponentsInChildren<Mask>(true);
+            Assert.IsTrue(masks.Length == 1, "masks.Length == 1");
+            masks[0].enabled = true;
         }
 
         private void OnDisable()
@@ -78,8 +86,11 @@ namespace MenuUi.Scripts.Credits
             }
             else
             {
-                _scrollSpeed = 0;
-                _scrollAccelerationDuration = 0;
+                if (_isStopAfterRestart)
+                {
+                    _scrollSpeed = 0;
+                    _scrollAccelerationDuration = 0;
+                }
                 _scrollRect.StopMovement();
                 _contentRoot.position = _restartPosition.position;
             }
@@ -104,8 +115,11 @@ namespace MenuUi.Scripts.Credits
         private void StopScrolling()
         {
             _isMouseHeldDown = true;
-            _scrollSpeed = 0;
-            _scrollAccelerationDuration = 0;
+            if (_isStopAfterClickDown)
+            {
+                _scrollSpeed = 0;
+                _scrollAccelerationDuration = 0;
+            }
         }
 
         private void RestartScrolling()
