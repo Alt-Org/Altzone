@@ -26,6 +26,11 @@ namespace MenuUi.Scripts.Settings
         public void SetMasterLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerMasterVolume", sliderValue);
+            // This would be the proper method if we used Unity's Audio system
+            // and the same would be for the other methods
+            /*
+            AudioMixer.SetFloat("PlayerMasterVolume", Mathf.Log10(sliderValue) * 20)
+            */
         }
         public void SetMenuSFXLevel(float sliderValue)
         {
