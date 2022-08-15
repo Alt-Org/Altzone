@@ -13,6 +13,8 @@ namespace Altzone.Scripts.Battle
 {
     public static class PhotonBattle
     {
+        #region Custom property names and values
+
         public const string PlayerPositionKey = "pp";
         public const string PlayerCountKey = "pc";
         public const string PlayerMainSkillKey = "mk";
@@ -53,6 +55,48 @@ namespace Altzone.Scripts.Battle
         public const int WinTypeDraw = 3;
 
         private const string NoPlayerName = "noname";
+
+        #endregion
+
+        #region Common datatypes
+
+        /// <summary>
+        /// Battle room score data.
+        /// </summary>
+        /// <remarks>
+        /// All fields should be zero or positive for valid gameplay result.
+        /// </remarks>
+        public class RoomScore
+        {
+            public readonly int WinType;
+            public readonly int WinningTeam;
+            public readonly int BlueScore;
+            public readonly int RedScore;
+
+            /// <summary>
+            /// Check that all fields has received a value from network before accessing score data.
+            /// </summary>
+            /// <remarks>
+            /// Setting custom properties for the room must set all fields with proper (>= 0) values.
+            /// </remarks>
+            public bool IsValid => !(WinType < 0 || WinningTeam < 0 || BlueScore < 0 || RedScore < 0);
+            
+            public RoomScore(int winType, int winningTeam, int blueScore, int redScore)
+            {
+                WinType = winType;
+                WinningTeam = winningTeam;
+                BlueScore = blueScore;
+                RedScore = redScore;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(WinType)}: {WinType}, {nameof(WinningTeam)}: {WinningTeam}, {nameof(BlueScore)}: {BlueScore}, {nameof(RedScore)}: {RedScore}";
+            }
+        }
+
+        #endregion
+        #region Player custom properties etc.
 
         public static bool IsRealPlayer(Player player)
         {
@@ -221,6 +265,10 @@ namespace Altzone.Scripts.Battle
             return true;
         }
 
+        #endregion
+
+        #region Room custom properties etc.
+
         /// <summary>
         /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
         /// </summary>
@@ -236,6 +284,31 @@ namespace Altzone.Scripts.Battle
             return character;
         }
 
+        public static int GetPlayerCountForRoom()
+        {
+            if (!PhotonNetwork.InRoom)
+            {
+                return 0;
+            }
+            var room = PhotonNetwork.CurrentRoom;
+            var value = room.GetCustomProperty(PlayerCountKey, 0);
+            return value;
+        }
+
+        public static RoomScore GetRoomScore()
+        {
+            if (!PhotonNetwork.InRoom)
+            {
+                return new RoomScore(WinTypeNone, NoTeamValue, 0, 0);
+            }
+            var room = PhotonNetwork.CurrentRoom;
+            var winType = room.GetCustomProperty(TeamWinTypeKey, -1);
+            var winnerTeam = room.GetCustomProperty(TeamWinKey, -1);
+            var blueScore = room.GetCustomProperty(TeamBlueScoreKey, -1);
+            var redScore = room.GetCustomProperty(TeamRedScoreKey, -1);
+            return new RoomScore(winType, winnerTeam, blueScore, redScore);
+        }
+        
         public static void SetRoomScores(Room room, int winType, int winningTeam, int blueScore, int redScore)
         {
             Assert.IsTrue(winType >= 0 && winType <= 3, "winType >= 0 && winType <= 3");
@@ -283,6 +356,10 @@ namespace Altzone.Scripts.Battle
             room.SetCustomProperties(props);
         }
 
+        #endregion
+
+        #region Debug and test utilities
+
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void SetDebugRoomProperties(Room room, int playerCount, string teamBlueName = "Blue", string teamRedName = "Red")
         {
@@ -325,5 +402,7 @@ namespace Altzone.Scripts.Battle
             });
             Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} skill {playerMainSkill}");
         }
+
+        #endregion
     }
 }

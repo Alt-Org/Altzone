@@ -16,9 +16,9 @@ namespace Prg.Scripts.Common.Unity.Input
     /// </remarks>
     public class TouchHandler : BaseHandler
     {
-        [Header("Debug"),SerializeField]  private int _touchCount;
-        [SerializeField] private Vector2 _firstPanPosition;
-        [SerializeField] private Vector2 _lastPanPosition;
+        [Header("Live Data"),SerializeField]  private int _touchCount;
+        [SerializeField] private Vector2 _curPanPosition;
+        [SerializeField] private Vector2 _prevPanPosition;
         [SerializeField] private int _panFingerId;
         [SerializeField] private bool _isFingerDown;
         [SerializeField] private bool _zoomActive;
@@ -59,20 +59,27 @@ namespace Prg.Scripts.Common.Unity.Input
                             return;
                         }
                         _isFingerDown = true;
-                        _firstPanPosition = touch.screenPosition;
+                        _curPanPosition = touch.screenPosition;
                         _touchCount = 1;
-                        SendMouseDown(_firstPanPosition, _touchCount);
+                        SendMouseDown(_curPanPosition, _touchCount);
+                        _prevPanPosition = _curPanPosition;
                         _panFingerId = touch.touchId;
                     }
                     else if (touch.touchId == _panFingerId && touch.phase == TouchPhase.Moved)
                     {
                         // Continue touch down (panning)
-                        _lastPanPosition = touch.screenPosition;
+                        _curPanPosition = touch.screenPosition;
                         _touchCount += 1;
-                        SendMouseDown(_lastPanPosition, _touchCount);
+                        SendMouseDown(_curPanPosition, _touchCount);
                         if (_isPan)
                         {
-                            PanCamera((_firstPanPosition - _lastPanPosition) * _panSpeed);
+                            const float minDelta = 0.00001f;
+                            var delta = _curPanPosition - _prevPanPosition;
+                            if (Mathf.Abs(delta.x) > minDelta || Mathf.Abs(delta.y) > minDelta)
+                            {
+                                PanCamera(delta * _panSpeed);
+                                _prevPanPosition = _curPanPosition;
+                            }
                         }
                     }
                     break;
@@ -110,7 +117,7 @@ namespace Prg.Scripts.Common.Unity.Input
                     {
                         // End touch down, report last touch position
                         _isFingerDown = false;
-                        SendMouseUp(_touchCount == 1 ? _firstPanPosition : _lastPanPosition);
+                        SendMouseUp(_prevPanPosition);
                     }
                     break;
             }

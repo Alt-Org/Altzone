@@ -1,4 +1,5 @@
-﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+﻿using System.Diagnostics;
+using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -10,14 +11,17 @@ namespace Prg.Scripts.Common.Unity.Window
     /// </summary>
     public class DefaultWindow : MonoBehaviour
     {
-        [SerializeField] private WindowDef _window;
-        [SerializeField] private bool _findWindow;
+        private const string Tooltip1 = "First window to show after scene has been loaded";
+        private const string Tooltip2 = "Automatically find the bottom-most active window (Canvas) in the scene (for testing)";
+
+        [SerializeField, Tooltip(Tooltip1)] private WindowDef _window;
+        [SerializeField, Tooltip(Tooltip2)] private bool _findWindowForEditor;
 
         private void OnEnable()
         {
-            if (_findWindow)
+            if (_findWindowForEditor)
             {
-                FindWindow();
+                FindWindowForEditor();
             }
             Debug.Log($"{_window}");
             var windowManager = WindowManager.Get();
@@ -27,9 +31,10 @@ namespace Prg.Scripts.Common.Unity.Window
         }
 
         /// <summary>
-        /// Create new window for the last <c>Canvas</c> found in current scene.
+        /// Create new <c>WindowDef</c> for the last active <c>Canvas</c> found in current scene.
         /// </summary>
-        private void FindWindow()
+        [Conditional("UNITY_EDITOR")]
+        private void FindWindowForEditor()
         {
             GameObject FindLastCanvas()
             {
@@ -39,7 +44,8 @@ namespace Prg.Scripts.Common.Unity.Window
                 while (--index >= 0)
                 {
                     var child = rootGameObjects[index];
-                    if (child.GetComponentInChildren<Canvas>() != null)
+                    var canvas = child.GetComponentInChildren<Canvas>();
+                    if (canvas != null && canvas.isActiveAndEnabled)
                     {
                         Debug.Log($"found {child.GetFullPath()}");
                         return child;
@@ -48,8 +54,13 @@ namespace Prg.Scripts.Common.Unity.Window
                 return null;
             }
 
+            var canvas = FindLastCanvas();
+            if (canvas == null)
+            {
+                return;
+            }
             _window = ScriptableObject.CreateInstance<WindowDef>();
-            _window.SetWindowPrefab(FindLastCanvas());
+            _window.SetWindowPrefab(canvas);
         }
     }
 }

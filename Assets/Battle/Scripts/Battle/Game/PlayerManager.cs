@@ -190,6 +190,7 @@ namespace Battle.Scripts.Battle.Game
         private TeamColliderPlayAreaTracker _teamRedPlayAreaTracker;
 
         private bool _isApplicationQuitting;
+        private bool _isDisableTeamForfeit;
 
         private void Awake()
         {
@@ -200,6 +201,7 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
+            _isDisableTeamForfeit = features._isDisableTeamForfeit;
             SetPlayAreaTracking();
         }
 
@@ -377,7 +379,7 @@ namespace Battle.Scripts.Battle.Game
             }
             var realPlayers = PhotonBattle.CountRealPlayers();
             Assert.IsTrue(realPlayers > 0, "realPlayers > 0");
-            var roomPlayers = PhotonWrapper.GetRoomProperty(PhotonBattle.PlayerCountKey, int.MaxValue);
+            var roomPlayers = PhotonBattle.GetPlayerCountForRoom();
             if (realPlayers < roomPlayers)
             {
                 Debug.Log($"WAIT more realPlayers {realPlayers} : roomPlayers {roomPlayers}");
@@ -453,13 +455,12 @@ namespace Battle.Scripts.Battle.Game
 
         private void TeamForfeitAndGameOver(Room room)
         {
-            var gameScoreManager = Context.GetGameScoreManager;
-            if (gameScoreManager == null)
+            if (_isDisableTeamForfeit)
             {
                 return;
             }
-            var isDisableTeamForfeit = RuntimeGameConfig.Get().Features._isDisableTeamForfeit;
-            if (isDisableTeamForfeit)
+            var gameScoreManager = Context.GetGameScoreManager;
+            if (gameScoreManager == null)
             {
                 return;
             }

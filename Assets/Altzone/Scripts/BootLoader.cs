@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
@@ -46,7 +47,7 @@ namespace Altzone.Scripts
         {
             // Google Play Families compliance:
             // - mixed indicates that the app is directed at mixed audiences (including children).
-            var privacyValue = PlayerPrefs.GetString("consent.families.privacy.mode", "mixed");
+            var privacyValue = PlayerPrefs.GetString(PlayerPrefKeys.ConsentFamiliesPrivacyMode, "mixed");
             var metaData = new MetaData("privacy");
             metaData.Set("mode", privacyValue);
             Advertisement.SetMetaData(metaData);

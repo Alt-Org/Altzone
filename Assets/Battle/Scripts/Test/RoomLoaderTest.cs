@@ -42,12 +42,12 @@ namespace Battle.Scripts.Test
                     // JoinRandomRoom -> OnJoinedRoom
                     PhotonNetwork.JoinRandomRoom();
                 }
-                else if (PhotonNetwork.NetworkClientState == ClientState.PeerCreated || PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+                else if (PhotonWrapper.CanConnect)
                 {
                     // Connect -> ConnectedToMasterServer
                     PhotonLobby.Connect(PhotonNetwork.NickName);
                 }
-                else if (PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
+                else if (PhotonWrapper.CanJoinLobby)
                 {
                     // OnJoinedLobby -> JoinOrCreateRoom -> OnJoinedRoom
                     PhotonLobby.JoinLobby();

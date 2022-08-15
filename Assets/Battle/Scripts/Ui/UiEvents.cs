@@ -94,7 +94,7 @@ namespace Battle.Scripts.Ui
 
             public override string ToString()
             {
-                return $"{nameof(HitType)}: {HitType}";
+                return $"{base.ToString()} {nameof(HitType)}: {HitType}";
             }
         }
 
@@ -156,11 +156,18 @@ namespace Battle.Scripts.Ui
         {
             public ITeamSlingshotTracker StartingTracker { get; }
             public ITeamSlingshotTracker OtherTracker { get; }
+            public List<ITeamSlingshotTracker> TeamTrackers { get; }
 
             public SlingshotEnd(ITeamSlingshotTracker startingTracker, ITeamSlingshotTracker otherTracker)
             {
                 StartingTracker = startingTracker;
                 OtherTracker = otherTracker;
+                var trackers = new List<ITeamSlingshotTracker> { startingTracker };
+                if (otherTracker != null)
+                {
+                    trackers.Add(otherTracker);
+                }
+                TeamTrackers = trackers;
             }
 
             public override string ToString()
@@ -171,7 +178,7 @@ namespace Battle.Scripts.Ui
 
         #endregion
 
-        #region base classes
+        #region Base classes
 
         internal class CollisionEvent
         {

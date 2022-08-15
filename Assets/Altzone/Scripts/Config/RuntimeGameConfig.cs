@@ -235,22 +235,29 @@ namespace Altzone.Scripts.Config
 
     public class RuntimeGameConfig : MonoBehaviour, IRuntimeGameConfig
     {
-        private const string IsFirstTimePlayingKey = "PlayerData.IsFirstTimePlaying";
-
-        public static IRuntimeGameConfig Get()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
         {
-            var instance = FindObjectOfType<RuntimeGameConfig>();
-            if (instance == null)
-            {
-                instance = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
-                LoadGameConfig(instance);
-            }
-            return instance;
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _runtimeGameConfig = null;
         }
 
-        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(IsFirstTimePlayingKey, 1) == 1;
+        private static RuntimeGameConfig _runtimeGameConfig;
+        
+        public static IRuntimeGameConfig Get()
+        {
+            if (_runtimeGameConfig == null)
+            {
+                _runtimeGameConfig = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
+                LoadGameConfig(_runtimeGameConfig);
+                Debug.Log($"{_runtimeGameConfig.name}");
+            }
+            return _runtimeGameConfig;
+        }
 
-        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(IsFirstTimePlayingKey, 0);
+        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
+
+        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, 0);
 
 #if UNITY_EDITOR
         /// <summary>
@@ -265,6 +272,16 @@ namespace Altzone.Scripts.Config
         [SerializeField] private GamePrefabs _permanentPrefabs;
         [SerializeField] private PlayerDataCache _playerDataCache;
         [SerializeField] private GameInput _gameInput;
+
+        private void Awake()
+        {
+            Debug.Log($"{name}");
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log($"{name}");
+        }
 
         /// <summary>
         /// Game features that can be toggled on and off.

@@ -64,15 +64,6 @@ namespace Battle.Scripts.Battle.Ball
             var otherGameObject = collision.gameObject;
             var layer = otherGameObject.layer;
             var colliderMask = 1 << layer;
-            if (_headMaskValue == (_headMaskValue | colliderMask))
-            {
-                if (!otherGameObject.CompareTag(Tags.Untagged))
-                {
-                    _scoreManager.OnHeadCollision(collision);
-                    _ballCollision.OnHeadCollision(collision);
-                }
-                return;
-            }
             if (_wallMaskValue == (_wallMaskValue | colliderMask))
             {
                 if (!otherGameObject.CompareTag(Tags.Untagged))
@@ -86,9 +77,18 @@ namespace Battle.Scripts.Battle.Ball
                 _ballCollision.OnBrickCollision(collision);
                 return;
             }
+            if (_headMaskValue == (_headMaskValue | colliderMask))
+            {
+                if (!otherGameObject.CompareTag(Tags.Untagged))
+                {
+                    _scoreManager.OnHeadCollision(collision);
+                    _ballCollision.OnHeadCollision(collision);
+                }
+                return;
+            }
             if (_ignoreMaskValue == (_ignoreMaskValue | colliderMask))
             {
-                // We ignore some collisions because they are handled by the other and we do not want to log them here.
+                // We ignore some collisions because they are handled by the others and we do not want to log them here.
                 return;
             }
             Debug.Log($"UNHANDLED {name} <- {otherGameObject.name} layer {layer} {LayerMask.LayerToName(layer)}");

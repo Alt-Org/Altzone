@@ -12,28 +12,40 @@ namespace Altzone.Scripts.Service.Audio
     /// </summary>
     public class FmodAudioManager : MonoBehaviour, IAudioManager
     {
+        private const string MasterChannelGroupName = "Master";
+        private const string MenuEffectsChannelGroupName = "MenuEffects";
+        private const string GameEffectsChannelGroupName = "GameEffects";
+        private const string GameMusicChannelGroupName = "GameMusic";
+
+        private static int _maxChannelGroupNameLen;
+
+        private ChannelGroup _master;
+        private ChannelGroup _menuEffects;
+        private ChannelGroup _gameEffects;
+        private ChannelGroup _gameMusic;
+
         public float MasterVolume
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => GetChannelGroupVolume(_master);
+            set => SetChannelGroupVolume(_master, value);
         }
 
         public float MenuEffectsVolume
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => GetChannelGroupVolume(_menuEffects);
+            set => SetChannelGroupVolume(_menuEffects, value);
         }
 
         public float GameEffectsVolume
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => GetChannelGroupVolume(_gameEffects);
+            set => SetChannelGroupVolume(_gameEffects, value);
         }
 
         public float GameMusicVolume
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => GetChannelGroupVolume(_gameEffects);
+            set => SetChannelGroupVolume(_gameEffects, value);
         }
 
         private void Awake()
@@ -41,14 +53,58 @@ namespace Altzone.Scripts.Service.Audio
             var result = RuntimeManager.CoreSystem.getVersion(out var version);
             Assert.AreEqual(RESULT.OK, result);
             Assert.IsTrue(RuntimeManager.IsInitialized, "FMODUnity.RuntimeManager.IsInitialized");
+
+            var features = RuntimeGameConfig.Get().Features;
+            var isMuted = features._isMuteAllSounds;
+            RuntimeManager.MuteAllEvents(isMuted);
+
             var verMajor = version >> 16;
             var verMinor = (version >> 8) & 0xF;
             var verDev = version & 0xF;
-            var features = RuntimeGameConfig.Get().Features;
-            var isMuted = features._isMuteAllSounds;
-            Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00} mute {isMuted}");
+            Debug.Log($"{name} FMOD ver {verMajor}.{verMinor:00}.{verDev:00} mute {RuntimeManager.IsMuted}");
 
-            RuntimeManager.MuteAllEvents(isMuted);
+            _master = CreateChannelGroup(MasterChannelGroupName, ref _maxChannelGroupNameLen);
+            _menuEffects = CreateChannelGroup(MenuEffectsChannelGroupName, ref _maxChannelGroupNameLen);
+            _gameEffects = CreateChannelGroup(GameEffectsChannelGroupName, ref _maxChannelGroupNameLen);
+            _gameMusic = CreateChannelGroup(GameMusicChannelGroupName, ref _maxChannelGroupNameLen);
+        }
+
+        private static ChannelGroup CreateChannelGroup(string name, ref int maxNameLen)
+        {
+            var result = RuntimeManager.CoreSystem.createChannelGroup(name, out var channelGroup);
+            if (result != RESULT.OK)
+            {
+                throw new UnityException($"Unable to create ChannelGroup {name}: {result}");
+            }
+            if (maxNameLen < name.Length)
+            {
+                maxNameLen = name.Length;
+            }
+            return channelGroup;
+        }
+
+        private static float GetChannelGroupVolume(ChannelGroup channelGroup)
+        {
+            var result = channelGroup.getVolume(out var volume);
+            if (result != RESULT.OK)
+            {
+                Debug.LogWarning(channelGroup.getName(out var channelGroupName, _maxChannelGroupNameLen) == RESULT.OK
+                    ? $"Failed to get volume for channel {channelGroupName}: {result}"
+                    : $"Failed to get volume for channel ???: {result}");
+                return 0;
+            }
+            return volume;
+        }
+
+        private static void SetChannelGroupVolume(ChannelGroup channelGroup, float value)
+        {
+            var result = channelGroup.setVolume(value);
+            if (result != RESULT.OK)
+            {
+                Debug.LogWarning(channelGroup.getName(out var channelGroupName, _maxChannelGroupNameLen) == RESULT.OK
+                    ? $"Failed to set volume {value} for channel {channelGroupName}: {result}"
+                    : $"Failed to set volume {value} for channel ???: {result}");
+            }
         }
     }
 }
