@@ -16,7 +16,7 @@ public class Field_Script : MonoBehaviour
     public void Draw(Hexa_Struct[,] state)
     {
         int width = state.GetLength(0);
-        int height = state.GetLength(1);
+        int height = state.GetLength(1);//Must be 1
 
         for(int x = 0; x < width; x++)
         {

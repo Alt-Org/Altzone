@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 488779033}
   m_Layer: 0
   m_Name: RaidCamera
-  m_TagString: Untagged
+  m_TagString: RaidCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -260,7 +260,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -537,12 +537,12 @@ MonoBehaviour:
   tileUnrevealed: {fileID: 11400000, guid: 2568dcf717621a245be85372bb7c32d2, type: 2}
   tileBomb: {fileID: 11400000, guid: 395396b50265cf74297ac49ed805c50c, type: 2}
   tileNeutral: {fileID: 11400000, guid: 56c41c4a14de5084aa781d106f051139, type: 2}
-  tileNumber1: {fileID: 11400000, guid: a0754451f2a65c344b89b28d81ccdd54, type: 2}
-  tileNumber2: {fileID: 11400000, guid: bb38882978d60324cbd34ba7e8e9b25d, type: 2}
-  tileNumber3: {fileID: 11400000, guid: 835b8721416023b439c729fcc282a30e, type: 2}
-  tileNumber4: {fileID: 11400000, guid: 5cbe84d720e15b1478f77193b03bc198, type: 2}
-  tileNumber5: {fileID: 11400000, guid: b56fb49b3295cda49b098ab6ef3e63b5, type: 2}
-  tileNumber6: {fileID: 11400000, guid: d512962ba2f4d4e4e80286476b8e4c0e, type: 2}
+  tileNumber1: {fileID: 11400000, guid: 83070e12f59e17c479c4acbabb889275, type: 2}
+  tileNumber2: {fileID: 11400000, guid: 4d4f7c9570ae3014589a254f26f460cc, type: 2}
+  tileNumber3: {fileID: 11400000, guid: 66149cb17bc33d4448124404bb52e9d7, type: 2}
+  tileNumber4: {fileID: 11400000, guid: c023347d5357105429d28301eb29b42b, type: 2}
+  tileNumber5: {fileID: 11400000, guid: 96094fa066b1f9a468364458b23980fd, type: 2}
+  tileNumber6: {fileID: 11400000, guid: d2d935aa81718b44fa117d041cda45f1, type: 2}
   tileLootTest: {fileID: 11400000, guid: 705580f9c777ed0459a01579291beda5, type: 2}
   tileFlag: {fileID: 11400000, guid: 3d7ae65dfcfffb848b86800d6a475121, type: 2}
   tileDetonated: {fileID: 11400000, guid: cfbb1c7f4a8dc734e94f6cce4387d1b2, type: 2}
@@ -769,7 +769,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 6.551107
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -793,7 +793,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1177825623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1353,7 +1353,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2020619277}
   m_Enabled: 1
-  m_CellSize: {x: 1, y: 1, z: 1}
+  m_CellSize: {x: 1, y: 1, z: 0}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 1
   m_CellSwizzle: 2
@@ -1385,12 +1385,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc21c185e029934da97a8e29590485b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minefieldWidth: 10
-  minefieldHeight: 10
-  numberOfBombs: 1
-  numberOfTestLoot: 20
+  minefieldWidth: 12
+  minefieldHeight: 12
+  numberOfBombs: 10
+  numberOfTestLoot: 0
   lootCollected: 0
-  maxLootCondition: 5
-  showBombs: 0
+  maxLootCondition: 20
+  showBombs: 1
   showHexas: 0
   showTestLoot: 0

@@ -3,20 +3,22 @@ using UnityEngine.InputSystem;
 
 public class RaidManager_Script : MonoBehaviour
 {
-    public int minefieldWidth;
-    public int minefieldHeight;
-    public int numberOfBombs;
-    public int numberOfTestLoot;
-    public int lootCollected;
-    public int maxLootCondition;
+    [SerializeField] private int minefieldWidth;
+    [SerializeField] private int minefieldHeight;
+    [SerializeField] private int numberOfBombs;
+    [SerializeField] private int numberOfTestLoot;
+    [SerializeField] private int lootCollected;
+    [SerializeField] private int maxLootCondition;
+    //[SerializeField] private Camera raidCamera;
+
     //public int number;
 
     /*(DEV) Show Bombs*/
-    public bool showBombs;
+    [SerializeField] private bool showBombs;
     /*(DEV) Show Hexas*/
-    public bool showHexas;
+    [SerializeField] private bool showHexas;
     /*(DEV) Number of loot*/
-    public bool showTestLoot;
+    [SerializeField] private bool showTestLoot;
 
 
     private Field_Script field;
@@ -31,14 +33,11 @@ public class RaidManager_Script : MonoBehaviour
     private void Start()
     {
         StartRaid();
-        //n‰yt‰Pommit = false; //(DEV) Poistetaan kun valmis
-        //n‰yt‰Hexat = false; //(DEV) Poistetaan kun valmis
     }
     private void Update()
     {
-        // (DEV) Bugi inputissa: Kokeile Project Settings > Player > Active Input > Both!!!
 
-        if (!raidIsOver) //(DEV) Vaihda jos ei toimi, kuten esim. == false. Tai kokeile tuplanegatiivi booleania. (Kts.MTISUMB isOutOfFlashlight)
+        if (!raidIsOver)
         {
             //if (Input.GetMouseButtonDown(0))
             //{
@@ -64,10 +63,10 @@ public class RaidManager_Script : MonoBehaviour
 
     private void StartRaid()
     {
-        //(DEV) Kovakoodataan minefieldHeight/Width kun gridien koot varmistuvat (pienenee mit‰ v‰hemm‰n pelaajia klaanissa)
+        //(DEV) Change when minefieldHeight/Width sixe is certain. (gets smaller as clan¥s size changes)
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
-        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Kameran testi default. Siirt‰‰ sen vastaamaan ruutuja. Poistetaan kun siirryt‰‰n oikeaan Sceneen.
+        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateBombs();
         GenerateTestLoot();
@@ -93,7 +92,7 @@ public class RaidManager_Script : MonoBehaviour
     {
         for(int i = 0; i < numberOfBombs; i++)
         {
-            //(DEV) Randomoitu pommien sijoittelu. Must be changed when testing of Loot Placement begins!
+            //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
             int x = Random.Range(0, minefieldWidth);
             int y = Random.Range(0, minefieldHeight);
 
@@ -114,13 +113,13 @@ public class RaidManager_Script : MonoBehaviour
             }
             state[x, y].type = Hexa_Struct.Type.Bomb;
 
-            //(DEV) N‰ytt‰‰ pommit
+            //(DEV) Shows bombs
             if (showBombs)
             {
                 state[x, y].revealed = true;
             }
             
-            /*state[x, y].revealed = true;*/ // (DEV) Paljastaa kaikki pommit
+            /*state[x, y].revealed = true;*/ // (DEV) Reveals all the bombs
         }
     }
 
@@ -128,7 +127,7 @@ public class RaidManager_Script : MonoBehaviour
     {
         for (int i = 0; i < numberOfTestLoot; i++)
         {
-            //(DEV) Randomoitu TestLoot sijoittelu. Change when Loot placement testing!
+            //(DEV) Random loot placement. Change when Loot placement testing!
             int x = Random.Range(0, minefieldWidth);
             int y = Random.Range(0, minefieldHeight);
 
@@ -162,9 +161,9 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateNumbers()
     {
-        for (int x = 0; x < minefieldWidth; x++)
+        for (int y = 0; y < minefieldHeight; y++)//int x = 0; x < minefieldWidth; x++
         {
-            for (int y = 0; y < minefieldHeight; y++)
+            for (int x = 0; x < minefieldWidth; x++)//int y = 0; y < minefieldHeight; y++
             {
                 Hexa_Struct hexa = state[x, y];
                 if (hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot)
@@ -178,12 +177,12 @@ public class RaidManager_Script : MonoBehaviour
                     hexa.type = Hexa_Struct.Type.Number;
                 }
 
-                //(DEV) Paljastaa hexat
+                //(DEV) Reveals hexas
                 if (showHexas)
                 {
                     hexa.revealed = true;
                 }
-                /*hexa.revealed = true;*/ // (DEV) Paljastaa kaikki numerot
+                /*hexa.revealed = true;*/ // (DEV) Reveals all the numbers
                 state[x, y] = hexa;
             }
         }
@@ -191,7 +190,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private int CalculateBombs(int hexaX, int hexaY)
     {
-        int count = 0; //Testaa ilman 0?
+        int count = 0;
 
         //(DEV) Fix the calculation! No through corridor calculation.
         for (int neighborX = -1; neighborX <= 1; neighborX++)
