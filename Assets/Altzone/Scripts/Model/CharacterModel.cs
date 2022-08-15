@@ -1,6 +1,24 @@
 ﻿namespace Altzone.Scripts.Model
 {
     /// <summary>
+    /// Enum values for Defence "attribute".
+    /// </summary>
+    /// <remarks>
+    /// This can be serialized so do not change or remove enum values.
+    /// </remarks>
+    public enum Defence
+    {
+        None = 0,
+        Desensitisation = 1,
+        Deflection = 2,
+        Introjection = 3,
+        Projection = 4,
+        Retroflection = 5,
+        Egotism = 6,
+        Confluence = 7,
+    }
+
+    /// <summary>
     /// Player character model.
     /// </summary>
     public class CharacterModel : AbstractModel
@@ -24,7 +42,8 @@
 
         public override string ToString()
         {
-            return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(MainDefence)}: {MainDefence}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+            return
+                $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(MainDefence)}: {MainDefence}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }
 }
