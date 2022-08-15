@@ -13,6 +13,8 @@ namespace MenuUi.Scripts.Settings
         [SerializeField] private Slider _gameMusic;
         [SerializeField] private Slider _gameSFX;
 
+        private IAudioManager _audioManager;
+        
         void Awake()
         {
             if (!PlayerPrefs.HasKey("PlayerMasterVolume"))
@@ -24,6 +26,16 @@ namespace MenuUi.Scripts.Settings
             _gameMusic.value = PlayerPrefs.GetFloat("PlayerGameMusicVolume");
             _gameSFX.value = PlayerPrefs.GetFloat("PlayerGameSFXVolume");
         }
+
+        private void Start()
+        {
+            _audioManager = AudioManager.Get();
+            _audioManager.MasterVolume = _master.value;
+            _audioManager.MenuEffectsVolume = _menuSFX.value;
+            _audioManager.GameMusicVolume = _gameMusic.value;
+            _audioManager.GameEffectsVolume = _gameSFX.value;
+        }
+
         public void SetMasterLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerMasterVolume", sliderValue);
@@ -31,18 +43,22 @@ namespace MenuUi.Scripts.Settings
             /*
             AudioMixer.SetFloat("PlayerMasterVolume", Mathf.Log10(sliderValue) * 20)
             */
+            _audioManager.MasterVolume = sliderValue;
         }
         public void SetMenuSFXLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerMenuSFXVolume", sliderValue);
+            _audioManager.MenuEffectsVolume = sliderValue;
         }
         public void SetMusicLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerGameMusicVolume", sliderValue);
+            _audioManager.GameMusicVolume = sliderValue;
         }
         public void SetGameSFXLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerGameSFXVolume", sliderValue);
+            _audioManager.GameEffectsVolume = sliderValue;
         }
 
         private void MakeVolumePrefs()
