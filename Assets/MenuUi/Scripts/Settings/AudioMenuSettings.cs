@@ -1,3 +1,4 @@
+using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
@@ -17,14 +18,14 @@ namespace MenuUi.Scripts.Settings
         
         void Awake()
         {
-            if (!PlayerPrefs.HasKey("PlayerMasterVolume"))
+            if (!PlayerPrefs.HasKey(PlayerPrefKeys.MasterVolume))
             {
                 MakeVolumePrefs();
             }
-            _master.value = PlayerPrefs.GetFloat("PlayerMasterVolume");
-            _menuSFX.value = PlayerPrefs.GetFloat("PlayerMenuSFXVolume");
-            _gameMusic.value = PlayerPrefs.GetFloat("PlayerGameMusicVolume");
-            _gameSFX.value = PlayerPrefs.GetFloat("PlayerGameSFXVolume");
+            _master.value = PlayerPrefs.GetFloat(PlayerPrefKeys.MasterVolume);
+            _menuSFX.value = PlayerPrefs.GetFloat(PlayerPrefKeys.MenuSFXVolume);
+            _gameMusic.value = PlayerPrefs.GetFloat(PlayerPrefKeys.GameMusicVolume);
+            _gameSFX.value = PlayerPrefs.GetFloat(PlayerPrefKeys.GameSFXVolume);
         }
 
         private void Start()
@@ -38,7 +39,7 @@ namespace MenuUi.Scripts.Settings
 
         public void SetMasterLevel(float sliderValue)
         {
-            PlayerPrefs.SetFloat("PlayerMasterVolume", sliderValue);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.MasterVolume, sliderValue);
             // Example if we used Unity's Audio system
             /*
             AudioMixer.SetFloat("PlayerMasterVolume", Mathf.Log10(sliderValue) * 20)
@@ -47,27 +48,27 @@ namespace MenuUi.Scripts.Settings
         }
         public void SetMenuSFXLevel(float sliderValue)
         {
-            PlayerPrefs.SetFloat("PlayerMenuSFXVolume", sliderValue);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.MenuSFXVolume, sliderValue);
             _audioManager.MenuEffectsVolume = sliderValue;
         }
         public void SetMusicLevel(float sliderValue)
         {
-            PlayerPrefs.SetFloat("PlayerGameMusicVolume", sliderValue);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.GameMusicVolume, sliderValue);
             _audioManager.GameMusicVolume = sliderValue;
         }
         public void SetGameSFXLevel(float sliderValue)
         {
-            PlayerPrefs.SetFloat("PlayerGameSFXVolume", sliderValue);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.GameSFXVolume, sliderValue);
             _audioManager.GameEffectsVolume = sliderValue;
         }
 
         private void MakeVolumePrefs()
         {
             float defaultVolume = 1.0f;
-            PlayerPrefs.SetFloat("PlayerMasterVolume", defaultVolume);
-            PlayerPrefs.SetFloat("PlayerMenuSFXVolume", defaultVolume);
-            PlayerPrefs.SetFloat("PlayerGameMusicVolume", defaultVolume);
-            PlayerPrefs.SetFloat("PlayerGameSFXVolume", defaultVolume);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.MasterVolume, defaultVolume);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.MenuSFXVolume, defaultVolume);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.GameMusicVolume, defaultVolume);
+            PlayerPrefs.SetFloat(PlayerPrefKeys.GameSFXVolume, defaultVolume);
         }
 
     }
