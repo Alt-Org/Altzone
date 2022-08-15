@@ -12,9 +12,9 @@ namespace Altzone.Scripts.Config
         public const string IsFirstTimePlaying = "PlayerData.IsFirstTimePlaying";
 
         public const string MasterVolume = "PlayerData.MasterVolume";
-        public const string MenuSFXVolume = "PlayerData.MenuSFXVolume";
+        public const string MenuSfxVolume = "PlayerData.MenuSFXVolume";
         public const string GameMusicVolume = "PlayerData.GameMusicVolume";
-        public const string GameSFXVolume = "PlayerData.GameSFXVolume";
+        public const string GameSfxVolume = "PlayerData.GameSFXVolume";
         
         public const string ConsentFamiliesPrivacyMode = "consent.families.privacy.mode";
         public const string GeoIpCountry = "GeoIp.Country";
