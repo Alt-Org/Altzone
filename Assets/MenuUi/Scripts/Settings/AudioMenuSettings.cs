@@ -7,6 +7,7 @@ namespace MenuUi.Scripts.Settings
 {
     public class AudioMenuSettings : MonoBehaviour
     {
+        // Slider Min Value must be 0.0001 and Max Value must be 1 for the Log10(x) * 20 method to work properly
         [Header("VolumeSliders"), SerializeField] private Slider _master;
         [SerializeField] private Slider _menuSFX;
         [SerializeField] private Slider _gameMusic;
@@ -26,8 +27,7 @@ namespace MenuUi.Scripts.Settings
         public void SetMasterLevel(float sliderValue)
         {
             PlayerPrefs.SetFloat("PlayerMasterVolume", sliderValue);
-            // This would be the proper method if we used Unity's Audio system
-            // and the same would be for the other methods
+            // Example if we used Unity's Audio system
             /*
             AudioMixer.SetFloat("PlayerMasterVolume", Mathf.Log10(sliderValue) * 20)
             */
