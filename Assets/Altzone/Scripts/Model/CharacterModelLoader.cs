@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
 
 namespace Altzone.Scripts.Model
 {
