@@ -7,41 +7,43 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts.Service.Audio
 {
     /// <summary>
-    /// AudioManager service with simple and most stupid (KISS) UNITY implementation.
+    /// UNITY implementation for AudioManager service.
     /// </summary>
     public class UnityAudioManager : MonoBehaviour, IAudioManager
     {
         private const float DefaultVolume = 1.0f;
+
+        [Header("Settings"), SerializeField] private float _minVolumeThreshold = 0.01f;
 
         [Header("Live Data"), SerializeField] private float _masterVolume;
         [SerializeField] private float _menuEffectsVolume;
         [SerializeField] private float _gameEffectsVolume;
         [SerializeField] private float _gameMusicVolume;
 
-        private readonly Dictionary<string, AudioClip> _audioClips = new();
+        private readonly Dictionary<string, AudioSource> _audioClips = new();
 
         float IAudioManager.MasterVolume
         {
             get => _masterVolume;
-            set => _masterVolume = value;
+            set => _masterVolume = ValidateVolume(value, _minVolumeThreshold);
         }
 
         float IAudioManager.MenuEffectsVolume
         {
             get => _menuEffectsVolume;
-            set => _menuEffectsVolume = value;
+            set => _menuEffectsVolume = ValidateVolume(value, _minVolumeThreshold);
         }
 
         float IAudioManager.GameEffectsVolume
         {
             get => _gameEffectsVolume;
-            set => _gameEffectsVolume = value;
+            set => _gameEffectsVolume = ValidateVolume(value, _minVolumeThreshold);
         }
 
         float IAudioManager.GameMusicVolume
         {
             get => _gameMusicVolume;
-            set => _gameMusicVolume = value;
+            set => _gameMusicVolume = ValidateVolume(value, _minVolumeThreshold);
         }
 
         private void Awake()
@@ -54,32 +56,40 @@ namespace Altzone.Scripts.Service.Audio
 
         void IAudioManager.RegisterAudioClip(string audioClipName, AudioClip audioClip)
         {
-            Assert.IsFalse(_audioClips.ContainsKey(audioClipName), "_audioClips.ContainsKey(audioClipName)");
-            _audioClips.Add(audioClipName, audioClip);
+            if (_audioClips.ContainsKey(audioClipName))
+            {
+                return;
+            }
+            var audioSource = CreateAudioSource(gameObject, audioClip, audioClipName);
+            _audioClips.Add(audioClipName, audioSource);
         }
 
         void IAudioManager.PlayMenuEffect(string audioClipName)
         {
             Assert.IsTrue(_audioClips.ContainsKey(audioClipName), "_audioClips.ContainsKey(audioClipName)");
-            ((IAudioManager)this).PlayMenuEffect(_audioClips[audioClipName]);
+            var audioSource = _audioClips[audioClipName];
+            PlayAudio2D(audioSource, _menuEffectsVolume * _masterVolume);
         }
 
         void IAudioManager.PlayGameEffect(string audioClipName)
         {
             Assert.IsTrue(_audioClips.ContainsKey(audioClipName), "_audioClips.ContainsKey(audioClipName)");
-            ((IAudioManager)this).PlayGameEffect(_audioClips[audioClipName]);
+            var audioSource = _audioClips[audioClipName];
+            PlayAudio(audioSource, _gameEffectsVolume * _masterVolume);
         }
 
         void IAudioManager.PlayGameEffect(string audioClipName, Vector3 worldPosition)
         {
             Assert.IsTrue(_audioClips.ContainsKey(audioClipName), "_audioClips.ContainsKey(audioClipName)");
-            ((IAudioManager)this).PlayGameEffect(_audioClips[audioClipName], worldPosition);
+            var audioSource = _audioClips[audioClipName];
+            PlayAudio(audioSource, _gameEffectsVolume * _masterVolume, worldPosition);
         }
 
         void IAudioManager.PlayGameMusic(string audioClipName)
         {
             Assert.IsTrue(_audioClips.ContainsKey(audioClipName), "_audioClips.ContainsKey(audioClipName)");
-            ((IAudioManager)this).PlayGameMusic(_audioClips[audioClipName]);
+            var audioSource = _audioClips[audioClipName];
+            PlayAudio2D(audioSource, _gameMusicVolume * _masterVolume, true);
         }
 
         void IAudioManager.PlayMenuEffect(AudioClip audioClip)
@@ -102,6 +112,8 @@ namespace Altzone.Scripts.Service.Audio
             PlayAudio2D(audioClip, _gameMusicVolume * _masterVolume, true);
         }
 
+        #region Play AudioClip
+
         private static void PlayAudio2D(AudioClip clip, float volume, bool isLooping = false, [CallerMemberName] string memberName = null)
         {
             if (!(volume > Mathf.Epsilon))
@@ -111,7 +123,7 @@ namespace Altzone.Scripts.Service.Audio
             Debug.Log($"{memberName} {clip.name} {volume}");
             PlayClipAtPoint(clip, Vector3.zero, volume, 0, isLooping);
         }
-        
+
         private static void PlayAudio(AudioClip clip, float volume, [CallerMemberName] string memberName = null)
         {
             if (!(volume > Mathf.Epsilon))
@@ -137,7 +149,7 @@ namespace Altzone.Scripts.Service.Audio
             // Copied from AudioSource - there is big difference how PlayOneShot and Play works!
             // static method: https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html
             // instance method: https://docs.unity3d.com/ScriptReference/AudioSource.Play.html
-            
+
             var gameObject = new GameObject($"clip {position} {spatialBlend:0} {isLooping}  {clip.name}")
             {
                 transform =
@@ -156,6 +168,84 @@ namespace Altzone.Scripts.Service.Audio
                 return;
             }
             Destroy(gameObject, clip.length * (Time.timeScale < 0.00999999977648258 ? 0.01f : Time.timeScale));
+        }
+
+        #endregion
+
+        #region Play AudioSource
+
+        private static void PlayAudio2D(AudioSource audioSource, float volume, bool isLooping = false, [CallerMemberName] string memberName = null)
+        {
+            if (!(volume > Mathf.Epsilon))
+            {
+                return;
+            }
+            Debug.Log($"{memberName} {audioSource.clip.name} {volume}");
+            audioSource.spatialBlend = 0;
+            audioSource.volume = volume;
+            audioSource.loop = isLooping;
+            audioSource.Play();
+        }
+
+        private static void PlayAudio(AudioSource audioSource, float volume, [CallerMemberName] string memberName = null)
+        {
+            if (!(volume > Mathf.Epsilon))
+            {
+                return;
+            }
+            Debug.Log($"{memberName} {audioSource.clip.name} {volume}");
+            audioSource.spatialBlend = 1f;
+            audioSource.volume = volume;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
+
+        private static void PlayAudio(AudioSource audioSource, float volume, Vector3 position, [CallerMemberName] string memberName = null)
+        {
+            if (!(volume > Mathf.Epsilon))
+            {
+                return;
+            }
+            Debug.Log($"{memberName} {audioSource.clip.name} {volume}");
+            audioSource.spatialBlend = 1f;
+            audioSource.volume = volume;
+            audioSource.loop = false;
+            audioSource.transform.position = position;
+            audioSource.Play();
+        }
+
+        private static AudioSource CreateAudioSource(GameObject parent, AudioClip clip, string audioClipName)
+        {
+            var gameObject = new GameObject($"clip {audioClipName}")
+            {
+                transform =
+                {
+                    parent = parent.transform,
+                    position = Vector3.zero
+                }
+            };
+            var audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = clip;
+            Debug.Log($"{audioClipName} [{audioSource.clip.name}]");
+            return audioSource;
+        }
+
+        #endregion
+
+        private static float ValidateVolume(float volume, float threshold)
+        {
+            if (volume > 0)
+            {
+                if (volume < threshold)
+                {
+                    return threshold;
+                }
+                if (volume > 1f)
+                {
+                    return 1f;
+                }
+            }
+            return volume;
         }
     }
 }
