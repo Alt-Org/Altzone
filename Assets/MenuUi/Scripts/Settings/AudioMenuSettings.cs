@@ -22,6 +22,7 @@ namespace MenuUi.Scripts.Settings
             {
                 MakeVolumePrefs();
             }
+            _audioManager = AudioManager.Get();
             SetSlider(_master, PlayerPrefKeys.MasterVolume);
             SetSlider(_menuSFX, PlayerPrefKeys.MenuSfxVolume);
             SetSlider(_gameMusic, PlayerPrefKeys.GameMusicVolume);
@@ -33,15 +34,6 @@ namespace MenuUi.Scripts.Settings
                 slider.maxValue = 1f;
                 slider.value = PlayerPrefs.GetFloat(playerPrefKeyName, DefaultVolume);
             }
-        }
-
-        private void Start()
-        {
-            _audioManager = AudioManager.Get();
-            _audioManager.MasterVolume = _master.value;
-            _audioManager.MenuEffectsVolume = _menuSFX.value;
-            _audioManager.GameMusicVolume = _gameMusic.value;
-            _audioManager.GameEffectsVolume = _gameSFX.value;
         }
 
         public void SetMasterLevel(float sliderValue)
