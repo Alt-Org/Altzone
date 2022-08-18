@@ -134,7 +134,10 @@ namespace Altzone.Scripts.Service.Audio
 
         private static void PlayClipAtPoint(AudioClip clip, Vector3 position, float volume, float spatialBlend, bool isLooping = false)
         {
-            // Copied from AudioSource
+            // Copied from AudioSource - there is big difference how PlayOneShot and Play works!
+            // static method: https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html
+            // instance method: https://docs.unity3d.com/ScriptReference/AudioSource.Play.html
+            
             var gameObject = new GameObject($"clip {position} {spatialBlend:0} {isLooping}  {clip.name}")
             {
                 transform =
