@@ -14,6 +14,12 @@ namespace Altzone.Scripts.Model
         {
             // HAHMOT ja niiden kuvaukset (+ värit)
             // https://docs.google.com/spreadsheets/d/1GBlkKJia89lFvEspTzrq_IJ3XXfCTRDQmB4NrZs-Npo/edit#gid=0
+            
+              RuntimeGameConfig Characters(string name,Defence mainDefence, int speed, int resistance,int attack,int defence)
+            {   
+            var LoadCharacterModel = Characters(name, mainDefence, speed, resistance, attack, defence);
+            return LoadCharacterModel;   
+            }
 
             return new List<CharacterModel>()
             {
