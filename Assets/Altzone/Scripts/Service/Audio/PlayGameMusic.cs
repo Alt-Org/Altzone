@@ -8,10 +8,14 @@ namespace Altzone.Scripts.Service.Audio
         [SerializeField] private Button _button;
         [SerializeField] private AudioClip _gameMusic;
 
+        private string _audioClipName;
+
         private void Awake()
         {
             var audioManager = AudioManager.Get();
-            _button.onClick.AddListener(() => { audioManager.PlayGameMusic(_gameMusic); });
+            _audioClipName = $"menu.{_gameMusic.name}";
+            audioManager.RegisterAudioClip(_audioClipName, _gameMusic);
+            _button.onClick.AddListener(() => { audioManager.PlayGameMusic(_audioClipName); });
         }
     }
 }

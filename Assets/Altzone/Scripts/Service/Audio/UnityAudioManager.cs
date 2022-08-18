@@ -84,7 +84,7 @@ namespace Altzone.Scripts.Service.Audio
 
         void IAudioManager.PlayMenuEffect(AudioClip audioClip)
         {
-            PlayAudio(audioClip, _menuEffectsVolume * _masterVolume);
+            PlayAudio2D(audioClip, _menuEffectsVolume * _masterVolume);
         }
 
         void IAudioManager.PlayGameEffect(AudioClip audioClip)
@@ -99,9 +99,19 @@ namespace Altzone.Scripts.Service.Audio
 
         void IAudioManager.PlayGameMusic(AudioClip audioClip)
         {
-            PlayAudio(audioClip, _gameMusicVolume * _masterVolume);
+            PlayAudio2D(audioClip, _gameMusicVolume * _masterVolume, true);
         }
 
+        private static void PlayAudio2D(AudioClip clip, float volume, bool isLooping = false, [CallerMemberName] string memberName = null)
+        {
+            if (!(volume > Mathf.Epsilon))
+            {
+                return;
+            }
+            Debug.Log($"{memberName} {clip.name} {volume}");
+            PlayClipAtPoint(clip, Vector3.zero, volume, 0, isLooping);
+        }
+        
         private static void PlayAudio(AudioClip clip, float volume, [CallerMemberName] string memberName = null)
         {
             if (!(volume > Mathf.Epsilon))
@@ -109,17 +119,40 @@ namespace Altzone.Scripts.Service.Audio
                 return;
             }
             Debug.Log($"{memberName} {clip.name} {volume}");
-            AudioSource.PlayClipAtPoint(clip, Vector3.zero, volume);
+            PlayClipAtPoint(clip, Vector3.zero, volume, 1);
         }
 
         private static void PlayAudio(AudioClip clip, float volume, Vector3 position, [CallerMemberName] string memberName = null)
         {
-            if (!(volume > 0))
+            if (!(volume > Mathf.Epsilon))
             {
                 return;
             }
             Debug.Log($"{memberName} {clip.name} {volume} {position}");
-            AudioSource.PlayClipAtPoint(clip, position, volume);
+            PlayClipAtPoint(clip, position, volume, 1f);
+        }
+
+        private static void PlayClipAtPoint(AudioClip clip, Vector3 position, float volume, float spatialBlend, bool isLooping = false)
+        {
+            // Copied from AudioSource
+            var gameObject = new GameObject($"clip {position} {spatialBlend:0} {isLooping}  {clip.name}")
+            {
+                transform =
+                {
+                    position = position
+                }
+            };
+            var audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = clip;
+            audioSource.spatialBlend = spatialBlend;
+            audioSource.volume = volume;
+            audioSource.loop = isLooping;
+            audioSource.Play();
+            if (isLooping)
+            {
+                return;
+            }
+            Destroy(gameObject, clip.length * (Time.timeScale < 0.00999999977648258 ? 0.01f : Time.timeScale));
         }
     }
 }
