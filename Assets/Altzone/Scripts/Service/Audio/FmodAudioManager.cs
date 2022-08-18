@@ -1,3 +1,4 @@
+#if USE_FMOD
 using System;
 using Altzone.Scripts.Config;
 using FMOD;
@@ -108,3 +109,4 @@ namespace Altzone.Scripts.Service.Audio
         }
     }
 }
+#endif

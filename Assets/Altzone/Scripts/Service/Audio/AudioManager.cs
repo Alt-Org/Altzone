@@ -20,7 +20,7 @@ namespace Altzone.Scripts.Service.Audio
         {
             if (_audioManager == null)
             {
-                _audioManager = UnityExtensions.CreateGameObjectAndComponent<FmodAudioManager>(nameof(FmodAudioManager), true);
+                _audioManager = UnityExtensions.CreateGameObjectAndComponent<UnityAudioManager>(nameof(UnityAudioManager), true);
             }
             return _audioManager;
         }
