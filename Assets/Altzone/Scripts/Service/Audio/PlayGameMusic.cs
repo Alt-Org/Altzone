@@ -3,12 +3,11 @@ using UnityEngine.UI;
 
 namespace Altzone.Scripts.Service.Audio
 {
-    [RequireComponent(typeof(Button))]
     public class PlayGameMusic : MonoBehaviour
     {
-        [SerializeField] private Button _button;
         [SerializeField] private bool _register;
         [SerializeField] private AudioClip _audioClip;
+        [SerializeField] private Button _button;
 
         private string _audioClipName;
 
@@ -24,17 +23,23 @@ namespace Altzone.Scripts.Service.Audio
                 _audioClipName = $"music.{_audioClip.name}";
                 audioManager.RegisterAudioClip(_audioClipName, _audioClip);
             }
-            _button.onClick.AddListener(() =>
+            if (_button != null)
             {
-                if (_audioClipName != null)
-                {
-                    audioManager.PlayGameMusic(_audioClipName);
-                }
-                else
-                {
-                    audioManager.PlayGameMusic(_audioClip);
-                }
-            });
+                _button.onClick.AddListener(Play);
+            }
+        }
+
+        public void Play()
+        {
+            var audioManager = AudioManager.Get();
+            if (_register)
+            {
+                audioManager.PlayGameMusic(_audioClipName);
+            }
+            else
+            {
+                audioManager.PlayGameMusic(_audioClip);
+            }
         }
     }
 }
