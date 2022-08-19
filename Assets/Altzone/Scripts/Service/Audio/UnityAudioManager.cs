@@ -9,6 +9,10 @@ namespace Altzone.Scripts.Service.Audio
     /// <summary>
     /// UNITY implementation for AudioManager service.
     /// </summary>
+    /// <remarks>
+    /// Cached <c>AudioSource</c> will be created for all registered <c>AudioClip</c>'s and
+    /// ad hoc <c>AudioClip</c>'s will be played using temporary <c>AudioSource</c> that creates some overhead and garbage.
+    /// </remarks>
     public class UnityAudioManager : MonoBehaviour, IAudioManager
     {
         private const float DefaultVolume = 1.0f;
@@ -162,6 +166,7 @@ namespace Altzone.Scripts.Service.Audio
             audioSource.spatialBlend = spatialBlend;
             audioSource.volume = volume;
             audioSource.loop = isLooping;
+            audioSource.playOnAwake = false;
             audioSource.Play();
             if (isLooping)
             {
@@ -184,6 +189,7 @@ namespace Altzone.Scripts.Service.Audio
             audioSource.spatialBlend = 0;
             audioSource.volume = volume;
             audioSource.loop = isLooping;
+            audioSource.playOnAwake = false;
             audioSource.Play();
         }
 
@@ -197,6 +203,7 @@ namespace Altzone.Scripts.Service.Audio
             audioSource.spatialBlend = 1f;
             audioSource.volume = volume;
             audioSource.loop = false;
+            audioSource.playOnAwake = false;
             audioSource.Play();
         }
 
@@ -210,6 +217,7 @@ namespace Altzone.Scripts.Service.Audio
             audioSource.spatialBlend = 1f;
             audioSource.volume = volume;
             audioSource.loop = false;
+            audioSource.playOnAwake = false;
             audioSource.transform.position = position;
             audioSource.Play();
         }
@@ -234,18 +242,11 @@ namespace Altzone.Scripts.Service.Audio
 
         private static float ValidateVolume(float volume, float threshold)
         {
-            if (volume > 0)
+            if (volume > 0 && volume < threshold)
             {
-                if (volume < threshold)
-                {
-                    return threshold;
-                }
-                if (volume > 1f)
-                {
-                    return 1f;
-                }
+                return threshold;
             }
-            return volume;
+            return Mathf.Clamp(volume, 0, 1f);
         }
     }
 }

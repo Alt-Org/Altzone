@@ -3,8 +3,12 @@ using UnityEngine;
 namespace Altzone.Scripts.Service.Audio
 {
     /// <summary>
-    /// AudioManager service.
+    /// Simple AudioManager service that can play <c>AudioClip</c>'s trough 3 simple logical channels.<br />
+    /// These are menu effects, game effects and game music.
     /// </summary>
+    /// <remarks>
+    /// Game effects can have a position for 3D sound placement.
+    /// </remarks>
     public interface IAudioManager
     {
         float MasterVolume { get; set; }
