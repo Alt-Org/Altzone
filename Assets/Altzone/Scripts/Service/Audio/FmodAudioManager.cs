@@ -1,3 +1,4 @@
+#if USE_FMOD
 using System;
 using Altzone.Scripts.Config;
 using FMOD;
@@ -44,8 +45,8 @@ namespace Altzone.Scripts.Service.Audio
 
         public float GameMusicVolume
         {
-            get => GetChannelGroupVolume(_gameEffects);
-            set => SetChannelGroupVolume(_gameEffects, value);
+            get => GetChannelGroupVolume(_gameMusic);
+            set => SetChannelGroupVolume(_gameMusic, value);
         }
 
         private void Awake()
@@ -108,3 +109,4 @@ namespace Altzone.Scripts.Service.Audio
         }
     }
 }
+#endif

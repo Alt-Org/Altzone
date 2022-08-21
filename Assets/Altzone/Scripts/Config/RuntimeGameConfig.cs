@@ -20,6 +20,7 @@ namespace Altzone.Scripts.Config
         GameVariables Variables { get; set; }
         GamePrefabs Prefabs { get; }
         GameInput Input { get; }
+        Characters  Characters { get; }
         
         PlayerDataCache PlayerDataCache { get; }
     }
@@ -230,6 +231,20 @@ namespace Altzone.Scripts.Config
         [Header("Player Input Actions")] public InputActionReference _clickInputAction;
         public InputActionReference _moveInputAction;
     }
+ 
+    ///<summary>
+    /// Character mobel attribute editing for Unity Editor
+    /// </summary>    
+    [Serializable]
+    public class Characters 
+    {   
+       [Header ("Character Model Attributes")] public string name;
+        public Defence mainDefence;
+        public int speed;
+        public int resistance;
+        public int attack; 
+        public int defence; 
+    }
 
     #endregion
 
@@ -272,6 +287,7 @@ namespace Altzone.Scripts.Config
         [SerializeField] private GamePrefabs _permanentPrefabs;
         [SerializeField] private PlayerDataCache _playerDataCache;
         [SerializeField] private GameInput _gameInput;
+        [SerializeField] private Characters _characters;
 
         private void Awake()
         {
@@ -319,6 +335,11 @@ namespace Altzone.Scripts.Config
         /// New Input System Package for Player actions.
         /// </summary>
         public GameInput Input => _gameInput;
+        
+        /// <summary>
+        /// Character models attributes 
+        /// </summary>
+        public Characters Characters => _characters;
 
         /// <summary>
         /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
@@ -332,6 +353,7 @@ namespace Altzone.Scripts.Config
             instance._permanentConstraints = new GameConstraints();
             instance._permanentVariables = new GameVariables();
             instance._permanentPrefabs = new GamePrefabs();
+            instance._characters = new Characters();
             // Set persistent values
             var gameSettings = Resources.Load<PersistentGameSettings>(nameof(PersistentGameSettings));
             instance.Features = gameSettings._features;

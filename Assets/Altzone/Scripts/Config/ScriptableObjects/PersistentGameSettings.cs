@@ -16,5 +16,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Header("Game Variables")] public GameVariables _variables;
         [Header("Game Prefabs")] public GamePrefabs _prefabs;
         [Header("Game Input")] public GameInput _input;
+        [Header ("Characters")]public Characters _characters;
+        
     }
 }
