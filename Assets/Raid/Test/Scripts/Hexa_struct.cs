@@ -12,6 +12,7 @@ public struct Hexa_Struct
         Bomb,
         Number,
         Loot,
+        NewTestBomb,//delete if does not work
     }
     public Vector3Int position;
     public Type type;

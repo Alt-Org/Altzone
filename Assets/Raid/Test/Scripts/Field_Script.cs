@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEditor;
 
 public class Field_Script : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class Field_Script : MonoBehaviour
             case Hexa_Struct.Type.Loot: return tileLootTest; //(DEV) Loot tile for testing placement
             case Hexa_Struct.Type.Number: return GetNumberTile(hexa);
             case Hexa_Struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Poista detonated tarvittaessa, jos normi pelitila jatkuu automaattisesti Raidin loputtua.
+            case Hexa_Struct.Type.NewTestBomb: return hexa.detonated ? tileDetonated : tileBomb;
             default: return null;
         }
 
@@ -84,4 +86,5 @@ public class Field_Script : MonoBehaviour
     public Tile tileLootTest;
     public Tile tileFlag;
     public Tile tileDetonated;
+    public Tile tileNewTestBomb;
 }

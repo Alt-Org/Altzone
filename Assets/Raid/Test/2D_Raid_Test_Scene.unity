@@ -546,6 +546,7 @@ MonoBehaviour:
   tileLootTest: {fileID: 11400000, guid: 705580f9c777ed0459a01579291beda5, type: 2}
   tileFlag: {fileID: 11400000, guid: 3d7ae65dfcfffb848b86800d6a475121, type: 2}
   tileDetonated: {fileID: 11400000, guid: cfbb1c7f4a8dc734e94f6cce4387d1b2, type: 2}
+  tileNewTestBomb: {fileID: 11400000, guid: 395396b50265cf74297ac49ed805c50c, type: 2}
 --- !u!1 &796619067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,10 +1388,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minefieldWidth: 12
   minefieldHeight: 12
-  numberOfBombs: 10
+  numberOfBombs: 1
+  numberOfNewTestBombs: 0
   numberOfTestLoot: 0
   lootCollected: 0
-  maxLootCondition: 20
+  maxLootCondition: 5
   showBombs: 1
+  showNewTestBombs: 0
   showHexas: 0
   showTestLoot: 0

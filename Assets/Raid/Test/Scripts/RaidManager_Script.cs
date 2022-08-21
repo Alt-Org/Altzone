@@ -6,6 +6,7 @@ public class RaidManager_Script : MonoBehaviour
     [SerializeField] private int minefieldWidth;
     [SerializeField] private int minefieldHeight;
     [SerializeField] private int numberOfBombs;
+    [SerializeField] private int numberOfNewTestBombs;//newtest bombs
     [SerializeField] private int numberOfTestLoot;
     [SerializeField] private int lootCollected;
     [SerializeField] private int maxLootCondition;
@@ -15,6 +16,8 @@ public class RaidManager_Script : MonoBehaviour
 
     /*(DEV) Show Bombs*/
     [SerializeField] private bool showBombs;
+    /*(DEV) Show new test bombs*/
+    [SerializeField] private bool showNewTestBombs;
     /*(DEV) Show Hexas*/
     [SerializeField] private bool showHexas;
     /*(DEV) Number of loot*/
@@ -66,9 +69,10 @@ public class RaidManager_Script : MonoBehaviour
         //(DEV) Change when minefieldHeight/Width sixe is certain. (gets smaller as clan´s size changes)
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
-        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. Moves Camera to follow grid manually.
+        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. (2f, 2f, -15f) Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateBombs();
+        //GenerateNewTestBombs();
         GenerateTestLoot();
         GenerateNumbers();
         field.Draw(state);
@@ -86,6 +90,43 @@ public class RaidManager_Script : MonoBehaviour
                 state[x, y] = hexa;
             }
         }
+    }
+
+    private void GenerateNewTestBombs()
+    {
+
+        for (int i = 0; i < numberOfNewTestBombs; i++)
+        {
+            //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
+            int x = Random.Range(0, minefieldWidth);
+            int y = Random.Range(0, minefieldHeight);
+
+            //Check if hexa already has an Bomb. Use this for other checking!!!
+            while (state[x, y].type == Hexa_Struct.Type.NewTestBomb)
+            {
+                x++;
+                if (x >= minefieldWidth)
+                {
+                    x = 0;
+                    y++;
+
+                    if (y >= minefieldHeight)
+                    {
+                        y = 0;
+                    }
+                }
+            }
+            state[x, y].type = Hexa_Struct.Type.NewTestBomb;
+
+            //(DEV) Shows bombs
+            if (showNewTestBombs)
+            {
+                state[x, y].revealed = true;
+            }
+
+            /*state[x, y].revealed = true;*/ // (DEV) Reveals all the bombs
+        }
+
     }
 
     private void GenerateBombs()
@@ -193,19 +234,20 @@ public class RaidManager_Script : MonoBehaviour
         int count = 0;
 
         //(DEV) Fix the calculation! No through corridor calculation.
-        for (int neighborX = -1; neighborX <= 1; neighborX++)
+        for (int neighborY = -1; neighborY <= 1; neighborY++)//int neighborX = -1; neighborX <= 1; neighborX++
         {
-            for(int neighborY = -1; neighborY <= 1; neighborY++)
+            for(int neighborX = -1; neighborX <= 1; neighborX++) //int neighborY = -1; neighborY <= 1; neighborY++
             {
                 if(neighborX == 0 && neighborY == 0)
                 {
                     continue;
                 }
+
                 int x = hexaX + neighborX;
                 int y = hexaY + neighborY;
 
-                ////Checks if neighbor tiles are out of bounds (no more hexas)
-                //if(x < 0 || x >= minefieldWidth || y < 0 || y >= minefieldHeight)
+                ////Checks if neighbor tiles are out of bounds (no more hexas) comment
+                //if (x < 0 || x >= minefieldWidth || y < 0 || y >= minefieldHeight)
                 //{
                 //    continue;
                 //}
@@ -217,7 +259,7 @@ public class RaidManager_Script : MonoBehaviour
                 }
 
                 ////Checks if a hexa is indeed a bomb hexa, and add it to count
-                //if(state[x, y].type == Hexa_struct.Type.Bomb)
+                //if (state[x, y].type == Hexa_struct.Type.Bomb)
                 //{
                 //    count++;
                 //}
@@ -252,14 +294,17 @@ public class RaidManager_Script : MonoBehaviour
         if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
-        }
-        
+        }      
 
         switch (hexa.type)
         {
             case Hexa_Struct.Type.Bomb:
                 Detonate(hexa);
                 break;
+
+            //case Hexa_Struct.Type.NewTestBomb:
+            //    UnityEngine.Debug.Log("l");
+            //    break;
 
             case Hexa_Struct.Type.Loot:
                 lootCollected++;
