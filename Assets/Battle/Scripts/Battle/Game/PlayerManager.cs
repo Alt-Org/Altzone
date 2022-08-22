@@ -7,7 +7,6 @@ using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Players;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
@@ -459,6 +458,8 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
+            Assert.IsTrue(_teamBlue.Count == 0 || _teamRed.Count == 0, "_teamBlue.Count == 0 || _teamRed.Count == 0");
+            Assert.IsTrue(_teamBlue.Count > 0 || _teamRed.Count > 0, "_teamBlue.Count > 0 || _teamRed.Count > 0");
             var gameScoreManager = Context.GetGameScoreManager;
             if (gameScoreManager == null)
             {
@@ -469,9 +470,8 @@ namespace Battle.Scripts.Battle.Game
                 var score = gameScoreManager.RedScore;
                 var scoreTotal = score.Item1 + score.Item2;
                 gameScoreManager.ShowGameOverWindow(room, PhotonBattle.WinTypeResign, PhotonBattle.TeamRedValue, 0, scoreTotal);
-                return;
             }
-            if (_teamRed.Count == 0)
+            else
             {
                 var score = gameScoreManager.BlueScore;
                 var scoreTotal = score.Item1 + score.Item2;
