@@ -27,10 +27,14 @@ public class RaidManager_Script : MonoBehaviour
     private Field_Script field;
     private Hexa_Struct[,] state;
     private bool raidIsOver;
+    private Camera cameraMain;
+    private Transform cameraMainTransform;
 
     private void Awake()
     {
         field = GetComponentInChildren<Field_Script>();
+        cameraMain = Camera.main;
+        cameraMainTransform = cameraMain.transform;
     }
 
     private void Start()
@@ -69,7 +73,7 @@ public class RaidManager_Script : MonoBehaviour
         //(DEV) Change when minefieldHeight/Width sixe is certain. (gets smaller as clan´s size changes)
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
-        Camera.main.transform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. (2f, 2f, -15f) Moves Camera to follow grid manually.
+        cameraMainTransform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. (2f, 2f, -15f) Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateBombs();
         //GenerateNewTestBombs();
@@ -270,7 +274,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Flag(Vector3 position)
     {
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
 
@@ -286,7 +290,7 @@ public class RaidManager_Script : MonoBehaviour
     private void Reveal(Vector3 position)
     {
         //(DEV) Change when build for Android!
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
