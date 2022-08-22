@@ -1,7 +1,5 @@
 using System.Collections;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
@@ -16,11 +14,9 @@ namespace Battle.Scripts.Test
 
         private int _roomStartDelay;
         private int _slingshotDelay;
-        private bool _isDisableRaid;
 
         private int _noComponentStart;
         private int _noComponentRestart;
-        private int _noComponentRaid;
 
         private void Awake()
         {
@@ -30,8 +26,6 @@ namespace Battle.Scripts.Test
             var variables = runtimeGameConfig.Variables;
             _roomStartDelay = variables._battleRoomStartDelay;
             _slingshotDelay = variables._battleSlingshotDelay;
-            var features = runtimeGameConfig.Features;
-            _isDisableRaid = features._isDisableRaid;
         }
 
         private void OnEnable()
@@ -39,12 +33,9 @@ namespace Battle.Scripts.Test
             var counter = _isDisableShowComponentErrors ? 0 : 3;
             _noComponentStart = counter;
             _noComponentRestart = counter;
-            _noComponentRaid = counter;
 
             this.Subscribe<UiEvents.StartBattle>(OnStartBattle);
             this.Subscribe<UiEvents.RestartBattle>(OnRestartBattle);
-            this.Subscribe<UiEvents.StartRaid>(OnStartRaid);
-            this.Subscribe<UiEvents.ExitRaidNotification>(OnExitRaid);
 
             this.Subscribe<UiEvents.SlingshotStart>(OnSlingshotStart);
             this.Subscribe<UiEvents.SlingshotEnd>(OnSlingshotEnd);
@@ -103,41 +94,6 @@ namespace Battle.Scripts.Test
             StartCoroutine(SimulateCountdown(_slingshotDelay));
         }
 
-        private void OnStartRaid(UiEvents.StartRaid data)
-        {
-            if (_isDisableRaid)
-            {
-                return;
-            }
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                return;
-            }
-            Debug.Log($"{data}");
-            if (FindObjectOfType<RaidManagerForBattle>() is not IRaidManagerForBattle raidManager)
-            {
-                if (--_noComponentRaid >= 0)
-                {
-                    ScoreFlashNet.Push("NO RAID COMPONENT");
-                }
-                return;
-            }
-            raidManager.RaidWallEvent(data.TeamNumber, data.PlayerToStart);
-        }
-
-        private void OnExitRaid(UiEvents.ExitRaidNotification data)
-        {
-            if (_isDisableRaid)
-            {
-                return;
-            }
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                return;
-            }
-            Debug.Log($"{data}");
-        }
-
         private void OnSlingshotStart(UiEvents.SlingshotStart data)
         {
             Debug.Log($"{data}");
@@ -180,12 +136,6 @@ namespace Battle.Scripts.Test
                 return;
             }
             Debug.Log($"{data}");
-            if (_isDisableRaid)
-            {
-                return;
-            }
-            var player = Context.PlayerManager.GetPlayerByLastBallHitTime(data.RaidTeam);
-            this.Publish(new UiEvents.StartRaid(data.RaidTeam, player));
         }
 
         private void OnTeamActivation(UiEvents.TeamActivation data)

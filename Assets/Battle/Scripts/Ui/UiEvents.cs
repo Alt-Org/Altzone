@@ -37,41 +37,6 @@ namespace Battle.Scripts.Ui
             }
         }
 
-        internal class StartRaid
-        {
-            public readonly int TeamNumber;
-            public readonly IPlayerDriver PlayerToStart;
-
-            public StartRaid(int teamNumber, IPlayerDriver playerToStart)
-            {
-                TeamNumber = teamNumber;
-                PlayerToStart = playerToStart;
-            }
-
-            public override string ToString()
-            {
-                return $"{nameof(TeamNumber)}: {TeamNumber}, {nameof(PlayerToStart)}: {PlayerToStart}";
-            }
-        }
-
-        internal class ExitRaidNotification
-        {
-            /// <summary>
-            /// Currently exiting player, can be <c>null</c>.
-            /// </summary>
-            public readonly IPlayerDriver PlayerToExit;
-
-            public ExitRaidNotification(IPlayerDriver playerToExit)
-            {
-                PlayerToExit = playerToExit;
-            }
-
-            public override string ToString()
-            {
-                return $"{nameof(PlayerToExit)}: {PlayerToExit}";
-            }
-        }
-
         #endregion
 
         #region Informational events
