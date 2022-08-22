@@ -28,13 +28,11 @@ public class RaidManager_Script : MonoBehaviour
     private Hexa_Struct[,] state;
     private bool raidIsOver;
     private Camera cameraMain;
-    private Transform cameraMainTransform;
 
     private void Awake()
     {
         field = GetComponentInChildren<Field_Script>();
         cameraMain = Camera.main;
-        cameraMainTransform = cameraMain.transform;
     }
 
     private void Start()
@@ -73,6 +71,7 @@ public class RaidManager_Script : MonoBehaviour
         //(DEV) Change when minefieldHeight/Width sixe is certain. (gets smaller as clan´s size changes)
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
+        Transform cameraMainTransform = cameraMain.transform;
         cameraMainTransform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. (2f, 2f, -15f) Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateBombs();
