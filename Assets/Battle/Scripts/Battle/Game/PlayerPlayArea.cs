@@ -5,6 +5,8 @@ namespace Battle.Scripts.Battle.Game
 {
     internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
+        [Header("PlayArea"), SerializeField] private Vector2 _playAreaMiddlePosition;
+
         [Header("Player Areas"), SerializeField] private Rect _playAreaP1;
         [SerializeField] private Rect _playAreaP2;
         [SerializeField] private Rect _playAreaP3;
@@ -28,7 +30,7 @@ namespace Battle.Scripts.Battle.Game
         public Collider2D BlueTeamCollider => _teamBlueCollider;
         public Collider2D RedTeamCollider => _teamRedCollider;
 
-        public Vector2 GetPlayAreaMiddlePosition => Vector2.zero;
+        public Vector2 GetPlayAreaMiddlePosition => _playAreaMiddlePosition;
         
         public Rect GetPlayerPlayArea(int playerPos)
         {
@@ -50,6 +52,8 @@ namespace Battle.Scripts.Battle.Game
                 default:
                     throw new UnityException($"Invalid player position {playerPos}");
             }
+            playArea.x += _playAreaMiddlePosition.x;
+            playArea.y += _playAreaMiddlePosition.y;
 
             if (PhotonBattle.GetTeamNumber(playerPos) == PhotonBattle.TeamBlueValue)
             {
@@ -78,6 +82,7 @@ namespace Battle.Scripts.Battle.Game
                 default:
                     throw new UnityException($"Invalid player position {playerPos}");
             }
+            startPosition += _playAreaMiddlePosition;
             var playArea = GetPlayerPlayArea(playerPos);
             if (!playArea.Contains(startPosition))
             {
