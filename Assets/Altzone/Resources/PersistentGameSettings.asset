@@ -23,6 +23,13 @@ MonoBehaviour:
     _isDisableRaid: 0
     _isDisableBricks: 0
     _isMuteAllSounds: 0
+    _isDisableBattleUiGrid: 0
+    _battleUiGridWidth: 9
+    _battleUiGridHeight: 16
+    _battleUiGridLineWidth: 0.05
+    _battleUiGridColor:
+      serializedVersion: 2
+      rgba: 4289915192
   _constraints:
     _minPlayerNameLength: 2
     _maxPlayerNameLength: 16
@@ -71,10 +78,10 @@ MonoBehaviour:
       type: 3}
     _moveInputAction: {fileID: -7747489554431944705, guid: 790646cf399ca894589ac6314d128d98,
       type: 3}
-      _characters:
+  _characters:
     name: 
-    mainDefence: 
-    speed: 
-    resistance: 
-    attack: 
-    defence: 
+    mainDefence: 0
+    speed: 0
+    resistance: 0
+    attack: 0
+    defence: 0
