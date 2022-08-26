@@ -1,0 +1,870 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8608477264823594289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 3 wav"
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 3 wav"
+  Guid:
+    Data1: -694075956
+    Data2: 1197565688
+    Data3: 1356847003
+    Data4: -96399079
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 3755
+--- !u!114 &-8098289645486286739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 1 wav"
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 1 wav"
+  Guid:
+    Data1: -1335038419
+    Data2: 1170669081
+    Data3: 951922306
+    Data4: 1276260857
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 6727
+--- !u!114 &-7902511675260107382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Jazz idea up 1
+  m_EditorClassIdentifier: 
+  Path: event:/Jazz idea up 1
+  Guid:
+    Data1: -1314742554
+    Data2: 1089624857
+    Data3: 296025503
+    Data4: 1411160664
+  Banks:
+  - {fileID: -7615516852757841150}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 92307
+--- !u!114 &-7615516852757841150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/BGM.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Mobile/BGM.bank
+  Name: BGM
+  StudioPath: bank:/BGM
+  lastModified: 637933923468274392
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-7389933626160676702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/ALTBGM/MusicEvent
+  m_EditorClassIdentifier: 
+  Name: MusicEvent
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 2859579434
+    data2: 3372518886
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-6691051302947085055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_2
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_2
+  Guid:
+    Data1: -1952808854
+    Data2: 1246854921
+    Data3: -235183742
+    Data4: 928046110
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1561
+--- !u!114 &-6361529190285321700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Jazz idea
+  m_EditorClassIdentifier: 
+  Path: event:/Jazz idea
+  Guid:
+    Data1: 1071003485
+    Data2: 1280199680
+    Data3: -872895583
+    Data4: -991832496
+  Banks:
+  - {fileID: -7615516852757841150}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 92307
+--- !u!114 &-5571986177290541438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 2 "
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 2 "
+  Guid:
+    Data1: 513604636
+    Data2: 1200447639
+    Data3: -562111310
+    Data4: 193390846
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2269
+--- !u!114 &-3898260298655343057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ALTBGM
+  m_EditorClassIdentifier: 
+  Path: event:/ALTBGM
+  Guid:
+    Data1: -550343557
+    Data2: 1340096706
+    Data3: -1119780463
+    Data4: 2079761237
+  Banks:
+  - {fileID: -7615516852757841150}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -7389933626160676702}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 198307
+--- !u!114 &-3661416112864457560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_3
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_3
+  Guid:
+    Data1: 1407801437
+    Data2: 1144144376
+    Data3: -510392657
+    Data4: -346010047
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1276
+--- !u!114 &-2157738379727197643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_wrong_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_wrong_1
+  Guid:
+    Data1: 1000250990
+    Data2: 1283434376
+    Data3: 1902026158
+    Data4: -1054295253
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &-2134161738481201627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Heartbeat
+  m_EditorClassIdentifier: 
+  Path: event:/Heartbeat
+  Guid:
+    Data1: -1371882002
+    Data2: 1136617033
+    Data3: 541189543
+    Data4: -566120962
+  Banks:
+  - {fileID: -7615516852757841150}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 8213
+--- !u!114 &-1995140785364267999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_1
+  Guid:
+    Data1: -218569665
+    Data2: 1153766693
+    Data3: 1296107171
+    Data4: 1631199370
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &-1733202209870017478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 5 wav"
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 5 wav"
+  Guid:
+    Data1: 843328519
+    Data2: 1125982452
+    Data3: 1674964096
+    Data4: 1044358376
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 16387
+--- !u!114 &-1361069606667152395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/TestBank.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Mobile/TestBank.bank
+  Name: TestBank
+  StudioPath: bank:/TestBank
+  lastModified: 637933923481323832
+  FileSizes: []
+  Exists: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: 1928807615288148112}
+  - {fileID: -7615516852757841150}
+  - {fileID: 3832302854064036734}
+  - {fileID: -1361069606667152395}
+  - {fileID: 7846823090848287480}
+  EditorEvents:
+  - {fileID: -6361529190285321700}
+  - {fileID: -3898260298655343057}
+  - {fileID: 7473790703078668712}
+  - {fileID: -7902511675260107382}
+  - {fileID: -2134161738481201627}
+  - {fileID: -1995140785364267999}
+  - {fileID: -3661416112864457560}
+  - {fileID: 8693436884260740577}
+  - {fileID: -6691051302947085055}
+  - {fileID: -2157738379727197643}
+  - {fileID: 6153431637382120868}
+  - {fileID: 2213407899328128267}
+  - {fileID: -1733202209870017478}
+  - {fileID: 7338795599760994586}
+  - {fileID: -5571986177290541438}
+  - {fileID: -8098289645486286739}
+  - {fileID: 4987304310408539329}
+  - {fileID: 2524142337506210123}
+  - {fileID: 8416586233350575830}
+  - {fileID: 1187367428391718848}
+  - {fileID: 6108527020004053993}
+  - {fileID: 1764219245320261598}
+  - {fileID: -8608477264823594289}
+  - {fileID: 3075598611239622201}
+  - {fileID: 1597948124669084562}
+  EditorParameters: []
+  MasterBanks:
+  - {fileID: 3832302854064036734}
+  StringsBanks:
+  - {fileID: 1928807615288148112}
+  cacheTime: 637933923486575078
+  cacheVersion: 131591
+--- !u!114 &1187367428391718848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 6 wav"
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 6 wav"
+  Guid:
+    Data1: -64425885
+    Data2: 1179452179
+    Data3: -1981218657
+    Data4: -1118952018
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 7470
+--- !u!114 &1597948124669084562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bass Drop 2
+  m_EditorClassIdentifier: 
+  Path: event:/Bass Drop 2
+  Guid:
+    Data1: 60962788
+    Data2: 1265953194
+    Data3: 824430264
+    Data4: -121313897
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4000
+--- !u!114 &1764219245320261598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 4 wav"
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 4 wav"
+  Guid:
+    Data1: -996816703
+    Data2: 1126103104
+    Data3: -1085673827
+    Data4: -474916861
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5984
+--- !u!114 &1928807615288148112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Mobile/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 637933923486192836
+  FileSizes:
+  - Name: 
+    Value: 1906
+  Exists: 1
+--- !u!114 &2213407899328128267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_hover_2
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_hover_2
+  Guid:
+    Data1: -1110019377
+    Data2: 1109161613
+    Data3: -2176848
+    Data4: -1498418236
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
+--- !u!114 &2524142337506210123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: "event:/Siirtym\xE4 7 "
+  m_EditorClassIdentifier: 
+  Path: "event:/Siirtym\xE4 7 "
+  Guid:
+    Data1: -1733726897
+    Data2: 1089238591
+    Data3: 396128187
+    Data4: -400173803
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 8956
+--- !u!114 &3075598611239622201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bass Drop 4
+  m_EditorClassIdentifier: 
+  Path: event:/Bass Drop 4
+  Guid:
+    Data1: -49597228
+    Data2: 1303905235
+    Data3: 1421836987
+    Data4: 840040087
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 6727
+--- !u!114 &3832302854064036734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Mobile/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 637933923486575078
+  FileSizes: []
+  Exists: 1
+--- !u!114 &4291833596481751210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/JazzBGM/MusicEvent
+  m_EditorClassIdentifier: 
+  Name: MusicEvent
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 2859579434
+    data2: 3372518886
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &4987304310408539329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Transition
+  m_EditorClassIdentifier: 
+  Path: event:/Transition
+  Guid:
+    Data1: 16679479
+    Data2: 1086505378
+    Data3: 1210875575
+    Data4: -844296823
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &6108527020004053993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bass Drop 1
+  m_EditorClassIdentifier: 
+  Path: event:/Bass Drop 1
+  Guid:
+    Data1: 991185576
+    Data2: 1187570695
+    Data3: -1194320466
+    Data4: -550871822
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 6023
+--- !u!114 &6153431637382120868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_select_4
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_select_4
+  Guid:
+    Data1: 536361652
+    Data2: 1128778942
+    Data3: 305077157
+    Data4: -1381208328
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2127
+--- !u!114 &7338795599760994586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BassDrop
+  m_EditorClassIdentifier: 
+  Path: event:/BassDrop
+  Guid:
+    Data1: 1098266135
+    Data2: 1154244103
+    Data3: -2095577705
+    Data4: -857148687
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &7473790703078668712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/JazzBGM
+  m_EditorClassIdentifier: 
+  Path: event:/JazzBGM
+  Guid:
+    Data1: 390023395
+    Data2: 1320483066
+    Data3: -310591057
+    Data4: -862479974
+  Banks:
+  - {fileID: -7615516852757841150}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 4291833596481751210}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 107307
+--- !u!114 &7846823090848287480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/UIAudio.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Mobile/UIAudio.bank
+  Name: UIAudio
+  StudioPath: bank:/UIAudio
+  lastModified: 637933923478160957
+  FileSizes: []
+  Exists: 1
+--- !u!114 &8416586233350575830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bass Drop 3
+  m_EditorClassIdentifier: 
+  Path: event:/Bass Drop 3
+  Guid:
+    Data1: 1643688787
+    Data2: 1141233674
+    Data3: -781156987
+    Data4: 229377235
+  Banks:
+  - {fileID: 7846823090848287480}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4498
+--- !u!114 &8693436884260740577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MENU_hover_1
+  m_EditorClassIdentifier: 
+  Path: event:/MENU_hover_1
+  Guid:
+    Data1: -1627326616
+    Data2: 1097136002
+    Data3: -1070584935
+    Data4: -722674799
+  Banks:
+  - {fileID: -1361069606667152395}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1702
