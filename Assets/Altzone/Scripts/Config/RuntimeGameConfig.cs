@@ -101,7 +101,7 @@ namespace Altzone.Scripts.Config
         [Min(1)] public int _battleUiGridWidth;
         [Min(1)] public int _battleUiGridHeight;
         [Min(0)] public float _battleUiGridLineWidth;
-        public Color32 _battleUiGridColor;
+        public Color _battleUiGridColor;
 
         public void CopyFrom(GameFeatures other)
         {

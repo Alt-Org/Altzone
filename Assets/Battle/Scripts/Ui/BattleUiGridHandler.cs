@@ -17,7 +17,7 @@ namespace Battle.Scripts.Ui
         private int _gridHeight;
         private float _gridLineWidth;
 
-        private Color32 _gridColor;
+        private Color _gridColor;
 
         private void Awake()
         {
