@@ -4,6 +4,13 @@ using UnityEngine.UI;
 
 namespace Prg.Scripts.Common.Unity.CanvasUtil
 {
+    /// <summary>
+    /// Sets <c>CanvasScaler</c> matchWidthOrHeight value based on screen width and height in order to force portrait or landscape match value. 
+    /// </summary>
+    /// <remarks>
+    /// Requires <c>ScaleMode.ScaleWithScreenSize</c> to work!<br />
+    /// This is stupid way to poll for changes in game window width or height using screen resolution as measurement stick.
+    /// </remarks>
     [RequireComponent(typeof(CanvasScaler))]
     public class CanvasScalerAutoMatch : MonoBehaviour
     {
