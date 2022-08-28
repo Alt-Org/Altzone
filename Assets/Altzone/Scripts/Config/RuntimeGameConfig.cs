@@ -258,17 +258,17 @@ namespace Altzone.Scripts.Config
     }
  
     ///<summary>
-    /// Character mobel attribute editing for Unity Editor
+    /// Character model attribute editing for Unity Editor
     /// </summary>    
     [Serializable]
     public class Characters 
     {   
-       [Header ("Character Model Attributes")] public string name;
-        public Defence mainDefence;
-        public int speed;
-        public int resistance;
-        public int attack; 
-        public int defence; 
+       [Header ("Character Model Attributes")] public string _name;
+        public Defence _mainDefence;
+        public int _speed;
+        public int _resistance;
+        public int _attack; 
+        public int _defence; 
     }
 
     #endregion
