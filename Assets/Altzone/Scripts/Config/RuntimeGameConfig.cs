@@ -18,6 +18,7 @@ namespace Altzone.Scripts.Config
         GameFeatures Features { get; set; }
         GameConstraints GameConstraints { get; }
         GameVariables Variables { get; set; }
+        BattleUiConfig BattleUi { get; }
         GamePrefabs Prefabs { get; }
         GameInput Input { get; }
         Characters  Characters { get; }
@@ -30,6 +31,9 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// Game features that can be toggled on and off.
     /// </summary>
+    /// <remarks>
+    /// Note that these member variables can be serialized over network and thus must be internally serializable.
+    /// </remarks>
     [Serializable]
     public class GameFeatures
     {
@@ -98,10 +102,6 @@ namespace Altzone.Scripts.Config
         /// </summary>
         [Header("Battle Scene UI Grid"), Tooltip("Disable Grid Overlay on Battle Scene")]
         public bool _isDisableBattleUiGrid;
-        [Min(1)] public int _battleUiGridWidth;
-        [Min(1)] public int _battleUiGridHeight;
-        [Min(0)] public float _battleUiGridLineWidth;
-        public Color _battleUiGridColor;
 
         public void CopyFrom(GameFeatures other)
         {
@@ -127,12 +127,17 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// Game variables that control game play somehow.
     /// </summary>
+    /// <remarks>
+    /// Note that these member variables can be serialized over network using our <c>BinarySerializer</c>.
+    /// </remarks>
     [Serializable]
     public class GameVariables
     {
         [Header("Battle"), Min(1)] public int _battleRoomStartDelay;
         [Min(1)] public int _battleSlingshotDelay;
         [Min(0)] public int _battleHeadScoreToWin;
+        [Min(1)] public int _battleUiGridWidth;
+        [Min(1)] public int _battleUiGridHeight;
 
         [Header("Raid"), Min(0)] public float _raidMaxLootCapacity;
 
@@ -158,6 +163,16 @@ namespace Altzone.Scripts.Config
         }
     }
 
+    /// <summary>
+    /// Battle game UI configuration.
+    /// </summary>
+    [Serializable]
+    public class BattleUiConfig
+    {
+        [Min(0)] public float _battleUiGridLineWidth;
+        public Color _battleUiGridColor;
+    }
+    
     /// <summary>
     /// Well known prefabs for the game.
     /// </summary>
@@ -294,6 +309,7 @@ namespace Altzone.Scripts.Config
         [SerializeField] private GameFeatures _permanentFeatures;
         [SerializeField] private GameConstraints _permanentConstraints;
         [SerializeField] private GameVariables _permanentVariables;
+        [SerializeField] private BattleUiConfig _battleUiConfig;
         [SerializeField] private GamePrefabs _permanentPrefabs;
         [SerializeField] private PlayerDataCache _playerDataCache;
         [SerializeField] private GameInput _gameInput;
@@ -333,6 +349,11 @@ namespace Altzone.Scripts.Config
         }
 
         /// <summary>
+        /// Unmodifiable Battle UI config.
+        /// </summary>
+        public BattleUiConfig BattleUi => _battleUiConfig;
+        
+        /// <summary>
         /// Well known prefabs for the game.
         /// </summary>
         public GamePrefabs Prefabs
@@ -362,6 +383,7 @@ namespace Altzone.Scripts.Config
             instance._permanentFeatures = new GameFeatures();
             instance._permanentConstraints = new GameConstraints();
             instance._permanentVariables = new GameVariables();
+            instance._battleUiConfig = new BattleUiConfig();
             instance._permanentPrefabs = new GamePrefabs();
             instance._characters = new Characters();
             // Set persistent values
@@ -369,6 +391,7 @@ namespace Altzone.Scripts.Config
             instance.Features = gameSettings._features;
             instance._permanentConstraints = gameSettings._constraints;
             instance.Variables = gameSettings._variables;
+            instance._battleUiConfig = gameSettings._battleUiConfig;
             instance.Prefabs = gameSettings._prefabs;
             instance._playerDataCache = LoadPlayerDataCache(instance);
             instance._gameInput = gameSettings._input;

@@ -22,13 +22,15 @@ namespace Battle.Scripts.Ui
         private void Awake()
         {
             var runtimeGameConfig = RuntimeGameConfig.Get();
-            var variables = runtimeGameConfig.Features;
+            var features = runtimeGameConfig.Features;
+            var variables = runtimeGameConfig.Variables;
+            var battleUi = runtimeGameConfig.BattleUi;
 
-            _isGridDisabled = variables._isDisableBattleUiGrid;
+            _isGridDisabled = features._isDisableBattleUiGrid;
             _gridWidth = variables._battleUiGridWidth;
             _gridHeight = variables._battleUiGridHeight;
-            _gridLineWidth = variables._battleUiGridLineWidth;
-            _gridColor = variables._battleUiGridColor;
+            _gridLineWidth = battleUi._battleUiGridLineWidth;
+            _gridColor = battleUi._battleUiGridColor;
         }
 
         private void Start()
