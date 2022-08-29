@@ -19,6 +19,7 @@ namespace Altzone.Scripts.Config
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
         [SerializeField] protected string _playerName;
+        [SerializeField] protected string _clanName;
 
         /// <summary>
         /// Player name.
@@ -38,6 +39,11 @@ namespace Altzone.Scripts.Config
 
         public bool HasPlayerName => !string.IsNullOrWhiteSpace(_playerName);
 
+        /// <summary>
+        /// Clan name.
+        /// </summary>
+        public string ClanName => _clanName;
+        
         [SerializeField] protected int _characterModelId;
 
         /// <summary>
@@ -221,11 +227,16 @@ namespace Altzone.Scripts.Config
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
+            // TODO: Clan is not implemented yet.
+            if (_clanId == -1 || string.IsNullOrWhiteSpace(_clanName))
+            {
+                _clanName = "Best Clan";
+            }
             if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(_playerName))
             {
                 return;
             }
-            // Save these settings immediately on this device!
+            // Create and save these settings immediately on this device!
             if (string.IsNullOrWhiteSpace(PlayerGuid))
             {
                 _playerGuid = CreatePlayerHandle();
