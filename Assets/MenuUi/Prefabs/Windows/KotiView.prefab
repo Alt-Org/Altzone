@@ -2123,6 +2123,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2946997330590361081}
+  - component: {fileID: 9015687335213794093}
+  - component: {fileID: 1070460618351758593}
   m_Layer: 0
   m_Name: KotiView
   m_TagString: Untagged
@@ -2146,6 +2148,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9015687335213794093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946997330590361080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0658526fd8e2a434da94b86d8bd733ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerName: {fileID: 2149378972492722996}
+  _clanName: {fileID: 1164755216532744658}
+--- !u!114 &1070460618351758593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946997330590361080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e63504f45d61f45a91b7734b4581ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _view: {fileID: 9015687335213794093}
 --- !u!1 &3254891827926722653
 GameObject:
   m_ObjectHideFlags: 0
