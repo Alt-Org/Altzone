@@ -22,6 +22,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private InputActionReference _moveInputAction;
 
         [Header("Live Data"), SerializeField] private Camera _camera;
+        [SerializeField] private bool _isKeyboardReversed;
         [SerializeField] private Rect _playerArea = DefaultPlayerArea;
         [SerializeField] private Transform _playerTransform;
 
@@ -35,7 +36,8 @@ namespace Battle.Scripts.Battle.Players
         {
             Assert.IsNull(_camera);
             _camera = Context.GetBattleCamera.Camera;
-            _isLimitMouseXYOnDesktop = !Application.isMobilePlatform;
+            var isDesktop = !Application.isMobilePlatform;
+            _isLimitMouseXYOnDesktop = isDesktop;
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
         }
@@ -46,6 +48,12 @@ namespace Battle.Scripts.Battle.Players
             ReleaseInput();
         }
 
+        private void SetupCamera()
+        {
+            var isDesktop = !Application.isMobilePlatform;
+            _isKeyboardReversed = isDesktop && Context.GetBattleCamera.IsRotated;
+        }
+        
         #region IPlayerInputHandler
 
         public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform, Rect playerArea)
@@ -54,6 +62,7 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver = playerDriver;
             _playerTransform = playerTransform;
             _playerArea = playerArea;
+            SetupCamera();
             SetupInput();
         }
 
@@ -104,8 +113,16 @@ namespace Battle.Scripts.Battle.Players
             // Simulate mouse click by trying to move very far.
             _inputClick = ctx.ReadValue<Vector2>() * _unReachableDistance;
             Vector2 inputPosition = _playerTransform.position;
-            inputPosition.x += _inputClick.x;
-            inputPosition.y += _inputClick.y;
+            if (_isKeyboardReversed)
+            {
+                inputPosition.x -= _inputClick.x;
+                inputPosition.y -= _inputClick.y;
+            }
+            else
+            {
+                inputPosition.x += _inputClick.x;
+                inputPosition.y += _inputClick.y;
+            }
             _inputClick.x = Mathf.Clamp(inputPosition.x, _playerArea.xMin, _playerArea.xMax);
             _inputClick.y = Mathf.Clamp(inputPosition.y, _playerArea.yMin, _playerArea.yMax);
             SendMoveTo(_inputClick);
