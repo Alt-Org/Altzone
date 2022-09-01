@@ -88,26 +88,23 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
+            if (_isGridMovementDisabled)
+            {
+                _playerDriver.MoveTo(targetPosition);
+            }
             targetPosition = CalculateGridMovement(_camera.WorldToViewportPoint(targetPosition));
             targetPosition = _camera.ViewportToWorldPoint(targetPosition);
             _playerDriver.MoveTo(targetPosition);
         }
 
-        private Vector2 CalculateGridMovement(Vector2 movePositionInGrid)
+        private Vector2 CalculateGridMovement(Vector2 viewportPosition)
         {
-            if (_isGridMovementDisabled == true)
-            {
-                return movePositionInGrid;
-            }
-            else
-            {
-                int _divX = (int)(movePositionInGrid.x * _gridWidth);
-                int _divY = (int)(movePositionInGrid.y * _gridHeight);
-                movePositionInGrid.x = (float)_divX / _gridWidth + 0.5f / _gridWidth;
-                movePositionInGrid.y = (float)_divY / _gridHeight + 0.5f / _gridHeight;
-                movePositionInGrid.x = Mathf.Clamp(movePositionInGrid.x, 1 / _gridWidth, 1 - 1 / _gridWidth);
-                return movePositionInGrid;
-            }
+            var divX = (int)(viewportPosition.x * _gridWidth);
+            var divY = (int)(viewportPosition.y * _gridHeight);
+            viewportPosition.x = (float)divX / _gridWidth + 0.5f / _gridWidth;
+            viewportPosition.y = (float)divY / _gridHeight + 0.5f / _gridHeight;
+            viewportPosition.x = Mathf.Clamp(viewportPosition.x, 0.5f / _gridWidth, 1f - (0.5f / _gridWidth));
+            return viewportPosition;
         }
 
         #endregion IPlayerInputHandler
