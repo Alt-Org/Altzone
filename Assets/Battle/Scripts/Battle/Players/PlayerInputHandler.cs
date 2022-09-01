@@ -1,3 +1,4 @@
+using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -28,6 +29,9 @@ namespace Battle.Scripts.Battle.Players
 
         private IPlayerDriver _playerDriver;
         private Vector2 _inputClick;
+        private bool _isGridMovementDisabled;
+        private int _gridWidth;
+        private int _gridHeight;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
         private bool _isLimitMouseXYOnDesktop;
@@ -40,6 +44,13 @@ namespace Battle.Scripts.Battle.Players
             _isLimitMouseXYOnDesktop = isDesktop;
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
+
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var features = runtimeGameConfig.Features;
+            var variables = runtimeGameConfig.Variables;
+            _isGridMovementDisabled = features._isDisableBattleGridMovement;
+            _gridWidth = variables._battleUiGridWidth;
+            _gridHeight = variables._battleUiGridHeight;
         }
 
         private void OnDestroy()
@@ -53,7 +64,7 @@ namespace Battle.Scripts.Battle.Players
             var isDesktop = !Application.isMobilePlatform;
             _isKeyboardReversed = isDesktop && Context.GetBattleCamera.IsRotated;
         }
-        
+
         #region IPlayerInputHandler
 
         public void SetPlayerDriver(IPlayerDriver playerDriver, Transform playerTransform, Rect playerArea)
@@ -77,10 +88,29 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
+            targetPosition = CalculateGridMovement(_camera.WorldToViewportPoint(targetPosition));
+            targetPosition = _camera.ViewportToWorldPoint(targetPosition);
             _playerDriver.MoveTo(targetPosition);
         }
 
-        #endregion
+        private Vector2 CalculateGridMovement(Vector2 movePositionInGrid)
+        {
+            if (_isGridMovementDisabled == true)
+            {
+                return movePositionInGrid;
+            }
+            else
+            {
+                int _divX = (int)(movePositionInGrid.x * _gridWidth);
+                int _divY = (int)(movePositionInGrid.y * _gridHeight);
+                movePositionInGrid.x = (float)_divX / _gridWidth + 0.5f / _gridWidth;
+                movePositionInGrid.y = (float)_divY / _gridHeight + 0.5f / _gridHeight;
+                movePositionInGrid.x = Mathf.Clamp(movePositionInGrid.x, 1 / _gridWidth, 1 - 1 / _gridWidth);
+                return movePositionInGrid;
+            }
+        }
+
+        #endregion IPlayerInputHandler
 
         #region UNITY Input System
 
@@ -154,6 +184,6 @@ namespace Battle.Scripts.Battle.Players
             SendMoveTo(_inputClick);
         }
 
-        #endregion
+        #endregion UNITY Input System
     }
 }
