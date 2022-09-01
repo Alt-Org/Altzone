@@ -271,10 +271,10 @@ namespace Altzone.Scripts.Config
     {   
        [Header ("Character Model Attributes")] public string _name;
         public Defence _mainDefence;
-        public int _speed;
-        public int _resistance;
-        public int _attack; 
-        public int _defence; 
+        [Range(0,10)]  public int _speed;
+        [Range(0,10)]  public int _resistance;
+        [Range(0,10)]  public int _attack; 
+        [Range(0,10)]  public int _defence; 
     }
 
     #endregion
