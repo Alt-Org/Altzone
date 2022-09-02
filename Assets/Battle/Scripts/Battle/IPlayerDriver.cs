@@ -34,6 +34,10 @@ namespace Battle.Scripts.Battle
         void FixCameraRotation(Camera gameCamera);
 
         void MoveTo(Vector2 targetPosition);
+        
+        void MoveTo(int row, int col);
+
+        void MoveTo(int row, int col, double movementStartTime);
 
         void SetCharacterPose(int poseIndex);
 
@@ -68,5 +72,6 @@ namespace Battle.Scripts.Battle
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();
+        void MoveTo(int row, int col);
     }
 }

@@ -314,6 +314,11 @@ namespace Battle.Scripts.Battle.Players
             _targetPosition = targetPosition;
         }
 
+        void IPlayerActor.MoveTo(Vector2 targetPosition, double movementStartTime)
+        {
+            throw new NotImplementedException();
+        }
+
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
             if (_debug._isLogEvents)

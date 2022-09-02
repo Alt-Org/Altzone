@@ -1,3 +1,4 @@
+using System;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Photon.Pun;
@@ -100,6 +101,11 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"pose {_currentPoseIndex} shield {_currentShieldResistance}");
             _lastBallHitTime = PhotonNetwork.Time;
             _playerDriver.SetPlayMode(BattlePlayMode.Ghosted);
+        }
+
+        public void MoveTo(int row, int col)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()

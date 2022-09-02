@@ -160,6 +160,16 @@ namespace Battle.Scripts.Battle.Players
             _playerActor.MoveTo(targetPosition);
         }
 
+        void IPlayerDriver.MoveTo(int row, int col)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IPlayerDriver.MoveTo(int row, int col, double movementStartTime)
+        {
+            throw new NotImplementedException();
+        }
+
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
             _playerActor.SetCharacterPose(poseIndex);

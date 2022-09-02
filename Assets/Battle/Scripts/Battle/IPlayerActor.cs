@@ -40,6 +40,8 @@ namespace Battle.Scripts.Battle
 
         void MoveTo(Vector2 targetPosition);
 
+        void MoveTo(Vector2 targetPosition, double movementStartTime);
+
         void SetCharacterPose(int poseIndex);
 
         void SetPlayMode(BattlePlayMode playMode);

@@ -18,11 +18,13 @@ namespace Battle.Scripts.Test
         public bool _setStunned;
         public bool _setRotation;
 
-        [Header("Test Settings")] public Vector2 _moveToPosition;
+        [Header("Test Settings")] public bool _isGridMovement;
+        public Vector2 _moveToPosition;
         public int _poseIndex;
         public bool _isShieldVisible;
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
+        public double _gridMovementDelay = 100;
 
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;
@@ -52,7 +54,14 @@ namespace Battle.Scripts.Test
                 // Toggle between test target position and current player position 
                 var position = _moveToPosition;
                 _moveToPosition = _playerDriver.Position;
-                _playerDriver.MoveTo(position);
+                if (_isGridMovement)
+                {
+                    _playerDriver.MoveTo((int)position.y, (int)position.x, _gridMovementDelay);
+                }
+                else
+                {
+                    _playerDriver.MoveTo(position);
+                }
                 return;
             }
             if (_setPose)
