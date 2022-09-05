@@ -1,3 +1,4 @@
+using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -22,11 +23,15 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private InputActionReference _moveInputAction;
 
         [Header("Live Data"), SerializeField] private Camera _camera;
+        [SerializeField] private bool _isKeyboardReversed;
         [SerializeField] private Rect _playerArea = DefaultPlayerArea;
         [SerializeField] private Transform _playerTransform;
 
         private IPlayerDriver _playerDriver;
         private Vector2 _inputClick;
+        private bool _isGridMovementDisabled;
+        private int _gridWidth;
+        private int _gridHeight;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
         private bool _isLimitMouseXYOnDesktop;
@@ -35,15 +40,31 @@ namespace Battle.Scripts.Battle.Players
         {
             Assert.IsNull(_camera);
             _camera = Context.GetBattleCamera.Camera;
-            _isLimitMouseXYOnDesktop = !Application.isMobilePlatform;
+            var isDesktop = !Application.isMobilePlatform;
+            _isLimitMouseXYOnDesktop = isDesktop;
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
+
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var features = runtimeGameConfig.Features;
+            var variables = runtimeGameConfig.Variables;
+            _isGridMovementDisabled = features._isDisableBattleGridMovement;
+            _gridWidth = variables._battleUiGridWidth;
+            _gridHeight = variables._battleUiGridHeight;
+            Assert.IsTrue(_gridWidth > 0, "_gridWidth > 0");
+            Assert.IsTrue(_gridHeight > 0, "_gridHeight > 0");
         }
 
         private void OnDestroy()
         {
             Debug.Log($"{name}");
             ReleaseInput();
+        }
+
+        private void SetupCamera()
+        {
+            var isDesktop = !Application.isMobilePlatform;
+            _isKeyboardReversed = isDesktop && Context.GetBattleCamera.IsRotated;
         }
 
         #region IPlayerInputHandler
@@ -54,6 +75,7 @@ namespace Battle.Scripts.Battle.Players
             _playerDriver = playerDriver;
             _playerTransform = playerTransform;
             _playerArea = playerArea;
+            SetupCamera();
             SetupInput();
         }
 
@@ -68,10 +90,28 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _playerDriver.MoveTo(targetPosition);
+            if (_isGridMovementDisabled)
+            {
+                _playerDriver.MoveTo(targetPosition);
+                return;
+            }
+            var gridPosition = CalculateGridMovement(targetPosition);
+            _playerDriver.MoveTo(gridPosition);
         }
 
-        #endregion
+        private Vector2 CalculateGridMovement(Vector2 targetPosition)
+        {
+            var viewportPosition = _camera.WorldToViewportPoint(targetPosition);
+            var divX = (int)(viewportPosition.x * _gridWidth);
+            var divY = (int)(viewportPosition.y * _gridHeight);
+            viewportPosition.x = (float)divX / _gridWidth + 0.5f / _gridWidth;
+            viewportPosition.y = (float)divY / _gridHeight + 0.5f / _gridHeight;
+            viewportPosition.x = Mathf.Clamp(viewportPosition.x, 0.5f / _gridWidth, 1f - (0.5f / _gridWidth));
+            Vector2 worldPosition = _camera.ViewportToWorldPoint(viewportPosition);
+            return worldPosition;
+        }
+
+        #endregion IPlayerInputHandler
 
         #region UNITY Input System
 
@@ -104,8 +144,16 @@ namespace Battle.Scripts.Battle.Players
             // Simulate mouse click by trying to move very far.
             _inputClick = ctx.ReadValue<Vector2>() * _unReachableDistance;
             Vector2 inputPosition = _playerTransform.position;
-            inputPosition.x += _inputClick.x;
-            inputPosition.y += _inputClick.y;
+            if (_isKeyboardReversed)
+            {
+                inputPosition.x -= _inputClick.x;
+                inputPosition.y -= _inputClick.y;
+            }
+            else
+            {
+                inputPosition.x += _inputClick.x;
+                inputPosition.y += _inputClick.y;
+            }
             _inputClick.x = Mathf.Clamp(inputPosition.x, _playerArea.xMin, _playerArea.xMax);
             _inputClick.y = Mathf.Clamp(inputPosition.y, _playerArea.yMin, _playerArea.yMax);
             SendMoveTo(_inputClick);
@@ -137,6 +185,6 @@ namespace Battle.Scripts.Battle.Players
             SendMoveTo(_inputClick);
         }
 
-        #endregion
+        #endregion UNITY Input System
     }
 }

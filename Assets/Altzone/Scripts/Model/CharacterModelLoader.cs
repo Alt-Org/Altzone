@@ -11,17 +11,19 @@ namespace Altzone.Scripts.Model
     /// </remarks>
     public static class CharacterModelLoader
     {
+        public static void UpdateListsInfo()
+        {
+            Characters LoadCharacterModel(string _name, Defence _mainDefence, int _speed, int _resistance,int _attack,int _defence)
+            {
+            return LoadCharacterModel(_name, _mainDefence, _speed, _resistance, _attack, _defence);
+            }
+        }
         public static List<CharacterModel> LoadModels()
         {
             // HAHMOT ja niiden kuvaukset (+ värit)
             // https://docs.google.com/spreadsheets/d/1GBlkKJia89lFvEspTzrq_IJ3XXfCTRDQmB4NrZs-Npo/edit#gid=0
             
-              RuntimeGameConfig Characters(string name,Defence mainDefence, int speed, int resistance,int attack,int defence)
-            {   
-            var LoadCharacterModel = Characters(name, mainDefence, speed, resistance, attack, defence);
-            return LoadCharacterModel;   
-            }
-
+             UpdateListsInfo();
             return new List<CharacterModel>()
             {
                 LoadCharacterModel("Koulukiusaaja", Defence.Desensitisation, 3, 9, 7, 3),

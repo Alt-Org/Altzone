@@ -70,7 +70,7 @@ namespace Editor.Prg.Dependencies
                 var asset = AssetDatabase.LoadMainAssetAtPath(path);
                 if (asset is GameObject gameObject)
                 {
-                    missingCount += FindMissingReferences("Selection", gameObject);
+                    missingCount += FindMissingReferences("Selection", gameObject.transform);
                 }
             }
             Debug.Log($"missingCount {missingCount}");
@@ -82,29 +82,29 @@ namespace Editor.Prg.Dependencies
             var missingCount = 0;
             foreach (var gameObject in gameObjects)
             {
-                missingCount += FindMissingReferences(context, gameObject);
+                missingCount += FindMissingReferences(context, gameObject.transform);
             }
             Debug.Log($"missingCount {missingCount}");
         }
 
-        private static int FindMissingReferences(string context, GameObject gameObject)
+        private static int FindMissingReferences(string context, Transform transform)
         {
+            var gameObject = transform.gameObject;
             var missingCount = 0;
             var components = gameObject.GetComponents<Component>();
+            var objRefValueMethod = typeof(SerializedProperty).GetProperty("objectReferenceStringValue",
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             foreach (var component in components)
             {
                 // Missing components will be null, we can't find their type, etc.
                 if (!component)
                 {
-                    Debug.LogWarning($"Missing Component in GameObject: {gameObject.GetFullPath()}", gameObject);
+                    Debug.LogWarning($"{RichText.Red("NOT FOUND")}: [{context}]{gameObject.GetFullPath()}: Is component deleted?", gameObject);
                     missingCount += 1;
                     continue;
                 }
                 var so = new SerializedObject(component);
                 var sp = so.GetIterator();
-                var objRefValueMethod = typeof(SerializedProperty).GetProperty("objectReferenceStringValue",
-                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
                 // Iterate over the components' properties.
                 while (sp.NextVisible(true))
                 {
@@ -135,6 +135,15 @@ namespace Editor.Prg.Dependencies
                     }
                 }
             }
+            var childCount = transform.childCount;
+            if (childCount > 0)
+            {
+                for (var i = 0; i < childCount; ++i)
+                {
+                    var child = transform.GetChild(i);
+                    missingCount += FindMissingReferences(context, child);
+                }
+            }
             return missingCount;
         }
 
@@ -148,8 +157,8 @@ namespace Editor.Prg.Dependencies
 
         private static void ShowMissing(string context, GameObject gameObject, string componentName, string propertyName, string propMessage)
         {
-            Debug.LogWarning(
-                $"MISSING: [{context}]{gameObject.GetFullPath()}. COMP: {componentName}, PROP: {propertyName} : {propMessage}", gameObject);
+            Debug.LogWarning($"{RichText.Yellow("MISSING")}: [{context}]{gameObject.GetFullPath()}: " +
+                             $"component: {componentName}, property: {propertyName} : {propMessage}", gameObject);
         }
     }
 }

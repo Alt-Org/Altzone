@@ -40,7 +40,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Rotate game camera for upper team so they see their own game area in lower part of the screen.
         /// </summary>
-        [Header("Core Features"), Tooltip("Rotate game camera for upper team so they see their own game area in lower part of the screen")]
+        [Header("Battle Game"), Tooltip("Rotate game camera for upper team so they see their own game area in lower part of the screen")]
         public bool _isRotateGameCamera;
 
         /// <summary>
@@ -50,9 +50,21 @@ namespace Altzone.Scripts.Config
         public bool _isRotateGameBackground;
 
         /// <summary>
+        /// Disable grid based player movement
+        /// </summary>
+        [Tooltip("Disable grid based player movement")]
+        public bool _isDisableBattleGridMovement;
+        
+        /// <summary>
+        /// Is sounds enabled.
+        /// </summary>
+        [Header("Miscellaneous"), Tooltip("Disable (mute) all sounds")]
+        public bool _isMuteAllSounds;
+
+        /// <summary>
         /// Disable player <c>SetPlayMode</c> calls when ball goes over team's gameplay area.
         /// </summary>
-        [Header("Testing"), Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
+        [Header("Battle Testing"), Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
         public bool _isDisablePlayModeChanges;
 
         /// <summary>
@@ -90,12 +102,6 @@ namespace Altzone.Scripts.Config
         /// </summary>
         [Tooltip("Disable bricks")]
         public bool _isDisableBricks;
-
-        /// <summary>
-        /// Is sounds enabled.
-        /// </summary>
-        [Tooltip("Disable (mute) all sounds")]
-        public bool _isMuteAllSounds;
 
         /// <summary>
         /// Settings for Battle Scene UI Grid Overlay.
@@ -265,10 +271,10 @@ namespace Altzone.Scripts.Config
     {   
        [Header ("Character Model Attributes")] public string _name;
         public Defence _mainDefence;
-        public int _speed;
-        public int _resistance;
-        public int _attack; 
-        public int _defence; 
+        [Range(0,10)]  public int _speed;
+        [Range(0,10)]  public int _resistance;
+        [Range(0,10)]  public int _attack; 
+        [Range(0,10)]  public int _defence; 
     }
 
     #endregion

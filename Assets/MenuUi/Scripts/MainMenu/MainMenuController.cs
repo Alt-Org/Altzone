@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
+﻿using Altzone.Scripts.Config;
 using UnityEngine;
 
 namespace MenuUi.Scripts.MainMenu
@@ -9,16 +7,12 @@ namespace MenuUi.Scripts.MainMenu
     {
         [SerializeField] private MainMenuView _view;
 
-        private void Awake()
+        private void OnEnable()
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
-        }
-
-        private IEnumerator Start()
-        {
-            yield return new WaitUntil(() => GeoLocation.HasData);
-            Debug.Log($"GeoLocation {GeoLocation.Data}");
+            _view.ClanName = playerDataCache.ClanName;
         }
     }
 }
