@@ -58,7 +58,7 @@ namespace Battle.Scripts.Battle.Players
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
-                _state.ResetState(this, _characterModel);
+                _state.ResetState(this, _playerActor, _characterModel);
                 _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }

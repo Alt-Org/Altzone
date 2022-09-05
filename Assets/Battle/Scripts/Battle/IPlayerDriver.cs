@@ -68,7 +68,7 @@ namespace Battle.Scripts.Battle
     internal interface IPlayerDriverState
     {
         double LastBallHitTime { get; }
-        void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel);
+        void ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();

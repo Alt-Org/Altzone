@@ -14,6 +14,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField, ReadOnly] private double _lastBallHitTime;
 
         private IPlayerDriver _playerDriver;
+        private IPlayerActor _playerActor;
         private CharacterModel _characterModel;
         private IBallManager _ballManager;
         private float _playerAttackMultiplier;
@@ -23,9 +24,10 @@ namespace Battle.Scripts.Battle.Players
 
         public double LastBallHitTime => _lastBallHitTime;
 
-        public void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel)
+        public void ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel)
         {
             _playerDriver = playerDriver;
+            _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
 
@@ -108,6 +110,11 @@ namespace Battle.Scripts.Battle.Players
             throw new NotImplementedException();
         }
 
+        private void DelayedMoveTo(Vector2 targetPosition, double movementStartTime)
+        {
+            _playerActor.MoveTo(targetPosition, movementStartTime);
+        }
+        
         public override string ToString()
         {
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
