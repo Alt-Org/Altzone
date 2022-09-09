@@ -7,6 +7,9 @@ using UnityEngine.Assertions;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
+/// <summary>
+/// Extension and helper methods for working with UNITY <c>GameObject</c>s and <c>Component</c>s.
+/// </summary>
 public static class UnityExtensions
 {
     #region GameObjects and Components
@@ -15,6 +18,11 @@ public static class UnityExtensions
     {
         var component = parent.GetComponent<T>();
         return component != null ? component : parent.AddComponent<T>();
+    }
+
+    public static T CreateStaticSingleton<T>() where T : Component
+    {
+        return CreateGameObjectAndComponent<T>(typeof(T).Name, true);
     }
 
     public static T CreateGameObjectAndComponent<T>(string name, bool isDontDestroyOnLoad) where T : Component

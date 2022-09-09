@@ -294,7 +294,7 @@ namespace Altzone.Scripts.Config
         {
             if (_runtimeGameConfig == null)
             {
-                _runtimeGameConfig = UnityExtensions.CreateGameObjectAndComponent<RuntimeGameConfig>(nameof(RuntimeGameConfig), true);
+                _runtimeGameConfig = UnityExtensions.CreateStaticSingleton<RuntimeGameConfig>();
                 LoadGameConfig(_runtimeGameConfig);
                 Debug.Log($"{_runtimeGameConfig.name}");
             }

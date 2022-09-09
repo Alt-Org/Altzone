@@ -61,8 +61,7 @@ namespace Altzone.Scripts.Config.Photon
                 _instance = FindObjectOfType<GameConfigSynchronizer>();
                 if (_instance == null)
                 {
-                    _instance =
-                        UnityExtensions.CreateGameObjectAndComponent<GameConfigSynchronizer>(nameof(GameConfigSynchronizer), true);
+                    _instance = UnityExtensions.CreateStaticSingleton<GameConfigSynchronizer>();
                 }
             }
             return _instance;

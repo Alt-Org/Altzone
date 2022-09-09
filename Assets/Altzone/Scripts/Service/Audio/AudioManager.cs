@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Service.Audio
 
         public static IAudioManager Get()
         {
-            return _audioManager ??= UnityExtensions.CreateGameObjectAndComponent<UnityAudioManager>(nameof(UnityAudioManager), true);
+            return _audioManager ??= UnityExtensions.CreateStaticSingleton<UnityAudioManager>();
         }
     }
 }
