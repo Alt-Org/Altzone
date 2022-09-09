@@ -285,20 +285,20 @@ namespace Altzone.Scripts.Config
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
-            _runtimeGameConfig = null;
+            _instance = null;
         }
 
-        private static RuntimeGameConfig _runtimeGameConfig;
+        private static RuntimeGameConfig _instance;
         
         public static IRuntimeGameConfig Get()
         {
-            if (_runtimeGameConfig == null)
+            if (_instance == null)
             {
-                _runtimeGameConfig = UnityExtensions.CreateStaticSingleton<RuntimeGameConfig>();
-                LoadGameConfig(_runtimeGameConfig);
-                Debug.Log($"{_runtimeGameConfig.name}");
+                _instance = UnityExtensions.CreateStaticSingleton<RuntimeGameConfig>();
+                LoadGameConfig(_instance);
+                Debug.Log($"{_instance.name}");
             }
-            return _runtimeGameConfig;
+            return _instance;
         }
 
         public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;

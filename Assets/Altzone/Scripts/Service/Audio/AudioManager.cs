@@ -11,14 +11,14 @@ namespace Altzone.Scripts.Service.Audio
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
-            _audioManager = null;
+            _instance = null;
         }
 
-        private static IAudioManager _audioManager;
+        private static IAudioManager _instance;
 
         public static IAudioManager Get()
         {
-            return _audioManager ??= UnityExtensions.CreateStaticSingleton<UnityAudioManager>();
+            return _instance ??= UnityExtensions.CreateStaticSingleton<UnityAudioManager>();
         }
     }
 }
