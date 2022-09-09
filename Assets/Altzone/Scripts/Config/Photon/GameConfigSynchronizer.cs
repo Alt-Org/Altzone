@@ -32,11 +32,18 @@ namespace Altzone.Scripts.Config.Photon
 
         private static readonly Dictionary<Type, int> TypesSizesCache = new Dictionary<Type, int>();
 
+        /// <summary>
+        /// Listens room Synchronize events from Photon Master Client.
+        /// </summary>
         public static void Listen()
         {
-            Get(); // Instantiate our private instance for listening synchronize events
+            // Instantiate our private instance for listening synchronize events
+            Get();
         }
 
+        /// <summary>
+        /// Sends room Synchronize events (Photon Master Client).
+        /// </summary>
         public static void Synchronize(What what)
         {
             //--Debug.Log($"Synchronize {what}");
@@ -56,30 +63,30 @@ namespace Altzone.Scripts.Config.Photon
 
         private static GameConfigSynchronizer Get()
         {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<GameConfigSynchronizer>();
-                if (_instance == null)
-                {
-                    _instance = UnityExtensions.CreateStaticSingleton<GameConfigSynchronizer>();
-                }
-            }
-            return _instance;
+            return _instance ??= UnityExtensions.CreateStaticSingleton<GameConfigSynchronizer>();
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+        
         private static GameConfigSynchronizer _instance;
 
         private PhotonEventDispatcher _photonEventDispatcher;
 
         private void Awake()
         {
+            Debug.Log($"{name}");
             _photonEventDispatcher = PhotonEventDispatcher.Get();
             _photonEventDispatcher.RegisterEventListener(MsgSynchronize, data => OnSynchronize(data.CustomData));
         }
 
         private void OnDestroy()
         {
-            _instance = null;
+            Debug.Log($"{name}");
         }
 
         private static void OnSynchronize(object data)
