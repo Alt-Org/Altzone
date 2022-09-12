@@ -53,7 +53,6 @@ public class Field_Script : MonoBehaviour
             case Hexa_Struct.Type.NewTestBomb: return hexa.detonated ? tileDetonated : tileBomb;
             default: return null;
         }
-
     }
 
     private Tile GetNumberTile(Hexa_Struct hexa)
@@ -66,6 +65,9 @@ public class Field_Script : MonoBehaviour
             case 4: return tileNumber4;
             case 5: return tileNumber5;
             case 6: return tileNumber6;
+            case 7: return tileNumber7;
+            case 8: return tileNumber8;
+            case 9: return tileNumber9;
             default: return null;
         }
     }
@@ -85,9 +87,7 @@ public class Field_Script : MonoBehaviour
             case 9: return tileLootNumber9;
             default: return null;
         }
-
     }
-
 
     public Tile tileUnrevealed;
     public Tile tileBomb;

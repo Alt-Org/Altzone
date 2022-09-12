@@ -10,9 +10,7 @@ public class RaidManager_Script : MonoBehaviour
     [SerializeField] private int numberOfTestLoot;
     [SerializeField] private int lootCollected;
     [SerializeField] private int maxLootCondition;
-    //[SerializeField] private Camera raidCamera;
-
-    //public int number;
+    [SerializeField] private int floodRadius;
 
     /*(DEV) Show Bombs*/
     [SerializeField] private bool showBombs;
@@ -28,6 +26,16 @@ public class RaidManager_Script : MonoBehaviour
     private Hexa_Struct[,] state;
     private bool raidIsOver;
     private Camera cameraMain;
+    private int floodingTurn;
+    private int topBombChance;
+    private int rightBombChance;
+    private int leftBombChance;
+    private int downBombChance;
+    private int topRightBombChance;
+    private int topLeftBombChance;
+    private int downRightBombChance;
+    private int downLeftBombChance;
+
 
     private void Awake()
     {
@@ -44,11 +52,6 @@ public class RaidManager_Script : MonoBehaviour
 
         if (!raidIsOver)
         {
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    Reveal();
-            //}
-
             if (Mouse.current.leftButton.isPressed)
             {
                 Reveal(Mouse.current.position.ReadValue());
@@ -58,11 +61,6 @@ public class RaidManager_Script : MonoBehaviour
             {
                 Flag(Mouse.current.position.ReadValue());
             }
-
-            //else if (Input.GetMouseButtonDown(1))
-            //{
-            //    Flag();
-            //}
         }
     }
 
@@ -72,10 +70,12 @@ public class RaidManager_Script : MonoBehaviour
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
         Transform cameraMainTransform = cameraMain.transform;
-        cameraMainTransform.position = new Vector3(minefieldWidth / 2f, minefieldHeight / 2f, -15f); //(DEV) Camera test default. (2f, 2f, -15f) Moves Camera to follow grid manually.
+        cameraMainTransform.position = new Vector3(3.0f, 5.5f, -15f); //(DEV) Camera test default. (2f, 2f, -15f), or "minefieldWidth / 2f, minefieldHeight / 2f, -15f" Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateTestLoot();//Change where comment is if not working
-        GenerateBombsNextToLoot();
+        GenerateBombsNextToLootTop();
+        GenerateBombsNextToLootRight();
+        GenerateBombsNextToLootTopRight();
         //GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
         //GenerateNewTestBombs();
         //GenerateTestLoot used to be here
@@ -99,7 +99,6 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateNewTestBombs()
     {
-
         for (int i = 0; i < numberOfNewTestBombs; i++)
         {
             //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
@@ -251,7 +250,7 @@ public class RaidManager_Script : MonoBehaviour
         }
     }
 
-    private void GenerateBombsNextToLoot()
+    private void GenerateBombsNextToLootTop()
     {
         //for loop numberOfBombs!
         for (int y = 0; y < minefieldHeight; y++)//int x = 0; x < minefieldWidth; x++
@@ -273,63 +272,102 @@ public class RaidManager_Script : MonoBehaviour
                         }
                         //Here it has returned to the same loot hexa
                         continue;
-                        //y++;
-                        //if(hexa.type != Hexa_Struct.Type.Loot)
-                        //{
-                        //    state[x, y].type = Hexa_Struct.Type.Bomb;
-                        //}
-                        //if(hexa.type == Hexa_Struct.Type.Loot)
-                        //{
-                        //    continue;
-                        //}
                     }
-                    state[x, y].type = Hexa_Struct.Type.Bomb;
-                    //x--;
-                    //x--; //now below the loot hexa
-                    //if (x >= minefieldWidth)
-                    //{
-                    //    x--;
-                    //    y++;
-
-                    //    if (y >= minefieldHeight)
-                    //    {
-                    //        y--;
-                    //    }
-                    //    //Here it has returned to the same loot hexa
-                    //    continue;
-                    //    //y++;
-                    //    //if(hexa.type != Hexa_Struct.Type.Loot)
-                    //    //{
-                    //    //    state[x, y].type = Hexa_Struct.Type.Bomb;
-                    //    //}
-                    //    //if(hexa.type == Hexa_Struct.Type.Loot)
-                    //    //{
-                    //    //    continue;
-                    //    //}
-                    //}
+                    topBombChance = Random.Range(0, 101);
+                    if (topBombChance <= 40)
+                    {
+                        state[x, y].type = Hexa_Struct.Type.Bomb;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                     //state[x, y].type = Hexa_Struct.Type.Bomb;
-
+                    //continue;
                 }
-                //while (state[x, y].type == Hexa_Struct.Type.Loot || state[x, y].type == Hexa_Struct.Type.Bomb)
-                //{
-                //    x++;
-                //    if (x >= minefieldWidth)
-                //    {
-                //        x = 0;
-                //        y++;
-
-                //        if (y >= minefieldHeight)
-                //        {
-                //            y = 0;
-                //        }
-                //    }
-                //    x--;
-                //}
-                //state[x, y].type = Hexa_Struct.Type.Bomb;
-
             }
         }
     }
+    private void GenerateBombsNextToLootRight()
+    {
+        //for loop numberOfBombs!
+        for (int y = 0; y < minefieldHeight; y++)//int x = 0; x < minefieldWidth; x++
+        {
+            for (int x = 0; x < minefieldWidth; x++)//int y = 0; y < minefieldHeight; y++
+            {
+                Hexa_Struct hexa = state[x, y];
+                if (hexa.type == Hexa_Struct.Type.Loot)
+                {
+                    y++;
+                    if (y >= minefieldWidth || y >= minefieldHeight) //This is for checking if hexa is out of bounds and would cause an error.
+                    {
+                        y--;
+                        x++;
+                        
+                        if (x >= minefieldHeight || x >= minefieldWidth)
+                        {
+                            x--;
+                        }
+                        //Here it has returned to the same loot hexa
+                        continue;
+                    }
+                    rightBombChance = Random.Range(0, 101);
+                    if (rightBombChance <= 40)
+                    {
+                        state[x, y].type = Hexa_Struct.Type.Bomb;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    //state[x, y].type = Hexa_Struct.Type.Bomb; //(DEV)Error on this line!
+                    //continue; 
+                }
+            }
+        }
+    }
+
+    private void GenerateBombsNextToLootTopRight()
+    {
+        //for loop numberOfBombs!
+        for (int y = 0; y < minefieldHeight; y++)//int x = 0; x < minefieldWidth; x++
+        {
+            for (int x = 0; x < minefieldWidth; x++)//int y = 0; y < minefieldHeight; y++
+            {
+                Hexa_Struct hexa = state[x, y];
+                if (hexa.type == Hexa_Struct.Type.Loot)
+                {
+                    y++;
+                    x++;
+                    if (y >= minefieldWidth || y >= minefieldHeight) //This is for checking if hexa is out of bounds and would cause an error.
+                    {
+                        y--;
+                        //x--;
+
+                        if (x >= minefieldHeight || x >= minefieldWidth)
+                        {
+                            x--;
+                        }
+                        //Here it has returned to the same loot hexa
+                        continue;
+                    }
+                    else
+                    {
+                        topRightBombChance = Random.Range(0, 101);
+                        if (topRightBombChance <= 40 && hexa.type != Hexa_Struct.Type.Bomb || hexa.type != Hexa_Struct.Type.Loot)
+                        {
+                            state[x, y].type = Hexa_Struct.Type.Bomb;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     private int CalculateBombsAndLoot(int hexaX, int hexaY)
     {
@@ -389,7 +427,14 @@ public class RaidManager_Script : MonoBehaviour
         if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
-        }      
+        }
+
+        if(hexa.type == Hexa_Struct.Type.Neutral) //Flooding
+        {
+            Flood(hexa);
+            floodingTurn = 0;
+        }
+        
 
         switch (hexa.type)
         {
@@ -417,6 +462,26 @@ public class RaidManager_Script : MonoBehaviour
             UnityEngine.Debug.Log("No more loot. You win!");
             raidIsOver = true;
         }
+    }
+
+    private void Flood(Hexa_Struct hexa)
+    {
+        floodingTurn++;
+        if (hexa.revealed) return;
+        if (hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Invalid) return;
+
+        hexa.revealed = true;
+        state[hexa.position.x, hexa.position.y] = hexa;
+
+        if (hexa.type == Hexa_Struct.Type.Neutral && floodingTurn <= floodRadius)
+        {
+            //UnityEngine.Debug.Log(floodingTurn);
+            Flood(GetHexa(hexa.position.x - 1, hexa.position.y));
+            Flood(GetHexa(hexa.position.x + 1, hexa.position.y));
+            Flood(GetHexa(hexa.position.x, hexa.position.y - 1));
+            Flood(GetHexa(hexa.position.x, hexa.position.y + 1));
+        }
+        else return;
     }
 
     private void Detonate(Hexa_Struct hexa)
