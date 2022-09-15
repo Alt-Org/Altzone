@@ -15,6 +15,11 @@ namespace GameOver.Scripts.GameOver
         [SerializeField] private float _timeOutDelay;
         [SerializeField] private float _pollingInterval;
         private int _playerCount;
+        
+        private const int WinTypeNone = PhotonBattle.WinTypeNone;
+        private const int WinTypeScore = PhotonBattle.WinTypeScore;
+        private const int WinTypeResign = PhotonBattle.WinTypeResign;
+        private const int WinTypeDraw = PhotonBattle.WinTypeDraw;
 
         private void OnEnable()
         {
@@ -78,7 +83,21 @@ namespace GameOver.Scripts.GameOver
                 }
             }
         }
-
+        private static int GetWinType(int winType)
+        {       
+            switch(winType)
+            {
+                case WinTypeNone:
+                    return WinTypeNone;
+                case WinTypeScore:
+                    return WinTypeScore;
+                case WinTypeResign:
+                    return WinTypeResign;
+                case WinTypeDraw:
+                    return WinTypeDraw;           
+            }
+            return winType;
+        }
         private void UpdateGameOverTexts(int myTeam, PhotonBattle.RoomScore score)
         {
             Debug.Log($"myTeam {myTeam} score {score}");
