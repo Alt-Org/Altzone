@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
@@ -39,14 +40,21 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
+        private IGridManager _gridManager;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
+        private double _movementDelay;
+        public bool IsMoving { get; set; }
 
         private void Awake()
         {
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
+            _gridManager = Context.GetGridManager;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _movementDelay = variables._movementDelay;
         }
 
         private void OnEnable()
@@ -65,7 +73,7 @@ namespace Battle.Scripts.Battle.Players
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
-                _state.ResetState(this, _characterModel);
+                _state.ResetState(this, _playerActor, _characterModel);
                 _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
@@ -203,6 +211,33 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
+        void IPlayerDriver.SetSpaceFree(int row, int col)
+        {
+            _gridManager._gridEmptySpaces[row, col] = true;
+            Debug.Log($"Grid space free: {row}, {col}, {_gridManager._gridEmptySpaces[row, col]}");
+        }
+
+         public void SetSpaceTaken(int row, int col)
+        {
+            _gridManager._gridEmptySpaces[row, col] = false;
+            Debug.Log($"Grid space taken: {row}, {col}, {_gridManager._gridEmptySpaces[row, col]}");
+        }
+
+        void IPlayerDriver.SendMoveRequest(int row, int col)
+        {
+            ProcessMoveRequest(row, col);
+        }
+
+        private void ProcessMoveRequest(int row, int col)
+        {
+            if (!_gridManager._gridEmptySpaces[row, col])
+            {
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                return;
+            }
+            SetSpaceTaken(row, col);
+            _state.DelayedMove(row, col, _movementDelay);
+        }
         #endregion
     }
 }

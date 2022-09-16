@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Ui;
 using Photon.Pun;
@@ -26,19 +27,23 @@ namespace Battle.Scripts.Battle.Players
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
+        private double _movementDelay;
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
+        private IGridManager _gridManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
+        public bool IsMoving { get; set; }
         private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         private void Awake()
         {
             print("++");
             _photonView = PhotonView.Get(this);
+            _gridManager = Context.GetGridManager;
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             Debug.Log($"{player.GetDebugLabel()} {_photonView}");
@@ -47,6 +52,9 @@ namespace Battle.Scripts.Battle.Players
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _movementDelay = variables._movementDelay;
         }
 
         private void OnEnable()
@@ -70,7 +78,7 @@ namespace Battle.Scripts.Battle.Players
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
-                _state.ResetState(this, _characterModel);
+                _state.ResetState(this, _playerActor, _characterModel);
                 _state.CheckRotation(_playerActor.Transform.position);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
@@ -194,6 +202,12 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
         }
 
+        void IPlayerDriver.SendMoveRequest(int row, int col)
+        {
+            if (IsMoving) { return; }
+            _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, row, col);
+        }
+
         void IPlayerDriver.SetCharacterPose(int poseIndex)
         {
             SetPlayerCharacterPoseRpc(poseIndex);
@@ -254,6 +268,15 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
+        void IPlayerDriver.SetSpaceFree(int row, int col)
+        {
+            _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, row, col);
+        }
+
+        void IPlayerDriver.SetSpaceTaken(int row, int col)
+        {
+            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, row, col);
+        }
         #endregion
 
         #region Photon RPC
@@ -300,6 +323,45 @@ namespace Battle.Scripts.Battle.Players
         private void SetPlayerStunnedRpc(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+
+        [PunRPC]
+        private void ProcessMoveRequestRpc(int row, int col, PhotonMessageInfo info)
+        {
+            if (!_gridManager._gridEmptySpaces[row, col])
+            {
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                return;
+            }
+            var movementDelay = info.SentServerTime + _movementDelay - PhotonNetwork.Time;
+            Debug.Log($"Grid Request approved: {row}, {col}, player: {info.Sender}, time: {movementDelay}");
+            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.All, row, col);
+            _photonView.RPC(nameof(MoveDelayedRpc), info.Sender, row, col, movementDelay);
+        }
+
+        [PunRPC]
+        private void MoveDelayedRpc(int row, int col, double movementStartTime)
+        {
+            IsMoving = true;
+            _state.DelayedMove(row, col, movementStartTime);
+        }
+
+        [PunRPC]
+        private void SetSpaceTakenRpc(int row, int col)
+        {
+            _gridManager._gridEmptySpaces[row, col] = false;
+            Debug.Log($"Grid space taken: {row}, {col}, {_gridManager._gridEmptySpaces[row, col]}");
+        }
+
+        [PunRPC]
+        public void SetSpaceFreeRpc(int row, int col)
+        {
+            _gridManager._gridEmptySpaces[row, col] = true;
+            Debug.Log($"Grid space free: {row}, {col}, {_gridManager._gridEmptySpaces[row, col]}");
+            if (PhotonNetwork.IsMasterClient)
+            {
+                _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.Others, row, col);
+            }
         }
 
         #endregion

@@ -19,6 +19,8 @@ namespace Battle.Scripts.Battle
 
         internal static IGameScoreManager GetGameScoreManager => Object.FindObjectOfType<GameScoreManager>();
 
+        internal static IGridManager GetGridManager => Object.FindObjectOfType<GridManager>();
+
         #endregion
 
         #region Static Actors

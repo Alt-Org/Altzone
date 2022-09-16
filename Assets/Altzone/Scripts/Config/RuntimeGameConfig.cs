@@ -139,6 +139,9 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class GameVariables
     {
+        [Header("Network"), Tooltip("Delay in seconds after movement request has been made")]
+        public double _movementDelay;
+
         [Header("Battle"), Min(1)] public int _battleRoomStartDelay;
         [Min(1)] public int _battleSlingshotDelay;
         [Min(0)] public int _battleHeadScoreToWin;

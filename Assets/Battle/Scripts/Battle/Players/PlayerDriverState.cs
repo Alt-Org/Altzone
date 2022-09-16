@@ -1,3 +1,4 @@
+using System.Collections;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Photon.Pun;
@@ -15,19 +16,25 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerDriver _playerDriver;
         private CharacterModel _characterModel;
         private IBallManager _ballManager;
+        private IPlayerActor _playerActor;
+        private Transform _transform;
+        private IGridManager _gridManager;
+        private IEnumerator _delayedMoveCoroutine;
         private float _playerAttackMultiplier;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
-
+        private int[] _savedGridPosition;
         public double LastBallHitTime => _lastBallHitTime;
 
-        public void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel)
+        public void ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel)
         {
             _playerDriver = playerDriver;
+            _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
-
+            _gridManager = Context.GetGridManager;
+            _transform = _playerActor.Transform;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerAttackMultiplier = variables._playerAttackMultiplier;
@@ -39,6 +46,13 @@ namespace Battle.Scripts.Battle.Players
             _currentPoseIndex = 0;
             _currentShieldResistance = characterModel.Resistance;
             _lastBallHitTime = PhotonNetwork.Time;
+
+            Vector2 playerCurrentPosition;
+            playerCurrentPosition.x = _transform.position.x;
+            playerCurrentPosition.y = _transform.position.y;
+            var gridPos = _gridManager.CalcRowAndColumn(playerCurrentPosition, Context.GetBattleCamera.IsRotated);
+            _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
+            _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
         }
 
         public void CheckRotation(Vector2 position)
@@ -105,6 +119,21 @@ namespace Battle.Scripts.Battle.Players
         public override string ToString()
         {
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
+        }
+
+        public void DelayedMove(int row, int col, double movementStartTime)
+        {
+            _delayedMoveCoroutine = DelayTime(row, col, movementStartTime);
+            StartCoroutine(_delayedMoveCoroutine);
+        }
+
+        private IEnumerator DelayTime(int row, int col, double waitTime)
+        {
+            yield return new WaitForSeconds((float)waitTime);
+            _playerDriver.SetSpaceFree(_savedGridPosition[0], _savedGridPosition[1]);
+            _savedGridPosition = new int[2] { row, col };
+            var targetPosition = _gridManager.GridPositionToWorldpoint(row, col, Context.GetBattleCamera.IsRotated);
+            _playerDriver.MoveTo(targetPosition);
         }
     }
 }

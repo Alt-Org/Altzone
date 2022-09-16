@@ -15,7 +15,7 @@ MonoBehaviour:
   _features:
     _isRotateGameCamera: 1
     _isRotateGameBackground: 1
-    _isDisableBattleGridMovement: 1
+    _isDisableBattleGridMovement: 0
     _isMuteAllSounds: 0
     _isDisablePlayModeChanges: 0
     _isDisableShieldStateChanges: 0
@@ -29,6 +29,7 @@ MonoBehaviour:
     _minPlayerNameLength: 2
     _maxPlayerNameLength: 16
   _variables:
+    _movementDelay: 0.1
     _battleRoomStartDelay: 6
     _battleSlingshotDelay: 6
     _battleHeadScoreToWin: 5

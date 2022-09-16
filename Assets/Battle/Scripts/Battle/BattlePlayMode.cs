@@ -1,3 +1,5 @@
+using Altzone.Scripts.Config;
+
 namespace Battle.Scripts.Battle
 {
     /// <summary>
@@ -38,7 +40,11 @@ namespace Battle.Scripts.Battle
 
         public static bool CanMove(this BattlePlayMode playMode)
         {
-            return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
+            if (RuntimeGameConfig.Get().Features._isDisableBattleGridMovement)
+            {
+                return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
+            }
+            return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted || playMode == BattlePlayMode.Frozen;
         }
 
         public static bool CanCollide(this BattlePlayMode playMode)

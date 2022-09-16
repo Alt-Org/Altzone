@@ -28,6 +28,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _playerTransform;
 
         private IPlayerDriver _playerDriver;
+        private IGridManager _gridManager;
         private Vector2 _inputClick;
         private bool _isGridMovementDisabled;
         private int _gridWidth;
@@ -39,6 +40,7 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             Assert.IsNull(_camera);
+            _gridManager = Context.GetGridManager;
             _camera = Context.GetBattleCamera.Camera;
             var isDesktop = !Application.isMobilePlatform;
             _isLimitMouseXYOnDesktop = isDesktop;
@@ -95,20 +97,8 @@ namespace Battle.Scripts.Battle.Players
                 _playerDriver.MoveTo(targetPosition);
                 return;
             }
-            var gridPosition = CalculateGridMovement(targetPosition);
-            _playerDriver.MoveTo(gridPosition);
-        }
-
-        private Vector2 CalculateGridMovement(Vector2 targetPosition)
-        {
-            var viewportPosition = _camera.WorldToViewportPoint(targetPosition);
-            var divX = (int)(viewportPosition.x * _gridWidth);
-            var divY = (int)(viewportPosition.y * _gridHeight);
-            viewportPosition.x = (float)divX / _gridWidth + 0.5f / _gridWidth;
-            viewportPosition.y = (float)divY / _gridHeight + 0.5f / _gridHeight;
-            viewportPosition.x = Mathf.Clamp(viewportPosition.x, 0.5f / _gridWidth, 1f - (0.5f / _gridWidth));
-            Vector2 worldPosition = _camera.ViewportToWorldPoint(viewportPosition);
-            return worldPosition;
+            var rowAndColumn = _gridManager.CalcRowAndColumn(targetPosition, Context.GetBattleCamera.IsRotated);
+            _playerDriver.SendMoveRequest(rowAndColumn[0], rowAndColumn[1]);
         }
 
         #endregion IPlayerInputHandler
