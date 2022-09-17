@@ -1,6 +1,8 @@
+using System;
 using Altzone.Scripts.Config;
 using System.Collections;
 using System.Collections.Generic;
+using Battle.Scripts.Battle.Game;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle
@@ -14,6 +16,36 @@ namespace Battle.Scripts.Battle
         int[] CalcRowAndColumn(Vector2 targetPosition, bool isRotated);
     }
 
+    internal interface IGridManagerProposal
+    {
+        /// <summary>
+        /// The <c>GameCamera</c> that we use.
+        /// </summary>
+        GameCamera GameCamera { get; }
+        
+        /// <summary>
+        /// Gets grid state for given row and column.
+        /// </summary>
+        bool GridState(int row, int col);
+        
+        /// <summary>
+        /// Tries to set grid state for given row and column.
+        /// </summary>
+        /// <returns>True if state was changed, false otherwise.</returns>
+        bool TrySetGridState(int row, int col, bool state);
+
+        /// <summary>
+        /// Converts grid row and column position to world x,y coordinates.
+        /// </summary>
+        Vector2 GridPositionToWorldPoint(int row, int col);
+
+        /// <summary>
+        /// Converts world x,y coordinates to grid row and column position.
+        /// </summary>
+        /// <returns>Tuple where Item1 is row and Item2 is col.</returns>
+        Tuple<int, int> WorldPointToGridPosition(Vector2 targetPosition);
+    }
+    
     internal class GridManager : MonoBehaviour, IGridManager
     {
         private int _gridWidth;
