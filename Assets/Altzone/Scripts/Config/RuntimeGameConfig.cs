@@ -139,9 +139,6 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class GameVariables
     {
-        [Header("Network"), Tooltip("Delay in seconds after movement request has been made")]
-        public double _movementDelay;
-
         [Header("Battle"), Min(1)] public int _battleRoomStartDelay;
         [Min(1)] public int _battleSlingshotDelay;
         [Min(0)] public int _battleHeadScoreToWin;
@@ -163,6 +160,7 @@ namespace Altzone.Scripts.Config
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0)] public float _playerShieldHitStunDuration;
+        [Min(0), Tooltip("Delay in seconds after movement request has been made")] public float _playerMovementNetworkDelay;
 
         [Header("Shield"), Min(0)] public float _shieldDistanceMultiplier;
 

@@ -54,7 +54,7 @@ namespace Battle.Scripts.Battle.Players
             Application.quitting += () => _isApplicationQuitting = true;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
-            _movementDelay = variables._movementDelay;
+            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
