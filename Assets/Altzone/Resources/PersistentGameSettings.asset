@@ -29,7 +29,6 @@ MonoBehaviour:
     _minPlayerNameLength: 2
     _maxPlayerNameLength: 16
   _variables:
-    _movementDelay: 0.1
     _battleRoomStartDelay: 6
     _battleSlingshotDelay: 6
     _battleHeadScoreToWin: 5
@@ -48,6 +47,7 @@ MonoBehaviour:
     _playerMoveSpeedMultiplier: 2
     _playerAttackMultiplier: 2
     _playerShieldHitStunDuration: 0.5
+    _playerMovementNetworkDelay: 0.1
     _shieldDistanceMultiplier: 1
   _battleUiConfig:
     _battleUiGridLineWidth: 0.05
