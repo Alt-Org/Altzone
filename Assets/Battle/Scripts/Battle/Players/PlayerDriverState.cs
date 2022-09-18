@@ -47,9 +47,7 @@ namespace Battle.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
             _lastBallHitTime = PhotonNetwork.Time;
 
-            Vector2 playerCurrentPosition;
-            playerCurrentPosition.x = _transform.position.x;
-            playerCurrentPosition.y = _transform.position.y;
+            Vector2 playerCurrentPosition = _transform.position;
             var gridPos = _gridManager.CalcRowAndColumn(playerCurrentPosition, Context.GetBattleCamera.IsRotated);
             _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
             _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
