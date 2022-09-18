@@ -24,8 +24,9 @@ namespace Battle.Scripts.Battle.Players
             var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             if (!RuntimeGameConfig.Get().Features._isDisableBattleGridMovement)
             {
-                var playerGridPos = Context.GetGridManager.CalcRowAndColumn(instantiationPosition, Context.GetBattleCamera.IsRotated);
-                instantiationPosition = Context.GetGridManager.GridPositionToWorldpoint(playerGridPos[0], playerGridPos[1], Context.GetBattleCamera.IsRotated);
+                var gridManager = Context.GetGridManager;
+                var playerGridPos = gridManager.CalcRowAndColumn(instantiationPosition, Context.GetBattleCamera.IsRotated);
+                instantiationPosition = gridManager.GridPositionToWorldpoint(playerGridPos[0], playerGridPos[1], Context.GetBattleCamera.IsRotated);
             }
 
                 PlayerActorBase playerActorBase;
