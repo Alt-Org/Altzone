@@ -109,13 +109,13 @@ namespace GameOver.Scripts.GameOver
             {
                 _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM(Blue) WINS") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Red("YOUR TEAM(Red)  LOST") : RichText.Yellow("DRAW");
+                _view.LoserInfo = isScoreValid ? RichText.Red("THE TEAM(Red)  LOST") : RichText.Yellow("DRAW");
             }
             else if (score.WinningTeam == PhotonBattle.TeamRedValue)
             {
                 _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM(Red) WINS") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Blue("YOUR TEAM(Blue) LOST") : RichText.Yellow("DRAW");
+                _view.LoserInfo = isScoreValid ? RichText.Blue("THE TEAM(Blue) LOST") : RichText.Yellow("DRAW");
             }
             else
             {
