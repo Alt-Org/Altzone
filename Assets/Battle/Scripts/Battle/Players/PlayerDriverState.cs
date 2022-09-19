@@ -27,13 +27,12 @@ namespace Battle.Scripts.Battle.Players
         private int[] _savedGridPosition;
         public double LastBallHitTime => _lastBallHitTime;
 
-        public void ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel)
+        public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
         {
             _playerDriver = playerDriver;
             _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
-            _gridManager = Context.GetGridManager;
             _transform = _playerActor.Transform;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
@@ -47,10 +46,18 @@ namespace Battle.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
             _lastBallHitTime = PhotonNetwork.Time;
 
-            Vector2 playerCurrentPosition = _transform.position;
-            var gridPos = _gridManager.CalcRowAndColumn(playerCurrentPosition, Context.GetBattleCamera.IsRotated);
+            if (features._isDisableBattleGridMovement)
+            {
+                return playerWorldPosition;
+            }
+            var isRotated = Context.GetBattleCamera.IsRotated;
+            _gridManager = Context.GetGridManager;
+            var gridPos = _gridManager.CalcRowAndColumn(playerWorldPosition, isRotated);
             _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
             _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
+            var currentPosition = _gridManager.GridPositionToWorldpoint(gridPos[0], gridPos[1], isRotated);
+            _playerDriver.MoveTo(currentPosition);
+            return currentPosition;
         }
 
         public void CheckRotation(Vector2 position)

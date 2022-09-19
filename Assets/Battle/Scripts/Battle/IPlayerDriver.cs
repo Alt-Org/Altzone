@@ -70,7 +70,7 @@ namespace Battle.Scripts.Battle
     internal interface IPlayerDriverState
     {
         double LastBallHitTime { get; }
-        void ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel);
+        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();
