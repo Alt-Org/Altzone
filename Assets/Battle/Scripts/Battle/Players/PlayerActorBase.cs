@@ -22,14 +22,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var playerPos = playerDriver.PlayerPos;
             var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-            if (!RuntimeGameConfig.Get().Features._isDisableBattleGridMovement)
-            {
-                var gridManager = Context.GetGridManager;
-                var playerGridPos = gridManager.CalcRowAndColumn(instantiationPosition, Context.GetBattleCamera.IsRotated);
-                instantiationPosition = gridManager.GridPositionToWorldpoint(playerGridPos[0], playerGridPos[1], Context.GetBattleCamera.IsRotated);
-            }
-
-                PlayerActorBase playerActorBase;
+            PlayerActorBase playerActorBase;
             if (playerPrefabTest == null)
             {
                 // This must be PlayerActor2 prefab which must be obtained via RuntimeGameConfig!
