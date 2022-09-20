@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
@@ -32,10 +33,20 @@ namespace Tests.PlayMode.GridManager
             }
             var runtimeGameConfig = RuntimeGameConfig.Get();
             Assert.AreEqual(false, runtimeGameConfig.Features._isDisableBattleGridMovement);
+            
             var variables = runtimeGameConfig.Variables;
             var gridWidth = variables._battleUiGridWidth;
             var gridHeight = variables._battleUiGridHeight;
-            Debug.Log($"Start width {gridWidth} height {gridHeight}");
+            
+            var battleCamera = Context.GetBattleCamera;
+            var world = battleCamera.Camera.ViewportToWorldPoint(Vector3.one);
+            var worldWidth = 2f * world.x;
+            var worldHeight = 2f * world.y;
+            Debug.Log($"GRID rows {gridWidth} cols {gridHeight} WORLD width {worldWidth} height {worldHeight}");
+
+            // We require that play are is set on origo (0,0) - to check that world pos is inside our "grid" world
+            var battlePlayArea = Context.GetBattlePlayArea;
+            Assert.AreEqual(Vector2.zero, battlePlayArea.GetPlayAreaCenterPosition);
 
             var grid = gridManager._gridEmptySpaces;
             Assert.AreEqual(gridWidth, grid.GetLength(0));
@@ -52,6 +63,8 @@ namespace Tests.PlayMode.GridManager
                     {
                         var worldPos = gridManager.GridPositionToWorldPoint(row, col, rotation);
                         Debug.Log($"Grid row, col {row:00},{col:00} -> x,y {worldPos.x:0.00},{worldPos.y:0.00} ({worldPos.x},{worldPos.y})");
+                        Assert.IsFalse(Mathf.Abs(worldPos.x) > world.x);
+                        Assert.IsFalse(Mathf.Abs(worldPos.y) > world.y);
                         var gridPos = gridManager.CalcRowAndColumn(worldPos, rotation);
                         var row2 = gridPos[0];
                         var col2 = gridPos[1];
@@ -60,7 +73,7 @@ namespace Tests.PlayMode.GridManager
                     }
                 }
             }
-            Debug.Log("Exit");
+            Debug.Log("Done");
         }
     }
 }
