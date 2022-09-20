@@ -19,30 +19,52 @@ namespace Battle.Scripts.Battle
     internal interface IGridManagerProposal
     {
         /// <summary>
+        /// The grid size (width aka row count, height aka column count).
+        /// </summary>
+        /// <remarks>
+        /// The gird is zero based and origo is in bottom left corner.
+        /// </remarks>
+        Tuple<int, int> GridSize { get; set; }
+        
+        /// <summary>
+        /// Gets grid width aka row count.
+        /// </summary>
+        int RowCount { get; }
+
+        /// <summary>
+        /// Gets grid height aka column count.
+        /// </summary>
+        int ColCount { get; }
+        
+        /// <summary>
         /// The <c>GameCamera</c> that we use.
         /// </summary>
-        GameCamera GameCamera { get; }
+        GameCamera GameCamera { get; set; }
         
         /// <summary>
         /// Gets grid state for given row and column.
         /// </summary>
-        bool GridState(int col, int row);
+        bool GridState(int row, int col);
+        bool GridState(Tuple<int, int> gridPos);
         
         /// <summary>
         /// Tries to set grid state for given row and column.
         /// </summary>
         /// <returns>True if state was changed, false otherwise.</returns>
-        bool TrySetGridState(int col, int row, bool state);
+        bool TrySetGridState(int row, int col, bool state);
+        bool TrySetGridState(Tuple<int, int> gridPos, bool state);
 
         /// <summary>
         /// Converts grid row and column position to world x,y coordinates.
         /// </summary>
-        Vector2 GridPositionToWorldPoint(int col, int row);
+        Vector2 GridPositionToWorldPoint(int row, int col);
+        Vector2 GridPositionToWorldPoint(Tuple<int, int> gridPos);
 
         /// <summary>
         /// Converts world x,y coordinates to grid row and column position.
         /// </summary>
         /// <returns>Tuple where Item1 is row and Item2 is col.</returns>
+        void WorldPointToGridPosition(Vector2 targetPosition, out int row, out int col);
         Tuple<int, int> WorldPointToGridPosition(Vector2 targetPosition);
     }
     
