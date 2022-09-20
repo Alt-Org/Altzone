@@ -9,9 +9,12 @@ namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerDriverState : MonoBehaviour, IPlayerDriverState
     {
-        [SerializeField, ReadOnly] private int _currentPoseIndex;
+        [Header("Live Data"), SerializeField, ReadOnly] private int _currentPoseIndex;
         [SerializeField, ReadOnly] private int _currentShieldResistance;
         [SerializeField, ReadOnly] private double _lastBallHitTime;
+        
+        [Header("Debug"), SerializeField, ReadOnly] private int _currentRow;
+        [SerializeField, ReadOnly] private int _currentCol;
 
         private IPlayerDriver _playerDriver;
         private CharacterModel _characterModel;
@@ -48,11 +51,15 @@ namespace Battle.Scripts.Battle.Players
 
             if (features._isDisableBattleGridMovement)
             {
+                _currentRow = -1;
+                _currentCol = -1;
                 return playerWorldPosition;
             }
             var isRotated = Context.GetBattleCamera.IsRotated;
             _gridManager = Context.GetGridManager;
             var gridPos = _gridManager.CalcRowAndColumn(playerWorldPosition, isRotated);
+            _currentRow = gridPos[1];
+            _currentCol = gridPos[0];
             _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
             _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
             var currentPosition = _gridManager.GridPositionToWorldpoint(gridPos[0], gridPos[1], isRotated);
@@ -136,6 +143,8 @@ namespace Battle.Scripts.Battle.Players
         {
             yield return new WaitForSeconds((float)waitTime);
             _playerDriver.SetSpaceFree(_savedGridPosition[0], _savedGridPosition[1]);
+            _currentRow = row;
+            _currentCol = col;
             _savedGridPosition = new int[2] { col, row };
             var targetPosition = _gridManager.GridPositionToWorldpoint(col, row, Context.GetBattleCamera.IsRotated);
             _playerDriver.MoveTo(targetPosition);
