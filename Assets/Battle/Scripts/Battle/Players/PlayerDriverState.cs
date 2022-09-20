@@ -126,18 +126,18 @@ namespace Battle.Scripts.Battle.Players
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
 
-        public void DelayedMove(int row, int col, double movementStartTime)
+        public void DelayedMove(int col, int row, double movementStartTime)
         {
-            _delayedMoveCoroutine = DelayTime(row, col, movementStartTime);
+            _delayedMoveCoroutine = DelayTime(col, row, movementStartTime);
             StartCoroutine(_delayedMoveCoroutine);
         }
 
-        private IEnumerator DelayTime(int row, int col, double waitTime)
+        private IEnumerator DelayTime(int col, int row, double waitTime)
         {
             yield return new WaitForSeconds((float)waitTime);
             _playerDriver.SetSpaceFree(_savedGridPosition[0], _savedGridPosition[1]);
-            _savedGridPosition = new int[2] { row, col };
-            var targetPosition = _gridManager.GridPositionToWorldpoint(row, col, Context.GetBattleCamera.IsRotated);
+            _savedGridPosition = new int[2] { col, row };
+            var targetPosition = _gridManager.GridPositionToWorldpoint(col, row, Context.GetBattleCamera.IsRotated);
             _playerDriver.MoveTo(targetPosition);
         }
     }

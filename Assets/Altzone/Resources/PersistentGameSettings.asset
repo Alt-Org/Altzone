@@ -32,8 +32,8 @@ MonoBehaviour:
     _battleRoomStartDelay: 6
     _battleSlingshotDelay: 6
     _battleHeadScoreToWin: 5
-    _battleUiGridWidth: 9
-    _battleUiGridHeight: 16
+    _battleUiGridWidth: 18
+    _battleUiGridHeight: 32
     _raidMaxLootCapacity: 0
     _ballMoveSpeedMultiplier: 1
     _ballMinMoveSpeed: 1
@@ -50,7 +50,7 @@ MonoBehaviour:
     _playerMovementNetworkDelay: 0.1
     _shieldDistanceMultiplier: 1
   _battleUiConfig:
-    _battleUiGridLineWidth: 0.05
+    _battleUiGridLineWidth: 0.03
     _battleUiGridColor: {r: 0.21960783, g: 0.9254902, b: 0.6006934, a: 0.2509804}
   _prefabs:
     _playerForDes: {fileID: 4878496965620720667, guid: 7e0ac59bdb0cf2246a3741c79b821217,

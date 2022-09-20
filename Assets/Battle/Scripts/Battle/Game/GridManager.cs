@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle
     {
         bool[,] _gridEmptySpaces { get; set; }
 
-        Vector2 GridPositionToWorldpoint(int row, int col, bool isRotated);
+        Vector2 GridPositionToWorldpoint(int col, int row, bool isRotated);
 
         int[] CalcRowAndColumn(Vector2 targetPosition, bool isRotated);
     }
@@ -26,18 +26,18 @@ namespace Battle.Scripts.Battle
         /// <summary>
         /// Gets grid state for given row and column.
         /// </summary>
-        bool GridState(int row, int col);
+        bool GridState(int col, int row);
         
         /// <summary>
         /// Tries to set grid state for given row and column.
         /// </summary>
         /// <returns>True if state was changed, false otherwise.</returns>
-        bool TrySetGridState(int row, int col, bool state);
+        bool TrySetGridState(int col, int row, bool state);
 
         /// <summary>
         /// Converts grid row and column position to world x,y coordinates.
         /// </summary>
-        Vector2 GridPositionToWorldPoint(int row, int col);
+        Vector2 GridPositionToWorldPoint(int col, int row);
 
         /// <summary>
         /// Converts world x,y coordinates to grid row and column position.
@@ -72,11 +72,11 @@ namespace Battle.Scripts.Battle
             }
         }
 
-        public Vector2 GridPositionToWorldpoint(int row, int col, bool isRotated)
+        public Vector2 GridPositionToWorldpoint(int col, int row, bool isRotated)
         {
             var viewportPosition = new Vector2();
-            viewportPosition.x = (float)row / _gridWidth + 0.5f / _gridWidth;
-            viewportPosition.y = (float)col / _gridHeight + 0.5f / _gridHeight;
+            viewportPosition.x = (float)col / _gridWidth + 0.5f / _gridWidth;
+            viewportPosition.y = (float)row / _gridHeight + 0.5f / _gridHeight;
             Vector2 worldPosition = Camera.main.ViewportToWorldPoint(viewportPosition);
             if (isRotated)
             {
@@ -94,9 +94,9 @@ namespace Battle.Scripts.Battle
                 worldPosition.y = -worldPosition.y;
             }
             var viewportPosition = Camera.main.WorldToViewportPoint(worldPosition);
-            var row = (int)(viewportPosition.x * _gridWidth);
-            var col = (int)(viewportPosition.y * _gridHeight);
-            return new int[] { row, col };
+            var col = (int)(viewportPosition.x * _gridWidth);
+            var row = (int)(viewportPosition.y * _gridHeight);
+            return new int[] { col, row };
         }
     }
 }
