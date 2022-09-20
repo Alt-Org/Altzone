@@ -4,9 +4,41 @@ using System.Collections;
 using System.Collections.Generic;
 using Battle.Scripts.Battle.Game;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle
 {
+    public static class Extensions
+    {
+        // https://www.tutorialsteacher.com/csharp/csharp-extension-method
+        public static int GetRow(this Tuple<int, int> gridPos)
+        {
+            if (gridPos == null)
+            {
+                return -1;
+            }
+            return gridPos.Item1;
+        }
+
+        public static int GetCol(this Tuple<int, int> gridPos)
+        {
+            if (gridPos == null)
+            {
+                return -1;
+            }
+            return gridPos.Item2;
+        }
+
+        public static void Demo()
+        {
+            var gripPos = new Tuple<int, int>(2, 4);
+            var row = gripPos.GetRow();
+            var col = gripPos.GetCol();
+            Assert.AreEqual(2, row);
+            Assert.AreEqual(4, col);
+        }
+    }
+    
     public interface IGridManager
     {
         bool[,] _gridEmptySpaces { get; set; }
