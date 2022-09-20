@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
-    internal interface IGridManager
+    public interface IGridManager
     {
         bool[,] _gridEmptySpaces { get; set; }
 
