@@ -15,7 +15,7 @@ namespace Battle.Scripts.Battle
 
         internal static IBattleBackground GetBattleBackground => Object.FindObjectOfType<GameBackground>();
 
-        internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
+        public static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
 
         internal static IGameScoreManager GetGameScoreManager => Object.FindObjectOfType<GameScoreManager>();
 
