@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle
     {
         bool[,] _gridEmptySpaces { get; set; }
 
-        Vector2 GridPositionToWorldpoint(int col, int row, bool isRotated);
+        Vector2 GridPositionToWorldPoint(int col, int row, bool isRotated);
 
         int[] CalcRowAndColumn(Vector2 targetPosition, bool isRotated);
     }
@@ -72,7 +72,7 @@ namespace Battle.Scripts.Battle
             }
         }
 
-        public Vector2 GridPositionToWorldpoint(int col, int row, bool isRotated)
+        public Vector2 GridPositionToWorldPoint(int col, int row, bool isRotated)
         {
             var viewportPosition = new Vector2();
             viewportPosition.x = (float)col / _gridWidth + 0.5f / _gridWidth;

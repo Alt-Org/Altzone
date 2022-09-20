@@ -62,7 +62,7 @@ namespace Battle.Scripts.Battle.Players
             _currentCol = gridPos[0];
             _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
             _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
-            var currentPosition = _gridManager.GridPositionToWorldpoint(gridPos[0], gridPos[1], isRotated);
+            var currentPosition = _gridManager.GridPositionToWorldPoint(gridPos[0], gridPos[1], isRotated);
             _playerDriver.MoveTo(currentPosition);
             return currentPosition;
         }
@@ -146,7 +146,7 @@ namespace Battle.Scripts.Battle.Players
             _currentRow = row;
             _currentCol = col;
             _savedGridPosition = new int[2] { col, row };
-            var targetPosition = _gridManager.GridPositionToWorldpoint(col, row, Context.GetBattleCamera.IsRotated);
+            var targetPosition = _gridManager.GridPositionToWorldPoint(col, row, Context.GetBattleCamera.IsRotated);
             _playerDriver.MoveTo(targetPosition);
         }
     }

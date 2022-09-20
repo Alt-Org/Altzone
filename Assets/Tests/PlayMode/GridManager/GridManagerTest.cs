@@ -2,7 +2,6 @@ using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
@@ -44,14 +43,14 @@ namespace Tests.PlayMode.GridManager
             yield return null;
             var rowMax = gridWidth;
             var colMax = gridHeight;
-            foreach (var rotation in new bool[] { false, true })
+            foreach (var rotation in new[] { false, true })
             {
                 Debug.Log($"Grid rotation {rotation}");
                 for (var row = 0; row < rowMax; ++row)
                 {
                     for (var col = 0; col < colMax; ++col)
                     {
-                        var worldPos = gridManager.GridPositionToWorldpoint(row, col, rotation);
+                        var worldPos = gridManager.GridPositionToWorldPoint(row, col, rotation);
                         Debug.Log($"Grid row, col {row:00},{col:00} -> x,y {worldPos.x:0.00},{worldPos.y:0.00} ({worldPos.x},{worldPos.y})");
                         var gridPos = gridManager.CalcRowAndColumn(worldPos, rotation);
                         var row2 = gridPos[0];
