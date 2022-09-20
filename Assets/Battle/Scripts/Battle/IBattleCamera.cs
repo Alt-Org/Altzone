@@ -5,7 +5,7 @@ namespace Battle.Scripts.Battle
     /// <summary>
     /// Game camera.
     /// </summary>
-    internal interface IBattleCamera
+    public interface IBattleCamera
     {
         Camera Camera { get; }
         bool IsRotated { get; }

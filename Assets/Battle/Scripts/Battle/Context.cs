@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle
     {
         #region Static Gameplay
 
-        internal static IBattleCamera GetBattleCamera => Object.FindObjectOfType<GameCamera>();
+        public static IBattleCamera GetBattleCamera => Object.FindObjectOfType<GameCamera>();
 
         internal static IBattleBackground GetBattleBackground => Object.FindObjectOfType<GameBackground>();
 
