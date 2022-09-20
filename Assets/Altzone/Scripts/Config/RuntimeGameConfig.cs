@@ -295,7 +295,7 @@ namespace Altzone.Scripts.Config
         {
             if (_instance == null)
             {
-                _instance = UnityExtensions.CreateStaticSingleton<RuntimeGameConfig>();
+                _instance = UnitySingleton.CreateStaticSingleton<RuntimeGameConfig>();
                 LoadGameConfig(_instance);
                 Debug.Log($"{_instance.name}");
             }

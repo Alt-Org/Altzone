@@ -122,7 +122,7 @@ namespace Prg.Scripts.Common.Util
                 return message;
             }
 
-            UnityExtensions.CreateGameObjectAndComponent<LogWriter>(nameof(LogWriter), true);
+            UnitySingleton.CreateStaticSingleton<LogWriter>();
             LogWriter.AddLogLineContentFilter(FilterPhotonLogMessage);
         }
 

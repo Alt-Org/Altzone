@@ -19,7 +19,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
                 ScoreFlasher.ScoreFlash = Object.FindObjectOfType<ScoreFlasher>();
                 if (ScoreFlasher.ScoreFlash == null)
                 {
-                    var instance = UnityExtensions.CreateGameObjectAndComponent<ScoreFlasher>(nameof(ScoreFlasher), false);
+                    var instance = UnitySingleton.CreateGameObjectAndComponent<ScoreFlasher>();
                     ScoreFlasher.ScoreFlash = instance;
                     var config = Resources.Load<ScoreFlashConfig>(nameof(ScoreFlashConfig));
                     instance.Setup(config, Camera.main);

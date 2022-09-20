@@ -61,7 +61,7 @@ namespace Prg.Scripts.Common.Photon
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private static void SetEditorStatus()
         {
-            UnityExtensions.CreateGameObjectAndComponent<PhotonListener>(nameof(PhotonListener), true);
+            UnitySingleton.CreateStaticSingleton<PhotonListener>();
         }
 
         private void OnEnable()
