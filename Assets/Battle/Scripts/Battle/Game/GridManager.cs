@@ -48,16 +48,24 @@ namespace Battle.Scripts.Battle
         int[] CalcRowAndColumn(Vector2 targetPosition, bool isRotated);
     }
 
+    public class GridPos : Tuple<int, int>
+    {
+        public int Row => Item1;
+        public int Col => Item2;
+        
+        public GridPos(int row, int col) : base(row, col)
+        {
+        }
+    }
+    
+    /// <summary>
+    /// Example interface for <c>GridManager</c>.
+    /// </summary>
+    /// <remarks>
+    /// The gird is zero based and origo is in bottom left corner.
+    /// </remarks>
     internal interface IGridManagerProposal
     {
-        /// <summary>
-        /// The grid size (width aka row count, height aka column count).
-        /// </summary>
-        /// <remarks>
-        /// The gird is zero based and origo is in bottom left corner.
-        /// </remarks>
-        Tuple<int, int> GridSize { get; set; }
-        
         /// <summary>
         /// Gets grid width aka row count.
         /// </summary>
@@ -77,27 +85,27 @@ namespace Battle.Scripts.Battle
         /// Gets grid state for given row and column.
         /// </summary>
         bool GridState(int row, int col);
-        bool GridState(Tuple<int, int> gridPos);
+        bool GridState(GridPos gridPos);
         
         /// <summary>
         /// Tries to set grid state for given row and column.
         /// </summary>
         /// <returns>True if state was changed, false otherwise.</returns>
         bool TrySetGridState(int row, int col, bool state);
-        bool TrySetGridState(Tuple<int, int> gridPos, bool state);
+        bool TrySetGridState(GridPos gridPos, bool state);
 
         /// <summary>
         /// Converts grid row and column position to world x,y coordinates.
         /// </summary>
         Vector2 GridPositionToWorldPoint(int row, int col);
-        Vector2 GridPositionToWorldPoint(Tuple<int, int> gridPos);
+        Vector2 GridPositionToWorldPoint(GridPos gridPos);
 
         /// <summary>
         /// Converts world x,y coordinates to grid row and column position.
         /// </summary>
         /// <returns>Tuple where Item1 is row and Item2 is col.</returns>
         void WorldPointToGridPosition(Vector2 targetPosition, out int row, out int col);
-        Tuple<int, int> WorldPointToGridPosition(Vector2 targetPosition);
+        GridPos WorldPointToGridPosition(Vector2 targetPosition);
     }
     
     internal class GridManager : MonoBehaviour, IGridManager
