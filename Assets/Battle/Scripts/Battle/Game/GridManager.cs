@@ -43,9 +43,9 @@ namespace Battle.Scripts.Battle
     {
         bool[,] _gridEmptySpaces { get; set; }
 
-        Vector2 GridPositionToWorldPoint(int col, int row, bool isRotated);
+        Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated);
 
-        int[] CalcRowAndColumn(Vector2 targetPosition, bool isRotated);
+        GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated);
     }
 
     public class GridPos : Tuple<int, int>
@@ -62,7 +62,7 @@ namespace Battle.Scripts.Battle
     /// Example interface for <c>GridManager</c>.
     /// </summary>
     /// <remarks>
-    /// The gird is zero based and origo is in bottom left corner.
+    /// Gridposition row: 1, col: 1 is the square in bottom left corner.
     /// </remarks>
     internal interface IGridManagerProposal
     {
@@ -110,6 +110,7 @@ namespace Battle.Scripts.Battle
     
     internal class GridManager : MonoBehaviour, IGridManager
     {
+        private Camera _camera;
         private int _gridWidth;
         private int _gridHeight;
 
@@ -117,6 +118,7 @@ namespace Battle.Scripts.Battle
 
         private void Awake()
         {
+            _camera = Context.GetBattleCamera.Camera;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             var battleUi = runtimeGameConfig.BattleUi;
@@ -124,22 +126,22 @@ namespace Battle.Scripts.Battle
             _gridWidth = variables._battleUiGridWidth;
             _gridHeight = variables._battleUiGridHeight;
 
-            _gridEmptySpaces = new bool[_gridWidth, _gridHeight];
-            for (int i = 0; i < _gridWidth; i++)
+            _gridEmptySpaces = new bool[_gridHeight + 1, _gridWidth + 1];
+            for (int i = 1; i <= _gridHeight; i++)
             {
-                for (int j = 0; j < _gridHeight; j++)
+                for (int j = 1; j <= _gridWidth; j++)
                 {
                     _gridEmptySpaces[i, j] = true;
                 }
             }
         }
 
-        public Vector2 GridPositionToWorldPoint(int col, int row, bool isRotated)
+        public Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
         {
             var viewportPosition = new Vector2();
-            viewportPosition.x = (float)col / _gridWidth + 0.5f / _gridWidth;
-            viewportPosition.y = (float)row / _gridHeight + 0.5f / _gridHeight;
-            Vector2 worldPosition = Camera.main.ViewportToWorldPoint(viewportPosition);
+            viewportPosition.x = (float)gridPos.Col / _gridWidth - 0.5f / _gridWidth;
+            viewportPosition.y = (float)gridPos.Row / _gridHeight - 0.5f / _gridHeight;
+            Vector2 worldPosition = _camera.ViewportToWorldPoint(viewportPosition);
             if (isRotated)
             {
                 worldPosition.x = -worldPosition.x;
@@ -148,17 +150,18 @@ namespace Battle.Scripts.Battle
             return worldPosition;
         }
 
-        public int[] CalcRowAndColumn(Vector2 worldPosition, bool isRotated)
+        public GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated)
         {
             if (isRotated)
             {
-                worldPosition.x = -worldPosition.x;
-                worldPosition.y = -worldPosition.y;
+                targetPosition.x = -targetPosition.x;
+                targetPosition.y = -targetPosition.y;
             }
-            var viewportPosition = Camera.main.WorldToViewportPoint(worldPosition);
-            var col = (int)(viewportPosition.x * _gridWidth);
-            var row = (int)(viewportPosition.y * _gridHeight);
-            return new int[] { col, row };
+            var viewportPosition = _camera.WorldToViewportPoint(targetPosition);
+            var col = (int)(viewportPosition.x * _gridWidth) + 1;
+            var row = (int)(viewportPosition.y * _gridHeight) + 1;
+            GridPos gridPos = new GridPos(row, col);
+            return gridPos;
         }
     }
 }

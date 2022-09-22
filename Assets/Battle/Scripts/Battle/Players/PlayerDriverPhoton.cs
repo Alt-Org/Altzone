@@ -202,10 +202,10 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
         }
 
-        void IPlayerDriver.SendMoveRequest(int col, int row)
+        void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
             if (IsMoving) { return; }
-            _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, col, row);
+            _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
@@ -268,14 +268,14 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
-        void IPlayerDriver.SetSpaceFree(int col, int row)
+        void IPlayerDriver.SetSpaceFree(GridPos gridPos)
         {
-            _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, col, row);
+            _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
-        void IPlayerDriver.SetSpaceTaken(int col, int row)
+        void IPlayerDriver.SetSpaceTaken(GridPos gridPos)
         {
-            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, col, row);
+            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
         #endregion
 
@@ -326,41 +326,42 @@ namespace Battle.Scripts.Battle.Players
         }
 
         [PunRPC]
-        private void ProcessMoveRequestRpc(int col, int row, PhotonMessageInfo info)
+        private void ProcessMoveRequestRpc(int row, int col, PhotonMessageInfo info)
         {
-            if (!_gridManager._gridEmptySpaces[col, row])
+            if (!_gridManager._gridEmptySpaces[row, col])
             {
-                Debug.Log($"Grid check failed. col: {col}, row: {row}");
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
                 return;
             }
             var movementDelay = info.SentServerTime + _movementDelay - PhotonNetwork.Time;
-            Debug.Log($"Grid Request approved: {col}, {row}, player: {info.Sender}, time: {movementDelay}");
-            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.All, col, row);
-            _photonView.RPC(nameof(MoveDelayedRpc), info.Sender, col, row, movementDelay);
+            Debug.Log($"Grid Request approved: row: {row}, col: {col}, player: {info.Sender}, time: {movementDelay}");
+            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.All, row, col);
+            _photonView.RPC(nameof(MoveDelayedRpc), info.Sender, row, col, movementDelay);
         }
 
         [PunRPC]
-        private void MoveDelayedRpc(int col, int row, double movementStartTime)
+        private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
             IsMoving = true;
-            _state.DelayedMove(col, row, movementStartTime);
+            GridPos gridPos = new GridPos(row, col);
+            _state.DelayedMove(gridPos, movementStartTime);
         }
 
         [PunRPC]
-        private void SetSpaceTakenRpc(int col, int row)
+        private void SetSpaceTakenRpc(int row, int col)
         {
-            _gridManager._gridEmptySpaces[col, row] = false;
-            Debug.Log($"Grid space taken: {col}, {row}, {_gridManager._gridEmptySpaces[col, row]}");
+            _gridManager._gridEmptySpaces[row, col] = false;
+            Debug.Log($"Grid space taken: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
         }
 
         [PunRPC]
-        public void SetSpaceFreeRpc(int col, int row)
+        public void SetSpaceFreeRpc(int row, int col)
         {
-            _gridManager._gridEmptySpaces[col, row] = true;
-            Debug.Log($"Grid space free: {col}, {row}, {_gridManager._gridEmptySpaces[col, row]}");
+            _gridManager._gridEmptySpaces[row, col] = true;
+            Debug.Log($"Grid space free: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
             if (PhotonNetwork.IsMasterClient)
             {
-                _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.Others, col, row);
+                _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.Others, row, col);
             }
         }
 

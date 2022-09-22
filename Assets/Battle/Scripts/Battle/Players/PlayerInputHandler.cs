@@ -97,8 +97,8 @@ namespace Battle.Scripts.Battle.Players
                 _playerDriver.MoveTo(targetPosition);
                 return;
             }
-            var rowAndColumn = _gridManager.CalcRowAndColumn(targetPosition, Context.GetBattleCamera.IsRotated);
-            _playerDriver.SendMoveRequest(rowAndColumn[0], rowAndColumn[1]);
+            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition, Context.GetBattleCamera.IsRotated);
+            _playerDriver.SendMoveRequest(gridPos);
         }
 
         #endregion IPlayerInputHandler

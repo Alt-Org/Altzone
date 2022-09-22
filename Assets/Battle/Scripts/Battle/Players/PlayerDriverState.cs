@@ -27,7 +27,7 @@ namespace Battle.Scripts.Battle.Players
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
-        private int[] _savedGridPosition;
+        private GridPos _savedGridPosition;
         public double LastBallHitTime => _lastBallHitTime;
 
         public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
@@ -57,12 +57,12 @@ namespace Battle.Scripts.Battle.Players
             }
             var isRotated = Context.GetBattleCamera.IsRotated;
             _gridManager = Context.GetGridManager;
-            var gridPos = _gridManager.CalcRowAndColumn(playerWorldPosition, isRotated);
-            _currentRow = gridPos[1];
-            _currentCol = gridPos[0];
-            _savedGridPosition = new int[2] { gridPos[0], gridPos[1] };
-            _playerDriver.SetSpaceTaken(gridPos[0], gridPos[1]);
-            var currentPosition = _gridManager.GridPositionToWorldPoint(gridPos[0], gridPos[1], isRotated);
+            var gridPos = _gridManager.WorldPointToGridPosition(playerWorldPosition, isRotated);
+            _currentRow = gridPos.Row;
+            _currentCol = gridPos.Col;
+            _savedGridPosition = gridPos;
+            _playerDriver.SetSpaceTaken(gridPos);
+            var currentPosition = _gridManager.GridPositionToWorldPoint(gridPos, isRotated);
             _playerDriver.MoveTo(currentPosition);
             return currentPosition;
         }
@@ -133,20 +133,20 @@ namespace Battle.Scripts.Battle.Players
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
 
-        public void DelayedMove(int col, int row, double movementStartTime)
+        public void DelayedMove(GridPos gridPos, double movementStartTime)
         {
-            _delayedMoveCoroutine = DelayTime(col, row, movementStartTime);
+            _delayedMoveCoroutine = DelayTime(gridPos, movementStartTime);
             StartCoroutine(_delayedMoveCoroutine);
         }
 
-        private IEnumerator DelayTime(int col, int row, double waitTime)
+        private IEnumerator DelayTime(GridPos gridPos, double waitTime)
         {
             yield return new WaitForSeconds((float)waitTime);
-            _playerDriver.SetSpaceFree(_savedGridPosition[0], _savedGridPosition[1]);
-            _currentRow = row;
-            _currentCol = col;
-            _savedGridPosition = new int[2] { col, row };
-            var targetPosition = _gridManager.GridPositionToWorldPoint(col, row, Context.GetBattleCamera.IsRotated);
+            _playerDriver.SetSpaceFree(_savedGridPosition);
+            _currentRow = gridPos.Row;
+            _currentCol = gridPos.Col;
+            _savedGridPosition = gridPos;
+            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, Context.GetBattleCamera.IsRotated);
             _playerDriver.MoveTo(targetPosition);
         }
     }

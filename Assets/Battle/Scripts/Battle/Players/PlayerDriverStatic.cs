@@ -211,32 +211,38 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
-        void IPlayerDriver.SetSpaceFree(int col, int row)
+        void IPlayerDriver.SetSpaceFree(GridPos gridPos)
         {
-            _gridManager._gridEmptySpaces[col, row] = true;
-            Debug.Log($"Grid space free: {col}, {row}, {_gridManager._gridEmptySpaces[col, row]}");
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            _gridManager._gridEmptySpaces[row, col] = true;
+            Debug.Log($"Grid space free: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
         }
 
-         public void SetSpaceTaken(int col, int row)
+         public void SetSpaceTaken(GridPos gridPos)
         {
-            _gridManager._gridEmptySpaces[col, row] = false;
-            Debug.Log($"Grid space taken: {col}, {row}, {_gridManager._gridEmptySpaces[col, row]}");
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            _gridManager._gridEmptySpaces[row, col] = false;
+            Debug.Log($"Grid space taken: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
         }
 
-        void IPlayerDriver.SendMoveRequest(int col, int row)
+        void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
-            ProcessMoveRequest(col, row);
+            ProcessMoveRequest(gridPos);
         }
 
-        private void ProcessMoveRequest(int col, int row)
+        private void ProcessMoveRequest(GridPos gridPos)
         {
-            if (!_gridManager._gridEmptySpaces[col, row])
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            if (!_gridManager._gridEmptySpaces[row, col])
             {
-                Debug.Log($"Grid check failed. col: {col}, row: {row}");
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
                 return;
             }
-            SetSpaceTaken(col, row);
-            _state.DelayedMove(col, row, _movementDelay);
+            SetSpaceTaken(gridPos);
+            _state.DelayedMove(gridPos, _movementDelay);
         }
         #endregion
     }
