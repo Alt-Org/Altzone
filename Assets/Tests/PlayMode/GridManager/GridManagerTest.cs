@@ -61,16 +61,14 @@ namespace Tests.PlayMode.GridManager
                 {
                     for (var col = 0; col < colMax; ++col)
                     {
-                        GridPos gridPos = new GridPos(row, col);
+                        var gridPos = new GridPos(row, col);
                         var worldPos = gridManager.GridPositionToWorldPoint(gridPos, rotation);
                         Debug.Log($"Grid row, col {row:00},{col:00} -> x,y {worldPos.x:0.00},{worldPos.y:0.00} ({worldPos.x},{worldPos.y})");
                         Assert.IsFalse(Mathf.Abs(worldPos.x) > world.x);
                         Assert.IsFalse(Mathf.Abs(worldPos.y) > world.y);
                         var gridPos2 = gridManager.WorldPointToGridPosition(worldPos, rotation);
-                        var row2 = gridPos2.Row;
-                        var col2 = gridPos2.Col;
-                        Assert.AreEqual(row, row2);
-                        Assert.AreEqual(col, col2);
+                        Assert.AreEqual(row, gridPos2.Row);
+                        Assert.AreEqual(col, gridPos2.Col);
                     }
                 }
             }
