@@ -57,12 +57,12 @@ namespace Battle.Scripts.Battle
         {
         }
     }
-    
+
     /// <summary>
     /// Example interface for <c>GridManager</c>.
     /// </summary>
     /// <remarks>
-    /// Gridposition row: 1, col: 1 is the square in bottom left corner.
+    /// The grid is zero based and origo is in bottom left corner.
     /// </remarks>
     internal interface IGridManagerProposal
     {
@@ -126,10 +126,10 @@ namespace Battle.Scripts.Battle
             _gridWidth = variables._battleUiGridWidth;
             _gridHeight = variables._battleUiGridHeight;
 
-            _gridEmptySpaces = new bool[_gridHeight + 1, _gridWidth + 1];
-            for (int i = 1; i <= _gridHeight; i++)
+            _gridEmptySpaces = new bool[_gridHeight, _gridWidth];
+            for (int i = 0; i < _gridHeight; i++)
             {
-                for (int j = 1; j <= _gridWidth; j++)
+                for (int j = 0; j < _gridWidth; j++)
                 {
                     _gridEmptySpaces[i, j] = true;
                 }
@@ -139,8 +139,8 @@ namespace Battle.Scripts.Battle
         public Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
         {
             var viewportPosition = new Vector2();
-            viewportPosition.x = (float)gridPos.Col / _gridWidth - 0.5f / _gridWidth;
-            viewportPosition.y = (float)gridPos.Row / _gridHeight - 0.5f / _gridHeight;
+            viewportPosition.x = (float)gridPos.Col / _gridWidth + 0.5f / _gridWidth;
+            viewportPosition.y = (float)gridPos.Row / _gridHeight + 0.5f / _gridHeight;
             Vector2 worldPosition = _camera.ViewportToWorldPoint(viewportPosition);
             if (isRotated)
             {
@@ -158,8 +158,8 @@ namespace Battle.Scripts.Battle
                 targetPosition.y = -targetPosition.y;
             }
             var viewportPosition = _camera.WorldToViewportPoint(targetPosition);
-            var col = (int)(viewportPosition.x * _gridWidth) + 1;
-            var row = (int)(viewportPosition.y * _gridHeight) + 1;
+            var col = (int)(viewportPosition.x * _gridWidth);
+            var row = (int)(viewportPosition.y * _gridHeight);
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
         }
