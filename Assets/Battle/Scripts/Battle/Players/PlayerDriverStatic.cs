@@ -214,7 +214,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager.TrySetGridState(row, col, true);
+            _gridManager.SetGridState(row, col, true);
             Debug.Log($"Grid space free: row: {row}, col: {col}");
         }
 
@@ -222,7 +222,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager.TrySetGridState(row, col, false);
+            _gridManager.SetGridState(row, col, false);
             Debug.Log($"Grid space taken: row: {row}, col: {col}");
         }
 

@@ -57,7 +57,7 @@ namespace Battle.Scripts.Battle
 
         bool GridState(int row, int col);
 
-        bool TrySetGridState(int row, int col, bool state);
+        void SetGridState(int row, int col, bool state);
     }
 
     public class GridPos : Tuple<int, int>
@@ -67,6 +67,11 @@ namespace Battle.Scripts.Battle
         
         public GridPos(int row, int col) : base(row, col)
         {
+        }
+
+        public override string ToString()
+        {
+            return $"GridPos {nameof(Row)},{nameof(Col)}: {Row},{Col}";
         }
     }
 
@@ -174,13 +179,10 @@ namespace Battle.Scripts.Battle
         {
             return _gridEmptySpaces[row, col];
         }
-        bool IGridManager.TrySetGridState(int row, int col, bool state)
+
+        void IGridManager.SetGridState(int row, int col, bool state)
         {
-            if (state == _gridEmptySpaces[row, col])
-                return false;
-            
             _gridEmptySpaces[row, col] = state;
-            return true;
         }
     }
 }
