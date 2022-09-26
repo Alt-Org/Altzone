@@ -41,6 +41,16 @@ namespace Battle.Scripts.Battle
     
     public interface IGridManager
     {
+        /// <summary>
+        /// Gets grid width aka row count.
+        /// </summary>
+        int RowCount { get; }
+
+        /// <summary>
+        /// Gets grid height aka column count.
+        /// </summary>
+        int ColCount { get; }
+
         Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated);
 
         GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated);
@@ -68,16 +78,6 @@ namespace Battle.Scripts.Battle
     /// </remarks>
     internal interface IGridManagerProposal
     {
-        /// <summary>
-        /// Gets grid width aka row count.
-        /// </summary>
-        int RowCount { get; }
-
-        /// <summary>
-        /// Gets grid height aka column count.
-        /// </summary>
-        int ColCount { get; }
-        
         /// <summary>
         /// The <c>GameCamera</c> that we use.
         /// </summary>
@@ -137,6 +137,10 @@ namespace Battle.Scripts.Battle
                 }
             }
         }
+
+        public int RowCount => _gridHeight;
+
+        public int ColCount => _gridWidth;
 
         Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
         {
