@@ -34,6 +34,8 @@ namespace Battle.Scripts.Battle
 
         int CurrentResistance { get; set; }
 
+        public bool CanRequestMove { get; set; }
+
         void Rotate(bool isUpsideDown);
 
         void FixCameraRotation(Camera gameCamera);

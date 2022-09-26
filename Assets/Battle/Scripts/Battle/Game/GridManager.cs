@@ -41,11 +41,13 @@ namespace Battle.Scripts.Battle
     
     public interface IGridManager
     {
-        bool[,] _gridEmptySpaces { get; set; }
-
         Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated);
 
         GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated);
+
+        bool GridState(int row, int col);
+
+        bool TrySetGridState(int row, int col, bool state);
     }
 
     public class GridPos : Tuple<int, int>
@@ -114,7 +116,7 @@ namespace Battle.Scripts.Battle
         private int _gridWidth;
         private int _gridHeight;
 
-        public bool[,] _gridEmptySpaces { get; set; }
+        private bool[,] _gridEmptySpaces;
 
         private void Awake()
         {
@@ -136,7 +138,7 @@ namespace Battle.Scripts.Battle
             }
         }
 
-        public Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
+        Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
         {
             var viewportPosition = new Vector2();
             viewportPosition.x = (float)gridPos.Col / _gridWidth + 0.5f / _gridWidth;
@@ -150,7 +152,7 @@ namespace Battle.Scripts.Battle
             return worldPosition;
         }
 
-        public GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated)
+        GridPos IGridManager.WorldPointToGridPosition(Vector2 targetPosition, bool isRotated)
         {
             if (isRotated)
             {
@@ -162,6 +164,19 @@ namespace Battle.Scripts.Battle
             var row = (int)(viewportPosition.y * _gridHeight);
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
+        }
+
+        bool IGridManager.GridState(int row, int col)
+        {
+            return _gridEmptySpaces[row, col];
+        }
+        bool IGridManager.TrySetGridState(int row, int col, bool state)
+        {
+            if (state == _gridEmptySpaces[row, col])
+                return false;
+            
+            _gridEmptySpaces[row, col] = state;
+            return true;
         }
     }
 }

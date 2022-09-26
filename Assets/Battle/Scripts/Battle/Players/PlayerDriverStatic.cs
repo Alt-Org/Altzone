@@ -215,16 +215,16 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager._gridEmptySpaces[row, col] = true;
-            Debug.Log($"Grid space free: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+            _gridManager.TrySetGridState(row, col, true);
+            Debug.Log($"Grid space free: row: {row}, col: {col}");
         }
 
          public void SetSpaceTaken(GridPos gridPos)
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager._gridEmptySpaces[row, col] = false;
-            Debug.Log($"Grid space taken: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+            _gridManager.TrySetGridState(row, col, false);
+            Debug.Log($"Grid space taken: row: {row}, col: {col}");
         }
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
@@ -236,7 +236,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            if (!_gridManager._gridEmptySpaces[row, col])
+            if (!_gridManager.GridState(row, col))
             {
                 Debug.Log($"Grid check failed. row: {row}, col: {col}");
                 return;

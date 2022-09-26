@@ -20,7 +20,6 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IBallManager _ballManager;
         private IPlayerActor _playerActor;
-        private Transform _transform;
         private IGridManager _gridManager;
         private IEnumerator _delayedMoveCoroutine;
         private float _playerAttackMultiplier;
@@ -36,7 +35,6 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
-            _transform = _playerActor.Transform;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerAttackMultiplier = variables._playerAttackMultiplier;
@@ -133,9 +131,9 @@ namespace Battle.Scripts.Battle.Players
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
 
-        public void DelayedMove(GridPos gridPos, double movementStartTime)
+        public void DelayedMove(GridPos gridPos, double moveExecuteDelay)
         {
-            _delayedMoveCoroutine = DelayTime(gridPos, movementStartTime);
+            _delayedMoveCoroutine = DelayTime(gridPos, moveExecuteDelay);
             StartCoroutine(_delayedMoveCoroutine);
         }
 
@@ -147,7 +145,7 @@ namespace Battle.Scripts.Battle.Players
             _currentCol = gridPos.Col;
             _savedGridPosition = gridPos;
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, Context.GetBattleCamera.IsRotated);
-            _playerDriver.MoveTo(targetPosition);
+            _playerActor.MoveTo(targetPosition);
         }
     }
 }

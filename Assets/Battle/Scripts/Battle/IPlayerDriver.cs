@@ -19,7 +19,6 @@ namespace Battle.Scripts.Battle
         /// Number of "our" other instances that have reported.
         /// </summary>
         int PeerCount { get; }
-        bool IsMoving { get; set; }
         bool IsValid { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }

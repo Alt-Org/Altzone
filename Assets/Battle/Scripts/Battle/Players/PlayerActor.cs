@@ -108,6 +108,7 @@ namespace Battle.Scripts.Battle.Players
         private float _speed;
         private float _playerMoveSpeedMultiplier;
         private int _resistance;
+        private bool _canRequestMove;
 
         private bool CanMove => _hasTarget && !_isStunned && _playMode.CanMove();
 
@@ -117,6 +118,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void Awake()
         {
+            _canRequestMove = true;
             Debug.Log($"{name}");
             if (_debug._playerText == null)
             {
@@ -228,7 +230,7 @@ namespace Battle.Scripts.Battle.Players
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;
             _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
-            _playerDriver.IsMoving = _hasTarget;
+            _canRequestMove = !_hasTarget;
         }
 
         #region Debugging
@@ -277,6 +279,15 @@ namespace Battle.Scripts.Battle.Players
             {
                 _resistance = value;
                 UpdatePlayerText();
+            }
+        }
+
+        bool IPlayerActor.CanRequestMove
+        {
+            get => _canRequestMove;
+            set
+            {
+                _canRequestMove = value;
             }
         }
 
