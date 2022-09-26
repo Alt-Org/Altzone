@@ -55,9 +55,10 @@ namespace Tests.PlayMode.GridManager
             yield return null;
             var rowMax = gridHeight;
             var colMax = gridWidth;
+            var expectedState = false;
             foreach (var rotation in new[] { false, true })
             {
-                Debug.Log($"Grid rotation {rotation}");
+                Debug.Log($"Grid rotation {rotation} expectedState {expectedState}");
                 for (var row = 0; row < rowMax; ++row)
                 {
                     for (var col = 0; col < colMax; ++col)
@@ -70,8 +71,13 @@ namespace Tests.PlayMode.GridManager
                         var gridPos2 = gridManager.WorldPointToGridPosition(worldPos, rotation);
                         Assert.AreEqual(row, gridPos2.Row);
                         Assert.AreEqual(col, gridPos2.Col);
+                        var currentState = gridManager.GridState(row, col);
+                        Assert.AreEqual(expectedState, currentState);
+                        // Set state so that it will have opposite value on next "round".
+                        gridManager.SetGridState(row, col, !currentState);
                     }
                 }
+                expectedState = !expectedState;
             }
             Debug.Log("Done");
         }
