@@ -20,10 +20,16 @@ namespace Tests.PlayMode.GridManager
         [UnityTest]
         public IEnumerator GridManagerTestWithEnumeratorPasses()
         {
-            // Use yield to skip a frame.
+            // Grid based movement must be enabled.
             var runtimeGameConfig = RuntimeGameConfig.Get();
             Assert.AreEqual(false, runtimeGameConfig.Features._isDisableBattleGridMovement);
 
+            // We require that gameplay area is origo set on (0,0) for tests to work.
+            var battlePlayArea = Context.GetBattlePlayArea;
+            Assert.AreEqual(Vector2.zero, battlePlayArea.GetPlayAreaCenterPosition);
+
+            // Use yield to skip a frame.
+            var skipFrame = new WaitForEndOfFrame();
             IGridManager gridManager;
             for (;;)
             {
@@ -33,7 +39,7 @@ namespace Tests.PlayMode.GridManager
                 {
                     break;
                 }
-                yield return null;
+                yield return skipFrame;
             }
             
             var variables = runtimeGameConfig.Variables;
@@ -46,19 +52,15 @@ namespace Tests.PlayMode.GridManager
             var worldHeight = 2f * world.y;
             Debug.Log($"GRID rows {gridWidth} cols {gridHeight} WORLD width {worldWidth} height {worldHeight}");
 
-            // We require that play are is set on origo (0,0) - to check that world pos is inside our "grid" world
-            var battlePlayArea = Context.GetBattlePlayArea;
-            Assert.AreEqual(Vector2.zero, battlePlayArea.GetPlayAreaCenterPosition);
-
             Assert.AreEqual(gridHeight, gridManager.RowCount);
             Assert.AreEqual(gridWidth, gridManager.ColCount);
-            yield return null;
             var rowMax = gridHeight;
             var colMax = gridWidth;
-            var expectedState = false;
+            var emptyState = true;
             foreach (var rotation in new[] { false, true })
             {
-                Debug.Log($"Grid rotation {rotation} expectedState {expectedState}");
+                yield return skipFrame;
+                Debug.Log($"Grid rotation {rotation} emptyState {emptyState}");
                 for (var row = 0; row < rowMax; ++row)
                 {
                     for (var col = 0; col < colMax; ++col)
@@ -72,12 +74,12 @@ namespace Tests.PlayMode.GridManager
                         Assert.AreEqual(row, gridPos2.Row);
                         Assert.AreEqual(col, gridPos2.Col);
                         var currentState = gridManager.GridState(row, col);
-                        Assert.AreEqual(expectedState, currentState);
+                        Assert.AreEqual(emptyState, currentState);
                         // Set state so that it will have opposite value on next "round".
                         gridManager.SetGridState(row, col, !currentState);
                     }
                 }
-                expectedState = !expectedState;
+                emptyState = !emptyState;
             }
             Debug.Log("Done");
         }
