@@ -22,7 +22,6 @@ namespace Battle.Scripts.Battle.Players
         {
             var playerPos = playerDriver.PlayerPos;
             var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-
             PlayerActorBase playerActorBase;
             if (playerPrefabTest == null)
             {
@@ -32,6 +31,7 @@ namespace Battle.Scripts.Battle.Players
                 Debug.Log($"defence {defence} prefab {playerPrefab.name}");
                 var playerInstance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
                 playerActorBase = playerInstance.GetComponent<PlayerActor2>();
+                Assert.IsNotNull(playerActorBase, "playerActorBase != null");
             }
             else
             {

@@ -34,7 +34,9 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - MoveDelayedRpc
   - MovePlayerToRpc
+  - ProcessMoveRequestRpc
   - RotatePlayerRpc
   - SendPlayerPeerCountRpc
   - SetBallPositionRpc
@@ -45,6 +47,8 @@ MonoBehaviour:
   - SetPlayerShieldResistanceRpc
   - SetPlayerShieldVisibilityRpc
   - SetPlayerStunnedRpc
+  - SetSpaceFreeRpc
+  - SetSpaceTakenRpc
   - SlingEndRpc
   - SlingStartRpc
   DisableAutoOpenWizard: 1

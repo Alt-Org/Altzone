@@ -15,6 +15,11 @@ namespace GameOver.Scripts.GameOver
         [SerializeField] private float _timeOutDelay;
         [SerializeField] private float _pollingInterval;
         private int _playerCount;
+        
+        private const int WinTypeNone = PhotonBattle.WinTypeNone;
+        private const int WinTypeScore = PhotonBattle.WinTypeScore;
+        private const int WinTypeResign = PhotonBattle.WinTypeResign;
+        private const int WinTypeDraw = PhotonBattle.WinTypeDraw;
 
         private void OnEnable()
         {
@@ -78,7 +83,21 @@ namespace GameOver.Scripts.GameOver
                 }
             }
         }
-
+        private static int GetWinType(int winType)
+        {       
+            switch(winType)
+            {
+                case WinTypeNone:
+                    return WinTypeNone;
+                case WinTypeScore:
+                    return WinTypeScore;
+                case WinTypeResign:
+                    return WinTypeResign;
+                case WinTypeDraw:
+                    return WinTypeDraw;           
+            }
+            return winType;
+        }
         private void UpdateGameOverTexts(int myTeam, PhotonBattle.RoomScore score)
         {
             Debug.Log($"myTeam {myTeam} score {score}");
@@ -88,15 +107,15 @@ namespace GameOver.Scripts.GameOver
             var isScoreValid = score.BlueScore != score.RedScore;
             if (score.WinningTeam == PhotonBattle.TeamBlueValue)
             {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
+                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM(Blue) WINS") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Red("YOUR TEAM LOST") : RichText.Yellow("DRAW");
+                _view.LoserInfo = isScoreValid ? RichText.Red("THE (Red)TEAM LOST") : RichText.Yellow("DRAW");
             }
             else if (score.WinningTeam == PhotonBattle.TeamRedValue)
             {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM WINS") : RichText.Yellow("DRAW!");
+                _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM(Red) WINS") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Blue("YOUR TEAM LOST") : RichText.Yellow("DRAW");
+                _view.LoserInfo = isScoreValid ? RichText.Blue("THE (Blue)TEAM LOST") : RichText.Yellow("DRAW");
             }
             else
             {

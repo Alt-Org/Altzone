@@ -160,6 +160,7 @@ namespace Altzone.Scripts.Config
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0)] public float _playerShieldHitStunDuration;
+        [Min(0), Tooltip("Delay in seconds after movement request has been made")] public float _playerMovementNetworkDelay;
 
         [Header("Shield"), Min(0)] public float _shieldDistanceMultiplier;
 
@@ -294,7 +295,7 @@ namespace Altzone.Scripts.Config
         {
             if (_instance == null)
             {
-                _instance = UnityExtensions.CreateStaticSingleton<RuntimeGameConfig>();
+                _instance = UnitySingleton.CreateStaticSingleton<RuntimeGameConfig>();
                 LoadGameConfig(_instance);
                 Debug.Log($"{_instance.name}");
             }

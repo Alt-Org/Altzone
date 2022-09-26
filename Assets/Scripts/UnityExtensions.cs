@@ -8,7 +8,30 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// Extension and helper methods for working with UNITY <c>GameObject</c>s and <c>Component</c>s.
+/// Helper methods to create UNITY singleton <c>Component</c> with hosting <c>GameObject</c>.
+/// </summary>
+/// <remarks>
+/// <c>Component</c> lifetime is either forever (<c>Object.DontDestroyOnLoad()</c>) or current scene.
+/// </remarks>
+public static class UnitySingleton
+{
+    public static T CreateStaticSingleton<T>() where T : Component
+    {
+        var name = typeof(T).Name;
+        var parent = new GameObject(name);
+        Object.DontDestroyOnLoad(parent);
+        return parent.AddComponent<T>();
+   }
+
+    public static T CreateGameObjectAndComponent<T>(string name = null) where T : Component
+    {
+        var parent = new GameObject(name ?? typeof(T).Name);
+        return parent.AddComponent<T>();
+    }
+}
+
+/// <summary>
+/// Extension for working with UNITY <c>GameObject</c>s and <c>Component</c>s.
 /// </summary>
 public static class UnityExtensions
 {
@@ -18,21 +41,6 @@ public static class UnityExtensions
     {
         var component = parent.GetComponent<T>();
         return component != null ? component : parent.AddComponent<T>();
-    }
-
-    public static T CreateStaticSingleton<T>() where T : Component
-    {
-        return CreateGameObjectAndComponent<T>(typeof(T).Name, true);
-    }
-
-    public static T CreateGameObjectAndComponent<T>(string name, bool isDontDestroyOnLoad) where T : Component
-    {
-        var parent = new GameObject(name);
-        if (isDontDestroyOnLoad)
-        {
-            Object.DontDestroyOnLoad(parent);
-        }
-        return parent.AddComponent<T>();
     }
 
     #endregion

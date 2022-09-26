@@ -184,6 +184,7 @@ namespace Battle.Scripts.Battle.Players
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;
             _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
+            _playerDriver.IsMoving = _hasTarget;
         }
 
         #region Debugging

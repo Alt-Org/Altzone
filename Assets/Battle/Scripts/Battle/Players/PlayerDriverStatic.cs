@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
@@ -21,25 +22,39 @@ namespace Battle.Scripts.Battle.Players
             public int _playerPos = PhotonBattle.PlayerPosition1;
             public int _teamNumber = PhotonBattle.TeamBlueValue;
             public Defence _playerMainSkill = Defence.Deflection;
-            public PlayerActorBase _playerPrefab;
             public bool _isLocal;
+        }
+
+        [Serializable]
+        internal class DebugSettings
+        {
+            public PlayerActorBase _playerPrefab;
         }
 
         [Header("Settings"), SerializeField] private Settings _settings;
 
+        [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
+        
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
         
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
+        private IGridManager _gridManager;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
+        private double _movementDelay;
+        public bool IsMoving { get; set; }
 
         private void Awake()
         {
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
+            _gridManager = Context.GetGridManager;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
@@ -52,14 +67,14 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
             _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _settings._playerPrefab);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
                 _playerActor.Speed = _characterModel.Speed;
                 _playerActor.CurrentResistance = _characterModel.Resistance;
                 _state = GetPlayerDriverState(this);
-                _state.ResetState(this, _characterModel);
-                _state.CheckRotation(_playerActor.Transform.position);
+                var playerWorldPosition = _state.ResetState(this, _playerActor, _characterModel, _playerActor.Transform.position);
+                _state.CheckRotation(playerWorldPosition);
                 ConnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
             }
             gameplayManager.RegisterPlayer(this);
@@ -196,6 +211,39 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
+        void IPlayerDriver.SetSpaceFree(GridPos gridPos)
+        {
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            _gridManager._gridEmptySpaces[row, col] = true;
+            Debug.Log($"Grid space free: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+        }
+
+         public void SetSpaceTaken(GridPos gridPos)
+        {
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            _gridManager._gridEmptySpaces[row, col] = false;
+            Debug.Log($"Grid space taken: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+        }
+
+        void IPlayerDriver.SendMoveRequest(GridPos gridPos)
+        {
+            ProcessMoveRequest(gridPos);
+        }
+
+        private void ProcessMoveRequest(GridPos gridPos)
+        {
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            if (!_gridManager._gridEmptySpaces[row, col])
+            {
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                return;
+            }
+            SetSpaceTaken(gridPos);
+            _state.DelayedMove(gridPos, _movementDelay);
+        }
         #endregion
     }
 }

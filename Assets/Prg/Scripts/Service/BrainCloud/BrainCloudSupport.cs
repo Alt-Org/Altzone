@@ -13,7 +13,7 @@ namespace Prg.Scripts.Service.BrainCloud
 
         public static void CreateService()
         {
-            UnityExtensions.CreateGameObjectAndComponent<BrainCloudService>(nameof(BrainCloudService), true);
+            UnityExtensions.CreateStaticSingleton<BrainCloudService>();
         }
 
         /// <summary>

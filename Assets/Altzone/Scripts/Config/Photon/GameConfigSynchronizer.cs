@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Config.Photon
 
         private static GameConfigSynchronizer Get()
         {
-            return _instance ??= UnityExtensions.CreateStaticSingleton<GameConfigSynchronizer>();
+            return _instance ??= UnitySingleton.CreateStaticSingleton<GameConfigSynchronizer>();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

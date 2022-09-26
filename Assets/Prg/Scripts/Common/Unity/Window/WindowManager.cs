@@ -55,7 +55,7 @@ namespace Prg.Scripts.Common.Unity.Window
         {
             if (_windowManager == null)
             {
-                _windowManager = UnityExtensions.CreateGameObjectAndComponent<WindowManager>(nameof(WindowManager), true);
+                _windowManager = UnitySingleton.CreateStaticSingleton<WindowManager>();
             }
             return _windowManager;
         }

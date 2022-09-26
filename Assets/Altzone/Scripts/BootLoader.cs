@@ -38,7 +38,7 @@ namespace Altzone.Scripts
             {
                 UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data} IsSimulator {AppPlatform.IsSimulator}");
                 SetConsentMetaData(data);
-                UnityExtensions.CreateStaticSingleton<ServiceLoader>();
+                UnitySingleton.CreateStaticSingleton<ServiceLoader>();
             });
         }
 

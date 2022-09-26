@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle
         /// Number of "our" other instances that have reported.
         /// </summary>
         int PeerCount { get; }
-
+        bool IsMoving { get; set; }
         bool IsValid { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
@@ -34,6 +34,12 @@ namespace Battle.Scripts.Battle
         void FixCameraRotation(Camera gameCamera);
 
         void MoveTo(Vector2 targetPosition);
+
+        void SendMoveRequest(GridPos gridPos);
+
+        void SetSpaceFree(GridPos gridPos);
+
+        void SetSpaceTaken(GridPos gridPos);
 
         void SetCharacterPose(int poseIndex);
 
@@ -64,9 +70,10 @@ namespace Battle.Scripts.Battle
     internal interface IPlayerDriverState
     {
         double LastBallHitTime { get; }
-        void ResetState(IPlayerDriver playerDriver, CharacterModel characterModel);
+        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();
+        void DelayedMove(GridPos gridPos, double movementStartTime);
     }
 }

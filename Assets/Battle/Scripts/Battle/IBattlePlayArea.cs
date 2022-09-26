@@ -5,7 +5,7 @@ namespace Battle.Scripts.Battle
     /// <summary>
     /// Player and team gameplay areas etc.
     /// </summary>
-    internal interface IBattlePlayArea
+    public interface IBattlePlayArea
     {
         Vector2 GetPlayAreaCenterPosition { get; }
         
