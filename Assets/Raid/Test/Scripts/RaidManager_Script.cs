@@ -76,6 +76,7 @@ public class RaidManager_Script : MonoBehaviour
         GenerateBombsNextToLootTop();
         GenerateBombsNextToLootRight();
         GenerateBombsNextToLootTopRight();
+        GenerateBombsNextToLootDown();
         //GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
         //GenerateNewTestBombs();
         //GenerateTestLoot used to be here
@@ -362,6 +363,44 @@ public class RaidManager_Script : MonoBehaviour
                         {
                             continue;
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private void GenerateBombsNextToLootDown()
+    {
+        //for loop numberOfBombs!
+        for (int y = 6; y > 0; y--)//int x = 0; x < minefieldWidth; x++
+        {
+            for (int x = 11; x > 0; x--)//int y = 0; y < minefieldHeight; y++
+            {
+                Hexa_Struct hexa = state[x, y];
+                if (hexa.type == Hexa_Struct.Type.Loot)
+                {
+                    x--;
+                    if (x >= minefieldWidth || y >= minefieldHeight || y <= minefieldHeight || x <= minefieldHeight) //This is for checking if hexa is out of bounds and would cause an error.
+                    {
+                        x++;
+                        y--;
+
+                        if (x >= minefieldWidth || y >= minefieldHeight || y <= minefieldHeight || x <= minefieldHeight)
+                        {
+                            y++;
+                        }
+                        //Here it has returned to the same loot hexa
+                        //continue;
+                    }
+                    downBombChance = Random.Range(0, 101);
+                    if (downBombChance <= 40)
+                    {
+                        x--;
+                        state[x, y].type = Hexa_Struct.Type.Bomb;
+                    }
+                    else
+                    {
+                        continue;
                     }
                 }
             }
