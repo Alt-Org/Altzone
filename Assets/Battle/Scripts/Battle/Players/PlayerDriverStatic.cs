@@ -70,8 +70,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor.Speed = _characterModel.Speed;
-                _playerActor.CurrentResistance = _characterModel.Resistance;
+                _playerActor.Setup(_characterModel.Speed, _characterModel.Resistance);
                 _state = GetPlayerDriverState(this);
                 var playerWorldPosition = _state.ResetState(this, _playerActor, _characterModel, _playerActor.Transform.position);
                 _state.CheckRotation(playerWorldPosition);
@@ -192,7 +191,7 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SetShieldResistance(int resistance)
         {
-            _playerActor.CurrentResistance = resistance;
+            _playerActor.SetShieldResistance(resistance);
         }
 
         void IPlayerDriver.SetStunned(float duration)

@@ -222,22 +222,17 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 
-        float IPlayerActor.Speed
-        {
-            get => _speed;
-            set => _speed = value;
-        }
+        float IPlayerActor.Speed => _speed;
 
-        int IPlayerActor.CurrentResistance
-        {
-            get => _resistance;
-            set
-            {
-                _resistance = value;
-                UpdatePlayerText();
-            }
-        }
+        int IPlayerActor.ShieldResistance => _resistance;
 
+        void IPlayerActor.Setup(float speed, int resistance)
+        {
+            _speed = speed;
+            _resistance = resistance;
+            UpdatePlayerText();
+        }
+        
         bool IPlayerActor.CanRequestMove
         {
             get => _canRequestMove;
@@ -282,6 +277,12 @@ namespace Battle.Scripts.Battle.Players
             _targetPosition = targetPosition;
         }
 
+        void IPlayerActor.SetShieldResistance(int resistance)
+        {
+            _resistance = resistance;
+            UpdatePlayerText();
+        }
+        
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
             if (_debug._isLogEvents)
