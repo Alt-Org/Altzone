@@ -23,12 +23,16 @@ namespace Battle.Scripts.Test
         public bool _isShieldVisible;
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
+        public bool _isGridMovement;
+        public double _gridMovementDelay = 0.1;
 
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;
 
         [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
+        private PlayerDriverState _playerDriverState;
         private IPlayerDriver _playerDriver;
+        private IGridManager _gridManager;
 
         private void Awake()
         {
@@ -42,6 +46,7 @@ namespace Battle.Scripts.Test
             }
             _nickname = _playerDriver.NickName ?? "noname";
             _isLocal = _playerDriver.IsLocal;
+            _gridManager = Context.GetGridManager;
         }
 
         private void Update()
@@ -52,7 +57,18 @@ namespace Battle.Scripts.Test
                 // Toggle between test target position and current player position 
                 var position = _moveToPosition;
                 _moveToPosition = _playerDriver.Position;
-                _playerDriver.MoveTo(position);
+                if (_isGridMovement)
+                {
+                    _playerDriverState = _playerDriverInstance.GetComponent<PlayerDriverState>();
+                    var row = (int)Mathf.Clamp(position.y, 0, _gridManager.RowCount - 1);
+                    var col = (int)Mathf.Clamp(position.x, 0, _gridManager.ColCount - 1);
+                    GridPos gridPos = new GridPos(row, col);
+                    _playerDriverState.DelayedMove(gridPos, _gridMovementDelay);
+                }
+                else
+                {
+                    _playerDriver.MoveTo(position);
+                }
                 return;
             }
             if (_setPose)

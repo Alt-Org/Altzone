@@ -131,6 +131,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void DoMove(InputAction.CallbackContext ctx)
         {
+            if (!_isGridMovementDisabled) return;
             // Simulate mouse click by trying to move very far.
             _inputClick = ctx.ReadValue<Vector2>() * _unReachableDistance;
             Vector2 inputPosition = _playerTransform.position;
@@ -151,6 +152,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void StopMove(InputAction.CallbackContext ctx)
         {
+            if (!_isGridMovementDisabled) return;
             // Simulate mouse click by "moving" to our current position.
             _inputClick = _playerTransform.position;
             SendMoveTo(_inputClick);
