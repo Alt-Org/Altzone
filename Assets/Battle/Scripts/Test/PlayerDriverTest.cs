@@ -30,13 +30,17 @@ namespace Battle.Scripts.Test
         [ReadOnly] public string _nickname;
 
         [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
-        private PlayerDriverState _playerDriverState;
         private IPlayerDriver _playerDriver;
+        private PlayerDriverState _playerDriverState;
         private IGridManager _gridManager;
 
         private void Awake()
         {
             _playerDriver = _playerDriverInstance as IPlayerDriver;
+            if (_isGridMovement)
+            {
+                _playerDriverState = _playerDriverInstance.GetComponent<PlayerDriverState>();
+            }
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
             if (_stunDuration == 0)
@@ -59,7 +63,6 @@ namespace Battle.Scripts.Test
                 _moveToPosition = _playerDriver.Position;
                 if (_isGridMovement)
                 {
-                    _playerDriverState = _playerDriverInstance.GetComponent<PlayerDriverState>();
                     var row = (int)Mathf.Clamp(position.y, 0, _gridManager.RowCount - 1);
                     var col = (int)Mathf.Clamp(position.x, 0, _gridManager.ColCount - 1);
                     GridPos gridPos = new GridPos(row, col);
