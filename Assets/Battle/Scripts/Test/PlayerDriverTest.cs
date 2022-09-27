@@ -1,3 +1,4 @@
+using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
@@ -37,10 +38,6 @@ namespace Battle.Scripts.Test
         private void Awake()
         {
             _playerDriver = _playerDriverInstance as IPlayerDriver;
-            if (_isGridMovement)
-            {
-                _playerDriverState = _playerDriverInstance.GetComponent<PlayerDriverState>();
-            }
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
             if (_stunDuration == 0)
@@ -53,23 +50,29 @@ namespace Battle.Scripts.Test
             _gridManager = Context.GetGridManager;
         }
 
+        private IEnumerator Start()
+        {
+            // Wait for PlayerDriverState instantiation.
+            yield return new WaitUntil(() => (_playerDriverState ??= _playerDriverInstance.GetComponent<PlayerDriverState>()) != null);
+        }
+
         private void Update()
         {
             if (_moveTo)
             {
                 _moveTo = false;
-                // Toggle between test target position and current player position 
-                var position = _moveToPosition;
-                _moveToPosition = _playerDriver.Position;
                 if (_isGridMovement)
                 {
-                    var row = (int)Mathf.Clamp(position.y, 0, _gridManager.RowCount - 1);
-                    var col = (int)Mathf.Clamp(position.x, 0, _gridManager.ColCount - 1);
-                    GridPos gridPos = new GridPos(row, col);
+                    var row = (int)Mathf.Clamp(_moveToPosition.y, 0, _gridManager.RowCount - 1);
+                    var col = (int)Mathf.Clamp(_moveToPosition.x, 0, _gridManager.ColCount - 1);
+                    var gridPos = new GridPos(row, col);
                     _playerDriverState.DelayedMove(gridPos, _gridMovementDelay);
                 }
                 else
                 {
+                    // Toggle between test target position and current player position 
+                    var position = _moveToPosition;
+                    _moveToPosition = _playerDriver.Position;
                     _playerDriver.MoveTo(position);
                 }
                 return;
