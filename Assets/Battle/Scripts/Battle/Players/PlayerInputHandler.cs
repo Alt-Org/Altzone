@@ -30,7 +30,8 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerDriver _playerDriver;
         private IGridManager _gridManager;
         private Vector2 _inputClick;
-        private bool _isGridMovementDisabled;
+        private bool _isGridMovementEnabled;
+        private bool _isKeyboardEnabled;
         private int _gridWidth;
         private int _gridHeight;
 
@@ -50,7 +51,9 @@ namespace Battle.Scripts.Battle.Players
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var features = runtimeGameConfig.Features;
             var variables = runtimeGameConfig.Variables;
-            _isGridMovementDisabled = features._isDisableBattleGridMovement;
+            _isGridMovementEnabled = !features._isDisableBattleGridMovement;
+            // Keyboard is not supported (now) when grid based movement is in use.
+            _isKeyboardEnabled = !_isGridMovementEnabled;
             _gridWidth = variables._battleUiGridWidth;
             _gridHeight = variables._battleUiGridHeight;
             Assert.IsTrue(_gridWidth > 0, "_gridWidth > 0");
@@ -92,13 +95,13 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            if (_isGridMovementDisabled)
+            if (_isGridMovementEnabled)
             {
-                _playerDriver.MoveTo(targetPosition);
+                var gridPos = _gridManager.WorldPointToGridPosition(targetPosition, Context.GetBattleCamera.IsRotated);
+                _playerDriver.SendMoveRequest(gridPos);
                 return;
             }
-            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition, Context.GetBattleCamera.IsRotated);
-            _playerDriver.SendMoveRequest(gridPos);
+            _playerDriver.MoveTo(targetPosition);
         }
 
         #endregion IPlayerInputHandler
@@ -109,29 +112,32 @@ namespace Battle.Scripts.Battle.Players
         {
             // https://gamedevbeginner.com/input-in-unity-made-easy-complete-guide-to-the-new-system/
 
-            // WASD or GamePad -> performed is called once per key press
-            var moveAction = _moveInputAction.action;
-            moveAction.performed += DoMove;
-            moveAction.canceled += StopMove;
-
+            if (_isKeyboardEnabled)
+            {
+                // WASD or GamePad -> performed is called once per key press
+                var moveAction = _moveInputAction.action;
+                moveAction.performed += DoKeyboardMove;
+                moveAction.canceled += StopKeyboardMove;
+            }
             // Pointer movement when pressed down -> move to given point even pointer is released.
             var clickAction = _clickInputAction.action;
-            clickAction.performed += DoClick;
+            clickAction.performed += DoPointerClick;
         }
 
         private void ReleaseInput()
         {
-            var moveAction = _moveInputAction.action;
-            moveAction.performed -= DoMove;
-            moveAction.canceled -= StopMove;
-
+            if (_isKeyboardEnabled)
+            {
+                var moveAction = _moveInputAction.action;
+                moveAction.performed -= DoKeyboardMove;
+                moveAction.canceled -= StopKeyboardMove;
+            }
             var clickAction = _clickInputAction.action;
-            clickAction.performed -= DoClick;
+            clickAction.performed -= DoPointerClick;
         }
 
-        private void DoMove(InputAction.CallbackContext ctx)
+        private void DoKeyboardMove(InputAction.CallbackContext ctx)
         {
-            if (!_isGridMovementDisabled) return;
             // Simulate mouse click by trying to move very far.
             _inputClick = ctx.ReadValue<Vector2>() * _unReachableDistance;
             Vector2 inputPosition = _playerTransform.position;
@@ -150,15 +156,14 @@ namespace Battle.Scripts.Battle.Players
             SendMoveTo(_inputClick);
         }
 
-        private void StopMove(InputAction.CallbackContext ctx)
+        private void StopKeyboardMove(InputAction.CallbackContext ctx)
         {
-            if (!_isGridMovementDisabled) return;
             // Simulate mouse click by "moving" to our current position.
             _inputClick = _playerTransform.position;
             SendMoveTo(_inputClick);
         }
 
-        private void DoClick(InputAction.CallbackContext ctx)
+        private void DoPointerClick(InputAction.CallbackContext ctx)
         {
             _inputClick = ctx.ReadValue<Vector2>();
 #if UNITY_STANDALONE
