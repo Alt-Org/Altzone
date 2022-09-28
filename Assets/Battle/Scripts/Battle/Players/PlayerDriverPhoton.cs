@@ -342,7 +342,7 @@ namespace Battle.Scripts.Battle.Players
         [PunRPC]
         private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
-            var moveExecuteDelay = movementStartTime - PhotonNetwork.Time;
+            var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
             _state.DelayedMove(row, col, (float)moveExecuteDelay);
         }
 

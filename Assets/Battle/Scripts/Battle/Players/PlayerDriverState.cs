@@ -21,7 +21,6 @@ namespace Battle.Scripts.Battle.Players
         private IBallManager _ballManager;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
-        private IEnumerator _delayedMoveCoroutine;
         private float _playerAttackMultiplier;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
@@ -139,8 +138,7 @@ namespace Battle.Scripts.Battle.Players
 
         public void DelayedMove(GridPos gridPos, float moveExecuteDelay)
         {
-            _delayedMoveCoroutine = DelayTime(gridPos, moveExecuteDelay);
-            StartCoroutine(_delayedMoveCoroutine);
+            StartCoroutine(DelayTime(gridPos, moveExecuteDelay));
         }
 
         private IEnumerator DelayTime(GridPos gridPos, float waitTime)
