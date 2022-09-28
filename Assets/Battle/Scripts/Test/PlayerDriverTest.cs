@@ -25,7 +25,7 @@ namespace Battle.Scripts.Test
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
         public bool _isGridMovement;
-        public double _gridMovementDelay = 0.1;
+        public float _gridMovementDelay = 0.1f;
 
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;

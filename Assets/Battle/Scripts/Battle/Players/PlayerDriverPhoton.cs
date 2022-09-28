@@ -342,9 +342,8 @@ namespace Battle.Scripts.Battle.Players
         [PunRPC]
         private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
-            GridPos gridPos = new GridPos(row, col);
             var moveExecuteDelay = movementStartTime - PhotonNetwork.Time;
-            _state.DelayedMove(gridPos, moveExecuteDelay);
+            _state.DelayedMove(row, col, (float)moveExecuteDelay);
         }
 
         [PunRPC]

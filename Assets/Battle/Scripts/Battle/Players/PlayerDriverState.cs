@@ -131,13 +131,19 @@ namespace Battle.Scripts.Battle.Players
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
 
-        public void DelayedMove(GridPos gridPos, double moveExecuteDelay)
+        public void DelayedMove(int row, int col, float moveExecuteDelay)
+        {
+            GridPos gridPos = new GridPos(row, col);
+            DelayedMove(gridPos, moveExecuteDelay);
+        }
+
+        public void DelayedMove(GridPos gridPos, float moveExecuteDelay)
         {
             _delayedMoveCoroutine = DelayTime(gridPos, moveExecuteDelay);
             StartCoroutine(_delayedMoveCoroutine);
         }
 
-        private IEnumerator DelayTime(GridPos gridPos, double waitTime)
+        private IEnumerator DelayTime(GridPos gridPos, float waitTime)
         {
             yield return new WaitForSeconds((float)waitTime);
             _playerDriver.SetSpaceFree(_savedGridPosition);

@@ -246,7 +246,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             SetSpaceTaken(gridPos);
-            _state.DelayedMove(gridPos, _movementDelay);
+            _state.DelayedMove(gridPos, (float)_movementDelay);
         }
         #endregion
     }
