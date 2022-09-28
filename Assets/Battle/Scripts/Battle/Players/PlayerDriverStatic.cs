@@ -13,6 +13,11 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Static <c>PlayerDriver</c> implementation.
     /// </summary>
+    /// <remarks>
+    /// Set our ExecutionOrder a bit lower to let other components initialize properly before us.<br />
+    /// Note that this (class) is strictly for testing purposes!
+    /// </remarks>
+    [DefaultExecutionOrder(100)]
     internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
