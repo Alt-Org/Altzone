@@ -202,8 +202,8 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
-            if (!_playerActor.CanRequestMove) { return; }
-            _playerActor.CanRequestMove = false;
+            if (!_state.CanRequestMove) { return; }
+            _state.SetIsWaitingForAnswer(true);
             _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
@@ -330,7 +330,7 @@ namespace Battle.Scripts.Battle.Players
             if (!_gridManager.GridState(row, col))
             {
                 Debug.Log($"Grid check failed. row: {row}, col: {col}");
-                _photonView.RPC(nameof(ReleaseMoveRequest), info.Sender, true);
+                _photonView.RPC(nameof(SetWaitingStateRpc), info.Sender, false);
                 return;
             }
             var movementStartTime = info.SentServerTime + _movementDelay;
@@ -364,9 +364,9 @@ namespace Battle.Scripts.Battle.Players
             }
         }
         [PunRPC]
-        private void ReleaseMoveRequest(bool canRequestMove)
+        private void SetWaitingStateRpc(bool isWaitingForAnswer)
         {
-            _playerActor.CanRequestMove = canRequestMove;
+            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
         }
         #endregion
 

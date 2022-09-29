@@ -26,7 +26,10 @@ namespace Battle.Scripts.Battle.Players
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
         private GridPos _savedGridPosition;
+        private bool _isWaitingForAnswer;
         public double LastBallHitTime => _lastBallHitTime;
+
+        public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsMoving;
 
         public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
         {
@@ -150,6 +153,12 @@ namespace Battle.Scripts.Battle.Players
             _savedGridPosition = gridPos;
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, Context.GetBattleCamera.IsRotated);
             _playerActor.MoveTo(targetPosition);
+            SetIsWaitingForAnswer(false);
+        }
+
+        public void SetIsWaitingForAnswer(bool isWaitingForAnswer)
+        {
+            _isWaitingForAnswer = isWaitingForAnswer;
         }
     }
 }

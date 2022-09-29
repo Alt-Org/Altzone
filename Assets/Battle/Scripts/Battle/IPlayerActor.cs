@@ -34,7 +34,7 @@ namespace Battle.Scripts.Battle
 
         int ShieldResistance { get; }
 
-        public bool CanRequestMove { get; set; }
+        public bool IsMoving { get; }
 
         void Setup(float speed, int resistance);
         
