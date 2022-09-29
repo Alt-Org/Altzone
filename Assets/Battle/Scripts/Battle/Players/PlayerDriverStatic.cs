@@ -111,6 +111,11 @@ namespace Battle.Scripts.Battle.Players
             playerInputHandler?.ResetPlayerDriver();
         }
 
+        private void ReleaseMoveRequest(bool canRequestMove)
+        {
+            _playerActor.CanRequestMove = canRequestMove;
+        }
+
         #region IPlayerActorCollision
 
         void IPlayerActorCollision.OnShieldCollision(Collision2D collision)
@@ -233,6 +238,8 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
+            if (!_playerActor.CanRequestMove) { return; }
+            _playerActor.CanRequestMove = false;
             ProcessMoveRequest(gridPos);
         }
 
@@ -243,6 +250,7 @@ namespace Battle.Scripts.Battle.Players
             if (!_gridManager.GridState(row, col))
             {
                 Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                ReleaseMoveRequest(true);
                 return;
             }
             SetSpaceTaken(gridPos);
