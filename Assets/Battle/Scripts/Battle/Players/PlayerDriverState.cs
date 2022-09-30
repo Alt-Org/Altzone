@@ -29,7 +29,7 @@ namespace Battle.Scripts.Battle.Players
         private bool _isWaitingForAnswer;
         public double LastBallHitTime => _lastBallHitTime;
 
-        public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsMoving;
+        public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsBusy;
 
         public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
         {

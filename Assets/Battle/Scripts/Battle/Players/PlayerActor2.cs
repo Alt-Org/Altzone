@@ -60,7 +60,6 @@ namespace Battle.Scripts.Battle.Players
         private float _speed;
         private float _playerMoveSpeedMultiplier;
         private int _resistance;
-        private bool _isMoving;
 
         private bool CanMove => _hasTarget && !_isStunned && _playMode.CanMove();
 
@@ -185,7 +184,6 @@ namespace Battle.Scripts.Battle.Players
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;
             _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
-            _isMoving = _hasTarget;
         }
 
         #region Debugging
@@ -232,7 +230,7 @@ namespace Battle.Scripts.Battle.Players
             UpdatePlayerText();
         }
 
-        bool IPlayerActor.IsMoving => _isMoving;
+        bool IPlayerActor.IsBusy => _hasTarget;
 
         void IPlayerActor.Rotate(bool isUpsideDown)
         {
