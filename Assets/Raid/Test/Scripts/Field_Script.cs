@@ -47,43 +47,216 @@ public class Field_Script : MonoBehaviour
         {
             case Hexa_Struct.Type.Neutral: return tileNeutral;
             case Hexa_Struct.Type.Loot: return tileLootTest; //(DEV) Loot tile for testing placement
-            case Hexa_Struct.Type.Number: return GetNumberTile(hexa);
-            case Hexa_Struct.Type.LootNumber: return GetLootNumberTile(hexa);
+            case Hexa_Struct.Type.Number: return LootNumberSwitch(hexa); //Return GetNumberTile when not testing lootCalculation
+            case Hexa_Struct.Type.LootNumber: return HexaNumberSwitch(hexa); //Return GetLootNumberTile when not testing lootCalculation
             case Hexa_Struct.Type.Bomb: return hexa.detonated ? tileDetonated : tileBomb; //(DEV) Delete detonated if game continues after Raid!
             case Hexa_Struct.Type.NewTestBomb: return hexa.detonated ? tileDetonated : tileBomb;
             default: return null;
         }
     }
 
-    private Tile GetNumberTile(Hexa_Struct hexa)
+    //private Tile GetNumberTile(Hexa_Struct hexa)
+    //{
+    //    switch (hexa.number)
+    //    {
+    //        case 1: return tileNumber1;
+    //        case 2: return tileNumber2;
+    //        case 3: return tileNumber3;
+    //        case 4: return tileNumber4;
+    //        case 5: return tileNumber5;
+    //        case 6: return tileNumber6;
+    //        case 7: return tileNumber7;
+    //        case 8: return tileNumber8;
+    //        case 9: return tileNumber9;
+    //        default: return null;
+    //    }
+    //}
+
+    //private Tile GetNumberTile(Hexa_Struct hexa)
+    //{
+    //    switch (hexa.number)
+    //    {
+    //        case 1://if(hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber1_LootNumber1; default: return tileNumber1; } }
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber1_LootNumber1;
+    //                case 2: return tileNumber1_LootNumber2;
+    //                case 3: return tileNumber1_LootNumber3;
+    //                case 4: return tileNumber1_LootNumber4;
+    //                case 5: return tileNumber1_LootNumber5;
+    //                case 6: return tileNumber1_LootNumber6;
+    //                case 7: return tileNumber1_LootNumber7;
+    //                case 8: return tileNumber1_LootNumber8;
+    //                default: return tileNumber1;
+    //            }
+    //        case 2:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber2_LootNumber1;
+    //                case 2: return tileNumber2_LootNumber2;
+    //                case 3: return tileNumber2_LootNumber3;
+    //                case 4: return tileNumber2_LootNumber4;
+    //                case 5: return tileNumber2_LootNumber5;
+    //                case 6: return tileNumber2_LootNumber6;
+    //                case 7: return tileNumber2_LootNumber7;
+    //                default: return tileNumber2;
+    //            }
+    //        case 3:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber3_LootNumber1;
+    //                case 2: return tileNumber3_LootNumber2;
+    //                case 3: return tileNumber3_LootNumber3;
+    //                case 4: return tileNumber3_LootNumber4;
+    //                case 5: return tileNumber3_LootNumber5;
+    //                case 6: return tileNumber3_LootNumber6;
+    //                default: return tileNumber3;
+    //            }
+    //        case 4:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber4_LootNumber1;
+    //                case 2: return tileNumber4_LootNumber2;
+    //                case 3: return tileNumber4_LootNumber3;
+    //                case 4: return tileNumber4_LootNumber4;
+    //                case 5: return tileNumber4_LootNumber5;
+    //                default: return tileNumber4;
+    //            }
+    //        case 5:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber5_LootNumber1;
+    //                case 2: return tileNumber5_LootNumber2;
+    //                case 3: return tileNumber5_LootNumber3;
+    //                case 4: return tileNumber5_LootNumber4;
+    //                default: return tileNumber5;
+    //            }
+    //        case 6:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber6_LootNumber1;
+    //                case 2: return tileNumber6_LootNumber2;
+    //                case 3: return tileNumber6_LootNumber3;
+    //                default: return tileNumber6;
+    //            }
+    //        case 7:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber7_LootNumber1;
+    //                case 2: return tileNumber7_LootNumber2;
+    //                default: return tileNumber7;
+    //            }
+    //        case 8:
+    //            switch (hexa.lootNumber)
+    //            {
+    //                case 1: return tileNumber8_LootNumber1;
+    //                default: return tileNumber8;
+    //            }
+    //        case 9: return tileNumber9;
+    //        default: return null;
+    //    }
+    //}
+
+    //private Tile GetLootNumberTile(Hexa_Struct hexa)
+    //{
+    //    switch (hexa.lootNumber)
+    //    {
+    //        case 1: return tileLootNumber1;
+    //        case 2: return tileLootNumber2;
+    //        case 3: return tileLootNumber3;
+    //        case 4: return tileLootNumber4;
+    //        case 5: return tileLootNumber5;
+    //        case 6: return tileLootNumber6;
+    //        case 7: return tileLootNumber7;
+    //        case 8: return tileLootNumber8;
+    //        case 9: return tileLootNumber9;
+    //        default: return null;
+    //    }
+    //}
+
+    //private Tile GetLootNumberTile(Hexa_Struct hexa)
+    //{
+    //    switch (hexa.lootNumber)
+    //    {
+    //        case 1:
+    //            switch (hexa.number)
+    //            {
+    //                case 1: return tileNumber1_LootNumber1;
+    //                default: return tileLootNumber1;
+    //            }
+    //        case 2:
+    //            switch (hexa.number)
+    //            {
+    //                case 2: return tileNumber2_LootNumber2;
+    //                default: return tileLootNumber2;
+    //            }
+    //        case 3:
+    //            switch (hexa.number)
+    //            {
+    //                case 3: return tileNumber3_LootNumber3;
+    //                default: return tileLootNumber3;
+    //            }
+    //        case 4:
+    //            switch (hexa.number)
+    //            {
+    //                case 4: return tileNumber4_LootNumber4;
+    //                default: return tileLootNumber4;
+    //            }
+    //        case 5:
+    //            switch (hexa.number)
+    //            {
+    //                default: return tileLootNumber5;
+    //            }
+    //        case 6:
+    //            switch (hexa.number)
+    //            {
+    //                default: return tileLootNumber6;
+    //            }
+    //        case 7:
+    //            switch (hexa.number)
+    //            {
+    //                default: return tileLootNumber7;
+    //            }
+    //        case 8:
+    //            switch (hexa.number)
+    //            {
+    //                default: return tileLootNumber8;
+    //            }
+    //        case 9: return tileLootNumber9;
+
+    //        default: return null;
+    //    }
+    //}
+
+    private Tile LootNumberSwitch(Hexa_Struct hexa)
     {
-        switch(hexa.number)
+        switch (hexa.number)
         {
-            case 1: return tileNumber1;
-            case 2: return tileNumber2;
-            case 3: return tileNumber3;
-            case 4: return tileNumber4;
-            case 5: return tileNumber5;
-            case 6: return tileNumber6;
-            case 7: return tileNumber7;
-            case 8: return tileNumber8;
+            case 1: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber1_LootNumber1; case 2: return tileNumber1_LootNumber2; case 3: return tileNumber1_LootNumber3; case 4: return tileNumber1_LootNumber4; case 5: return tileNumber1_LootNumber5; case 6: return tileNumber1_LootNumber6; case 7: return tileNumber1_LootNumber7; case 8: return tileNumber1_LootNumber8; default: return null;  } } else return tileNumber1;
+            case 2: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber2_LootNumber1; case 2: return tileNumber2_LootNumber2; case 3: return tileNumber2_LootNumber3; case 4: return tileNumber2_LootNumber4; case 5: return tileNumber2_LootNumber5; case 6: return tileNumber2_LootNumber6; case 7: return tileNumber2_LootNumber7; default: return null; } } else return tileNumber2;
+            case 3: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber3_LootNumber1; case 2: return tileNumber3_LootNumber2; case 3: return tileNumber3_LootNumber3; case 4: return tileNumber3_LootNumber4; case 5: return tileNumber3_LootNumber5; case 6: return tileNumber3_LootNumber6; default: return null; } } else return tileNumber3;
+            case 4: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber4_LootNumber1; case 2: return tileNumber4_LootNumber2; case 3: return tileNumber4_LootNumber3; case 4: return tileNumber4_LootNumber4; case 5: return tileNumber4_LootNumber5; default: return null; } } else return tileNumber4;
+            case 5: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber5_LootNumber1; case 2: return tileNumber5_LootNumber2; case 3: return tileNumber5_LootNumber3; case 4: return tileNumber5_LootNumber4; default: return null; } } else return tileNumber5;
+            case 6: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber6_LootNumber1; case 2: return tileNumber6_LootNumber2; case 3: return tileNumber6_LootNumber3; default: return null; } } else return tileNumber6;
+            case 7: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber7_LootNumber1; case 2: return tileNumber7_LootNumber2; default: return null; } } else return tileNumber7;
+            case 8: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber8_LootNumber1; default: return null; } } else return tileNumber8;
             case 9: return tileNumber9;
             default: return null;
         }
     }
 
-    private Tile GetLootNumberTile(Hexa_Struct hexa)
+    private Tile HexaNumberSwitch(Hexa_Struct hexa)
     {
-        switch(hexa.lootNumber)
+        switch (hexa.lootNumber)
         {
-            case 1: return tileLootNumber1;
-            case 2: return tileLootNumber2;
-            case 3: return tileLootNumber3;
-            case 4: return tileLootNumber4;
-            case 5: return tileLootNumber5;
-            case 6: return tileLootNumber6;
-            case 7: return tileLootNumber7;
-            case 8: return tileLootNumber8;
+            case 1: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber1; case 2: return tileNumber2_LootNumber1; case 3: return tileNumber3_LootNumber1; case 4: return tileNumber4_LootNumber1; case 5: return tileNumber5_LootNumber1; case 6: return tileNumber6_LootNumber1; case 7: return tileNumber7_LootNumber1; case 8: return tileNumber8_LootNumber1; default: return null;  } } else return tileLootNumber1;
+            case 2: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber2; case 2: return tileNumber2_LootNumber2; case 3: return tileNumber3_LootNumber2; case 4: return tileNumber4_LootNumber2; case 5: return tileNumber5_LootNumber2; case 6: return tileNumber6_LootNumber2; case 7: return tileNumber7_LootNumber2; default: return null; } } else return tileLootNumber2;
+            case 3: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber3; case 2: return tileNumber2_LootNumber3; case 3: return tileNumber3_LootNumber3; case 4: return tileNumber4_LootNumber3; case 5: return tileNumber5_LootNumber3; case 6: return tileNumber6_LootNumber3; default: return null; } } else return tileLootNumber3;
+            case 4: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber4; case 2: return tileNumber2_LootNumber4; case 3: return tileNumber3_LootNumber4; case 4: return tileNumber4_LootNumber4; case 5: return tileNumber5_LootNumber4; default: return null; } } else return tileLootNumber4;
+            case 5: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber5; case 2: return tileNumber2_LootNumber5; case 3: return tileNumber3_LootNumber5; case 4: return tileNumber4_LootNumber5; default: return null; } } else return tileLootNumber5;
+            case 6: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber6; case 2: return tileNumber2_LootNumber6; case 3: return tileNumber3_LootNumber6; default: return null; } } else return tileLootNumber6;
+            case 7: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber7; case 2: return tileNumber2_LootNumber7; default: return null; } } else return tileLootNumber7;
+            case 8: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber8; default: return null; } } else return tileLootNumber8;
             case 9: return tileLootNumber9;
             default: return null;
         }
