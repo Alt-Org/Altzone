@@ -105,22 +105,21 @@ namespace GameOver.Scripts.GameOver
             Debug.Log(PhotonNetwork.LocalPlayer.GetDebugLabel());
             // It is possible that we can have equal score and winning team - but that can not be true!
             var isScoreValid = score.BlueScore != score.RedScore;
-            if (score.WinningTeam == PhotonBattle.TeamBlueValue)
+            if (score.WinningTeam == myTeam && score.BlueScore != score.RedScore )
             {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOUR TEAM(Blue) WINS") : RichText.Yellow("DRAW!");
+                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Red("THE (Red)TEAM LOST") : RichText.Yellow("DRAW");
             }
-            else if (score.WinningTeam == PhotonBattle.TeamRedValue)
+            else if (score.WinningTeam != myTeam)
             {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Red("YOUR TEAM(Red) WINS") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
-                _view.LoserInfo = isScoreValid ? RichText.Blue("THE (Blue)TEAM LOST") : RichText.Yellow("DRAW");
+               _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
+               _view.LoserInfo = isScoreValid ? RichText.Red("YOU LOSE") : RichText.Yellow("DRAW");
             }
             else
             {
                 _view.WinnerInfo1 = RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = string.Empty;
+                _view.LoserInfo =  RichText.Red("YOU LOSE");
             }
         }
 

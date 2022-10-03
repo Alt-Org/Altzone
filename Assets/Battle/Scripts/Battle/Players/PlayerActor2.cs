@@ -184,7 +184,6 @@ namespace Battle.Scripts.Battle.Players
             _tempPosition = Vector3.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;
             _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
-            _playerDriver.IsMoving = _hasTarget;
         }
 
         #region Debugging
@@ -220,21 +219,18 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerActor.MaxPoseIndex => _maxPoseIndex;
 
-        float IPlayerActor.Speed
+        float IPlayerActor.Speed => _speed;
+
+        int IPlayerActor.ShieldResistance => _resistance;
+
+        void IPlayerActor.Setup(float speed, int resistance)
         {
-            get => _speed;
-            set => _speed = value;
+            _speed = speed;
+            _resistance = resistance;
+            UpdatePlayerText();
         }
 
-        int IPlayerActor.CurrentResistance
-        {
-            get => _resistance;
-            set
-            {
-                _resistance = value;
-                UpdatePlayerText();
-            }
-        }
+        bool IPlayerActor.IsBusy => _hasTarget;
 
         void IPlayerActor.Rotate(bool isUpsideDown)
         {
@@ -271,6 +267,12 @@ namespace Battle.Scripts.Battle.Players
             _targetPosition = targetPosition;
         }
 
+        void IPlayerActor.SetShieldResistance(int resistance)
+        {
+            _resistance = resistance;
+            UpdatePlayerText();
+        }
+        
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
             if (_debug._isLogEvents)

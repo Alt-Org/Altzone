@@ -13,6 +13,11 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Static <c>PlayerDriver</c> implementation.
     /// </summary>
+    /// <remarks>
+    /// Set our ExecutionOrder a bit lower to let other components initialize properly before us.<br />
+    /// Note that this (class) is strictly for testing purposes!
+    /// </remarks>
+    [DefaultExecutionOrder(100)]
     internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerActorCollision
     {
         [Serializable]
@@ -70,8 +75,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
-                _playerActor.Speed = _characterModel.Speed;
-                _playerActor.CurrentResistance = _characterModel.Resistance;
+                _playerActor.Setup(_characterModel.Speed, _characterModel.Resistance);
                 _state = GetPlayerDriverState(this);
                 var playerWorldPosition = _state.ResetState(this, _playerActor, _characterModel, _playerActor.Transform.position);
                 _state.CheckRotation(playerWorldPosition);
@@ -105,6 +109,11 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerInputHandler = PlayerInputHandler.Get();
             playerInputHandler?.ResetPlayerDriver();
+        }
+
+        private void SetWaitingState(bool isWaitingForAnswer)
+        {
+            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
         }
 
         #region IPlayerActorCollision
@@ -192,7 +201,7 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SetShieldResistance(int resistance)
         {
-            _playerActor.CurrentResistance = resistance;
+            _playerActor.SetShieldResistance(resistance);
         }
 
         void IPlayerDriver.SetStunned(float duration)
@@ -215,20 +224,22 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager._gridEmptySpaces[row, col] = true;
-            Debug.Log($"Grid space free: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+            _gridManager.SetGridState(row, col, true);
+            Debug.Log($"Grid space free: row: {row}, col: {col}");
         }
 
          public void SetSpaceTaken(GridPos gridPos)
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            _gridManager._gridEmptySpaces[row, col] = false;
-            Debug.Log($"Grid space taken: row: {row}, col: {col}, {_gridManager._gridEmptySpaces[row, col]}");
+            _gridManager.SetGridState(row, col, false);
+            Debug.Log($"Grid space taken: row: {row}, col: {col}");
         }
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
+            if (!_state.CanRequestMove) { return; }
+            _state.SetIsWaitingForAnswer(true);
             ProcessMoveRequest(gridPos);
         }
 
@@ -236,13 +247,14 @@ namespace Battle.Scripts.Battle.Players
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            if (!_gridManager._gridEmptySpaces[row, col])
+            if (!_gridManager.GridState(row, col))
             {
                 Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                SetWaitingState(false);
                 return;
             }
             SetSpaceTaken(gridPos);
-            _state.DelayedMove(gridPos, _movementDelay);
+            _state.DelayedMove(gridPos, (float)_movementDelay);
         }
         #endregion
     }

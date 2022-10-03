@@ -20,15 +20,16 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IBallManager _ballManager;
         private IPlayerActor _playerActor;
-        private Transform _transform;
         private IGridManager _gridManager;
-        private IEnumerator _delayedMoveCoroutine;
         private float _playerAttackMultiplier;
         private float _stunDuration;
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
         private GridPos _savedGridPosition;
+        private bool _isWaitingForAnswer;
         public double LastBallHitTime => _lastBallHitTime;
+
+        public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsBusy;
 
         public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
         {
@@ -36,7 +37,6 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
-            _transform = _playerActor.Transform;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerAttackMultiplier = variables._playerAttackMultiplier;
@@ -133,13 +133,18 @@ namespace Battle.Scripts.Battle.Players
             return $"pose={_currentPoseIndex} res={_currentShieldResistance}";
         }
 
-        public void DelayedMove(GridPos gridPos, double movementStartTime)
+        public void DelayedMove(int row, int col, float moveExecuteDelay)
         {
-            _delayedMoveCoroutine = DelayTime(gridPos, movementStartTime);
-            StartCoroutine(_delayedMoveCoroutine);
+            GridPos gridPos = new GridPos(row, col);
+            DelayedMove(gridPos, moveExecuteDelay);
         }
 
-        private IEnumerator DelayTime(GridPos gridPos, double waitTime)
+        public void DelayedMove(GridPos gridPos, float moveExecuteDelay)
+        {
+            StartCoroutine(DelayTime(gridPos, moveExecuteDelay));
+        }
+
+        private IEnumerator DelayTime(GridPos gridPos, float waitTime)
         {
             yield return new WaitForSeconds((float)waitTime);
             _playerDriver.SetSpaceFree(_savedGridPosition);
@@ -147,7 +152,13 @@ namespace Battle.Scripts.Battle.Players
             _currentCol = gridPos.Col;
             _savedGridPosition = gridPos;
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, Context.GetBattleCamera.IsRotated);
-            _playerDriver.MoveTo(targetPosition);
+            _playerActor.MoveTo(targetPosition);
+            SetIsWaitingForAnswer(false);
+        }
+
+        public void SetIsWaitingForAnswer(bool isWaitingForAnswer)
+        {
+            _isWaitingForAnswer = isWaitingForAnswer;
         }
     }
 }

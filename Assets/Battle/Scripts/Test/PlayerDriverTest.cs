@@ -1,3 +1,4 @@
+using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
@@ -23,12 +24,16 @@ namespace Battle.Scripts.Test
         public bool _isShieldVisible;
         public float _stunDuration;
         public bool _isPlayerUpsideDown;
+        public bool _isGridMovement;
+        public float _gridMovementDelay = 0.1f;
 
         [Header("Live Data"), ReadOnly] public bool _isLocal;
         [ReadOnly] public string _nickname;
 
         [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
         private IPlayerDriver _playerDriver;
+        private PlayerDriverState _playerDriverState;
+        private IGridManager _gridManager;
 
         private void Awake()
         {
@@ -42,6 +47,13 @@ namespace Battle.Scripts.Test
             }
             _nickname = _playerDriver.NickName ?? "noname";
             _isLocal = _playerDriver.IsLocal;
+            _gridManager = Context.GetGridManager;
+        }
+
+        private IEnumerator Start()
+        {
+            // Wait for PlayerDriverState instantiation.
+            yield return new WaitUntil(() => (_playerDriverState ??= _playerDriverInstance.GetComponent<PlayerDriverState>()) != null);
         }
 
         private void Update()
@@ -49,10 +61,20 @@ namespace Battle.Scripts.Test
             if (_moveTo)
             {
                 _moveTo = false;
-                // Toggle between test target position and current player position 
-                var position = _moveToPosition;
-                _moveToPosition = _playerDriver.Position;
-                _playerDriver.MoveTo(position);
+                if (_isGridMovement)
+                {
+                    var row = (int)Mathf.Clamp(_moveToPosition.y, 0, _gridManager.RowCount - 1);
+                    var col = (int)Mathf.Clamp(_moveToPosition.x, 0, _gridManager.ColCount - 1);
+                    var gridPos = new GridPos(row, col);
+                    _playerDriverState.DelayedMove(gridPos, _gridMovementDelay);
+                }
+                else
+                {
+                    // Toggle between test target position and current player position 
+                    var position = _moveToPosition;
+                    _moveToPosition = _playerDriver.Position;
+                    _playerDriver.MoveTo(position);
+                }
                 return;
             }
             if (_setPose)

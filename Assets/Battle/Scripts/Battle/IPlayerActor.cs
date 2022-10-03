@@ -30,16 +30,22 @@ namespace Battle.Scripts.Battle
 
         int MaxPoseIndex { get; }
 
-        float Speed { get; set; }
+        float Speed { get; }
 
-        int CurrentResistance { get; set; }
+        int ShieldResistance { get; }
 
+        public bool IsBusy { get; }
+
+        void Setup(float speed, int resistance);
+        
         void Rotate(bool isUpsideDown);
 
         void FixCameraRotation(Camera gameCamera);
 
         void MoveTo(Vector2 targetPosition);
 
+        void SetShieldResistance(int resistance);
+        
         void SetCharacterPose(int poseIndex);
 
         void SetPlayMode(BattlePlayMode playMode);
