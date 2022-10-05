@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6871712117659296220}
   - component: {fileID: 2061757397644444123}
   - component: {fileID: 4973149698285530800}
+  - component: {fileID: 5390123553517038378}
   m_Layer: 5
   m_Name: BT_pappi1
   m_TagString: Untagged
@@ -122,6 +123,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5390123553517038378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21832986302914234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 4650fd3d97a0c7b419804e31f7046f8c, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &99047047791468272
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,6 +963,7 @@ GameObject:
   - component: {fileID: 811970786396586147}
   - component: {fileID: 6250857440328329709}
   - component: {fileID: 1590826689445897931}
+  - component: {fileID: 9111673328686291762}
   m_Layer: 5
   m_Name: BT_pul1
   m_TagString: Untagged
@@ -1058,6 +1074,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &9111673328686291762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766997944569739196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 42ecfee9b6b24c646a739150b7bbf47e, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &878854619822911921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1616,6 +1646,7 @@ GameObject:
   - component: {fileID: 8671271426015665989}
   - component: {fileID: 9084898293269707703}
   - component: {fileID: 7684655899198720373}
+  - component: {fileID: 1332855210403294552}
   m_Layer: 5
   m_Name: BT_kius1
   m_TagString: Untagged
@@ -1726,6 +1757,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1332855210403294552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702105474227666755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: d61fc63178923d74ca940d72d40d2cd4, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &1759599768565461172
 GameObject:
   m_ObjectHideFlags: 0
@@ -1770,6 +1815,7 @@ GameObject:
   - component: {fileID: 4672126839523709503}
   - component: {fileID: 2517392535983732114}
   - component: {fileID: 1076600121536266512}
+  - component: {fileID: 4186476121145927337}
   m_Layer: 5
   m_Name: BT_vits1
   m_TagString: Untagged
@@ -1880,6 +1926,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4186476121145927337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1846055176863051838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 4c08325afa94cd948bc6736d26cb8314, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &1928985197366155325
 GameObject:
   m_ObjectHideFlags: 0
@@ -2455,6 +2515,7 @@ GameObject:
   - component: {fileID: 3771577802221642586}
   - component: {fileID: 4682089090386561652}
   - component: {fileID: 130765994098556969}
+  - component: {fileID: 1862857686887645844}
   m_Layer: 5
   m_Name: BT_tyt1
   m_TagString: Untagged
@@ -2565,6 +2626,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1862857686887645844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3308116882965070708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 4d6a33657ed4a61429fb7cbf852c86ea, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &3581682276413582882
 GameObject:
   m_ObjectHideFlags: 0
@@ -2864,6 +2939,7 @@ GameObject:
   - component: {fileID: 4410331791966183633}
   - component: {fileID: 6330275715742835235}
   - component: {fileID: 9197964724756958242}
+  - component: {fileID: 4455154687071462307}
   m_Layer: 5
   m_Name: BT_tait1
   m_TagString: Untagged
@@ -2974,6 +3050,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4455154687071462307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4256132531025943297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 14690f6a2f18bbd49804d35f06139e45, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &4383128676690781014
 GameObject:
   m_ObjectHideFlags: 0
