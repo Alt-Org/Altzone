@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Battle.Scripts.Battle.Game;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Photon.Pun;
 
 namespace Battle.Scripts.Battle
 {
@@ -24,9 +25,13 @@ namespace Battle.Scripts.Battle
 
         GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated);
 
-        bool GridState(int row, int col);
+        void SetSpaceFree(GridPos gridPos);
 
-        void SetGridState(int row, int col, bool state);
+        void SetSpaceTaken(GridPos gridPos);
+
+        void SetSpaceTaken(int row, int col);
+
+        bool GridFreeState(int row, int col);
     }
 
     public class GridPos : Tuple<int, int>
@@ -46,14 +51,17 @@ namespace Battle.Scripts.Battle
 
     internal class GridManager : MonoBehaviour, IGridManager
     {
+        private PhotonView _photonView;
         private Camera _camera;
         private int _gridWidth;
         private int _gridHeight;
+        private IGridManager _gridManager;
 
         private bool[,] _gridEmptySpaces;
 
         private void Awake()
         {
+            _photonView = GetComponent<PhotonView>();
             _camera = Context.GetBattleCamera.Camera;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
@@ -103,15 +111,54 @@ namespace Battle.Scripts.Battle
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
         }
+        void IGridManager.SetSpaceFree(GridPos gridPos)
+        {
+            if (_photonView == null)
+            {
+                SetGridState(gridPos.Row, gridPos.Col, true);
+                return;
+            }
+            _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
+        }
 
-        bool IGridManager.GridState(int row, int col)
+        void IGridManager.SetSpaceTaken(GridPos gridPos)
+        {
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            SetSpaceTaken(row, col);
+        }
+
+        public void SetSpaceTaken(int row, int col)
+        {
+            if (_photonView == null)
+            {
+                SetGridState(row, col, false);
+                return;
+            }
+            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, row, col);
+        }
+        public bool GridFreeState(int row, int col)
         {
             return _gridEmptySpaces[row, col];
         }
 
-        void IGridManager.SetGridState(int row, int col, bool state)
+        private void SetGridState(int row, int col, bool state)
         {
             _gridEmptySpaces[row, col] = state;
+        }
+
+        [PunRPC]
+        private void SetSpaceTakenRpc(int row, int col)
+        {
+            SetGridState(row, col, false);
+            Debug.Log($"Grid space taken: row: {row}, col: {col}");
+        }
+
+        [PunRPC]
+        private void SetSpaceFreeRpc(int row, int col)
+        {
+            SetGridState(row, col, true);
+            Debug.Log($"Grid space free: row: {row}, col: {col}");
         }
     }
 }

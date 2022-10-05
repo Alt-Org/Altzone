@@ -27,12 +27,10 @@ namespace Battle.Scripts.Battle.Players
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
-        private double _movementDelay;
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
-        private IGridManager _gridManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
@@ -42,7 +40,6 @@ namespace Battle.Scripts.Battle.Players
         {
             print("++");
             _photonView = PhotonView.Get(this);
-            _gridManager = Context.GetGridManager;
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             Debug.Log($"{player.GetDebugLabel()} {_photonView}");
@@ -51,9 +48,6 @@ namespace Battle.Scripts.Battle.Players
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
-            var variables = runtimeGameConfig.Variables;
-            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
@@ -204,7 +198,7 @@ namespace Battle.Scripts.Battle.Players
         {
             if (!_state.CanRequestMove) { return; }
             _state.SetIsWaitingForAnswer(true);
-            _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
+            _state.ProcessMoveRequest(gridPos);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
@@ -267,15 +261,6 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
-        void IPlayerDriver.SetSpaceFree(GridPos gridPos)
-        {
-            _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
-        }
-
-        void IPlayerDriver.SetSpaceTaken(GridPos gridPos)
-        {
-            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
-        }
         #endregion
 
         #region Photon RPC
@@ -324,50 +309,6 @@ namespace Battle.Scripts.Battle.Players
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
         }
 
-        [PunRPC]
-        private void ProcessMoveRequestRpc(int row, int col, PhotonMessageInfo info)
-        {
-            if (!_gridManager.GridState(row, col))
-            {
-                Debug.Log($"Grid check failed. row: {row}, col: {col}");
-                _photonView.RPC(nameof(SetWaitingStateRpc), info.Sender, false);
-                return;
-            }
-            var movementStartTime = info.SentServerTime + _movementDelay;
-            Debug.Log($"Grid Request approved: row: {row}, col: {col}, player: {info.Sender}, time: {movementStartTime}");
-            _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.All, row, col);
-            _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, row, col, movementStartTime);
-        }
-
-        [PunRPC]
-        private void MoveDelayedRpc(int row, int col, double movementStartTime)
-        {
-            var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
-            _state.DelayedMove(row, col, (float)moveExecuteDelay);
-        }
-
-        [PunRPC]
-        private void SetSpaceTakenRpc(int row, int col)
-        {
-            _gridManager.SetGridState(row, col, false);
-            Debug.Log($"Grid space taken: row: {row}, col: {col}");
-        }
-
-        [PunRPC]
-        public void SetSpaceFreeRpc(int row, int col)
-        {
-            _gridManager.SetGridState(row, col, true);
-            Debug.Log($"Grid space free: row: {row}, col: {col}");
-            if (PhotonNetwork.IsMasterClient)
-            {
-                _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.Others, row, col);
-            }
-        }
-        [PunRPC]
-        private void SetWaitingStateRpc(bool isWaitingForAnswer)
-        {
-            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
-        }
         #endregion
 
         #region Photon RPC for PeerCount handshake protocol

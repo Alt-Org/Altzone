@@ -36,10 +36,6 @@ namespace Battle.Scripts.Battle
 
         void SendMoveRequest(GridPos gridPos);
 
-        void SetSpaceFree(GridPos gridPos);
-
-        void SetSpaceTaken(GridPos gridPos);
-
         void SetCharacterPose(int poseIndex);
 
         void SetPlayMode(BattlePlayMode playMode);
@@ -73,6 +69,7 @@ namespace Battle.Scripts.Battle
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();
+        void ProcessMoveRequest(GridPos gridPos);
         void DelayedMove(GridPos gridPos, float moveExecuteDelay);
         void DelayedMove(int row, int col, float moveExecuteDelay);
         void SetIsWaitingForAnswer(bool isWaitingForAnswer);
