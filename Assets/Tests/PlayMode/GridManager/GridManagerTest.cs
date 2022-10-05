@@ -73,10 +73,17 @@ namespace Tests.PlayMode.GridManager
                         var gridPos2 = gridManager.WorldPointToGridPosition(worldPos, rotation);
                         Assert.AreEqual(row, gridPos2.Row);
                         Assert.AreEqual(col, gridPos2.Col);
-                        var currentState = gridManager.GridState(row, col);
+                        var currentState = gridManager.GridFreeState(row, col);
                         Assert.AreEqual(emptyState, currentState);
                         // Set state so that it will have opposite value on next "round".
-                        gridManager.SetGridState(row, col, !currentState);
+                        if (!currentState)
+                        {
+                            gridManager.SetSpaceFree(gridPos);
+                        }
+                        else
+                        {
+                            gridManager.SetSpaceTaken(gridPos);
+                        }
                     }
                 }
                 emptyState = !emptyState;

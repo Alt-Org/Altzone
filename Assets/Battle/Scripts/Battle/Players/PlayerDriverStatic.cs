@@ -45,21 +45,14 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
-        private IGridManager _gridManager;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
-        private double _movementDelay;
-        public bool IsMoving { get; set; }
 
         private void Awake()
         {
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
-            _gridManager = Context.GetGridManager;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
-            var variables = runtimeGameConfig.Variables;
-            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
@@ -220,42 +213,13 @@ namespace Battle.Scripts.Battle.Players
             DisconnectDistanceMeter(this, GetComponent<PlayerDistanceMeter>());
         }
 
-        void IPlayerDriver.SetSpaceFree(GridPos gridPos)
-        {
-            var row = gridPos.Row;
-            var col = gridPos.Col;
-            _gridManager.SetGridState(row, col, true);
-            Debug.Log($"Grid space free: row: {row}, col: {col}");
-        }
-
-         public void SetSpaceTaken(GridPos gridPos)
-        {
-            var row = gridPos.Row;
-            var col = gridPos.Col;
-            _gridManager.SetGridState(row, col, false);
-            Debug.Log($"Grid space taken: row: {row}, col: {col}");
-        }
-
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
             if (!_state.CanRequestMove) { return; }
             _state.SetIsWaitingForAnswer(true);
-            ProcessMoveRequest(gridPos);
+            _state.ProcessMoveRequest(gridPos);
         }
 
-        private void ProcessMoveRequest(GridPos gridPos)
-        {
-            var row = gridPos.Row;
-            var col = gridPos.Col;
-            if (!_gridManager.GridState(row, col))
-            {
-                Debug.Log($"Grid check failed. row: {row}, col: {col}");
-                SetWaitingState(false);
-                return;
-            }
-            SetSpaceTaken(gridPos);
-            _state.DelayedMove(gridPos, (float)_movementDelay);
-        }
         #endregion
     }
 }
