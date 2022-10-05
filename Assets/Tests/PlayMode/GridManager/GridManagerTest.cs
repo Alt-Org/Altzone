@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using NUnit.Framework;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -30,6 +31,12 @@ namespace Tests.PlayMode.GridManager
 
             // Use yield to skip a frame.
             var skipFrame = new WaitForEndOfFrame();
+            // Wait until we are in a room because GridManager uses Photon RPC.
+            while (!PhotonNetwork.InRoom)
+            {
+                yield return skipFrame;
+            }
+            Debug.Log($"Connected to {PhotonNetwork.CurrentRoom}");
             IGridManager gridManager;
             for (;;)
             {
@@ -67,7 +74,6 @@ namespace Tests.PlayMode.GridManager
                     {
                         var gridPos = new GridPos(row, col);
                         var worldPos = gridManager.GridPositionToWorldPoint(gridPos, rotation);
-                        Debug.Log($"Grid row, col {row:00},{col:00} -> x,y {worldPos.x:0.00},{worldPos.y:0.00} ({worldPos.x},{worldPos.y})");
                         Assert.IsFalse(Mathf.Abs(worldPos.x) > world.x);
                         Assert.IsFalse(Mathf.Abs(worldPos.y) > world.y);
                         var gridPos2 = gridManager.WorldPointToGridPosition(worldPos, rotation);
