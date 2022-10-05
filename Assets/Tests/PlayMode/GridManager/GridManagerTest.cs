@@ -56,11 +56,11 @@ namespace Tests.PlayMode.GridManager
             Assert.AreEqual(gridWidth, gridManager.ColCount);
             var rowMax = gridHeight;
             var colMax = gridWidth;
-            var emptyState = true;
+            var expectedState = true;
             foreach (var rotation in new[] { false, true })
             {
                 yield return skipFrame;
-                Debug.Log($"Grid rotation {rotation} emptyState {emptyState}");
+                Debug.Log($"Grid rotation {rotation} expectedState {expectedState}");
                 for (var row = 0; row < rowMax; ++row)
                 {
                     for (var col = 0; col < colMax; ++col)
@@ -73,20 +73,20 @@ namespace Tests.PlayMode.GridManager
                         var gridPos2 = gridManager.WorldPointToGridPosition(worldPos, rotation);
                         Assert.AreEqual(row, gridPos2.Row);
                         Assert.AreEqual(col, gridPos2.Col);
-                        var currentState = gridManager.GridFreeState(row, col);
-                        Assert.AreEqual(emptyState, currentState);
+                        var isFreePosition = gridManager.GridFreeState(row, col);
+                        Assert.AreEqual(expectedState, isFreePosition);
                         // Set state so that it will have opposite value on next "round".
-                        if (!currentState)
-                        {
-                            gridManager.SetSpaceFree(gridPos);
-                        }
-                        else
+                        if (isFreePosition)
                         {
                             gridManager.SetSpaceTaken(gridPos);
                         }
+                        else
+                        {
+                            gridManager.SetSpaceFree(gridPos);
+                        }
                     }
                 }
-                emptyState = !emptyState;
+                expectedState = !expectedState;
             }
             Debug.Log("Done");
         }
