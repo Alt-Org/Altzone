@@ -125,10 +125,10 @@ namespace Battle.Scripts.Battle
         {
             var row = gridPos.Row;
             var col = gridPos.Col;
-            SetSpaceTaken(row, col);
+            ((IGridManager)this).SetSpaceTaken(row, col);
         }
 
-        public void SetSpaceTaken(int row, int col)
+        void IGridManager.SetSpaceTaken(int row, int col)
         {
             if (_photonView == null)
             {
@@ -137,7 +137,7 @@ namespace Battle.Scripts.Battle
             }
             _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, row, col);
         }
-        public bool GridFreeState(int row, int col)
+        bool IGridManager.GridFreeState(int row, int col)
         {
             return _gridEmptySpaces[row, col];
         }
