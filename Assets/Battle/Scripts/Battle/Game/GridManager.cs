@@ -61,7 +61,7 @@ namespace Battle.Scripts.Battle
 
         private void Awake()
         {
-            _photonView = GetComponent<PhotonView>();
+            _photonView = PhotonView.Get(this);
             _camera = Context.GetBattleCamera.Camera;
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var variables = runtimeGameConfig.Variables;
@@ -113,11 +113,6 @@ namespace Battle.Scripts.Battle
         }
         void IGridManager.SetSpaceFree(GridPos gridPos)
         {
-            if (_photonView == null)
-            {
-                SetGridState(gridPos.Row, gridPos.Col, true);
-                return;
-            }
             _photonView.RPC(nameof(SetSpaceFreeRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
@@ -130,11 +125,6 @@ namespace Battle.Scripts.Battle
 
         void IGridManager.SetSpaceTaken(int row, int col)
         {
-            if (_photonView == null)
-            {
-                SetGridState(row, col, false);
-                return;
-            }
             _photonView.RPC(nameof(SetSpaceTakenRpc), RpcTarget.MasterClient, row, col);
         }
         bool IGridManager.GridFreeState(int row, int col)

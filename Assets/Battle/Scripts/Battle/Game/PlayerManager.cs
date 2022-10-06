@@ -431,8 +431,11 @@ namespace Battle.Scripts.Battle.Game
                 }
                 else if (_teamBlue.Count == 0 && PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
                 {
-                    TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
-                    return;
+                    if (_teamRed.Count > 0)
+                    {
+                        TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
+                        return;
+                    }
                 }
             }
             else if (playerDriver.TeamNumber == PhotonBattle.TeamRedValue)
@@ -444,8 +447,11 @@ namespace Battle.Scripts.Battle.Game
                 }
                 else if (_teamRed.Count == 0 && PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
                 {
-                    TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
-                    return;
+                    if (_teamBlue.Count > 0)
+                    {
+                        TeamForfeitAndGameOver(PhotonNetwork.CurrentRoom);
+                        return;
+                    }
                 }
             }
             this.Publish(new PlayerLeft(playerDriver));
