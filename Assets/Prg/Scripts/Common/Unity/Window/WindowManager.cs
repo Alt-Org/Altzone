@@ -354,13 +354,13 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private static void Show(MyWindow window)
         {
-            Debug.Log($"Show {window._windowDef}", window._windowDef);
+            Debug.Log($"Show {window._windowDef}", window._window);
             window._window.SetActive(true);
         }
 
         private static void Hide(MyWindow window)
         {
-            Debug.Log($"Hide {window._windowDef}");
+            Debug.Log($"Hide {window._windowDef}", window._window);
             if (window.IsValid)
             {
                 window._window.SetActive(false);

@@ -20,7 +20,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void Start()
         {
-            Debug.Log($"{name}");
+            Debug.Log($"{name}", gameObject);
             var button = GetComponent<Button>();
             if (_naviTarget == null)
             {
@@ -39,7 +39,7 @@ namespace Prg.Scripts.Common.Unity.Window
 
         private void OnNaviButtonClick()
         {
-            Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}");
+            Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", _naviTarget);
             var windowManager = WindowManager.Get();
             if (_isCurrentPopOutWindow)
             {
