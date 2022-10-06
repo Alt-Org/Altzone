@@ -64,6 +64,7 @@ namespace Tests.PlayMode.GridManager
             var rowMax = gridHeight;
             var colMax = gridWidth;
             var expectedState = true;
+            var startTime = Time.time;
             foreach (var rotation in new[] { false, true })
             {
                 yield return skipFrame;
@@ -94,7 +95,8 @@ namespace Tests.PlayMode.GridManager
                 }
                 expectedState = !expectedState;
             }
-            Debug.Log("Done");
+            yield return skipFrame;
+            Debug.Log($"Done in {Time.time - startTime:0.000} s");
         }
     }
 }
