@@ -31,7 +31,7 @@ MonoBehaviour:
   _variables:
     _battleRoomStartDelay: 6
     _battleSlingshotDelay: 6
-    _battleHeadScoreToWin: 1
+    _battleHeadScoreToWin: 10000
     _battleUiGridWidth: 180
     _battleUiGridHeight: 320
     _raidMaxLootCapacity: 0
@@ -43,11 +43,11 @@ MonoBehaviour:
     _ballSlingshotPower: 0.75
     _ballIdleAccelerationStartDelay: 1
     _ballIdleAccelerationInterval: 1
-    _ballIdleAccelerationMultiplier: 1.1
+    _ballIdleAccelerationMultiplier: 1
     _playerMoveSpeedMultiplier: 20
     _playerAttackMultiplier: 1.5
     _playerShieldHitStunDuration: 0.5
-    _playerMovementNetworkDelay: 0.05
+    _playerMovementNetworkDelay: 0.1
     _shieldDistanceMultiplier: 1
   _battleUiConfig:
     _battleUiGridLineWidth: 0.03
