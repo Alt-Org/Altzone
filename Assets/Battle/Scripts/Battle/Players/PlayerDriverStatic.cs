@@ -45,14 +45,20 @@ namespace Battle.Scripts.Battle.Players
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
+        private IGridManager _gridManager;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
+        private double _movementDelay;
 
         private void Awake()
         {
             print("++");
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
+            _gridManager = Context.GetGridManager;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
@@ -217,9 +223,23 @@ namespace Battle.Scripts.Battle.Players
         {
             if (!_state.CanRequestMove) { return; }
             _state.SetIsWaitingForAnswer(true);
-            _state.ProcessMoveRequest(gridPos);
+            ProcessMoveRequest(gridPos);
         }
 
         #endregion
+
+        private void ProcessMoveRequest(GridPos gridPos)
+        {
+            var row = gridPos.Row;
+            var col = gridPos.Col;
+            if (!_gridManager.GridFreeState(row, col))
+            {
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                SetWaitingState(false);
+                return;
+            }
+            _gridManager.SetSpaceTaken(gridPos);
+            _state.DelayedMove(gridPos, (float)_movementDelay);
+        }
     }
 }
