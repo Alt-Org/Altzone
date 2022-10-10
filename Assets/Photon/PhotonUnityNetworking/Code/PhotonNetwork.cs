@@ -64,7 +64,7 @@ namespace Photon.Pun
     public static partial class PhotonNetwork
     {
         /// <summary>Version number of PUN. Used in the AppVersion, which separates your playerbase in matchmaking.</summary>
-        public const string PunVersion = "2.40";
+        public const string PunVersion = "2.41";
 
         /// <summary>Version number of your game. Setting this updates the AppVersion, which separates your playerbase in matchmaking.</summary>
         /// <remarks>
@@ -3192,7 +3192,7 @@ namespace Photon.Pun
             // create the ScriptableObject if it could not be loaded
             if (photonServerSettings == null)
             {
-                photonServerSettings = (ServerSettings)ScriptableObject.CreateInstance("ServerSettings");
+                photonServerSettings = (ServerSettings)ScriptableObject.CreateInstance(nameof(ServerSettings));
                 if (photonServerSettings == null)
                 {
                     Debug.LogError("Failed to create ServerSettings. PUN is unable to run this way. If you deleted it from the project, reload the Editor.");

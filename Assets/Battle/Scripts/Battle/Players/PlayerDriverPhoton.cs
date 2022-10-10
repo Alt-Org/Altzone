@@ -27,10 +27,12 @@ namespace Battle.Scripts.Battle.Players
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
+        private double _movementDelay;
 
         private CharacterModel _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
+        private IGridManager _gridManager;
         private bool _isLocal;
         private bool _isApplicationQuitting;
         private bool _isDestroyed;
@@ -40,6 +42,7 @@ namespace Battle.Scripts.Battle.Players
         {
             print("++");
             _photonView = PhotonView.Get(this);
+            _gridManager = Context.GetGridManager;
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             Debug.Log($"{player.GetDebugLabel()} {_photonView}");
@@ -48,6 +51,9 @@ namespace Battle.Scripts.Battle.Players
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
+            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var variables = runtimeGameConfig.Variables;
+            _movementDelay = variables._playerMovementNetworkDelay;
         }
 
         private void OnEnable()
@@ -198,7 +204,7 @@ namespace Battle.Scripts.Battle.Players
         {
             if (!_state.CanRequestMove) { return; }
             _state.SetIsWaitingForAnswer(true);
-            _state.ProcessMoveRequest(gridPos);
+            _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
@@ -307,6 +313,34 @@ namespace Battle.Scripts.Battle.Players
         private void SetPlayerStunnedRpc(float duration)
         {
             _playerActor.SetBuff(PlayerBuff.Stunned, duration);
+        }
+
+        [PunRPC]
+        private void ProcessMoveRequestRpc(int row, int col, PhotonMessageInfo info)
+        {
+            if (!_gridManager.GridFreeState(row, col))
+            {
+                Debug.Log($"Grid check failed. row: {row}, col: {col}");
+                _photonView.RPC(nameof(SetWaitingStateRpc), info.Sender, false);
+                return;
+            }
+            var movementStartTime = info.SentServerTime + _movementDelay;
+            Debug.Log($"Grid Request approved: row: {row}, col: {col}, player: {info.Sender}, time: {movementStartTime}");
+            _gridManager.SetSpaceTaken(row, col);
+            _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, row, col, movementStartTime);
+        }
+
+        [PunRPC]
+        private void MoveDelayedRpc(int row, int col, double movementStartTime)
+        {
+            var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
+            _state.DelayedMove(row, col, (float)moveExecuteDelay);
+        }
+
+        [PunRPC]
+        private void SetWaitingStateRpc(bool isWaitingForAnswer)
+        {
+            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
         }
 
         #endregion
