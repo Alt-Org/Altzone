@@ -73,13 +73,13 @@ public class RaidManager_Script : MonoBehaviour
         cameraMainTransform.position = new Vector3(3.0f, 5.5f, -15f); //(DEV) Camera test default. (2f, 2f, -15f), or "minefieldWidth / 2f, minefieldHeight / 2f, -15f" Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateTestLoot();//Change where comment is if not working
-        GenerateBombsNextToLootTop();
-        GenerateBombsNextToLootRight();
-        GenerateBombsNextToLootTopRight();
-        GenerateBombsNextToLootDown();
-        GenerateBombsNextToLootLeft();
-        GenerateBombsNextToLootDownLeft();
-        //GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
+        //GenerateBombsNextToLootTop();
+        //GenerateBombsNextToLootRight();
+        //GenerateBombsNextToLootTopRight();
+        //GenerateBombsNextToLootDown();
+        //GenerateBombsNextToLootLeft();
+        //GenerateBombsNextToLootDownLeft();
+        GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
         //GenerateNewTestBombs();
         //GenerateTestLoot used to be here
         GenerateNumbers();
@@ -158,7 +158,7 @@ public class RaidManager_Script : MonoBehaviour
                     }
                 }
             }
-            state[x, y].type = Hexa_Struct.Type.Bomb;
+            if (state[x,y].type != Hexa_Struct.Type.Loot) { state[x, y].type = Hexa_Struct.Type.Bomb; }
 
             if (showBombs)
             {
