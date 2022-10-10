@@ -175,7 +175,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnEnable()
         {
             var model = _playerDriver.CharacterModel;
-            Debug.Log($"{name} {model.Name} {model.MainDefence}");
+            Debug.Log($"{name} {model.MainDefence}");
             var skillColor = _skillColors[(int)model.MainDefence];
             var avatarColorCount = _settings._avatar.Avatars.Length - 1;
             _avatarPose = new TestPoseManager(_settings._avatar.Avatars, skillColor, avatarColorCount);

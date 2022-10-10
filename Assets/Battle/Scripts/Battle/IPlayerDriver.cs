@@ -22,7 +22,7 @@ namespace Battle.Scripts.Battle
         bool IsValid { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
-        CharacterModel CharacterModel { get; }
+        IBattleCharacter CharacterModel { get; }
         Transform PlayerTransform { get; }
         BattlePlayMode BattlePlayMode{ get; }
 
@@ -65,7 +65,7 @@ namespace Battle.Scripts.Battle
     internal interface IPlayerDriverState
     {
         double LastBallHitTime { get; }
-        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition);
+        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, IBattleCharacter characterModel, Vector2 playerWorldPosition);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();

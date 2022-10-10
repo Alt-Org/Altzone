@@ -29,7 +29,7 @@ namespace Battle.Scripts.Battle.Players
         private int _teamNumber;
         private double _movementDelay;
 
-        private CharacterModel _characterModel;
+        private IBattleCharacter _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
         private IGridManager _gridManager;
@@ -172,7 +172,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
-        CharacterModel IPlayerDriver.CharacterModel => _characterModel;
+        IBattleCharacter IPlayerDriver.CharacterModel => _characterModel;
 
         Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 

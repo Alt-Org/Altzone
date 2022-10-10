@@ -42,7 +42,7 @@ namespace Battle.Scripts.Battle.Players
         
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
         
-        private CharacterModel _characterModel;
+        private IBattleCharacter _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
         private IGridManager _gridManager;
@@ -70,7 +70,7 @@ namespace Battle.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
-            _characterModel = Storefront.Get().GetCharacterModel((int)_settings._playerMainSkill);
+            _characterModel = PhotonBattle.GetCharacterModelForSkill((int)_settings._playerMainSkill);
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
@@ -160,7 +160,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
-        CharacterModel IPlayerDriver.CharacterModel => _characterModel;
+        IBattleCharacter IPlayerDriver.CharacterModel => _characterModel;
 
         Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 

@@ -269,21 +269,43 @@ namespace Altzone.Scripts.Battle
 
         #region Room custom properties etc.
 
+        private class BattleCharacter : IBattleCharacter
+        {
+            public Defence MainDefence { get; }
+            public int Speed  { get; }
+            public int Resistance  { get; }
+            public int Attack  { get; }
+            public int Defence  { get; }
+
+            public BattleCharacter(CharacterModel model)
+            {
+                MainDefence = model.MainDefence;
+                Speed = model.Speed;
+                Resistance = model.Resistance;
+                Attack = model.Attack;
+                Defence = model.Defence;
+            }
+        }
         /// <summary>
         /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
         /// </summary>
-        public static CharacterModel GetCharacterModelForRoom(Player player)
+        public static IBattleCharacter GetCharacterModelForRoom(Player player)
         {
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
+            return GetCharacterModelForSkill(skillId);
+        }
+
+        public static IBattleCharacter GetCharacterModelForSkill(int skillId)
+        {
             if (skillId == -1)
             {
                 skillId = (int)RuntimeGameConfig.Get().PlayerDataCache.GetCharacterModelForUi().MainDefence;
             }
             var character = Storefront.Get().GetCharacterModel(skillId);
-            return character;
+            return new BattleCharacter(character);
         }
-
+        
         public static int GetPlayerCountForRoom()
         {
             if (!PhotonNetwork.InRoom)

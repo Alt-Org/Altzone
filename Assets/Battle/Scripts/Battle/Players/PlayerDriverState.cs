@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Photon.Pun;
@@ -18,7 +19,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField, ReadOnly] private int _currentCol;
 
         private IPlayerDriver _playerDriver;
-        private CharacterModel _characterModel;
+        private IBattleCharacter _characterModel;
         private IBallManager _ballManager;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
@@ -32,7 +33,7 @@ namespace Battle.Scripts.Battle.Players
 
         public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsBusy;
 
-        public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
+        public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, IBattleCharacter characterModel, Vector2 playerWorldPosition)
         {
             _playerDriver = playerDriver;
             _playerActor = playerActor;
