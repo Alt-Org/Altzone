@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
@@ -289,20 +290,21 @@ namespace Altzone.Scripts.Battle
         /// <summary>
         /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
         /// </summary>
-        public static IBattleCharacter GetCharacterModelForRoom(Player player)
+        public static IBattleCharacter GetCharacterModelForPlayer(Player player)
         {
             Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
-            return GetCharacterModelForSkill(skillId);
+            if (!Enum.TryParse(skillId.ToString(), out Defence defence))
+            {
+                defence = RuntimeGameConfig.Get().PlayerDataCache.GetCharacterModelForUi().MainDefence;
+            }
+            return GetCharacterModelForSkill(defence);
         }
 
-        public static IBattleCharacter GetCharacterModelForSkill(int skillId)
+        public static IBattleCharacter GetCharacterModelForSkill(Defence defence)
         {
-            if (skillId == -1)
-            {
-                skillId = (int)RuntimeGameConfig.Get().PlayerDataCache.GetCharacterModelForUi().MainDefence;
-            }
-            var character = Storefront.Get().GetCharacterModel(skillId);
+            var character = Storefront.Get().GetCharacterModel((int)defence);
+            Assert.IsNotNull(character, "character != null");
             return new BattleCharacter(character);
         }
         

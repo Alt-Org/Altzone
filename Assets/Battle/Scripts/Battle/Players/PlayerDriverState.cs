@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
@@ -14,7 +12,7 @@ namespace Battle.Scripts.Battle.Players
         [Header("Live Data"), SerializeField, ReadOnly] private int _currentPoseIndex;
         [SerializeField, ReadOnly] private int _currentShieldResistance;
         [SerializeField, ReadOnly] private double _lastBallHitTime;
-        
+
         [Header("Debug"), SerializeField, ReadOnly] private int _currentRow;
         [SerializeField, ReadOnly] private int _currentCol;
 

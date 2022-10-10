@@ -39,9 +39,9 @@ namespace Battle.Scripts.Battle.Players
         [Header("Settings"), SerializeField] private Settings _settings;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
-        
+
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
-        
+
         private IBattleCharacter _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
@@ -70,7 +70,7 @@ namespace Battle.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
-            _characterModel = PhotonBattle.GetCharacterModelForSkill((int)_settings._playerMainSkill);
+            _characterModel = PhotonBattle.GetCharacterModelForSkill(_settings._playerMainSkill);
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
@@ -221,7 +221,10 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
-            if (!_state.CanRequestMove) { return; }
+            if (!_state.CanRequestMove)
+            {
+                return;
+            }
             _state.SetIsWaitingForAnswer(true);
             ProcessMoveRequest(gridPos);
         }

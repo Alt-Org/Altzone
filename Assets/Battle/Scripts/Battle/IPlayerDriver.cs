@@ -1,5 +1,4 @@
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Model;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle
@@ -19,12 +18,13 @@ namespace Battle.Scripts.Battle
         /// Number of "our" other instances that have reported.
         /// </summary>
         int PeerCount { get; }
+
         bool IsValid { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
         IBattleCharacter CharacterModel { get; }
         Transform PlayerTransform { get; }
-        BattlePlayMode BattlePlayMode{ get; }
+        BattlePlayMode BattlePlayMode { get; }
 
         IPlayerActorCollision PlayerActorCollision { get; }
 
