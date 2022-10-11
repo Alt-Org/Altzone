@@ -72,7 +72,7 @@ namespace Battle.Scripts.Battle
         void DelayedMove(GridPos gridPos, float moveExecuteDelay);
         void DelayedMove(int row, int col, float moveExecuteDelay);
         void DelayedMove(Vector2 targetPosition, float moveExecuteDelay);
-        void IsWaitingToMove(bool isMoveHappening);
+        void IsWaitingToMove(bool isWaitingToMove);
         bool CanRequestMove { get; }
     }
 }
