@@ -619,11 +619,11 @@ namespace Battle.Scripts.Battle.Game
         /// Hard reference to the list of team members we are tracking.
         /// </summary>
         public List<IPlayerDriver> TeamMembers { get; set; }
+        private bool _isFrozenPlayModeOn;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            var features = RuntimeGameConfig.Get().Features;
-            var isFrozenPlayModeOn = features._isFrozenPlayModeOn;
+
             if (!enabled)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
@@ -633,7 +633,9 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
-            if (isFrozenPlayModeOn)
+            var features = RuntimeGameConfig.Get().Features;
+            _isFrozenPlayModeOn = features._isFrozenPlayModeOn;
+            if (_isFrozenPlayModeOn)
             {
                 foreach (var playerDriver in TeamMembers)
                 {
