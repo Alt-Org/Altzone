@@ -81,7 +81,7 @@ namespace Altzone.Scripts.Battle
             /// Setting custom properties for the room must set all fields with proper (>= 0) values.
             /// </remarks>
             public bool IsValid => !(WinType < 0 || WinningTeam < 0 || BlueScore < 0 || RedScore < 0);
-            
+
             public RoomScore(int winType, int winningTeam, int blueScore, int redScore)
             {
                 WinType = winType;
@@ -92,11 +92,13 @@ namespace Altzone.Scripts.Battle
 
             public override string ToString()
             {
-                return $"{nameof(WinType)}: {WinType}, {nameof(WinningTeam)}: {WinningTeam}, {nameof(BlueScore)}: {BlueScore}, {nameof(RedScore)}: {RedScore}";
+                return
+                    $"{nameof(WinType)}: {WinType}, {nameof(WinningTeam)}: {WinningTeam}, {nameof(BlueScore)}: {BlueScore}, {nameof(RedScore)}: {RedScore}";
             }
         }
 
         #endregion
+
         #region Player custom properties etc.
 
         public static bool IsRealPlayer(Player player)
@@ -270,13 +272,16 @@ namespace Altzone.Scripts.Battle
 
         #region Room custom properties etc.
 
+        /// <summary>
+        /// <c>IBattleCharacter</c> implementation for Battle game.
+        /// </summary>
         private class BattleCharacter : IBattleCharacter
         {
             public Defence MainDefence { get; }
-            public int Speed  { get; }
-            public int Resistance  { get; }
-            public int Attack  { get; }
-            public int Defence  { get; }
+            public int Speed { get; }
+            public int Resistance { get; }
+            public int Attack { get; }
+            public int Defence { get; }
 
             public BattleCharacter(CharacterModel model)
             {
@@ -287,8 +292,9 @@ namespace Altzone.Scripts.Battle
                 Defence = model.Defence;
             }
         }
+
         /// <summary>
-        /// Gets <c>CharacterModel</c> for a player in a room (from its single source of truth).
+        /// Gets <c>IBattleCharacter</c> for a player in a room.
         /// </summary>
         public static IBattleCharacter GetCharacterModelForPlayer(Player player)
         {
@@ -301,13 +307,16 @@ namespace Altzone.Scripts.Battle
             return GetCharacterModelForSkill(defence);
         }
 
+        /// <summary>
+        /// Gets <c>IBattleCharacter</c> for given <c>Defence</c>.
+        /// </summary>
         public static IBattleCharacter GetCharacterModelForSkill(Defence defence)
         {
             var character = Storefront.Get().GetCharacterModel((int)defence);
             Assert.IsNotNull(character, "character != null");
             return new BattleCharacter(character);
         }
-        
+
         public static int GetPlayerCountForRoom()
         {
             if (!PhotonNetwork.InRoom)
@@ -332,7 +341,7 @@ namespace Altzone.Scripts.Battle
             var redScore = room.GetCustomProperty(TeamRedScoreKey, -1);
             return new RoomScore(winType, winnerTeam, blueScore, redScore);
         }
-        
+
         public static void SetRoomScores(Room room, int winType, int winningTeam, int blueScore, int redScore)
         {
             Assert.IsTrue(winType >= 0 && winType <= 3, "winType >= 0 && winType <= 3");
