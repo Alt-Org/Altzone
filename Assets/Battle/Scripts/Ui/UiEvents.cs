@@ -14,6 +14,9 @@ namespace Battle.Scripts.Ui
     {
         #region Active Gameplay events
 
+        /// <summary>
+        /// Signal to start the battle game for first time.
+        /// </summary>
         internal class StartBattle
         {
             public override string ToString()
@@ -22,6 +25,9 @@ namespace Battle.Scripts.Ui
             }
         }
 
+        /// <summary>
+        /// Signal to restart the battle game during gameplay.
+        /// </summary>
         internal class RestartBattle
         {
             public readonly IPlayerDriver PlayerToStart;
@@ -33,13 +39,13 @@ namespace Battle.Scripts.Ui
 
             public override string ToString()
             {
-                return $"{nameof(PlayerToStart)}: {PlayerToStart}";
+                return $"{nameof(RestartBattle)} {nameof(PlayerToStart)}: {PlayerToStart}";
             }
         }
 
         #endregion
 
-        #region Informational events
+        #region Informational (ball movement related) events
 
         internal class HeadCollision : PlayerCollisionEvent
         {
@@ -95,6 +101,10 @@ namespace Battle.Scripts.Ui
             }
         }
 
+        #endregion
+
+        #region Slingshot events
+        
         internal class SlingshotStart
         {
             public List<ITeamSlingshotTracker> TeamTrackers { get; }

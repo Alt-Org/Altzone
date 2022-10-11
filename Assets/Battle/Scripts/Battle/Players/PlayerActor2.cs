@@ -122,7 +122,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnEnable()
         {
             var model = _playerDriver.CharacterModel;
-            Debug.Log($"{name} {model.Name} {model.MainDefence}");
+            Debug.Log($"{name} {model.MainDefence}");
             _avatarPose = _settings.GetAvatarPoseManager;
             var avatarHeadTag = _playerDriver.TeamNumber == PhotonBattle.TeamBlueValue ? Tags.BlueTeam : Tags.RedTeam;
             _avatarPose.Reset(0, BattlePlayMode.Normal, true, avatarHeadTag);

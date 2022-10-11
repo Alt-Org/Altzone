@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TouchPhase = UnityEngine.TouchPhase;
 
 public class RaidManager_Script : MonoBehaviour
 {
@@ -52,15 +53,26 @@ public class RaidManager_Script : MonoBehaviour
 
         if (!raidIsOver)
         {
-            if (Mouse.current.leftButton.isPressed)
+            //if (Mouse.current.leftButton.isPressed)
+            //{
+            //    Reveal(Mouse.current.position.ReadValue());
+            //}
+
+            if (Input.touchCount > 0)
             {
-                Reveal(Mouse.current.position.ReadValue());
+                Touch touch = Input.GetTouch(0);
+                switch(touch.phase)
+                {
+                    case TouchPhase.Began: Reveal(Mouse.current.position.ReadValue());
+                        break;
+                }
+                //Reveal(Mouse.current.position.ReadValue());
             }
 
-            else if (Mouse.current.rightButton.isPressed)
-            {
-                Flag(Mouse.current.position.ReadValue());
-            }
+            //else if (Mouse.current.rightButton.isPressed)
+            //{
+            //    Flag(Mouse.current.position.ReadValue());
+            //}
         }
     }
 
@@ -73,15 +85,15 @@ public class RaidManager_Script : MonoBehaviour
         cameraMainTransform.position = new Vector3(3.0f, 5.5f, -15f); //(DEV) Camera test default. (2f, 2f, -15f), or "minefieldWidth / 2f, minefieldHeight / 2f, -15f" Moves Camera to follow grid manually.
         GenerateHexas();
         GenerateTestLoot();//Change where comment is if not working
-        GenerateBombsNextToLootTop();
-        GenerateBombsNextToLootRight();
-        GenerateBombsNextToLootTopRight();
-        GenerateBombsNextToLootDown();
-        GenerateBombsNextToLootLeft();
-        GenerateBombsNextToLootDownLeft();
-        //GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
+        //GenerateBombsNextToLootTop();
+        //GenerateBombsNextToLootRight();
+        //GenerateBombsNextToLootTopRight();
+        //GenerateBombsNextToLootDown();
+        //GenerateBombsNextToLootLeft();
+        //GenerateBombsNextToLootDownLeft();
+        GenerateBombs(); //Change to comment when testing GenerateBombsNextToLoot
         //GenerateNewTestBombs();
-        //GenerateTestLoot used to be here
+        //GenerateTestLoot(); //used to be here
         GenerateNumbers();
         GenerateLootNumbers(); //Uncomment this when testing lootNumber calculation
         field.Draw(state);
@@ -158,7 +170,8 @@ public class RaidManager_Script : MonoBehaviour
                     }
                 }
             }
-            state[x, y].type = Hexa_Struct.Type.Bomb;
+            if (state[x, y].type != Hexa_Struct.Type.Loot) { state[x, y].type = Hexa_Struct.Type.Bomb; }
+            else continue;
 
             if (showBombs)
             {
@@ -200,7 +213,7 @@ public class RaidManager_Script : MonoBehaviour
             int y = Random.Range(0, minefieldHeight);
 
             //Check if hexa already has a TestLoot OR a Bomb. (DEV): Use this everywhere you need hexa checking!!!
-            while (state[x, y].type == Hexa_Struct.Type.Loot || state[x, y].type == Hexa_Struct.Type.Bomb || state[x, y].type == Hexa_Struct.Type.Number)
+            while (state[x, y].type == Hexa_Struct.Type.Loot || state[x, y].type == Hexa_Struct.Type.Bomb/* || state[x, y].type == Hexa_Struct.Type.Number*/)
             {
                 x++;
                 if (x >= minefieldWidth)
@@ -214,7 +227,11 @@ public class RaidManager_Script : MonoBehaviour
                     }
                 }
             }
-            state[x, y].type = Hexa_Struct.Type.Loot;
+            if (state[x, y].type != Hexa_Struct.Type.Bomb)
+            {
+                state[x, y].type = Hexa_Struct.Type.Loot;
+            }
+            else continue;
 
             //(DEV) Shows testloot
             if (showTestLoot)

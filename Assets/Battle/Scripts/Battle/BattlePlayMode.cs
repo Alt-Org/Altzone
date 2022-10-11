@@ -40,11 +40,7 @@ namespace Battle.Scripts.Battle
 
         public static bool CanMove(this BattlePlayMode playMode)
         {
-            if (RuntimeGameConfig.Get().Features._isDisableBattleGridMovement)
-            {
-                return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
-            }
-            return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted || playMode == BattlePlayMode.Frozen;
+            return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
         }
 
         public static bool CanCollide(this BattlePlayMode playMode)

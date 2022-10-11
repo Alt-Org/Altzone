@@ -21,8 +21,8 @@ namespace Altzone.Scripts.Config
         BattleUiConfig BattleUi { get; }
         GamePrefabs Prefabs { get; }
         GameInput Input { get; }
-        Characters  Characters { get; }
-        
+        Characters Characters { get; }
+
         PlayerDataCache PlayerDataCache { get; }
     }
 
@@ -37,6 +37,8 @@ namespace Altzone.Scripts.Config
     [Serializable]
     public class GameFeatures
     {
+        #region Battle Game
+
         /// <summary>
         /// Rotate game camera for upper team so they see their own game area in lower part of the screen.
         /// </summary>
@@ -52,20 +54,34 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Disable grid based player movement
         /// </summary>
-        [Tooltip("Disable grid based player movement")]
-        public bool _isDisableBattleGridMovement;
-        
+        [Tooltip("Enable grid based player movement")]
+        public bool _useBattleGridMovement;
+
+        #endregion
+
+        #region Miscellaneous
+
         /// <summary>
         /// Is sounds enabled.
         /// </summary>
         [Header("Miscellaneous"), Tooltip("Disable (mute) all sounds")]
         public bool _isMuteAllSounds;
 
+        #endregion
+
+        #region Battle Testing
+
         /// <summary>
         /// Disable player <c>SetPlayMode</c> calls when ball goes over team's gameplay area.
         /// </summary>
         [Header("Battle Testing"), Tooltip("Disable player SetPlayMode calls when ball goes over team's gameplay area")]
         public bool _isDisablePlayModeChanges;
+
+        /// <summary>
+        /// Enable Frozen PlayMode.
+        /// </summary>
+        [Tooltip("Enable going to Frozen PlayMode when ball is on team's gameplay area")]
+        public bool _isFrozenPlayModeOn;
 
         /// <summary>
         /// Disable player shield state changes when ball hits the shield.
@@ -103,11 +119,17 @@ namespace Altzone.Scripts.Config
         [Tooltip("Disable bricks")]
         public bool _isDisableBricks;
 
+        #endregion
+
+        #region Battle Scene UI
+
         /// <summary>
         /// Settings for Battle Scene UI Grid Overlay.
         /// </summary>
         [Header("Battle Scene UI Grid"), Tooltip("Disable Grid Overlay on Battle Scene")]
         public bool _isDisableBattleUiGrid;
+
+        #endregion
 
         public void CopyFrom(GameFeatures other)
         {
@@ -179,7 +201,7 @@ namespace Altzone.Scripts.Config
         [Min(0)] public float _battleUiGridLineWidth;
         public Color _battleUiGridColor;
     }
-    
+
     /// <summary>
     /// Well known prefabs for the game.
     /// </summary>
@@ -263,19 +285,19 @@ namespace Altzone.Scripts.Config
         [Header("Player Input Actions")] public InputActionReference _clickInputAction;
         public InputActionReference _moveInputAction;
     }
- 
+
     ///<summary>
     /// Character model attribute editing for Unity Editor
     /// </summary>    
     [Serializable]
-    public class Characters 
-    {   
-       [Header ("Character Model Attributes")] public string _name;
+    public class Characters
+    {
+        [Header("Character Model Attributes")] public string _name;
         public Defence _mainDefence;
-        [Range(0,10)]  public int _speed;
-        [Range(0,10)]  public int _resistance;
-        [Range(0,10)]  public int _attack; 
-        [Range(0,10)]  public int _defence; 
+        [Range(0, 10)] public int _speed;
+        [Range(0, 10)] public int _resistance;
+        [Range(0, 10)] public int _attack;
+        [Range(0, 10)] public int _defence;
     }
 
     #endregion
@@ -290,7 +312,7 @@ namespace Altzone.Scripts.Config
         }
 
         private static RuntimeGameConfig _instance;
-        
+
         public static IRuntimeGameConfig Get()
         {
             if (_instance == null)
@@ -359,7 +381,7 @@ namespace Altzone.Scripts.Config
         /// Unmodifiable Battle UI config.
         /// </summary>
         public BattleUiConfig BattleUi => _battleUiConfig;
-        
+
         /// <summary>
         /// Well known prefabs for the game.
         /// </summary>
@@ -373,7 +395,7 @@ namespace Altzone.Scripts.Config
         /// New Input System Package for Player actions.
         /// </summary>
         public GameInput Input => _gameInput;
-        
+
         /// <summary>
         /// Character models attributes 
         /// </summary>

@@ -1,5 +1,4 @@
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Model;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle
@@ -19,12 +18,13 @@ namespace Battle.Scripts.Battle
         /// Number of "our" other instances that have reported.
         /// </summary>
         int PeerCount { get; }
+
         bool IsValid { get; }
         int PlayerPos { get; }
         int MaxPoseIndex { get; }
-        CharacterModel CharacterModel { get; }
+        IBattleCharacter CharacterModel { get; }
         Transform PlayerTransform { get; }
-        BattlePlayMode BattlePlayMode{ get; }
+        BattlePlayMode BattlePlayMode { get; }
 
         IPlayerActorCollision PlayerActorCollision { get; }
 
@@ -65,13 +65,14 @@ namespace Battle.Scripts.Battle
     internal interface IPlayerDriverState
     {
         double LastBallHitTime { get; }
-        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition);
+        Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, IBattleCharacter characterModel, Vector2 playerWorldPosition);
         void CheckRotation(Vector2 position);
         void OnShieldCollision(out string debugString);
         void OnHeadCollision();
         void DelayedMove(GridPos gridPos, float moveExecuteDelay);
         void DelayedMove(int row, int col, float moveExecuteDelay);
-        void SetIsWaitingForAnswer(bool isWaitingForAnswer);
+        void DelayedMove(Vector2 targetPosition, float moveExecuteDelay);
+        void IsWaitingToMove(bool isWaitingToMove);
         bool CanRequestMove { get; }
     }
 }
