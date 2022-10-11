@@ -78,6 +78,12 @@ namespace Altzone.Scripts.Config
         public bool _isDisablePlayModeChanges;
 
         /// <summary>
+        /// Enable Frozen PlayMode.
+        /// </summary>
+        [Tooltip("Enable going to Frozen PlayMode when ball is on team's gameplay area")]
+        public bool _isFrozenPlayModeOn;
+
+        /// <summary>
         /// Disable player shield state changes when ball hits the shield.
         /// </summary>
         [Tooltip("Disable player shield state changes when ball hits the shield")]

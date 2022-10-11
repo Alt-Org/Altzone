@@ -26,10 +26,10 @@ namespace Battle.Scripts.Battle.Players
         private bool _isDisableShieldStateChanges;
         private bool _isDisableBallSpeedChanges;
         private GridPos _savedGridPosition;
-        private bool _isWaitingForAnswer;
+        private bool _isWaitingToMove;
         public double LastBallHitTime => _lastBallHitTime;
 
-        public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsBusy;
+        public bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
         public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, IBattleCharacter characterModel, Vector2 playerWorldPosition)
         {
@@ -153,12 +153,24 @@ namespace Battle.Scripts.Battle.Players
             _savedGridPosition = gridPos;
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, Context.GetBattleCamera.IsRotated);
             _playerActor.MoveTo(targetPosition);
-            SetIsWaitingForAnswer(false);
+            IsWaitingToMove(false);
         }
 
-        public void SetIsWaitingForAnswer(bool isWaitingForAnswer)
+        public void IsWaitingToMove(bool isWaitingToMove)
         {
-            _isWaitingForAnswer = isWaitingForAnswer;
+            _isWaitingToMove = isWaitingToMove;
+        }
+
+        public void DelayedMove(Vector2 targetPosition, float moveExecuteDelay)
+        {
+            StartCoroutine(DelayTime(targetPosition, moveExecuteDelay));
+        }
+
+        private IEnumerator DelayTime(Vector2 targetPosition, float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
+            _playerActor.MoveTo(targetPosition);
+            IsWaitingToMove(false);
         }
     }
 }

@@ -15,9 +15,10 @@ MonoBehaviour:
   _features:
     _isRotateGameCamera: 1
     _isRotateGameBackground: 1
-    _useBattleGridMovement: 1
+    _useBattleGridMovement: 0
     _isMuteAllSounds: 0
     _isDisablePlayModeChanges: 0
+    _isFrozenPlayModeOn: 0
     _isDisableShieldStateChanges: 0
     _isDisableBallSpeedChanges: 0
     _isDisableTeamForfeit: 0
@@ -32,8 +33,8 @@ MonoBehaviour:
     _battleRoomStartDelay: 6
     _battleSlingshotDelay: 4
     _battleHeadScoreToWin: 10000
-    _battleUiGridWidth: 180
-    _battleUiGridHeight: 320
+    _battleUiGridWidth: 9
+    _battleUiGridHeight: 16
     _raidMaxLootCapacity: 0
     _ballMoveSpeedMultiplier: 1.1
     _ballMinMoveSpeed: 4

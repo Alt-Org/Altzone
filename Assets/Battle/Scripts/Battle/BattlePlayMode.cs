@@ -40,10 +40,6 @@ namespace Battle.Scripts.Battle
 
         public static bool CanMove(this BattlePlayMode playMode)
         {
-            if (RuntimeGameConfig.Get().Features._useBattleGridMovement && playMode == BattlePlayMode.Frozen)
-            {
-                return true;
-            }
             return playMode == BattlePlayMode.Normal || playMode == BattlePlayMode.Ghosted || playMode == BattlePlayMode.SuperGhosted;
         }
 

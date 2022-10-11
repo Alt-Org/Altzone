@@ -110,9 +110,9 @@ namespace Battle.Scripts.Battle.Players
             playerInputHandler?.ResetPlayerDriver();
         }
 
-        private void SetWaitingState(bool isWaitingForAnswer)
+        private void SetWaitingState(bool isWaitingToMove)
         {
-            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
+            _state.IsWaitingToMove(isWaitingToMove);
         }
 
         #region IPlayerActorCollision
@@ -180,7 +180,9 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
-            _playerActor.MoveTo(targetPosition);
+            if (!_state.CanRequestMove) { return; }
+            _state.IsWaitingToMove(true);
+            _state.DelayedMove(targetPosition, (float)_movementDelay);
         }
 
         void IPlayerDriver.SetCharacterPose(int poseIndex)
@@ -225,7 +227,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _state.SetIsWaitingForAnswer(true);
+            _state.IsWaitingToMove(true);
             ProcessMoveRequest(gridPos);
         }
 

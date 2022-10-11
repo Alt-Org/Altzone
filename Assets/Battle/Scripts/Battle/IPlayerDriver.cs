@@ -71,7 +71,8 @@ namespace Battle.Scripts.Battle
         void OnHeadCollision();
         void DelayedMove(GridPos gridPos, float moveExecuteDelay);
         void DelayedMove(int row, int col, float moveExecuteDelay);
-        void SetIsWaitingForAnswer(bool isWaitingForAnswer);
+        void DelayedMove(Vector2 targetPosition, float moveExecuteDelay);
+        void IsWaitingToMove(bool isMoveHappening);
         bool CanRequestMove { get; }
     }
 }

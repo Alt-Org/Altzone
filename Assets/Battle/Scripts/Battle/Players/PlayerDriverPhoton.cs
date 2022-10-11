@@ -196,7 +196,13 @@ namespace Battle.Scripts.Battle.Players
         {
             // NO IsNetworkSynchronize check!
             // - If input is configured to us, lets do it!
-            _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
+            if (!_state.CanRequestMove)
+            {
+                return;
+            }
+            _state.IsWaitingToMove(true);
+            var movementStartTime = PhotonNetwork.Time + _movementDelay;
+            _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition, movementStartTime);
         }
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
@@ -205,7 +211,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _state.SetIsWaitingForAnswer(true);
+            _state.IsWaitingToMove(true);
             _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }
 
@@ -282,9 +288,10 @@ namespace Battle.Scripts.Battle.Players
         }
 
         [PunRPC]
-        private void MovePlayerToRpc(Vector2 targetPosition)
+        private void MovePlayerToRpc(Vector2 targetPosition, double movementStartTime)
         {
-            _playerActor.MoveTo(targetPosition);
+            var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
+            _state.DelayedMove(targetPosition, (float)moveExecuteDelay);
         }
 
         [PunRPC]
@@ -340,9 +347,9 @@ namespace Battle.Scripts.Battle.Players
         }
 
         [PunRPC]
-        private void SetWaitingStateRpc(bool isWaitingForAnswer)
+        private void SetWaitingStateRpc(bool isWaitingToMove)
         {
-            _state.SetIsWaitingForAnswer(isWaitingForAnswer);
+            _state.IsWaitingToMove(isWaitingToMove);
         }
 
         #endregion

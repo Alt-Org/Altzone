@@ -622,6 +622,8 @@ namespace Battle.Scripts.Battle.Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            var features = RuntimeGameConfig.Get().Features;
+            var isFrozenPlayModeOn = features._isFrozenPlayModeOn;
             if (!enabled)
             {
                 return; // Collision events will be sent to disabled MonoBehaviours, to allow enabling Behaviours in response to collisions.
@@ -631,9 +633,12 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
-            foreach (var playerDriver in TeamMembers)
+            if (isFrozenPlayModeOn)
             {
-                playerDriver.SetPlayMode(BattlePlayMode.Frozen);
+                foreach (var playerDriver in TeamMembers)
+                {
+                    playerDriver.SetPlayMode(BattlePlayMode.Frozen);
+                }
             }
         }
 
