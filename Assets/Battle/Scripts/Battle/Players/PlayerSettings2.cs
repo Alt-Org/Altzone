@@ -4,6 +4,12 @@ using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Players
 {
+    /// <summary>
+    /// Helper class for <c>PlayerActor2</c> for visual representation.
+    /// </summary>
+    /// <remarks>
+    /// Neither naming nor API is perfect for this ad hoc implementation.
+    /// </remarks>
     internal class PlayerSettings2 : MonoBehaviour
     {
         [Header("Settings"), SerializeField] private Transform _geometryRoot;
@@ -48,7 +54,7 @@ namespace Battle.Scripts.Battle.Players
     }
 
     /// <summary>
-    /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor</c> (shields and avatars).
+    /// Helper class to manage <c>GameObject</c> hierarchy for <c>PlayerActor2</c> (shield and avatar state).
     /// </summary>
     internal class SimplePoseManager : IPoseManager
     {
