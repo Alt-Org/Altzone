@@ -49,7 +49,7 @@ namespace Battle.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
             _lastBallHitTime = PhotonNetwork.Time;
 
-            if (features._isDisableBattleGridMovement)
+            if (!features._useBattleGridMovement)
             {
                 _currentRow = -1;
                 _currentCol = -1;

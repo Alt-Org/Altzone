@@ -52,8 +52,8 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Disable grid based player movement
         /// </summary>
-        [Tooltip("Disable grid based player movement")]
-        public bool _isDisableBattleGridMovement;
+        [Tooltip("Enable grid based player movement")]
+        public bool _useBattleGridMovement;
         
         /// <summary>
         /// Is sounds enabled.
