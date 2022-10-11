@@ -1,7 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Battle.Scripts.Ui;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
@@ -29,7 +28,7 @@ namespace Battle.Scripts.Battle.Players
         private int _teamNumber;
         private double _movementDelay;
 
-        private CharacterModel _characterModel;
+        private IBattleCharacter _characterModel;
         private IPlayerActor _playerActor;
         private IPlayerDriverState _state;
         private IGridManager _gridManager;
@@ -70,7 +69,7 @@ namespace Battle.Scripts.Battle.Players
                 // Should not be enabled twice!
                 return;
             }
-            _characterModel = PhotonBattle.GetCharacterModelForRoom(player);
+            _characterModel = PhotonBattle.GetCharacterModelForPlayer(player);
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
@@ -83,7 +82,7 @@ namespace Battle.Scripts.Battle.Players
             var gameplayManager = Context.PlayerManager;
             gameplayManager.RegisterPlayer(this);
             _peerCount = 0;
-           this.ExecuteOnNextFrame(() =>
+            this.ExecuteOnNextFrame(() =>
             {
                 // PeerCount handshake protocol
                 Debug.Log($"SEND SendMyPeerCountRpc {this} pos {_playerPos} local {_isLocal} : {_peerCount} ->");
@@ -157,7 +156,7 @@ namespace Battle.Scripts.Battle.Players
         Vector2 IPlayerInfo.Position => _playerActor.Transform.position;
 
         double IPlayerInfo.LastBallHitTime => _state.LastBallHitTime;
-        
+
         #endregion
 
         #region IPlayerDriver
@@ -172,7 +171,7 @@ namespace Battle.Scripts.Battle.Players
 
         int IPlayerDriver.MaxPoseIndex => _playerActor.MaxPoseIndex;
 
-        CharacterModel IPlayerDriver.CharacterModel => _characterModel;
+        IBattleCharacter IPlayerDriver.CharacterModel => _characterModel;
 
         Transform IPlayerDriver.PlayerTransform => _playerActor.Transform;
 
@@ -202,7 +201,10 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.SendMoveRequest(GridPos gridPos)
         {
-            if (!_state.CanRequestMove) { return; }
+            if (!_state.CanRequestMove)
+            {
+                return;
+            }
             _state.SetIsWaitingForAnswer(true);
             _photonView.RPC(nameof(ProcessMoveRequestRpc), RpcTarget.MasterClient, gridPos.Row, gridPos.Col);
         }

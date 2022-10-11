@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
 using UnityEngine;
@@ -13,12 +12,12 @@ namespace Battle.Scripts.Battle.Players
         [Header("Live Data"), SerializeField, ReadOnly] private int _currentPoseIndex;
         [SerializeField, ReadOnly] private int _currentShieldResistance;
         [SerializeField, ReadOnly] private double _lastBallHitTime;
-        
+
         [Header("Debug"), SerializeField, ReadOnly] private int _currentRow;
         [SerializeField, ReadOnly] private int _currentCol;
 
         private IPlayerDriver _playerDriver;
-        private CharacterModel _characterModel;
+        private IBattleCharacter _characterModel;
         private IBallManager _ballManager;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
@@ -32,7 +31,7 @@ namespace Battle.Scripts.Battle.Players
 
         public bool CanRequestMove => !_isWaitingForAnswer && !_playerActor.IsBusy;
 
-        public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, CharacterModel characterModel, Vector2 playerWorldPosition)
+        public Vector2 ResetState(IPlayerDriver playerDriver, IPlayerActor playerActor, IBattleCharacter characterModel, Vector2 playerWorldPosition)
         {
             _playerDriver = playerDriver;
             _playerActor = playerActor;
@@ -50,7 +49,7 @@ namespace Battle.Scripts.Battle.Players
             _currentShieldResistance = characterModel.Resistance;
             _lastBallHitTime = PhotonNetwork.Time;
 
-            if (features._isDisableBattleGridMovement)
+            if (!features._useBattleGridMovement)
             {
                 _currentRow = -1;
                 _currentCol = -1;
