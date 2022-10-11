@@ -181,8 +181,8 @@ namespace Altzone.Scripts.Config
 
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
-        [Min(0)] public float _playerShieldHitStunDuration;
-        [Min(0), Tooltip("Delay in seconds after movement request has been made")] public float _playerMovementNetworkDelay;
+        [Min(0), Tooltip("Stun duration in seconds after shield hit")] public float _playerShieldHitStunDuration;
+        [Min(0), Tooltip("Delay in seconds when movement starts after movement request has been made")] public float _playerMovementNetworkDelay;
 
         [Header("Shield"), Min(0)] public float _shieldDistanceMultiplier;
 
