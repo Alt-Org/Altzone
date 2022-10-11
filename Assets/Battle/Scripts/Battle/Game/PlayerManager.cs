@@ -621,6 +621,12 @@ namespace Battle.Scripts.Battle.Game
         public List<IPlayerDriver> TeamMembers { get; set; }
         private bool _isFrozenPlayModeOn;
 
+        private void OnEnable()
+        {
+            var features = RuntimeGameConfig.Get().Features;
+            _isFrozenPlayModeOn = features._isFrozenPlayModeOn;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
 
@@ -633,8 +639,6 @@ namespace Battle.Scripts.Battle.Game
             {
                 return;
             }
-            var features = RuntimeGameConfig.Get().Features;
-            _isFrozenPlayModeOn = features._isFrozenPlayModeOn;
             if (_isFrozenPlayModeOn)
             {
                 foreach (var playerDriver in TeamMembers)
