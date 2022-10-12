@@ -20,7 +20,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
 
         private void Awake()
         {
-            var allowedPlatform = Application.isMobilePlatform || AppPlatform.IsWindows || AppPlatform.IsEditor;
+            var allowedPlatform = AppPlatform.IsMobile || AppPlatform.IsWindows || AppPlatform.IsEditor;
             if (!allowedPlatform)
             {
                 enabled = false;

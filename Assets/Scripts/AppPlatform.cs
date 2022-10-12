@@ -69,6 +69,16 @@ public static class AppPlatform
     }
 
     /// <summary>
+    ///  Mobile platform (for consistency).
+    /// </summary>
+    public static bool IsMobile => Application.isMobilePlatform;
+
+    /// <summary>
+    /// Desktop platform is everything but mobile or console.
+    /// </summary>
+    public static bool IsDesktop => !(Application.isMobilePlatform || Application.isConsolePlatform);
+
+    /// <summary>
     /// Windows platform can be editor, player or server.
     /// </summary>
     public static bool IsWindows { get; } = UnityEngine.Device.Application.platform is

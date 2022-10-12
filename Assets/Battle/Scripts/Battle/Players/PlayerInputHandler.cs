@@ -43,8 +43,7 @@ namespace Battle.Scripts.Battle.Players
             Assert.IsNull(_camera);
             _gridManager = Context.GetGridManager;
             _camera = Context.GetBattleCamera.Camera;
-            var isDesktop = !Application.isMobilePlatform;
-            _isLimitMouseXYOnDesktop = isDesktop;
+            _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
 
@@ -68,8 +67,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SetupCamera()
         {
-            var isDesktop = !Application.isMobilePlatform;
-            _isKeyboardReversed = isDesktop && Context.GetBattleCamera.IsRotated;
+            _isKeyboardReversed = AppPlatform.IsDesktop && Context.GetBattleCamera.IsRotated;
         }
 
         #region IPlayerInputHandler

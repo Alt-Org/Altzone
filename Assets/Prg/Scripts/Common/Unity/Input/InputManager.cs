@@ -37,7 +37,7 @@ namespace Prg.Scripts.Common.Unity.Input
             }
             if (Handler == null)
             {
-                if (Application.isMobilePlatform || AppPlatform.IsSimulator)
+                if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
                 {
                     _handler = gameObject.GetOrAddComponent<TouchHandler>()
                         .Configure(Touch);
