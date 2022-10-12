@@ -30,7 +30,7 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerDriver _playerDriver;
         private IGridManager _gridManager;
         private Vector2 _inputClick;
-        private bool _isGridMovementEnabled;
+        private bool _useBattleGridMovement;
         private bool _isKeyboardEnabled;
         private int _gridWidth;
         private int _gridHeight;
@@ -51,9 +51,9 @@ namespace Battle.Scripts.Battle.Players
             var runtimeGameConfig = RuntimeGameConfig.Get();
             var features = runtimeGameConfig.Features;
             var variables = runtimeGameConfig.Variables;
-            _isGridMovementEnabled = !features._isDisableBattleGridMovement;
+            _useBattleGridMovement = features._useBattleGridMovement;
             // Keyboard is not supported (now) when grid based movement is in use.
-            _isKeyboardEnabled = !_isGridMovementEnabled;
+            _isKeyboardEnabled = !_useBattleGridMovement;
             _gridWidth = variables._battleUiGridWidth;
             _gridHeight = variables._battleUiGridHeight;
             Assert.IsTrue(_gridWidth > 0, "_gridWidth > 0");
@@ -95,7 +95,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            if (_isGridMovementEnabled)
+            if (_useBattleGridMovement)
             {
                 var gridPos = _gridManager.WorldPointToGridPosition(targetPosition, Context.GetBattleCamera.IsRotated);
                 _playerDriver.SendMoveRequest(gridPos);

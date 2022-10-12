@@ -23,7 +23,7 @@ namespace Tests.PlayMode.GridManager
         {
             // Grid based movement must be enabled.
             var runtimeGameConfig = RuntimeGameConfig.Get();
-            Assert.AreEqual(false, runtimeGameConfig.Features._isDisableBattleGridMovement);
+            Assert.AreEqual(true, runtimeGameConfig.Features._useBattleGridMovement);
 
             // We require that gameplay area is origo set on (0,0) for tests to work.
             var battlePlayArea = Context.GetBattlePlayArea;

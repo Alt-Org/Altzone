@@ -27,8 +27,9 @@ namespace Prg.Scripts.Test
 
         private void OnEnable()
         {
-            Assert.IsTrue(FindObjectsOfType<PhotonStatsWindow>().Length == 1, "FindObjectsOfType<PhotonStatsWindow>().Length == 1");
-            _windowId = (int)DateTime.Now.Ticks;
+            var type = GetType();
+            Assert.IsTrue(FindObjectsOfType(type).Length == 1, $"FindObjectsOfType({type}).Length == 1");
+            _windowId = type.GetHashCode();
             _windowRect = new Rect(0, 0, Screen.width, Screen.height);
             _windowTitle = $"({_controlKey}) Photon";
         }
@@ -85,6 +86,7 @@ namespace Prg.Scripts.Test
             if (GUILayout.Button(title, _guiButtonStyle))
             {
                 ToggleWindowState();
+                return;
             }
             var space = "  ";
             var label = $"v={PhotonLobby.GameVersion} r={PhotonNetwork.CloudRegion} ping={PhotonNetwork.GetPing()}";
