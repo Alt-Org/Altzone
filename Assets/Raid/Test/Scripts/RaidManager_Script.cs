@@ -53,21 +53,21 @@ public class RaidManager_Script : MonoBehaviour
 
         if (!raidIsOver)
         {
-            //if (Mouse.current.leftButton.isPressed)
-            //{
-            //    Reveal(Mouse.current.position.ReadValue());
-            //}
-
-            if (Input.touchCount > 0)
+            if (Mouse.current.leftButton.isPressed)
             {
-                Touch touch = Input.GetTouch(0);
-                switch(touch.phase)
-                {
-                    case TouchPhase.Began: Reveal(Mouse.current.position.ReadValue());
-                        break;
-                }
-                //Reveal(Mouse.current.position.ReadValue());
+                Reveal(Mouse.current.position.ReadValue());
             }
+
+            //if (Input.touchCount > 0)
+            //{
+            //    Touch touch = Input.GetTouch(0);
+            //    switch(touch.phase)
+            //    {
+            //        case TouchPhase.Began: Reveal(Mouse.current.position.ReadValue());
+            //            break;
+            //    }
+            //    //Reveal(Mouse.current.position.ReadValue());
+            //}
 
             //else if (Mouse.current.rightButton.isPressed)
             //{
