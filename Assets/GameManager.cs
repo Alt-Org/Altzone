@@ -1,3 +1,4 @@
+#if USE_LOOTLOCKER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,3 +21,4 @@ public class GameManager : MonoBehaviour
         });
     }
 }
+#endif
