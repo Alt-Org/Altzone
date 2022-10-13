@@ -175,12 +175,12 @@ namespace Battle.Scripts.Test
                 ? _slingshotDelay
                 : _roomStartDelay;
             var countDownDelay = new WaitForSeconds(countdownSeconds);
-            Debug.Log($"{name} WAIT {countDownDelay}");
             if (playerToStart != null)
             {
                 var startingTeam = playerToStart.TeamNumber;
                 var tracker = _playerManager.GetTeamSnapshotTracker(playerToStart.TeamNumber);
                 this.Publish(new UiEvents.SlingshotStart(tracker, null));
+                Debug.Log($"{name} WAIT {countdownSeconds} mode {playerToStart.BattlePlayMode}");
                 yield return countDownDelay;
 
                 tracker.StopTracking();
@@ -210,6 +210,7 @@ namespace Battle.Scripts.Test
                 var blueTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamBlueValue);
                 var redTracker = _playerManager.GetTeamSnapshotTracker(PhotonBattle.TeamRedValue);
                 this.Publish(new UiEvents.SlingshotStart(blueTracker, redTracker));
+                Debug.Log($"{name} WAIT {countdownSeconds}");
                 yield return countDownDelay;
 
                 blueTracker.StopTracking();
