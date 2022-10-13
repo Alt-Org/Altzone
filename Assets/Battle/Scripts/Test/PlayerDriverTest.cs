@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Reflection.Emit;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
@@ -36,6 +38,15 @@ namespace Battle.Scripts.Test
         private IGridManager _gridManager;
 
         private void Awake()
+        {
+            if (_playerDriverInstance == null)
+            {
+                UnityEngine.Debug.Log($"{nameof(PlayerDriverTest)} is disabled, no PlayerDriver set");
+                enabled = false;
+            }
+        }
+
+        private void OnEnable()
         {
             _playerDriver = _playerDriverInstance as IPlayerDriver;
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
