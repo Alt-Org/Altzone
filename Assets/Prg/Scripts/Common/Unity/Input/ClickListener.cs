@@ -40,12 +40,17 @@ namespace Prg.Scripts.Common.Unity.Input
             }
             var hitObject = hit.collider.gameObject;
             var layer = hitObject.layer;
-            var hasTag = !string.IsNullOrEmpty(_clickableTagName) && hitObject.CompareTag(_clickableTagName);
-            var hasLayer = hasTag || _layerMask == (_layerMask | (1 << layer)); // unity3d check if layer mask contains layer
-
-            //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} ({hasTag}) layer {_layer} {LayerMask.LayerToName(_layer)} ({hasLayer})");
-            if (hasTag || hasLayer)
+            var hasLayer = _layerMask == (_layerMask | (1 << layer)); // unity3d check if layer mask contains layer
+            if (hasLayer)
             {
+                //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} layer {layer} {LayerMask.LayerToName(layer)}");
+                this.Publish(new ClickObjectEvent(data.ScreenPosition, hitObject));
+                return;
+            }
+            var hasTag = !string.IsNullOrEmpty(_clickableTagName) && hitObject.CompareTag(_clickableTagName);
+            if (hasTag)
+            {
+                //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} layer {layer} {LayerMask.LayerToName(layer)}");
                 this.Publish(new ClickObjectEvent(data.ScreenPosition, hitObject));
             }
         }
