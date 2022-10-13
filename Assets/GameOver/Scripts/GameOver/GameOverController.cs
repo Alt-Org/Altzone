@@ -106,6 +106,7 @@ namespace GameOver.Scripts.GameOver
             {
                 _view.LoserInfo =  RichText.Red("YOU LOSE");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
+            }
             else
             {
                 _view.WinnerInfo1 = RichText.Yellow("DRAW!");
