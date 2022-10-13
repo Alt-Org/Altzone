@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TouchPhase = UnityEngine.TouchPhase;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class RaidManager_Script : MonoBehaviour
 {
@@ -37,44 +39,62 @@ public class RaidManager_Script : MonoBehaviour
     private int downRightBombChance;
     private int downLeftBombChance;
     private string prevDebugString;
+    private bool isMobile;
     
     private void Awake()
     {
         field = GetComponentInChildren<Field_Script>();
         cameraMain = Camera.main;
+        isMobile = AppPlatform.IsMobile || AppPlatform.IsSimulator;
     }
 
+    private void OnEnable()
+    {
+        // Enhanced touch support provides automatic finger tracking and touch history recording. It is an API designed for polling!
+        EnhancedTouchSupport.Enable();
+    }
+
+    private void OnDisable()
+    {
+        EnhancedTouchSupport.Disable();
+    }
+    
     private void Start()
     {
         StartRaid();
     }
     private void Update()
     {
-        if (!raidIsOver)
+        if (raidIsOver)
         {
-            if (Mouse.current.leftButton.isPressed)
+            return;
+        }
+        if (isMobile)
+        {
+            CheckTouch();
+        }
+        else
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Reveal(Mouse.current.position.ReadValue());
             }
-
-            //if (Input.touchCount > 0)
-            //{
-            //    Touch touch = Input.GetTouch(0);
-            //    switch(touch.phase)
-            //    {
-            //        case TouchPhase.Began: Reveal(Mouse.current.position.ReadValue());
-            //            break;
-            //    }
-            //    //Reveal(Mouse.current.position.ReadValue());
-            //}
-
-            //else if (Mouse.current.rightButton.isPressed)
-            //{
-            //    Flag(Mouse.current.position.ReadValue());
-            //}
         }
     }
 
+    private void CheckTouch()
+    {
+        if (Touch.activeTouches.Count != 1)
+        {
+            return;
+        }
+        var touch = Touch.activeTouches[0];
+        if (touch.phase == TouchPhase.Began)
+        {
+            Reveal(touch.screenPosition);
+        }
+    }
+    
     private void StartRaid()
     {
         //(DEV) Change when minefieldHeight/Width size is certain. (gets smaller as clan´s size changes)
@@ -606,7 +626,7 @@ public class RaidManager_Script : MonoBehaviour
         field.Draw(state);
     }
 
-    private void Reveal(Vector3 position)
+    private void Reveal(Vector2 position)
     {
         Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position);
         // Fix origo by adding half of the cell size (1f).
