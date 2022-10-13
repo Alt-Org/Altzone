@@ -31,7 +31,10 @@ namespace Battle.Scripts.Test
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
             [Tooltip(Tooltip4)] public bool _isAllocateByTeams;
             public bool _isRandomSKill;
-            public Defence _playerMainSkill = Defence.Projection;
+            public Defence _playerMainSkill1 = Defence.Introjection;
+            public Defence _playerMainSkill2 = Defence.Desensitisation;
+            public Defence _playerMainSkill3 = Defence.Projection;
+            public Defence _playerMainSkill4 = Defence.Retroflection;
         }
 
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
@@ -39,7 +42,6 @@ namespace Battle.Scripts.Test
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
 
         private bool _isStopListeningForPlayerProperties;
-        private bool _hasMainSKill;
 
         public override void OnEnable()
         {
@@ -137,12 +139,24 @@ namespace Battle.Scripts.Test
 
         private void SetDebugPlayer(Player player)
         {
-            if (!_hasMainSKill && _debug._isRandomSKill)
+            Defence mainSKill;
+            if (_debug._isRandomSKill)
             {
-                _hasMainSKill = true;
-                _debug._playerMainSkill = (Defence)Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
+                mainSKill = (Defence)Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
             }
-            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, (int)_debug._playerMainSkill);
+            else
+            {
+                var number = player.ActorNumber % 4;
+                mainSKill = number switch
+                {
+                    1 => _debug._playerMainSkill1,
+                    2 => _debug._playerMainSkill2,
+                    3 => _debug._playerMainSkill3,
+                    0 => _debug._playerMainSkill4,
+                    _ => throw new UnityException()
+                };
+            }
+            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._isAllocateByTeams, (int)mainSKill);
         }
 
         private static void InstantiateLocalPlayer(Player player, string networkPrefabName)
