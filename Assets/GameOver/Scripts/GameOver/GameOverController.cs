@@ -20,6 +20,7 @@ namespace GameOver.Scripts.GameOver
         private const int WinTypeScore = PhotonBattle.WinTypeScore;
         private const int WinTypeResign = PhotonBattle.WinTypeResign;
         private const int WinTypeDraw = PhotonBattle.WinTypeDraw;
+        private int WinType;
 
         private void OnEnable()
         {
@@ -83,21 +84,7 @@ namespace GameOver.Scripts.GameOver
                 }
             }
         }
-        private static int GetWinType(int winType)
-        {       
-            switch(winType)
-            {
-                case WinTypeNone:
-                    return WinTypeNone;
-                case WinTypeScore:
-                    return WinTypeScore;
-                case WinTypeResign:
-                    return WinTypeResign;
-                case WinTypeDraw:
-                    return WinTypeDraw;           
-            }
-            return winType;
-        }
+    
         private void UpdateGameOverTexts(int myTeam, PhotonBattle.RoomScore score)
         {
             Debug.Log($"myTeam {myTeam} score {score}");
@@ -110,11 +97,15 @@ namespace GameOver.Scripts.GameOver
                 _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
             }
-            else if (score.WinningTeam != myTeam)
+             else if(WinType == WinTypeScore)
             {
-               _view.WinnerInfo2 = $"{score.RedScore} - {score.BlueScore}";
-               _view.LoserInfo = isScoreValid ? RichText.Red("YOU LOSE") : RichText.Yellow("DRAW");
+                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
+                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
             }
+            else if(score.WinningTeam != myTeam)
+            {
+                _view.LoserInfo =  RichText.Red("YOU LOSE");
+                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
             else
             {
                 _view.WinnerInfo1 = RichText.Yellow("DRAW!");
