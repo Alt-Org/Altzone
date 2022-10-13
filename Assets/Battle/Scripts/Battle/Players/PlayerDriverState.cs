@@ -63,7 +63,7 @@ namespace Battle.Scripts.Battle.Players
             _savedGridPosition = gridPos;
             _gridManager.SetSpaceTaken(gridPos);
             var currentPosition = _gridManager.GridPositionToWorldPoint(gridPos, isRotated);
-            _playerDriver.MoveTo(currentPosition);
+            _playerActor.MoveTo(currentPosition);
             return currentPosition;
         }
 
