@@ -247,7 +247,7 @@ namespace Battle.Scripts.Test
             }
             // We can lose start team during the time it takes to (re)start the ball!
             startTeam?.SetPlayMode(BattlePlayMode.SuperGhosted);
-            otherTeam?.SetPlayMode(BattlePlayMode.Ghosted);
+            otherTeam?.SetPlayMode(BattlePlayMode.Normal);
             yield return null;
 
             _ballManager.SetBallPosition(ballDropPosition);
