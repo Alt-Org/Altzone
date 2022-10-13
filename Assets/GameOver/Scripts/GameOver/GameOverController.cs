@@ -97,7 +97,7 @@ namespace GameOver.Scripts.GameOver
                 _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
             }
-             else if(WinType == WinTypeScore)
+            else if(WinType == WinTypeScore)
             {
                 _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
                 _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
