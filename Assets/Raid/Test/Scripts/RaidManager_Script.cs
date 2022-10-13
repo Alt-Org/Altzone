@@ -50,7 +50,6 @@ public class RaidManager_Script : MonoBehaviour
     }
     private void Update()
     {
-
         if (!raidIsOver)
         {
             if (Mouse.current.leftButton.isPressed)
@@ -211,6 +210,7 @@ public class RaidManager_Script : MonoBehaviour
             //(DEV) Random loot placement. Change when Loot placement testing!
             int x = Random.Range(0, minefieldWidth);
             int y = Random.Range(0, minefieldHeight);
+
 
             //Check if hexa already has a TestLoot OR a Bomb. (DEV): Use this everywhere you need hexa checking!!!
             while (state[x, y].type == Hexa_Struct.Type.Loot || state[x, y].type == Hexa_Struct.Type.Bomb/* || state[x, y].type == Hexa_Struct.Type.Number*/)
@@ -605,22 +605,24 @@ public class RaidManager_Script : MonoBehaviour
 
     private void Reveal(Vector3 position)
     {
-        //(DEV) Change when build for Android!
-        Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position); //Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position);
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
+        UnityEngine.Debug.Log("x = " + hexaPosition.x); UnityEngine.Debug.Log("y = " + hexaPosition.y);
 
         if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
         }
 
-        if(hexa.type == Hexa_Struct.Type.Neutral) //Flooding
-        {
-            Flood(hexa);
-            floodingTurn = 0;
-        }
+        //Remove flood when testing cordinates
+
+        //if(hexa.type == Hexa_Struct.Type.Neutral) //Flooding
+        //{
+        //    Flood(hexa);
+        //    floodingTurn = 0;
+        //}
         
 
         switch (hexa.type)
@@ -686,7 +688,7 @@ public class RaidManager_Script : MonoBehaviour
     private Hexa_Struct GetHexa(int x, int y)
     {
         if(IsValid(x, y))
-        {
+        {            
             return state[x, y];
         }
         else
