@@ -1,12 +1,13 @@
 {
   "dependencies": {
     "com.lootlocker.lootlockersdk": {
-      "version": "file:C:/Users/psykk/Documents/GitHub/unity-sdk",
+      "version": "https://github.com/LootLocker/unity-sdk.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "2.0.0"
-      }
+      },
+      "hash": "c1932c1defb2809da4244f6abf0c6820d2df77d7"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
