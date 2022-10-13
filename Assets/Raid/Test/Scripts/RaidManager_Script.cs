@@ -36,8 +36,8 @@ public class RaidManager_Script : MonoBehaviour
     private int topLeftBombChance;
     private int downRightBombChance;
     private int downLeftBombChance;
-
-
+    private string prevDebugString;
+    
     private void Awake()
     {
         field = GetComponentInChildren<Field_Script>();
@@ -147,6 +147,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateBombs()
     {
+        return;
         for(int i = 0; i < numberOfBombs; i++)
         {
             //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
@@ -205,6 +206,8 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateTestLoot()
     {
+        return;
+        Random.seed = 42;
         for (int i = 0; i < numberOfTestLoot; i++)
         {
             //(DEV) Random loot placement. Change when Loot placement testing!
@@ -606,11 +609,18 @@ public class RaidManager_Script : MonoBehaviour
     private void Reveal(Vector3 position)
     {
         Vector3 worldPosition = cameraMain.ScreenToWorldPoint(position);
+        // Fix origo by adding half of the cell size (1f).
+        worldPosition.x += .5f;
+        worldPosition.y += .5f;
 
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
-        UnityEngine.Debug.Log("x = " + hexaPosition.x); UnityEngine.Debug.Log("y = " + hexaPosition.y);
-
+        var debugString = $"Reveal world x={position.x} y={position.y} hexa x={hexaPosition.x} y={hexaPosition.y}";
+        if (debugString != prevDebugString)
+        {
+            prevDebugString = debugString;
+            UnityEngine.Debug.Log(prevDebugString);
+        }
         if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
