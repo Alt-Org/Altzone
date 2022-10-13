@@ -167,7 +167,7 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateBombs()
     {
-        return;
+        //return;
         for(int i = 0; i < numberOfBombs; i++)
         {
             //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
@@ -226,8 +226,8 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateTestLoot()
     {
-        return;
-        Random.seed = 42;
+        //return;
+        //Random.seed = 42;
         for (int i = 0; i < numberOfTestLoot; i++)
         {
             //(DEV) Random loot placement. Change when Loot placement testing!
@@ -636,24 +636,22 @@ public class RaidManager_Script : MonoBehaviour
         Vector3Int hexaPosition = field.tilemap.WorldToCell(worldPosition);
         Hexa_Struct hexa = GetHexa(hexaPosition.x, hexaPosition.y);
         var debugString = $"Reveal world x={position.x} y={position.y} hexa x={hexaPosition.x} y={hexaPosition.y}";
-        if (debugString != prevDebugString)
-        {
-            prevDebugString = debugString;
-            UnityEngine.Debug.Log(prevDebugString);
-        }
+        //if (debugString != prevDebugString)
+        //{
+        //    prevDebugString = debugString;
+        //    UnityEngine.Debug.Log(prevDebugString);
+        //}
         if (hexa.type == Hexa_Struct.Type.Invalid || hexa.revealed || hexa.flagged)
         {
             return;
         }
 
-        //Remove flood when testing cordinates
+        if (hexa.type == Hexa_Struct.Type.Neutral) //Flooding
+        {
+            Flood(hexa);
+            floodingTurn = 0;
+        }
 
-        //if(hexa.type == Hexa_Struct.Type.Neutral) //Flooding
-        //{
-        //    Flood(hexa);
-        //    floodingTurn = 0;
-        //}
-        
 
         switch (hexa.type)
         {
