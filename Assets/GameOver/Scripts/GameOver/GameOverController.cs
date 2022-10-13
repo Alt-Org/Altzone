@@ -16,12 +16,6 @@ namespace GameOver.Scripts.GameOver
         [SerializeField] private float _pollingInterval;
         private int _playerCount;
         
-        private const int WinTypeNone = PhotonBattle.WinTypeNone;
-        private const int WinTypeScore = PhotonBattle.WinTypeScore;
-        private const int WinTypeResign = PhotonBattle.WinTypeResign;
-        private const int WinTypeDraw = PhotonBattle.WinTypeDraw;
-        private int WinType;
-
         private void OnEnable()
         {
             _playerCount = PhotonBattle.GetPlayerCountForRoom();
@@ -90,29 +84,13 @@ namespace GameOver.Scripts.GameOver
             Debug.Log($"myTeam {myTeam} score {score}");
             Debug.Log(PhotonNetwork.CurrentRoom.GetDebugLabel());
             Debug.Log(PhotonNetwork.LocalPlayer.GetDebugLabel());
-            // It is possible that we can have equal score and winning team - but that can not be true!
-            var isScoreValid = score.BlueScore != score.RedScore;
-            if (score.WinningTeam == myTeam && score.BlueScore != score.RedScore )
+            if (score.WinningTeam == myTeam
+                && (score.WinType == PhotonBattle.WinTypeScore || score.WinType == PhotonBattle.WinTypeResign))
             {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
+                _view.WinnerInfo1 = RichText.Yellow("YOU WIN");
+                return;
             }
-            else if(WinType == WinTypeScore)
-            {
-                _view.WinnerInfo1 = isScoreValid ? RichText.Blue("YOU WIN") : RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
-            }
-            else if(score.WinningTeam != myTeam)
-            {
-                _view.LoserInfo =  RichText.Red("YOU LOSE");
-                _view.WinnerInfo2 = $"{score.BlueScore} - {score.RedScore}";
-            }
-            else
-            {
-                _view.WinnerInfo1 = RichText.Yellow("DRAW!");
-                _view.WinnerInfo2 = string.Empty;
-                _view.LoserInfo =  RichText.Red("YOU LOSE");
-            }
+            _view.WinnerInfo1 = RichText.Brown("YOU LOSE");
         }
 
         private IEnumerator BusyPlayerPolling()

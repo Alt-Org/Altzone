@@ -52,6 +52,7 @@ namespace GameOver.Scripts.GameOver
             Debug.Log($"{name}");
             _winnerInfo1.text = string.Empty;
             _winnerInfo2.text = string.Empty;
+            _loserInfo.text = string.Empty;
             DisableButtons();
         }
 
