@@ -20,7 +20,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
 
         private void Awake()
         {
-            var allowedPlatform = AppPlatform.IsMobile || AppPlatform.IsWindows || AppPlatform.IsEditor;
+            var allowedPlatform = AppPlatform.IsMobile || AppPlatform.IsDesktop || AppPlatform.IsEditor;
             if (!allowedPlatform)
             {
                 enabled = false;
@@ -31,6 +31,11 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
         {
             _camera = GetComponent<Camera>();
             UpdateCrop();
+            if (AppPlatform.IsMobile && _camera.rect == FixedRect)
+            {
+                // Aspect ratio is what we want and no fixing is needed.
+                enabled = false;
+            }
         }
 
 #if UNITY_EDITOR
@@ -66,7 +71,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
             if (Mathf.Approximately(screenRatio, targetRatio))
             {
                 // Screen or window is the target aspect ratio: use the whole area.
-                _camera.rect = new Rect(0, 0, 1, 1);
+                _camera.rect = FixedRect;
             }
             else if (screenRatio > targetRatio)
             {
