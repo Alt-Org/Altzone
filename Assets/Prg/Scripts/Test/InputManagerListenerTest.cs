@@ -6,18 +6,19 @@ namespace Prg.Scripts.Test
 {
     public class InputManagerListenerTest : MonoBehaviour
     {
-        public bool _isPointerDown;
+        [Header("Settings"), SerializeField] private float _longPressDuration = 0.500f;
+
+        [Header("Debug"), SerializeField] private bool _isPointerDown;
+        [SerializeField] private int _lastEventId;
 
         private ThrottledDebugLogger _panLogger;
         private ThrottledDebugLogger _zoomLogger;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        protected void Awake()
-        {
-        }
-
         private void OnEnable()
         {
+            _lastEventId = -1;
+            
             _panLogger = new ThrottledDebugLogger(this);
             _zoomLogger = new ThrottledDebugLogger(this);
 
@@ -26,6 +27,7 @@ namespace Prg.Scripts.Test
             this.Subscribe<InputManager.PanEvent>(OnPanEvent);
             this.Subscribe<InputManager.ZoomEvent>(OnZoomEvent);
             this.Subscribe<ClickListener.ClickObjectEvent>(OnClickObjectEvent);
+            this.Subscribe<ClickListenerTimed.ClickObjectTimedEvent>(OnClickObjectTimedEvent);
         }
 
         private void OnDisable()
@@ -40,13 +42,11 @@ namespace Prg.Scripts.Test
                 return;
             }
             _isPointerDown = true;
-            Debug.Log($"{data}");
         }
 
         private void OnClickUpEvent(InputManager.ClickUpEvent data)
         {
             _isPointerDown = false;
-            Debug.Log($"{data}");
         }
 
         private void OnPanEvent(InputManager.PanEvent data)
@@ -59,14 +59,41 @@ namespace Prg.Scripts.Test
             ThrottledDebugLogger.Log(_zoomLogger, $"{data}");
         }
 
-        private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
+        private static void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
         {
             Debug.Log($"{data}");
-            // Pick a random, saturated and not-too-dark color
-            var target = data.GameObject.GetComponent<Renderer>();
-            if (target != null)
+            HandleClick(data.GameObject);
+        }
+
+        private void OnClickObjectTimedEvent(ClickListenerTimed.ClickObjectTimedEvent data)
+        {
+            if (data.Duration > _longPressDuration)
             {
-                target.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+                if (_lastEventId == data.EventId)
+                {
+                    return;
+                }
+                _lastEventId = data.EventId;
+                Debug.Log($"{data}");
+                HandleClick(data.GameObject);
+            }
+        }
+
+        private static void HandleClick(GameObject targetGameObject)
+        {
+            // Pick a random, saturated and not-too-dark color
+            var targetRenderer = targetGameObject.GetComponent<Renderer>();
+            if (targetRenderer != null)
+            {
+                var curColor = targetRenderer.material.color;
+                for (;;)
+                {
+                    targetRenderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+                    if (targetRenderer.material.color != curColor)
+                    {
+                        break;
+                    }
+                }
             }
         }
 #endif

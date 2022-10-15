@@ -472,9 +472,10 @@ GameObject:
   - component: {fileID: 267871366}
   - component: {fileID: 267871365}
   - component: {fileID: 267871368}
+  - component: {fileID: 267871369}
   - component: {fileID: 267871367}
   m_Layer: 0
-  m_Name: InputForCameraAndUI
+  m_Name: InputManagerListenerTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -519,7 +520,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &267871367
 MonoBehaviour:
@@ -533,7 +534,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c8476b82e5941baab447f43e416b037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _longPressDuration: 0.5
   _isPointerDown: 0
+  _lastEventId: 0
 --- !u!114 &267871368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,6 +554,28 @@ MonoBehaviour:
   _clickableLayers:
     serializedVersion: 2
     m_Bits: 16384
+  _layerMask: 0
+--- !u!114 &267871369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267871364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d725e165a9433496c78165685bbc79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 371051776}
+  _clickableTagName: Ball
+  _clickableLayers:
+    serializedVersion: 2
+    m_Bits: 16384
+  _timerInterval: 0.1
+  _timerStartTime: 0
+  _timerFireEventTime: 0
+  _eventId: 0
   _layerMask: 0
 --- !u!1 &371051774
 GameObject:
@@ -808,7 +833,7 @@ Transform:
   - {fileID: 1351086689}
   - {fileID: 1849111028}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &547657270
 GameObject:
@@ -1786,6 +1811,7 @@ MonoBehaviour:
     type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!114 &1517977668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,7 +1937,7 @@ RectTransform:
   - {fileID: 59109666}
   - {fileID: 744916123}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3675,7 +3701,7 @@ Transform:
   - {fileID: 564320302167131374}
   - {fileID: 3667407192486831171}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7009298417682678902
 SpriteRenderer:
