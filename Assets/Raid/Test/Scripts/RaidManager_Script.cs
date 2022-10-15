@@ -1,4 +1,7 @@
+using System.Collections;
+using Raid.Test.Scripts;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -14,6 +17,8 @@ public class RaidManager_Script : MonoBehaviour
     [SerializeField] private int lootCollected;
     [SerializeField] private int maxLootCondition;
     [SerializeField] private int floodRadius;
+    [SerializeField] private int editorRandomSeed;
+    [SerializeField] private RaidManager_View view;
 
     /*(DEV) Show Bombs*/
     [SerializeField] private bool showBombs;
@@ -46,12 +51,30 @@ public class RaidManager_Script : MonoBehaviour
         field = GetComponentInChildren<Field_Script>();
         cameraMain = Camera.main;
         isMobile = AppPlatform.IsMobile || AppPlatform.IsSimulator;
+        if (AppPlatform.IsEditor)
+        {
+            // Use well known seed for testing in Editor.
+            if (editorRandomSeed == 0)
+            {
+                editorRandomSeed = System.Environment.TickCount % 100000;
+            }
+            UnityEngine.Debug.Log($"seed {editorRandomSeed}");
+            Random.InitState(editorRandomSeed);
+        }
     }
 
     private void OnEnable()
     {
         // Enhanced touch support provides automatic finger tracking and touch history recording. It is an API designed for polling!
         EnhancedTouchSupport.Enable();
+        StartCoroutine(WaitForView());
+    }
+
+    private IEnumerator WaitForView()
+    {
+        yield return new WaitUntil(() => (view = FindObjectOfType<RaidManager_View>()) != null);
+        view.ResetView();
+        view.SetSeed(editorRandomSeed);
     }
 
     private void OnDisable()
@@ -167,7 +190,6 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateBombs()
     {
-        //return;
         for(int i = 0; i < numberOfBombs; i++)
         {
             //(DEV) Random bomb placement. Must be changed when testing of Loot Placement begins!
@@ -226,8 +248,6 @@ public class RaidManager_Script : MonoBehaviour
 
     private void GenerateTestLoot()
     {
-        //return;
-        //Random.seed = 42;
         for (int i = 0; i < numberOfTestLoot; i++)
         {
             //(DEV) Random loot placement. Change when Loot placement testing!
