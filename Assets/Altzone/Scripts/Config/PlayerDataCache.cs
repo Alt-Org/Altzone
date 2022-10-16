@@ -266,6 +266,7 @@ namespace Altzone.Scripts.Config
             // Create same GUID for same device if possible
             // - guid can be used to identify third party cloud game services
             // - we want to keep it constant for single device even this data is wiped e.g. during testing
+            // - note that SystemInfo.deviceUniqueIdentifier is *not* guaranteed to be always unique even on the same device
             var deviceId = SystemInfo.deviceUniqueIdentifier;
             if (deviceId == SystemInfo.unsupportedIdentifier)
             {
