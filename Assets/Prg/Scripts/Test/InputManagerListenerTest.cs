@@ -14,6 +14,8 @@ namespace Prg.Scripts.Test
         private ThrottledDebugLogger _panLogger;
         private ThrottledDebugLogger _zoomLogger;
 
+        private bool _isMobile;
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnEnable()
         {
@@ -21,6 +23,8 @@ namespace Prg.Scripts.Test
             
             _panLogger = new ThrottledDebugLogger(this);
             _zoomLogger = new ThrottledDebugLogger(this);
+
+            _isMobile = AppPlatform.IsMobile;
 
             this.Subscribe<InputManager.ClickDownEvent>(OnClickDownEvent);
             this.Subscribe<InputManager.ClickUpEvent>(OnClickUpEvent);
@@ -59,10 +63,10 @@ namespace Prg.Scripts.Test
             ThrottledDebugLogger.Log(_zoomLogger, $"{data}");
         }
 
-        private static void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
+        private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
         {
             Debug.Log($"{data}");
-            HandleClick(data.GameObject);
+            HandleClick(data.GameObject, false);
         }
 
         private void OnClickObjectTimedEvent(ClickListenerTimed.ClickObjectTimedEvent data)
@@ -75,11 +79,11 @@ namespace Prg.Scripts.Test
                 }
                 _lastEventId = data.EventId;
                 Debug.Log($"{data}");
-                HandleClick(data.GameObject);
+                HandleClick(data.GameObject, _isMobile);
             }
         }
 
-        private static void HandleClick(GameObject targetGameObject)
+        private void HandleClick(GameObject targetGameObject, bool vibrate)
         {
             // Pick a random, saturated and not-too-dark color
             var targetRenderer = targetGameObject.GetComponent<Renderer>();
@@ -91,6 +95,11 @@ namespace Prg.Scripts.Test
                     targetRenderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
                     if (targetRenderer.material.color != curColor)
                     {
+                        // Clicked - provide haptic feedback
+                        if (vibrate)
+                        {
+                            Handheld.Vibrate();
+                        }
                         break;
                     }
                 }
