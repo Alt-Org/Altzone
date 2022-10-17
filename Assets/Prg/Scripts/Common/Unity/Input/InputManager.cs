@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.Common.Unity.Input
 {
+    /// <summary>
+    /// Input manager to read mouse and touch inputs and convert them to higher level events.<br />
+    /// These events are click down, click up, zoom and pan.
+    /// </summary>
     public class InputManager : MonoBehaviour
     {
         [Header("Settings"), SerializeField] private InputManagerConfig _config; // For manual Editor config

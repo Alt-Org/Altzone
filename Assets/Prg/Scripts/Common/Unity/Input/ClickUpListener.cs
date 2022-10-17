@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity.Input
 {
+    /// <summary>
+    /// Sends <c>ClickUpObjectEvent</c> when user clicks on eligible UI element.
+    /// </summary>
+    /// <remarks>
+    /// Eligible means that UI element is marked given with tag or layer for these events.
+    /// </remarks>
     public class ClickUpListener : MonoBehaviour
     {
         [Header("Settings"), SerializeField] private Camera _camera;
