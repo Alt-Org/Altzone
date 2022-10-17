@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity.Input
 {
-    public class ClickListener : MonoBehaviour
+    public class ClickDownListener : MonoBehaviour
     {
         [Header("Settings"), SerializeField] private Camera _camera;
         [SerializeField] private string _clickableTagName;
@@ -44,23 +44,23 @@ namespace Prg.Scripts.Common.Unity.Input
             if (hasLayer)
             {
                 //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} layer {layer} {LayerMask.LayerToName(layer)}");
-                this.Publish(new ClickObjectEvent(data.ScreenPosition, hitObject));
+                this.Publish(new ClickDownObjectEvent(data.ScreenPosition, hitObject));
                 return;
             }
             var hasTag = !string.IsNullOrEmpty(_clickableTagName) && hitObject.CompareTag(_clickableTagName);
             if (hasTag)
             {
                 //Debug.Log($"CLICK {hitObject.GetFullPath()} tag {hitObject.tag} layer {layer} {LayerMask.LayerToName(layer)}");
-                this.Publish(new ClickObjectEvent(data.ScreenPosition, hitObject));
+                this.Publish(new ClickDownObjectEvent(data.ScreenPosition, hitObject));
             }
         }
 
-        public class ClickObjectEvent
+        public class ClickDownObjectEvent
         {
             public readonly Vector2 ScreenPosition;
             public readonly GameObject GameObject;
 
-            public ClickObjectEvent(Vector2 screenPosition, GameObject gameObject)
+            public ClickDownObjectEvent(Vector2 screenPosition, GameObject gameObject)
             {
                 ScreenPosition = screenPosition;
                 GameObject = gameObject;
@@ -68,7 +68,7 @@ namespace Prg.Scripts.Common.Unity.Input
 
             public override string ToString()
             {
-                return $"{nameof(ScreenPosition)}: {ScreenPosition}, {nameof(GameObject)}: {GameObject.GetFullPath()}";
+                return $"ClickDown {nameof(ScreenPosition)}: {ScreenPosition}, {nameof(GameObject)}: {GameObject.GetFullPath()}";
             }
         }
     }

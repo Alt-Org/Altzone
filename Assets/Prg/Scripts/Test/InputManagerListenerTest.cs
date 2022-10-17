@@ -1,15 +1,14 @@
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity.Input;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Prg.Scripts.Test
 {
     public class InputManagerListenerTest : MonoBehaviour
     {
-        [Header("Settings"), SerializeField] private float _longPressDuration = 0.500f;
-
         [Header("Debug"), SerializeField] private bool _isPointerDown;
-        [SerializeField] private int _lastEventId;
+        [SerializeField] private GameObject _currentTarget;
 
         private ThrottledDebugLogger _panLogger;
         private ThrottledDebugLogger _zoomLogger;
@@ -19,8 +18,6 @@ namespace Prg.Scripts.Test
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnEnable()
         {
-            _lastEventId = -1;
-            
             _panLogger = new ThrottledDebugLogger(this);
             _zoomLogger = new ThrottledDebugLogger(this);
 
@@ -30,8 +27,8 @@ namespace Prg.Scripts.Test
             this.Subscribe<InputManager.ClickUpEvent>(OnClickUpEvent);
             this.Subscribe<InputManager.PanEvent>(OnPanEvent);
             this.Subscribe<InputManager.ZoomEvent>(OnZoomEvent);
-            this.Subscribe<ClickListener.ClickObjectEvent>(OnClickObjectEvent);
-            this.Subscribe<ClickListenerTimed.ClickObjectTimedEvent>(OnClickObjectTimedEvent);
+            this.Subscribe<ClickDownListener.ClickDownObjectEvent>(OnClickObjectEvent);
+            this.Subscribe<ClickUpListener.ClickUpObjectEvent>(OnClickUpObjectEvent);
         }
 
         private void OnDisable()
@@ -63,24 +60,32 @@ namespace Prg.Scripts.Test
             ThrottledDebugLogger.Log(_zoomLogger, $"{data}");
         }
 
-        private void OnClickObjectEvent(ClickListener.ClickObjectEvent data)
+        private void OnClickObjectEvent(ClickDownListener.ClickDownObjectEvent data)
         {
             Debug.Log($"{data}");
             HandleClick(data.GameObject, false);
         }
 
-        private void OnClickObjectTimedEvent(ClickListenerTimed.ClickObjectTimedEvent data)
+        private void OnClickUpObjectEvent(ClickUpListener.ClickUpObjectEvent data)
         {
-            if (data.Duration > _longPressDuration)
+            if (data.Phase == ClickUpListener.ClickUpPhase.ClickUpStart)
             {
-                if (_lastEventId == data.EventId)
-                {
-                    return;
-                }
-                _lastEventId = data.EventId;
                 Debug.Log($"{data}");
-                HandleClick(data.GameObject, _isMobile);
+                _currentTarget = data.GameObject;
+                return;
             }
+            if (data.Phase != ClickUpListener.ClickUpPhase.ClickUpEnd)
+            {
+                throw new UnityException($"Unknown ClickUpPhase {data.Phase}");
+            }
+            Assert.IsNotNull(_currentTarget);
+            if (!_currentTarget.Equals(data.GameObject))
+            {
+                Debug.Log($"SKIP {data}");
+                return;
+            }
+            Debug.Log($"{data}");
+            HandleClick(data.GameObject, _isMobile);
         }
 
         private void HandleClick(GameObject targetGameObject, bool vibrate)

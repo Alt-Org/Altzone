@@ -534,9 +534,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c8476b82e5941baab447f43e416b037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _longPressDuration: 0.5
   _isPointerDown: 0
-  _lastEventId: 0
+  _currentTarget: {fileID: 0}
 --- !u!114 &267871368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,10 +571,6 @@ MonoBehaviour:
   _clickableLayers:
     serializedVersion: 2
     m_Bits: 16384
-  _timerInterval: 0.1
-  _timerStartTime: 0
-  _timerFireEventTime: 0
-  _eventId: 0
   _layerMask: 0
 --- !u!1 &371051774
 GameObject:
