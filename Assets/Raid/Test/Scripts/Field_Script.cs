@@ -93,14 +93,14 @@ public class Field_Script : MonoBehaviour
     {
         switch (hexa.number)
         {
-            case 1: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber1_LootNumber1; case 2: return tileNumber1_LootNumber2; case 3: return tileNumber1_LootNumber3; case 4: return tileNumber1_LootNumber4; case 5: return tileNumber1_LootNumber5; case 6: return tileNumber1_LootNumber6; case 7: return tileNumber1_LootNumber7; case 8: return tileNumber1_LootNumber8; default: return null;  } } else return tileNumber1;
-            case 2: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber2_LootNumber1; case 2: return tileNumber2_LootNumber2; case 3: return tileNumber2_LootNumber3; case 4: return tileNumber2_LootNumber4; case 5: return tileNumber2_LootNumber5; case 6: return tileNumber2_LootNumber6; case 7: return tileNumber2_LootNumber7; default: return null; } } else return tileNumber2;
-            case 3: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber3_LootNumber1; case 2: return tileNumber3_LootNumber2; case 3: return tileNumber3_LootNumber3; case 4: return tileNumber3_LootNumber4; case 5: return tileNumber3_LootNumber5; case 6: return tileNumber3_LootNumber6; default: return null; } } else return tileNumber3;
-            case 4: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber4_LootNumber1; case 2: return tileNumber4_LootNumber2; case 3: return tileNumber4_LootNumber3; case 4: return tileNumber4_LootNumber4; case 5: return tileNumber4_LootNumber5; default: return null; } } else return tileNumber4;
-            case 5: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber5_LootNumber1; case 2: return tileNumber5_LootNumber2; case 3: return tileNumber5_LootNumber3; case 4: return tileNumber5_LootNumber4; default: return null; } } else return tileNumber5;
-            case 6: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber6_LootNumber1; case 2: return tileNumber6_LootNumber2; case 3: return tileNumber6_LootNumber3; default: return null; } } else return tileNumber6;
-            case 7: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber7_LootNumber1; case 2: return tileNumber7_LootNumber2; default: return null; } } else return tileNumber7;
-            case 8: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileNumber8_LootNumber1; default: return null; } } else return tileNumber8;
+            case 1: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber1_LootNumber1; case 2: return tileBombNumber1_LootNumber2; case 3: return tileBombNumber1_LootNumber3; case 4: return tileBombNumber1_LootNumber4; case 5: return tileBombNumber1_LootNumber5; case 6: return tileBombNumber1_LootNumber6; case 7: return tileBombNumber1_LootNumber7; case 8: return tileBombNumber1_LootNumber8; default: return null;  } } else return tileNumber1;
+            case 2: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber2_LootNumber1; case 2: return tileBombNumber2_LootNumber2; case 3: return tileBombNumber2_LootNumber3; case 4: return tileBombNumber2_LootNumber4; case 5: return tileBombNumber2_LootNumber5; case 6: return tileBombNumber2_LootNumber6; case 7: return tileBombNumber2_LootNumber7; default: return null; } } else return tileNumber2;
+            case 3: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber3_LootNumber1; case 2: return tileBombNumber3_LootNumber2; case 3: return tileBombNumber3_LootNumber3; case 4: return tileBombNumber3_LootNumber4; case 5: return tileBombNumber3_LootNumber5; case 6: return tileBombNumber3_LootNumber6; default: return null; } } else return tileNumber3;
+            case 4: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber4_LootNumber1; case 2: return tileBombNumber4_LootNumber2; case 3: return tileBombNumber4_LootNumber3; case 4: return tileBombNumber4_LootNumber4; case 5: return tileBombNumber4_LootNumber5; default: return null; } } else return tileNumber4;
+            case 5: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber5_LootNumber1; case 2: return tileBombNumber5_LootNumber2; case 3: return tileBombNumber5_LootNumber3; case 4: return tileBombNumber5_LootNumber4; default: return null; } } else return tileNumber5;
+            case 6: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber6_LootNumber1; case 2: return tileBombNumber6_LootNumber2; case 3: return tileBombNumber6_LootNumber3; default: return null; } } else return tileNumber6;
+            case 7: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber7_LootNumber1; case 2: return tileBombNumber7_LootNumber2; default: return null; } } else return tileNumber7;
+            case 8: if (hexa.lootNumber > 0) { switch (hexa.lootNumber) { case 1: return tileBombNumber8_LootNumber1; default: return null; } } else return tileNumber8;
             case 9: return tileNumber9;
             default: return null;
         }
@@ -110,14 +110,14 @@ public class Field_Script : MonoBehaviour
     {
         switch (hexa.lootNumber)
         {
-            case 1: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber1; case 2: return tileNumber2_LootNumber1; case 3: return tileNumber3_LootNumber1; case 4: return tileNumber4_LootNumber1; case 5: return tileNumber5_LootNumber1; case 6: return tileNumber6_LootNumber1; case 7: return tileNumber7_LootNumber1; case 8: return tileNumber8_LootNumber1; default: return null;  } } else return tileLootNumber1;
-            case 2: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber2; case 2: return tileNumber2_LootNumber2; case 3: return tileNumber3_LootNumber2; case 4: return tileNumber4_LootNumber2; case 5: return tileNumber5_LootNumber2; case 6: return tileNumber6_LootNumber2; case 7: return tileNumber7_LootNumber2; default: return null; } } else return tileLootNumber2;
-            case 3: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber3; case 2: return tileNumber2_LootNumber3; case 3: return tileNumber3_LootNumber3; case 4: return tileNumber4_LootNumber3; case 5: return tileNumber5_LootNumber3; case 6: return tileNumber6_LootNumber3; default: return null; } } else return tileLootNumber3;
-            case 4: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber4; case 2: return tileNumber2_LootNumber4; case 3: return tileNumber3_LootNumber4; case 4: return tileNumber4_LootNumber4; case 5: return tileNumber5_LootNumber4; default: return null; } } else return tileLootNumber4;
-            case 5: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber5; case 2: return tileNumber2_LootNumber5; case 3: return tileNumber3_LootNumber5; case 4: return tileNumber4_LootNumber5; default: return null; } } else return tileLootNumber5;
-            case 6: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber6; case 2: return tileNumber2_LootNumber6; case 3: return tileNumber3_LootNumber6; default: return null; } } else return tileLootNumber6;
-            case 7: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber7; case 2: return tileNumber2_LootNumber7; default: return null; } } else return tileLootNumber7;
-            case 8: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileNumber1_LootNumber8; default: return null; } } else return tileLootNumber8;
+            case 1: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber1; case 2: return tileBombNumber2_LootNumber1; case 3: return tileBombNumber3_LootNumber1; case 4: return tileBombNumber4_LootNumber1; case 5: return tileBombNumber5_LootNumber1; case 6: return tileBombNumber6_LootNumber1; case 7: return tileBombNumber7_LootNumber1; case 8: return tileBombNumber8_LootNumber1; default: return null;  } } else return tileLootNumber1;
+            case 2: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber2; case 2: return tileBombNumber2_LootNumber2; case 3: return tileBombNumber3_LootNumber2; case 4: return tileBombNumber4_LootNumber2; case 5: return tileBombNumber5_LootNumber2; case 6: return tileBombNumber6_LootNumber2; case 7: return tileBombNumber7_LootNumber2; default: return null; } } else return tileLootNumber2;
+            case 3: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber3; case 2: return tileBombNumber2_LootNumber3; case 3: return tileBombNumber3_LootNumber3; case 4: return tileBombNumber4_LootNumber3; case 5: return tileBombNumber5_LootNumber3; case 6: return tileBombNumber6_LootNumber3; default: return null; } } else return tileLootNumber3;
+            case 4: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber4; case 2: return tileBombNumber2_LootNumber4; case 3: return tileBombNumber3_LootNumber4; case 4: return tileBombNumber4_LootNumber4; case 5: return tileBombNumber5_LootNumber4; default: return null; } } else return tileLootNumber4;
+            case 5: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber5; case 2: return tileBombNumber2_LootNumber5; case 3: return tileBombNumber3_LootNumber5; case 4: return tileBombNumber4_LootNumber5; default: return null; } } else return tileLootNumber5;
+            case 6: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber6; case 2: return tileBombNumber2_LootNumber6; case 3: return tileBombNumber3_LootNumber6; default: return null; } } else return tileLootNumber6;
+            case 7: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber7; case 2: return tileBombNumber2_LootNumber7; default: return null; } } else return tileLootNumber7;
+            case 8: if (hexa.number > 0) { switch (hexa.number) { case 1: return tileBombNumber1_LootNumber8; default: return null; } } else return tileLootNumber8;
             case 9: return tileLootNumber9;
             default: return null;
         }
@@ -154,54 +154,54 @@ public class Field_Script : MonoBehaviour
     public Tile tileLootNumber9;
 
     //Number 1 Loot options
-    public Tile tileNumber1_LootNumber1;
-    public Tile tileNumber1_LootNumber2;
-    public Tile tileNumber1_LootNumber3;
-    public Tile tileNumber1_LootNumber4;
-    public Tile tileNumber1_LootNumber5;
-    public Tile tileNumber1_LootNumber6;
-    public Tile tileNumber1_LootNumber7;
-    public Tile tileNumber1_LootNumber8;
+    public Tile tileBombNumber1_LootNumber1;
+    public Tile tileBombNumber1_LootNumber2;
+    public Tile tileBombNumber1_LootNumber3;
+    public Tile tileBombNumber1_LootNumber4;
+    public Tile tileBombNumber1_LootNumber5;
+    public Tile tileBombNumber1_LootNumber6;
+    public Tile tileBombNumber1_LootNumber7;
+    public Tile tileBombNumber1_LootNumber8;
 
     //Number 2 Loot options
-    public Tile tileNumber2_LootNumber1;
-    public Tile tileNumber2_LootNumber2;
-    public Tile tileNumber2_LootNumber3;
-    public Tile tileNumber2_LootNumber4;
-    public Tile tileNumber2_LootNumber5;
-    public Tile tileNumber2_LootNumber6;
-    public Tile tileNumber2_LootNumber7;
+    public Tile tileBombNumber2_LootNumber1;
+    public Tile tileBombNumber2_LootNumber2;
+    public Tile tileBombNumber2_LootNumber3;
+    public Tile tileBombNumber2_LootNumber4;
+    public Tile tileBombNumber2_LootNumber5;
+    public Tile tileBombNumber2_LootNumber6;
+    public Tile tileBombNumber2_LootNumber7;
 
     //Number 3 Loot options
-    public Tile tileNumber3_LootNumber1;
-    public Tile tileNumber3_LootNumber2;
-    public Tile tileNumber3_LootNumber3;
-    public Tile tileNumber3_LootNumber4;
-    public Tile tileNumber3_LootNumber5;
-    public Tile tileNumber3_LootNumber6;
+    public Tile tileBombNumber3_LootNumber1;
+    public Tile tileBombNumber3_LootNumber2;
+    public Tile tileBombNumber3_LootNumber3;
+    public Tile tileBombNumber3_LootNumber4;
+    public Tile tileBombNumber3_LootNumber5;
+    public Tile tileBombNumber3_LootNumber6;
 
     //Number 4 Loot options
-    public Tile tileNumber4_LootNumber1;
-    public Tile tileNumber4_LootNumber2;
-    public Tile tileNumber4_LootNumber3;
-    public Tile tileNumber4_LootNumber4;
-    public Tile tileNumber4_LootNumber5;
+    public Tile tileBombNumber4_LootNumber1;
+    public Tile tileBombNumber4_LootNumber2;
+    public Tile tileBombNumber4_LootNumber3;
+    public Tile tileBombNumber4_LootNumber4;
+    public Tile tileBombNumber4_LootNumber5;
 
     //Number 5 Loot options
-    public Tile tileNumber5_LootNumber1;
-    public Tile tileNumber5_LootNumber2;
-    public Tile tileNumber5_LootNumber3;
-    public Tile tileNumber5_LootNumber4;
+    public Tile tileBombNumber5_LootNumber1;
+    public Tile tileBombNumber5_LootNumber2;
+    public Tile tileBombNumber5_LootNumber3;
+    public Tile tileBombNumber5_LootNumber4;
 
     //Number 6 Loot options
-    public Tile tileNumber6_LootNumber1;
-    public Tile tileNumber6_LootNumber2;
-    public Tile tileNumber6_LootNumber3;
+    public Tile tileBombNumber6_LootNumber1;
+    public Tile tileBombNumber6_LootNumber2;
+    public Tile tileBombNumber6_LootNumber3;
 
     //Number 7 Loot options
-    public Tile tileNumber7_LootNumber1;
-    public Tile tileNumber7_LootNumber2;
+    public Tile tileBombNumber7_LootNumber1;
+    public Tile tileBombNumber7_LootNumber2;
 
     //Number 8 Loot options
-    public Tile tileNumber8_LootNumber1;
+    public Tile tileBombNumber8_LootNumber1;
 }
