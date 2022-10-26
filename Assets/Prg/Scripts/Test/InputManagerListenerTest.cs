@@ -103,7 +103,9 @@ namespace Prg.Scripts.Test
                         // Clicked - provide haptic feedback
                         if (vibrate)
                         {
+#if UNITY_ANDROID
                             Handheld.Vibrate();
+#endif
                         }
                         break;
                     }
