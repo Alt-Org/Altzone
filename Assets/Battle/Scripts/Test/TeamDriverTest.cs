@@ -113,6 +113,7 @@ namespace Battle.Scripts.Test
         {
             Debug.Log($"TeamsAreReadyForGameplay {data.TeamBlue} vs {data.TeamRed?.ToString() ?? "null"} " +
                       $"IsMasterClient {PhotonNetwork.IsMasterClient}");
+            this.Publish(new UiEvents.StartAnimation());
             if (!PhotonNetwork.IsMasterClient)
             {
                 return;

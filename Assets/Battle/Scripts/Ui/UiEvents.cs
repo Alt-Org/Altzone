@@ -24,6 +24,16 @@ namespace Battle.Scripts.Ui
                 return $"{nameof(StartBattle)}";
             }
         }
+        /// <summary>
+        /// Signal to start the butterfly animation during first countdown.
+        /// </summary>
+        internal class StartAnimation
+        {
+            public override string ToString()
+            {
+                return $"{nameof(StartAnimation)}";
+            }
+        }
 
         /// <summary>
         /// Signal to restart the battle game during gameplay.

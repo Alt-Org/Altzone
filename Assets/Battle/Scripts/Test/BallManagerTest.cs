@@ -124,6 +124,7 @@ namespace Battle.Scripts.Test
         private void StartTheBallTest()
         {
             this.Publish(new UiEvents.StartBattle());
+            this.Publish(new UiEvents.StartAnimation());
         }
     }
 }
