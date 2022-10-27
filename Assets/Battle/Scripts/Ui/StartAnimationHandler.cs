@@ -1,41 +1,37 @@
-using System.Collections;
-using Battle.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
-public class StartAnimationHandler : MonoBehaviour
+namespace Battle.Scripts.Ui
 {
-    private Animator[] _animators;
-
-    private void Awake()
+    public class StartAnimationHandler : MonoBehaviour
     {
-        _animators = gameObject.GetComponentsInChildren<Animator>();
-        for (int i = 0; i < _animators.Length; i++)
+        private Animator[] _animators;
+
+        private void Awake()
         {
-            _animators[i].enabled = false;
+            _animators = gameObject.GetComponentsInChildren<Animator>();
+            for (int i = 0; i < _animators.Length; i++)
+            {
+                _animators[i].enabled = false;
+            }
         }
-    }
 
-    private void OnEnable()
-    {
-        this.Subscribe<UiEvents.StartAnimation>(OnStartBattle);
-    }
-
-    void OnStartBattle(UiEvents.StartAnimation data)
-    {
-        StartCoroutine(EnableStartAnimation());
-    }
-
-    private IEnumerator EnableStartAnimation()
-    {
-        yield return new WaitForSeconds(1f);
-        for (int i = 0; i < _animators.Length; i++)
+        private void OnEnable()
         {
-            _animators[i].enabled = true;
+            this.Subscribe<UiEvents.StartAnimation>(OnStartBattle);
         }
-    }
-    private void OnDisable()
-    {
-        this.Unsubscribe();
+
+        void OnStartBattle(UiEvents.StartAnimation data)
+        {
+            for (int i = 0; i < _animators.Length; i++)
+            {
+                _animators[i].enabled = true;
+            }
+        }
+
+        private void OnDisable()
+        {
+            this.Unsubscribe();
+        }
     }
 }
