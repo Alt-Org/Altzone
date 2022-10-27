@@ -23,7 +23,7 @@ namespace Altzone.Scripts.Config
         GameInput Input { get; }
         Characters Characters { get; }
 
-        PlayerDataCache PlayerDataCache { get; }
+        IPlayerDataCache PlayerDataCache { get; }
     }
 
     #region RuntimeGameConfig "Parts"
@@ -332,17 +332,26 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Used by Editor classes with <c>MenuItem</c> to pre-load <c>PlayerDataCache</c> as it is not otherwise available.
         /// </summary>
-        public static PlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache(null);
+        public static IPlayerDataCache GetPlayerDataCacheInEditor() => LoadPlayerDataCache(null);
 #endif
+
+        #region UNITY Editor
 
         [SerializeField] private GameFeatures _permanentFeatures;
         [SerializeField] private GameConstraints _permanentConstraints;
         [SerializeField] private GameVariables _permanentVariables;
         [SerializeField] private BattleUiConfig _battleUiConfig;
         [SerializeField] private GamePrefabs _permanentPrefabs;
-        [SerializeField] private PlayerDataCache _playerDataCache;
         [SerializeField] private GameInput _gameInput;
         [SerializeField] private Characters _characters;
+
+        #endregion
+
+        #region Data Store
+
+        private IPlayerDataCache _playerDataCache;
+
+        #endregion
 
         private void Awake()
         {
@@ -404,7 +413,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
         /// </summary>
-        public PlayerDataCache PlayerDataCache => _playerDataCache;
+        public IPlayerDataCache PlayerDataCache => _playerDataCache;
 
         private static void LoadGameConfig(RuntimeGameConfig instance)
         {

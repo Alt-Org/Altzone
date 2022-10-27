@@ -8,11 +8,26 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Config
 {
+    public interface IPlayerDataCache
+    {
+        string PlayerName { get; set; }
+        string ClanName { get; }
+        int CharacterModelId { get; set; }
+        SystemLanguage Language { get; set; }
+
+        CharacterModel CharacterModelForUi { get; }
+
+#if UNITY_EDITOR
+        void DebugSavePlayer();
+        void DebugResetPlayer();
+#endif
+    }
+
     /// <summary>
     /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
     /// </summary>
     [Serializable]
-    public class PlayerDataCache
+    internal class PlayerDataCache : IPlayerDataCache
     {
         protected const string DefaultPlayerName = "Player";
         protected const int DefaultModelId = (int)Defence.Introjection;
@@ -43,7 +58,7 @@ namespace Altzone.Scripts.Config
         /// Clan name.
         /// </summary>
         public string ClanName => _clanName;
-        
+
         [SerializeField] protected int _characterModelId;
 
         /// <summary>
@@ -65,7 +80,7 @@ namespace Altzone.Scripts.Config
         /// <remarks>
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
-        public CharacterModel GetCharacterModelForUi() =>
+        public CharacterModel CharacterModelForUi =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
             Storefront.Get().GetCharacterModel(DefaultModelId) ??
             new CharacterModel(-1, "Ö", Defence.Introjection, 3, 3, 3, 3);
@@ -156,7 +171,7 @@ namespace Altzone.Scripts.Config
 
         public string GetPlayerInfoLabel()
         {
-            var characterModelName = GetCharacterModelForUi().Name;
+            var characterModelName = CharacterModelForUi.Name;
             if (ClanId > 0)
             {
                 var clan = Storefront.Get().GetClanModel(ClanId);
@@ -184,7 +199,7 @@ namespace Altzone.Scripts.Config
             // Placeholder for actual implementation in derived class.
         }
 
-        [Conditional("UNITY_EDITOR")]
+#if UNITY_EDITOR
         public void DebugResetPlayer()
         {
             // Actually can not delete at this level - just invalidate everything!
@@ -195,11 +210,11 @@ namespace Altzone.Scripts.Config
             InternalSave();
         }
 
-        [Conditional("UNITY_EDITOR")]
         public void DebugSavePlayer()
         {
             InternalSave();
         }
+#endif
 
         public override string ToString()
         {
@@ -212,7 +227,7 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
     /// </summary>
-    public class PlayerDataCacheLocal : PlayerDataCache
+    internal class PlayerDataCacheLocal : PlayerDataCache
     {
         private readonly MonoBehaviour _host;
         private Coroutine _delayedSave;
