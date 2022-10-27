@@ -50,13 +50,5 @@ namespace Editor.Prg.GameDebug
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
         }
-
-        public static void DeleteLocalAllData()
-        {
-            Debug.Log("*");
-            Debug.Log(RichText.Brown("PlayerPrefs.DeleteAll"));
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-        }
     }
 }

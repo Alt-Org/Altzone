@@ -43,9 +43,6 @@ namespace Editor
         [MenuItem(GameDebug + "Util/Dump Models to Wiki", false, 20)]
         private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
 
-        [MenuItem(GameDebug + "Danger Zone/Delete All Local Data", false, 30)]
-        private static void DeleteLocalAllData() => DebugMenu.DeleteLocalAllData();
-
         #endregion
 
         #region Localization
