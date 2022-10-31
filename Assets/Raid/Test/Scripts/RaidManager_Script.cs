@@ -212,7 +212,10 @@ public class RaidManager_Script : MonoBehaviour
                     }
                 }
             }
-            if (state[x, y].type != Hexa_Struct.Type.Loot) { state[x, y].type = Hexa_Struct.Type.Bomb; }
+            if (state[x, y].type != Hexa_Struct.Type.Loot)
+            {
+                state[x, y].type = Hexa_Struct.Type.Bomb;
+            }
             else continue;
 
             if (showBombs)
@@ -694,9 +697,9 @@ public class RaidManager_Script : MonoBehaviour
         field.Draw(state);
 
         // Win condition. Change the number when needed!
-        if(lootCollected == maxLootCondition)
+        if(lootCollected >= maxLootCondition)
         {
-            UnityEngine.Debug.Log("No more loot. You win!");
+            UnityEngine.Debug.Log("Too much loot! Your backbag has been overloaded! You lose!");
             raidIsOver = true;
         }
     }
@@ -730,6 +733,19 @@ public class RaidManager_Script : MonoBehaviour
         hexa.detonated = true;
 
         state[hexa.position.x, hexa.position.y] = hexa;
+
+        for (int x = 0; x < minefieldWidth; x++)
+        {
+            for (int y = 0; y < minefieldHeight; y++)
+            {
+                hexa = state[x, y];
+                if(hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot || hexa.type == Hexa_Struct.Type.NumberAndLootNumber || hexa.type == Hexa_Struct.Type.Neutral || hexa.type == Hexa_Struct.Type.Number || hexa.type == Hexa_Struct.Type.LootNumber)
+                {
+                    hexa.revealed = true;
+                    state[x, y] = hexa;
+                }
+            }
+        }
 
     }
 
