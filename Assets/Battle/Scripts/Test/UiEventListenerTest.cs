@@ -67,7 +67,6 @@ namespace Battle.Scripts.Test
                 }
                 return;
             }
-            ScoreFlashNet.Push("START THE GAME");
             startTheBallTest.StartBallFirstTime();
             StartCoroutine(SimulateCountdown(_roomStartDelay));
         }
@@ -146,10 +145,11 @@ namespace Battle.Scripts.Test
         private static IEnumerator SimulateCountdown(int countdownDelay)
         {
             var delay = new WaitForSeconds(1f);
-            while (--countdownDelay >= 0)
+            while (countdownDelay >= 0)
             {
-                yield return delay;
                 ScoreFlashNet.Push(countdownDelay.ToString());
+                countdownDelay--;
+                yield return delay;
             }
         }
     }

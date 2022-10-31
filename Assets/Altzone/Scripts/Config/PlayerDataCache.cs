@@ -1,20 +1,33 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
 using Altzone.Scripts.Model;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config
 {
+    public interface IPlayerDataCache
+    {
+        string PlayerName { get; set; }
+        string ClanName { get; }
+        int CharacterModelId { get; set; }
+        SystemLanguage Language { get; set; }
+
+        CharacterModel CharacterModelForUi { get; }
+
+#if UNITY_EDITOR
+        void DebugSavePlayer();
+        void DebugResetPlayer();
+#endif
+    }
+
     /// <summary>
     /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
     /// </summary>
     [Serializable]
-    public class PlayerDataCache
+    internal class PlayerDataCache : IPlayerDataCache
     {
         protected const string DefaultPlayerName = "Player";
+        protected const string DefaultClanName = "Clan";
         protected const int DefaultModelId = (int)Defence.Introjection;
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
@@ -42,8 +55,8 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Clan name.
         /// </summary>
-        public string ClanName => _clanName;
-        
+        public string ClanName => _clanId == -1 || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
+
         [SerializeField] protected int _characterModelId;
 
         /// <summary>
@@ -65,7 +78,7 @@ namespace Altzone.Scripts.Config
         /// <remarks>
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
-        public CharacterModel GetCharacterModelForUi() =>
+        public CharacterModel CharacterModelForUi =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
             Storefront.Get().GetCharacterModel(DefaultModelId) ??
             new CharacterModel(-1, "Ö", Defence.Introjection, 3, 3, 3, 3);
@@ -156,7 +169,7 @@ namespace Altzone.Scripts.Config
 
         public string GetPlayerInfoLabel()
         {
-            var characterModelName = GetCharacterModelForUi().Name;
+            var characterModelName = CharacterModelForUi.Name;
             if (ClanId > 0)
             {
                 var clan = Storefront.Get().GetClanModel(ClanId);
@@ -184,22 +197,24 @@ namespace Altzone.Scripts.Config
             // Placeholder for actual implementation in derived class.
         }
 
-        [Conditional("UNITY_EDITOR")]
+#if UNITY_EDITOR
         public void DebugResetPlayer()
         {
-            // Actually can not delete at this level - just invalidate everything!
+            // Actually can not delete at this level - just invalidate everything (but PlayerGuid)!
             PlayerName = string.Empty;
             CharacterModelId = DefaultModelId;
             ClanId = -1;
+            Language = DefaultLanguage;
             IsTosAccepted = false;
+            IsDebugFlag = false;
             InternalSave();
         }
 
-        [Conditional("UNITY_EDITOR")]
         public void DebugSavePlayer()
         {
             InternalSave();
         }
+#endif
 
         public override string ToString()
         {
@@ -212,7 +227,7 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
     /// </summary>
-    public class PlayerDataCacheLocal : PlayerDataCache
+    internal class PlayerDataCacheLocal : PlayerDataCache
     {
         private readonly MonoBehaviour _host;
         private Coroutine _delayedSave;
@@ -227,11 +242,6 @@ namespace Altzone.Scripts.Config
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
-            // TODO: Clan is not implemented yet.
-            if (_clanId == -1 || string.IsNullOrWhiteSpace(_clanName))
-            {
-                _clanName = "Best Clan";
-            }
             if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(_playerName))
             {
                 return;
@@ -239,7 +249,7 @@ namespace Altzone.Scripts.Config
             // Create and save these settings immediately on this device!
             if (string.IsNullOrWhiteSpace(PlayerGuid))
             {
-                _playerGuid = CreatePlayerHandle();
+                _playerGuid = Guid.NewGuid().ToString();
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
             }
             if (string.IsNullOrWhiteSpace(_playerName))
@@ -259,24 +269,6 @@ namespace Altzone.Scripts.Config
             PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, (int)_language);
             PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, IsTosAccepted ? 1 : 0);
             PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
-        }
-
-        private static string CreatePlayerHandle()
-        {
-            // Create same GUID for same device if possible
-            // - guid can be used to identify third party cloud game services
-            // - we want to keep it constant for single device even this data is wiped e.g. during testing
-            // - note that SystemInfo.deviceUniqueIdentifier is *not* guaranteed to be always unique even on the same device
-            var deviceId = SystemInfo.deviceUniqueIdentifier;
-            if (deviceId == SystemInfo.unsupportedIdentifier)
-            {
-                return Guid.NewGuid().ToString();
-            }
-            using (var md5 = MD5.Create())
-            {
-                var hash = md5.ComputeHash(Encoding.Unicode.GetBytes(deviceId));
-                return new Guid(hash).ToString();
-            }
         }
 
         protected override void Save()
