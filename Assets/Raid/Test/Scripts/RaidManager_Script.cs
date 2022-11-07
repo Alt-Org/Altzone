@@ -18,6 +18,7 @@ public class RaidManager_Script : MonoBehaviour
     [SerializeField] private int maxLootCondition;
     [SerializeField] private int floodRadius;
     [SerializeField] private int editorRandomSeed;
+    [SerializeField] private float raidTime;
     [SerializeField] private RaidManager_View view;
 
     /*(DEV) Show Bombs*/
@@ -33,7 +34,9 @@ public class RaidManager_Script : MonoBehaviour
     private Field_Script field;
     private Hexa_Struct[,] state;
     private bool raidIsOver;
+    private bool raidTimeIsUp;
     private Camera cameraMain;
+
     private int floodingTurn;
     private int topBombChance;
     private int rightBombChance;
@@ -88,6 +91,11 @@ public class RaidManager_Script : MonoBehaviour
     }
     private void Update()
     {
+        if(raidTime >= 0 && !raidIsOver)
+        {          
+            RaidTimer();
+        }
+        else
         if (raidIsOver)
         {
             return;
@@ -101,6 +109,7 @@ public class RaidManager_Script : MonoBehaviour
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Reveal(Mouse.current.position.ReadValue());
+
             }
         }
     }
@@ -123,6 +132,7 @@ public class RaidManager_Script : MonoBehaviour
         //(DEV) Change when minefieldHeight/Width size is certain. (gets smaller as clan´s size changes)
         state = new Hexa_Struct[minefieldWidth, minefieldHeight];
         raidIsOver = false;
+        raidTimeIsUp = false;
         Transform cameraMainTransform = cameraMain.transform;
         cameraMainTransform.position = new Vector3(3.0f, 5.5f, -15f); //(DEV) Camera test default. (2f, 2f, -15f), or "minefieldWidth / 2f, minefieldHeight / 2f, -15f" Moves Camera to follow grid manually.
         GenerateHexas();
@@ -675,7 +685,6 @@ public class RaidManager_Script : MonoBehaviour
             floodingTurn = 0;
         }
 
-
         switch (hexa.type)
         {
             case Hexa_Struct.Type.Bomb:
@@ -697,7 +706,7 @@ public class RaidManager_Script : MonoBehaviour
         field.Draw(state);
 
         // Win condition. Change the number when needed!
-        if(lootCollected >= maxLootCondition)
+        if (lootCollected >= maxLootCondition)
         {
             UnityEngine.Debug.Log("Too much loot! Your backbag has been overloaded! You lose!");
             raidIsOver = true;
@@ -734,19 +743,64 @@ public class RaidManager_Script : MonoBehaviour
 
         state[hexa.position.x, hexa.position.y] = hexa;
 
+        RevealAll(hexa);
+        raidTime = 0;
+
+        //for (int x = 0; x < minefieldWidth; x++)
+        //{
+        //    for (int y = 0; y < minefieldHeight; y++)
+        //    {
+        //        hexa = state[x, y];
+        //        if(hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot || hexa.type == Hexa_Struct.Type.NumberAndLootNumber || hexa.type == Hexa_Struct.Type.Neutral || hexa.type == Hexa_Struct.Type.Number || hexa.type == Hexa_Struct.Type.LootNumber)
+        //        {
+        //            hexa.revealed = true;
+        //            state[x, y] = hexa;
+        //        }
+        //    }
+        //}
+    }
+
+    private void RevealAll(Hexa_Struct hexa)
+    {
+        state[hexa.position.x, hexa.position.y] = hexa;
+
         for (int x = 0; x < minefieldWidth; x++)
         {
             for (int y = 0; y < minefieldHeight; y++)
             {
                 hexa = state[x, y];
-                if(hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot || hexa.type == Hexa_Struct.Type.NumberAndLootNumber || hexa.type == Hexa_Struct.Type.Neutral || hexa.type == Hexa_Struct.Type.Number || hexa.type == Hexa_Struct.Type.LootNumber)
+                if (hexa.type != Hexa_Struct.Type.Invalid/*hexa.type == Hexa_Struct.Type.Bomb || hexa.type == Hexa_Struct.Type.Loot || hexa.type == Hexa_Struct.Type.NumberAndLootNumber || hexa.type == Hexa_Struct.Type.Neutral || hexa.type == Hexa_Struct.Type.Number || hexa.type == Hexa_Struct.Type.LootNumber*/)
                 {
                     hexa.revealed = true;
                     state[x, y] = hexa;
                 }
             }
         }
+    }
+    public void TimeReveal(Hexa_Struct hexa)
+    {
 
+    }
+
+    private void RaidTimer()
+    {
+        raidTime -= Time.deltaTime;
+        UnityEngine.Debug.Log(raidTime);
+        if (raidTime <= 0)
+        {
+            RaidTimeEnds();
+        }
+    }
+
+    private void RaidTimeEnds()
+    {
+        raidTimeIsUp = true;
+        raidIsOver = true;
+        UnityEngine.Debug.Log("Raiding time is up! Raid has ended!");
+
+        showHexas = true;
+        showBombs = true;      
+        showTestLoot = true;
     }
 
     private Hexa_Struct GetHexa(int x, int y)
