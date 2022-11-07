@@ -785,7 +785,6 @@ public class RaidManager_Script : MonoBehaviour
     private void RaidTimer()
     {
         raidTime -= Time.deltaTime;
-        UnityEngine.Debug.Log(raidTime);
         if (raidTime <= 0)
         {
             RaidTimeEnds();
