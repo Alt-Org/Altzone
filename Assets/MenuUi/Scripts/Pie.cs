@@ -7,15 +7,17 @@ public class Pie : MonoBehaviour
 {
    public Image[] imagesPieChart;
    public float[] values;
-    void Start()
-    {
-        SetValues(values);
+  
+
+    void Start() {
+         SetValues(values);  
+           
     }
 
     
     void Update()
     {
-        
+     
     }
 
     public void SetValues(float[] valuesToSet)
@@ -37,4 +39,8 @@ public class Pie : MonoBehaviour
         }
         return valueToSet[index] / totalAmount;
     }
+   
+  
+        
+	
 }
