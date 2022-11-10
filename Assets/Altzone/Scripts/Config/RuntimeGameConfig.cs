@@ -3,8 +3,15 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Config
 {
+    /// <summary>
+    /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
+    /// </summary>
+    /// <remarks>
+    /// Note that some parts of <c>RuntimeGameConfig</c> can be synchronized over network.
+    /// </remarks>
     public interface IRuntimeGameConfig
     {
+        GameVariables GameVariables { get; }
         IPlayerDataCache PlayerDataCache { get; }
     }
 
@@ -28,6 +35,12 @@ namespace Altzone.Scripts.Config
                 Debug.Log($"{_instance.name}");
             }
             return _instance;
+        }
+
+        public GameVariables GameVariables
+        {
+            get => _permanentVariables;
+            set => _permanentVariables.CopyFrom(value);
         }
 
         public IPlayerDataCache PlayerDataCache => _playerDataCache;
