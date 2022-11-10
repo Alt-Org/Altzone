@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     // [CreateAssetMenu(menuName = "ALT-Zone/GameSettings", fileName = "GameSettings")]
     internal class GameSettings : ScriptableObject
     {
-        private static string GameSettingsName = "GameSettings";
+        private const string GameSettingsName = "GameSettings";
 
         [Header("Game Variables")] public GameVariables _variables;
 
@@ -27,7 +27,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         }
     }
 
-    #region RuntimeGameConfig "Parts"
+    #region GameSettings "Parts"
 
     /// <summary>
     /// Game features that can be toggled on and off.
@@ -85,10 +85,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GamePrefabs
     {
-        public void CopyFrom(GamePrefabs other)
-        {
-            PropertyCopier<GamePrefabs, GamePrefabs>.CopyFields(other, this);
-        }
     }
 
     /// <summary>
