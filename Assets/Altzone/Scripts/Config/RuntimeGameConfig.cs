@@ -4,10 +4,11 @@ using UnityEngine;
 namespace Altzone.Scripts.Config
 {
     /// <summary>
-    /// Runtime game config variables that can be referenced from anywhere safely and optionally can be changed on the fly.
+    /// Runtime game config variables that can be referenced from anywhere safely and
+    /// optionally can be changed on the fly without any side effects.
     /// </summary>
     /// <remarks>
-    /// Note that some parts of <c>RuntimeGameConfig</c> can be synchronized over network.
+    /// Note that some parts of <c>RuntimeGameConfig</c> can be synchronized over network thus requiring a setter.
     /// </remarks>
     public interface IRuntimeGameConfig
     {
