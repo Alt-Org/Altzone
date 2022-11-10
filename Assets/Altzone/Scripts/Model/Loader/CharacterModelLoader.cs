@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Altzone.Scripts.Config;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Loader
 {
     /// <summary>
     /// Utility class to load <c>CharacterModel</c> models for runtime from external storage.

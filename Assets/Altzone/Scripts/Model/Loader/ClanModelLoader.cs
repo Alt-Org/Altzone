@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Loader
 {
     /// <summary>
     /// Utility class to load <c>ClanModel</c> models for runtime from external storage.
