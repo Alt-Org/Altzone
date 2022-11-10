@@ -1,9 +1,7 @@
-using Altzone.Scripts.Model;
-
-namespace Altzone.Scripts.Battle
+namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Read-only interface of Player character for Battle gameplay.
+    /// Read-only interface for <c>IBattleCharacter</c>.
     /// </summary>
     public interface IBattleCharacter
     {

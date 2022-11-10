@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle0.Scripts.Battle.Players;
 using Photon.Pun;

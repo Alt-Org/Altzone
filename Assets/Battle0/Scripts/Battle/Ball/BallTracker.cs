@@ -1,4 +1,3 @@
-using Altzone.Scripts.Battle;
 using Battle0.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;

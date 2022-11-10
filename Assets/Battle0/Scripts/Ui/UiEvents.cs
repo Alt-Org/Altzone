@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Altzone.Scripts.Battle;
 using Battle0.Scripts.Battle;
 using UnityEngine;
 using UnityEngine.Assertions;

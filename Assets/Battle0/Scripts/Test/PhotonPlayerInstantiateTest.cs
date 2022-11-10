@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using Battle0.Scripts.Battle.Players;
 using Photon.Pun;

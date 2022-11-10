@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Linq;
-using Altzone.Scripts.Battle;
+using Battle0.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Altzone.Scripts.Battle;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;

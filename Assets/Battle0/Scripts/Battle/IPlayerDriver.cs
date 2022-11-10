@@ -1,4 +1,4 @@
-using Altzone.Scripts.Battle;
+using Altzone.Scripts.Model;
 using Battle0.Scripts.Battle.Game;
 using UnityEngine;
 

@@ -10,7 +10,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Battle
+namespace Battle0.Scripts
 {
     public static class PhotonBattle
     {
@@ -272,51 +272,6 @@ namespace Altzone.Scripts.Battle
 
         #region Room custom properties etc.
 
-        /// <summary>
-        /// <c>IBattleCharacter</c> implementation for Battle game.
-        /// </summary>
-        private class BattleCharacter : IBattleCharacter
-        {
-            public Defence MainDefence { get; }
-            public int Speed { get; }
-            public int Resistance { get; }
-            public int Attack { get; }
-            public int Defence { get; }
-
-            public BattleCharacter(CharacterModel model)
-            {
-                MainDefence = model.MainDefence;
-                Speed = model.Speed;
-                Resistance = model.Resistance;
-                Attack = model.Attack;
-                Defence = model.Defence;
-            }
-        }
-
-        /// <summary>
-        /// Gets <c>IBattleCharacter</c> for a player in a room.
-        /// </summary>
-        public static IBattleCharacter GetCharacterModelForPlayer(Player player)
-        {
-            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
-            var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
-            if (!Enum.TryParse(skillId.ToString(), out Defence defence))
-            {
-                defence = RuntimeGameConfig.Get().PlayerDataCache.CharacterModelForUi.MainDefence;
-            }
-            return GetCharacterModelForSkill(defence);
-        }
-
-        /// <summary>
-        /// Gets <c>IBattleCharacter</c> for given <c>Defence</c>.
-        /// </summary>
-        public static IBattleCharacter GetCharacterModelForSkill(Defence defence)
-        {
-            var character = Storefront.Get().GetCharacterModel((int)defence);
-            Assert.IsNotNull(character, "character != null");
-            return new BattleCharacter(character);
-        }
-
         public static int GetPlayerCountForRoom()
         {
             if (!PhotonNetwork.InRoom)
@@ -391,6 +346,25 @@ namespace Altzone.Scripts.Battle
 
         #endregion
 
+        #region MyRegion
+
+        /// <summary>
+        /// Gets <c>IBattleCharacter</c> for a player in a room.
+        /// </summary>
+        public static IBattleCharacter GetCharacterModelForPlayer(Player player)
+        {
+            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
+            var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
+            if (!Enum.TryParse(skillId.ToString(), out Defence defence))
+            {
+                defence = RuntimeGameConfig.Get().PlayerDataCache.CharacterModelForUi.MainDefence;
+            }
+            return Storefront.Get().GetCharacterModelForSkill(defence);
+        }
+
+        
+
+        #endregion
         #region Debug and test utilities
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]

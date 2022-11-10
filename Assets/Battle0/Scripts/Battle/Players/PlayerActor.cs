@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Prg.Scripts.Test;
 using TMPro;

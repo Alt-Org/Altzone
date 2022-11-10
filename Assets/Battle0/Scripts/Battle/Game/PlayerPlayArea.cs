@@ -1,4 +1,3 @@
-using Altzone.Scripts.Battle;
 using UnityEngine;
 
 namespace Battle0.Scripts.Battle.Game

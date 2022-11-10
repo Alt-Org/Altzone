@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Altzone.Scripts.Battle;
+using Battle0.Scripts;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;

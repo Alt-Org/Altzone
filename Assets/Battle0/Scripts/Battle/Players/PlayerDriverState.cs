@@ -1,6 +1,6 @@
 using System.Collections;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using Battle0.Scripts.Battle.Game;
 using Photon.Pun;
 using Prg.Scripts.Common.Unity.Attributes;
