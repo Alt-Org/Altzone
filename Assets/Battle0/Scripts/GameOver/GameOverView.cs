@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameOver.Scripts.GameOver
+namespace Battle0.Scripts.GameOver
 {
     public class GameOverView : MonoBehaviour
     {

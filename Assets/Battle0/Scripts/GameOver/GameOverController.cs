@@ -4,7 +4,7 @@ using Photon.Pun;
 using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;
 
-namespace GameOver.Scripts.GameOver
+namespace Battle0.Scripts.GameOver
 {
     public class GameOverController : MonoBehaviour
     {
