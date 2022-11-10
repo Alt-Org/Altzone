@@ -52,7 +52,7 @@ namespace Battle0.Scripts.Test
             Debug.Log($"playerDriver {_playerDriver}");
             if (_stunDuration == 0)
             {
-                var variables = RuntimeGameConfig.Get().Variables;
+                var variables = Battle0GameConfig.Get().Variables;
                 _stunDuration = variables._playerShieldHitStunDuration;
             }
             _nickname = _playerDriver.NickName ?? "noname";

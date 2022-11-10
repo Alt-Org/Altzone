@@ -34,7 +34,7 @@ namespace Battle0.Scripts.Battle.Players
             _playerTransform1 = playerDriver.PlayerTransform;
             Debug.Log($"{_playerDriver} @ {(Vector2)_playerTransform1.position}");
 
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
 
             var defence = playerDriver.CharacterModel.Defence;
             var variables = runtimeGameConfig.Variables;

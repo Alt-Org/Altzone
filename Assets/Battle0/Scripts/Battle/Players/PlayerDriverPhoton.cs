@@ -51,7 +51,7 @@ namespace Battle0.Scripts.Battle.Players
             var playerTag = $"{_playerPos}:{((IPlayerDriver)this).NickName}";
             name = name.Replace("Clone", playerTag);
             Application.quitting += () => _isApplicationQuitting = true;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _movementDelay = variables._playerMovementNetworkDelay;
         }

@@ -47,7 +47,7 @@ namespace Battle0.Scripts.Test
         private void OnEnable()
         {
             Debug.Log($"{name}");
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _ballSlingshotPower = variables._ballSlingshotPower;
             _playerAttackMultiplier = variables._playerAttackMultiplier;

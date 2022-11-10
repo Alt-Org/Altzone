@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Altzone.Scripts.Config.ScriptableObjects
+namespace Battle0.Scripts
 {
     /// <summary>
     /// Editable persistent settings for the game.
@@ -17,6 +17,5 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Header("Battle UI")] public BattleUiConfig _battleUiConfig;
         [Header("Game Prefabs")] public GamePrefabs _prefabs;
         [Header("Game Input")] public GameInput _input;
-        [Header("Characters")] public Characters _characters;
     }
 }

@@ -94,7 +94,7 @@ namespace Battle0.Scripts.Battle.Ball
             _photonView = PhotonView.Get(this);
             _rigidbody = GetComponent<Rigidbody2D>();
             _ballCollider = _ballColliderParent.GetComponent<Collider2D>();
-            var variables = RuntimeGameConfig.Get().Variables;
+            var variables = Battle0GameConfig.Get().Variables;
             _ballMoveSpeedMultiplier = variables._ballMoveSpeedMultiplier;
             _ballMinMoveSpeed = variables._ballMinMoveSpeed;
             _ballMaxMoveSpeed = variables._ballMaxMoveSpeed;

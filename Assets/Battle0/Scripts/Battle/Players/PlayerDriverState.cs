@@ -38,7 +38,7 @@ namespace Battle0.Scripts.Battle.Players
             _playerActor = playerActor;
             _characterModel = characterModel;
             _ballManager = Context.BallManager;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerAttackMultiplier = variables._playerAttackMultiplier;
             _stunDuration = variables._playerShieldHitStunDuration;

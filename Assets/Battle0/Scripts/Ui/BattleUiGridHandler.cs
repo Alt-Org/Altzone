@@ -21,7 +21,7 @@ namespace Battle0.Scripts.Ui
 
         private void Awake()
         {
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var features = runtimeGameConfig.Features;
             var variables = runtimeGameConfig.Variables;
             var battleUi = runtimeGameConfig.BattleUi;

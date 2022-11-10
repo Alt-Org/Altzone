@@ -48,7 +48,7 @@ namespace Battle0.Scripts.Battle.Players
             // PlayerInput is mandatory to have, for some reason!
             Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
 
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var features = runtimeGameConfig.Features;
             var variables = runtimeGameConfig.Variables;
             _useBattleGridMovement = features._useBattleGridMovement;

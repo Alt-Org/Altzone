@@ -78,7 +78,7 @@ namespace Battle0.Scripts.Battle.Players
             {
                 _debug._playerText.gameObject.SetActive(false);
             }
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             // Wait until PlayerDriver is assigned.

@@ -8,7 +8,7 @@ using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Config.Photon
+namespace Battle0.Scripts
 {
     [Flags] public enum What
     {
@@ -115,7 +115,7 @@ namespace Altzone.Scripts.Config.Photon
 
         private void SendSynchronizeFeatures(byte first, byte last)
         {
-            var features = RuntimeGameConfig.Get().Features;
+            var features = Battle0GameConfig.Get().Features;
             using (var stream = new MemoryStream())
             {
                 using (var writer = new BinaryWriter(stream))
@@ -147,12 +147,12 @@ namespace Altzone.Scripts.Config.Photon
                     reader.ReadByte(); // skip last
                 }
             }
-            RuntimeGameConfig.Get().Features = features;
+            Battle0GameConfig.Get().Features = features;
         }
 
         private void SendSynchronizeVariables(byte first, byte last)
         {
-            var variables = RuntimeGameConfig.Get().Variables;
+            var variables = Battle0GameConfig.Get().Variables;
             using (var stream = new MemoryStream())
             {
                 using (var writer = new BinaryWriter(stream))
@@ -184,7 +184,7 @@ namespace Altzone.Scripts.Config.Photon
                     reader.ReadByte(); // skip last
                 }
             }
-            RuntimeGameConfig.Get().Variables = variables;
+            Battle0GameConfig.Get().Variables = variables;
         }
 
         private static int CountFieldsByteSize(Type type)

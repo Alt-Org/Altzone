@@ -10,7 +10,7 @@ namespace Battle0.Scripts.Battle.Brick
     {
         private void Awake()
         {
-            var isDisableBricks = RuntimeGameConfig.Get().Features._isDisableBricks;
+            var isDisableBricks = Battle0GameConfig.Get().Features._isDisableBricks;
             if (isDisableBricks)
             {
                 gameObject.SetActive(false);

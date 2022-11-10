@@ -26,7 +26,7 @@ namespace Battle0.Scripts.Battle.Players
             if (playerPrefabTest == null)
             {
                 // This must be PlayerActor2 prefab which must be obtained via RuntimeGameConfig!
-                var runtimeGameConfig = RuntimeGameConfig.Get();
+                var runtimeGameConfig = Battle0GameConfig.Get();
                 var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(defence);
                 Debug.Log($"defence {defence} prefab {playerPrefab.name}");
                 var playerInstance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);

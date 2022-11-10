@@ -131,7 +131,7 @@ namespace Battle0.Scripts.Battle.Players
                 Color.black, _colors._colorForDes, _colors._colorForDef, _colors._colorForInt,
                 _colors._colorForPro, _colors._colorForRet, _colors._colorForEgo, _colors._colorForCon
             };
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             // Wait until PlayerDriver is assigned.

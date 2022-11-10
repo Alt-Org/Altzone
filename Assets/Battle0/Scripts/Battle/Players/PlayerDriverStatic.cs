@@ -57,7 +57,7 @@ namespace Battle0.Scripts.Battle.Players
             Assert.IsTrue(PhotonBattle.IsValidGameplayPos(_settings._playerPos), "PhotonBattle.IsValidGameplayPos(_playerPos)");
             Application.quitting += () => _isApplicationQuitting = true;
             _gridManager = Context.GetGridManager;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _movementDelay = variables._playerMovementNetworkDelay;
         }

@@ -57,7 +57,7 @@ namespace Battle0.Scripts.Battle.Game
         private void Awake()
         {
             _camera = Context.GetBattleCamera.Camera;
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             var battleUi = runtimeGameConfig.BattleUi;
 

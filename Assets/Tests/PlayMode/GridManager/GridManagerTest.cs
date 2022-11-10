@@ -23,7 +23,7 @@ namespace Tests.PlayMode.GridManager
         public IEnumerator GridManagerTestWithEnumeratorPasses()
         {
             // Grid based movement must be enabled.
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0.Scripts.Battle0GameConfig.Get();
             Assert.AreEqual(true, runtimeGameConfig.Features._useBattleGridMovement);
 
             // We require that gameplay area is origo set on (0,0) for tests to work.

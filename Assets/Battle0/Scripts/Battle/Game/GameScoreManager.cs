@@ -35,7 +35,7 @@ namespace Battle0.Scripts.Battle.Game
 
         private void Awake()
         {
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _headScoreToWin = variables._battleHeadScoreToWin;
             ResetScores();

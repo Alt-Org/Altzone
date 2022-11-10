@@ -195,7 +195,7 @@ namespace Battle0.Scripts.Battle.Game
         {
             Debug.Log($"{name}");
             Application.quitting += () => _isApplicationQuitting = true;
-            var features = RuntimeGameConfig.Get().Features;
+            var features = Battle0GameConfig.Get().Features;
             if (features._isDisablePlayModeChanges)
             {
                 return;
@@ -500,7 +500,7 @@ namespace Battle0.Scripts.Battle.Game
 
         private static void RotateLocalPlayerGameplayExperience(Camera gameCamera, GameObject gameBackground)
         {
-            var features = RuntimeGameConfig.Get().Features;
+            var features = Battle0GameConfig.Get().Features;
             var isRotateGameCamera = features._isRotateGameCamera && gameCamera != null;
             if (isRotateGameCamera)
             {
@@ -623,7 +623,7 @@ namespace Battle0.Scripts.Battle.Game
 
         private void OnEnable()
         {
-            var features = RuntimeGameConfig.Get().Features;
+            var features = Battle0GameConfig.Get().Features;
             _isFrozenPlayModeOn = features._isFrozenPlayModeOn;
         }
 

@@ -22,7 +22,7 @@ namespace Battle0.Scripts.Test
         {
             ScoreFlashNet.RegisterEventListener();
 
-            var runtimeGameConfig = RuntimeGameConfig.Get();
+            var runtimeGameConfig = Battle0GameConfig.Get();
             var variables = runtimeGameConfig.Variables;
             _roomStartDelay = variables._battleRoomStartDelay;
             _slingshotDelay = variables._battleSlingshotDelay;
