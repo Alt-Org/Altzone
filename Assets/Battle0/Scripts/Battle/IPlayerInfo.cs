@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace Altzone.Scripts.Battle
+namespace Battle0.Scripts.Battle
 {
     /// <summary>
     /// Readonly global <c>Player</c> info.
     /// </summary>
-    public interface IPlayerInfo
+    internal interface IPlayerInfo
     {
         /// <summary>
         /// Non-zero <c>ActorNumber</c> is unique identifier for any local or remote player.
