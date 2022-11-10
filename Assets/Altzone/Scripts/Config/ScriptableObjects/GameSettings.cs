@@ -101,17 +101,59 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
     ///<summary>
     /// Character model attribute editing for Unity Editor
-    /// </summary>    
-    [Serializable]
-    public class Characters
-    {
-        [Header("Character Model Attributes")] public string _name;
-        public Defence _mainDefence;
-        [Range(0, 10)] public int _speed;
-        [Range(0, 10)] public int _resistance;
-        [Range(0, 10)] public int _attack;
-        [Range(0, 10)] public int _defence;
-    }
+    /// </summary>  
+    [Serializable]  
+    public class Characters 
+    {  
+        public static string Koulukiusaaja;
+        [Header ("Koulukiusaaja")] public Defence _mainDefence1;
+        [Range(0, 10)] public int _speed1;
+        [Range(0, 10)] public int _resistance1;
+        [Range(0, 10)] public int _attack1;
+        [Range(0, 10)] public int _defence1;
+
+        public static string Vitsiniekka;
+        [Header ("Vitsiniekka")]public Defence _mainDefence2;
+        [Range(0, 10)] public int _speed2;
+        [Range(0, 10)] public int _resistance2;
+        [Range(0, 10)] public int _attack2;
+        [Range(0, 10)] public int _defence2;
+        
+        public static string Pappi;
+        [Header ("Pappi")] public Defence _mainDefence3;
+        [Range(0, 10)] public int _speed3;
+        [Range(0, 10)] public int _resistance3;
+        [Range(0, 10)] public int _attack3;
+        [Range(0, 10)] public int _defence3;
+    
+        public static string Taiteilija;
+        [Header ("Taiteilija")] public Defence _mainDefence4;
+        [Range(0, 10)] public int _speed4;
+        [Range(0, 10)] public int _resistance4;
+        [Range(0, 10)] public int _attack4;
+        [Range(0, 10)] public int _defence4;
+
+        public static string Hodariläski;
+        [Header ("Hodariläski")]public Defence _mainDefence5;
+        [Range(0, 10)] public int _speed5;
+        [Range(0, 10)] public int _resistance5;
+        [Range(0, 10)] public int _attack5;
+        [Range(0, 10)] public int _defence5;
+        
+        public static string Älykkö;
+        [Header ("Älykkö")] public Defence _mainDefence6;
+        [Range(0, 10)] public int _speed6;
+        [Range(0, 10)] public int _resistance6;
+        [Range(0, 10)] public int _attack6;
+        [Range(0, 10)] public int _defence6;
+        
+        public static string Tytöt;
+        [Header ("Tytöt")] public Defence _mainDefence7;
+        [Range(0, 10)] public int _speed7;
+        [Range(0, 10)] public int _resistance7;
+        [Range(0, 10)] public int _attack7;
+        [Range(0, 10)] public int _defence7; 
+   }
 
     #endregion
 }
