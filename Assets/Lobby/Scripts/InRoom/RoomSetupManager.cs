@@ -1,7 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Config.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -143,17 +142,6 @@ namespace Lobby.Scripts.InRoom
             {
                 _upperTeamText.gameObject.SetActive(false);
                 _lowerTeamText.gameObject.SetActive(false);
-            }
-            // NOTE that in real world we would not use this kind of protocol - but one with more precise logic for handshaking!
-            if (PhotonNetwork.IsMasterClient)
-            {
-                // While in the game room that is going to start playing soon
-                // we will send known runtime settings every time something significant changes, regardless of what to be on the safe side :)
-                GameConfigSynchronizer.Synchronize(What.All);
-            }
-            else
-            {
-                GameConfigSynchronizer.Listen();
             }
         }
 
