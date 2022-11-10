@@ -14,6 +14,7 @@ namespace Altzone.Scripts.Config
     {
         GameVariables GameVariables { get; }
         IPlayerDataCache PlayerDataCache { get; }
+        Characters Characters { get; }
     }
 
     public class RuntimeGameConfig : MonoBehaviour, IRuntimeGameConfig
@@ -51,7 +52,10 @@ namespace Altzone.Scripts.Config
         private IPlayerDataCache _playerDataCache;
 
         #endregion
-
+        public Characters Characters 
+        { 
+            get => _characters;
+        }
         #region UNITY Editor
 
         [SerializeField] private GameFeatures _permanentFeatures;
