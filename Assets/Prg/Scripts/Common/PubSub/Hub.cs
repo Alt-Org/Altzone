@@ -10,18 +10,43 @@ namespace Prg.Scripts.Common.PubSub
         {
             public readonly Delegate Action;
             public readonly WeakReference Subscriber;
-            public readonly Type Type;
+            public readonly Type MessageType;
+            private readonly object _selectorWrapper;
 
-            public Handler(Delegate action, WeakReference subscriber, Type type)
+            public bool Select<T>(T message)
+            {
+                if (_selectorWrapper == null)
+                {
+                    return true;
+                }
+                if (_selectorWrapper is SelectorWrapper<T> wrapper)
+                {
+                    return wrapper.Selector(message);
+                }
+                return false;
+            }
+
+            public Handler(Delegate action, WeakReference subscriber, Type messageType, object selectorWrapper)
             {
                 Action = action;
                 Subscriber = subscriber;
-                Type = type;
+                MessageType = messageType;
+                _selectorWrapper = selectorWrapper;
             }
 
             public override string ToString()
             {
-                return $"A={Action.Method.Name}, S={(Subscriber.IsAlive ? Subscriber.Target : "dead")}, T={Type.Name}";
+                return $"A={Action.Method.Name}, S={(Subscriber.IsAlive ? Subscriber.Target : "dead")}, T={MessageType.Name}";
+            }
+
+            public class SelectorWrapper<T>
+            {
+                public readonly Predicate<T> Selector;
+
+                public SelectorWrapper(Predicate<T> selector)
+                {
+                    Selector = selector;
+                }
             }
         }
 
@@ -36,7 +61,7 @@ namespace Prg.Scripts.Common.PubSub
                 {
                     if (h.Subscriber.IsAlive &&
                         Equals(h.Subscriber.Target, subscriber) &&
-                        typeof(T) == h.Type)
+                        typeof(T) == h.MessageType)
                     {
                         return true;
                     }
@@ -63,7 +88,7 @@ namespace Prg.Scripts.Common.PubSub
                     {
                         handlersToRemoveList.Add(handler);
                     }
-                    else if (handler.Type.IsAssignableFrom(typeof(T)))
+                    else if (handler.MessageType.IsAssignableFrom(typeof(T)))
                     {
                         handlerList.Add(handler);
                     }
@@ -78,7 +103,10 @@ namespace Prg.Scripts.Common.PubSub
 
             foreach (var l in handlerList)
             {
-                ((Action<T>)l.Action)(data);
+                if (l.Select(data))
+                {
+                    ((Action<T>)l.Action)(data);
+                }
             }
         }
 
@@ -86,15 +114,17 @@ namespace Prg.Scripts.Common.PubSub
         /// Allow subscribing directly to this Hub.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="handler"></param>
-        public void Subscribe<T>(Action<T> handler)
+        /// <param name="messageHandler"></param>
+        /// <param name="messageSelector"></param>
+        public void Subscribe<T>(Action<T> messageHandler, Predicate<T> messageSelector)
         {
-            Subscribe(this, handler);
+            Subscribe(this, messageHandler, messageSelector);
         }
 
-        public void Subscribe<T>(object subscriber, Action<T> handler)
+        public void Subscribe<T>(object subscriber, Action<T> messageHandler, Predicate<T> messageSelector)
         {
-            var item = new Handler(handler, new WeakReference(subscriber), typeof(T));
+            var selectorWrapper = messageSelector != null ? new Handler.SelectorWrapper<T>(messageSelector) : null;
+            var item = new Handler(messageHandler, new WeakReference(subscriber), typeof(T), selectorWrapper);
             lock (_locker)
             {
                 //-Debug.Log($"subscribe {item}");
@@ -150,7 +180,7 @@ namespace Prg.Scripts.Common.PubSub
             {
                 var query = Handlers
                     .Where(a => !a.Subscriber.IsAlive ||
-                                (a.Subscriber.Target.Equals(subscriber) && a.Type == typeof(T)));
+                                (a.Subscriber.Target.Equals(subscriber) && a.MessageType == typeof(T)));
 
                 if (handler != null)
                 {

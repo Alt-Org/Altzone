@@ -89,5 +89,44 @@ namespace Tests.EditMode.PubSub
                 Debug.Log($"{m} : {messageCounter}");
             }
         }
+
+        [Test]
+        public void PredicateTest()
+        {
+            Debug.Log("test");
+            var message1 = new Message(1);
+            var message2 = new Message(2);
+            var message3 = new Message(3);
+            var messageCounter = 0;
+
+            this.Subscribe<Message>(MessageHandler);
+            this.Subscribe<Message>(MessageHandler1, message => message.Id == 1);
+            this.Subscribe<Message>(MessageHandler2, message => message.Id == 2);
+
+            this.Publish(message1);
+            this.Publish(message2);
+            this.Publish(message3);
+            Assert.AreEqual(3 + 2, messageCounter);
+
+            void MessageHandler(Message m)
+            {
+                messageCounter += 1;
+                Debug.Log($"h0 {m} : {messageCounter}");
+            }
+
+            void MessageHandler1(Message m)
+            {
+                messageCounter += 1;
+                Debug.Log($"h1 {m} : {messageCounter}");
+                Assert.AreEqual(1, m.Id);
+            }
+
+            void MessageHandler2(Message m)
+            {
+                messageCounter += 1;
+                Debug.Log($"h2 {m} : {messageCounter}");
+                Assert.AreEqual(2, m.Id);
+            }
+        }
     }
 }

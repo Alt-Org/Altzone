@@ -57,9 +57,9 @@ namespace Prg.Scripts.Common.PubSub
             Hub.Publish(data);
         }
 
-        public static void Subscribe<T>(this object subscriber, Action<T> handler)
+        public static void Subscribe<T>(this object subscriber, Action<T> messageHandler, Predicate<T> messageSelector = null)
         {
-            Hub.Subscribe(subscriber, handler);
+            Hub.Subscribe(subscriber, messageHandler, messageSelector);
         }
 
         public static void Unsubscribe(this object subscriber)
