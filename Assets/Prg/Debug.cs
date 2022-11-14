@@ -169,6 +169,33 @@ public static class Debug
             // For anonymous types we try its parent type.
             className = method.ReflectedType?.DeclaringType?.Name ?? nameof(Debug);
         }
+        var methodName = method.Name;
+        if (methodName.StartsWith("<"))
+        {
+            // Local methods are compiled to internal static methods with a name of the following form:
+            // <Name1>g__Name2|x_y
+            // Name1 is the name of the surrounding method. Name2 is the name of the local method.
+            const string methodPrefix = ">g__";
+            const string methodSuffix = "|";
+            var pos1 = methodName.IndexOf(methodPrefix, StringComparison.Ordinal);
+            if (pos1 > 0)
+            {
+                pos1 += methodPrefix.Length;
+                var pos2 = methodName.IndexOf(methodSuffix, pos1, StringComparison.Ordinal);
+                if (pos2 > 0)
+                {
+                    var localName = $">{methodName.Substring(pos1, pos2 - pos1)}";
+                    if (memberName == null)
+                    {
+                        memberName = localName;
+                    }
+                    else
+                    {
+                        memberName += localName;
+                    }
+                }
+            }
+        }
         if (memberName != null)
         {
             return _isClassNamePrefix
