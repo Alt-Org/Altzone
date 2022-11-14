@@ -19,6 +19,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         [Header("Game Variables")] public GameVariables _variables;
 
+        [Header("Characters")] public Characters _characters;
+
         internal static GameSettings Load()
         {
             var gameSettings = Resources.Load<GameSettings>(GameSettingsName);
