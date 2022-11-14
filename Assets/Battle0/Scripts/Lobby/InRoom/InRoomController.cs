@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     public class InRoomController : MonoBehaviour
     {

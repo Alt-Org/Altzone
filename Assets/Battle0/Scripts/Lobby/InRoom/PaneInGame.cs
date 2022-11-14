@@ -1,9 +1,8 @@
-﻿using Battle0.Scripts;
-using Prg.Scripts.Common.PubSub;
+﻿using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Top most pane in lobby while in room to manage player position in the game.

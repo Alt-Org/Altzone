@@ -1,13 +1,12 @@
 using System.Collections;
 using Altzone.Scripts.Config;
-using Battle0.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.

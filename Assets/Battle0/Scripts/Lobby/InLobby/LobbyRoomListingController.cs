@@ -5,7 +5,7 @@ using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 
-namespace Lobby.Scripts.InLobby
+namespace Battle0.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingController : MonoBehaviourPunCallbacks
     {

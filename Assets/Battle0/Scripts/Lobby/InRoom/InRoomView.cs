@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     public class InRoomView : MonoBehaviour
     {

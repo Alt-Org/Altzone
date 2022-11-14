@@ -4,7 +4,7 @@ using Altzone.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lobby.Scripts.InChooseModel
+namespace Battle0.Scripts.Lobby.InChooseModel
 {
     /// <summary>
     /// <c>CharacterModel</c> view.

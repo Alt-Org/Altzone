@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Linq;
-using Battle0.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
@@ -11,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Lobby.Scripts
+namespace Battle0.Scripts.Lobby
 {
     /// <summary>
     /// Manages local player position and setup in a room.

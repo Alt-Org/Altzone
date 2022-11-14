@@ -4,7 +4,7 @@ using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
-namespace Lobby.Scripts.InLobby
+namespace Battle0.Scripts.Lobby.InLobby
 {
     public class InLobbyController : MonoBehaviour
     {

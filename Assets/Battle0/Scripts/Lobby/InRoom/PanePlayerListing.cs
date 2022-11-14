@@ -1,12 +1,11 @@
 ﻿using System.Linq;
-using Battle0.Scripts;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Lowest pane in lobby while in room to show current players list that have joined this room.

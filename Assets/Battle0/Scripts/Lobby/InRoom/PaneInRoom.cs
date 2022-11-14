@@ -1,10 +1,9 @@
-﻿using Battle0.Scripts;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Lobby.Scripts.InRoom
+namespace Battle0.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Middle pane in lobby while in room to manage current player "state".

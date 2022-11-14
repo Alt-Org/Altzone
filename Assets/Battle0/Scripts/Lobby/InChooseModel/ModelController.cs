@@ -5,7 +5,7 @@ using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
-namespace Lobby.Scripts.InChooseModel
+namespace Battle0.Scripts.Lobby.InChooseModel
 {
     /// <summary>
     /// UI controller for <c>CharacterModel</c> view.
