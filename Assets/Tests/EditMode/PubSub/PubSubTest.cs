@@ -25,13 +25,13 @@ namespace Tests.EditMode.PubSub
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            Debug.Log("test");
+            Debug.Log("setup");
         }
 
         [TearDown]
         public void TearDown()
         {
-            Debug.Log("test");
+            Debug.Log("reset");
             this.Unsubscribe();
         }
 
@@ -65,28 +65,39 @@ namespace Tests.EditMode.PubSub
         public void UnsubscribeTwice()
         {
             Debug.Log("test");
-            var messageCounter = 0;
+            var messageCounter1 = 0;
+            var messageCounter2 = 0;
 
-            this.Subscribe<Message>(MessageHandler);
-            Assert.AreEqual(0, messageCounter);
+            this.Subscribe<Message>(MessageHandler1);
+            this.Subscribe<Message>(MessageHandler2);
+            Assert.AreEqual(0, messageCounter1);
+            Assert.AreEqual(0, messageCounter2);
 
             this.Publish(new Message(10));
-            Assert.AreEqual(1, messageCounter);
+            Assert.AreEqual(1, messageCounter1);
+            Assert.AreEqual(1, messageCounter2);
 
-            this.Unsubscribe<Message>(MessageHandler);
-            Assert.AreEqual(1, messageCounter);
+            this.Unsubscribe<Message>(MessageHandler1);
+            Assert.AreEqual(1, messageCounter1);
+            Assert.AreEqual(1, messageCounter2);
 
             this.Publish(new Message(20));
+            Assert.AreEqual(1, messageCounter1);
+            Assert.AreEqual(2, messageCounter2);
 
-            Assert.AreEqual(1, messageCounter);
+            // Should fail with exception!
+            this.Unsubscribe<Message>(MessageHandler1);
 
-            this.Unsubscribe<Message>(MessageHandler);
-            Assert.AreEqual(1, messageCounter);
-
-            void MessageHandler(Message m)
+            void MessageHandler1(Message m)
             {
-                messageCounter += 1;
-                Debug.Log($"{m} : {messageCounter}");
+                messageCounter1 += 1;
+                Debug.Log($"h1 {m} : {messageCounter1}");
+            }
+
+            void MessageHandler2(Message m)
+            {
+                messageCounter2 += 1;
+                Debug.Log($"h2 {m} : {messageCounter2}");
             }
         }
 
