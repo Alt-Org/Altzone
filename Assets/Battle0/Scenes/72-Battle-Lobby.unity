@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
@@ -180,6 +181,7 @@ MonoBehaviour:
     type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!114 &369289468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,7 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _window: {fileID: 11400000, guid: 49456bc2e3f05254bb9bf031f48128d4, type: 2}
-  _findWindow: 0
+  _findWindowForEditor: 0
 --- !u!4 &1556160750
 Transform:
   m_ObjectHideFlags: 0
