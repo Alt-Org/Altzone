@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -35,11 +33,11 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
 
     private void OnEnable()
     {
-        _gridManager = FindObjectOfType<GridManager>();
+        _gridManager = Context.GetGridManager();
         _shieldCollider = GetComponentInChildren<EdgeCollider2D>();
         _transform = transform;
         _camera = Camera.main;
-        _battlePlayArea = FindObjectOfType<PlayerPlayArea>();
+        _battlePlayArea = Context.GetBattlePlayArea();
         _playArea = _battlePlayArea.GetPlayerPlayArea(PlayerPosition1);
     }
 

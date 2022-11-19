@@ -1,6 +1,5 @@
-using UnityEngine;
 using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Game;
+using UnityEngine;
 
 namespace Battle.Scripts.Ui
 {
@@ -28,7 +27,7 @@ namespace Battle.Scripts.Ui
 
         private void Awake()
         {
-            _battlePlayArea = FindObjectOfType<PlayerPlayArea>();
+            _battlePlayArea = Context.GetBattlePlayArea();
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
             _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
