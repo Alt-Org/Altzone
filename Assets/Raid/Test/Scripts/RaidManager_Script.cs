@@ -48,7 +48,9 @@ public class RaidManager_Script : MonoBehaviour
     private int downLeftBombChance;
     private string prevDebugString;
     private bool isMobile;
-    
+    private bool hasView;
+
+    private float GetBackpackPercentage() => lootCollected == 0 ? 0 : (float)lootCollected / maxLootCondition * 100f;
     private void Awake()
     {
         field = GetComponentInChildren<Field_Script>();
@@ -75,8 +77,12 @@ public class RaidManager_Script : MonoBehaviour
 
     private IEnumerator WaitForView()
     {
+        // Unfortunately here are levels that do not have view attached to them :-(
         yield return new WaitUntil(() => (view = FindObjectOfType<RaidManager_View>()) != null);
+        hasView = true;
         view.ResetView();
+        view.SetTimer(raidTime);
+        view.SetBackpack(GetBackpackPercentage());
         view.SetSeed(editorRandomSeed);
     }
 
@@ -674,6 +680,7 @@ public class RaidManager_Script : MonoBehaviour
 
             case Hexa_Struct.Type.Loot:
                 lootCollected++;
+                if (hasView) view.SetBackpack(GetBackpackPercentage());
                 UnityEngine.Debug.Log(lootCollected);
                 break;
 
@@ -691,6 +698,7 @@ public class RaidManager_Script : MonoBehaviour
         {
             UnityEngine.Debug.Log("Too much loot! Your backbag has been overloaded! You lose!");
             raidIsOver = true;
+            if (hasView) view.SetGameOVer();
         }
     }
 
@@ -775,6 +783,7 @@ public class RaidManager_Script : MonoBehaviour
     private void RaidTimer()
     {
         raidTime -= Time.deltaTime;
+        if (hasView) view.SetTimer(raidTime);
         if (raidTime <= 0)
         {
             RaidTimeEnds();
