@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Altzone.Scripts.Model;
 using UnityEngine;
 
@@ -28,7 +29,6 @@ namespace Altzone.Scripts.Config
     {
         protected const string DefaultPlayerName = "Player";
         protected const string DefaultClanName = "Clan";
-        protected const int DefaultModelId = (int)Defence.Introjection;
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
         [SerializeField] protected string _playerName;
@@ -80,7 +80,7 @@ namespace Altzone.Scripts.Config
         /// </remarks>
         public CharacterModel CharacterModelForUi =>
             Storefront.Get().GetCharacterModel(_characterModelId) ??
-            Storefront.Get().GetCharacterModel(DefaultModelId) ??
+            Storefront.Get().GetAllCharacterModels().FirstOrDefault(x => x != null) ??
             new CharacterModel(-1, "Ö", Defence.Introjection, 3, 3, 3, 3);
 
         [SerializeField] protected int _clanId;
@@ -202,7 +202,7 @@ namespace Altzone.Scripts.Config
         {
             // Actually can not delete at this level - just invalidate everything (but PlayerGuid)!
             PlayerName = string.Empty;
-            CharacterModelId = DefaultModelId;
+            CharacterModelId = -1;
             ClanId = -1;
             Language = DefaultLanguage;
             IsTosAccepted = false;
@@ -236,7 +236,7 @@ namespace Altzone.Scripts.Config
         {
             _host = host;
             _playerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
-            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DefaultModelId);
+            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, -1);
             _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, -1);
             _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
@@ -267,7 +267,7 @@ namespace Altzone.Scripts.Config
             PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
             PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
             PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, (int)_language);
-            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, IsTosAccepted ? 1 : 0);
+            PlayerPrefs.SetInt(PlayerPrefKeys.IsTosAccepted, IsTosAccepted ? 1 : 0);
             PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
         }
 
