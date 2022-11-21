@@ -31,6 +31,18 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.AreEqual(first.Id, model.Id);
         }
 
+        [Test, Description("Test that non existing Character Model is returned (all values should be '1')")]
+        public void CharacterModelNotFoundTest()
+        {
+            Debug.Log("test");
+            const int modelId = int.MaxValue;
+            var model = _store.GetCharacterModel(modelId);
+            Assert.IsNotNull(model);
+            Assert.AreEqual(modelId, model.Id);
+            Assert.AreEqual(Defence.Desensitisation, model.MainDefence);
+            Assert.AreEqual(4, model.Attack + model.Defence + model.Resistance + model.Speed);
+        }
+
         [Test]
         public void CustomCharacterModelTest()
         {
@@ -56,7 +68,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
             var model = _store.GetCharacterModel(characterModelId);
             Assert.AreEqual(customCharacterModel.CharacterModelId, model.Id);
         }
-        
+
         [Test]
         public void BattleCharacterTest()
         {
