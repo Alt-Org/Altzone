@@ -40,7 +40,12 @@ namespace Altzone.Scripts.Model
 
         CharacterModel IStorefront.GetCharacterModel(int id)
         {
-            return Models.FindById<CharacterModel>(id);
+            var model = Models.FindById<CharacterModel>(id);
+            if (model == null)
+            {
+                model = new CharacterModel(id, "Ööö", Defence.Desensitisation, 1, 1, 1, 1);
+            }
+            return model;
         }
 
         List<CharacterModel> IStorefront.GetAllCharacterModels()

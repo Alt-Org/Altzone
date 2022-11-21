@@ -29,6 +29,7 @@ namespace Altzone.Scripts.Config
     {
         protected const string DefaultPlayerName = "Player";
         protected const string DefaultClanName = "Clan";
+        protected const int DummyModelId = int.MaxValue;
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
         [SerializeField] protected string _playerName;
@@ -55,7 +56,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Clan name.
         /// </summary>
-        public string ClanName => _clanId == -1 || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
+        public string ClanName => _clanId == DummyModelId || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
 
         [SerializeField] protected int _characterModelId;
 
@@ -78,10 +79,7 @@ namespace Altzone.Scripts.Config
         /// <remarks>
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
-        public CharacterModel CharacterModelForUi =>
-            Storefront.Get().GetCharacterModel(_characterModelId) ??
-            Storefront.Get().GetAllCharacterModels().FirstOrDefault(x => x != null) ??
-            new CharacterModel(-1, "Ö", Defence.Introjection, 3, 3, 3, 3);
+        public CharacterModel CharacterModelForUi => Storefront.Get().GetCharacterModel(_characterModelId);
 
         [SerializeField] protected int _clanId;
 
@@ -202,8 +200,8 @@ namespace Altzone.Scripts.Config
         {
             // Actually can not delete at this level - just invalidate everything (but PlayerGuid)!
             PlayerName = string.Empty;
-            CharacterModelId = -1;
-            ClanId = -1;
+            CharacterModelId = DummyModelId;
+            ClanId = DummyModelId;
             Language = DefaultLanguage;
             IsTosAccepted = false;
             IsDebugFlag = false;
@@ -236,8 +234,8 @@ namespace Altzone.Scripts.Config
         {
             _host = host;
             _playerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
-            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, -1);
-            _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, -1);
+            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
+            _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
             _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
             _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
