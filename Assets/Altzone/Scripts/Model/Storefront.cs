@@ -19,7 +19,7 @@ namespace Altzone.Scripts.Model
 
         IBattleCharacter GetBattleCharacter(int id);
         List<IBattleCharacter> GetAllBattleCharacters();
-        
+
         ClanModel GetClanModel(int id);
         List<ClanModel> GetAllClanModels();
     }
@@ -107,7 +107,7 @@ namespace Altzone.Scripts.Model
         {
             public string Name { get; }
 
-            public int CustomCharacterId { get; }
+            public int CustomCharacterModelId { get; }
 
             public Defence MainDefence { get; }
             public int Speed { get; }
@@ -119,7 +119,7 @@ namespace Altzone.Scripts.Model
             {
                 Assert.IsTrue(custom.CharacterModelId == model.Id, "custom.CharacterId == model.Id");
                 Name = custom.Name;
-                CustomCharacterId = custom.Id;
+                CustomCharacterModelId = custom.Id;
                 MainDefence = model.MainDefence;
                 Speed = model.Speed + custom.Speed;
                 Resistance = model.Resistance + custom.Resistance;

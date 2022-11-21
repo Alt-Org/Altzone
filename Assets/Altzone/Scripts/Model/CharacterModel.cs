@@ -1,4 +1,6 @@
-﻿namespace Altzone.Scripts.Model
+﻿using UnityEngine.Assertions;
+
+namespace Altzone.Scripts.Model
 {
     /// <summary>
     /// Enum values for Defence "attribute".
@@ -32,6 +34,7 @@
 
         public CharacterModel(int id, string name, Defence mainDefence, int speed, int resistance, int attack, int defence) : base(id)
         {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(name), "string.IsNullOrWhiteSpace(name)");
             Name = name;
             MainDefence = mainDefence;
             Speed = speed;

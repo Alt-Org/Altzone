@@ -77,10 +77,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    CurrentCharacterId = character.CustomCharacterId;
+                    CurrentCharacterId = character.CustomCharacterModelId;
                     ShowCharacter(character);
                 });
-                if (currentCharacterId == character.CustomCharacterId)
+                if (currentCharacterId == character.CustomCharacterModelId)
                 {
                     ShowCharacter(character);
                 }
@@ -103,7 +103,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             curPrefab.SetActive(false);
             // HACK: we assume that prefabs are arranged by this same id!
-            curPrefab = prefabs[character.CustomCharacterId];
+            curPrefab = prefabs[character.CustomCharacterModelId];
             curPrefab.SetActive(true);
         }
     }

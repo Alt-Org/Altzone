@@ -2,7 +2,7 @@ using NUnit.Framework;
 using Prg.Scripts.Common.PubSub;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Tests.EditMode.PubSub
+namespace Assets.Tests.EditMode.PubSub
 {
     [TestFixture]
     public class PubSubTest

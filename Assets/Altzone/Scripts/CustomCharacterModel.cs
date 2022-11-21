@@ -1,3 +1,5 @@
+using UnityEngine.Assertions;
+
 namespace Altzone.Scripts
 {
     /// <summary>
@@ -15,6 +17,8 @@ namespace Altzone.Scripts
 
         public CustomCharacterModel(int id, int characterModelId, string name, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(id > 0, "id > 0");
+            Assert.IsFalse(string.IsNullOrWhiteSpace(name), "string.IsNullOrWhiteSpace(name)");
             Id = id;
             CharacterModelId = characterModelId;
             Name = name;
