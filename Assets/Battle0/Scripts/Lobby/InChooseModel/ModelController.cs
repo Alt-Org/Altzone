@@ -23,7 +23,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _view.PlayerName = playerDataCache.PlayerName;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
             var currentCharacterId = playerDataCache.CharacterModelId;
-            var characters = Storefront.Get().GetAllCharacterModels();
+            var characters = Storefront.Get().GetAllBattleCharacters();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             _view.SetCharacters(characters, currentCharacterId);
         }

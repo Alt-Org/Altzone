@@ -359,7 +359,7 @@ namespace Battle0.Scripts
             {
                 defence = RuntimeGameConfig.Get().PlayerDataCache.CharacterModelForUi.MainDefence;
             }
-            return Storefront.Get().GetCharacterModelForSkill(defence);
+            return Storefront.Get().GetBattleCharacter((int)defence);
         }
 
         

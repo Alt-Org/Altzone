@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Altzone.Scripts;
 using Altzone.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
@@ -65,27 +66,28 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             }
         }
 
-        public void SetCharacters(List<CharacterModel> characters, int currentCharacterId)
+        public void SetCharacters(List<IBattleCharacter> characters, int currentCharacterId)
         {
             CurrentCharacterId = currentCharacterId;
             for (var i = 0; i < characters.Count; ++i)
             {
                 var character = characters[i];
                 var button = _buttons[i];
+                button.interactable = true;
                 button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    CurrentCharacterId = character.Id;
+                    CurrentCharacterId = character.CustomCharacterId;
                     ShowCharacter(character);
                 });
-                if (currentCharacterId == character.Id)
+                if (currentCharacterId == character.CustomCharacterId)
                 {
                     ShowCharacter(character);
                 }
             }
         }
 
-        private void ShowCharacter(CharacterModel character)
+        private void ShowCharacter(IBattleCharacter character)
         {
             var i = -1;
             _labels[++i].text = $"{character.Name}";
@@ -97,10 +99,11 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             SetCharacterPrefab(character);
         }
 
-        private void SetCharacterPrefab(CharacterModel character)
+        private void SetCharacterPrefab(IBattleCharacter character)
         {
             curPrefab.SetActive(false);
-            curPrefab = prefabs[character.Id];
+            // HACK: we assume that prefabs are arranged by this same id!
+            curPrefab = prefabs[character.CustomCharacterId];
             curPrefab.SetActive(true);
         }
     }

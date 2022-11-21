@@ -19,7 +19,7 @@
     }
 
     /// <summary>
-    /// Player character model.
+    /// Game base character model.
     /// </summary>
     public class CharacterModel : AbstractModel
     {
