@@ -7,6 +7,9 @@ namespace Altzone.Scripts.Model.Loader
     /// <summary>
     /// Helper class for external <c>CustomCharacterModel</c> operations.
     /// </summary>
+    /// <remarks>
+    /// WIKI: https://github.com/Alt-Org/Altzone/wiki/ModelLoader
+    /// </remarks>
     public static class CustomCharacterModels
     {
         public static CustomCharacterModel GetCustomCharacterModel(int id)

@@ -9,11 +9,11 @@ namespace Altzone.Scripts
     {
         public readonly int Id;
         public readonly int CharacterModelId;
-        public readonly string Name;
-        public readonly int Speed;
-        public readonly int Resistance;
-        public readonly int Attack;
-        public readonly int Defence;
+        public string Name { get; set; }
+        public int Speed { get; set; }
+        public int Resistance { get; set; }
+        public int Attack { get; set; }
+        public int Defence { get; set; }
 
         public CustomCharacterModel(int id, int characterModelId, string name, int speed, int resistance, int attack, int defence)
         {
