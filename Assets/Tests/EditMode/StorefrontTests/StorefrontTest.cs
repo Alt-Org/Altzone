@@ -1,4 +1,5 @@
 using System.Linq;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 using Assert = UnityEngine.Assertions.Assert;
@@ -93,6 +94,16 @@ namespace Assets.Tests.EditMode.StorefrontTests
             var customCharacterModelId = customCharacterModel.Id;
             var character = _store.GetBattleCharacter(customCharacterModelId);
             Assert.AreEqual(customCharacterModel.Id, character.CustomCharacterModelId);
+        }
+
+        [Test, Description("Test that Battle Character can be found from PlayerDataCache")]
+        public void PlayerDataCacheTest()
+        {
+            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var characterModelId = playerDataCache.CharacterModelId;
+            var character = _store.GetBattleCharacter(characterModelId);
+            Assert.IsNotNull(character);
+            Assert.AreEqual(characterModelId, character.CustomCharacterModelId);
         }
     }
 }
