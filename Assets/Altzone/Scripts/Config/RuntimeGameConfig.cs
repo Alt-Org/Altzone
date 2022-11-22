@@ -78,13 +78,6 @@ namespace Altzone.Scripts.Config
             Debug.Log($"{name}");
         }
 
-#if UNITY_EDITOR
-        /// <summary>
-        /// Used by Editor classes with <c>MenuItem</c> to pre-load <c>PlayerDataCache</c> as it is not otherwise available.
-        /// </summary>
-        public static IPlayerDataCache GetPlayerDataCacheInEditor() => Get().PlayerDataCache;
-#endif
-
         private static void LoadGameConfig(RuntimeGameConfig instance)
         {
             instance._characters = new Characters();
