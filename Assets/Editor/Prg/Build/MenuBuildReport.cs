@@ -23,6 +23,7 @@ namespace Editor.Prg.Build
             "Assets/Photon",
             "Assets/Photon Unity Networking",
             ".*/Editor/.*",
+            "Assets/Tests",
             "Assets/TextMesh Pro",
         };
 
