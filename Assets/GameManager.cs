@@ -1,11 +1,11 @@
-#if USE_LOOTLOCKER
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+#if USE_LOOTLOCKER
 using LootLocker.Requests;
+#endif
 
 public class GameManager : MonoBehaviour
 {
+#if USE_LOOTLOCKER
     void Start()
     {
         LootLockerSDKManager.StartGuestSession((response) =>
@@ -20,5 +20,5 @@ public class GameManager : MonoBehaviour
             Debug.Log("successfully started LootLocker session");
         });
     }
-}
 #endif
+}
