@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Loader;
+using Altzone.Scripts.Model.LocalStorage;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -13,9 +13,9 @@ namespace Altzone.Scripts.Model
         CharacterModel GetCharacterModel(int id);
         List<CharacterModel> GetAllCharacterModels();
 
-        CustomCharacterModel GetCustomCharacterModel(int id);
-        List<CustomCharacterModel> GetAllCustomCharacterModels();
-        void Save(CustomCharacterModel customCharacterModel);
+        ICustomCharacterModel GetCustomCharacterModel(int id);
+        List<ICustomCharacterModel> GetAllCustomCharacterModels();
+        void Save(ICustomCharacterModel customCharacterModel);
 
         IBattleCharacter GetBattleCharacter(int id);
         List<IBattleCharacter> GetAllBattleCharacters();
@@ -63,17 +63,17 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<ClanModel>();
         }
 
-        public CustomCharacterModel GetCustomCharacterModel(int id)
+        public ICustomCharacterModel GetCustomCharacterModel(int id)
         {
             return CustomCharacterModels.GetCustomCharacterModel(id);
         }
 
-        public List<CustomCharacterModel> GetAllCustomCharacterModels()
+        public List<ICustomCharacterModel> GetAllCustomCharacterModels()
         {
             return CustomCharacterModels.LoadModels();
         }
 
-        public void Save(CustomCharacterModel customCharacterModel)
+        public void Save(ICustomCharacterModel customCharacterModel)
         {
             CustomCharacterModels.Save(customCharacterModel);
         }
@@ -120,7 +120,7 @@ namespace Altzone.Scripts.Model
             public int Attack { get; }
             public int Defence { get; }
 
-            public BattleCharacter(CustomCharacterModel custom, CharacterModel model)
+            public BattleCharacter(ICustomCharacterModel custom, CharacterModel model)
             {
                 Assert.IsTrue(custom.CharacterModelId == model.Id, "custom.CharacterId == model.Id");
                 Name = custom.Name;
