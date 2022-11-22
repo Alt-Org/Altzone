@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -19,9 +20,26 @@ public static class UnitySingleton
     {
         var name = typeof(T).Name;
         var parent = new GameObject(name);
-        Object.DontDestroyOnLoad(parent);
+        try
+        {
+            Object.DontDestroyOnLoad(parent);
+        }
+        catch (InvalidOperationException e)
+        {
+#if UNITY_EDITOR
+            // Unfortunately DontDestroyOnLoad will fail during EditMode tests and we just swallow it.
+            if (EditorApplication.isPlaying)
+            {
+                UnityEngine.Debug.Log($"Unhandled exception {e}");
+                throw;
+            }
+#else
+            UnityEngine.Debug.Log($"Unhandled exception {e}");
+            throw;
+#endif
+        }
         return parent.AddComponent<T>();
-   }
+    }
 
     public static T CreateGameObjectAndComponent<T>(string name = null) where T : Component
     {
