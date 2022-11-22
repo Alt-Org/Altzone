@@ -86,7 +86,7 @@ namespace Altzone.Scripts.Model
                 throw new UnityException($"CustomCharacterModel not found for {customCharacterId}");
             }
             var character = Get().GetCharacterModel(customCharacter.CharacterModelId);
-            if (customCharacter == null)
+            if (character == null)
             {
                 throw new UnityException($"CustomCharacter {customCharacterId} CharacterModel not found for {customCharacter.CharacterModelId}");
             }
