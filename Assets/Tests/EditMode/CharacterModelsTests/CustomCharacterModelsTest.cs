@@ -69,23 +69,38 @@ namespace Assets.Tests.EditMode.CharacterModelsTests
             DeleteStorage(storageFilename);
 
             Debug.Log($"test {storageFilename}");
+            const int modelId = 10;
+
             var storage1 = new CustomCharacterModelStorage(storageFilename);
-            storage1.Save(new CustomCharacterModel(
-                10, 20, "Testaaja", 1, 2, 3, 4));
+            var templateModel = GetTemplateModel(modelId);
+            storage1.Save(templateModel);
 
             var storage2 = new CustomCharacterModelStorage(storageFilename);
-            var model = storage2.GetCustomCharacterModel(10);
             
-            Assert.IsNotNull(model);
-            Assert.AreEqual(10, model.Id);
-            Assert.AreEqual(20, model.CharacterModelId);
-            Assert.AreEqual("Testaaja", model.Name);
-            Assert.AreEqual(1, model.Speed);
-            Assert.AreEqual(2, model.Resistance);
-            Assert.AreEqual(3, model.Attack);
-            Assert.AreEqual(4, model.Defence);
+            var models = storage2.GetAll();
+            Assert.AreEqual(1, models.Count);
+
+            var customCharacterModel = storage2.GetCustomCharacterModel(modelId);
+            AssertAreEqual(templateModel, customCharacterModel);
         }
 
+        private static void AssertAreEqual(CustomCharacterModel expected, ICustomCharacterModel actual)
+        {
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(expected._id, actual.Id);
+            Assert.AreEqual(expected._characterModelId, actual.CharacterModelId);
+            Assert.AreEqual(expected._name, actual.Name);
+            Assert.AreEqual(expected._speed, actual.Speed);
+            Assert.AreEqual(expected._resistance, actual.Resistance);
+            Assert.AreEqual(expected._attack, actual.Attack);
+            Assert.AreEqual(expected._defence, actual.Defence);
+        }
+        
+        private static CustomCharacterModel GetTemplateModel(int id)
+        {
+            return new CustomCharacterModel(id, 20, "Testaaja", 1, 2, 3, 4);
+        }
+        
         private static void DeleteStorage(string storageFilename)
         {
             var storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
