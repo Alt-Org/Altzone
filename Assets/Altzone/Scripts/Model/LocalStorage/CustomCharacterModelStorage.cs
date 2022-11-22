@@ -19,6 +19,8 @@ namespace Altzone.Scripts.Model.LocalStorage
         
         private readonly string _storagePath;
         private readonly List<ICustomCharacterModel> _models;
+
+        public string StoragePath => _storagePath;
         
         public CustomCharacterModelStorage(string storageFilename)
         {

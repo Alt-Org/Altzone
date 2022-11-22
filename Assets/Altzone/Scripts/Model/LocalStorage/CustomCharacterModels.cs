@@ -12,7 +12,13 @@ namespace Altzone.Scripts.Model.LocalStorage
     {
         private const string StorageFilename = "CustomCharacterModels.json";
         
-        private static readonly CustomCharacterModelStorage Storage = new(StorageFilename);
+        private static readonly CustomCharacterModelStorage Storage;
+
+        static CustomCharacterModels()
+        {
+            Storage = new CustomCharacterModelStorage(StorageFilename);
+            Debug.Log($"storage file {Storage.StoragePath}");
+        }
         
         public static ICustomCharacterModel GetCustomCharacterModel(int id)
         {
