@@ -27,6 +27,13 @@ namespace Altzone.Scripts.Model
 
     public class Storefront : IStorefront
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+
         public static IStorefront Get()
         {
             return _instance ??= new Storefront();
