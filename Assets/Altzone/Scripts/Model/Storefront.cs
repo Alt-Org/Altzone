@@ -37,6 +37,7 @@ namespace Altzone.Scripts.Model
         private Storefront()
         {
             Models.Load();
+            CustomCharacterModels.Load();
         }
 
         CharacterModel IStorefront.GetCharacterModel(int id)

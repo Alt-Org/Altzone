@@ -13,37 +13,32 @@ namespace Altzone.Scripts.Model
     {
         private const string StorageFilename = "CustomCharacterModels.json";
         
-        private static readonly CustomCharacterModelStorage Storage;
+        private static CustomCharacterModelStorage _storage;
 
-        static CustomCharacterModels()
+        public static void Load()
         {
-            // Note that we do not use
-            // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-            // if UNITY Domain Reloading is disabled.
-            // This means that storage is not updated between Editor "runs" if it is edited in file system by hand during testing.
-            // Only compiling will force storage to be loaded again.
-            Storage = new CustomCharacterModelStorage(StorageFilename);
-            Debug.Log($"storage file {Storage.StoragePath}");
+            _storage = new CustomCharacterModelStorage(StorageFilename);
+            Debug.Log($"storage file {_storage.StoragePath}");
         }
         
         public static ICustomCharacterModel GetCustomCharacterModel(int id)
         {
-            return Storage.GetCustomCharacterModel(id);
+            return _storage.GetCustomCharacterModel(id);
         }
 
         public static List<ICustomCharacterModel> LoadModels()
         {
-            return Storage.GetAll();
+            return _storage.GetAll();
         }
 
         public static void Save(ICustomCharacterModel customCharacterModel)
         {
-            Storage.Save(customCharacterModel);
+            _storage.Save(customCharacterModel);
         }
 
         public static void Delete(int id)
         {
-            Storage.Delete(id);
+            _storage.Delete(id);
         }
     }
 }

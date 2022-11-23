@@ -6,6 +6,13 @@ using Assert = UnityEngine.Assertions.Assert;
 
 namespace Assets.Tests.EditMode.StorefrontTests
 {
+    /// <summary>
+    /// Tests for <c>IStorefront</c> implementation.
+    /// </summary>
+    /// <remarks>
+    /// Note that most tests rely on that 'enough' Custom Character Models and Character Models exists for tests to succeed.<br />
+    /// There is no specific test data for these tests - nor facilities to create them easily.
+    /// </remarks>
     [TestFixture]
     public class StorefrontTest
     {
@@ -19,7 +26,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.IsNotNull(_store);
         }
 
-        [Test]
+        [Test, Description("Test that there is Character Models and we can fetch one by id")]
         public void CharacterModelTest()
         {
             Debug.Log("test");
@@ -44,13 +51,13 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.AreEqual(4, model.Attack + model.Defence + model.Resistance + model.Speed);
         }
 
-        [Test]
+        [Test, Description("Test that there is Custom Character Models and we can fetch one by id")]
         public void CustomCharacterModelTest()
         {
             Debug.Log("test");
-            var models = _store.GetAllCustomCharacterModels();
-            Assert.IsTrue(models.Count > 0);
-            var first = models.First(x => x.Id > 0);
+            var customCharacterModels = _store.GetAllCustomCharacterModels();
+            Assert.IsTrue(customCharacterModels.Count > 0);
+            var first = customCharacterModels.First(x => x.Id > 0);
             Assert.IsNotNull(first);
             var model = _store.GetCustomCharacterModel(first.Id);
             Assert.IsNotNull(model);
@@ -61,36 +68,37 @@ namespace Assets.Tests.EditMode.StorefrontTests
         public void CustomCharacterModelTest2()
         {
             Debug.Log("test");
-            var models = _store.GetAllCustomCharacterModels();
-            var index = models.Count / 2;
+            var customCharacterModels = _store.GetAllCustomCharacterModels();
+            var index = customCharacterModels.Count / 2;
             Assert.IsTrue(index >= 0);
-            var customCharacterModel = models[index];
+            var customCharacterModel = customCharacterModels[index];
             var characterModelId = customCharacterModel.CharacterModelId;
             var model = _store.GetCharacterModel(characterModelId);
             Assert.AreEqual(customCharacterModel.CharacterModelId, model.Id);
         }
 
-        [Test]
+        [Test, Description("Test that there is Battle Characters and we can fetch one by id")]
         public void BattleCharacterTest()
         {
             Debug.Log("test");
-            var characters = _store.GetAllBattleCharacters();
-            Assert.IsTrue(characters.Count > 0);
-            var first = characters.First(x => x.CustomCharacterModelId > 0);
+            var battleCharacters = _store.GetAllBattleCharacters();
+            Assert.IsTrue(battleCharacters.Count > 0);
+            var first = battleCharacters.First(x => x.CustomCharacterModelId > 0);
             Assert.IsNotNull(first);
             var character = _store.GetBattleCharacter(first.CustomCharacterModelId);
             Assert.IsNotNull(character);
             Assert.AreEqual(first.CustomCharacterModelId, character.CustomCharacterModelId);
         }
 
-        [Test, Description("Test that Battle Character can be found from Custom Character")]
+        [Test, Description("Test that Battle Character can be found from Custom Character Model")]
         public void BattleCharacterTest2()
         {
             Debug.Log("test");
-            var models = _store.GetAllCustomCharacterModels();
-            var index = models.Count / 2;
+            var customCharacterModels = _store.GetAllCustomCharacterModels();
+            Assert.IsTrue(customCharacterModels.Count > 0);
+            var index = customCharacterModels.Count / 2;
             Assert.IsTrue(index >= 0);
-            var customCharacterModel = models[index];
+            var customCharacterModel = customCharacterModels[index];
             var customCharacterModelId = customCharacterModel.Id;
             var character = _store.GetBattleCharacter(customCharacterModelId);
             Assert.AreEqual(customCharacterModel.Id, character.CustomCharacterModelId);

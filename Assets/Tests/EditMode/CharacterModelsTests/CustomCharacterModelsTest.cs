@@ -22,6 +22,7 @@ namespace Assets.Tests.EditMode.CharacterModelsTests
             var storage = new CustomCharacterModelStorage(DefaultStorageFilename);
             var models = new List<CustomCharacterModel>()
             {
+                // TestData/CustomCharacterModels.json uses same IDs
                 new(1, 1, "Koulukiusaaja", 10, 20, 30, 40),
                 new(2, 2, "Vitsiniekka", 10, 20, 30, 40),
                 new(3, 3, "Pappi", 10, 20, 30, 40),
