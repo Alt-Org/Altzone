@@ -17,6 +17,11 @@ namespace Altzone.Scripts.Model
 
         static CustomCharacterModels()
         {
+            // Note that we do not use
+            // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+            // if UNITY Domain Reloading is disabled.
+            // This means that storage is not updated between Editor "runs" if it is edited in file system by hand during testing.
+            // Only compiling will force storage to be loaded again.
             Storage = new CustomCharacterModelStorage(StorageFilename);
             Debug.Log($"storage file {Storage.StoragePath}");
         }
@@ -34,6 +39,11 @@ namespace Altzone.Scripts.Model
         public static void Save(ICustomCharacterModel customCharacterModel)
         {
             Storage.Save(customCharacterModel);
+        }
+
+        public static void Delete(int id)
+        {
+            Storage.Delete(id);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Model
         ICustomCharacterModel GetCustomCharacterModel(int id);
         List<ICustomCharacterModel> GetAllCustomCharacterModels();
         void Save(ICustomCharacterModel customCharacterModel);
+        void Delete(int id);
 
         IBattleCharacter GetBattleCharacter(int id);
         List<IBattleCharacter> GetAllBattleCharacters();
@@ -78,6 +79,11 @@ namespace Altzone.Scripts.Model
             CustomCharacterModels.Save(customCharacterModel);
         }
 
+        public void Delete(int id)
+        {
+            CustomCharacterModels.Delete(id);
+        }
+        
         public IBattleCharacter GetBattleCharacter(int customCharacterId)
         {
             var customCharacter = Get().GetCustomCharacterModel(customCharacterId);

@@ -62,6 +62,17 @@ namespace Altzone.Scripts.Model.LocalStorage
             SaveStorage(_models, _storagePath);
         }
 
+        public void Delete(int id)
+        {
+            var index = _models.FindIndex(x => x.Id == id);
+            if (index == -1)
+            {
+                return;
+            }
+            _models.RemoveAt(index);
+            SaveStorage(_models, _storagePath);
+        }
+        
         private static StorageData LoadStorage(string storagePath)
         {
             var jsonData = File.ReadAllText(storagePath);

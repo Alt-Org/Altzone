@@ -85,6 +85,38 @@ namespace Assets.Tests.EditMode.CharacterModelsTests
         }
 
         [Test]
+        public void UpdateOneCharacterTest()
+        {
+            var storageFilename = "TestUpdateOneCharacter.json";
+            DeleteStorage(storageFilename);
+
+            Debug.Log($"test {storageFilename}");
+            const int modelId = 10;
+
+            var storage1 = new CustomCharacterModelStorage(storageFilename);
+            ICustomCharacterModel templateModel = GetTemplateModel(modelId);
+
+            // Add new object.
+            const string name1 = "MyName";
+            templateModel.Name = name1;
+            storage1.Save(templateModel);
+            var model1 = storage1.GetCustomCharacterModel(modelId);
+            Assert.AreEqual(name1, model1.Name);
+
+            // Update existing object.
+            const string name2 = "NewName";
+            templateModel.Name = name2;
+            storage1.Save(templateModel);
+            var model2 = storage1.GetCustomCharacterModel(modelId);
+            Assert.AreEqual(name2, model2.Name);
+            
+            // Verify that updates are written to the storage file.
+            var storage3 = new CustomCharacterModelStorage(storageFilename);
+            var model3 = storage3.GetCustomCharacterModel(modelId);
+            Assert.AreEqual(name2, model3.Name);
+        }
+        
+        [Test]
         public void AddMoreCharactersTest()
         {
             var storageFilename = "TestMoreCharacters.json";
@@ -112,12 +144,42 @@ namespace Assets.Tests.EditMode.CharacterModelsTests
 
             var savedModel1 = new CustomCharacterModelStorage(storageFilename).GetCustomCharacterModel(modelId1);
             AssertAreEqual(templateModel1, savedModel1);
-            
+
             var savedModel2 = new CustomCharacterModelStorage(storageFilename).GetCustomCharacterModel(modelId2);
             AssertAreEqual(templateModel2, savedModel2);
-            
+
             var savedModel3 = new CustomCharacterModelStorage(storageFilename).GetCustomCharacterModel(modelId3);
             AssertAreEqual(templateModel3, savedModel3);
+        }
+
+        [Test]
+        public void DeleteCharacterTest()
+        {
+            var storageFilename = "TestDeleteCharacter.json";
+            DeleteStorage(storageFilename);
+
+            Debug.Log($"test {storageFilename}");
+            const int modelId1 = 10;
+            const int modelId2 = 20;
+
+            var storage1 = new CustomCharacterModelStorage(storageFilename);
+            storage1.Save(GetTemplateModel(modelId1));
+            storage1.Save(GetTemplateModel(modelId2));
+            
+            var storage2 = new CustomCharacterModelStorage(storageFilename);
+            var model1 = storage2.GetCustomCharacterModel(modelId1);
+            Assert.IsNotNull(model1);
+            storage2.Delete(modelId1);
+            model1 = storage2.GetCustomCharacterModel(modelId1);
+            Assert.IsNull(model1);
+            var model2 = storage2.GetCustomCharacterModel(modelId2);
+            Assert.IsNotNull(model2);
+
+            var storage3 = new CustomCharacterModelStorage(storageFilename);
+            var nullModel = storage3.GetCustomCharacterModel(modelId1);
+            Assert.IsNull(nullModel);
+            model2 = storage3.GetCustomCharacterModel(modelId2);
+            Assert.IsNotNull(model2);
         }
 
         private static void AssertAreEqual(CustomCharacterModel expected, ICustomCharacterModel actual)
