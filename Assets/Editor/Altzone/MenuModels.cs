@@ -17,6 +17,17 @@ namespace Editor.Altzone
             File.Copy(sourcePath, targetPath);
         }
         
+        public static void DeleteCustomCharacterModels()
+        {
+            Debug.Log("*");
+            var targetPath = Path.Combine(Application.persistentDataPath, "CustomCharacterModels.json");
+            Debug.Log($"Delete {targetPath}");
+            if (File.Exists(targetPath))
+            {
+                File.Delete(targetPath);
+            }
+        }
+        
         public static void DumpModelsToWikiTable()
         {
             Debug.Log("*");
