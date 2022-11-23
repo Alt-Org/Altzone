@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
-using Altzone.Scripts;
+using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.LocalStorage;
 using NUnit.Framework;
 using UnityEngine;

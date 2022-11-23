@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts
+namespace Altzone.Scripts.Model
 {
     /// <summary>
     /// Public interface for <c>CustomCharacterModel</c>.
