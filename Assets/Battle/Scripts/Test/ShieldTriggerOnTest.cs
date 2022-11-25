@@ -1,12 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityConstants;
 
 public class ShieldTriggerOnTest : MonoBehaviour
 {
     private GameObject _parent;
+    private string _ballLayerMask = "Ball";
+    private string _ballTag = "Ball";
     private Collider2D _shieldTriggerOn;
 
-    public bool isTouching => _shieldTriggerOn.IsTouchingLayers(LayerMask.GetMask(Tags.Ball));
+    public bool isTouching => _shieldTriggerOn.IsTouchingLayers(LayerMask.GetMask(_ballLayerMask));
 
     private void Awake()
     {
@@ -14,10 +17,9 @@ public class ShieldTriggerOnTest : MonoBehaviour
         _shieldTriggerOn = GetComponent<Collider2D>();
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        var otherGameObject = collision.gameObject;
-        if (otherGameObject.CompareTag(Tags.Ball))
+        if (other.tag == _ballTag)
         {
             _parent.GetComponent<PlayerMovementTest>().TurnShieldOn();
         }
