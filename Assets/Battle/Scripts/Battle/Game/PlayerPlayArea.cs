@@ -4,7 +4,8 @@ namespace Battle.Scripts.Battle.Game
 {
     internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
-        [Tooltip("Arena size in world coordinates"), SerializeField] private Vector2 _arenaSize;
+        [Tooltip("Arena width in world coordinates"), SerializeField] private float _arenaWidth;
+        [Tooltip("Arena height in world coordinates"), SerializeField] private float _arenaHeigth;
         [Tooltip("Middle area height in shield grid squares"), SerializeField] private float _middleAreaHeight;
         [Tooltip("How many squares is the shield grid height"), SerializeField] private int _shieldGridHeight;
         [Tooltip("How many squares is the shield grid width"), SerializeField] private int _shieldGridWidth;
@@ -17,6 +18,12 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GameObject _middleArea;
         [Tooltip("Set top and bottom wall colliders as triggers"), SerializeField] private bool _isBackWallsTriggers;
 
+        [SerializeField] private GameObject _blueTeamBrickWall;
+        [SerializeField] private GameObject _redTeamBrickWall;
+
+        private GameObject[] _blueTeamBricks;
+        private GameObject[] _redTeamBricks;
+
         private BoxCollider2D _rightWallCollider;
         private BoxCollider2D _leftWallCollider;
         private BoxCollider2D _bottomWallCollider;
@@ -24,11 +31,14 @@ namespace Battle.Scripts.Battle.Game
 
         private int _movementGridHeight;
         private int _movementGridWidth;
+        private const float BrickSpriteWidth = 2.35f;
+        private const int BricksPerWall = 5;
 
         private Rect _playAreaBlue;
         private Rect _playAreaRed;
 
-        public Vector2 ArenaSize => _arenaSize;
+        public float ArenaWidth => _arenaWidth;
+        public float ArenaHeight => _arenaHeigth;
 
         public int ShieldGridWidth => _shieldGridWidth;
         public int ShieldGridHeight => _shieldGridHeight;
@@ -42,25 +52,41 @@ namespace Battle.Scripts.Battle.Game
             _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
             _topWallCollider = _topWall.GetComponent<BoxCollider2D>();
 
-            _rightWallCollider.size = ArenaSize;
-            _bottomWallCollider.size = ArenaSize;
-            _leftWallCollider.size = ArenaSize;
-            _topWallCollider.size = ArenaSize;
+            var arenaSize = new Vector2(_arenaWidth, _arenaHeigth);
+            _rightWallCollider.size = arenaSize;
+            _bottomWallCollider.size = arenaSize;
+            _leftWallCollider.size = arenaSize;
+            _topWallCollider.size = arenaSize;
             _bottomWallCollider.isTrigger = _isBackWallsTriggers;
             _topWallCollider.isTrigger = _isBackWallsTriggers;
 
-            _leftWall.transform.position = new Vector2(-ArenaSize.x, 0);
-            _rightWall.transform.position = new Vector2(ArenaSize.x, 0);
-            _topWall.transform.position = new Vector2(0, ArenaSize.y);
-            _bottomWall.transform.position = new Vector2(0, -ArenaSize.y);
+            _leftWall.transform.position = new Vector2(-_arenaWidth, 0);
+            _rightWall.transform.position = new Vector2(_arenaWidth, 0);
+            _topWall.transform.position = new Vector2(0, _arenaHeigth);
+            _bottomWall.transform.position = new Vector2(0, -_arenaHeigth);
 
-            var middleAreaHeight = _middleAreaHeight * _arenaSize.y / _shieldGridHeight;
-            _middleArea.transform.localScale = new Vector2(_arenaSize.x, middleAreaHeight);
+            var middleAreaHeight = _middleAreaHeight * _arenaHeigth / _shieldGridHeight;
+            _middleArea.transform.localScale = new Vector2(_arenaWidth, middleAreaHeight);
 
-            _playAreaBlue = new Rect(-_arenaSize.x / 2, -_arenaSize.y / 2, _arenaSize.x, _arenaSize.y / 2 - middleAreaHeight / 2);
-            _playAreaRed = new Rect(-_arenaSize.x / 2, middleAreaHeight / 2, _arenaSize.x, _arenaSize.y / 2 - middleAreaHeight / 2);
+            _playAreaBlue = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2);
+            _playAreaRed = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2);
             _movementGridHeight = _movementGridMultiplier * _shieldGridHeight;
             _movementGridWidth = _movementGridMultiplier * _shieldGridWidth;
+
+            _blueTeamBricks = new GameObject[BricksPerWall];
+            _redTeamBricks = new GameObject[BricksPerWall];
+
+            for (int i = 0; i < BricksPerWall; i++)
+            {
+                _blueTeamBricks[i] = _blueTeamBrickWall.transform.GetChild(i).gameObject;
+                _redTeamBricks[i] = _redTeamBrickWall.transform.GetChild(i).gameObject;
+                _blueTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
+                _redTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
+                _blueTeamBricks[i].transform.position = new Vector2(_blueTeamBricks[i].transform.position.x, -_arenaHeigth / 2 + _arenaHeigth / (2 * _shieldGridHeight));
+                _redTeamBricks[i].transform.position = new Vector2(_redTeamBricks[i].transform.position.x, _arenaHeigth / 2 - _arenaHeigth / (2 * _shieldGridHeight));
+                _blueTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
+                _redTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
+            }
         }
 
         public Rect GetPlayerPlayArea(int playerPos)
