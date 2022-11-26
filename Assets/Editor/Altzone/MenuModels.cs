@@ -32,7 +32,7 @@ namespace Editor.Altzone
         {
             Debug.Log("*");
             Models.Load();
-            var models = Models.GetAll<CharacterModel>();
+            var models = Models.GetAll<CharacterClassModel>();
             var builder = new StringBuilder();
             var speedStats = new Stats();
             var resistanceStats = new Stats();

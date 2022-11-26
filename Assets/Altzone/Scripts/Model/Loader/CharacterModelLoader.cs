@@ -10,9 +10,9 @@ namespace Altzone.Scripts.Model.Loader
     /// </remarks>
     public static class CharacterModelLoader
     {
-        public static List<CharacterModel> LoadModels()
+        public static List<CharacterClassModel> LoadModels()
         {
-            return new List<CharacterModel>()
+            return new List<CharacterClassModel>()
             {
                 new(1, "Koulukiusaaja", Defence.Desensitisation, 3, 9, 7, 3),
                 new(2, "Vitsiniekka", Defence.Deflection, 9, 3, 3, 4),

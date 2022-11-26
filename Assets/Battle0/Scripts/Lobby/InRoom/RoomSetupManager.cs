@@ -90,7 +90,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             player.CustomProperties.Clear();
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            var defence = playerDataCache.CharacterModelForUi.MainDefence;
+            var defence = playerDataCache.CurrentBattleCharacter.MainDefence;
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, playerPos },

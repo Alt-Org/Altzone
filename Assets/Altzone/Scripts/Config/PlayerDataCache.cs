@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Config
     {
         string PlayerName { get; set; }
         string ClanName { get; }
-        int CharacterModelId { get; set; }
+        int CustomCharacterModelId { get; set; }
         SystemLanguage Language { get; set; }
 
-        CharacterModel CharacterModelForUi { get; }
+        IBattleCharacter CurrentBattleCharacter { get; }
 
 #if UNITY_EDITOR
         void DebugSavePlayer();
@@ -58,28 +58,28 @@ namespace Altzone.Scripts.Config
         /// </summary>
         public string ClanName => _clanId == DummyModelId || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
 
-        [SerializeField] protected int _characterModelId;
+        [SerializeField] protected int _customCharacterModelId;
 
         /// <summary>
-        /// Player character model id.
+        /// Player custom character model id.
         /// </summary>
-        public int CharacterModelId
+        public int CustomCharacterModelId
         {
-            get => _characterModelId;
+            get => _customCharacterModelId;
             set
             {
-                _characterModelId = value;
+                _customCharacterModelId = value;
                 Save();
             }
         }
 
         /// <summary>
-        /// Player character model.
+        /// Current battle character.
         /// </summary>
         /// <remarks>
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
-        public CharacterModel CharacterModelForUi => Storefront.Get().GetCharacterModel(_characterModelId);
+        public IBattleCharacter CurrentBattleCharacter => Storefront.Get().GetBattleCharacter(_customCharacterModelId);
 
         [SerializeField] protected int _clanId;
 
@@ -167,7 +167,7 @@ namespace Altzone.Scripts.Config
 
         public string GetPlayerInfoLabel()
         {
-            var characterModelName = CharacterModelForUi.Name;
+            var characterModelName = CurrentBattleCharacter.Name;
             if (ClanId > 0)
             {
                 var clan = Storefront.Get().GetClanModel(ClanId);
@@ -200,7 +200,7 @@ namespace Altzone.Scripts.Config
         {
             // Actually can not delete at this level - just invalidate everything (but PlayerGuid)!
             PlayerName = string.Empty;
-            CharacterModelId = DummyModelId;
+            CustomCharacterModelId = DummyModelId;
             ClanId = DummyModelId;
             Language = DefaultLanguage;
             IsTosAccepted = false;
@@ -218,7 +218,7 @@ namespace Altzone.Scripts.Config
         {
             // This is required for actual implementation to detect changes in our changeable properties!
             return
-                $"Name {PlayerName}, Model {CharacterModelId}, Clan {ClanId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
+                $"Name {PlayerName}, Model {CustomCharacterModelId}, Clan {ClanId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
         }
     }
 
@@ -234,7 +234,7 @@ namespace Altzone.Scripts.Config
         {
             _host = host;
             _playerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
-            _characterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
+            _customCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
             _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
             _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
@@ -261,7 +261,7 @@ namespace Altzone.Scripts.Config
         protected override void InternalSave()
         {
             PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
-            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CharacterModelId);
+            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
             PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
             PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
             PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, (int)_language);

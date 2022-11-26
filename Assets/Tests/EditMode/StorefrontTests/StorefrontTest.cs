@@ -30,11 +30,11 @@ namespace Assets.Tests.EditMode.StorefrontTests
         public void CharacterModelTest()
         {
             Debug.Log("test");
-            var models = _store.GetAllCharacterModels();
+            var models = _store.GetAllCharacterClassModels();
             Assert.IsTrue(models.Count > 0);
             var first = models.First(x => x.Id > 0);
             Assert.IsNotNull(first);
-            var model = _store.GetCharacterModel(first.Id);
+            var model = _store.GetCharacterClassModel(first.Id);
             Assert.IsNotNull(model);
             Assert.AreEqual(first.Id, model.Id);
         }
@@ -44,7 +44,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             const int modelId = int.MaxValue;
-            var model = _store.GetCharacterModel(modelId);
+            var model = _store.GetCharacterClassModel(modelId);
             Assert.IsNotNull(model);
             Assert.AreEqual(modelId, model.Id);
             Assert.AreEqual(Defence.Desensitisation, model.MainDefence);
@@ -73,7 +73,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.IsTrue(index >= 0);
             var customCharacterModel = customCharacterModels[index];
             var characterModelId = customCharacterModel.CharacterModelId;
-            var model = _store.GetCharacterModel(characterModelId);
+            var model = _store.GetCharacterClassModel(characterModelId);
             Assert.AreEqual(customCharacterModel.CharacterModelId, model.Id);
         }
 
@@ -108,7 +108,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         public void PlayerDataCacheTest()
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            var characterModelId = playerDataCache.CharacterModelId;
+            var characterModelId = playerDataCache.CustomCharacterModelId;
             var character = _store.GetBattleCharacter(characterModelId);
             Assert.IsNotNull(character);
             Assert.AreEqual(characterModelId, character.CustomCharacterModelId);

@@ -22,7 +22,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             _view.PlayerName = playerDataCache.PlayerName;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
-            var currentCharacterId = playerDataCache.CharacterModelId;
+            var currentCharacterId = playerDataCache.CustomCharacterModelId;
             var characters = Storefront.Get().GetAllBattleCharacters();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             _view.SetCharacters(characters, currentCharacterId);
@@ -34,10 +34,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             // Save player settings if changed before continuing!
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             if (_view.PlayerName != playerDataCache.PlayerName ||
-                _view.CurrentCharacterId != playerDataCache.CharacterModelId)
+                _view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
             {
                 playerDataCache.PlayerName = _view.PlayerName;
-                playerDataCache.CharacterModelId = _view.CurrentCharacterId;
+                playerDataCache.CustomCharacterModelId = _view.CurrentCharacterId;
             }
             if (PhotonNetwork.NickName != playerDataCache.PlayerName)
             {

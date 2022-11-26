@@ -21,9 +21,9 @@ namespace Altzone.Scripts.Model
     }
 
     /// <summary>
-    /// Game base character model.
+    /// Game base character class model.
     /// </summary>
-    public class CharacterModel : AbstractModel
+    public class CharacterClassModel : AbstractModel
     {
         public readonly string Name;
         public readonly Defence MainDefence;
@@ -32,7 +32,7 @@ namespace Altzone.Scripts.Model
         public readonly int Attack;
         public readonly int Defence;
 
-        public CharacterModel(int id, string name, Defence mainDefence, int speed, int resistance, int attack, int defence) : base(id)
+        public CharacterClassModel(int id, string name, Defence mainDefence, int speed, int resistance, int attack, int defence) : base(id)
         {
             Assert.IsFalse(string.IsNullOrWhiteSpace(name), "string.IsNullOrWhiteSpace(name)");
             Name = name;

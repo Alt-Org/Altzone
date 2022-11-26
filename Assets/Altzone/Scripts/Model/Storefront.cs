@@ -10,8 +10,8 @@ namespace Altzone.Scripts.Model
     /// </summary>
     public interface IStorefront
     {
-        CharacterModel GetCharacterModel(int id);
-        List<CharacterModel> GetAllCharacterModels();
+        CharacterClassModel GetCharacterClassModel(int id);
+        List<CharacterClassModel> GetAllCharacterClassModels();
 
         ICustomCharacterModel GetCustomCharacterModel(int id);
         List<ICustomCharacterModel> GetAllCustomCharacterModels();
@@ -47,19 +47,19 @@ namespace Altzone.Scripts.Model
             CustomCharacterModels.Load();
         }
 
-        CharacterModel IStorefront.GetCharacterModel(int id)
+        CharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
-            var model = Models.FindById<CharacterModel>(id);
+            var model = Models.FindById<CharacterClassModel>(id);
             if (model == null)
             {
-                model = new CharacterModel(id, "Ööö", Defence.Desensitisation, 1, 1, 1, 1);
+                model = new CharacterClassModel(id, "Ööö", Defence.Desensitisation, 1, 1, 1, 1);
             }
             return model;
         }
 
-        List<CharacterModel> IStorefront.GetAllCharacterModels()
+        List<CharacterClassModel> IStorefront.GetAllCharacterClassModels()
         {
-            return Models.GetAll<CharacterModel>();
+            return Models.GetAll<CharacterClassModel>();
         }
 
         ClanModel IStorefront.GetClanModel(int id)
@@ -99,7 +99,7 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"CustomCharacterModel not found for {customCharacterId}");
             }
-            var character = Get().GetCharacterModel(customCharacter.CharacterModelId);
+            var character = Get().GetCharacterClassModel(customCharacter.CharacterModelId);
             if (character == null)
             {
                 throw new UnityException($"CustomCharacter {customCharacterId} CharacterModel not found for {customCharacter.CharacterModelId}");
@@ -134,16 +134,16 @@ namespace Altzone.Scripts.Model
             public int Attack { get; }
             public int Defence { get; }
 
-            public BattleCharacter(ICustomCharacterModel custom, CharacterModel model)
+            public BattleCharacter(ICustomCharacterModel custom, CharacterClassModel classModel)
             {
-                Assert.IsTrue(custom.CharacterModelId == model.Id, "custom.CharacterId == model.Id");
+                Assert.IsTrue(custom.CharacterModelId == classModel.Id, "custom.CharacterId == model.Id");
                 Name = custom.Name;
                 CustomCharacterModelId = custom.Id;
-                MainDefence = model.MainDefence;
-                Speed = model.Speed + custom.Speed;
-                Resistance = model.Resistance + custom.Resistance;
-                Attack = model.Attack + custom.Attack;
-                Defence = model.Defence + custom.Defence;
+                MainDefence = classModel.MainDefence;
+                Speed = classModel.Speed + custom.Speed;
+                Resistance = classModel.Resistance + custom.Resistance;
+                Attack = classModel.Attack + custom.Attack;
+                Defence = classModel.Defence + custom.Defence;
             }
         }
     }
