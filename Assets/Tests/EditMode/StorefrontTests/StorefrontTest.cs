@@ -1,7 +1,8 @@
-using System.Linq;
+using System.Collections.Generic;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
+using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
 namespace Assets.Tests.EditMode.StorefrontTests
@@ -30,13 +31,12 @@ namespace Assets.Tests.EditMode.StorefrontTests
         public void CharacterModelTest()
         {
             Debug.Log("test");
-            var models = _store.GetAllCharacterClassModels();
-            Assert.IsTrue(models.Count > 0);
-            var first = models.First(x => x.Id > 0);
-            Assert.IsNotNull(first);
-            var model = _store.GetCharacterClassModel(first.Id);
+            var characterClassModels = _store.GetAllCharacterClassModels();
+            var characterClassModel = GetRandomObject(characterClassModels);
+            Assert.IsNotNull(characterClassModel);
+            var model = _store.GetCharacterClassModel(characterClassModel.Id);
             Assert.IsNotNull(model);
-            Assert.AreEqual(first.Id, model.Id);
+            Assert.AreEqual(characterClassModel.Id, model.Id);
         }
 
         [Test, Description("Test that non existing Character Model is returned (all values should be '1')")]
@@ -56,12 +56,11 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             var customCharacterModels = _store.GetAllCustomCharacterModels();
-            Assert.IsTrue(customCharacterModels.Count > 0);
-            var first = customCharacterModels.First(x => x.Id > 0);
-            Assert.IsNotNull(first);
-            var model = _store.GetCustomCharacterModel(first.Id);
+            var customCharacterModel = GetRandomObject(customCharacterModels);
+            Assert.IsNotNull(customCharacterModel);
+            var model = _store.GetCustomCharacterModel(customCharacterModel.Id);
             Assert.IsNotNull(model);
-            Assert.AreEqual(first.Id, model.Id);
+            Assert.AreEqual(customCharacterModel.Id, model.Id);
         }
 
         [Test, Description("Test that Character Model can be found from Custom Character")]
@@ -69,9 +68,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             var customCharacterModels = _store.GetAllCustomCharacterModels();
-            var index = customCharacterModels.Count / 2;
-            Assert.IsTrue(index >= 0);
-            var customCharacterModel = customCharacterModels[index];
+            var customCharacterModel = GetRandomObject(customCharacterModels);
             var characterModelId = customCharacterModel.CharacterModelId;
             var model = _store.GetCharacterClassModel(characterModelId);
             Assert.AreEqual(customCharacterModel.CharacterModelId, model.Id);
@@ -82,12 +79,11 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             var battleCharacters = _store.GetAllBattleCharacters();
-            Assert.IsTrue(battleCharacters.Count > 0);
-            var first = battleCharacters.First(x => x.CustomCharacterModelId > 0);
-            Assert.IsNotNull(first);
-            var character = _store.GetBattleCharacter(first.CustomCharacterModelId);
+            var battleCharacter = GetRandomObject(battleCharacters);
+            var customCharacterModelId = battleCharacter.CustomCharacterModelId;
+            var character = _store.GetBattleCharacter(customCharacterModelId);
             Assert.IsNotNull(character);
-            Assert.AreEqual(first.CustomCharacterModelId, character.CustomCharacterModelId);
+            Assert.AreEqual(battleCharacter.CustomCharacterModelId, character.CustomCharacterModelId);
         }
 
         [Test, Description("Test that Battle Character can be found from Custom Character Model")]
@@ -95,10 +91,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             var customCharacterModels = _store.GetAllCustomCharacterModels();
-            Assert.IsTrue(customCharacterModels.Count > 0);
-            var index = customCharacterModels.Count / 2;
-            Assert.IsTrue(index >= 0);
-            var customCharacterModel = customCharacterModels[index];
+            var customCharacterModel = GetRandomObject(customCharacterModels);
             var customCharacterModelId = customCharacterModel.Id;
             var character = _store.GetBattleCharacter(customCharacterModelId);
             Assert.AreEqual(customCharacterModel.Id, character.CustomCharacterModelId);
@@ -109,9 +102,17 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             var characterModelId = playerDataCache.CustomCharacterModelId;
-            var character = _store.GetBattleCharacter(characterModelId);
-            Assert.IsNotNull(character);
-            Assert.AreEqual(characterModelId, character.CustomCharacterModelId);
+            var battleCharacter = _store.GetBattleCharacter(characterModelId);
+            Assert.IsNotNull(battleCharacter);
+            Assert.AreEqual(characterModelId, battleCharacter.CustomCharacterModelId);
+        }
+
+        private static T GetRandomObject<T>(IReadOnlyList<T> objectList)
+        {
+            Assert.IsTrue(objectList.Count > 0);
+            var index = Random.Range(0, objectList.Count);
+            var instance = objectList[index];
+            return instance;
         }
     }
 }
