@@ -20,24 +20,14 @@ public static class UnitySingleton
     {
         var name = typeof(T).Name;
         var parent = new GameObject(name);
-        try
-        {
-            Object.DontDestroyOnLoad(parent);
-        }
-        catch (InvalidOperationException e)
-        {
 #if UNITY_EDITOR
-            // Unfortunately DontDestroyOnLoad will fail during EditMode tests and we just swallow it.
-            if (EditorApplication.isPlaying)
-            {
-                UnityEngine.Debug.Log($"Unhandled exception {e}");
-                throw;
-            }
-#else
-            UnityEngine.Debug.Log($"Unhandled exception {e}");
-            throw;
-#endif
+        if (!EditorApplication.isPlaying)
+        {
+            // Unfortunately DontDestroyOnLoad will fail with 'InvalidOperationException' during EditMode tests and we just skip it.
+            return parent.AddComponent<T>();
         }
+#endif
+        Object.DontDestroyOnLoad(parent);
         return parent.AddComponent<T>();
     }
 
