@@ -1,10 +1,10 @@
 ﻿namespace Altzone.Scripts.Model.Loader
 {
     /// <summary>
-    /// Utility class to load all models for runtime.
+    /// Utility class to load all static models for runtime.
     /// </summary>
     /// <remarks>
-    /// WIKI: https://github.com/Alt-Org/Altzone/wiki/ModelLoader
+    /// Note that this class should load everything that is read-only and not included in local or cloud storage.
     /// </remarks>
     internal static class ModelLoader
     {

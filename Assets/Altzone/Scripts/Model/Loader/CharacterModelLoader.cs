@@ -3,11 +3,8 @@ using System.Collections.Generic;
 namespace Altzone.Scripts.Model.Loader
 {
     /// <summary>
-    /// Utility class to load <c>CharacterModel</c> models for runtime from external storage.
+    /// Utility class to load <c>CharacterClassModel</c> models for runtime from external storage.
     /// </summary>
-    /// <remarks>
-    /// WIKI: https://github.com/Alt-Org/Altzone/wiki/ModelLoader
-    /// </remarks>
     public static class CharacterModelLoader
     {
         public static List<CharacterClassModel> LoadModels()

@@ -6,9 +6,6 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Helper class for external <c>ICustomCharacterModel</c> operations.
     /// </summary>
-    /// <remarks>
-    /// WIKI: https://github.com/Alt-Org/Altzone/wiki/ModelLoader
-    /// </remarks>
     public static class CustomCharacterModels
     {
         private const string StorageFilename = "CustomCharacterModels.json";
