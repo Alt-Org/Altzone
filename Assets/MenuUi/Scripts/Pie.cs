@@ -17,7 +17,8 @@ public class Pie : MonoBehaviour
     
     void Update()
     {
-     
+    
+    
     }
 
     public void SetValues(float[] valuesToSet)
@@ -25,7 +26,7 @@ public class Pie : MonoBehaviour
         float totalValues = 0;
         for(int i = 0; i < imagesPieChart.Length; i++)
         {
-            totalValues += FindPercentage(valuesToSet, i);
+            totalValues += FindPercentage(valuesToSet, i);  
             imagesPieChart[i].fillAmount = totalValues;
         }
     }
