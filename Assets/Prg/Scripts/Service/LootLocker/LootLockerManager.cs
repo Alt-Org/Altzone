@@ -4,78 +4,70 @@ using System.Threading.Tasks;
 using LootLocker;
 using LootLocker.Requests;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Prg.Scripts.Service.LootLocker
 {
     [Serializable]
     public class PlayerHandle
     {
-        [SerializeField] private string _deviceId;
+        [SerializeField] private string _localPlayerGuid;
         [SerializeField] private string _playerName;
-        [SerializeField] private int _playerID;
+        [SerializeField] private int _lootLockerPlayerID;
 
-        public string DeviceId => _deviceId;
-        public int PlayerId => _playerID;
+        public string LocalPlayerGuid => _localPlayerGuid;
+        public int LootLockerPlayerID => _lootLockerPlayerID;
         public string PlayerName => _playerName;
 
-        public PlayerHandle(string deviceId, string playerName, int playerId)
+        public PlayerHandle(string localPlayerGuid, string playerName, int lootLockerPlayerID = -1)
         {
-            this._deviceId = deviceId;
-            this._playerName = playerName;
-            _playerID = playerId;
+            Assert.IsFalse(string.IsNullOrWhiteSpace(playerName), "string.IsNullOrWhiteSpace(playerName)");
+            _localPlayerGuid = localPlayerGuid;
+            _playerName = playerName;
+            _lootLockerPlayerID = lootLockerPlayerID;
         }
     }
 
     /// <summary>
-    /// Test driver for LootLocker Game BAAS
+    /// Asynchronous LootLocker API manager.
     /// </summary>
     /// <remarks>
     /// We create a new session and try to synchronize player name between <c>LootLocker</c> and our <c>PlayerPrefs</c>.<br />
-    /// We mostly ignore errors as next time player logins there is a chance to fix everything that need to be fixed.
+    /// We mostly ignore errors as next time player logins there is a chance to fix everything that needs to be fixed.
     /// </remarks>
-    public class LootLockerManager : MonoBehaviour
+    public class LootLockerManager
     {
-        private const string DoNotSaveItHere = "f1e477e40a312095f53887ebb3de4425b19e420a";
+        private const string GameVersion = "0.0.0.1";
+        private const LootLockerConfig.platformType Platform = LootLockerConfig.platformType.Android;
 
-        [SerializeField] private bool _isAsyncMode;
-        [SerializeField] private PlayerHandle _playerHandle;
-        [SerializeField] private bool _isStartSessionReady;
+        public static Func<string> ApiKey;
+
+        private PlayerHandle _playerHandle;
+        private bool _isStartSessionReady;
 
         public PlayerHandle PlayerHandle => _playerHandle;
-        public bool IsValid => _playerHandle != null && _isStartSessionReady;
+        public bool IsRunning => _isStartSessionReady && _playerHandle != null;
 
-        /// <summary>
-        /// Asynchronous methods can be mind-boggling even though they make life a lot easier!
-        /// </summary>
-        private void Awake()
+        public void Init(string apiKey, bool onDevelopmentMode, string domainKey)
         {
-            Debug.Log("start");
-            var apiKey = DoNotSaveItHere;
-            var gameVersion = "0.0.0.1";
-            var platform = LootLockerConfig.platformType.Android;
-            LootLockerSDKManager.Init(apiKey, gameVersion, platform, true, null);
+            Debug.Log($"LootLockerSDKManager.Init mode {(onDevelopmentMode ? "DEV" : "PROD")}");
+            LootLockerSDKManager.Init(apiKey, GameVersion, Platform, onDevelopmentMode, domainKey);
             _isStartSessionReady = false;
         }
 
-        public async void Init(string deviceId, string playerName, Action<string> setPlayerName)
+        public async void Run(string localPlayerGuid, string playerName, Action<string> setPlayerName)
         {
-            Debug.Log("start");
+            Debug.Log($"run {playerName}");
             _isStartSessionReady = false;
-            if (_isAsyncMode)
-            {
-                await AsyncInit(deviceId, playerName, setPlayerName);
-                _isStartSessionReady = true;
-                Debug.Log("done");
-            }
-            else
-            {
-                CallbackInit(deviceId, playerName, setPlayerName);
-            }
+            await AsyncInit(localPlayerGuid, playerName, setPlayerName);
+            _isStartSessionReady = true;
+            Debug.Log("done");
         }
-        private async Task AsyncInit(string deviceId, string playerName, Action<string> setPlayerName)
+
+        private async Task AsyncInit(string localPlayerGuid, string playerName, Action<string> updatePlayerName)
         {
-            Debug.Log($"StartSession for {playerName} {deviceId}");
-            var sessionResp = await LootLockerAsync.StartSession(deviceId);
+            Debug.Log($"StartSession for {playerName} {localPlayerGuid}");
+            var sessionResp = await LootLockerAsync.StartSession(localPlayerGuid);
             if (!sessionResp.success)
             {
                 if (sessionResp.text.Contains("Game not found"))
@@ -83,10 +75,10 @@ namespace Prg.Scripts.Service.LootLocker
                     Debug.LogError("INVALID game_key");
                 }
                 // Create dummy player using PlayerPrefs values
-                _playerHandle = new PlayerHandle(deviceId, playerName, -1);
+                _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
                 return;
             }
-            _playerHandle = new PlayerHandle(deviceId, playerName, sessionResp.player_id);
+            _playerHandle = new PlayerHandle(localPlayerGuid, playerName, sessionResp.player_id);
 
             if (!sessionResp.seen_before)
             {
@@ -107,71 +99,9 @@ namespace Prg.Scripts.Service.LootLocker
             if (_playerHandle.PlayerName != getNameResp.name)
             {
                 // Update local name from LootLocker
-                _playerHandle = new PlayerHandle(deviceId, _playerHandle.PlayerName, sessionResp.player_id);
-                setPlayerName?.Invoke(_playerHandle.PlayerName);
+                _playerHandle = new PlayerHandle(localPlayerGuid, _playerHandle.PlayerName, sessionResp.player_id);
+                updatePlayerName?.Invoke(_playerHandle.PlayerName);
             }
-        }
-
-        private void CallbackInit(string deviceId, string playerName, Action<string> setPlayerName)
-        {
-            Debug.Log($"StartSession for {playerName} {deviceId}");
-            LootLockerSDKManager.StartSession(deviceId, (sessionResp) =>
-            {
-                if (!sessionResp.success)
-                {
-                    _playerHandle = new PlayerHandle(deviceId, playerName, 0);
-                    _isStartSessionReady = true;
-                    Debug.Log("done");
-                    return;
-                }
-                _playerHandle = new PlayerHandle(deviceId, playerName, sessionResp.player_id);
-                if (!sessionResp.seen_before)
-                {
-                    Debug.Log($"SetPlayerName '{playerName}'");
-                    LootLockerSDKManager.SetPlayerName(playerName, null); // Fire and forget
-                    _isStartSessionReady = true;
-                    Debug.Log("done");
-                    return;
-                }
-                LootLockerSDKManager.GetPlayerName(getNameResp =>
-                {
-                    if (!getNameResp.success)
-                    {
-                        _isStartSessionReady = true;
-                        Debug.Log("done");
-                        return;
-                    }
-                    if (getNameResp.name == _playerHandle.PlayerName)
-                    {
-                        _isStartSessionReady = true;
-                        Debug.Log("done");
-                        return;
-                    }
-                    if (!string.IsNullOrWhiteSpace(getNameResp.name))
-                    {
-                        _playerHandle = new PlayerHandle(deviceId, getNameResp.name, sessionResp.player_id);
-                        setPlayerName?.Invoke(_playerHandle.PlayerName);
-                        _isStartSessionReady = true;
-                        Debug.Log("done");
-                        return;
-                    }
-                    // Name was empty
-                    Debug.Log($"SetPlayerName '{_playerHandle.PlayerName}'");
-                    LootLockerSDKManager.SetPlayerName(_playerHandle.PlayerName, setNameResp =>
-                    {
-                        if (!setNameResp.success || string.IsNullOrWhiteSpace(setNameResp.name))
-                        {
-                            _isStartSessionReady = true;
-                            Debug.Log("done");
-                            return;
-                        }
-                        _playerHandle = new PlayerHandle(deviceId, setNameResp.name, sessionResp.player_id);
-                        setPlayerName?.Invoke(_playerHandle.PlayerName);
-                        _isStartSessionReady = true;
-                        Debug.Log("done");
-                    });
-                });
-            });
         }
 
         public async Task SetPlayerName(string playerName, Action<string> setPlayerName)
@@ -180,7 +110,7 @@ namespace Prg.Scripts.Service.LootLocker
             if (setNameResp.success)
             {
                 Debug.Log($"Update player {_playerHandle.PlayerName} <- {setNameResp.name}");
-                _playerHandle = new PlayerHandle(_playerHandle.DeviceId, setNameResp.name, _playerHandle.PlayerId);
+                _playerHandle = new PlayerHandle(_playerHandle.LocalPlayerGuid, setNameResp.name, _playerHandle.LootLockerPlayerID);
             }
             setPlayerName?.Invoke(_playerHandle.PlayerName);
         }
