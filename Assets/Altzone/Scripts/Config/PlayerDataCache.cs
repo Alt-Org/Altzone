@@ -9,6 +9,8 @@ namespace Altzone.Scripts.Config
     public interface IPlayerDataCache
     {
         string PlayerName { get; set; }
+        string PlayerGuid { get; }
+        int ClanId { get; set; }
         string ClanName { get; }
         int CustomCharacterModelId { get; set; }
         SystemLanguage Language { get; set; }
