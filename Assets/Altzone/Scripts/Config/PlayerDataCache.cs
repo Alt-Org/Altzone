@@ -53,22 +53,20 @@ namespace Altzone.Scripts.Config
 
         public bool HasPlayerName => !string.IsNullOrWhiteSpace(_playerName);
 
-        /// <summary>
-        /// Clan name.
-        /// </summary>
-        public string ClanName => _clanId == DummyModelId || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
-
-        [SerializeField] protected int _customCharacterModelId;
+        [SerializeField] protected string _playerGuid;
 
         /// <summary>
-        /// Player custom character model id.
+        /// Unique string to identify this player across devices and systems.
         /// </summary>
-        public int CustomCharacterModelId
+        /// <remarks>
+        /// When new player is detected this could be set and persisted in all external systems in order to identify this player unambiguously.
+        /// </remarks>
+        public string PlayerGuid
         {
-            get => _customCharacterModelId;
+            get => _playerGuid;
             set
             {
-                _customCharacterModelId = value;
+                _playerGuid = value ?? string.Empty;
                 Save();
             }
         }
@@ -96,20 +94,22 @@ namespace Altzone.Scripts.Config
             }
         }
 
-        [SerializeField] protected string _playerGuid;
+        /// <summary>
+        /// Clan name.
+        /// </summary>
+        public string ClanName => _clanId == DummyModelId || string.IsNullOrWhiteSpace(_clanName) ? DefaultClanName : _clanName;
+
+        [SerializeField] protected int _customCharacterModelId;
 
         /// <summary>
-        /// Unique string to identify this player across devices and systems.
+        /// Player custom character model id.
         /// </summary>
-        /// <remarks>
-        /// When new player is detected this could be set and persisted in all external systems in order to identify this player unambiguously.
-        /// </remarks>
-        public string PlayerGuid
+        public int CustomCharacterModelId
         {
-            get => _playerGuid;
+            get => _customCharacterModelId;
             set
             {
-                _playerGuid = value ?? string.Empty;
+                _customCharacterModelId = value;
                 Save();
             }
         }
@@ -234,11 +234,11 @@ namespace Altzone.Scripts.Config
         {
             _host = host;
             _playerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
-            _customCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
-            _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
             _playerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
+            _clanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
+            _customCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
             _language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
-            _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfService, 0) == 1;
+            _isTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
             _isDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
             if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(_playerName))
             {
@@ -261,11 +261,11 @@ namespace Altzone.Scripts.Config
         protected override void InternalSave()
         {
             PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
-            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
-            PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
             PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
-            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfService, (int)_language);
-            PlayerPrefs.SetInt(PlayerPrefKeys.IsTosAccepted, IsTosAccepted ? 1 : 0);
+            PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
+            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
+            PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)_language);
+            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
             PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
         }
 
