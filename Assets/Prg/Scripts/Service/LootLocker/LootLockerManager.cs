@@ -37,7 +37,6 @@ namespace Prg.Scripts.Service.LootLocker
     /// </remarks>
     public class LootLockerManager
     {
-        private const string GameVersion = "0.0.0.1";
         private const LootLockerConfig.platformType Platform = LootLockerConfig.platformType.Android;
 
         public static Func<string> ApiKey;
@@ -48,60 +47,62 @@ namespace Prg.Scripts.Service.LootLocker
         public PlayerHandle PlayerHandle => _playerHandle;
         public bool IsRunning => _isStartSessionReady && _playerHandle != null;
 
-        public void Init(string apiKey, bool onDevelopmentMode, string domainKey)
+        public void Init(string gameVersion, string apiKey, bool onDevelopmentMode, string domainKey)
         {
             Debug.Log($"LootLockerSDKManager.Init mode {(onDevelopmentMode ? "DEV" : "PROD")}");
-            LootLockerSDKManager.Init(apiKey, GameVersion, Platform, onDevelopmentMode, domainKey);
+            var success = LootLockerSDKManager.Init(apiKey, gameVersion, Platform, onDevelopmentMode, domainKey);
+            Debug.Log($"Init success {success}");
             _isStartSessionReady = false;
         }
 
         public async void Run(string localPlayerGuid, string playerName, Action<string> setPlayerName)
         {
-            Debug.Log($"run {playerName}");
+            Debug.Log($"playerName {playerName}");
             _isStartSessionReady = false;
-            await AsyncInit(localPlayerGuid, playerName, setPlayerName);
-            _isStartSessionReady = true;
+            var success = await StartSession(localPlayerGuid, playerName, setPlayerName);
+            _isStartSessionReady = success;
             Debug.Log("done");
         }
 
-        private async Task AsyncInit(string localPlayerGuid, string playerName, Action<string> updatePlayerName)
+        private async Task<bool> StartSession(string localPlayerGuid, string playerName, Action<string> updatePlayerName)
         {
-            Debug.Log($"StartSession for {playerName} {localPlayerGuid}");
+            Debug.Log($"playerName {playerName} guid {localPlayerGuid}");
             var sessionResp = await LootLockerAsync.StartSession(localPlayerGuid);
             if (!sessionResp.success)
             {
-                if (sessionResp.text.Contains("Game not found"))
-                {
-                    Debug.LogError("INVALID game_key");
-                }
+                Debug.Log($"sessionResp {sessionResp.text}");
                 // Create dummy player using PlayerPrefs values
                 _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
-                return;
+                return false;
             }
             _playerHandle = new PlayerHandle(localPlayerGuid, playerName, sessionResp.player_id);
+            Debug.Log($"sessionResp uid {sessionResp.public_uid} '{_playerHandle.PlayerName}'");
 
             if (!sessionResp.seen_before)
             {
                 // This is new player
-                Debug.Log($"SetPlayerName is NEW '{_playerHandle.PlayerName}'");
+                Debug.Log($"SetPlayerName (NOT seen_before) '{_playerHandle.PlayerName}'");
                 var task = LootLockerAsync.SetPlayerName(_playerHandle.PlayerName); // Fire and forget
-                return;
+                return true;
             }
 
             var getNameResp = await LootLockerAsync.GetPlayerName();
             if (!getNameResp.success || string.IsNullOrWhiteSpace(getNameResp.name))
             {
                 // Failed to get or name is empty
+                Debug.Log($"getNameResp {getNameResp.text}");
                 Debug.Log($"SetPlayerName '{_playerHandle.PlayerName}'");
                 var task = LootLockerAsync.SetPlayerName(_playerHandle.PlayerName); // Fire and forget
-                return;
+                return true;
             }
             if (_playerHandle.PlayerName != getNameResp.name)
             {
                 // Update local name from LootLocker
+                Debug.Log($"UpdatePlayerName '{playerName}' <- '{_playerHandle.PlayerName}'");
                 _playerHandle = new PlayerHandle(localPlayerGuid, _playerHandle.PlayerName, sessionResp.player_id);
                 updatePlayerName?.Invoke(_playerHandle.PlayerName);
             }
+            return true;
         }
 
         public async Task SetPlayerName(string playerName, Action<string> setPlayerName)

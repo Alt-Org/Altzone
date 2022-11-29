@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
@@ -40,8 +41,21 @@ namespace Altzone.Scripts
                 SetConsentMetaData(data);
                 UnitySingleton.CreateStaticSingleton<ServiceLoader>();
             });
+            StartLootLocker();
         }
 
+        [Conditional("USE_LOOTLOCKER")]
+        private static void StartLootLocker()
+        {
+            // We need player name and guid in order to start LootLocker.
+            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            if (string.IsNullOrWhiteSpace(playerDataCache.PlayerName) || string.IsNullOrWhiteSpace(playerDataCache.PlayerGuid))
+            {
+                return;
+            }
+            LootLockerWrapper.Init();
+        }
+        
         [Conditional("USE_UNITY_ADS")]
         private static void SetConsentMetaData(GeoLocation.LocationData data)
         {
