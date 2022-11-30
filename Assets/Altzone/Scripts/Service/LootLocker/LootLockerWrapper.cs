@@ -21,6 +21,7 @@ namespace Altzone.Scripts.Service.LootLocker
 
         private const string GameVersion = "0.1.0.0";
         private const string DomainKey = "nagpi6si";
+        private const bool IsGuestLogin = true;
 
 #if USE_LOOTLOCKER
         public static bool IsRunning => Manager.IsRunning;
@@ -35,7 +36,7 @@ namespace Altzone.Scripts.Service.LootLocker
             // https://console.lootlocker.com/settings/api-keys
             apiKey ??= "1dfbd87633b925b496395555f306d754c6a6903e";
 #endif
-            Manager.Init(GameVersion, apiKey, isDevelopmentMode, DomainKey);
+            Manager.Init(GameVersion, apiKey, DomainKey, isDevelopmentMode, IsGuestLogin);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
         }

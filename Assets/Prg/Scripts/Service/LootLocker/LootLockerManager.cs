@@ -13,18 +13,18 @@ namespace Prg.Scripts.Service.LootLocker
     {
         [SerializeField] private string _localPlayerGuid;
         [SerializeField] private string _playerName;
-        [SerializeField] private int _lootLockerPlayerID;
+        [SerializeField] private string _lootLockerPlayerID;
 
         public string LocalPlayerGuid => _localPlayerGuid;
-        public int LootLockerPlayerID => _lootLockerPlayerID;
+        public string LootLockerPlayerID => _lootLockerPlayerID;
         public string PlayerName => _playerName;
 
-        public PlayerHandle(string localPlayerGuid, string playerName, int lootLockerPlayerID = -1)
+        public PlayerHandle(string localPlayerGuid, string playerName, string lootLockerPlayerID = null)
         {
             Assert.IsFalse(string.IsNullOrWhiteSpace(playerName), "string.IsNullOrWhiteSpace(playerName)");
             _localPlayerGuid = localPlayerGuid;
             _playerName = playerName;
-            _lootLockerPlayerID = lootLockerPlayerID;
+            _lootLockerPlayerID = lootLockerPlayerID ?? string.Empty;
         }
     }
 
@@ -42,16 +42,18 @@ namespace Prg.Scripts.Service.LootLocker
         public static Func<string> ApiKey;
 
         private PlayerHandle _playerHandle;
+        private bool _isGuestLogin;
 
         public PlayerHandle PlayerHandle => _playerHandle;
-        public bool IsRunning => _playerHandle?.LootLockerPlayerID > 0;
+        public bool IsRunning => !string.IsNullOrWhiteSpace(_playerHandle?.LootLockerPlayerID);
 
-        public void Init(string gameVersion, string apiKey, bool isDevelopmentMode, string domainKey)
+        public void Init(string gameVersion, string apiKey, string domainKey, bool isDevelopmentMode, bool isGuestLogin)
         {
             // NOTE that LootLocker must be properly initialized every time it is used because of the way it is implemented with GameObjects!
+            _isGuestLogin = isGuestLogin;
             var config = LootLockerConfig.Get();
             var version = config.dateVersion;
-            Debug.Log($"{gameVersion} mode {(isDevelopmentMode ? "DEV" : "PROD")} : {version}");
+            Debug.Log($"{gameVersion} mode {(isDevelopmentMode ? "DEV" : "PROD")} : {version} isGuestLogin {_isGuestLogin}");
             var success = LootLockerSDKManager.Init(apiKey, gameVersion, Platform, isDevelopmentMode, domainKey);
             Debug.Log($"Init success {success}");
         }
@@ -78,17 +80,30 @@ namespace Prg.Scripts.Service.LootLocker
 
         private async Task<bool> StartSession(string localPlayerGuid, string playerName, Action<string> updatePlayerName)
         {
-            Debug.Log($"playerName '{playerName}' guid {localPlayerGuid}");
-            var sessionResp = await LootLockerAsync.StartSession(localPlayerGuid);
+            var config = LootLockerConfig.Get();
+            Debug.Log($"playerName '{playerName}' guid {localPlayerGuid} platform {(_isGuestLogin ? "Guest" : config.platform)}");
+            LootLockerSessionResponse sessionResp;
+            if (_isGuestLogin)
+            {
+                sessionResp = await LootLockerAsync.StartGuestSession(localPlayerGuid);
+            }
+            else
+            {
+                sessionResp = await LootLockerAsync.StartSession(localPlayerGuid);
+            }
             if (!sessionResp.success)
             {
-                Debug.Log($"sessionResp {sessionResp.text}");
+                Debug.Log($"sessionResp {sessionResp.text} : {sessionResp.Error}");
                 // Create dummy player using PlayerPrefs values.
                 _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
                 return false;
             }
+            if (sessionResp is LootLockerGuestSessionResponse guestSessionResp)
+            {
+                Assert.AreEqual(localPlayerGuid, guestSessionResp.player_identifier);
+            }
             // Create valid player for this session.
-            _playerHandle = new PlayerHandle(localPlayerGuid, playerName, sessionResp.player_id);
+            _playerHandle = new PlayerHandle(localPlayerGuid, playerName, sessionResp.public_uid);
             Debug.Log($"sessionResp '{_playerHandle.PlayerName}' uid {sessionResp.public_uid} seen_before {sessionResp.seen_before}");
 
             // Validate (synchronize) player name between local device settings and LootLocker.
@@ -112,8 +127,8 @@ namespace Prg.Scripts.Service.LootLocker
             if (_playerHandle.PlayerName != getNameResp.name)
             {
                 // Update our local player name from LootLocker.
-                Debug.Log($"UpdatePlayerName '{playerName}' <- '{_playerHandle.PlayerName}'");
-                _playerHandle = new PlayerHandle(localPlayerGuid, _playerHandle.PlayerName, sessionResp.player_id);
+                Debug.Log($"UpdatePlayerName '{playerName}' <- '{getNameResp.name}'");
+                _playerHandle = new PlayerHandle(localPlayerGuid, getNameResp.name, sessionResp.public_uid);
                 updatePlayerName?.Invoke(_playerHandle.PlayerName);
             }
             return true;
