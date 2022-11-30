@@ -51,9 +51,11 @@ namespace Altzone.Scripts
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             if (string.IsNullOrWhiteSpace(playerDataCache.PlayerName) || string.IsNullOrWhiteSpace(playerDataCache.PlayerGuid))
             {
+                Debug.Log("Can not start LootLocker because player name and/or guid is missing");
                 return;
             }
-            LootLockerWrapper.Init();
+            Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning}");
+            LootLockerWrapper.Start();
         }
         
         [Conditional("USE_UNITY_ADS")]

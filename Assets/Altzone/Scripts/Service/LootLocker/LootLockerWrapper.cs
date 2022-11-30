@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Service.LootLocker
     public static class LootLockerWrapper
     {
         private const string GameVersion = "0.1.0.0";
-        private const bool OnDevelopmentMode = true;
+        private const bool IsDevelopmentMode = true;
         private const string DomainKey = "nagpi6si";
 
 #if USE_LOOTLOCKER
@@ -18,23 +18,24 @@ namespace Altzone.Scripts.Service.LootLocker
 
         private static readonly LootLockerManager Manager = new();
 
-        public static void Init(Func<string> getApiKey = null)
+        public static void Start(Func<string> getApiKey = null)
         {
-            if (Manager.IsRunning)
-            {
-                return;
-            }
             // Read API key.
             var apiKey = getApiKey?.Invoke(); 
 #if UNITY_EDITOR
             // https://console.lootlocker.com/settings/api-keys
             apiKey ??= "1dfbd87633b925b496395555f306d754c6a6903e";
 #endif
-            Manager.Init(GameVersion, apiKey, OnDevelopmentMode, DomainKey);
+            Manager.Init(GameVersion, apiKey, IsDevelopmentMode, DomainKey);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            Manager.Run(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
+            Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
         }
 
+        public static void Stop()
+        {
+            Manager.EndSession();
+        }
+        
         public static string GetPlayerName()
         {
             Assert.IsTrue(Manager.IsRunning, "Manager.IsRunning");
@@ -43,17 +44,28 @@ namespace Altzone.Scripts.Service.LootLocker
 
         public static void SetPlayerName(string playerName)
         {
-            Assert.IsTrue(Manager.IsRunning, "Manager.IsRunning");
+            if (!Manager.IsRunning)
+            {
+                return;
+            }
+            if (string.Compare(Manager.PlayerHandle.PlayerName, playerName, StringComparison.Ordinal) == 0)
+            {
+                return;
+            }
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            var task = Manager.SetPlayerName(playerName, s => playerDataCache.PlayerName = s);
+            var task = Manager.SetPlayerNameAsync(playerName, s => playerDataCache.PlayerName = s);
         }
 #else
         public static bool IsRunning => true;
 
-        public static void Init(Func<string> getApiKey = null)
+        public static void Start(Func<string> getApiKey = null)
         {
         }
 
+        public static void Stop()
+        {
+        }
+        
         public static string GetPlayerName()
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
@@ -62,8 +74,6 @@ namespace Altzone.Scripts.Service.LootLocker
 
         public static void SetPlayerName(string playerName)
         {
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
-            playerDataCache.PlayerName = playerName;
         }
 #endif
     }

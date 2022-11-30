@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Service.LootLocker;
 using UnityEngine;
 
 namespace Altzone.Scripts.Config
@@ -49,6 +50,7 @@ namespace Altzone.Scripts.Config
             set
             {
                 _playerName = value ?? string.Empty;
+                LootLockerWrapper.SetPlayerName(_playerName);
                 Save();
             }
         }

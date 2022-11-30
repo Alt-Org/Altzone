@@ -160,7 +160,9 @@ namespace Editor
 
         [MenuItem(LootLocker + "Show LootLocker API Keys", false, 11)]
         private static void ShowLootLockerApiKeys() => MenuLootLocker.ShowLootLockerApiKeys();
-        
+
+        [MenuItem(LootLocker + "Check LootLocker Session", false, 12)]
+        private static void CheckSession() => MenuLootLocker.CheckSession();
 
         #endregion
     }
