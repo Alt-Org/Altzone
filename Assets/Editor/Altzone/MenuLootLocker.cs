@@ -1,3 +1,6 @@
+using Altzone.Scripts.Service.LootLocker;
+using Prg.Scripts.Common.Unity;
+using UnityEngine;
 #if USE_LOOTLOCKER
 using LootLocker;
 using LootLocker.Requests;
@@ -10,11 +13,18 @@ namespace Editor.Altzone
         public static void CreateLootLockerApiKeys()
         {
             Debug.Log("*");
+            Debug.Log($"LootLocker ApiKeys are created using {RichText.Yellow("StringProperty")} ScriptableObject assets");
         }
 
         public static void ShowLootLockerApiKeys()
         {
             Debug.Log("*");
+            const string suffix1 = LootLockerWrapper.Prefix1;
+            var apiKey1 = Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix1}").PropertyValue;
+            Debug.Log($"apiKey1 {apiKey1}");
+            const string suffix2 = LootLockerWrapper.Prefix2;
+            var apiKey2 = Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix2}").PropertyValue;
+            Debug.Log($"apiKey2 {apiKey2}");
         }
 
         public static void CheckSession()

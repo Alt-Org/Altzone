@@ -5,6 +5,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Photon;
+using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 #if USE_UNITY_ADS
@@ -41,11 +42,12 @@ namespace Altzone.Scripts
                 SetConsentMetaData(data);
                 UnitySingleton.CreateStaticSingleton<ServiceLoader>();
             });
-            StartLootLocker();
+            const bool isDevelopmentMode = true;
+            StartLootLocker(isDevelopmentMode);
         }
 
         [Conditional("USE_LOOTLOCKER")]
-        private static void StartLootLocker()
+        private static void StartLootLocker(bool isDevelopmentMode)
         {
             // We need player name and guid in order to start LootLocker.
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
@@ -54,8 +56,10 @@ namespace Altzone.Scripts
                 Debug.Log("Can not start LootLocker because player name and/or guid is missing");
                 return;
             }
-            Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning}");
-            LootLockerWrapper.Start();
+            var suffix = isDevelopmentMode ? LootLockerWrapper.Prefix1 : LootLockerWrapper.Prefix2;
+            Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning} suffix {suffix}");
+            LootLockerWrapper.Start(isDevelopmentMode, 
+                () => Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix}").PropertyValue);
         }
         
         [Conditional("USE_UNITY_ADS")]

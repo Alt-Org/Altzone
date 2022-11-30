@@ -9,8 +9,17 @@ namespace Altzone.Scripts.Service.LootLocker
 {
     public static class LootLockerWrapper
     {
+        /// <summary>
+        /// Development mode API Key suffix (simplified chinese).
+        /// </summary>
+        public const string Prefix1 = "发展";     // Fāzhǎn
+
+        /// <summary>
+        /// Production mode API Key suffix (simplified chinese).
+        /// </summary>
+        public const string Prefix2 = "生产";     // Shēngchǎn
+
         private const string GameVersion = "0.1.0.0";
-        private const bool IsDevelopmentMode = true;
         private const string DomainKey = "nagpi6si";
 
 #if USE_LOOTLOCKER
@@ -18,7 +27,7 @@ namespace Altzone.Scripts.Service.LootLocker
 
         private static readonly LootLockerManager Manager = new();
 
-        public static void Start(Func<string> getApiKey = null)
+        public static void Start(bool isDevelopmentMode, Func<string> getApiKey = null)
         {
             // Read API key.
             var apiKey = getApiKey?.Invoke(); 
@@ -26,7 +35,7 @@ namespace Altzone.Scripts.Service.LootLocker
             // https://console.lootlocker.com/settings/api-keys
             apiKey ??= "1dfbd87633b925b496395555f306d754c6a6903e";
 #endif
-            Manager.Init(GameVersion, apiKey, IsDevelopmentMode, DomainKey);
+            Manager.Init(GameVersion, apiKey, isDevelopmentMode, DomainKey);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
         }
@@ -58,14 +67,14 @@ namespace Altzone.Scripts.Service.LootLocker
 #else
         public static bool IsRunning => true;
 
-        public static void Start(Func<string> getApiKey = null)
+        public static void Start(bool isDevelopmentMode, Func<string> getApiKey = null)
         {
         }
 
         public static void Stop()
         {
         }
-        
+
         public static string GetPlayerName()
         {
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
