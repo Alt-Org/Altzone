@@ -20,6 +20,7 @@ namespace Battle0.Scripts.Battle.Players
         public static IPlayerInputHandler Get() => FindObjectOfType<PlayerInputHandler>();
 
         [Header("Settings"), SerializeField] private float _unReachableDistance = 100;
+        [SerializeField] private PlayerInput _playerInput;
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
 
@@ -45,8 +46,8 @@ namespace Battle0.Scripts.Battle.Players
             _gridManager = Context.GetGridManager;
             _camera = Context.GetBattleCamera.Camera;
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
-            // PlayerInput is mandatory to have, for some reason!
-            Assert.IsNotNull(FindObjectOfType<PlayerInput>(), "FindObjectOfType<PlayerInput>() != null");
+            // PlayerInput is required for input actions we use. They are setup in Editor.
+            Assert.IsNotNull(_playerInput, "_playerInput != null");
 
             var runtimeGameConfig = Battle0GameConfig.Get();
             var features = runtimeGameConfig.Features;
