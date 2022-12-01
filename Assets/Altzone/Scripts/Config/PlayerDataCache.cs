@@ -4,6 +4,7 @@ using System.Linq;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Service.LootLocker;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Config
 {
@@ -17,6 +18,8 @@ namespace Altzone.Scripts.Config
         SystemLanguage Language { get; set; }
 
         IBattleCharacter CurrentBattleCharacter { get; }
+
+        void UpdatePlayerGuid(string newPlayerGuid);
 
 #if UNITY_EDITOR
         void DebugSavePlayer();
@@ -169,6 +172,14 @@ namespace Altzone.Scripts.Config
             }
         }
 
+        public void UpdatePlayerGuid(string newPlayerGuid)
+        {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(newPlayerGuid), "!string.IsNullOrWhiteSpace(newPlayerGuid)");
+            Assert.AreNotEqual(_playerGuid, newPlayerGuid);
+
+            PlayerGuid = newPlayerGuid;
+        }
+        
         public string GetPlayerInfoLabel()
         {
             var characterModelName = CurrentBattleCharacter.Name;
