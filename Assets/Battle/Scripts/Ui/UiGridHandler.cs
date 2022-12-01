@@ -14,6 +14,7 @@ namespace Battle.Scripts.Ui
         [SerializeField] private Color _lineColor;
         [SerializeField] private GameObject _shieldGridTile;
         [SerializeField] private float _gridLineWidth = 0.03f;
+        [SerializeField] private int _spriteSortingLayer;
 
         private Camera _camera;
         private IBattlePlayArea _battlePlayArea;
@@ -124,6 +125,7 @@ namespace Battle.Scripts.Ui
                         _shieldSpriteSquares[row, col].sprite = sprite;
                         _shieldSpriteSquares[row, col].color = _gridColor1;
                         _shieldSpriteSquares[row, col].size = squareSize;
+                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
                         yPos += squareSize.y;
                     }
                     else
@@ -133,6 +135,7 @@ namespace Battle.Scripts.Ui
                         _shieldSpriteSquares[row, col].sprite = sprite;
                         _shieldSpriteSquares[row, col].color = _gridColor2;
                         _shieldSpriteSquares[row, col].size = squareSize;
+                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
                         yPos += squareSize.y;
                     }
                 }
