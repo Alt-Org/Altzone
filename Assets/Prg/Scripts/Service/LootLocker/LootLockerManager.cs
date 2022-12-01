@@ -29,7 +29,7 @@ namespace Prg.Scripts.Service.LootLocker
     }
 
     /// <summary>
-    /// Asynchronous LootLocker API manager.
+    /// Mostly asynchronous <c>LootLocker</c> SDK API manager.
     /// </summary>
     /// <remarks>
     /// We create a new session and try to synchronize player name between <c>LootLocker</c> and our <c>PlayerPrefs</c>.<br />
@@ -37,30 +37,37 @@ namespace Prg.Scripts.Service.LootLocker
     /// </remarks>
     public class LootLockerManager
     {
+        /// <summary>
+        /// Hardcoded platform when using 'platform login' instead of (recommended) 'guest login'.
+        /// </summary>
         private const LootLockerConfig.platformType Platform = LootLockerConfig.platformType.Android;
-
-        public static Func<string> ApiKey;
 
         private PlayerHandle _playerHandle;
         private bool _isGuestLogin;
 
         public PlayerHandle PlayerHandle => _playerHandle;
+        
+        /// <summary>
+        /// We are in running state when LootLockerPlayerID has any valid value from <c>LootLocker</c> SDK API.
+        /// </summary>
         public bool IsRunning => !string.IsNullOrWhiteSpace(_playerHandle?.LootLockerPlayerID);
 
-        public void Init(string gameVersion, string apiKey, string domainKey, bool isDevelopmentMode, bool isGuestLogin)
+        public void Init(string gameVersion, Func<string> apiKey, string domainKey, bool isDevelopmentMode, bool isGuestLogin)
         {
             // NOTE that LootLocker must be properly initialized every time it is used because of the way it is implemented with GameObjects!
             _isGuestLogin = isGuestLogin;
             var config = LootLockerConfig.Get();
             var version = config.dateVersion;
             Debug.Log($"{gameVersion} mode {(isDevelopmentMode ? "DEV" : "PROD")} : {version} isGuestLogin {_isGuestLogin}");
-            var success = LootLockerSDKManager.Init(apiKey, gameVersion, Platform, isDevelopmentMode, domainKey);
+            var success = LootLockerSDKManager.Init(apiKey(), gameVersion, Platform, isDevelopmentMode, domainKey);
             Debug.Log($"Init success {success}");
         }
 
         public async void StartSessionAsync(string localPlayerGuid, string playerName, Action<string> setPlayerName)
         {
             Debug.Log($"playerName {playerName}");
+            // Create dummy player until we got a valid player when session has been established.
+            _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
             var startTime = Time.time;
             var success = await StartSession(localPlayerGuid, playerName, setPlayerName);
             Debug.Log($"done success {success} in {Time.time - startTime:0.00} s");
@@ -94,7 +101,7 @@ namespace Prg.Scripts.Service.LootLocker
             if (!sessionResp.success)
             {
                 Debug.Log($"sessionResp {sessionResp.text} : {sessionResp.Error}");
-                // Create dummy player using PlayerPrefs values.
+                // Create dummy player to mark invalid session.
                 _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
                 return false;
             }

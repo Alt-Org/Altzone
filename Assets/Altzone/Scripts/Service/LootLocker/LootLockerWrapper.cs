@@ -7,20 +7,32 @@ using Prg.Scripts.Service.LootLocker;
 
 namespace Altzone.Scripts.Service.LootLocker
 {
+    /// <summary>
+    /// Altzone specific Facade for <c>LootLocker</c> SDK API.
+    /// </summary>
     public static class LootLockerWrapper
     {
         /// <summary>
-        /// Development mode API Key suffix (simplified chinese).
+        /// Not sure where this is used but at least <c>LootLocker</c> stores it in its own config during runtime
+        /// and it can be fetched from there if required.
         /// </summary>
-        public const string Prefix1 = "发展";     // Fāzhǎn
+        private const string GameVersion = "0.1.0.1";
 
         /// <summary>
-        /// Production mode API Key suffix (simplified chinese).
+        /// Not sure if we really need this but here it is anyway.
         /// </summary>
-        public const string Prefix2 = "生产";     // Shēngchǎn
-
-        private const string GameVersion = "0.1.0.0";
+        /// <remarks>
+        /// See https://console.lootlocker.com/settings/api-keys
+        /// </remarks>
         private const string DomainKey = "nagpi6si";
+
+        /// <summary>
+        /// Do we use (recommended) 'guest login' or 'platform login' (like Android hardcoded now in <c>LootLockerManager</c>).
+        /// </summary>
+        /// <remarks>
+        /// Corresponding setting must be enabled in LootLocker Web Console!<br />
+        /// See https://console.lootlocker.com/settings/platforms 
+        /// </remarks>
         private const bool IsGuestLogin = true;
 
 #if USE_LOOTLOCKER
@@ -31,12 +43,12 @@ namespace Altzone.Scripts.Service.LootLocker
         public static void Start(bool isDevelopmentMode, Func<string> getApiKey = null)
         {
             // Read API key.
-            var apiKey = getApiKey?.Invoke(); 
+            var apiKey = getApiKey?.Invoke();
 #if UNITY_EDITOR
             // https://console.lootlocker.com/settings/api-keys
             apiKey ??= "1dfbd87633b925b496395555f306d754c6a6903e";
 #endif
-            Manager.Init(GameVersion, apiKey, DomainKey, isDevelopmentMode, IsGuestLogin);
+            Manager.Init(GameVersion, () => apiKey, DomainKey, isDevelopmentMode, IsGuestLogin);
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
         }
@@ -45,7 +57,7 @@ namespace Altzone.Scripts.Service.LootLocker
         {
             Manager.EndSession();
         }
-        
+
         public static string GetPlayerName()
         {
             Assert.IsTrue(Manager.IsRunning, "Manager.IsRunning");
