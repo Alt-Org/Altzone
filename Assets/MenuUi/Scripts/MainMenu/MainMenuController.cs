@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.MainMenu
             var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
             _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
-            _view.ClanName = playerDataCache.ClanName;
+            _view.ClanName = playerDataCache.Clan.Name;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Config
         Characters Characters { get; }
     }
 
-    public class RuntimeGameConfig : MonoBehaviour, IRuntimeGameConfig
+    public class RuntimeGameConfig : IRuntimeGameConfig
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
@@ -32,9 +32,7 @@ namespace Altzone.Scripts.Config
         {
             if (_instance == null)
             {
-                _instance = UnitySingleton.CreateStaticSingleton<RuntimeGameConfig>();
-                LoadGameConfig(_instance);
-                Debug.Log($"{_instance.name}");
+                _instance = new RuntimeGameConfig();
             }
             return _instance;
         }
@@ -45,50 +43,31 @@ namespace Altzone.Scripts.Config
             set => _permanentVariables.CopyFrom(value);
         }
 
-        public IPlayerDataCache PlayerDataCache => _playerDataCache;
+        public IPlayerDataCache PlayerDataCache { get; private set; }
+
+        public Characters Characters { get; private set; }
+
+        #region Private serializable variables
+
+        private GameFeatures _permanentFeatures;
+        private GameConstraints _permanentConstraints;
+        private readonly GameVariables _permanentVariables;
+        private BattleUiConfig _battleUiConfig;
+        private GamePrefabs _permanentPrefabs;
+        private GameInput _gameInput;
+
+        #endregion
 
         #region Data Store
 
-        private IPlayerDataCache _playerDataCache;
-
-        #endregion
-        public Characters Characters 
-        { 
-            get => _characters;
-        }
-        #region UNITY Editor
-
-        [SerializeField] private GameFeatures _permanentFeatures;
-        [SerializeField] private GameConstraints _permanentConstraints;
-        [SerializeField] private GameVariables _permanentVariables;
-        [SerializeField] private BattleUiConfig _battleUiConfig;
-        [SerializeField] private GamePrefabs _permanentPrefabs;
-        [SerializeField] private GameInput _gameInput;
-        [SerializeField] private Characters _characters;
-
         #endregion
 
-        private void Awake()
+        private RuntimeGameConfig()
         {
-            Debug.Log($"{name}");
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log($"{name}");
-        }
-
-        private static void LoadGameConfig(RuntimeGameConfig instance)
-        {
-            instance._characters = new Characters();
+            PlayerDataCache = new PlayerDataCacheLocal();
             var setting = GameSettings.Load();
-            instance._permanentVariables = setting._variables;
-            instance._playerDataCache = LoadPlayerDataCache(instance);
-        }
-
-        private static PlayerDataCache LoadPlayerDataCache(MonoBehaviour host)
-        {
-            return new PlayerDataCacheLocal(host);
+            Characters = setting._characters;
+            _permanentVariables = setting._variables;
         }
     }
 }
