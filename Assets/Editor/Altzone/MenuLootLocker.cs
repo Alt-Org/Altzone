@@ -18,7 +18,7 @@ namespace Editor.Altzone
         public static void ShowLootLockerApiKeys()
         {
             Debug.Log("*");
-            var resource = BootLoaderSupport.GetLootLockerResource();
+            var resource = ServiceLoader.Support.GetLootLockerResource();
             Selection.objects = new UnityEngine.Object[] { resource };
             EditorGUIUtility.PingObject(resource);
         }

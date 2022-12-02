@@ -14,31 +14,8 @@ using UnityEngine.Advertisements;
 
 namespace Altzone.Scripts
 {
-    /// <summary>
-    /// Helper class for UNITY Editor operations.
-    /// </summary>
-    public static class BootLoaderSupport
-    {
-#if UNITY_EDITOR
-        public static StringProperty GetLootLockerResource()
-        {
-            return BootLoader.GetLootLockerResource();
-        }
-#endif
-    }
-    
     internal static class BootLoader
     {
-        /// <summary>
-        /// Development mode API Key suffix (simplified chinese) for <c>LootLocker</c> SDK API.
-        /// </summary>
-        private const string Prefix1 = "发展"; // Fāzhǎn
-
-        /// <summary>
-        /// Production mode API Key suffix (simplified chinese) for <c>LootLocker</c> SDK API.
-        /// </summary>
-        private const string Prefix2 = "生产"; // Shēngchǎn
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
@@ -65,34 +42,8 @@ namespace Altzone.Scripts
                 SetConsentMetaData(data);
                 UnitySingleton.CreateStaticSingleton<ServiceLoader>();
             });
-            // Development vs production mode needs to be decided during build time!
-            const bool isDevelopmentMode = true;
-            StartLootLocker(isDevelopmentMode);
         }
 
-        [Conditional("USE_LOOTLOCKER")]
-        private static void StartLootLocker(bool isDevelopmentMode)
-        {
-            // We need player name and guid in order to start LootLocker.
-            var playerDataCache = GameConfig.Get().PlayerDataCache;
-            if (string.IsNullOrWhiteSpace(playerDataCache.PlayerName) || string.IsNullOrWhiteSpace(playerDataCache.PlayerGuid))
-            {
-                Debug.Log("Can not start LootLocker because player name and/or guid is missing");
-                return;
-            }
-            var suffix = isDevelopmentMode ? Prefix1 : Prefix2;
-            Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning} suffix {suffix}");
-            LootLockerWrapper.Start(isDevelopmentMode,
-                () => Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix}").PropertyValue);
-        }
-
-#if UNITY_EDITOR
-        public static StringProperty GetLootLockerResource()
-        {
-            return Resources.Load<StringProperty>($"{nameof(StringProperty)}{Prefix1}");
-        }
-#endif
-        
         [Conditional("USE_UNITY_ADS")]
         private static void SetConsentMetaData(GeoLocation.LocationData data)
         {
