@@ -191,7 +191,7 @@ namespace Battle0.Scripts
             {
                 return PhotonNetwork.NickName;
             }
-            var playerData = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerDataCache;
             return !string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : NoPlayerName;
         }
 
@@ -357,7 +357,7 @@ namespace Battle0.Scripts
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (!Enum.TryParse(skillId.ToString(), out Defence defence))
             {
-                defence = RuntimeGameConfig.Get().PlayerDataCache.CurrentBattleCharacter.MainDefence;
+                defence = GameConfig.Get().PlayerDataCache.CurrentBattleCharacter.MainDefence;
             }
             return Storefront.Get().GetBattleCharacter((int)defence);
         }

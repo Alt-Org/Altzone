@@ -74,7 +74,7 @@ namespace Altzone.Scripts
         private static void StartLootLocker(bool isDevelopmentMode)
         {
             // We need player name and guid in order to start LootLocker.
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             if (string.IsNullOrWhiteSpace(playerDataCache.PlayerName) || string.IsNullOrWhiteSpace(playerDataCache.PlayerGuid))
             {
                 Debug.Log("Can not start LootLocker because player name and/or guid is missing");

@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity
@@ -8,6 +9,13 @@ namespace Prg.Scripts.Common.Unity
         {
             get
             {
+#if UNITY_EDITOR
+                if (!EditorApplication.isPlaying)
+                {
+                    // If game is not running there is no use to create this helper!
+                    return null;
+                }
+#endif
                 var instance = FindObjectOfType<UnityMonoHelper>();
                 if (instance == null)
                 {

@@ -9,7 +9,7 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
             _view.ClanName = playerDataCache.Clan.Name;

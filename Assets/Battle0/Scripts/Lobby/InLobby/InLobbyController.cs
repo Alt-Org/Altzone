@@ -42,7 +42,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                 }
                 else if (PhotonWrapper.CanConnect)
                 {
-                    var playerData = RuntimeGameConfig.Get().PlayerDataCache;
+                    var playerData = GameConfig.Get().PlayerDataCache;
                     PhotonLobby.Connect(playerData.PlayerName);
                 }
                 else if (PhotonWrapper.CanJoinLobby)

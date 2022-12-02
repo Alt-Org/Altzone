@@ -100,7 +100,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         [Test, Description("Test that Battle Character can be found from PlayerDataCache")]
         public void PlayerDataCacheTest()
         {
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             var characterModelId = playerDataCache.CustomCharacterModelId;
             var battleCharacter = _store.GetBattleCharacter(characterModelId);
             Assert.IsNotNull(battleCharacter);

@@ -19,7 +19,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             Debug.Log("Start");
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             _view.PlayerName = playerDataCache.PlayerName;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
             var currentCharacterId = playerDataCache.CustomCharacterModelId;
@@ -32,7 +32,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             Debug.Log("click");
             // Save player settings if changed before continuing!
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             if (_view.PlayerName != playerDataCache.PlayerName ||
                 _view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
             {

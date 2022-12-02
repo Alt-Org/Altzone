@@ -39,23 +39,28 @@ namespace Altzone.Scripts.Config
 
         public override string ToString()
         {
-            return $"{nameof(PlayerName)}: {PlayerName}, {nameof(PlayerGuid)}: {PlayerGuid}, {nameof(ClanId)}: {ClanId}, " +
-                   $"{nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(Language)}: {Language}, " +
-                   $"{nameof(IsTosAccepted)}: {IsTosAccepted}, {nameof(IsDebugFlag)}: {IsDebugFlag}";
+            return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}, " +
+                   $"{nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}, {nameof(IsDebugFlag)}: {IsDebugFlag}" +
+                   $", {nameof(PlayerGuid)}: {PlayerGuid}";
         }
     }
-    
+
     /// <summary>
     /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
     /// </summary>
     internal class PlayerDataCache : IPlayerDataCache
     {
+        public static IPlayerDataCache Create()
+        {
+            return new PlayerDataCacheLocal();
+        }
+
         protected const string DefaultPlayerName = "Player";
         protected const int DummyModelId = int.MaxValue;
         protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
-        protected readonly PlayerData PlayerData = new ();
-        
+        protected readonly PlayerData PlayerData = new();
+
         /// <summary>
         /// Player name.
         /// </summary>
@@ -167,7 +172,7 @@ namespace Altzone.Scripts.Config
         /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
         /// </remarks>
         public IBattleCharacter CurrentBattleCharacter => Storefront.Get().GetBattleCharacter(PlayerData.CustomCharacterModelId);
-        
+
         public ClanModel Clan => Storefront.Get().GetClanModel(PlayerData.ClanId) ?? new ClanModel(DummyModelId, string.Empty, string.Empty);
 
         public void UpdatePlayerGuid(string newPlayerGuid)
@@ -233,82 +238,87 @@ namespace Altzone.Scripts.Config
             return
                 $"Name {PlayerName}, Model {CustomCharacterModelId}, Clan {ClanId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
         }
-    }
 
-    /// <summary>
-    /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
-    /// </summary>
-    internal class PlayerDataCacheLocal : PlayerDataCache
-    {
-        private readonly MonoBehaviour _host;
-        private Coroutine _delayedSave;
-
-        public PlayerDataCacheLocal()
+        /// <summary>
+        /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
+        /// </summary>
+        private class PlayerDataCacheLocal : PlayerDataCache
         {
-            _host = UnityMonoHelper.Instance;
-            PlayerData.PlayerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
-            PlayerData.PlayerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
-            PlayerData.ClanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
-            PlayerData.CustomCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
-            PlayerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
-            PlayerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
-            PlayerData.IsDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
-            if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(PlayerData.PlayerName))
+            private readonly MonoBehaviour _host;
+            private Coroutine _delayedSave;
+
+            public PlayerDataCacheLocal()
             {
-                Debug.Log(PlayerData.ToString());
-                return;
+                _host = UnityMonoHelper.Instance;
+                PlayerData.PlayerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);
+                PlayerData.PlayerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
+                PlayerData.ClanId = PlayerPrefs.GetInt(PlayerPrefKeys.ClanId, DummyModelId);
+                PlayerData.CustomCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
+                PlayerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
+                PlayerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
+                PlayerData.IsDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
+                if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(PlayerData.PlayerName))
+                {
+                    Debug.Log(PlayerData.ToString());
+                    return;
+                }
+                // Create and save these settings immediately on this device!
+                if (string.IsNullOrWhiteSpace(PlayerGuid))
+                {
+                    PlayerData.PlayerGuid = Guid.NewGuid().ToString();
+                    PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+                }
+                if (string.IsNullOrWhiteSpace(PlayerData.PlayerName))
+                {
+                    PlayerData.PlayerName = DefaultPlayerName;
+                    PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
+                }
+                PlayerPrefs.Save();
             }
-            // Create and save these settings immediately on this device!
-            if (string.IsNullOrWhiteSpace(PlayerGuid))
+
+            public override string ToString()
             {
-                PlayerData.PlayerGuid = Guid.NewGuid().ToString();
-                PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+                return PlayerData.ToString();
             }
-            if (string.IsNullOrWhiteSpace(PlayerData.PlayerName))
+
+            protected override void InternalSave()
             {
-                PlayerData.PlayerName = DefaultPlayerName;
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
+                PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+                PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
+                PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
+                PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)PlayerData.Language);
+                PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
+                PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
+                Debug.Log(PlayerData.ToString());
             }
-            PlayerPrefs.Save();
-        }
 
-        protected override void InternalSave()
-        {
-            PlayerPrefs.SetString(PlayerPrefKeys.PlayerName, PlayerName);
-            PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
-            PlayerPrefs.SetInt(PlayerPrefKeys.ClanId, ClanId);
-            PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
-            PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)PlayerData.Language);
-            PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
-            PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
-            Debug.Log(PlayerData.ToString());
-        }
-
-        protected override void Save()
-        {
-            if (_host == null)
+            protected override void Save()
             {
-                // Can not delay, using UNITY default functionality save on exit
-                return;
+                if (_host == null)
+                {
+                    // Can not delay, using UNITY default functionality save on exit
+                    return;
+                }
+                if (_delayedSave != null)
+                {
+                    // NOP - already delayed.
+                    return;
+                }
+                // Save all changed player prefs on next frame.
+                _delayedSave = _host.StartCoroutine(DelayedSave());
             }
-            if (_delayedSave != null)
-            {
-                // NOP - already delayed.
-                return;
-            }
-            // Save all changed player prefs on next frame.
-            _delayedSave = _host.StartCoroutine(DelayedSave());
-        }
 
-        private IEnumerator DelayedSave()
-        {
-            // By default Unity writes preferences to disk during OnApplicationQuit().
-            // - you can force them to disk using PlayerPrefs.Save().
-            yield return null;
-            Debug.Log("PlayerPrefs.Save");
-            InternalSave();
-            PlayerPrefs.Save();
-            _delayedSave = null;
+            private IEnumerator DelayedSave()
+            {
+                // By default Unity writes preferences to disk during OnApplicationQuit().
+                // - you can force them to disk using PlayerPrefs.Save().
+                yield return null;
+                Debug.Log("PlayerPrefs.Save");
+                InternalSave();
+                PlayerPrefs.Save();
+                _delayedSave = null;
+            }
         }
     }
 }
