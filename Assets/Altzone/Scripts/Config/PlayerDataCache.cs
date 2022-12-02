@@ -35,13 +35,29 @@ namespace Altzone.Scripts.Config
         public int CustomCharacterModelId;
         public SystemLanguage Language;
         public bool IsTosAccepted;
+        public bool IsFirstTimePlaying;
+        public bool IsAccountVerified;
         public bool IsDebugFlag;
 
+        public void ResetData(int dummyModelId, SystemLanguage defaultLanguage)
+        {
+            PlayerName = string.Empty;
+            PlayerGuid = string.Empty;
+            ClanId = dummyModelId;
+            CustomCharacterModelId = dummyModelId;
+            Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)defaultLanguage);
+            IsTosAccepted = false;
+            IsFirstTimePlaying = true;
+            IsAccountVerified = false;
+            IsDebugFlag = false;
+        }
+        
         public override string ToString()
         {
-            return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}, " +
-                   $"{nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}, {nameof(IsDebugFlag)}: {IsDebugFlag}" +
-                   $", {nameof(PlayerGuid)}: {PlayerGuid}";
+            return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}" +
+                   $", {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
+                   $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
+                   $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
         }
     }
 
@@ -55,11 +71,11 @@ namespace Altzone.Scripts.Config
             return new PlayerDataCacheLocal();
         }
 
-        protected const string DefaultPlayerName = "Player";
-        protected const int DummyModelId = int.MaxValue;
-        protected const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
+        private const string DefaultPlayerName = "Player";
+        private const int DummyModelId = int.MaxValue;
+        private const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
-        protected readonly PlayerData PlayerData = new();
+        private readonly PlayerData PlayerData = new();
 
         /// <summary>
         /// Player name.
@@ -150,6 +166,32 @@ namespace Altzone.Scripts.Config
         }
 
         /// <summary>
+        /// Is this first time game is started?
+        /// </summary>
+        public bool IsFirstTimePlaying
+        {
+            get => PlayerData.IsFirstTimePlaying;
+            set
+            {
+                PlayerData.IsFirstTimePlaying = value;
+                Save();
+            }
+        }
+
+        /// <summary>
+        /// Is player's third party account verified?
+        /// </summary>
+        public bool IsAccountVerified
+        {
+            get => PlayerData.IsAccountVerified;
+            set
+            {
+                PlayerData.IsAccountVerified = value;
+                Save();
+            }
+        }
+
+        /// <summary>
         /// Debug FLag for debugging and diagnostics purposes.
         /// </summary>
         /// <remarks>
@@ -216,14 +258,7 @@ namespace Altzone.Scripts.Config
 #if UNITY_EDITOR
         public void DebugResetPlayer()
         {
-            // Actually can not delete at this level - just invalidate everything (but PlayerGuid)!
-            PlayerName = string.Empty;
-            CustomCharacterModelId = DummyModelId;
-            ClanId = DummyModelId;
-            Language = DefaultLanguage;
-            IsTosAccepted = false;
-            IsDebugFlag = false;
-            InternalSave();
+            PlayerData.ResetData(DummyModelId, DefaultLanguage);
         }
 
         public void DebugSavePlayer()
@@ -256,6 +291,8 @@ namespace Altzone.Scripts.Config
                 PlayerData.CustomCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
                 PlayerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
                 PlayerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
+                PlayerData.IsFirstTimePlaying = PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
+                PlayerData.IsAccountVerified = PlayerPrefs.GetInt(PlayerPrefKeys.IsAccountVerified, 0) == 1;
                 PlayerData.IsDebugFlag = PlayerPrefs.GetInt(PlayerPrefKeys.IsDebugFlag, 0) == 1;
                 if (!string.IsNullOrWhiteSpace(PlayerGuid) && !string.IsNullOrWhiteSpace(PlayerData.PlayerName))
                 {
@@ -289,6 +326,8 @@ namespace Altzone.Scripts.Config
                 PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
                 PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)PlayerData.Language);
                 PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
+                PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, IsFirstTimePlaying ? 1 : 0);
+                PlayerPrefs.SetInt(PlayerPrefKeys.IsAccountVerified, IsAccountVerified ? 1 : 0);
                 PlayerPrefs.SetInt(PlayerPrefKeys.IsDebugFlag, IsDebugFlag ? 1 : 0);
                 Debug.Log(PlayerData.ToString());
             }

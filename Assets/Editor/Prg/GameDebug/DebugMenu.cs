@@ -42,7 +42,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log(playerData.ToString());
         }
 
-        public static void DeleteLocalPlayerData()
+        public static void ResetLocalPlayerData()
         {
             Debug.Log("*");
             var playerData = GameConfig.Get().PlayerDataCache;

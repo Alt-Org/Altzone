@@ -10,6 +10,7 @@ namespace Altzone.Scripts.Config
         public const string TermsOfServiceAccepted = "PlayerData.TermsOfService";
         public const string IsDebugFlag = "PlayerData.IsDebugFlag";
         public const string IsFirstTimePlaying = "PlayerData.IsFirstTimePlaying";
+        public const string IsAccountVerified = "PlayerData.IsAccountVerified";
 
         public const string MasterVolume = "PlayerData.MasterVolume";
         public const string MenuSfxVolume = "PlayerData.MenuSFXVolume";

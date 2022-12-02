@@ -38,8 +38,8 @@ namespace Editor
         [MenuItem(GameDebug + "Set Player Language to 'EN'", false, 12)]
         private static void SetLanguageToEn() => DebugMenu.SetLanguageToEn();
 
-        [MenuItem(GameDebug + "Delete Local Player Data", false, 13)]
-        private static void DeleteLocalPlayerData() => DebugMenu.DeleteLocalPlayerData();
+        [MenuItem(GameDebug + "Reset Local Player Data", false, 13)]
+        private static void ResetLocalPlayerData() => DebugMenu.ResetLocalPlayerData();
 
         [MenuItem(GameDebug + "Models/Copy Custom Character Models", false, 20)]
         private static void CopyCustomCharacterModels() => MenuModels.CopyCustomCharacterModels();
