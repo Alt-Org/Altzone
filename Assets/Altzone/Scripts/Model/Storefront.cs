@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Altzone.Scripts.Model.LocalStorage;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -91,7 +90,7 @@ namespace Altzone.Scripts.Model
         {
             CustomCharacterModels.Delete(id);
         }
-        
+
         public IBattleCharacter GetBattleCharacter(int customCharacterId)
         {
             var customCharacter = Get().GetCustomCharacterModel(customCharacterId);

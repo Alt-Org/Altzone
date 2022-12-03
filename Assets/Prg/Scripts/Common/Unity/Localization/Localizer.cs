@@ -247,6 +247,11 @@ namespace Prg.Scripts.Common.Unity.Localization
 
         public static string Localize(string key) => _curLanguage.Word(key);
 
+        public static bool HasLanguage(SystemLanguage language)
+        {
+            return _languages?.HasLanguage(language) ?? false;
+        }
+
         public static void SetLanguage(SystemLanguage language)
         {
             Debug.Log($"SetLanguage {_curLanguage} : {_curSystemLanguage} <- {language}");

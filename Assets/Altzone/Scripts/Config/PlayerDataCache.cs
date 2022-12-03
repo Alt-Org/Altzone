@@ -8,6 +8,9 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Config
 {
+    /// <summary>
+    /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
+    /// </summary>
     public interface IPlayerDataCache
     {
         string PlayerName { get; set; }
@@ -15,10 +18,15 @@ namespace Altzone.Scripts.Config
         int ClanId { get; set; }
         int CustomCharacterModelId { get; set; }
         SystemLanguage Language { get; set; }
+        bool IsDebugFlag { get; set; }
+        bool IsTosAccepted { get; set; }
+        bool IsFirstTimePlaying { get; set; }
+        bool IsAccountVerified { get; set; }
 
         IBattleCharacter CurrentBattleCharacter { get; }
         ClanModel Clan { get; }
 
+        bool HasPlayerName { get; }
         void UpdatePlayerGuid(string newPlayerGuid);
 
 #if UNITY_EDITOR
@@ -62,7 +70,7 @@ namespace Altzone.Scripts.Config
     }
 
     /// <summary>
-    /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
+    /// <c>IPlayerDataCache</c> default implementation.
     /// </summary>
     internal class PlayerDataCache : IPlayerDataCache
     {
@@ -216,6 +224,8 @@ namespace Altzone.Scripts.Config
         public IBattleCharacter CurrentBattleCharacter => Storefront.Get().GetBattleCharacter(PlayerData.CustomCharacterModelId);
 
         public ClanModel Clan => Storefront.Get().GetClanModel(PlayerData.ClanId) ?? new ClanModel(DummyModelId, string.Empty, string.Empty);
+
+        public bool HasPlayerName => !string.IsNullOrWhiteSpace(PlayerName);
 
         public void UpdatePlayerGuid(string newPlayerGuid)
         {

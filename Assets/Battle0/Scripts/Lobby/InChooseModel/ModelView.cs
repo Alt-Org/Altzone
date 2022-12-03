@@ -102,7 +102,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void SetCharacterPrefab(IBattleCharacter character)
         {
             curPrefab.SetActive(false);
-            // HACK: we assume that prefabs are arranged by this same id!
+            // HACK: we assume that prefabs are arranged by this same id! This worked well when all models were hard coded.
             curPrefab = prefabs[character.CustomCharacterModelId];
             curPrefab.SetActive(true);
         }
