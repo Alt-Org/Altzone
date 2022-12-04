@@ -1,6 +1,5 @@
 using System;
 using Altzone.Scripts.Model;
-using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -16,6 +15,10 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     internal class GameSettings : ScriptableObject
     {
         private const string GameSettingsName = "GameSettings";
+
+        [Header("Game Features")] public GameFeatures _features;
+
+        [Header("Game Constraints")] public GameConstraints _constraints;
 
         [Header("Game Variables")] public GameVariables _variables;
 
@@ -40,10 +43,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameFeatures
     {
-        public void CopyFrom(GameFeatures other)
-        {
-            PropertyCopier<GameFeatures, GameFeatures>.CopyFields(other, this);
-        }
     }
 
     /// <summary>
@@ -52,44 +51,16 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameConstraints
     {
-        public void CopyFrom(GameConstraints other)
-        {
-            PropertyCopier<GameConstraints, GameConstraints>.CopyFields(other, this);
-        }
     }
 
     /// <summary>
     /// Game variables that control game play somehow.
     /// </summary>
     /// <remarks>
-    /// Note that these member variables could be serialized over network using our <c>BinarySerializer</c>.
+    /// Note that these member variables can be serialized over network and thus must be internally serializable.
     /// </remarks>
     [Serializable]
     public class GameVariables
-    {
-    }
-
-    /// <summary>
-    /// Battle game UI configuration.
-    /// </summary>
-    [Serializable]
-    public class BattleUiConfig
-    {
-    }
-
-    /// <summary>
-    /// Well known prefabs for the game.
-    /// </summary>
-    [Serializable]
-    public class GamePrefabs
-    {
-    }
-
-    /// <summary>
-    /// New Input System Package for Player actions.
-    /// </summary>
-    [Serializable]
-    public class GameInput
     {
     }
 

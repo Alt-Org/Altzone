@@ -14,7 +14,9 @@ namespace Altzone.Scripts.Config
     /// </remarks>
     public interface IGameConfig
     {
-        GameVariables GameVariables { get; }
+        GameFeatures Features { get; }
+        GameConstraints Constraints { get; }
+        GameVariables Variables { get; }
         IPlayerDataCache PlayerDataCache { get; }
         Characters Characters { get; }
     }
@@ -32,17 +34,25 @@ namespace Altzone.Scripts.Config
 
         public static IGameConfig Get()
         {
-            if (_instance == null)
-            {
-                _instance = new GameConfig();
-            }
-            return _instance;
+            return _instance ??= new GameConfig();
         }
 
-        public GameVariables GameVariables
+        public GameFeatures Features
         {
-            get => _permanentVariables;
-            set => UpdateFrom(value, _permanentVariables);
+            get => _gameFeatures;
+            set => UpdateFrom(value, _gameFeatures);
+        }
+
+        public GameConstraints Constraints
+        {
+            get => _gameConstraints;
+            set => UpdateFrom(value, _gameConstraints);
+        }
+
+        public GameVariables Variables
+        {
+            get => _gameVariables;
+            set => UpdateFrom(value, _gameVariables);
         }
 
         public IPlayerDataCache PlayerDataCache { get; }
@@ -53,10 +63,9 @@ namespace Altzone.Scripts.Config
 
         private GameFeatures _permanentFeatures;
         private GameConstraints _permanentConstraints;
-        private readonly GameVariables _permanentVariables;
-        private BattleUiConfig _battleUiConfig;
-        private GamePrefabs _permanentPrefabs;
-        private GameInput _gameInput;
+        private readonly GameVariables _gameVariables;
+        private readonly GameFeatures _gameFeatures;
+        private readonly GameConstraints _gameConstraints;
 
         #endregion
 
@@ -65,7 +74,9 @@ namespace Altzone.Scripts.Config
             PlayerDataCache = Altzone.Scripts.Config.PlayerDataCache.Create();
             var setting = GameSettings.Load();
             Characters = setting._characters;
-            _permanentVariables = CreateCopyFrom(setting._variables);
+            _gameVariables = CreateCopyFrom(setting._variables);
+            _gameFeatures = CreateCopyFrom(setting._features);
+            _gameConstraints = CreateCopyFrom(setting._constraints);
         }
 
         private static T CreateCopyFrom<T>(T source) where T : class, new()
