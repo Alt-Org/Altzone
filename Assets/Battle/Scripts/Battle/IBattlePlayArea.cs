@@ -9,8 +9,8 @@ namespace Battle.Scripts.Battle
     {
         Rect GetPlayerPlayArea(int playerPos);
 
-        Vector2 ArenaSize { get; }
-
+        float ArenaWidth { get; }
+        float ArenaHeight { get; }
         int ShieldGridWidth { get; }
         int ShieldGridHeight { get; }
         int MovementGridWidth { get; }

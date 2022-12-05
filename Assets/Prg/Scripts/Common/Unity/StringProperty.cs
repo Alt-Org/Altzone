@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity
 {
+    /// <summary>
+    /// <c>StringProperty</c> is used to store Base16k 'obfuscated' string data in similar manner as Base64.
+    /// </summary>
     [CreateAssetMenu(menuName = "ALT-Zone/StringProperty", fileName = "StringProperty")]
     public class StringProperty : ScriptableObject
     {

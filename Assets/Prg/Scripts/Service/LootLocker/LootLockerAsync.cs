@@ -12,13 +12,20 @@ namespace Prg.Scripts.Service.LootLocker
     /// </remarks>
     public static class LootLockerAsync
     {
-        public static Task<LootLockerSessionResponse> StartSession(string deviceId)
+        public static Task<LootLockerSessionResponse> StartSession(string playerIdentifier)
         {
             var taskCompletionSource = new TaskCompletionSource<LootLockerSessionResponse>();
-            LootLockerSDKManager.StartSession(deviceId, response => { taskCompletionSource.SetResult(response); });
+            LootLockerSDKManager.StartSession(playerIdentifier, response => { taskCompletionSource.SetResult(response); });
             return taskCompletionSource.Task;
         }
 
+        public static Task<LootLockerGuestSessionResponse> StartGuestSession(string playerIdentifier)
+        {
+            var taskCompletionSource = new TaskCompletionSource<LootLockerGuestSessionResponse>();
+            LootLockerSDKManager.StartGuestSession(playerIdentifier, response => { taskCompletionSource.SetResult(response); });
+            return taskCompletionSource.Task;
+        }
+        
         public static Task<PlayerNameResponse> SetPlayerName(string playerName)
         {
             var taskCompletionSource = new TaskCompletionSource<PlayerNameResponse>();

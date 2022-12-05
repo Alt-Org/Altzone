@@ -13,7 +13,7 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
     private Vector2 _targetPosition;
     [SerializeField] private float _movementSpeed;
     [SerializeField] private float _playerMoveSpeedMultiplier;
-    [SerializeField] private Collider2D _shieldCollider;
+    [SerializeField] public EdgeCollider2D _shieldCollider;
     [SerializeField] private ShieldTriggerOnTest _shieldTriggerOn;
     [SerializeField] private float _shieldBackOnDelay = 1f;
 
@@ -34,7 +34,6 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
     private void OnEnable()
     {
         _gridManager = Context.GetGridManager();
-        _shieldCollider = GetComponentInChildren<EdgeCollider2D>();
         _transform = transform;
         _camera = Camera.main;
         _battlePlayArea = Context.GetBattlePlayArea();

@@ -12,7 +12,7 @@ namespace Editor.Prg.GameDebug
         public static void ShowLocalPlayerData()
         {
             Debug.Log("*");
-            var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
+            var playerData = GameConfig.Get().PlayerDataCache;
             Debug.Log(playerData.ToString());
         }
 
@@ -21,11 +21,11 @@ namespace Editor.Prg.GameDebug
             Debug.Log("*");
             var language = Application.systemLanguage;
             Localizer.LoadTranslations(language);
-            var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
+            var playerData = GameConfig.Get().PlayerDataCache;
             playerData.PlayerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
             playerData.Language = language;
             Localizer.SetLanguage(language);
-            playerData.CharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
+            playerData.CustomCharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
         }
@@ -35,17 +35,17 @@ namespace Editor.Prg.GameDebug
             Debug.Log("*");
             const SystemLanguage language = SystemLanguage.English;
             Localizer.LoadTranslations(language);
-            var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
+            var playerData = GameConfig.Get().PlayerDataCache;
             playerData.Language = language;
             Localizer.SetLanguage(language);
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
         }
 
-        public static void DeleteLocalPlayerData()
+        public static void ResetLocalPlayerData()
         {
             Debug.Log("*");
-            var playerData = RuntimeGameConfig.GetPlayerDataCacheInEditor();
+            var playerData = GameConfig.Get().PlayerDataCache;
             playerData.DebugResetPlayer();
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());

@@ -14,6 +14,7 @@ namespace Battle.Scripts.Ui
         [SerializeField] private Color _lineColor;
         [SerializeField] private GameObject _shieldGridTile;
         [SerializeField] private float _gridLineWidth = 0.03f;
+        [SerializeField] private int _spriteSortingLayer;
 
         private Camera _camera;
         private IBattlePlayArea _battlePlayArea;
@@ -21,7 +22,8 @@ namespace Battle.Scripts.Ui
         private int _movementGridHeight;
         private int _shieldGridWidth;
         private int _shieldGridHeight;
-        private Vector2 _arenaSize;
+        private float _arenaWidth;
+        private float _arenaHeight;
         private GameObject[,] _shieldGridSquares;
         private SpriteRenderer[,] _shieldSpriteSquares;
 
@@ -32,13 +34,13 @@ namespace Battle.Scripts.Ui
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
             _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
             _shieldGridHeight = _battlePlayArea.ShieldGridHeight;
-            _arenaSize = _battlePlayArea.ArenaSize;
+            _arenaWidth = _battlePlayArea.ArenaWidth;
+            _arenaHeight = _battlePlayArea.ArenaHeight;
+            _camera = Camera.main;
         }
 
         private void Start()
         {
-            _camera = Camera.main;
-
             myLineRenderer.startColor = _lineColor;
             myLineRenderer.endColor = _lineColor;
             myLineRenderer.startWidth = _gridLineWidth;
@@ -109,9 +111,9 @@ namespace Battle.Scripts.Ui
             Texture2D texture = new Texture2D(1, 1);
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, 1, 1), new Vector2(0, 0));
 
-            var squareSize = new Vector2(_arenaSize.x / _shieldGridWidth, _arenaSize.y / _shieldGridHeight);
-            var xPos = -_arenaSize.x / 2;
-            var yPos = -_arenaSize.y / 2;
+            var squareSize = new Vector2(_arenaWidth / _shieldGridWidth, _arenaHeight / _shieldGridHeight);
+            var xPos = -_arenaWidth / 2;
+            var yPos = -_arenaHeight / 2;
             for (int col = 0; col < _shieldGridWidth; col++)
             {
                 for (int row = 0; row < _shieldGridHeight; row++)
@@ -123,6 +125,7 @@ namespace Battle.Scripts.Ui
                         _shieldSpriteSquares[row, col].sprite = sprite;
                         _shieldSpriteSquares[row, col].color = _gridColor1;
                         _shieldSpriteSquares[row, col].size = squareSize;
+                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
                         yPos += squareSize.y;
                     }
                     else
@@ -132,10 +135,11 @@ namespace Battle.Scripts.Ui
                         _shieldSpriteSquares[row, col].sprite = sprite;
                         _shieldSpriteSquares[row, col].color = _gridColor2;
                         _shieldSpriteSquares[row, col].size = squareSize;
+                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
                         yPos += squareSize.y;
                     }
                 }
-                yPos = -_arenaSize.y / 2;
+                yPos = -_arenaHeight / 2;
                 xPos += squareSize.x;
             }
         }

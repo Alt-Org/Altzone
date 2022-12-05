@@ -70,7 +70,7 @@ namespace Battle0.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
-            _characterModel = Storefront.Get().GetCharacterModelForSkill(_settings._playerMainSkill);
+            _characterModel = Storefront.Get().GetBattleCharacter((int)_settings._playerMainSkill);
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations

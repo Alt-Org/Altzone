@@ -77,11 +77,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unReachableDistance: 100
+  _playerInput: {fileID: 8874158972019943833}
   _clickInputAction: {fileID: 3018464710834141242, guid: 790646cf399ca894589ac6314d128d98,
     type: 3}
   _moveInputAction: {fileID: -7747489554431944705, guid: 790646cf399ca894589ac6314d128d98,
     type: 3}
   _camera: {fileID: 0}
+  _isKeyboardReversed: 0
   _playerArea:
     serializedVersion: 2
     x: -100

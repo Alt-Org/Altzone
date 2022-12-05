@@ -19,11 +19,11 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             Debug.Log("Start");
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             _view.PlayerName = playerDataCache.PlayerName;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
-            var currentCharacterId = playerDataCache.CharacterModelId;
-            var characters = Storefront.Get().GetAllCharacterModels();
+            var currentCharacterId = playerDataCache.CustomCharacterModelId;
+            var characters = Storefront.Get().GetAllBattleCharacters();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             _view.SetCharacters(characters, currentCharacterId);
         }
@@ -32,12 +32,12 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             Debug.Log("click");
             // Save player settings if changed before continuing!
-            var playerDataCache = RuntimeGameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerDataCache;
             if (_view.PlayerName != playerDataCache.PlayerName ||
-                _view.CurrentCharacterId != playerDataCache.CharacterModelId)
+                _view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
             {
                 playerDataCache.PlayerName = _view.PlayerName;
-                playerDataCache.CharacterModelId = _view.CurrentCharacterId;
+                playerDataCache.CustomCharacterModelId = _view.CurrentCharacterId;
             }
             if (PhotonNetwork.NickName != playerDataCache.PlayerName)
             {

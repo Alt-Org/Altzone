@@ -1,16 +1,38 @@
+using System.IO;
 using System.Linq;
 using System.Text;
 using Altzone.Scripts.Model;
+using UnityEngine;
 
 namespace Editor.Altzone
 {
     internal static class MenuModels
     {
+        public static void CopyCustomCharacterModels()
+        {
+            Debug.Log("*");
+            var sourcePath = Path.Combine("TestData", "CustomCharacterModels.json");
+            var targetPath = Path.Combine(Application.persistentDataPath, "CustomCharacterModels.json");
+            Debug.Log($"Copy {sourcePath} -> {targetPath}");
+            File.Copy(sourcePath, targetPath);
+        }
+        
+        public static void DeleteCustomCharacterModels()
+        {
+            Debug.Log("*");
+            var targetPath = Path.Combine(Application.persistentDataPath, "CustomCharacterModels.json");
+            Debug.Log($"Delete {targetPath}");
+            if (File.Exists(targetPath))
+            {
+                File.Delete(targetPath);
+            }
+        }
+        
         public static void DumpModelsToWikiTable()
         {
             Debug.Log("*");
             Models.Load();
-            var models = Models.GetAll<CharacterModel>();
+            var models = Models.GetAll<CharacterClassModel>();
             var builder = new StringBuilder();
             var speedStats = new Stats();
             var resistanceStats = new Stats();

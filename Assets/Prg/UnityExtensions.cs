@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -19,9 +20,17 @@ public static class UnitySingleton
     {
         var name = typeof(T).Name;
         var parent = new GameObject(name);
+#if UNITY_EDITOR
+        if (!EditorApplication.isPlaying)
+        {
+            // DontDestroyOnLoad will fail with 'InvalidOperationException' during EditMode tests etc. and we just skip it with error message.
+            Debug.LogError($"You are creating a STATIC SINGLETON outside PLAY mode: {name}");
+            return parent.AddComponent<T>();
+        }
+#endif
         Object.DontDestroyOnLoad(parent);
         return parent.AddComponent<T>();
-   }
+    }
 
     public static T CreateGameObjectAndComponent<T>(string name = null) where T : Component
     {

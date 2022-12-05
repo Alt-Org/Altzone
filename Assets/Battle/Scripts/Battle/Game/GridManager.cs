@@ -11,12 +11,14 @@ namespace Battle.Scripts.Battle.Game
         private int _movementGridWidth;
         private int _movementGridHeight;
         private IBattlePlayArea _battlePlayArea;
-        private Vector2 _arenaSize;
+        private float _arenaWidth;
+        private float _arenaHeight;
 
         private void Awake()
         {
-            _battlePlayArea = FindObjectOfType<PlayerPlayArea>();
-            _arenaSize = _battlePlayArea.ArenaSize;
+            _battlePlayArea = Context.GetBattlePlayArea();
+            _arenaWidth = _battlePlayArea.ArenaWidth;
+            _arenaHeight = _battlePlayArea.ArenaHeight;
 
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
@@ -24,11 +26,10 @@ namespace Battle.Scripts.Battle.Game
 
         Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos, bool isRotated)
         {
-            var arenaWidth = _arenaSize.x;
-            var arenaHeight = _arenaSize.y;
-            var xPosition = gridPos.Col * arenaWidth / _movementGridWidth + arenaWidth / _movementGridWidth * 0.5f;
-            var yPosition = gridPos.Row * arenaHeight / _movementGridHeight + arenaHeight / _movementGridHeight * 0.5f;
-            Vector2 worldPosition = new Vector2(xPosition - arenaWidth / 2, yPosition - arenaHeight / 2);
+
+            var xPosition = gridPos.Col * _arenaWidth / _movementGridWidth + _arenaWidth / _movementGridWidth * 0.5f;
+            var yPosition = gridPos.Row * _arenaHeight / _movementGridHeight + _arenaHeight / _movementGridHeight * 0.5f;
+            Vector2 worldPosition = new Vector2(xPosition - _arenaWidth / 2, yPosition - _arenaHeight / 2);
             if (isRotated)
             {
                 worldPosition.x = -worldPosition.x;
@@ -39,16 +40,14 @@ namespace Battle.Scripts.Battle.Game
 
         GridPos IGridManager.WorldPointToGridPosition(Vector2 targetPosition, bool isRotated)
         {
-            var arenaWidth = _arenaSize.x;
-            var arenaHeight = _arenaSize.y;
             if (isRotated)
             {
                 targetPosition.x = -targetPosition.x;
                 targetPosition.y = -targetPosition.y;
             }
-            var posNew = new Vector2(targetPosition.x + arenaWidth / 2, targetPosition.y + arenaHeight / 2);
-            var col = Math.Min(_movementGridWidth - 1, (int) (posNew.x / (arenaWidth / _movementGridWidth)));
-            var row = Math.Min(_movementGridHeight - 1, (int) (posNew.y / (arenaHeight / _movementGridHeight)));
+            var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
+            var col = Math.Min(_movementGridWidth - 1, (int) (posNew.x / (_arenaWidth / _movementGridWidth)));
+            var row = Math.Min(_movementGridHeight - 1, (int) (posNew.y / (_arenaHeight / _movementGridHeight)));
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
         }
