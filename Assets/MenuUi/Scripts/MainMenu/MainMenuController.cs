@@ -1,4 +1,5 @@
 ﻿using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using UnityEngine;
 
 namespace MenuUi.Scripts.MainMenu
@@ -12,7 +13,11 @@ namespace MenuUi.Scripts.MainMenu
             var playerDataCache = GameConfig.Get().PlayerDataCache;
             _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
-            _view.ClanName = playerDataCache.Clan.Name;
+            var clan = Storefront.Get().GetClanModel(playerDataCache.ClanId);
+            if (clan != null)
+            {
+                _view.ClanName = clan.Name;
+            }
         }
     }
 }

@@ -22,7 +22,8 @@ namespace Editor.Prg.GameDebug
             var language = Application.systemLanguage;
             Localizer.LoadTranslations(language);
             var playerData = GameConfig.Get().PlayerDataCache;
-            playerData.PlayerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
+            var playerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
+            playerData.SetPlayerName(playerName);
             playerData.Language = language;
             Localizer.SetLanguage(language);
             playerData.CustomCharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
