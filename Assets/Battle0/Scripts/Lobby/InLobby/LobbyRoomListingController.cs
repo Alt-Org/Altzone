@@ -28,13 +28,13 @@ namespace Battle0.Scripts.Lobby.InLobby
             {
                 UpdateStatus();
             }
-            _photonRoomList.roomsUpdated += UpdateStatus;
+            _photonRoomList.OnRoomsUpdated += UpdateStatus;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            _photonRoomList.roomsUpdated -= UpdateStatus;
+            _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             _view.Reset();
         }
 
@@ -48,7 +48,7 @@ namespace Battle0.Scripts.Lobby.InLobby
         private void JoinRoom(string roomName)
         {
             Debug.Log($"{roomName}");
-            var rooms = _photonRoomList.currentRooms.ToList();
+            var rooms = _photonRoomList.CurrentRooms.ToList();
             foreach (var roomInfo in rooms)
             {
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
@@ -75,7 +75,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                 _view.Reset();
                 return;
             }
-            var rooms = _photonRoomList.currentRooms.ToList();
+            var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
                 // First open rooms by name, then closed (aka playing) rooms by name

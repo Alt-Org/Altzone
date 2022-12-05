@@ -1,9 +1,9 @@
-using Photon.Pun;
-using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Photon
@@ -12,32 +12,32 @@ namespace Prg.Scripts.Common.Photon
     /// Convenience class and example how to keep updated room list in a cache.
     /// </summary>
     /// <remarks>
-    /// Note that <c>PhotonNetwork.GetRoomList</c> does not exist and
+    /// Note that <c>PhotonNetwork.GetRoomList</c> does not exist anymore and
     /// you have to manually do your own book keeping of known rooms with <c>ILobbyCallbacks.OnRoomListUpdate</c>.
     /// </remarks>
     public class PhotonRoomList : MonoBehaviour, ILobbyCallbacks
     {
-        [SerializeField] private int roomListCount; // Just for debugging in Editor
+        [SerializeField] private int _debugRoomListCount;
 
-        private List<RoomInfo> currentRoomList = new List<RoomInfo>(); // Cached list of current rooms
+        private List<RoomInfo> _currentRoomList = new();
 
-        public Action roomsUpdated;
+        public Action OnRoomsUpdated;
 
-        public ReadOnlyCollection<RoomInfo> currentRooms => getRoomListing();
+        public ReadOnlyCollection<RoomInfo> CurrentRooms => GetCurrentRooms();
 
-        public ReadOnlyCollection<RoomInfo> getRoomListing()
+        public ReadOnlyCollection<RoomInfo> GetCurrentRooms()
         {
             if (PhotonNetwork.InLobby)
             {
-                return currentRoomList.AsReadOnly();
+                return _currentRoomList.AsReadOnly();
             }
             if (PhotonNetwork.NetworkClientState == ClientState.Joining)
             {
                 // It seems that OnRoomListUpdate can happen between transitioning from lobby to room:
                 // -> JoinedLobby -> Joining -> Joined
-                currentRoomList.Clear();
-                roomListCount = 0;
-                return currentRoomList.AsReadOnly();
+                _currentRoomList.Clear();
+                _debugRoomListCount = 0;
+                return _currentRoomList.AsReadOnly();
             }
             throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
         }
@@ -52,51 +52,51 @@ namespace Prg.Scripts.Common.Photon
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-        private void updateRoomListing(List<RoomInfo> roomList)
+        private void UpdateRoomListing(List<RoomInfo> roomList)
         {
             // We always remove and add entries to keep cached data up-to-date.
             foreach (var newRoomInfo in roomList)
             {
-                var curRoomInfoIndex = currentRoomList.FindIndex(x => x.Equals(newRoomInfo));
+                var curRoomInfoIndex = _currentRoomList.FindIndex(x => x.Equals(newRoomInfo));
                 if (curRoomInfoIndex != -1)
                 {
-                    currentRoomList.RemoveAt(curRoomInfoIndex);
+                    _currentRoomList.RemoveAt(curRoomInfoIndex);
                     if (newRoomInfo.RemovedFromList)
                     {
                         continue; // No need to add as this will be disappear soon!
                     }
                 }
-                currentRoomList.Add(newRoomInfo);
+                _currentRoomList.Add(newRoomInfo);
             }
-            if (currentRoomList.Any(x => x.RemovedFromList))
+            if (_currentRoomList.Any(x => x.RemovedFromList))
             {
                 // Remove removed rooms from cache
-                currentRoomList = currentRoomList.Where(x => !x.RemovedFromList).ToList();
+                _currentRoomList = _currentRoomList.Where(x => !x.RemovedFromList).ToList();
             }
         }
 
         void ILobbyCallbacks.OnJoinedLobby()
         {
-            currentRoomList.Clear();
-            roomListCount = 0;
-            Debug.Log($"OnJoinedLobby roomsUpdated: {roomListCount}");
-            roomsUpdated?.Invoke();
+            _currentRoomList.Clear();
+            _debugRoomListCount = 0;
+            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            OnRoomsUpdated?.Invoke();
         }
 
         void ILobbyCallbacks.OnLeftLobby()
         {
-            currentRoomList.Clear();
-            roomListCount = 0;
-            Debug.Log($"OnLeftLobby roomsUpdated: {roomListCount}");
-            roomsUpdated?.Invoke();
+            _currentRoomList.Clear();
+            _debugRoomListCount = 0;
+            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            OnRoomsUpdated?.Invoke();
         }
 
         void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            updateRoomListing(roomList);
-            roomListCount = roomList.Count;
-            Debug.Log($"OnRoomListUpdate roomsUpdated: {roomListCount}");
-            roomsUpdated?.Invoke();
+            UpdateRoomListing(roomList);
+            _debugRoomListCount = roomList.Count;
+            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            OnRoomsUpdated?.Invoke();
         }
 
         void ILobbyCallbacks.OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
