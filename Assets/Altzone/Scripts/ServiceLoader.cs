@@ -49,7 +49,7 @@ namespace Altzone.Scripts
             var suffix = isDevelopmentMode ? Prefix1 : Prefix2;
             Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning} suffix {suffix}");
             LootLockerWrapper.Start(isDevelopmentMode,
-                () => Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix}").PropertyValue);
+                () => Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix}")?.PropertyValue);
         }
 
 #if UNITY_EDITOR

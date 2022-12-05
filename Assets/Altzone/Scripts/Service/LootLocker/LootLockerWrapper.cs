@@ -50,7 +50,7 @@ namespace Altzone.Scripts.Service.LootLocker
 #endif
             Manager.Init(GameVersion, () => apiKey, DomainKey, isDevelopmentMode, IsGuestLogin);
             var playerDataCache = GameConfig.Get().PlayerDataCache;
-            Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.PlayerName = s);
+            Manager.StartSessionAsync(playerDataCache.PlayerGuid, playerDataCache.PlayerName, s => playerDataCache.SetPlayerName(s));
         }
 
         public static void Stop()
@@ -75,7 +75,7 @@ namespace Altzone.Scripts.Service.LootLocker
                 return;
             }
             var playerDataCache = GameConfig.Get().PlayerDataCache;
-            var task = Manager.SetPlayerNameAsync(playerName, s => playerDataCache.PlayerName = s);
+            var task = Manager.SetPlayerNameAsync(playerName, s => playerDataCache.SetPlayerName(s));
         }
 #else
         public static bool IsRunning => true;
