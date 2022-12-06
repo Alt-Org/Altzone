@@ -25,7 +25,17 @@ namespace Prg.Scripts.Service.LootLocker
             LootLockerSDKManager.StartGuestSession(playerIdentifier, response => { taskCompletionSource.SetResult(response); });
             return taskCompletionSource.Task;
         }
-        
+
+        public static Task<string> Ping()
+        {
+            var taskCompletionSource = new TaskCompletionSource<string>();
+            LootLockerSDKManager.Ping(r =>
+            {
+                var response = r.success ? $"OK date {r.date}" : r.Error;
+                taskCompletionSource.SetResult(response);
+            });
+            return taskCompletionSource.Task;
+        }
         public static Task<PlayerNameResponse> SetPlayerName(string playerName)
         {
             var taskCompletionSource = new TaskCompletionSource<PlayerNameResponse>();

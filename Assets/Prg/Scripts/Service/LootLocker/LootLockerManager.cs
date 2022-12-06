@@ -63,13 +63,13 @@ namespace Prg.Scripts.Service.LootLocker
             Debug.Log($"Init success {success}");
         }
 
-        public async void StartSessionAsync(string localPlayerGuid, string playerName, Action<string> setPlayerName)
+        public async void StartSessionAsync(string localPlayerGuid, string playerName, Action<string> updatePlayerName)
         {
             Debug.Log($"playerName {playerName}");
             // Create dummy player until we got a valid player when session has been established.
             _playerHandle = new PlayerHandle(localPlayerGuid, playerName);
             var startTime = Time.time;
-            var success = await StartSession(localPlayerGuid, playerName, setPlayerName);
+            var success = await StartSession(localPlayerGuid, playerName, updatePlayerName);
             Debug.Log($"done success {success} in {Time.time - startTime:0.00} s");
         }
 
@@ -141,6 +141,12 @@ namespace Prg.Scripts.Service.LootLocker
             return true;
         }
 
+        public Task<string> Ping()
+        {
+            Debug.Log($"IsRunning {IsRunning}");
+            return LootLockerAsync.Ping();
+        }
+        
         public async Task SetPlayerNameAsync(string playerName, Action<string> setPlayerName)
         {
             // Even if LootLocker fails we should save the new player name to local settings.
