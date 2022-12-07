@@ -1,5 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -90,7 +91,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             player.CustomProperties.Clear();
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var playerDataCache = GameConfig.Get().PlayerDataCache;
-            var defence = playerDataCache.CurrentBattleCharacter.MainDefence;
+            var defence = Storefront.Get().GetBattleCharacter(playerDataCache.CustomCharacterModelId).MainDefence;
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, playerPos },

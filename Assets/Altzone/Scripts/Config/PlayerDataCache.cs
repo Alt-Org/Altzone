@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
@@ -22,8 +21,6 @@ namespace Altzone.Scripts.Config
         bool IsTosAccepted { get; set; }
         bool IsFirstTimePlaying { get; set; }
         bool IsAccountVerified { get; set; }
-
-        IBattleCharacter CurrentBattleCharacter { get; }
 
         bool HasPlayerName { get; }
         void SetPlayerName(string playerName);
@@ -222,11 +219,6 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// Current battle character.
         /// </summary>
-        /// <remarks>
-        /// This is guaranteed to be valid reference all the time even <c>CharacterModelId</c> is invalid.
-        /// </remarks>
-        public IBattleCharacter CurrentBattleCharacter => Storefront.Get().GetBattleCharacter(_playerData.CustomCharacterModelId);
-
         public bool HasPlayerName => !string.IsNullOrWhiteSpace(PlayerName);
 
         public void SetPlayerName(string playerName)
@@ -255,20 +247,6 @@ namespace Altzone.Scripts.Config
             ClanId = clanId;
         }
         
-        public string GetPlayerInfoLabel()
-        {
-            var characterModelName = CurrentBattleCharacter.Name;
-            if (ClanId > 0)
-            {
-                var clan = Storefront.Get().GetClanModel(ClanId);
-                if (clan != null)
-                {
-                    return $"{PlayerName}[{clan.Tag}] {characterModelName}";
-                }
-            }
-            return $"{PlayerName} {characterModelName}";
-        }
-
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.
         /// </summary>
