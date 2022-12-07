@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -10,6 +9,10 @@ namespace Editor
     {
         private const string AssetHistoryFilename = "m_Build_AssetHistory.txt";
         private const string AssetPath = "Assets";
+        private static readonly int MetaExtensionLength = ".meta".Length;
+
+        /*[MenuItem("Window/ALT-Zone/Update Asset History", false, 55)]
+        private static void UpdateAssetHistoryMenu() => OnDelayCall();*/
 
         [InitializeOnLoadMethod]
         private static void InitializeOnLoadMethod()
@@ -20,7 +23,6 @@ namespace Editor
         private static void OnDelayCall()
         {
             UnityEngine.Debug.Log(RichText.Magenta("AssetHistoryUpdater working"));
-            UnityEngine.Debug.Log(Path.GetFullPath(AssetHistoryFilename));
             if (!File.Exists(AssetHistoryFilename))
             {
                 File.WriteAllText(AssetHistoryFilename, "");
@@ -31,6 +33,7 @@ namespace Editor
         private static void UpdateAssetHistory()
         {
             var lines = File.ReadAllLines(AssetHistoryFilename);
+            var hasLines = lines.Length > 0 && lines[0].Length > 0;
             var fileHistory = new HashSet<string>(lines);
             var files = Directory.GetFiles(AssetPath, "*.meta", SearchOption.AllDirectories);
             UnityEngine.Debug.Log($"UpdateAssetHistory {AssetHistoryFilename} with {fileHistory.Count} entries and {files.Length} meta files");
@@ -42,31 +45,39 @@ namespace Editor
                 {
                     continue;
                 }
-                if (fileHistory.Add(file))
+                var assetPath = file.Substring(0, file.Length - MetaExtensionLength);
+                var guid = AssetDatabase.GUIDFromAssetPath(assetPath);
+                var line = $"{assetPath}\t{guid}";
+                if (fileHistory.Add(line))
                 {
                     newFileCount += 1;
-                    if (newFileCount > 1)
+                    newLines.Append(line).AppendLine();
+                    if (hasLines)
                     {
-                        newLines.AppendLine();
+                        UnityEngine.Debug.Log(line);
                     }
-                    var guid = GetAssetGuid(file);
-                    newLines.Append($"{file}\t{guid}");
                 }
             }
             if (newFileCount == 0)
             {
-                UnityEngine.Debug.Log("ok");
+                UnityEngine.Debug.Log(RichText.White("ok"));
+                return;
             }
-            using var sw = File.AppendText(AssetHistoryFilename);
-            sw.WriteLine(newLines.ToString());
-            UnityEngine.Debug.Log($"UpdateAssetHistory {AssetHistoryFilename} with {newFileCount} new entries");
-        }
-
-        private static string GetAssetGuid(string metaPath)
-        {
-            var assetPath = Path.GetFileNameWithoutExtension(metaPath);
-            var guid = AssetDatabase.GUIDFromAssetPath(assetPath);
-            return guid.ToString();
+            // Remove last CR-LF
+            newLines.Length -= 2;
+            if (hasLines)
+            {
+                using var streamWriter = File.AppendText(AssetHistoryFilename);
+                // Add CR-LF
+                streamWriter.WriteLine();
+                streamWriter.Write(newLines.ToString());
+            }
+            else
+            {
+                File.WriteAllText(AssetHistoryFilename, newLines.ToString());
+            }
+            var message = $"UpdateAssetHistory {AssetHistoryFilename} with {newFileCount} new entries";
+            UnityEngine.Debug.Log(RichText.Yellow(message));
         }
     }
 }
