@@ -53,8 +53,8 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
             var minWorld = _camera.ViewportToWorldPoint(Vector2.zero);
             _targetPosition.x = Mathf.Clamp(_targetPosition.x, _playArea.xMin, _playArea.xMax);
             _targetPosition.y = Mathf.Clamp(_targetPosition.y, _playArea.yMin, _playArea.yMax);
-            var gridPos = _gridManager.WorldPointToGridPosition(_targetPosition, false);
-            _targetPosition = _gridManager.GridPositionToWorldPoint(gridPos, false);
+            var gridPos = _gridManager.WorldPointToGridPosition(_targetPosition);
+            _targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             var maxDistanceDelta = _movementSpeed * _playerMoveSpeedMultiplier * Time.deltaTime;
             _tempPosition = Vector2.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
             _transform.position = _tempPosition;

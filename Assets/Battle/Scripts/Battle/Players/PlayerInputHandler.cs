@@ -12,7 +12,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
 
-        private IPlayerActor _playerActor;
+        private IPlayerDriver _playerDriver;
         private Camera _camera;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
@@ -20,7 +20,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void Awake()
         {
-            _playerActor = FindObjectOfType<PlayerActor>();
+            _playerDriver = FindObjectOfType<PlayerDriverStatic>();
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             _camera = Camera.main;
             SetupInput();
@@ -28,7 +28,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _playerActor.MoveTo(targetPosition);
+            _playerDriver.MoveTo(targetPosition);
         }
 
         private void SetupInput()

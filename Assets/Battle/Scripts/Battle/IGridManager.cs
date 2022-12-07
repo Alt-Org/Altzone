@@ -20,8 +20,8 @@ namespace Battle.Scripts.Battle
 
     public interface IGridManager
     {
-        Vector2 GridPositionToWorldPoint(GridPos gridPos, bool isRotated);
+        Vector2 GridPositionToWorldPoint(GridPos gridPos);
 
-        GridPos WorldPointToGridPosition(Vector2 targetPosition, bool isRotated);
+        GridPos WorldPointToGridPosition(Vector2 targetPosition);
     }
 }

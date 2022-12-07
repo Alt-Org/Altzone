@@ -16,30 +16,33 @@ namespace Battle.Scripts.Battle.Players
     {
         private EdgeCollider2D _edgeCollider;
         private const float _bounceForce = 10f;
+        private GameObject _otherCollider;
+        private Transform _transform;
 
         private void Awake()
         {
+            _transform = GetComponent<Transform>();
             _edgeCollider = GetComponent<EdgeCollider2D>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            var otherGameObject = other.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball))
+            _otherCollider = other.gameObject;
+            if (_otherCollider.CompareTag(Tags.Ball))
             {
-                var endPoint1 = transform.TransformPoint(_edgeCollider.points[0]);
-                var endPoint2 = transform.TransformPoint(_edgeCollider.points[1]);
+                var endPoint1 = _transform.TransformPoint(_edgeCollider.points[0]);
+                var endPoint2 = _transform.TransformPoint(_edgeCollider.points[1]);
                 var edgeVector = endPoint2 - endPoint1;
                 var bounceDirection = Vector2.Perpendicular(edgeVector).normalized;
                 var contact = _edgeCollider.ClosestPoint(other.transform.position);
-                var otherPos = new Vector2(otherGameObject.transform.position.x, otherGameObject.transform.position.y);
+                var otherPos = new Vector2(_otherCollider.transform.position.x, _otherCollider.transform.position.y);
                 var dif = (otherPos - contact) - bounceDirection;
                 var add = (otherPos - contact) + bounceDirection;
-                if (dif.magnitude > add.magnitude)
+                if (dif.sqrMagnitude > add.sqrMagnitude)
                 {
                     return;
                 }
-                var rb = otherGameObject.GetComponentInParent<Rigidbody2D>();
+                var rb = _otherCollider.GetComponentInParent<Rigidbody2D>();
                 rb.velocity = bounceDirection * _bounceForce;
                 UnityEngine.Debug.DrawRay(contact, bounceDirection * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             }
