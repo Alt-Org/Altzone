@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
-namespace Prg.Scripts.Test
+namespace Prg.Scripts.DevUtil
 {
     public class PhotonPingWindow : MonoBehaviour
     {

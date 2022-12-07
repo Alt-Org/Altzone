@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Prg.Scripts.Test
+namespace Prg.Scripts.DevUtil
 {
     public class ThrottledDebugLogger
     {

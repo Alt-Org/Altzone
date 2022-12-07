@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Prg.Scripts.Common.Unity.Window;
@@ -6,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
-namespace Prg.Scripts.Test
+namespace Prg.Scripts.DevUtil
 {
     /// <summary>
     /// Helper OnGUI window to show breadcrumbs from <c>WindowManager</c>.

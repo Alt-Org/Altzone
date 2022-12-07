@@ -1,8 +1,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Altzone.Scripts.Config;
-using Prg.Scripts.Test;
+using Prg.Scripts.DevUtil;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
