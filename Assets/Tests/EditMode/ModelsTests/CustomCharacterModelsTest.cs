@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Assets.Tests.EditMode.CharacterModelsTests
+namespace Assets.Tests.EditMode.ModelsTests
 {
     [TestFixture]
     public class CustomCharacterModelsTest
