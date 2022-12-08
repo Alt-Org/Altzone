@@ -23,6 +23,9 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Game base character class model.
     /// </summary>
+    /// <remarks>
+    /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
+    /// </remarks>
     public class CharacterClassModel : AbstractModel
     {
         public readonly string Name;

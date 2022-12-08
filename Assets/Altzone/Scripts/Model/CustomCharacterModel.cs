@@ -6,6 +6,9 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Public interface for <c>CustomCharacterModel</c>.
     /// </summary>
+    /// <remarks>
+    /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
+    /// </remarks>
     public interface ICustomCharacterModel
     {
         public int Id { get; }

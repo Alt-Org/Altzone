@@ -1,8 +1,11 @@
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Read-only interface for Battle Character that is composite of <c>CharacterModel</c> and <c>CustomCharacterModel</c>.
+    /// Read-only interface for Battle Character that is composite of <c>CharacterClassModel</c> and <c>CustomCharacterModel</c>.
     /// </summary>
+    /// <remarks>
+    /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
+    /// </remarks>
     public interface IBattleCharacter
     {
         string Name { get; }

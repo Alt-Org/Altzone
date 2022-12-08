@@ -10,6 +10,9 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
     /// </summary>
+    /// <remarks>
+    /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
+    /// </remarks>
     public interface IPlayerDataCache
     {
         string PlayerName { get; }
@@ -24,8 +27,8 @@ namespace Altzone.Scripts.Config
 
         bool HasPlayerName { get; }
         void SetPlayerName(string playerName);
-        void UpdatePlayerGuid(string newPlayerGuid);
-        void UpdateClanId(int clanId);
+        void SetPlayerGuid(string newPlayerGuid);
+        void SetClanId(int clanId);
 
 #if UNITY_EDITOR
         void DebugSavePlayer();
@@ -33,6 +36,9 @@ namespace Altzone.Scripts.Config
 #endif
     }
 
+    /// <summary>
+    /// Convenience class to keep all local storage related settings in one place.
+    /// </summary>
     internal class PlayerData
     {
         public string PlayerName;
@@ -72,7 +78,7 @@ namespace Altzone.Scripts.Config
     /// </summary>
     internal class PlayerDataCache : IPlayerDataCache
     {
-        public static IPlayerDataCache Create()
+        internal static IPlayerDataCache Create()
         {
             return new PlayerDataCacheLocal();
         }
@@ -227,7 +233,7 @@ namespace Altzone.Scripts.Config
             LootLockerWrapper.SetPlayerName(_playerData.PlayerName);
         }
         
-        public void UpdatePlayerGuid(string newPlayerGuid)
+        public void SetPlayerGuid(string newPlayerGuid)
         {
             Assert.IsTrue(!string.IsNullOrWhiteSpace(newPlayerGuid), "!string.IsNullOrWhiteSpace(newPlayerGuid)");
             if (_playerData.PlayerGuid != null)
@@ -238,7 +244,7 @@ namespace Altzone.Scripts.Config
             PlayerGuid = newPlayerGuid;
         }
 
-        public void UpdateClanId(int clanId)
+        public void SetClanId(int clanId)
         {
             if (clanId <= 0)
             {
