@@ -1,3 +1,4 @@
+#if PHOTON_UNITY_NETWORKING
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -253,3 +254,4 @@ public static class PhotonExtensions
 
     #endregion
 }
+#endif

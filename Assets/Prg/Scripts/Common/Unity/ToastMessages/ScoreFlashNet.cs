@@ -1,6 +1,8 @@
 using System;
 using System.Text;
+#if PHOTON_UNITY_NETWORKING
 using Prg.Scripts.Common.Photon;
+#endif
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -70,6 +72,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
     internal class ScoreFlasherNet : IScoreFlash
     {
+#if PHOTON_UNITY_NETWORKING
         private const int MsgScoreFlash = PhotonEventDispatcher.EventCodeBase + 6;
         private const int MsgBufferFixedLength = 4 + 4 + 1;
         private const int MaxStringMessageLength = 24;
@@ -137,5 +140,11 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
         }
 
         #endregion
+#else
+        public void Push(string message, float worldX, float y)
+        {
+            throw new NotImplementedException();
+        }
+#endif
     }
 }

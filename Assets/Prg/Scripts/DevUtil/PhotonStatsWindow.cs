@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
+#endif
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
@@ -17,7 +20,7 @@ namespace Prg.Scripts.DevUtil
         public bool _visible;
         public Key _controlKey = Key.F2;
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if PHOTON_UNITY_NETWORKING && (DEVELOPMENT_BUILD || UNITY_EDITOR)
         private int _windowId;
         private Rect _windowRect;
         private string _windowTitle;

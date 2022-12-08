@@ -1,4 +1,6 @@
+#if PHOTON_UNITY_NETWORKING
 using Prg.Scripts.Common.Photon;
+#endif
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Unity.ToastMessages
@@ -10,6 +12,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
     {
         [Header("Settings"), SerializeField] private bool _isLoadScoreFlashNet;
 
+#if PHOTON_UNITY_NETWORKING
         private void Awake()
         {
             PhotonEventDispatcher.Get();
@@ -18,5 +21,6 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
                 ScoreFlashNet.RegisterEventListener();
             }
         }
+#endif
     }
 }
