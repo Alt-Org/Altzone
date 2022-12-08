@@ -22,7 +22,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _playerDriver = FindObjectOfType<PlayerDriverStatic>();
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
-            _camera = Camera.main;
+            _camera = Context.GetBattleCamera.Camera;
             SetupInput();
         }
 

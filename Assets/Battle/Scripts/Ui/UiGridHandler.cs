@@ -36,7 +36,7 @@ namespace Battle.Scripts.Ui
             _shieldGridHeight = _battlePlayArea.ShieldGridHeight;
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
-            _camera = Camera.main;
+            _camera = Context.GetBattleCamera.Camera;
         }
 
         private void Start()
