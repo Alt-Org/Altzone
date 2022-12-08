@@ -26,7 +26,7 @@ namespace Editor.Prg.GameDebug
             playerData.SetPlayerName(playerName);
             playerData.Language = language;
             Localizer.SetLanguage(language);
-            playerData.CustomCharacterModelId = Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
+            playerData.SetCustomCharacterModelId(1);
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
         }

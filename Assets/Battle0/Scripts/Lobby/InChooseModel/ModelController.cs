@@ -37,7 +37,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 _view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
             {
                 playerDataCache.SetPlayerName(_view.PlayerName);
-                playerDataCache.CustomCharacterModelId = _view.CurrentCharacterId;
+                playerDataCache.SetCustomCharacterModelId(_view.CurrentCharacterId);
             }
             if (PhotonNetwork.NickName != playerDataCache.PlayerName)
             {

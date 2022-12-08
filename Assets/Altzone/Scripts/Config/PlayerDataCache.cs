@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Config
         string PlayerName { get; }
         string PlayerGuid { get; }
         int ClanId { get; }
-        int CustomCharacterModelId { get; set; }
+        int CustomCharacterModelId { get; }
         SystemLanguage Language { get; set; }
         bool IsDebugFlag { get; set; }
         bool IsTosAccepted { get; set; }
@@ -29,6 +29,7 @@ namespace Altzone.Scripts.Config
         void SetPlayerName(string playerName);
         void SetPlayerGuid(string newPlayerGuid);
         void SetClanId(int clanId);
+        void SetCustomCharacterModelId(int customCharacterModelId);
 
 #if UNITY_EDITOR
         void DebugSavePlayer();
@@ -63,7 +64,7 @@ namespace Altzone.Scripts.Config
             IsAccountVerified = false;
             IsDebugFlag = false;
         }
-        
+
         public override string ToString()
         {
             return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}" +
@@ -87,7 +88,7 @@ namespace Altzone.Scripts.Config
         /// Negative model IDs are considered invalid.
         /// </summary>
         private const int DummyModelId = -1;
-        
+
         private const string DefaultPlayerName = "Player";
         private const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
@@ -144,7 +145,7 @@ namespace Altzone.Scripts.Config
         public int CustomCharacterModelId
         {
             get => _playerData.CustomCharacterModelId;
-            set
+            private set
             {
                 _playerData.CustomCharacterModelId = value;
                 Save();
@@ -232,7 +233,7 @@ namespace Altzone.Scripts.Config
             PlayerName = playerName ?? DefaultPlayerName;
             LootLockerWrapper.SetPlayerName(_playerData.PlayerName);
         }
-        
+
         public void SetPlayerGuid(string newPlayerGuid)
         {
             Assert.IsTrue(!string.IsNullOrWhiteSpace(newPlayerGuid), "!string.IsNullOrWhiteSpace(newPlayerGuid)");
@@ -246,13 +247,14 @@ namespace Altzone.Scripts.Config
 
         public void SetClanId(int clanId)
         {
-            if (clanId <= 0)
-            {
-                clanId = DummyModelId;
-            }
-            ClanId = clanId;
+            ClanId = clanId <= 0 ? DummyModelId : clanId;
         }
-        
+
+        public void SetCustomCharacterModelId(int customCharacterModelId)
+        {
+            CustomCharacterModelId = customCharacterModelId <= 0 ? DummyModelId : customCharacterModelId;
+        }
+
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.
         /// </summary>
