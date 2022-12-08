@@ -51,9 +51,9 @@ namespace Altzone.Scripts.Config
         public bool IsAccountVerified;
         public bool IsDebugFlag;
 
-        public void ResetData(int dummyModelId, SystemLanguage defaultLanguage)
+        public void ResetData(string dummyPlayerName, int dummyModelId, SystemLanguage defaultLanguage)
         {
-            PlayerName = string.Empty;
+            PlayerName = dummyPlayerName;
             PlayerGuid = string.Empty;
             ClanId = dummyModelId;
             CustomCharacterModelId = dummyModelId;
@@ -272,7 +272,7 @@ namespace Altzone.Scripts.Config
 #if UNITY_EDITOR
         public void DebugResetPlayer()
         {
-            _playerData.ResetData(DummyModelId, DefaultLanguage);
+            _playerData.ResetData(DefaultPlayerName, DummyModelId, DefaultLanguage);
         }
 
         public void DebugSavePlayer()
