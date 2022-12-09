@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Altzone.Scripts.Config;
 using Prg.Scripts.Common.RestApi;
@@ -28,6 +29,101 @@ namespace Altzone.Scripts
             No,
         }
 
+        public static LocationData Data { get; private set; }
+
+        public static bool HasData => Data != null;
+
+        public static void Load(Action<LocationData> callback)
+        {
+            Data = LocationData.Load();
+            if (Data != null)
+            {
+                callback?.Invoke(Data);
+                return;
+            }
+            var result = LoadLocationDataAsync(callback);
+            // Keep compiler happy as we ignore the result.
+            Assert.IsNotNull(result);
+        }
+
+        public static void Delete()
+        {
+            Data = null;
+        }
+
+        [Conditional("USE_UNITY_ADS")]
+        public static void SetConsentMetaData(GeoLocation.LocationData data)
+        {
+            // Google Play Families compliance:
+            // - mixed indicates that the app is directed at mixed audiences (including children).
+            var privacyValue = PlayerPrefs.GetString(PlayerPrefKeys.ConsentFamiliesPrivacyMode, "mixed");
+            var metaData = new MetaData("privacy");
+            metaData.Set("mode", privacyValue);
+            Advertisement.SetMetaData(metaData);
+
+            // Complying with GDPR:
+            // - false indicates that the user opts out of targeted advertising.
+            var gdprConsentValue = data.GdprConsent == GeoLocation.GdprConsent.Yes ? "true" : "false";
+            metaData = new MetaData("gdpr");
+            metaData.Set("consent", gdprConsentValue);
+            Advertisement.SetMetaData(metaData);
+
+            // COPPA compliance and contextual ads:
+            // - true indicates that the user may not receive personalized ads.
+            var nonBehavioralValue = data.GdprConsent == GeoLocation.GdprConsent.Yes ? "false" : "true";
+            metaData = new MetaData("user");
+            metaData.Set("nonbehavioral", nonBehavioralValue);
+            Advertisement.SetMetaData(metaData);
+        }
+
+        private static async Task LoadLocationDataAsync(Action<LocationData> callback)
+        {
+            Dictionary<string, string> ParseJson(string json)
+            {
+                json = json.Replace('{', ' ').Replace('}', ' ');
+                var lines = json.Split(',');
+                var data = new Dictionary<string, string>();
+                for (var i = 0; i < lines.Length; ++i)
+                {
+                    var line = lines[i];
+                    var tokens = line.Trim().Split(':');
+                    if (tokens.Length == 2)
+                    {
+                        var key = tokens[0].Trim().Replace("\"", string.Empty);
+                        var value = tokens[1].Trim().Replace("\"", string.Empty);
+                        data.Add(key, value);
+                    }
+                }
+                return data;
+            }
+
+            Data = null;
+            try
+            {
+                var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
+                if (!result.Success)
+                {
+                    Debug.Log($"GET {result.Message}");
+                    return;
+                }
+                var payload = result.Payload;
+                var response = ParseJson(payload);
+                if (!response.ContainsKey("status")
+                    || !response.TryGetValue("country", out var country)
+                    || !response.TryGetValue("countryCode", out var countryCode))
+                {
+                    Debug.Log($"GET ERROR {payload}");
+                    return;
+                }
+                Data = LocationData.Save(country, countryCode, GdprConsent.Unknown);
+                Debug.Log($"GeoLocation {Data}");
+            }
+            finally
+            {
+                callback?.Invoke(Data);
+            }
+        }
+
         public class LocationData
         {
             public readonly string Country;
@@ -46,14 +142,7 @@ namespace Altzone.Scripts
                 GdprConsent = IsGdprApplicable ? gdprConsent : GdprConsent.Yes;
             }
 
-            public static LocationData CreateAndSave(string country, string countryCode, GdprConsent gdprConsent)
-            {
-                var locationData = new LocationData(country, countryCode, gdprConsent);
-                locationData.Save();
-                return locationData;
-            }
-
-            public static LocationData Load()
+            internal static LocationData Load()
             {
                 var country = PlayerPrefs.GetString(PlayerPrefKeys.GeoIpCountry, string.Empty);
                 var countryCode = PlayerPrefs.GetString(PlayerPrefKeys.GeoIpCountryCode, string.Empty);
@@ -66,7 +155,14 @@ namespace Altzone.Scripts
                 return locationData;
             }
 
-            private void Save()
+            internal static LocationData Save(string country, string countryCode, GdprConsent gdprConsent)
+            {
+                var locationData = new LocationData(country, countryCode, gdprConsent);
+                locationData.SaveSettings();
+                return locationData;
+            }
+
+            private void SaveSettings()
             {
                 PlayerPrefs.SetString(PlayerPrefKeys.GeoIpCountry, Country);
                 PlayerPrefs.SetString(PlayerPrefKeys.GeoIpCountryCode, CountryCode);
@@ -121,70 +217,6 @@ namespace Altzone.Scripts
             public override string ToString()
             {
                 return $"{Country} ({CountryCode}){(IsGdprApplicable ? " (GDPR)" : "")} consent {GdprConsent}";
-            }
-        }
-
-        public static bool HasData => Data != null;
-        public static LocationData Data { get; private set; }
-
-        public static void Load(Action<LocationData> callback)
-        {
-            Data = LocationData.Load();
-            if (Data != null)
-            {
-                callback?.Invoke(Data);
-                return;
-            }
-            var result = LoadLocationDataAsync(callback);
-            // Keep compiler happy as we ignore the result.
-            Assert.IsNotNull(result);
-        }
-
-        private static async Task LoadLocationDataAsync(Action<LocationData> callback)
-        {
-            Dictionary<string, string> ParseJson(string json)
-            {
-                json = json.Replace('{', ' ').Replace('}', ' ');
-                var lines = json.Split(',');
-                var data = new Dictionary<string, string>();
-                for (var i = 0; i < lines.Length; ++i)
-                {
-                    var line = lines[i];
-                    var tokens = line.Trim().Split(':');
-                    if (tokens.Length == 2)
-                    {
-                        var key = tokens[0].Trim().Replace("\"", string.Empty);
-                        var value = tokens[1].Trim().Replace("\"", string.Empty);
-                        data.Add(key, value);
-                    }
-                }
-                return data;
-            }
-
-            Data = null;
-            try
-            {
-                var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
-                if (!result.Success)
-                {
-                    Debug.Log($"GET {result.Message}");
-                    return;
-                }
-                var payload = result.Payload;
-                var response = ParseJson(payload);
-                if (!response.ContainsKey("status")
-                    || !response.TryGetValue("country", out var country)
-                    || !response.TryGetValue("countryCode", out var countryCode))
-                {
-                    Debug.Log($"GET ERROR {payload}");
-                    return;
-                }
-                Data = LocationData.CreateAndSave(country, countryCode, GdprConsent.Unknown);
-                Debug.Log($"Set GeoLocation {Data}");
-            }
-            finally
-            {
-                callback?.Invoke(Data);
             }
         }
     }

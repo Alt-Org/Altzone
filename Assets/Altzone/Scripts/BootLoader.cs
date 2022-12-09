@@ -36,37 +36,8 @@ namespace Altzone.Scripts
                     PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
                 }
             }
-            GeoLocation.Load(data =>
-            {
-                UnityEngine.Debug.Log($"Photon {PhotonLobby.GameVersion} GeoLocation {data} IsSimulator {AppPlatform.IsSimulator}");
-                SetConsentMetaData(data);
-                UnitySingleton.CreateStaticSingleton<ServiceLoader>();
-            });
-        }
-
-        [Conditional("USE_UNITY_ADS")]
-        private static void SetConsentMetaData(GeoLocation.LocationData data)
-        {
-            // Google Play Families compliance:
-            // - mixed indicates that the app is directed at mixed audiences (including children).
-            var privacyValue = PlayerPrefs.GetString(PlayerPrefKeys.ConsentFamiliesPrivacyMode, "mixed");
-            var metaData = new MetaData("privacy");
-            metaData.Set("mode", privacyValue);
-            Advertisement.SetMetaData(metaData);
-
-            // Complying with GDPR:
-            // - false indicates that the user opts out of targeted advertising.
-            var gdprConsentValue = data.GdprConsent == GeoLocation.GdprConsent.Yes ? "true" : "false";
-            metaData = new MetaData("gdpr");
-            metaData.Set("consent", gdprConsentValue);
-            Advertisement.SetMetaData(metaData);
-
-            // COPPA compliance and contextual ads:
-            // - true indicates that the user may not receive personalized ads.
-            var nonBehavioralValue = data.GdprConsent == GeoLocation.GdprConsent.Yes ? "false" : "true";
-            metaData = new MetaData("user");
-            metaData.Set("nonbehavioral", nonBehavioralValue);
-            Advertisement.SetMetaData(metaData);
+            UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
+            UnitySingleton.CreateStaticSingleton<ServiceLoader>();
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
@@ -79,6 +50,7 @@ namespace Altzone.Scripts
             Thread.CurrentThread.CurrentUICulture = ci;
         }
     }
+
 #if USE_UNITY_ADS
 #else
     // Keep compiler happy with these dummy classes for UnityEngine.Advertisements package when UNITY ADS are not in use.
