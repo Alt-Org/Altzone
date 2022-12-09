@@ -3,16 +3,19 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players
 {
-
-    public class PlayerInputHandler : MonoBehaviour
+    public interface IPlayerInputHandler
     {
-        
+        void SetPlayerDriver(IPlayerDriver playerDriver);
+    }
+
+        public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
+    {
         private Vector2 _inputClick;
 
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
-
         private IPlayerDriver _playerDriver;
+
         private Camera _camera;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
@@ -20,9 +23,14 @@ namespace Battle.Scripts.Battle.Players
 
         private void Awake()
         {
-            _playerDriver = FindObjectOfType<PlayerDriverStatic>();
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             _camera = Context.GetBattleCamera.Camera;
+        }
+
+        public void SetPlayerDriver(IPlayerDriver playerDriver)
+        {
+            Debug.Log($"{name}");
+            _playerDriver = playerDriver;
             SetupInput();
         }
 

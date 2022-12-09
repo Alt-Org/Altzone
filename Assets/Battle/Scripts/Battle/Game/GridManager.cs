@@ -14,7 +14,7 @@ namespace Battle.Scripts.Battle.Game
         private float _arenaWidth;
         private float _arenaHeight;
 
-        private void Awake()
+        private void Start()
         {
             _battlePlayArea = Context.GetBattlePlayArea();
             _arenaWidth = _battlePlayArea.ArenaWidth;

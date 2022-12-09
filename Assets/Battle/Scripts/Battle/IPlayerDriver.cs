@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
-    internal interface IPlayerDriver
+    public interface IPlayerDriver
     {
         void MoveTo(Vector2 targetPosition);
     }
