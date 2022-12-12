@@ -118,6 +118,89 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Range(0, 10)] public int _resistance7;
         [Range(0, 10)] public int _attack7;
         [Range(0, 10)] public int _defence7;
+        
+        public void LoadKoulukiusaaja(int _Speed1, int _Resistance1, int _Attack1, int _Defence1)
+        {
+            Koulukiusaaja = "Koulukiusaaja";
+            _mainDefence1 = Defence.Desensitisation;
+            _speed1 = _Speed1;
+            _resistance1 = _Resistance1;
+            _attack1 = _Attack1;
+            _defence1 = _Defence1;
+        }
+
+        public void LoadVitsiniekka(int _Speed2, int _Resistance2, int _Attack2, int _Defence2)
+        {
+            Vitsiniekka = "Vitsiniekka";
+            _mainDefence2 = Defence.Deflection;
+            _speed2 = _Speed2;
+             _resistance2 = _Resistance2;
+            _attack2 = _Attack2;
+            _defence2 =  _Defence2;
+        }
+
+         public void  LoadPappi( int _Speed3, int _Resistance3, int _Attack3, int _Defence3)
+        {
+            Pappi = "Pappi";
+            _mainDefence3 = Defence.Introjection;
+            _speed3 = _Speed3;
+            _resistance3 = _Resistance3;
+            _attack3 = _Attack3;
+            _defence3=  _Defence3;
+        }
+
+        public  void LoadTaiteilija(int _Speed4, int _Resistance4, int  _Attack4, int _Defence4)
+        {
+            Taiteilija = "Taiteilija";
+            _mainDefence4 = Defence.Projection;
+            _speed4 = _Speed4;
+            _resistance4 = _Resistance4;
+            _attack4 = _Attack4;
+            _defence4 = _Defence4;
+        }
+
+         public void LoadHodariläski( int _Speed5, int _Resistance5, int _Attack5, int _Defence5)
+        {
+            Hodariläski = "Hodariläski";
+            _mainDefence5 = Defence.Retroflection;
+            _speed5 = _Speed5;
+            _resistance5 = _Resistance5;
+            _attack5 = _Attack5;
+            _defence5 = _Defence5;
+        }
+
+        public void LoadÄlykkö( int _Speed6, int _Resistance6, int _Attack6, int _Defence6)
+        {
+            Älykkö = "Älykkö";
+            _mainDefence6 = Defence.Egotism;
+            _speed6 = _Speed6;
+            _resistance6 = _Resistance6;
+            _attack6 = _Attack6;
+            _defence6 = _Defence6;
+        }
+        
+         public void LoadTytöt(int  _Speed7, int _Resistance7, int _Attack7, int _Defence7)
+        {
+            Tytöt = "Tytöt";
+            _mainDefence7 = Defence.Confluence;
+            _speed7 = _Speed7;
+            _resistance7 = _Resistance7;
+            _attack7 = _Attack7;
+            _defence7 = _Defence7;
+        }
+        public void LoadNewCharacter(string _name, Defence _mainDefence8, int _Speed8,int _Resistance8 ,int _Attack8, int _Defence8)
+        {
+            _name = "";
+            _mainDefence8 = Defence.Egotism;
+            _speed8 =_Speed8;
+            _resistance8 = _Resistance8;
+            _attack8 = _Attack8;
+            _defence8 = _Defence8;
+        }
+        public void DeleteNewCharacter()
+        {
+
+        }
     }
 
     #endregion
