@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Prg.Scripts.Common.RestApi
 {
+    /// <summary>
+    /// Async helper for REST API requests.
+    /// </summary>
     public static class RestApiServiceAsync
     {
         public class Response
@@ -36,7 +42,39 @@ namespace Prg.Scripts.Common.RestApi
             }
         }
 
-        public static async Task<Response> ExecuteRequest(string verb, string url, byte[] content, string jwtToken = null)
+        public class Headers
+        {
+            public readonly List<Tuple<string, string>> HeaderList;
+
+            public Headers(string name, string value)
+            {
+                HeaderList = new List<Tuple<string, string>>() { new(name, value) };
+            }
+
+            public Headers(List<Tuple<string, string>> headerList)
+            {
+                HeaderList = headerList;
+            }
+        }
+
+        /// <summary>
+        /// Container for HTTP Authorization header.
+        /// </summary>
+        /// <remarks>
+        /// Name is typically 'Authorization' and value is service dependent, like e.g. jwt token etc.
+        /// </remarks>
+        public class AuthorizationHeader : Headers
+        {
+            public AuthorizationHeader(string value) : base("Authorization", value)
+            {
+            }
+
+            public AuthorizationHeader(string name, string value) : base(name, value)
+            {
+            }
+        }
+
+        public static async Task<Response> ExecuteRequest(string verb, string url, object content = null, Headers headers = null)
         {
             string GetWebExceptionStatus(WebException webException)
             {
@@ -53,6 +91,39 @@ namespace Prg.Scripts.Common.RestApi
                 return response ?? string.Empty;
             }
 
+            async Task WriteRequestData(WebRequest webRequest, object contentData)
+            {
+                if (contentData is string stringData)
+                {
+                    var bytes = Encoding.ASCII.GetBytes(stringData);
+                    webRequest.ContentLength = bytes.Length;
+                    if (bytes.Length > 0)
+                    {
+                        webRequest.ContentType = "application/json";
+                        using (var stream = await webRequest.GetRequestStreamAsync())
+                        {
+                            await stream.WriteAsync(bytes, 0, bytes.Length);
+                        }
+                    }
+                }
+                else if (contentData is byte[] formData)
+                {
+                    webRequest.ContentLength = formData.Length;
+                    if (formData.Length > 0)
+                    {
+                        webRequest.ContentType = "application/x-www-form-urlencoded";
+                        using (var stream = await webRequest.GetRequestStreamAsync())
+                        {
+                            await stream.WriteAsync(formData, 0, formData.Length);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new UnityException($"Invalid content type: {contentData?.GetType().FullName}");
+                }
+            }
+            
             Debug.Log($"ExecuteRequest start {url}");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -62,9 +133,18 @@ namespace Prg.Scripts.Common.RestApi
             {
                 var request = WebRequest.Create(url);
                 request.Method = verb;
-                if (jwtToken != null)
+                if (headers != null)
                 {
-                    request.Headers.Add("Authorization", "Bearer " + jwtToken);
+                    foreach (var header in headers.HeaderList)
+                    {
+                        request.Headers.Add(header.Item1, header.Item2);
+                    }
+                }
+                Debug.Log($"Headers #{request.Headers.Count}");
+                for (var i = 0; i < request.Headers.Count; ++i)
+                {
+                    var h = request.Headers;
+                    Debug.Log($"{h.GetKey(i)}: {string.Join(',', h.GetValues(i))}");
                 }
                 if (request is HttpWebRequest webRequest)
                 {
@@ -72,15 +152,7 @@ namespace Prg.Scripts.Common.RestApi
                 }
                 if (verb == "POST")
                 {
-                    request.ContentLength = content.Length;
-                    if (content.Length > 0)
-                    {
-                        request.ContentType = "application/x-www-form-urlencoded";
-                        using (var stream = await request.GetRequestStreamAsync())
-                        {
-                            await stream.WriteAsync(content, 0, content.Length);
-                        }
-                    }
+                    await WriteRequestData(request, content);
                 }
                 if (!(await request.GetResponseAsync() is HttpWebResponse response))
                 {
@@ -91,26 +163,22 @@ namespace Prg.Scripts.Common.RestApi
                     return new Response($"Request failed: {response.StatusCode}", string.Empty);
                 }
                 contentType = response.ContentType;
-                using (var dataStream = response.GetResponseStream())
+                await using var dataStream = response.GetResponseStream();
+                if (dataStream != null)
                 {
-                    if (dataStream != null)
-                    {
-                        var reader = new StreamReader(dataStream);
-                        httpResponse = await ReadToEndAsyncNonNull(reader);
-                    }
+                    var reader = new StreamReader(dataStream);
+                    httpResponse = await ReadToEndAsyncNonNull(reader);
                 }
             }
             catch (WebException e)
             {
                 if (e.Response != null)
                 {
-                    using (var dataStream = e.Response.GetResponseStream())
+                    await using var dataStream = e.Response.GetResponseStream();
+                    if (dataStream != null)
                     {
-                        if (dataStream != null)
-                        {
-                            var reader = new StreamReader(dataStream);
-                            httpResponse = await ReadToEndAsyncNonNull(reader);
-                        }
+                        var reader = new StreamReader(dataStream);
+                        httpResponse = await ReadToEndAsyncNonNull(reader);
                     }
                 }
                 stopWatch.Stop();

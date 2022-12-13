@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Altzone.Scripts.Config;
+using Prg.Scripts.Common.MiniJson;
 using Prg.Scripts.Common.RestApi;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -78,29 +79,19 @@ namespace Altzone.Scripts
 
         private static async Task LoadLocationDataAsync(Action<LocationData> callback)
         {
-            Dictionary<string, string> ParseJson(string json)
+            Dictionary<string, object> ParseJson(string json)
             {
-                json = json.Replace('{', ' ').Replace('}', ' ');
-                var lines = json.Split(',');
-                var data = new Dictionary<string, string>();
-                for (var i = 0; i < lines.Length; ++i)
+                if (!(Json.Deserialize(json) is Dictionary<string, object> jsonData))
                 {
-                    var line = lines[i];
-                    var tokens = line.Trim().Split(':');
-                    if (tokens.Length == 2)
-                    {
-                        var key = tokens[0].Trim().Replace("\"", string.Empty);
-                        var value = tokens[1].Trim().Replace("\"", string.Empty);
-                        data.Add(key, value);
-                    }
+                    jsonData = new Dictionary<string, object>();
                 }
-                return data;
+                return jsonData;
             }
 
             Data = null;
             try
             {
-                var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl, null);
+                var result = await RestApiServiceAsync.ExecuteRequest("GET", ApiUrl);
                 if (!result.Success)
                 {
                     Debug.Log($"GET {result.Message}");
@@ -112,10 +103,10 @@ namespace Altzone.Scripts
                     || !response.TryGetValue("country", out var country)
                     || !response.TryGetValue("countryCode", out var countryCode))
                 {
-                    Debug.Log($"GET ERROR {payload}");
+                    Debug.Log($"JSON ERROR {payload.Replace('\r', '.').Replace('\n', '.')}");
                     return;
                 }
-                Data = LocationData.Save(country, countryCode, GdprConsent.Unknown);
+                Data = LocationData.Save(country.ToString(), countryCode.ToString(), GdprConsent.Unknown);
                 Debug.Log($"GeoLocation {Data}");
             }
             finally

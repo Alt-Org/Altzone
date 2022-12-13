@@ -60,6 +60,7 @@ namespace Editor
             var currentStatus = 
                 $"{RichText.Magenta("UpdateAssetHistory")} {AssetHistoryFilename} with {fileHistory.Count} entries and {files.Length} meta files";
             var newFileCount = 0;
+            var isShowNewFiles = Math.Abs(fileHistory.Count - files.Length) < 100;
             var newLines = new StringBuilder();
             foreach (var file in files)
             {
@@ -74,7 +75,7 @@ namespace Editor
                 {
                     newFileCount += 1;
                     newLines.Append(line).AppendLine();
-                    if (hasLines)
+                    if (isShowNewFiles)
                     {
                         UnityEngine.Debug.Log(line);
                     }
