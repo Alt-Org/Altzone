@@ -35,26 +35,20 @@ namespace Editor
             EditorApplication.delayCall -= OnDelayCall;
             
             var dayOfYear = DateTime.Now.DayOfYear;
-            if (File.Exists(AssetHistoryFilename))
+            if (dayOfYear == PlayerPrefs.GetInt(DayNumberKey, 0) && File.Exists(AssetHistoryFilename))
             {
-                var dayNumber = PlayerPrefs.GetInt(DayNumberKey, 0);
-                if (dayNumber == dayOfYear)
-                {
-                    return;
-                }
+                return;
             }
-            else
+            if (UpdateAssetHistory())
             {
-                File.WriteAllText(AssetHistoryFilename, "");
+                PlayerPrefs.SetInt(DayNumberKey, dayOfYear);
             }
-            UpdateAssetHistory();
-            PlayerPrefs.SetInt(DayNumberKey, dayOfYear);
         }
 
-        private static void UpdateAssetHistory()
+        private static bool UpdateAssetHistory()
         {
-            var lines = File.ReadAllLines(AssetHistoryFilename);
-            var hasLines = lines.Length > 0 && lines[0].Length > 0;
+            var lines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
+            var hasLines = lines.Length > 0;
             var fileHistory = new HashSet<string>(lines);
             var files = Directory.GetFiles(AssetPath, "*.meta", SearchOption.AllDirectories);
             var currentStatus = 
@@ -84,7 +78,7 @@ namespace Editor
             if (newFileCount == 0)
             {
                 UnityEngine.Debug.Log($"{currentStatus} {RichText.White("ok")}");
-                return;
+                return false;
             }
             // Remove last CR-LF
             newLines.Length -= 2;
@@ -100,6 +94,7 @@ namespace Editor
                 File.WriteAllText(AssetHistoryFilename, newLines.ToString());
             }
             UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} new entries")}");
+            return true;
         }
     }
 }
