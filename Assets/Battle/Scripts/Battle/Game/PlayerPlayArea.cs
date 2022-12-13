@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
@@ -20,6 +21,11 @@ namespace Battle.Scripts.Battle.Game
 
         [SerializeField] private GameObject _blueTeamBrickWall;
         [SerializeField] private GameObject _redTeamBrickWall;
+
+        [Header("Player Start Positions"), SerializeField] private GridPos _startPositionBlueA;
+        [SerializeField] private GridPos _startPositionBlueB;
+        [SerializeField] private GridPos _startPositionRedA;
+        [SerializeField] private GridPos _startPositionRedB;
 
         private GameObject[] _blueTeamBricks;
         private GameObject[] _redTeamBricks;
@@ -114,6 +120,29 @@ namespace Battle.Scripts.Battle.Game
                     throw new UnityException($"Invalid player position {playerPos}");
             }
             return playArea;
+        }
+
+        public GridPos GetPlayerStartPosition(int playerPos)
+        {
+            GridPos startPosition;
+            switch (playerPos)
+            {
+                case 1:
+                    startPosition = _startPositionBlueA;
+                    break;
+                case 2:
+                    startPosition = _startPositionBlueB;
+                    break;
+                case 3:
+                    startPosition = _startPositionRedA;
+                    break;
+                case 4:
+                    startPosition = _startPositionRedB;
+                    break;
+                default:
+                    throw new UnityException($"Invalid player position {playerPos}");
+            }
+                return startPosition;
         }
     }
 }

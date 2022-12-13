@@ -192,10 +192,10 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         {
             _name = "";
             _mainDefence8 = Defence.Egotism;
-            _speed8 =_Speed8;
-            _resistance8 = _Resistance8;
-            _attack8 = _Attack8;
-            _defence8 = _Defence8;
+            //_speed8 =_Speed8;
+            //_resistance8 = _Resistance8;
+            //_attack8 = _Attack8;
+            //_defence8 = _Defence8;
         }
         public void DeleteNewCharacter()
         {

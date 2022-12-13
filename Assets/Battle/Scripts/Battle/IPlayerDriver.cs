@@ -7,5 +7,7 @@ namespace Battle.Scripts.Battle
     public interface IPlayerDriver
     {
         void MoveTo(Vector2 targetPosition);
+
+        void MoveTo(GridPos gridPos);
     }
 }

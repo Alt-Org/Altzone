@@ -28,6 +28,10 @@ namespace Battle.Scripts.Battle.Players
             targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition);
         }
-
+        void IPlayerDriver.MoveTo(GridPos gridPos)
+        {
+            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
+            _playerActor.MoveTo(targetPosition);
+        }
     }
 }

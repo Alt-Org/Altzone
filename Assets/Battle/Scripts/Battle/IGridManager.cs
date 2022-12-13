@@ -3,13 +3,18 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
+    [Serializable]
     public class GridPos : Tuple<int, int>
     {
-        public int Row => Item1;
-        public int Col => Item2;
+        [SerializeField] private int _row;
+        [SerializeField] private int _col;
+        public int Row => _row;
+        public int Col => _col;
 
         public GridPos(int row, int col) : base(row, col)
         {
+            _row = row;
+            _col = col;
         }
 
         public override string ToString()
