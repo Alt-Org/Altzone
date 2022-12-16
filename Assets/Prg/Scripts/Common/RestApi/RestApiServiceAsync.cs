@@ -76,54 +76,6 @@ namespace Prg.Scripts.Common.RestApi
 
         public static async Task<Response> ExecuteRequest(string verb, string url, object content = null, Headers headers = null)
         {
-            string GetWebExceptionStatus(WebException webException)
-            {
-                if (webException.Status == WebExceptionStatus.ProtocolError && webException.Response is HttpWebResponse httpWebResponse)
-                {
-                    return $"{(int)httpWebResponse.StatusCode} {httpWebResponse.StatusDescription}";
-                }
-                return webException.Message;
-            }
-
-            async Task<string> ReadToEndAsyncNonNull(TextReader streamReader)
-            {
-                var response = await streamReader.ReadToEndAsync();
-                return response ?? string.Empty;
-            }
-
-            async Task WriteRequestData(WebRequest webRequest, object contentData)
-            {
-                if (contentData is string stringData)
-                {
-                    var bytes = Encoding.ASCII.GetBytes(stringData);
-                    webRequest.ContentLength = bytes.Length;
-                    if (bytes.Length > 0)
-                    {
-                        webRequest.ContentType = "application/json";
-                        using (var stream = await webRequest.GetRequestStreamAsync())
-                        {
-                            await stream.WriteAsync(bytes, 0, bytes.Length);
-                        }
-                    }
-                }
-                else if (contentData is byte[] formData)
-                {
-                    webRequest.ContentLength = formData.Length;
-                    if (formData.Length > 0)
-                    {
-                        webRequest.ContentType = "application/x-www-form-urlencoded";
-                        using (var stream = await webRequest.GetRequestStreamAsync())
-                        {
-                            await stream.WriteAsync(formData, 0, formData.Length);
-                        }
-                    }
-                }
-                else
-                {
-                    throw new UnityException($"Invalid content type: {contentData?.GetType().FullName}");
-                }
-            }
-            
             Debug.Log($"ExecuteRequest start {url}");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -154,13 +106,13 @@ namespace Prg.Scripts.Common.RestApi
                 {
                     await WriteRequestData(request, content);
                 }
-                if (!(await request.GetResponseAsync() is HttpWebResponse response))
+                if (await request.GetResponseAsync() is not HttpWebResponse response)
                 {
                     return new Response("Request failed: (NULL response)", string.Empty);
                 }
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    return new Response($"Request failed: {response.StatusCode}", string.Empty);
+                    return new Response($"Request failed: {response.StatusCode}: {response.StatusDescription}", string.Empty);
                 }
                 contentType = response.ContentType;
                 await using var dataStream = response.GetResponseStream();
@@ -183,7 +135,7 @@ namespace Prg.Scripts.Common.RestApi
                 }
                 stopWatch.Stop();
                 var status = GetWebExceptionStatus(e);
-                Debug.Log($"request failed: {status} in {stopWatch.ElapsedMilliseconds} ms");
+                Debug.Log($"Request failed: {status} in {stopWatch.ElapsedMilliseconds} ms");
                 Debug.Log($"body {httpResponse}");
                 return new Response(status, httpResponse ?? string.Empty);
             }
@@ -193,13 +145,56 @@ namespace Prg.Scripts.Common.RestApi
                 return new Response(e.Message, string.Empty);
             }
             stopWatch.Stop();
-            Debug.Log($"request success {contentType} len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
+            Debug.Log($"Request success {contentType} len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
             if (contentType.Contains("json"))
             {
                 httpResponse = httpResponse.Replace("\r", "").Replace("\n", "");
             }
-            Debug.Log($"response {httpResponse}");
+            Debug.Log($"Response: {httpResponse}");
             return new Response(httpResponse);
+        }
+
+        private static string GetWebExceptionStatus(WebException webException)
+        {
+            if (webException.Status == WebExceptionStatus.ProtocolError && webException.Response is HttpWebResponse httpWebResponse)
+            {
+                return $"{(int)httpWebResponse.StatusCode} {httpWebResponse.StatusDescription}";
+            }
+            return webException.Message;
+        }
+
+        private static async Task<string> ReadToEndAsyncNonNull(TextReader streamReader)
+        {
+            var response = await streamReader.ReadToEndAsync();
+            return response ?? string.Empty;
+        }
+
+        private static async Task WriteRequestData(WebRequest webRequest, object contentData)
+        {
+            if (contentData is string stringData)
+            {
+                var bytes = Encoding.ASCII.GetBytes(stringData);
+                webRequest.ContentLength = bytes.Length;
+                if (bytes.Length > 0)
+                {
+                    webRequest.ContentType = "application/json";
+                    await using var stream = await webRequest.GetRequestStreamAsync();
+                    await stream.WriteAsync(bytes, 0, bytes.Length);
+                }
+                return;
+            }
+            if (contentData is byte[] formData)
+            {
+                webRequest.ContentLength = formData.Length;
+                if (formData.Length > 0)
+                {
+                    webRequest.ContentType = "application/x-www-form-urlencoded";
+                    await using var stream = await webRequest.GetRequestStreamAsync();
+                    await stream.WriteAsync(formData, 0, formData.Length);
+                }
+                return;
+            }
+            throw new UnityException($"Invalid content type for request data: {contentData?.GetType().FullName}");
         }
     }
 }
