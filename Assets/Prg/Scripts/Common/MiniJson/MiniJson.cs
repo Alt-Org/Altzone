@@ -74,7 +74,7 @@ namespace Prg.Scripts.Common.MiniJson {
 	/// JSON uses Arrays and Objects. These correspond here to the datatypes IList and IDictionary.
 	/// All numbers are parsed to doubles.
 	/// </summary>
-	public static class Json {
+	public static class MiniJson {
 		/// <summary>
 		/// Parses the string json into a value
 		/// </summary>

@@ -81,7 +81,7 @@ namespace Altzone.Scripts
         {
             Dictionary<string, object> ParseJson(string json)
             {
-                if (!(Json.Deserialize(json) is Dictionary<string, object> jsonData))
+                if (!(MiniJson.Deserialize(json) is Dictionary<string, object> jsonData))
                 {
                     jsonData = new Dictionary<string, object>();
                 }
