@@ -13,6 +13,7 @@ namespace Battle.Scripts.Battle.Players
         private IBattlePlayArea _battlePlayArea;
         private PhotonView _photonView;
         private int _playerPos;
+        private int _teamNumber;
 
         private bool _isLocal;
 
@@ -22,6 +23,8 @@ namespace Battle.Scripts.Battle.Players
             _photonView = PhotonView.Get(this);
             _gridManager = Context.GetGridManager();
             _playerActor = Instantiate(_playerPrefab).GetComponent<PlayerActor>();
+            _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
+            _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
         }
 
         private void OnEnable()
@@ -34,9 +37,16 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerInputHandler = Context.GetPlayerInputHandler();
             playerInputHandler.SetPlayerDriver(this);
-            _playerPos = PhotonNetwork.LocalPlayer.ActorNumber;
             var startingPos = _battlePlayArea.GetPlayerStartPosition(_playerPos);
             ((IPlayerDriver)this).MoveTo(startingPos);
+            if (_teamNumber == 1)
+            {
+                ((IPlayerDriver)this).Rotate(180f);
+            }
+        }
+        void IPlayerDriver.Rotate(float angle)
+        {
+            _photonView.RPC(nameof(RotatePlayerRpc), RpcTarget.All, angle);
         }
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
@@ -55,6 +65,12 @@ namespace Battle.Scripts.Battle.Players
             var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
             targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition);
+        }
+
+        [PunRPC]
+        private void RotatePlayerRpc(float angle)
+        {
+            _playerActor.Rotate(angle);
         }
     }
 }

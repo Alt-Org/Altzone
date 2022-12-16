@@ -5,6 +5,8 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerActor : MonoBehaviour, IPlayerActor
     {
         private Transform _transform;
+        [Header("Settings"), SerializeField] private Transform _geometryRoot;
+
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _playerMoveSpeedMultiplier;
         private Vector2 _targetPosition;
@@ -18,6 +20,10 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             _targetPosition = targetPosition;
+        }
+        void IPlayerActor.Rotate(float angle)
+        {
+            _geometryRoot.Rotate(0, 0, angle);
         }
 
         private void Update()
