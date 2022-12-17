@@ -190,7 +190,8 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
                 var screenRect = Rect.MinMaxRect(0, 0, width, height);
                 _messageAreaScreen = screenRect.Inflate(new Vector2(width * InflateScreenX, height * InflateScreenY));
                 Debug.Log($"screenRect {screenRect} -> _messageAreaScreen {_messageAreaScreen}");
-                Debug.Log($"_messageAreaScreen x [{_messageAreaScreen.xMin} .. {_messageAreaScreen.xMax}] y [{_messageAreaScreen.yMin} .. {_messageAreaScreen.yMax}]");
+                Debug.Log($"_messageAreaScreen x [{_messageAreaScreen.xMin} .. {_messageAreaScreen.xMax}] " +
+                          $"y [{_messageAreaScreen.yMin} .. {_messageAreaScreen.yMax}]");
             }
             _canvas = Instantiate(config._canvasPrefab, Vector3.zero, Quaternion.identity);
             Assert.IsTrue(_canvas.isRootCanvas, "_canvas.isRootCanvas");

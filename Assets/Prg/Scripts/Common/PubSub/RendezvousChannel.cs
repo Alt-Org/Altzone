@@ -171,7 +171,7 @@ namespace Prg.Scripts.Common.PubSub
                 {
                     return false;
                 }
-                return Equals((ChannelBinding) obj);
+                return Equals((ChannelBinding)obj);
             }
 
             public override int GetHashCode()

@@ -16,7 +16,7 @@ namespace Prg.Scripts.Common.Unity.Input
     /// </remarks>
     public class TouchHandler : BaseHandler
     {
-        [Header("Live Data"),SerializeField]  private int _touchCount;
+        [Header("Live Data"), SerializeField] private int _touchCount;
         [SerializeField] private Vector2 _curPanPosition;
         [SerializeField] private Vector2 _prevPanPosition;
         [SerializeField] private int _panFingerId;
@@ -44,7 +44,7 @@ namespace Prg.Scripts.Common.Unity.Input
             Assert.IsTrue(EnhancedTouchSupport.enabled, "EnhancedTouchSupport.enabled");
             switch (Touch.activeTouches.Count)
             {
-                case 1: 
+                case 1:
                     // If the touch began, capture its position and its finger ID.
                     // Otherwise, if the finger ID of the touch doesn't match, skip it.
                     _zoomActive = false;

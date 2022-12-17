@@ -72,7 +72,7 @@ public static class PhotonExtensions
     public static void SafeSetCustomProperty<T>(this Player player, string key, T newValue, T currentValue) where T : struct
     {
         CheckIsTypeAcceptable(newValue);
-        Assert.IsTrue(newValue.GetType() == currentValue.GetType(),"newValue.GetType() == currentValue.GetType()");
+        Assert.IsTrue(newValue.GetType() == currentValue.GetType(), "newValue.GetType() == currentValue.GetType()");
         DoSetCustomProperty(player, key, newValue, currentValue);
     }
 

@@ -30,6 +30,7 @@ namespace Prg.Scripts.Common.Unity.Window
                 }
                 throw new UnityException($"scene not found: {sceneName}");
             }
+
             var scene = windowDef.Scene;
             Assert.IsNotNull(scene, "scene != null");
             Assert.IsFalse(string.IsNullOrEmpty(scene.SceneName), "string.IsNullOrEmpty(scene.SceneName)");

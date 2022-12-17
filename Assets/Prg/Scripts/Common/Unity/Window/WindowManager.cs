@@ -146,7 +146,7 @@ namespace Prg.Scripts.Common.Unity.Window
         int IWindowManager.WindowCount => _currentWindows.Count;
 
         List<MyWindow> IWindowManager.WindowStack => _currentWindows;
-        
+
         int IWindowManager.FindIndex(WindowDef windowDef)
         {
             return _currentWindows.FindIndex(x => x._windowDef == windowDef);

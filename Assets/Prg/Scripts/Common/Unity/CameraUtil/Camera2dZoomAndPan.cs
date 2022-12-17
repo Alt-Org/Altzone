@@ -11,7 +11,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
         void Zoom(float deltaZoom);
         void SetZoomTo(float zoomSize);
     }
-    
+
     [RequireComponent(typeof(Camera2D))]
     public class Camera2dZoomAndPan : MonoBehaviour, ICamera2dZoomAndPan
     {

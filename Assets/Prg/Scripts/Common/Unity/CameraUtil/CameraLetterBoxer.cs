@@ -14,7 +14,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
     {
         // TODO: BEFORE MAKING CHANGES test that this work and then fix code style.
         // NOTE: It seems that this uses extra camera for background and CameraAspectRatio uses OnPreCull()
-        
+
         public enum ReferenceMode
         {
             DesignedAspectRatio,

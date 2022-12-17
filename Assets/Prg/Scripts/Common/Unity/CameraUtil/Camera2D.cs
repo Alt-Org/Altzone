@@ -15,7 +15,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
     public class Camera2D : MonoBehaviour
     {
         #region Variables
-        
+
         private bool _hasCamera;
         private Camera _camera;
         private Transform _transform;

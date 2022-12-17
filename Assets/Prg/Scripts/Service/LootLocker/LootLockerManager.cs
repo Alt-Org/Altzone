@@ -46,7 +46,7 @@ namespace Prg.Scripts.Service.LootLocker
         private bool _isGuestLogin;
 
         public PlayerHandle PlayerHandle => _playerHandle;
-        
+
         /// <summary>
         /// We are in running state when LootLockerPlayerID has any valid value from <c>LootLocker</c> SDK API.
         /// </summary>
@@ -146,7 +146,7 @@ namespace Prg.Scripts.Service.LootLocker
             Debug.Log($"IsRunning {IsRunning}");
             return LootLockerAsync.Ping();
         }
-        
+
         public async Task SetPlayerNameAsync(string playerName, Action<string> setPlayerName)
         {
             // Even if LootLocker fails we should save the new player name to local settings.

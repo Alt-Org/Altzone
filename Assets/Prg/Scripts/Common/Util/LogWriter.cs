@@ -110,7 +110,6 @@ namespace Prg.Scripts.Common.Util
         private static string _prevLogString = string.Empty;
         private static int _prevLogLineCount;
 
-
         /// <summary>
         /// Callback to listen UNITY Debug messages and write them to a file.
         /// </summary>

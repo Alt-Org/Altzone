@@ -53,7 +53,7 @@ public class PrintScreen : MonoBehaviour
             if (Event.current.keyCode == KeyCode.Print
                 || Event.current.keyCode == KeyCode.SysReq // This is actually Print Screen!
                 || Event.current.keyCode == KeyCode.F6 // Works for Mac
-            )
+               )
             {
                 _capturing = true;
             }

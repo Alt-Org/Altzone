@@ -59,7 +59,7 @@ namespace Prg.Scripts.Common.Util
         /// <remarks>
         /// Only non-static public fields are processed!
         /// </remarks>
-        public static Tuple<T,int> Deserialize<T>(BinaryReader reader) where T : class, new()
+        public static Tuple<T, int> Deserialize<T>(BinaryReader reader) where T : class, new()
         {
             var instance = new T();
             var type = instance.GetType();

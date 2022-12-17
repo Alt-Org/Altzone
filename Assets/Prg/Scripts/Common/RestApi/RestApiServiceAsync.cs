@@ -16,7 +16,7 @@ namespace Prg.Scripts.Common.RestApi
     {
         private const string JsonContentType = "application/json";
         private const string FormPostContentType = "application/x-www-form-urlencoded";
-        
+
         public class Response
         {
             private const string OkMessage = "OK";
@@ -146,7 +146,7 @@ namespace Prg.Scripts.Common.RestApi
 
             string LogHttpResponse()
             {
-                var response = responseContentType.Contains("json") 
+                var response = responseContentType.Contains("json")
                     ? httpResponse.Replace('\r', '.').Replace('\n', '.')
                     : httpResponse;
                 return response.Length > 1000 ? response.Substring(0, 1000) : response;

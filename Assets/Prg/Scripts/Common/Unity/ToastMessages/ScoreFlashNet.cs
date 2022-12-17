@@ -140,6 +140,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
         }
 
         #endregion
+
 #else
         public void Push(string message, float worldX, float y)
         {

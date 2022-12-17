@@ -22,8 +22,8 @@ namespace Prg.Scripts.Common.PubSub
             {
                 pairHandlers.Remove(type);
                 //Debug.Log($"Rendezvous {client} with {handler.Client.Target}");
-                handshake((T) handler.Client.Target);
-                ((Action<T>) handler.Action)(client);
+                handshake((T)handler.Client.Target);
+                ((Action<T>)handler.Action)(client);
                 return;
             }
             //Debug.Log($"Rendezvous {client} wait for the other client");
@@ -45,7 +45,7 @@ namespace Prg.Scripts.Common.PubSub
                 var query = handlerList.Where(x => x.Client.IsAlive && !client.Equals(x.Client.Target));
                 foreach (var handlerCandidate in query)
                 {
-                    if (selector((T) handlerCandidate.Client.Target))
+                    if (selector((T)handlerCandidate.Client.Target))
                     {
                         // Handler must be copied to separate list because they may update original handler list, eg. remove themself
                         actionList.Add(handlerCandidate);
@@ -57,8 +57,8 @@ namespace Prg.Scripts.Common.PubSub
                     foreach (var selectedHandler in actionList)
                     {
                         //Debug.Log($"Rendezvous #{++actionCounter} {client} with {selectedHandler.Client.Target}");
-                        handshake((T) selectedHandler.Client.Target);
-                        ((Action<T>) selectedHandler.Action)(client);
+                        handshake((T)selectedHandler.Client.Target);
+                        ((Action<T>)selectedHandler.Action)(client);
                     }
                     return;
                 }

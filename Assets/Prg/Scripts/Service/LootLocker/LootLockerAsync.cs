@@ -36,6 +36,7 @@ namespace Prg.Scripts.Service.LootLocker
             });
             return taskCompletionSource.Task;
         }
+
         public static Task<PlayerNameResponse> SetPlayerName(string playerName)
         {
             var taskCompletionSource = new TaskCompletionSource<PlayerNameResponse>();
