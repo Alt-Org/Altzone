@@ -10,10 +10,13 @@ using UnityEngine;
 namespace Prg.Scripts.Common.RestApi
 {
     /// <summary>
-    /// Async helper for REST API requests.
+    /// Async helper for common REST API requests using JSON.
     /// </summary>
     public static class RestApiServiceAsync
     {
+        private const string JsonContentType = "application/json";
+        private const string FormPostContentType = "application/x-www-form-urlencoded";
+        
         public class Response
         {
             private const string OkMessage = "OK";
@@ -38,7 +41,7 @@ namespace Prg.Scripts.Common.RestApi
 
             public override string ToString()
             {
-                return $"{(Success ? "OK" : $"ERROR:{Message}")}: Response: {Payload}";
+                return $"{Message}: {Payload}";
             }
         }
 
@@ -74,38 +77,31 @@ namespace Prg.Scripts.Common.RestApi
             }
         }
 
+        /// <summary>
+        /// Execute a REST API style request.
+        /// </summary>
+        /// <param name="verb">GET or POST</param>
+        /// <param name="url">API endpoint url</param>
+        /// <param name="content">JSON string or FORM POST byte[]</param>
+        /// <param name="headers">Optional headers for the request</param>
+        /// <returns><c>Response</c> object with success/failure status and JSON response (if any)</returns>
         public static async Task<Response> ExecuteRequest(string verb, string url, object content = null, Headers headers = null)
         {
             Debug.Log($"ExecuteRequest start {url}");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            string contentType;
+            string responseContentType;
             var httpResponse = string.Empty;
             try
             {
-                var request = WebRequest.Create(url);
-                request.Method = verb;
-                if (headers != null)
+                // (1) create web request.
+                var request = CreateWebRequest(url, verb, headers);
+                if (request.Method == "POST")
                 {
-                    foreach (var header in headers.HeaderList)
-                    {
-                        request.Headers.Add(header.Item1, header.Item2);
-                    }
-                }
-                Debug.Log($"Headers #{request.Headers.Count}");
-                for (var i = 0; i < request.Headers.Count; ++i)
-                {
-                    var h = request.Headers;
-                    Debug.Log($"{h.GetKey(i)}: {string.Join(',', h.GetValues(i))}");
-                }
-                if (request is HttpWebRequest webRequest)
-                {
-                    webRequest.Accept = "application/json";
-                }
-                if (verb == "POST")
-                {
+                    // (2) add post data to request.
                     await WriteRequestData(request, content);
                 }
+                // (3) submit and wait for response - handle errors if necessary.
                 if (await request.GetResponseAsync() is not HttpWebResponse response)
                 {
                     return new Response("Request failed: (NULL response)", string.Empty);
@@ -114,24 +110,27 @@ namespace Prg.Scripts.Common.RestApi
                 {
                     return new Response($"Request failed: {response.StatusCode}: {response.StatusDescription}", string.Empty);
                 }
-                contentType = response.ContentType;
+                // (4) read response (if any).
+                responseContentType = response.ContentType;
                 await using var dataStream = response.GetResponseStream();
                 if (dataStream != null)
                 {
                     var reader = new StreamReader(dataStream);
                     httpResponse = await ReadToEndAsyncNonNull(reader);
                 }
+                // (5) return our own Response object.
+                stopWatch.Stop();
+                Debug.Log($"Request success: '{responseContentType}' len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
+                Debug.Log($"Response: {LogHttpResponse()}");
+                return new Response(httpResponse);
             }
             catch (WebException e)
             {
-                if (e.Response != null)
+                await using var dataStream = e.Response?.GetResponseStream();
+                if (dataStream != null)
                 {
-                    await using var dataStream = e.Response.GetResponseStream();
-                    if (dataStream != null)
-                    {
-                        var reader = new StreamReader(dataStream);
-                        httpResponse = await ReadToEndAsyncNonNull(reader);
-                    }
+                    var reader = new StreamReader(dataStream);
+                    httpResponse = await ReadToEndAsyncNonNull(reader);
                 }
                 stopWatch.Stop();
                 var status = GetWebExceptionStatus(e);
@@ -144,14 +143,38 @@ namespace Prg.Scripts.Common.RestApi
                 Debug.LogException(e);
                 return new Response(e.Message, string.Empty);
             }
-            stopWatch.Stop();
-            Debug.Log($"Request success {contentType} len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
-            if (contentType.Contains("json"))
+
+            string LogHttpResponse()
             {
-                httpResponse = httpResponse.Replace("\r", "").Replace("\n", "");
+                var response = responseContentType.Contains("json") 
+                    ? httpResponse.Replace('\r', '.').Replace('\n', '.')
+                    : httpResponse;
+                return response.Length > 1000 ? response.Substring(0, 1000) : response;
             }
-            Debug.Log($"Response: {httpResponse}");
-            return new Response(httpResponse);
+        }
+
+        private static WebRequest CreateWebRequest(string url, string verb, Headers headers)
+        {
+            var request = WebRequest.Create(url);
+            request.Method = verb;
+            if (request is HttpWebRequest webRequest)
+            {
+                webRequest.Accept = JsonContentType;
+            }
+            if (headers != null)
+            {
+                foreach (var header in headers.HeaderList)
+                {
+                    request.Headers.Add(header.Item1, header.Item2);
+                }
+            }
+            Debug.Log($"Headers #{request.Headers.Count}");
+            for (var i = 0; i < request.Headers.Count; ++i)
+            {
+                var h = request.Headers;
+                Debug.Log($"{h.GetKey(i)}: {string.Join(',', h.GetValues(i))}");
+            }
+            return request;
         }
 
         private static string GetWebExceptionStatus(WebException webException)
@@ -173,11 +196,12 @@ namespace Prg.Scripts.Common.RestApi
         {
             if (contentData is string stringData)
             {
-                var bytes = Encoding.ASCII.GetBytes(stringData);
+                // This is JSON.
+                var bytes = Encoding.UTF8.GetBytes(stringData);
                 webRequest.ContentLength = bytes.Length;
                 if (bytes.Length > 0)
                 {
-                    webRequest.ContentType = "application/json";
+                    webRequest.ContentType = JsonContentType;
                     await using var stream = await webRequest.GetRequestStreamAsync();
                     await stream.WriteAsync(bytes, 0, bytes.Length);
                 }
@@ -185,10 +209,11 @@ namespace Prg.Scripts.Common.RestApi
             }
             if (contentData is byte[] formData)
             {
+                // This is Form POST data.
                 webRequest.ContentLength = formData.Length;
                 if (formData.Length > 0)
                 {
-                    webRequest.ContentType = "application/x-www-form-urlencoded";
+                    webRequest.ContentType = FormPostContentType;
                     await using var stream = await webRequest.GetRequestStreamAsync();
                     await stream.WriteAsync(formData, 0, formData.Length);
                 }
