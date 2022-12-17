@@ -39,13 +39,11 @@ namespace Editor
             {
                 return;
             }
-            if (UpdateAssetHistory())
-            {
-                PlayerPrefs.SetInt(DayNumberKey, dayOfYear);
-            }
+            UpdateAssetHistory();
+            PlayerPrefs.SetInt(DayNumberKey, dayOfYear);
         }
 
-        private static bool UpdateAssetHistory()
+        private static void UpdateAssetHistory()
         {
             var lines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
             var hasLines = lines.Length > 0;
@@ -78,7 +76,7 @@ namespace Editor
             if (newFileCount == 0)
             {
                 UnityEngine.Debug.Log($"{currentStatus} {RichText.White("ok")}");
-                return false;
+                return;
             }
             // Remove last CR-LF
             newLines.Length -= 2;
@@ -94,7 +92,6 @@ namespace Editor
                 File.WriteAllText(AssetHistoryFilename, newLines.ToString());
             }
             UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} new entries")}");
-            return true;
         }
     }
 }
