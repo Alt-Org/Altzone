@@ -119,6 +119,13 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Range(0, 10)] public int _attack7;
         [Range(0, 10)] public int _defence7;
         
+        [Header("NewCharacter")] public string[] _name;
+        public Defence[] _mainDefence8;
+        [Range(0, 10)]public int[] _speed8;
+        [Range(0, 10)]public int[] _resistance8; 
+        [Range(0, 10)]public int[] _attack8; 
+        [Range(0, 10)]public int[] _defence8;
+        
         public void LoadKoulukiusaaja(int _Speed1, int _Resistance1, int _Attack1, int _Defence1)
         {
             Koulukiusaaja = "Koulukiusaaja";
@@ -188,18 +195,15 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _attack7 = _Attack7;
             _defence7 = _Defence7;
         }
-        public void LoadNewCharacter(string _name, Defence _mainDefence8, int _Speed8,int _Resistance8 ,int _Attack8, int _Defence8)
+        
+      public void LoadNewCharacter(string[] _name, Defence[] _mainDefence8, int[] _Speed8,int[] _Resistance8 ,int[] _Attack8, int[] _Defence8)
         {
-            _name = "";
-            _mainDefence8 = Defence.Egotism;
-            //_speed8 =_Speed8;
-            //_resistance8 = _Resistance8;
-            //_attack8 = _Attack8;
-            //_defence8 = _Defence8;
-        }
-        public void DeleteNewCharacter()
-        {
-
+            /*_name[] = {"Koodari",};
+            _mainDefence8[] ={Defence.Egotism,};
+            _speed8 =_Speed8;
+            _resistance8 = _Resistance8;
+            _attack8 = _Attack8;
+            _defence8 = _Defence8;*/
         }
     }
 
