@@ -3535,10 +3535,10 @@ MonoBehaviour:
   imagesPieChart:
   - {fileID: 7672265096392430132}
   - {fileID: 7055923720657794718}
-  - {fileID: 1294607752579408705}
   - {fileID: 6330018800869800740}
-  - {fileID: 6848266457890999295}
+  - {fileID: 1294607752579408705}
   - {fileID: 3373089323574246923}
+  - {fileID: 6848266457890999295}
   - {fileID: 5213931551673454673}
   values:
   - 400
@@ -4779,6 +4779,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5063388635983763041}
   - component: {fileID: 8795890778793672644}
+  - component: {fileID: 4212235788215311995}
   - component: {fileID: 7614705291359236500}
   - component: {fileID: 5215264796051361316}
   m_Layer: 5
@@ -4817,6 +4818,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4363188484330515314}
   m_CullTransparentMesh: 1
+--- !u!114 &4212235788215311995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4363188484330515314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdcfc7ed176a3d54fb6c1c3dc0dd7ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  values:
+  - 0
+  - 0
+  - 0
+  - 0
+  incrementAmount: 1
+  valueText: {fileID: 5599254544116321665}
+  valueButtons:
+  - {fileID: 5215264796051361316}
+  - {fileID: 5513208318603004236}
+  - {fileID: 8373258660983880706}
+  - {fileID: 7976724773492317636}
+  incrementButton: {fileID: 8663802538442160932}
+  decrementButton: {fileID: 1581800808428275711}
 --- !u!114 &7614705291359236500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7317,6 +7344,86 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 6e04f143f7d154c4092dba163406cfca, type: 2}
   _isCurrentPopOutWindow: 0
+--- !u!1 &7316918485691737676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9188832532990570359}
+  - component: {fileID: 2853128682588867730}
+  - component: {fileID: 5599254544116321665}
+  m_Layer: 5
+  m_Name: Text (Legacy)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &9188832532990570359
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7316918485691737676}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7982946314271511262}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -46.931, y: -364}
+  m_SizeDelta: {x: 948.5906, y: 132.9758}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2853128682588867730
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7316918485691737676}
+  m_CullTransparentMesh: 1
+--- !u!114 &5599254544116321665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7316918485691737676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 100
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 100
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
 --- !u!1 &7333494667063831989
 GameObject:
   m_ObjectHideFlags: 0
