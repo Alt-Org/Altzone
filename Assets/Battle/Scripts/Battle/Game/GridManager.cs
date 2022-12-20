@@ -16,7 +16,7 @@ namespace Battle.Scripts.Battle.Game
 
         private void Start()
         {
-            _battlePlayArea = Context.GetBattlePlayArea();
+            _battlePlayArea = Context.GetBattlePlayArea;
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
 

@@ -33,10 +33,10 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
 
     private void OnEnable()
     {
-        _gridManager = Context.GetGridManager();
+        _gridManager = Context.GetGridManager;
         _transform = transform;
         _camera = Camera.main;
-        _battlePlayArea = Context.GetBattlePlayArea();
+        _battlePlayArea = Context.GetBattlePlayArea;
         _playArea = _battlePlayArea.GetPlayerPlayArea(PlayerPosition1);
     }
 

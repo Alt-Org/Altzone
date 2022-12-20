@@ -3,18 +3,19 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public interface IPlayerInputHandler
+    internal interface IPlayerInputHandler
     {
         void SetPlayerDriver(IPlayerDriver playerDriver);
     }
 
-        public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
+    public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
     {
         private Vector2 _inputClick;
 
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
         private IPlayerDriver _playerDriver;
+        private IGridManager _gridManager;
 
         private Camera _camera;
 
@@ -25,9 +26,10 @@ namespace Battle.Scripts.Battle.Players
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             _camera = Context.GetBattleCamera.Camera;
+            _gridManager = Context.GetGridManager;
         }
 
-        public void SetPlayerDriver(IPlayerDriver playerDriver)
+        void IPlayerInputHandler.SetPlayerDriver(IPlayerDriver playerDriver)
         {
             Debug.Log($"{name}");
             _playerDriver = playerDriver;
@@ -36,7 +38,8 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _playerDriver.MoveTo(targetPosition);
+            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+            _playerDriver.MoveTo(gridPos);
         }
 
         private void SetupInput()

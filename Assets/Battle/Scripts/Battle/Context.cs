@@ -6,9 +6,9 @@ namespace Battle.Scripts.Battle
 {
     public static class Context
     {
-        public static IPlayerInputHandler GetPlayerInputHandler() => Object.FindObjectOfType<PlayerInputHandler>();
+        internal static IPlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
         public static IBattleCamera GetBattleCamera => Object.FindObjectOfType<GameCamera>();
-        public static IGridManager GetGridManager() => Object.FindObjectOfType<GridManager>();
-        public static IBattlePlayArea GetBattlePlayArea() => Object.FindObjectOfType<PlayerPlayArea>();
+        internal static IGridManager GetGridManager => Object.FindObjectOfType<GridManager>();
+        public static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
     }
 }

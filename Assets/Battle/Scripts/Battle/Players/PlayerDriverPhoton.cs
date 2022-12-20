@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
@@ -19,9 +17,9 @@ namespace Battle.Scripts.Battle.Players
 
         private void Awake()
         {
-            _battlePlayArea = Context.GetBattlePlayArea();
+            _battlePlayArea = Context.GetBattlePlayArea;
             _photonView = PhotonView.Get(this);
-            _gridManager = Context.GetGridManager();
+            _gridManager = Context.GetGridManager;
             _playerActor = Instantiate(_playerPrefab).GetComponent<PlayerActor>();
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
@@ -35,7 +33,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            var playerInputHandler = Context.GetPlayerInputHandler();
+            var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
             var startingPos = _battlePlayArea.GetPlayerStartPosition(_playerPos);
             ((IPlayerDriver)this).MoveTo(startingPos);

@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
-    public interface IPlayerDriver
+    internal interface IPlayerDriver
     {
         void Rotate(float angle);
 

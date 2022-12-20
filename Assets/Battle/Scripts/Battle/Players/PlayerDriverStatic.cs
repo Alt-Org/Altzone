@@ -15,15 +15,15 @@ namespace Battle.Scripts.Battle.Players
 
         private void Awake()
         {
-            _battlePlayArea = Context.GetBattlePlayArea();
-            _gridManager = Context.GetGridManager();
+            _battlePlayArea = Context.GetBattlePlayArea;
+            _gridManager = Context.GetGridManager;
             _playerActor = Instantiate(_playerPrefab).GetComponent<PlayerActor>();
         }
 
         private IEnumerator Start()
         {
             yield return null;
-            var playerInputHandler = Context.GetPlayerInputHandler();
+            var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
             var startingPos = _battlePlayArea.GetPlayerStartPosition(_playerPos);
             ((IPlayerDriver)this).MoveTo(startingPos);

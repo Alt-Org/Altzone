@@ -23,7 +23,7 @@ namespace Battle.Scripts.Battle
         }
     }
 
-    public interface IGridManager
+    internal interface IGridManager
     {
         Vector2 GridPositionToWorldPoint(GridPos gridPos);
 

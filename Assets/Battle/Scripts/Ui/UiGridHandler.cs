@@ -29,7 +29,7 @@ namespace Battle.Scripts.Ui
 
         private void Awake()
         {
-            _battlePlayArea = Context.GetBattlePlayArea();
+            _battlePlayArea = Context.GetBattlePlayArea;
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
             _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
@@ -40,6 +40,12 @@ namespace Battle.Scripts.Ui
         }
 
         private void Start()
+        {
+            DrawLineGrid();
+            DrawChessGrid();
+        }
+
+        private void DrawLineGrid()
         {
             myLineRenderer.startColor = _lineColor;
             myLineRenderer.endColor = _lineColor;
@@ -106,12 +112,16 @@ namespace Battle.Scripts.Ui
                 myLineRenderer.SetPosition(2 * i, _lineStart);
                 myLineRenderer.SetPosition(2 * i + 1, _lineEnd);
             }
+        }
+
+        private void DrawChessGrid()
+        {
             _shieldGridSquares = new GameObject[_shieldGridHeight, _shieldGridWidth];
             _shieldSpriteSquares = new SpriteRenderer[_shieldGridHeight, _shieldGridWidth];
             Texture2D texture = new Texture2D(1, 1);
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, 1, 1), new Vector2(0, 0));
 
-            var squareSize = new Vector2(_arenaWidth / _shieldGridWidth, _arenaHeight / _shieldGridHeight);
+            var tileSize = new Vector2(_arenaWidth / _shieldGridWidth, _arenaHeight / _shieldGridHeight);
             var xPos = -_arenaWidth / 2;
             var yPos = -_arenaHeight / 2;
             for (int col = 0; col < _shieldGridWidth; col++)
@@ -120,28 +130,28 @@ namespace Battle.Scripts.Ui
                 {
                     if (col % 2 == row % 2)
                     {
-                        _shieldGridSquares[row, col] = Instantiate(_shieldGridTile, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
-                        _shieldSpriteSquares[row, col] = _shieldGridSquares[row, col].GetComponentInChildren<SpriteRenderer>();
-                        _shieldSpriteSquares[row, col].sprite = sprite;
-                        _shieldSpriteSquares[row, col].color = _gridColor1;
-                        _shieldSpriteSquares[row, col].size = squareSize;
-                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
-                        yPos += squareSize.y;
+                        DrawGridTile(row, col, sprite, _gridColor1, tileSize, xPos, yPos);
+                        yPos += tileSize.y;
                     }
                     else
                     {
-                        _shieldGridSquares[row, col] = Instantiate(_shieldGridTile, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
-                        _shieldSpriteSquares[row, col] = _shieldGridSquares[row, col].GetComponentInChildren<SpriteRenderer>();
-                        _shieldSpriteSquares[row, col].sprite = sprite;
-                        _shieldSpriteSquares[row, col].color = _gridColor2;
-                        _shieldSpriteSquares[row, col].size = squareSize;
-                        _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
-                        yPos += squareSize.y;
+                        DrawGridTile(row, col, sprite, _gridColor2, tileSize, xPos, yPos);
+                        yPos += tileSize.y;
                     }
                 }
                 yPos = -_arenaHeight / 2;
-                xPos += squareSize.x;
+                xPos += tileSize.x;
             }
+        }
+
+        private void DrawGridTile(int row, int col, Sprite sprite, Color color, Vector2 tileSize, float xPos, float yPos)
+        {
+            _shieldGridSquares[row, col] = Instantiate(_shieldGridTile, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
+            _shieldSpriteSquares[row, col] = _shieldGridSquares[row, col].GetComponentInChildren<SpriteRenderer>();
+            _shieldSpriteSquares[row, col].sprite = sprite;
+            _shieldSpriteSquares[row, col].color = color;
+            _shieldSpriteSquares[row, col].size = tileSize;
+            _shieldSpriteSquares[row, col].sortingOrder = _spriteSortingLayer;
         }
     }
 }
