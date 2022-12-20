@@ -10,6 +10,29 @@ using UnityEngine;
 namespace Prg.Scripts.Common.RestApi
 {
     /// <summary>
+    /// Helper to create valid URLs for given server base URL.
+    /// </summary>
+    public class ServerUrl
+    {
+        private readonly string _urlPrefix;
+
+        public ServerUrl(string urlPrefix)
+        {
+            _urlPrefix = urlPrefix.EndsWith("/") ? urlPrefix.Substring(0, urlPrefix.Length - 1) : urlPrefix;
+        }
+
+        public string GetUrlFor(string path)
+        {
+            return path.StartsWith("/") ? $"{_urlPrefix}{path}" : $"{_urlPrefix}/{path}";
+        }
+
+        public override string ToString()
+        {
+            return _urlPrefix;
+        }
+    }
+
+    /// <summary>
     /// Async helper for common REST API requests using JSON.
     /// </summary>
     public static class RestApiServiceAsync
@@ -21,27 +44,36 @@ namespace Prg.Scripts.Common.RestApi
         {
             private const string OkMessage = "OK";
 
-            public readonly bool Success;
+            public readonly int StatusCode;
             public readonly string Message;
             public readonly string Payload;
 
+            public bool Success => StatusCode == (int)HttpStatusCode.OK;
+
             public Response(string payload)
             {
-                Success = true;
+                StatusCode = (int)HttpStatusCode.OK;
                 Message = OkMessage;
                 Payload = payload;
             }
 
             public Response(string message, string payload)
             {
-                Success = false;
+                StatusCode = (int)HttpStatusCode.InternalServerError;
+                Message = message;
+                Payload = payload;
+            }
+
+            public Response(int statusCode, string message, string payload)
+            {
+                StatusCode = statusCode;
                 Message = message;
                 Payload = payload;
             }
 
             public override string ToString()
             {
-                return $"{Message}: {Payload}";
+                return $"({StatusCode}) {Message}: {Payload}";
             }
         }
 
@@ -108,7 +140,7 @@ namespace Prg.Scripts.Common.RestApi
                 }
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    return new Response($"Request failed: {response.StatusCode}: {response.StatusDescription}", string.Empty);
+                    return new Response((int)response.StatusCode, response.StatusDescription, string.Empty);
                 }
                 // (4) read response (if any).
                 responseContentType = response.ContentType;
@@ -121,7 +153,7 @@ namespace Prg.Scripts.Common.RestApi
                 // (5) return our own Response object.
                 stopWatch.Stop();
                 Debug.Log($"Request success: '{responseContentType}' len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
-                Debug.Log($"Response: {LogHttpResponse()}");
+                Debug.Log($"Response ({httpResponse.Length}) {LogHttpResponse()}");
                 return new Response(httpResponse);
             }
             catch (WebException e)
@@ -134,9 +166,12 @@ namespace Prg.Scripts.Common.RestApi
                 }
                 stopWatch.Stop();
                 var status = GetWebExceptionStatus(e);
-                Debug.Log($"Request failed: {status} in {stopWatch.ElapsedMilliseconds} ms");
-                Debug.Log($"body {httpResponse}");
-                return new Response(status, httpResponse ?? string.Empty);
+                Debug.Log($"Request failed: {status.Item1} {status.Item2} in {stopWatch.ElapsedMilliseconds} ms");
+                if (httpResponse.Length > 0)
+                {
+                    Debug.Log($"body ({httpResponse.Length}) {httpResponse}");
+                }
+                return new Response(status.Item1, status.Item2, httpResponse ?? string.Empty);
             }
             catch (Exception e)
             {
@@ -177,13 +212,13 @@ namespace Prg.Scripts.Common.RestApi
             return request;
         }
 
-        private static string GetWebExceptionStatus(WebException webException)
+        private static Tuple<int, string> GetWebExceptionStatus(WebException webException)
         {
             if (webException.Status == WebExceptionStatus.ProtocolError && webException.Response is HttpWebResponse httpWebResponse)
             {
-                return $"{(int)httpWebResponse.StatusCode} {httpWebResponse.StatusDescription}";
+                return new Tuple<int, string>((int)httpWebResponse.StatusCode, httpWebResponse.StatusDescription);
             }
-            return webException.Message;
+            return new Tuple<int, string>((int)HttpStatusCode.InternalServerError, webException.Message);
         }
 
         private static async Task<string> ReadToEndAsyncNonNull(TextReader streamReader)
