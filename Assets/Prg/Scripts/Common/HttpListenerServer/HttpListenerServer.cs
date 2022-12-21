@@ -13,7 +13,11 @@ using ThreadState = System.Threading.ThreadState;
 namespace Prg.Scripts.Common.HttpListenerServer
 {
     /// <summary>
-    /// Simple HTTP Server based on <c>HttpListener</c>.
+    /// Simple 'localhost' HTTP Server based on <c>HttpListener</c>.<br />
+    /// You can send requests to following URLs when using port number 8090:<br /> 
+    /// http://localhost:8090/ or
+    /// http://127.0.0.1:8090/ and
+    /// http://&lt;COMPUTERNAME&gt;:8090/
     /// </summary>
     /// <remarks>
     /// Inspiration from:<br />
