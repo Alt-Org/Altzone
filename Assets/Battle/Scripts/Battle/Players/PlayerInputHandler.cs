@@ -15,7 +15,6 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
         private IPlayerDriver _playerDriver;
-        private IGridManager _gridManager;
 
         private Camera _camera;
 
@@ -26,7 +25,6 @@ namespace Battle.Scripts.Battle.Players
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             _camera = Context.GetBattleCamera.Camera;
-            _gridManager = Context.GetGridManager;
         }
 
         void IPlayerInputHandler.SetPlayerDriver(IPlayerDriver playerDriver)
@@ -38,8 +36,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            _playerDriver.MoveTo(gridPos);
+            _playerDriver.MoveTo(targetPosition);
         }
 
         private void SetupInput()

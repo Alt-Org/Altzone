@@ -7,8 +7,8 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private int _playerPos = PhotonBattle.PlayerPosition1;
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
-
         [SerializeField] private GameObject _playerPrefab;
+
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IBattlePlayArea _battlePlayArea;
@@ -25,13 +25,13 @@ namespace Battle.Scripts.Battle.Players
             yield return null;
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
-            var startingPos = _battlePlayArea.GetPlayerStartPosition(_playerPos);
-            ((IPlayerDriver)this).MoveTo(startingPos);
             if (_teamNumber == 1)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }
         }
+
+        int IPlayerDriver.PlayerPos => _playerPos;
 
         void IPlayerDriver.Rotate(float angle)
         {
@@ -42,12 +42,6 @@ namespace Battle.Scripts.Battle.Players
         {
             var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
             targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
-            _playerActor.MoveTo(targetPosition);
-        }
-
-        void IPlayerDriver.MoveTo(GridPos gridPos)
-        {
-            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition);
         }
     }

@@ -1,18 +1,21 @@
+using System;
 using Photon.Pun;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerDriverPhoton : MonoBehaviour, IPlayerDriver
+    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver
     {
-        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private double _movementDelay;
+
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IBattlePlayArea _battlePlayArea;
+        private IPlayerDriverState _state;
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
-
         private bool _isLocal;
 
         private void Awake()
@@ -20,8 +23,8 @@ namespace Battle.Scripts.Battle.Players
             _battlePlayArea = Context.GetBattlePlayArea;
             _photonView = PhotonView.Get(this);
             _gridManager = Context.GetGridManager;
-            _playerActor = Instantiate(_playerPrefab).GetComponent<PlayerActor>();
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
         }
 
@@ -29,19 +32,23 @@ namespace Battle.Scripts.Battle.Players
         {
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
+            _state = GetPlayerDriverState(this);
+            _state.ResetState(this, _playerActor);
             if (!_isLocal)
             {
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
-            var startingPos = _battlePlayArea.GetPlayerStartPosition(_playerPos);
-            ((IPlayerDriver)this).MoveTo(startingPos);
+
             if (_teamNumber == 1)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }
         }
+
+        int IPlayerDriver.PlayerPos => _playerPos;
+
         void IPlayerDriver.Rotate(float angle)
         {
             _photonView.RPC(nameof(RotatePlayerRpc), RpcTarget.All, angle);
@@ -49,20 +56,22 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
-            _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
-        }
-        void IPlayerDriver.MoveTo(GridPos gridPos)
-        {
-            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
-            _photonView.RPC(nameof(MovePlayerToRpc), RpcTarget.All, targetPosition);
+            if (!_state.CanRequestMove)
+            {
+                return;
+            }
+            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+            _state.IsWaitingToMove(true);
+            var movementStartTime = PhotonNetwork.Time + _movementDelay;
+            _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
         [PunRPC]
-        private void MovePlayerToRpc(Vector2 targetPosition)
+        private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
-            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
-            _playerActor.MoveTo(targetPosition);
+            var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
+            var gridPos = new GridPos(row, col);
+            _state.DelayedMove(gridPos, (float)moveExecuteDelay);
         }
 
         [PunRPC]

@@ -5,9 +5,6 @@ namespace Battle.Scripts.Battle.Game
 {
     internal class GridManager : MonoBehaviour, IGridManager
     {
-        [SerializeField] private Vector2 _testPosition;
-        [SerializeField] private GridPos _testGridPos;
-
         private int _movementGridWidth;
         private int _movementGridHeight;
         private IBattlePlayArea _battlePlayArea;
