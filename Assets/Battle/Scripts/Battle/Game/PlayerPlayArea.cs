@@ -40,8 +40,8 @@ namespace Battle.Scripts.Battle.Game
         private const float BrickSpriteWidth = 2.35f;
         private const int BricksPerWall = 5;
 
-        private Rect _playAreaBlue;
-        private Rect _playAreaRed;
+        private Rect _playStartAreaBlue;
+        private Rect _playStartAreaRed;
 
         public float ArenaWidth => _arenaWidth;
         public float ArenaHeight => _arenaHeigth;
@@ -57,35 +57,28 @@ namespace Battle.Scripts.Battle.Game
             SetupBrickWalls();
 
             var middleAreaHeight = _middleAreaHeight * _arenaHeigth / _shieldGridHeight;
-            _playAreaBlue = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2);
-            _playAreaRed = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2);
+            var shieldSquareHeight = _arenaHeigth / _shieldGridHeight;
+            _playStartAreaBlue = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2 + shieldSquareHeight, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
+            _playStartAreaRed = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
             _movementGridHeight = _movementGridMultiplier * _shieldGridHeight;
             _movementGridWidth = _movementGridMultiplier * _shieldGridWidth;
         }
 
-        public Rect GetPlayerPlayArea(int playerPos)
+        public Rect GetPlayerPlayArea(int teamNumber)
         {
             Rect playArea;
-            switch (playerPos)
+            switch (teamNumber)
             {
-                case 1:
-                    playArea = _playAreaBlue;
+                case PhotonBattle.TeamBlueValue:
+                    playArea = _playStartAreaBlue;
                     break;
 
-                case 2:
-                    playArea = _playAreaBlue;
-                    break;
-
-                case 3:
-                    playArea = _playAreaRed;
-                    break;
-
-                case 4:
-                    playArea = _playAreaRed;
+                case PhotonBattle.TeamRedValue:
+                    playArea = _playStartAreaRed;
                     break;
 
                 default:
-                    throw new UnityException($"Invalid player position {playerPos}");
+                    throw new UnityException($"Invalid Team Number {teamNumber}");
             }
             return playArea;
         }

@@ -61,6 +61,11 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _teamNumber);
+            if (!isSpaceFree)
+            {
+                return;
+            }
             _state.IsWaitingToMove(true);
             var movementStartTime = PhotonNetwork.Time + _movementDelay;
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);

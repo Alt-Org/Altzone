@@ -28,5 +28,7 @@ namespace Battle.Scripts.Battle
         Vector2 GridPositionToWorldPoint(GridPos gridPos);
 
         GridPos WorldPointToGridPosition(Vector2 targetPosition);
+
+        bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber);
     }
 }

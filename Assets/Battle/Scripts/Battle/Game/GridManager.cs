@@ -10,6 +10,10 @@ namespace Battle.Scripts.Battle.Game
         private IBattlePlayArea _battlePlayArea;
         private float _arenaWidth;
         private float _arenaHeight;
+        private bool[,] _gridEmptySpacesBlue;
+        private bool[,] _gridEmptySpacesRed;
+        private Rect _startAreaBlue;
+        private Rect _startAreaRed;
 
         private void Start()
         {
@@ -19,6 +23,58 @@ namespace Battle.Scripts.Battle.Game
 
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
+
+            InitializeGridArrays();
+        }
+
+        private void InitializeGridArrays()
+        {
+            _startAreaBlue = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBlueValue);
+            _startAreaRed = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamRedValue);
+
+            var smallOffset = 0.001f;
+            var blueAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.x, _startAreaBlue.y + smallOffset));
+            var redAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.x, _startAreaRed.y + smallOffset));
+            var blueAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.xMax, _startAreaBlue.yMax - smallOffset));
+            var redAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.xMax, _startAreaRed.yMax - smallOffset));
+
+            var blueRowMin = blueAreaStart.Row;
+            var redRowMin = redAreaStart.Row;
+            var blueRowMax = blueAreaEnd.Row;
+            var redRowMax = redAreaEnd.Row;
+
+            _gridEmptySpacesBlue = new bool[_movementGridHeight, _movementGridWidth];
+            _gridEmptySpacesRed = new bool[_movementGridHeight, _movementGridWidth];
+
+            for (int row = 0; row < _movementGridHeight; row++)
+            {
+                for (int col = 0; col < _movementGridWidth; col++)
+                {
+                    if (row >= blueRowMin && row <= blueRowMax)
+                    {
+                        _gridEmptySpacesBlue[row, col] = true;
+                    }
+                    else
+                    {
+                        _gridEmptySpacesBlue[row, col] = false;
+                    }
+                }
+            }
+
+            for (int row = 0; row < _movementGridHeight; row++)
+            {
+                for (int col = 0; col < _movementGridWidth; col++)
+                {
+                    if (row >= redRowMin && row <= redRowMax)
+                    {
+                        _gridEmptySpacesRed[row, col] = true;
+                    }
+                    else
+                    {
+                        _gridEmptySpacesRed[row, col] = false;
+                    }
+                }
+            }
         }
 
         Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos)
@@ -36,6 +92,19 @@ namespace Battle.Scripts.Battle.Game
             var row = Math.Min(_movementGridHeight - 1, (int) (posNew.y / (_arenaHeight / _movementGridHeight)));
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
+        }
+
+        bool IGridManager.IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
+        {
+            switch (teamNumber)
+            {
+                case PhotonBattle.TeamBlueValue:
+                    return _gridEmptySpacesBlue[gridPos.Row, gridPos.Col];
+                case PhotonBattle.TeamRedValue:
+                    return _gridEmptySpacesRed[gridPos.Row, gridPos.Col];
+                default:
+                    return false;
+            }
         }
     }
 }
