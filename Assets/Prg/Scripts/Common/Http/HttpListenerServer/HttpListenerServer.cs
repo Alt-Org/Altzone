@@ -10,7 +10,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using ThreadState = System.Threading.ThreadState;
 
-namespace Prg.Scripts.Common.HttpListenerServer
+namespace Prg.Scripts.Common.Http.HttpListenerServer
 {
     /// <summary>
     /// Simple 'localhost' HTTP Server based on <c>HttpListener</c>.<br />

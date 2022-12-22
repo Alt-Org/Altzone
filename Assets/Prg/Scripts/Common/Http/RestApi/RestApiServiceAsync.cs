@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Prg.Scripts.Common.RestApi
+namespace Prg.Scripts.Common.Http.RestApi
 {
     /// <summary>
     /// Helper to create valid URLs for given server base URL.

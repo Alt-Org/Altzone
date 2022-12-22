@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Altzone.Scripts.Config;
+using Prg.Scripts.Common.Http.RestApi;
 using Prg.Scripts.Common.MiniJson;
-using Prg.Scripts.Common.RestApi;
 using UnityEngine;
 using UnityEngine.Assertions;
 
