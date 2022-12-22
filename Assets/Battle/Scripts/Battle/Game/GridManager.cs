@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
+    /// <summary>
+    /// <c>GridManager</c> translates between world and grid coordinates, also keeps track which coordinates player can move to.
+    /// </summary>
     internal class GridManager : MonoBehaviour, IGridManager
     {
         private int _movementGridWidth;
@@ -33,8 +36,8 @@ namespace Battle.Scripts.Battle.Game
             _startAreaRed = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamRedValue);
 
             var smallOffset = 0.001f;
-            var blueAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.x, _startAreaBlue.y + smallOffset));
-            var redAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.x, _startAreaRed.y + smallOffset));
+            var blueAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.xMin, _startAreaBlue.yMin + smallOffset));
+            var redAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.xMin, _startAreaRed.yMin + smallOffset));
             var blueAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.xMax, _startAreaBlue.yMax - smallOffset));
             var redAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.xMax, _startAreaRed.yMax - smallOffset));
 
@@ -77,6 +80,8 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
+        #region IGridManager
+
         Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos)
         {
             var xPosition = gridPos.Col * _arenaWidth / _movementGridWidth + _arenaWidth / _movementGridWidth * 0.5f;
@@ -88,8 +93,8 @@ namespace Battle.Scripts.Battle.Game
         GridPos IGridManager.WorldPointToGridPosition(Vector2 targetPosition)
         {
             var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
-            var col = Math.Min(_movementGridWidth - 1, (int) (posNew.x / (_arenaWidth / _movementGridWidth)));
-            var row = Math.Min(_movementGridHeight - 1, (int) (posNew.y / (_arenaHeight / _movementGridHeight)));
+            var col = Math.Min(_movementGridWidth - 1, (int)(posNew.x / (_arenaWidth / _movementGridWidth)));
+            var row = Math.Min(_movementGridHeight - 1, (int)(posNew.y / (_arenaHeight / _movementGridHeight)));
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
         }
@@ -103,8 +108,10 @@ namespace Battle.Scripts.Battle.Game
                 case PhotonBattle.TeamRedValue:
                     return _gridEmptySpacesRed[gridPos.Row, gridPos.Col];
                 default:
-                    return false;
+                    throw new UnityException($"Invalid Team Number {teamNumber}");
             }
         }
+
+        #endregion
     }
 }

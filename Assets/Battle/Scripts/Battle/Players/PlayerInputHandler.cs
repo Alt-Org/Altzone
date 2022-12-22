@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players
 {
+    /// <summary>
+    /// Handles player's input.
+    /// </summary>
     internal interface IPlayerInputHandler
     {
         void SetPlayerDriver(IPlayerDriver playerDriver);
@@ -10,13 +13,12 @@ namespace Battle.Scripts.Battle.Players
 
     public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
     {
-        private Vector2 _inputClick;
-
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
-        private IPlayerDriver _playerDriver;
 
+        private IPlayerDriver _playerDriver;
         private Camera _camera;
+        private Vector2 _inputClick;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
         private bool _isLimitMouseXYOnDesktop;
@@ -25,13 +27,6 @@ namespace Battle.Scripts.Battle.Players
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             _camera = Context.GetBattleCamera.Camera;
-        }
-
-        void IPlayerInputHandler.SetPlayerDriver(IPlayerDriver playerDriver)
-        {
-            Debug.Log($"{name}");
-            _playerDriver = playerDriver;
-            SetupInput();
         }
 
         private void SendMoveTo(Vector2 targetPosition)
@@ -61,5 +56,16 @@ namespace Battle.Scripts.Battle.Players
             _inputClick = _camera.ScreenToWorldPoint(_inputClick);
             SendMoveTo(_inputClick);
         }
+
+        #region IPlayerInputHandler
+
+        void IPlayerInputHandler.SetPlayerDriver(IPlayerDriver playerDriver)
+        {
+            Debug.Log($"{name}");
+            _playerDriver = playerDriver;
+            SetupInput();
+        }
+
+        #endregion
     }
 }

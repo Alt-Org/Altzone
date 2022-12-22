@@ -1,10 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
+    /// <summary>
+    /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
+    /// </summary>
     public class PhotonPlayerInstantiate : MonoBehaviour
     {
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;

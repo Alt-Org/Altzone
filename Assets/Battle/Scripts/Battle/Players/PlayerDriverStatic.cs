@@ -1,28 +1,32 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
+    /// <summary>
+    /// Static <c>PlayerDriver</c> implementation.
+    /// </summary>
+    /// <remarks>
+    /// Set our ExecutionOrder a bit lower to let other components initialize properly before us.<br />
+    /// Note that this (class) is strictly for testing purposes!
+    /// </remarks>
+    [DefaultExecutionOrder(100)]
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver
     {
         [SerializeField] private int _playerPos = PhotonBattle.PlayerPosition1;
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
-        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private double _movementDelay;
 
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
-        private IBattlePlayArea _battlePlayArea;
+        private IPlayerDriverState _state;
 
-        private void Awake()
+        private void Start()
         {
-            _battlePlayArea = Context.GetBattlePlayArea;
             _gridManager = Context.GetGridManager;
-            _playerActor = Instantiate(_playerPrefab).GetComponent<PlayerActor>();
-        }
-
-        private IEnumerator Start()
-        {
-            yield return null;
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
+            _state = GetPlayerDriverState(this);
+            _state.ResetState(_playerActor);
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
             if (_teamNumber == 1)
@@ -30,6 +34,8 @@ namespace Battle.Scripts.Battle.Players
                 ((IPlayerDriver)this).Rotate(180f);
             }
         }
+
+        #region IPlayerDriver
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
@@ -40,9 +46,20 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerDriver.MoveTo(Vector2 targetPosition)
         {
+            if (!_state.CanRequestMove)
+            {
+                return;
+            }
             var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
-            _playerActor.MoveTo(targetPosition);
+            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _teamNumber);
+            if (!isSpaceFree)
+            {
+                return;
+            }
+            _state.IsWaitingToMove(true);
+            _state.DelayedMove(gridPos, (float)_movementDelay);
         }
+
+        #endregion
     }
 }

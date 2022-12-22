@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
+    /// <summary>
+    /// Photon <c>PlayerDriver</c> implementation.
+    /// </summary>
     internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
@@ -33,7 +36,7 @@ namespace Battle.Scripts.Battle.Players
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             _state = GetPlayerDriverState(this);
-            _state.ResetState(this, _playerActor);
+            _state.ResetState(_playerActor);
             if (!_isLocal)
             {
                 return;
@@ -41,11 +44,13 @@ namespace Battle.Scripts.Battle.Players
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
 
-            if (_teamNumber == 1)
+            if (_teamNumber == PhotonBattle.TeamBlueValue)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }
         }
+
+        #region IPlayerDriver
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
@@ -71,6 +76,10 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
+        #endregion
+
+        #region Photon RPC
+
         [PunRPC]
         private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
@@ -84,5 +93,6 @@ namespace Battle.Scripts.Battle.Players
         {
             _playerActor.Rotate(angle);
         }
+        #endregion
     }
 }

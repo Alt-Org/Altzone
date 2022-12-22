@@ -1,8 +1,10 @@
-using System;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
+    /// <summary>
+    /// Sets the arena, player's starting positions and team play areas.
+    /// </summary>
     internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
         [Tooltip("Arena width in world coordinates"), SerializeField] private float _arenaWidth;
@@ -43,14 +45,6 @@ namespace Battle.Scripts.Battle.Game
         private Rect _playStartAreaBlue;
         private Rect _playStartAreaRed;
 
-        public float ArenaWidth => _arenaWidth;
-        public float ArenaHeight => _arenaHeigth;
-
-        public int ShieldGridWidth => _shieldGridWidth;
-        public int ShieldGridHeight => _shieldGridHeight;
-        public int MovementGridWidth => _movementGridWidth;
-        public int MovementGridHeight => _movementGridHeight;
-
         private void Awake()
         {
             SetupArenaBorders();
@@ -62,48 +56,6 @@ namespace Battle.Scripts.Battle.Game
             _playStartAreaRed = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
             _movementGridHeight = _movementGridMultiplier * _shieldGridHeight;
             _movementGridWidth = _movementGridMultiplier * _shieldGridWidth;
-        }
-
-        public Rect GetPlayerPlayArea(int teamNumber)
-        {
-            Rect playArea;
-            switch (teamNumber)
-            {
-                case PhotonBattle.TeamBlueValue:
-                    playArea = _playStartAreaBlue;
-                    break;
-
-                case PhotonBattle.TeamRedValue:
-                    playArea = _playStartAreaRed;
-                    break;
-
-                default:
-                    throw new UnityException($"Invalid Team Number {teamNumber}");
-            }
-            return playArea;
-        }
-
-        public GridPos GetPlayerStartPosition(int playerPos)
-        {
-            GridPos startPosition;
-            switch (playerPos)
-            {
-                case 1:
-                    startPosition = _startPositionBlueA;
-                    break;
-                case 2:
-                    startPosition = _startPositionBlueB;
-                    break;
-                case 3:
-                    startPosition = _startPositionRedA;
-                    break;
-                case 4:
-                    startPosition = _startPositionRedB;
-                    break;
-                default:
-                    throw new UnityException($"Invalid player position {playerPos}");
-            }
-                return startPosition;
         }
 
         private void SetupArenaBorders()
@@ -143,5 +95,55 @@ namespace Battle.Scripts.Battle.Game
                 _redTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
             }
         }
+
+        #region IBattlePlayArea
+
+        float IBattlePlayArea.ArenaWidth => _arenaWidth;
+        float IBattlePlayArea.ArenaHeight => _arenaHeigth;
+        int IBattlePlayArea.ShieldGridWidth => _shieldGridWidth;
+        int IBattlePlayArea.ShieldGridHeight => _shieldGridHeight;
+        int IBattlePlayArea.MovementGridWidth => _movementGridWidth;
+        int IBattlePlayArea.MovementGridHeight => _movementGridHeight;
+
+        Rect IBattlePlayArea.GetPlayerPlayArea(int teamNumber)
+        {
+            Rect playArea;
+            switch (teamNumber)
+            {
+                case PhotonBattle.TeamBlueValue:
+                    playArea = _playStartAreaBlue;
+                    break;
+                case PhotonBattle.TeamRedValue:
+                    playArea = _playStartAreaRed;
+                    break;
+                default:
+                    throw new UnityException($"Invalid Team Number {teamNumber}");
+            }
+            return playArea;
+        }
+
+        GridPos IBattlePlayArea.GetPlayerStartPosition(int playerPos)
+        {
+            GridPos startPosition;
+            switch (playerPos)
+            {
+                case PhotonBattle.PlayerPosition1:
+                    startPosition = _startPositionBlueA;
+                    break;
+                case PhotonBattle.PlayerPosition2:
+                    startPosition = _startPositionBlueB;
+                    break;
+                case PhotonBattle.PlayerPosition3:
+                    startPosition = _startPositionRedA;
+                    break;
+                case PhotonBattle.PlayerPosition4:
+                    startPosition = _startPositionRedB;
+                    break;
+                default:
+                    throw new UnityException($"Invalid player position {playerPos}");
+            }
+                return startPosition;
+        }
+        #endregion
     }
 }

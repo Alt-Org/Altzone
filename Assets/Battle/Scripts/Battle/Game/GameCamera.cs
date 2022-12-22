@@ -9,11 +9,11 @@ namespace Battle.Scripts.Battle.Game
     {
         [SerializeField] private Camera _gameCamera;
 
-        public Camera Camera => _gameCamera;
+        Camera IBattleCamera.Camera => _gameCamera;
 
-        public bool IsRotated => _gameCamera.transform.rotation.z != 0f;
+        bool IBattleCamera.IsRotated => _gameCamera.transform.rotation.z != 0f;
 
-        public void DisableAudio()
+        void IBattleCamera.DisableAudio()
         {
             var cameraAudioListener = GetComponent<AudioListener>();
             if (cameraAudioListener != null)

@@ -21,6 +21,7 @@ namespace Battle.Scripts.Battle
         {
             return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
         }
+
         public static int GetTeamNumber(int playerPos)
         {
             switch (playerPos)
@@ -28,9 +29,11 @@ namespace Battle.Scripts.Battle
                 case PlayerPosition1:
                 case PlayerPosition2:
                     return TeamBlueValue;
+
                 case PlayerPosition3:
                 case PlayerPosition4:
                     return TeamRedValue;
+
                 default:
                     return NoTeamValue;
             }
