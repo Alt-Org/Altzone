@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// Conditional UnityEngine.Debug wrapper for development.
+/// Conditional (thread-safe) UnityEngine.Debug wrapper for development.
 /// </summary>
 [DefaultExecutionOrder(-100)]
 public static class Debug
@@ -234,15 +234,32 @@ public static class Debug
             var isAllowed = _logLineAllowedFilter(method);
             if (isAllowed)
             {
-                CachedMethods.Add(method, true);
+                AddMethod(true);
                 // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
                 return true;
             }
             // Nobody accepted so it is rejected.
-            CachedMethods.Add(method, false);
+            AddMethod(false);
             // UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
             return false;
         }
         return true;
+
+        void AddMethod(bool isAllowed)
+        {
+            // Dictionary is not thread safe - so we guard it without locking!
+            if (CachedMethods.ContainsKey(method))
+            {
+                return;
+            }
+            try
+            {
+                CachedMethods.Add(method, isAllowed);
+            }
+            catch (ArgumentException)
+            {
+                // Swallow - An element with the same key already exists!
+            }
+        }
     }
 }
