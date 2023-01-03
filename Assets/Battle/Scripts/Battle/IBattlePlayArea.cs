@@ -14,7 +14,7 @@ namespace Battle.Scripts.Battle
         int MovementGridWidth { get; }
         int MovementGridHeight { get; }
 
-        Rect GetPlayerPlayArea(int playerPos);
+        Rect GetPlayerPlayArea(int teamNumber);
 
         GridPos GetPlayerStartPosition(int playerPos);
     }
