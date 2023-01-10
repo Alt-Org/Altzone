@@ -22,6 +22,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         [Header("Game Variables")] public GameVariables _variables;
 
+        [Header("Player Prefabs")] public PlayerPrefabs _playerPrefabs ;
+
         [Header("Characters")] public Characters _characters;
 
         internal static GameSettings Load()
@@ -62,6 +64,21 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameVariables
     {
+    }
+
+    /// <summary>
+    /// Player prefabs in simple array.
+    /// </summary>
+    [Serializable]
+    public class PlayerPrefabs
+    {
+        public GameObject[] _playerPrefabs;
+
+        public GameObject GetPlayerPrefab(int prefabId)
+        {
+            Assert.IsTrue(prefabId >= _playerPrefabs.Length && prefabId < _playerPrefabs.Length);
+            return _playerPrefabs[prefabId];
+        }
     }
 
     ///<summary>
@@ -118,14 +135,14 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Range(0, 10)] public int _resistance7;
         [Range(0, 10)] public int _attack7;
         [Range(0, 10)] public int _defence7;
-        
+
         [Header("NewCharacter")] public string[] _name;
         public Defence[] _mainDefence8;
-        [Range(0, 10)]public int[] _speed8;
-        [Range(0, 10)]public int[] _resistance8; 
-        [Range(0, 10)]public int[] _attack8; 
-        [Range(0, 10)]public int[] _defence8;
-        
+        [Range(0, 10)] public int[] _speed8;
+        [Range(0, 10)] public int[] _resistance8;
+        [Range(0, 10)] public int[] _attack8;
+        [Range(0, 10)] public int[] _defence8;
+
         public void LoadKoulukiusaaja(int _Speed1, int _Resistance1, int _Attack1, int _Defence1)
         {
             Koulukiusaaja = "Koulukiusaaja";
@@ -141,22 +158,22 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             Vitsiniekka = "Vitsiniekka";
             _mainDefence2 = Defence.Deflection;
             _speed2 = _Speed2;
-             _resistance2 = _Resistance2;
+            _resistance2 = _Resistance2;
             _attack2 = _Attack2;
-            _defence2 =  _Defence2;
+            _defence2 = _Defence2;
         }
 
-         public void  LoadPappi( int _Speed3, int _Resistance3, int _Attack3, int _Defence3)
+        public void LoadPappi(int _Speed3, int _Resistance3, int _Attack3, int _Defence3)
         {
             Pappi = "Pappi";
             _mainDefence3 = Defence.Introjection;
             _speed3 = _Speed3;
             _resistance3 = _Resistance3;
             _attack3 = _Attack3;
-            _defence3=  _Defence3;
+            _defence3 = _Defence3;
         }
 
-        public  void LoadTaiteilija(int _Speed4, int _Resistance4, int  _Attack4, int _Defence4)
+        public void LoadTaiteilija(int _Speed4, int _Resistance4, int _Attack4, int _Defence4)
         {
             Taiteilija = "Taiteilija";
             _mainDefence4 = Defence.Projection;
@@ -166,7 +183,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _defence4 = _Defence4;
         }
 
-         public void LoadHodariläski( int _Speed5, int _Resistance5, int _Attack5, int _Defence5)
+        public void LoadHodariläski(int _Speed5, int _Resistance5, int _Attack5, int _Defence5)
         {
             Hodariläski = "Hodariläski";
             _mainDefence5 = Defence.Retroflection;
@@ -176,7 +193,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _defence5 = _Defence5;
         }
 
-        public void LoadÄlykkö( int _Speed6, int _Resistance6, int _Attack6, int _Defence6)
+        public void LoadÄlykkö(int _Speed6, int _Resistance6, int _Attack6, int _Defence6)
         {
             Älykkö = "Älykkö";
             _mainDefence6 = Defence.Egotism;
@@ -185,8 +202,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _attack6 = _Attack6;
             _defence6 = _Defence6;
         }
-        
-         public void LoadTytöt(int  _Speed7, int _Resistance7, int _Attack7, int _Defence7)
+
+        public void LoadTytöt(int _Speed7, int _Resistance7, int _Attack7, int _Defence7)
         {
             Tytöt = "Tytöt";
             _mainDefence7 = Defence.Confluence;
@@ -195,8 +212,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             _attack7 = _Attack7;
             _defence7 = _Defence7;
         }
-        
-      public void LoadNewCharacter(string[] _name, Defence[] _mainDefence8, int[] _Speed8,int[] _Resistance8 ,int[] _Attack8, int[] _Defence8)
+
+        public void LoadNewCharacter(string[] _name, Defence[] _mainDefence8, int[] _Speed8, int[] _Resistance8, int[] _Attack8, int[] _Defence8)
         {
             /*_name[] = {"Koodari",};
             _mainDefence8[] ={Defence.Egotism,};

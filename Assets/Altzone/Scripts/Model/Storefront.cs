@@ -127,6 +127,8 @@ namespace Altzone.Scripts.Model
 
             public int CustomCharacterModelId { get; }
 
+            public int PlayerPrefabId => CustomCharacterModelId;
+
             public Defence MainDefence { get; }
             public int Speed { get; }
             public int Resistance { get; }

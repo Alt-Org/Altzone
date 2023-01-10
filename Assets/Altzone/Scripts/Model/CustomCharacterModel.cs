@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Model
     {
         public int Id { get; }
         public int CharacterModelId { get; }
+        int PlayerPrefabId { get; }
         public string Name { get; set; }
         public int Speed { get; set; }
         public int Resistance { get; set; }
@@ -40,6 +41,8 @@ namespace Altzone.Scripts.Model
         int ICustomCharacterModel.Id => _id;
 
         int ICustomCharacterModel.CharacterModelId => _characterModelId;
+
+        public int PlayerPrefabId => _characterModelId;
 
         string ICustomCharacterModel.Name
         {

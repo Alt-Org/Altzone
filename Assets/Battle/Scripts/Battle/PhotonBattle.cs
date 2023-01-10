@@ -6,6 +6,7 @@ namespace Battle.Scripts.Battle
     public class PhotonBattle : MonoBehaviour
     {
         public const string PlayerPositionKey = "pp";
+        public const string PlayerPrefabIdKey = "mk";
 
         public const int PlayerPositionGuest = 0;
         public const int PlayerPosition1 = 1;
@@ -20,6 +21,11 @@ namespace Battle.Scripts.Battle
         public static int GetPlayerPos(Player player)
         {
             return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+        }
+
+        public static int GetPlayerPrefabId(Player player)
+        {
+            return player.GetCustomProperty(PlayerPrefabIdKey, -1);
         }
 
         public static int GetTeamNumber(int playerPos)
