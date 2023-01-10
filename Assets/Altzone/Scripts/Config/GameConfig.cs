@@ -1,6 +1,7 @@
 using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Config
 {
@@ -17,6 +18,7 @@ namespace Altzone.Scripts.Config
         GameFeatures Features { get; }
         GameConstraints Constraints { get; }
         GameVariables Variables { get; }
+        PlayerPrefabs PlayerPrefabs { get; }
         IPlayerDataCache PlayerDataCache { get; }
         Characters Characters { get; }
     }
@@ -55,6 +57,8 @@ namespace Altzone.Scripts.Config
             set => UpdateFrom(value, _gameVariables);
         }
 
+        public PlayerPrefabs PlayerPrefabs { get; }
+
         public IPlayerDataCache PlayerDataCache { get; }
 
         public Characters Characters { get; }
@@ -72,11 +76,12 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerDataCache = Altzone.Scripts.Config.PlayerDataCache.Create();
-            var setting = GameSettings.Load();
-            Characters = setting._characters;
-            _gameVariables = CreateCopyFrom(setting._variables);
-            _gameFeatures = CreateCopyFrom(setting._features);
-            _gameConstraints = CreateCopyFrom(setting._constraints);
+            var settings = GameSettings.Load();
+            Characters = settings._characters;
+            _gameFeatures = CreateCopyFrom(settings._features);
+            _gameConstraints = CreateCopyFrom(settings._constraints);
+            _gameVariables = CreateCopyFrom(settings._variables);
+            PlayerPrefabs = settings._playerPrefabs;
         }
 
         private static T CreateCopyFrom<T>(T source) where T : class, new()

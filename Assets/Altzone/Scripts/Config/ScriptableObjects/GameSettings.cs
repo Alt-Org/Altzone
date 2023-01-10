@@ -22,7 +22,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         [Header("Game Variables")] public GameVariables _variables;
 
-        [Header("Player Prefabs")] public PlayerPrefabs _playerPrefabs ;
+        [Header("Player Prefabs")] public PlayerPrefabs _playerPrefabs;
 
         [Header("Characters")] public Characters _characters;
 
@@ -69,6 +69,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// <summary>
     /// Player prefabs in simple array.
     /// </summary>
+    /// <remarks>
+    /// Note that prefabId is the same as array index.
+    /// </remarks>
     [Serializable]
     public class PlayerPrefabs
     {
@@ -76,7 +79,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         public GameObject GetPlayerPrefab(int prefabId)
         {
-            Assert.IsTrue(prefabId >= _playerPrefabs.Length && prefabId < _playerPrefabs.Length);
+            Assert.IsTrue(prefabId >= 0 && prefabId < _playerPrefabs.Length);
             return _playerPrefabs[prefabId];
         }
     }
