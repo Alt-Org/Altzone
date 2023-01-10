@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Battle.Scripts.Battle
 {
     /// <summary>
-    /// Service locator pattern for important objects in this game.
+    /// Service locator pattern for important objects in <c>Battle</c> assembly.
     /// </summary>
-    public static class Context
+    internal static class Context
     {
         internal static IPlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
         internal static IBattleCamera GetBattleCamera => Object.FindObjectOfType<GameCamera>();

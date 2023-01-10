@@ -3,7 +3,11 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle
 {
-    public class PhotonBattle : MonoBehaviour
+    /// <summary>
+    /// Custom property names and values and helper methods to create, update and read them.<br />
+    /// Additionally this has methods that supports testing without dependencies to other modules like Lobby.
+    /// </summary>
+    internal class PhotonBattle : MonoBehaviour
     {
         public const string PlayerPositionKey = "pp";
         public const string PlayerPrefabIdKey = "mk";
