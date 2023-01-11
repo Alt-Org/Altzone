@@ -23,8 +23,8 @@ namespace Assets.Tests.EditMode.ModelsTests
             Debug.Log($"storage {storage.StoragePath}");
             var models = new List<RaidGameRoomModel>()
             {
-                new RaidGameRoomModel(1, "test10", 10, 10),
-                new RaidGameRoomModel(2, "test20", 20, 20),
+                new(1, "test10", 10, 10),
+                new(2, "test20", 20, 20),
             };
             foreach (var model in models)
             {
@@ -42,7 +42,7 @@ namespace Assets.Tests.EditMode.ModelsTests
         public void DefaultStorageTest()
         {
             Debug.Log($"test {DefaultStorageFilename}");
-            var storage = new CustomCharacterModelStorage(DefaultStorageFilename);
+            var storage = new RaidGameRoomModelStorage(DefaultStorageFilename);
             var models = storage.GetAll();
             Assert.IsTrue(models.Count > 1);
         }
