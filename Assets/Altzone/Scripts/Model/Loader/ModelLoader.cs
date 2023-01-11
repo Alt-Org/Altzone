@@ -18,6 +18,10 @@
             {
                 Models.Add(model, model.Name);
             }
+            foreach (var model in FurnitureModelLoader.LoadModels())
+            {
+                Models.Add(model, model.Name);
+            }
         }
     }
 }

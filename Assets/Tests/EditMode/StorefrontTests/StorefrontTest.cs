@@ -27,6 +27,26 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.IsNotNull(_store);
         }
 
+        [Test]
+        public void FurnitureModelTestGetOne()
+        {
+            Debug.Log("test");
+            var models = _store.GetAllFurnitureModels();
+            var randomModel = GetRandomObject(models);
+            var model = _store.GetCharacterClassModel(randomModel.Id);
+            Assert.IsNotNull(model);
+            Assert.AreEqual(randomModel.Id, model.Id);
+        }
+
+        [Test]
+        public void FurnitureModelTestGetAll()
+        {
+            Debug.Log("test");
+            var models = _store.GetAllFurnitureModels();
+            Assert.IsNotNull(models);
+            Assert.IsTrue(models.Count > 0);
+        }
+
         [Test, Description("Test that there is Character Models and we can fetch one by id")]
         public void CharacterModelTest()
         {

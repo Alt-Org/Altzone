@@ -22,6 +22,9 @@ namespace Altzone.Scripts.Model
 
         ClanModel GetClanModel(int id);
         List<ClanModel> GetAllClanModels();
+
+        FurnitureModel GetFurnitureModel(int id);
+        List<FurnitureModel> GetAllFurnitureModels();
     }
 
     public class Storefront : IStorefront
@@ -69,6 +72,16 @@ namespace Altzone.Scripts.Model
         List<ClanModel> IStorefront.GetAllClanModels()
         {
             return Models.GetAll<ClanModel>();
+        }
+
+        FurnitureModel IStorefront.GetFurnitureModel(int id)
+        {
+            return Models.FindById<FurnitureModel>(id);
+        }
+
+        List<FurnitureModel> IStorefront.GetAllFurnitureModels()
+        {
+            return Models.GetAll<FurnitureModel>();
         }
 
         public ICustomCharacterModel GetCustomCharacterModel(int id)
