@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Loader
 {
-    public class FurnitureModelLoader
+    /// <summary>
+    /// Utility class to load <c>FurnitureModel</c> models for runtime from external storage.
+    /// </summary>
+    public static class FurnitureModelLoader
     {
         public static List<FurnitureModel> LoadModels()
         {

@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model
     }
 
     /// <summary>
-    /// Furniture model.
+    /// Furniture model (for Raid mini-game and UI).
     /// </summary>
     public class FurnitureModel : AbstractModel
     {
