@@ -47,6 +47,17 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Assert.IsTrue(models.Count > 0);
         }
 
+        [Test, Description("Test that there is RaidGameRoomModels and we can fetch one by id")]
+        public void RaidGameRoomModelTest()
+        {
+            Debug.Log("test");
+            var models = _store.GetAllRaidGameRoomModels();
+            var randomModel = GetRandomObject(models);
+            var model = _store.GetCharacterClassModel(randomModel._id);
+            Assert.IsNotNull(model);
+            Assert.AreEqual(randomModel._id, model.Id);
+        }
+
         [Test, Description("Test that there is Character Models and we can fetch one by id")]
         public void CharacterModelTest()
         {

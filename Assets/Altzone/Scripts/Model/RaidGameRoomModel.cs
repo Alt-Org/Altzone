@@ -59,7 +59,7 @@ namespace Altzone.Scripts.Model
 
         public List<BombLocation> _bombLocations = new();
         public List<CoinLocation> _coinLocations = new();
-        public List<FurnitureLocation> _fFurnitureLocations = new();
+        public List<FurnitureLocation> _furnitureLocations = new();
 
         public RaidGameRoomModel(int id, string name, int width, int height)
         {

@@ -51,6 +51,7 @@ namespace Altzone.Scripts.Model
         {
             Models.Load();
             CustomCharacterModels.Load();
+            RaidGameRoomModels.Load();
         }
 
         CharacterClassModel IStorefront.GetCharacterClassModel(int id)

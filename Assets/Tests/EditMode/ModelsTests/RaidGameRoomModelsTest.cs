@@ -28,8 +28,12 @@ namespace Assets.Tests.EditMode.ModelsTests
             };
             foreach (var model in models)
             {
-                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(1,2));
-                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(2,3));
+                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(1, 2));
+                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(2, 3));
+                model._coinLocations.Add(new RaidGameRoomModel.CoinLocation(5, 5, 10));
+                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(5,5,1));
+                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3,4,2));
+                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(7,8,3));
                 storage.Save(model);
             }
         }

@@ -47,7 +47,13 @@ namespace Editor
         [MenuItem(GameDebug + "Models/Delete Custom Character Models", false, 21)]
         private static void DeleteCustomCharacterModels() => MenuModels.DeleteCustomCharacterModels();
 
-        [MenuItem(GameDebug + "Models/Dump Character Models to Wiki", false, 22)]
+        [MenuItem(GameDebug + "Models/Copy Raid Game Room Models", false, 22)]
+        private static void CopyRaidGameRoomModels() => MenuModels.CopyRaidGameRoomModels();
+
+        [MenuItem(GameDebug + "Models/Delete Raid Game Room Models", false, 23)]
+        private static void DeleteRaidGameRoomModels() => MenuModels.DeleteRaidGameRoomModels();
+
+        [MenuItem(GameDebug + "Models/Dump Character Models to Wiki", false, 24)]
         private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
 
         #endregion
