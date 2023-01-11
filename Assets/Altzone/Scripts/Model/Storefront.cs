@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Model.LocalStorage;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -25,6 +26,9 @@ namespace Altzone.Scripts.Model
 
         FurnitureModel GetFurnitureModel(int id);
         List<FurnitureModel> GetAllFurnitureModels();
+
+        RaidGameRoomModel GetRaidGameRoomModel(int id);
+        List<RaidGameRoomModel> GetAllRaidGameRoomModels();
     }
 
     public class Storefront : IStorefront
@@ -129,6 +133,16 @@ namespace Altzone.Scripts.Model
                 battleCharacters.Add(Get().GetBattleCharacter(customCharacter.Id));
             }
             return battleCharacters;
+        }
+
+        public RaidGameRoomModel GetRaidGameRoomModel(int id)
+        {
+            return RaidGameRoomModels.GetRaidGameRoomModel(id);
+        }
+
+        public List<RaidGameRoomModel> GetAllRaidGameRoomModels()
+        {
+            return RaidGameRoomModels.LoadModels();
         }
 
         /// <summary>
