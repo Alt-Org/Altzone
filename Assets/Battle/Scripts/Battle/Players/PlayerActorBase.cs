@@ -12,8 +12,7 @@ namespace Battle.Scripts.Battle.Players
             var playerPos = playerDriver.PlayerPos;
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            PlayerActorBase playerActorBase;
-            playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
             var playerActor = (IPlayerActor)playerActorBase;
             return playerActor;
         }
