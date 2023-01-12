@@ -25,9 +25,11 @@ namespace Altzone.Scripts.Model
         List<ClanModel> GetAllClanModels();
 
         FurnitureModel GetFurnitureModel(int id);
+        FurnitureModel GetFurnitureModel(string name);
         List<FurnitureModel> GetAllFurnitureModels();
 
         RaidGameRoomModel GetRaidGameRoomModel(int id);
+        RaidGameRoomModel GetRaidGameRoomModel(string name);
         List<RaidGameRoomModel> GetAllRaidGameRoomModels();
     }
 
@@ -82,6 +84,11 @@ namespace Altzone.Scripts.Model
         FurnitureModel IStorefront.GetFurnitureModel(int id)
         {
             return Models.FindById<FurnitureModel>(id);
+        }
+
+        FurnitureModel IStorefront.GetFurnitureModel(string name)
+        {
+            return Models.Find<FurnitureModel>(x => x.Name == name);
         }
 
         List<FurnitureModel> IStorefront.GetAllFurnitureModels()
@@ -139,6 +146,11 @@ namespace Altzone.Scripts.Model
         public RaidGameRoomModel GetRaidGameRoomModel(int id)
         {
             return RaidGameRoomModels.GetRaidGameRoomModel(id);
+        }
+
+        public RaidGameRoomModel GetRaidGameRoomModel(string name)
+        {
+            return RaidGameRoomModels.GetRaidGameRoomModel(name);
         }
 
         public List<RaidGameRoomModel> GetAllRaidGameRoomModels()

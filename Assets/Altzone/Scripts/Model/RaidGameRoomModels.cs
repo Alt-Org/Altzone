@@ -9,7 +9,7 @@ namespace Altzone.Scripts.Model
     public static class RaidGameRoomModels
     {
         private const string StorageFilename = "RaidGameRoomModels.json";
-        
+
         private static RaidGameRoomModelStorage _storage;
 
         public static void Load()
@@ -17,10 +17,15 @@ namespace Altzone.Scripts.Model
             _storage = new RaidGameRoomModelStorage(StorageFilename);
             Debug.Log($"storage file {_storage.StoragePath}");
         }
-        
+
         public static RaidGameRoomModel GetRaidGameRoomModel(int id)
         {
             return _storage.GetCustomCharacterModel(id);
+        }
+
+        public static RaidGameRoomModel GetRaidGameRoomModel(string name)
+        {
+            return _storage.GetAll().Find(x => x._name == name);
         }
 
         public static List<RaidGameRoomModel> LoadModels()

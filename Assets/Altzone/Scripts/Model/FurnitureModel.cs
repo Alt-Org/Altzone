@@ -40,6 +40,11 @@ namespace Altzone.Scripts.Model
             var constants = gameConfig.Constants;
             var fullName = Path.Combine(constants._furniturePrefabFolder, PrefabName).Replace('\\', '/');
             var prefab = Resources.Load(fullName);
+            if (prefab == null)
+            {
+                Debug.LogWarning($"prefab '{fullName}' was not found");
+                return null;
+            }
             var instance = (GameObject)Object.Instantiate(prefab, parent);
             instance.name = Name;
             return instance;
