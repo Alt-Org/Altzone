@@ -1,5 +1,8 @@
 using System;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -27,8 +30,35 @@ namespace Battle.Scripts.Battle.Players
             _photonView = PhotonView.Get(this);
             _gridManager = Context.GetGridManager;
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
+            _playerActor = GetPlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
+        }
+
+        private IPlayerActor GetPlayerPrefab(Player player)
+        {
+            if (_playerPrefab != null)
+            {
+                return PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
+            }
+            // Oikeasti pitää ensin selvittää Photon pelaajan IBattleCharacter (Player Custom Properties)
+            // Luulen että jonkinlainen tämänlainen ketju pitää mennä läpi että löydetään tämän pelaajan kustomoitu prefab.
+            // - ongelmana vaan on se että tämä tieto on vain yhdellä instanssilla tiedossa (siis itse pelaajalla),
+            //   muilla ei ole (tällä hetkellä) tietoa miten tämä pelaaja on kustomoinut oman pelihahmonsa :-(
+            // - ratkaisu on PhotonNetwork.Instantiate kutsu (PhotonPlayerInstantiate)
+            //   jossa kerrotaan tarvittavat kustomoinnit tms. tuossa *data* parametrissa.
+            // - voi myös olla että pelaajan tekemät pelihahmon kustomoinnit ei näy remote instansesissa jolloin päästään helpommalla :-)
+            const object[] data = null;
+            PhotonNetwork.Instantiate(string.Empty, Vector3.zero, Quaternion.identity, 0, data);
+
+            var characterModel = PhotonBattle.GetCharacterModelForPlayer(player);
+            var customCharacterModelId = characterModel.CustomCharacterModelId;
+            var battleCharacter = Storefront.Get().GetBattleCharacter(customCharacterModelId);
+            var playerPrefabId = battleCharacter.PlayerPrefabId;
+            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
+            var original = playerPrefabs.GetPlayerPrefab(playerPrefabId);
+            var playerPrefab = original.GetComponent<PlayerActorBase>();
+            var playerActor = PlayerActorBase.InstantiatePrefabFor(this, playerPrefab);
+            return playerActor;
         }
 
         private void OnEnable()
@@ -93,6 +123,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _playerActor.Rotate(angle);
         }
+
         #endregion
     }
 }
