@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Config
     public interface IGameConfig
     {
         GameFeatures Features { get; }
-        GameConstraints Constraints { get; }
+        GameConstants Constants { get; }
         GameVariables Variables { get; }
         PlayerPrefabs PlayerPrefabs { get; }
         IPlayerDataCache PlayerDataCache { get; }
@@ -45,10 +45,10 @@ namespace Altzone.Scripts.Config
             set => UpdateFrom(value, _gameFeatures);
         }
 
-        public GameConstraints Constraints
+        public GameConstants Constants
         {
-            get => _gameConstraints;
-            set => UpdateFrom(value, _gameConstraints);
+            get => _gameConstants;
+            set => UpdateFrom(value, _gameConstants);
         }
 
         public GameVariables Variables
@@ -66,10 +66,10 @@ namespace Altzone.Scripts.Config
         #region Private serializable variables
 
         private GameFeatures _permanentFeatures;
-        private GameConstraints _permanentConstraints;
+        private GameConstants _permanentConstants;
         private readonly GameVariables _gameVariables;
         private readonly GameFeatures _gameFeatures;
-        private readonly GameConstraints _gameConstraints;
+        private readonly GameConstants _gameConstants;
 
         #endregion
 
@@ -79,7 +79,7 @@ namespace Altzone.Scripts.Config
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);
-            _gameConstraints = CreateCopyFrom(settings._constraints);
+            _gameConstants = CreateCopyFrom(settings._constants);
             _gameVariables = CreateCopyFrom(settings._variables);
             PlayerPrefabs = settings._playerPrefabs;
         }

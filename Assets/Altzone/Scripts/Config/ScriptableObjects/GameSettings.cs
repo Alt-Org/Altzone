@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         [Header("Game Features")] public GameFeatures _features;
 
-        [Header("Game Constraints")] public GameConstraints _constraints;
+        [Header("Game Constants")] public GameConstants _constants;
 
         [Header("Game Variables")] public GameVariables _variables;
 
@@ -51,8 +51,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// Game constraints that that control the workings of the game.
     /// </summary>
     [Serializable]
-    public class GameConstraints
+    public class GameConstants
     {
+        [Header("Furniture")] public string _furniturePrefabFolder;
     }
 
     /// <summary>

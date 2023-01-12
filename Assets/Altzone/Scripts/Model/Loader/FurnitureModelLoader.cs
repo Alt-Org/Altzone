@@ -17,6 +17,7 @@ namespace Altzone.Scripts.Model.Loader
                 new(3, FurnitureType.ThreeSquaresStraight, "ThreeSquaresStraight", Color.red, "ThreeSquaresStraight"),
                 new(4, FurnitureType.ThreeSquaresBend, "ThreeSquaresBend", Color.red, "ThreeSquaresBend"),
                 new(5, FurnitureType.FourSquares, "FourSquares", Color.red, "FourSquares"),
+                new(6, FurnitureType.OneSquare, "WhiteBall", Color.white, "WhiteBall"),
             };
         }
     }

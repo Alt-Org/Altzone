@@ -1,3 +1,5 @@
+using System.IO;
+using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -30,6 +32,16 @@ namespace Altzone.Scripts.Model
             Name = name;
             Color = color;
             PrefabName = prefabName;
+        }
+
+        public GameObject Instantiate(Transform parent)
+        {
+            var gameConfig = GameConfig.Get();
+            var constants = gameConfig.Constants;
+            var fullName = Path.Combine(constants._furniturePrefabFolder, PrefabName).Replace('\\', '/');
+            var prefab = Resources.Load(fullName);
+            var instance = Object.Instantiate(prefab, parent) as GameObject;
+            return instance;
         }
     }
 }
