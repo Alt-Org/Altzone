@@ -7,7 +7,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver, IPlayerInputTarget
+    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;

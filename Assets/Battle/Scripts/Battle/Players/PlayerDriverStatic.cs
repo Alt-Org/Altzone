@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Players
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerInputTarget
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver
     {
         [SerializeField] private int _playerPos = PhotonBattle.PlayerPosition1;
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;

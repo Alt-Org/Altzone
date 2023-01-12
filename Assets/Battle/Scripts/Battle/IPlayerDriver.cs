@@ -1,6 +1,8 @@
+using Battle.Scripts.Battle.Players;
+
 namespace Battle.Scripts.Battle
 {
-    internal interface IPlayerDriver
+    internal interface IPlayerDriver : IPlayerInputTarget
     {
         int PlayerPos { get; }
 
