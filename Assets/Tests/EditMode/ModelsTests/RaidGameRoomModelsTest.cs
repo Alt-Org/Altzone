@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Altzone.Scripts.Model;
@@ -23,18 +24,44 @@ namespace Assets.Tests.EditMode.ModelsTests
             Debug.Log($"storage {storage.StoragePath}");
             var models = new List<RaidGameRoomModel>()
             {
-                new(1, "test10", 10, 10),
-                new(2, "test20", 20, 20),
+                new(1, "test10", 7, 12),
+                new(2, "test20", 7, 12),
             };
             foreach (var model in models)
             {
-                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(1, 2));
-                model._bombLocations.Add(new RaidGameRoomModel.BombLocation(2, 3));
-                model._coinLocations.Add(new RaidGameRoomModel.CoinLocation(5, 5, 10));
-                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(5,5,1));
-                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3,4,2));
-                model._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(7,8,3));
+                SetupRoomModel(model);
                 storage.Save(model);
+            }
+
+            void SetupRoomModel(RaidGameRoomModel roomModel)
+            {
+                // X = colum, Y = row, origo = top,left, zero based indexing
+                foreach (var data in new Tuple<int,int>[]
+                         {
+                             new (1,2), new (5,2),
+                             new (4,3),
+                             new (0,4),
+                             new (6,5),
+                             new (4,6),
+                             new (6,7),
+                             new (1,9),
+                             new (3,10),
+                             new (4,11),
+                         })
+                {
+                    roomModel._bombLocations.Add(new RaidGameRoomModel.BombLocation(data.Item1,data.Item2));
+                }
+                roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(0, 0, 10));
+                roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(0, 6, 10));
+                roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(11, 0, 10));
+                roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(11, 6, 10));
+                
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3,0,1));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,0,1));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(6,0,1));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1,6,1));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2,7,1));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,8,1));
             }
         }
 

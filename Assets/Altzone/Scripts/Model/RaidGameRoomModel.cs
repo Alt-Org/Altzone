@@ -4,8 +4,11 @@ using System.Collections.Generic;
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Persistable Room model for Raid mini-game.
+    /// Serializable Room model for Raid mini-game that can be sent over network or saved somewhere (e.h. as JSON string).
     /// </summary>
+    /// <remarks>
+    /// Data coordinate system is: X = colum, Y = row, origo = top,left, zero based indexing.
+    /// </remarks>
     [Serializable]
     public class RaidGameRoomModel
     {
