@@ -1,4 +1,3 @@
-using Altzone.Scripts.Model;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -48,11 +47,6 @@ namespace Battle.Scripts.Battle
                 default:
                     return NoTeamValue;
             }
-        }
-
-        public static IBattleCharacter GetCharacterModelForPlayer(Player player)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
