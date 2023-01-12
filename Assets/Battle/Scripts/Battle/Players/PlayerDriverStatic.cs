@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Players
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver
+    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver, IPlayerInputTarget
     {
         [SerializeField] private int _playerPos = PhotonBattle.PlayerPosition1;
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
@@ -44,7 +44,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor.Rotate(angle);
         }
 
-        void IPlayerDriver.MoveTo(Vector2 targetPosition)
+        void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {

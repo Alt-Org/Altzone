@@ -8,7 +8,15 @@ namespace Battle.Scripts.Battle.Players
     /// </summary>
     internal interface IPlayerInputHandler
     {
-        void SetPlayerDriver(IPlayerDriver playerDriver);
+        void SetPlayerDriver(IPlayerInputTarget playerDriver);
+    }
+
+    /// <summary>
+    /// Receiver for player's input actions.
+    /// </summary>
+    internal interface IPlayerInputTarget
+    {
+        void MoveTo(Vector2 targetPosition);
     }
 
     public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
@@ -16,7 +24,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
 
-        private IPlayerDriver _playerDriver;
+        private IPlayerInputTarget _inputTarget;
         private Camera _camera;
         private Vector2 _inputClick;
 
@@ -31,7 +39,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _playerDriver.MoveTo(targetPosition);
+            _inputTarget.MoveTo(targetPosition);
         }
 
         private void SetupInput()
@@ -59,10 +67,10 @@ namespace Battle.Scripts.Battle.Players
 
         #region IPlayerInputHandler
 
-        void IPlayerInputHandler.SetPlayerDriver(IPlayerDriver playerDriver)
+        void IPlayerInputHandler.SetPlayerDriver(IPlayerInputTarget playerDriver)
         {
             Debug.Log($"{name}");
-            _playerDriver = playerDriver;
+            _inputTarget = playerDriver;
             SetupInput();
         }
 

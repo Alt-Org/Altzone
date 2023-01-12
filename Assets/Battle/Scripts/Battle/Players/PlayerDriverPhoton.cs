@@ -7,7 +7,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver
+    internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver, IPlayerInputTarget
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;
@@ -59,7 +59,7 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(RotatePlayerRpc), RpcTarget.All, angle);
         }
 
-        void IPlayerDriver.MoveTo(Vector2 targetPosition)
+        void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Battle.Scripts.Battle
 {
     internal interface IPlayerDriver
@@ -7,8 +5,6 @@ namespace Battle.Scripts.Battle
         int PlayerPos { get; }
 
         void Rotate(float angle);
-
-        void MoveTo(Vector2 targetPosition);
     }
 
     internal interface IPlayerDriverState
