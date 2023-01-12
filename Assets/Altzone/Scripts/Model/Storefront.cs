@@ -1,36 +1,59 @@
 using System.Collections.Generic;
-using Altzone.Scripts.Model.LocalStorage;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Store for model and custom objects.
+    /// Store CRUD operations for model and custom objects.
     /// </summary>
     public interface IStorefront
     {
+        #region CharacterClassModel
+
         CharacterClassModel GetCharacterClassModel(int id);
         List<CharacterClassModel> GetAllCharacterClassModels();
+
+        #endregion
+
+        #region ICustomCharacterModel
 
         ICustomCharacterModel GetCustomCharacterModel(int id);
         List<ICustomCharacterModel> GetAllCustomCharacterModels();
         void Save(ICustomCharacterModel customCharacterModel);
         void Delete(int id);
 
+        #endregion
+
+        #region IBattleCharacter
+
         IBattleCharacter GetBattleCharacter(int id);
         List<IBattleCharacter> GetAllBattleCharacters();
 
+        #endregion
+
+        #region ClanModel
+
         ClanModel GetClanModel(int id);
         List<ClanModel> GetAllClanModels();
+
+        #endregion
+
+        #region FurnitureModel
 
         FurnitureModel GetFurnitureModel(int id);
         FurnitureModel GetFurnitureModel(string name);
         List<FurnitureModel> GetAllFurnitureModels();
 
+        #endregion
+
+        #region RaidGameRoomModel
+
         RaidGameRoomModel GetRaidGameRoomModel(int id);
         RaidGameRoomModel GetRaidGameRoomModel(string name);
         List<RaidGameRoomModel> GetAllRaidGameRoomModels();
+
+        #endregion
     }
 
     public class Storefront : IStorefront
@@ -118,44 +141,27 @@ namespace Altzone.Scripts.Model
 
         public IBattleCharacter GetBattleCharacter(int customCharacterId)
         {
-            var customCharacter = Get().GetCustomCharacterModel(customCharacterId);
-            if (customCharacter == null)
-            {
-                throw new UnityException($"CustomCharacterModel not found for {customCharacterId}");
-            }
-            var character = Get().GetCharacterClassModel(customCharacter.CharacterModelId);
-            if (character == null)
-            {
-                throw new UnityException($"CustomCharacter {customCharacterId} CharacterModel not found for {customCharacter.CharacterModelId}");
-            }
-            return new BattleCharacter(customCharacter, character);
+            return BattleCharacter.GetBattleCharacter(this, customCharacterId);
         }
 
         public List<IBattleCharacter> GetAllBattleCharacters()
         {
-            // Same as Custom Characters.
-            var battleCharacters = new List<IBattleCharacter>();
-            var customCharacters = Get().GetAllCustomCharacterModels();
-            foreach (var customCharacter in customCharacters)
-            {
-                battleCharacters.Add(Get().GetBattleCharacter(customCharacter.Id));
-            }
-            return battleCharacters;
+            return BattleCharacter.GetAllBattleCharacters(this);
         }
 
         public RaidGameRoomModel GetRaidGameRoomModel(int id)
         {
-            return RaidGameRoomModels.GetRaidGameRoomModel(id);
+            return RaidGameRoomModels.GetById(id);
         }
 
         public RaidGameRoomModel GetRaidGameRoomModel(string name)
         {
-            return RaidGameRoomModels.GetRaidGameRoomModel(name);
+            return RaidGameRoomModels.GetByName(name);
         }
 
         public List<RaidGameRoomModel> GetAllRaidGameRoomModels()
         {
-            return RaidGameRoomModels.LoadModels();
+            return RaidGameRoomModels.GetAll();
         }
 
         /// <summary>
@@ -186,6 +192,33 @@ namespace Altzone.Scripts.Model
                 Resistance = classModel.Resistance + custom.Resistance;
                 Attack = classModel.Attack + custom.Attack;
                 Defence = classModel.Defence + custom.Defence;
+            }
+
+            public static IBattleCharacter GetBattleCharacter(IStorefront store, int customCharacterId)
+            {
+                var customCharacter = store.GetCustomCharacterModel(customCharacterId);
+                if (customCharacter == null)
+                {
+                    throw new UnityException($"CustomCharacterModel not found for {customCharacterId}");
+                }
+                var character = store.GetCharacterClassModel(customCharacter.CharacterModelId);
+                if (character == null)
+                {
+                    throw new UnityException($"CustomCharacter {customCharacterId} CharacterModel not found for {customCharacter.CharacterModelId}");
+                }
+                return new BattleCharacter(customCharacter, character);
+            }
+
+            public static List<IBattleCharacter> GetAllBattleCharacters(IStorefront store)
+            {
+                // Same as Custom Characters.
+                var battleCharacters = new List<IBattleCharacter>();
+                var customCharacters = store.GetAllCustomCharacterModels();
+                foreach (var customCharacter in customCharacters)
+                {
+                    battleCharacters.Add(Get().GetBattleCharacter(customCharacter.Id));
+                }
+                return battleCharacters;
             }
         }
     }

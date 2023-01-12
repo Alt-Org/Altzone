@@ -18,17 +18,17 @@ namespace Altzone.Scripts.Model
             Debug.Log($"storage file {_storage.StoragePath}");
         }
 
-        public static RaidGameRoomModel GetRaidGameRoomModel(int id)
+        public static RaidGameRoomModel GetById(int id)
         {
             return _storage.GetCustomCharacterModel(id);
         }
 
-        public static RaidGameRoomModel GetRaidGameRoomModel(string name)
+        public static RaidGameRoomModel GetByName(string name)
         {
             return _storage.GetAll().Find(x => x._name == name);
         }
 
-        public static List<RaidGameRoomModel> LoadModels()
+        public static List<RaidGameRoomModel> GetAll()
         {
             return _storage.GetAll();
         }
