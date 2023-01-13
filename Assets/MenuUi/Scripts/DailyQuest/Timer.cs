@@ -2,33 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Timer : MonoBehaviour
 {
-   
-    public float time = 86400;
-   
-    
+    private DateTime midnight;
     public Text timerText;
+
+    void Start()
+    {
+     
+        DateTime now = DateTime.Now;
+       
+        midnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, 0).AddDays(1);
+    }
 
     void Update()
     {
         Time.timeScale = 1f;
-       
-        time -= Time.deltaTime;
-
       
-        if (time <= 0)
+        TimeSpan timeRemaining = midnight - DateTime.Now;
+        
+        if (DateTime.Now >= midnight)
         {
-            time = 86400;
+            
+            midnight = midnight.AddDays(1);
         }
 
-      
-        int hours = (int)(time / 3600);
-        int minutes = (int)((time % 3600) / 60);
-        int seconds = (int)(time % 60);
+        int hours = (int)(timeRemaining.TotalHours);
+        int minutes = (int)(timeRemaining.TotalMinutes % 60);
+        int seconds = (int)(timeRemaining.TotalSeconds % 60);
 
-        
-        timerText.text = "Time remaining: " + hours + " hours " + minutes + " minutes " + seconds + " seconds";
+        timerText.text = hours + " hours " + minutes + " minutes " + seconds + " seconds";
     }
 }
