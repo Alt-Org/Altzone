@@ -6,7 +6,7 @@ using Altzone.Scripts.Model.LocalStorage;
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Helper class for external <c>RaidGameRoomModel</c> operations.
+    /// Helper class for external <c>RaidGameRoomModel</c> async operations.
     /// </summary>
     public static class RaidGameRoomModels
     {
@@ -26,19 +26,41 @@ namespace Altzone.Scripts.Model
             catch (Exception x)
             {
                 Debug.LogWarning($"storage file {_storage.StoragePath} error: {x.GetType().FullName} {x.Message}");
-                taskCompletionSource.SetResult(false);
+                taskCompletionSource.SetException(x);
             }
             return taskCompletionSource.Task;
         }
 
-        public static RaidGameRoomModel GetById(int id)
+        public static Task<RaidGameRoomModel> GetById(int id)
         {
-            return _storage.GetCustomCharacterModel(id);
+            var taskCompletionSource = new TaskCompletionSource<RaidGameRoomModel>();
+            try
+            {
+                var result= _storage.GetCustomCharacterModel(id);
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
         }
 
-        public static RaidGameRoomModel GetByName(string name)
+        public static Task<RaidGameRoomModel> GetByName(string name)
         {
-            return _storage.GetAll().Find(x => x._name == name);
+            var taskCompletionSource = new TaskCompletionSource<RaidGameRoomModel>();
+            try
+            {
+                var result= _storage.GetAll().Find(x => x._name == name);
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
         }
 
         public static Task<List<RaidGameRoomModel>> GetAll()
@@ -52,7 +74,7 @@ namespace Altzone.Scripts.Model
             catch (Exception x)
             {
                 Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
-                taskCompletionSource.SetResult(null);
+                taskCompletionSource.SetException(x);
             }
             return taskCompletionSource.Task;
         }
@@ -68,7 +90,7 @@ namespace Altzone.Scripts.Model
             catch (Exception x)
             {
                 Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
-                taskCompletionSource.SetResult(false);
+                taskCompletionSource.SetException(x);
             }
             return taskCompletionSource.Task;
         }
@@ -84,7 +106,7 @@ namespace Altzone.Scripts.Model
             catch (Exception x)
             {
                 Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
-                taskCompletionSource.SetResult(false);
+                taskCompletionSource.SetException(x);
             }
             return taskCompletionSource.Task;
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -47,11 +48,11 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        #region RaidGameRoomModel
+        #region RaidGameRoomModel (Async)
 
-        RaidGameRoomModel GetRaidGameRoomModel(int id);
-        RaidGameRoomModel GetRaidGameRoomModel(string name);
-        List<RaidGameRoomModel> GetAllRaidGameRoomModels();
+        Task<RaidGameRoomModel> GetRaidGameRoomModel(int id);
+        Task<RaidGameRoomModel> GetRaidGameRoomModel(string name);
+        Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels();
 
         #endregion
     }
@@ -76,7 +77,7 @@ namespace Altzone.Scripts.Model
         {
             Models.Load();
             CustomCharacterModels.Load();
-            RaidGameRoomModels.Load();
+            RaidGameRoomModels.Connect();
         }
 
         CharacterClassModel IStorefront.GetCharacterClassModel(int id)
@@ -149,17 +150,17 @@ namespace Altzone.Scripts.Model
             return BattleCharacter.GetAllBattleCharacters(this);
         }
 
-        public RaidGameRoomModel GetRaidGameRoomModel(int id)
+        public Task<RaidGameRoomModel> GetRaidGameRoomModel(int id)
         {
             return RaidGameRoomModels.GetById(id);
         }
 
-        public RaidGameRoomModel GetRaidGameRoomModel(string name)
+        public Task<RaidGameRoomModel> GetRaidGameRoomModel(string name)
         {
             return RaidGameRoomModels.GetByName(name);
         }
 
-        public List<RaidGameRoomModel> GetAllRaidGameRoomModels()
+        public Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels()
         {
             return RaidGameRoomModels.GetAll();
         }

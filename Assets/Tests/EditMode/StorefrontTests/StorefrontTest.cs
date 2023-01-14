@@ -3,7 +3,6 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 using UnityEngine;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace Assets.Tests.EditMode.StorefrontTests
 {
@@ -45,17 +44,6 @@ namespace Assets.Tests.EditMode.StorefrontTests
             var models = _store.GetAllFurnitureModels();
             Assert.IsNotNull(models);
             Assert.IsTrue(models.Count > 0);
-        }
-
-        [Test, Description("Test that there is RaidGameRoomModels and we can fetch one by id")]
-        public void RaidGameRoomModelTest()
-        {
-            Debug.Log("test");
-            var models = _store.GetAllRaidGameRoomModels();
-            var randomModel = GetRandomObject(models);
-            var model = _store.GetCharacterClassModel(randomModel._id);
-            Assert.IsNotNull(model);
-            Assert.AreEqual(randomModel._id, model.Id);
         }
 
         [Test, Description("Test that there is Character Models and we can fetch one by id")]
