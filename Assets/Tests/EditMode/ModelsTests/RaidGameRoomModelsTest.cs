@@ -5,7 +5,6 @@ using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.LocalStorage;
 using NUnit.Framework;
 using UnityEngine;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace Assets.Tests.EditMode.ModelsTests
 {

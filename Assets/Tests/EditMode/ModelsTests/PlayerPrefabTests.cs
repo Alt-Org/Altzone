@@ -1,7 +1,6 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace Assets.Tests.EditMode.ModelsTests
 {

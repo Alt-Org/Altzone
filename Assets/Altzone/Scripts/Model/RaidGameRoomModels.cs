@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Altzone.Scripts.Model.LocalStorage;
 
 namespace Altzone.Scripts.Model
@@ -12,10 +14,21 @@ namespace Altzone.Scripts.Model
 
         private static RaidGameRoomModelStorage _storage;
 
-        public static void Load()
+        public static Task<bool> Connect()
         {
-            _storage = new RaidGameRoomModelStorage(StorageFilename);
-            Debug.Log($"storage file {_storage.StoragePath}");
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            try
+            {
+                _storage = new RaidGameRoomModelStorage(StorageFilename);
+                Debug.Log($"storage file {_storage.StoragePath}");
+                taskCompletionSource.SetResult(true);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"storage file {_storage.StoragePath} error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetResult(false);
+            }
+            return taskCompletionSource.Task;
         }
 
         public static RaidGameRoomModel GetById(int id)
@@ -28,19 +41,52 @@ namespace Altzone.Scripts.Model
             return _storage.GetAll().Find(x => x._name == name);
         }
 
-        public static List<RaidGameRoomModel> GetAll()
+        public static Task<List<RaidGameRoomModel>> GetAll()
         {
-            return _storage.GetAll();
+            var taskCompletionSource = new TaskCompletionSource<List<RaidGameRoomModel>>();
+            try
+            {
+                var result= _storage.GetAll();
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetResult(null);
+            }
+            return taskCompletionSource.Task;
         }
 
-        public static void Save(RaidGameRoomModel model)
+        public static Task<bool> Save(RaidGameRoomModel model)
         {
-            _storage.Save(model);
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            try
+            {
+                _storage.Save(model);
+                taskCompletionSource.SetResult(true);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetResult(false);
+            }
+            return taskCompletionSource.Task;
         }
 
-        public static void Delete(int id)
+        public static Task<bool> Delete(int id)
         {
-            _storage.Delete(id);
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            try
+            {
+                _storage.Delete(id);
+                taskCompletionSource.SetResult(true);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetResult(false);
+            }
+            return taskCompletionSource.Task;
         }
     }
 }
