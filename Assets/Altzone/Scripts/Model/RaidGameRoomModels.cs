@@ -51,8 +51,12 @@ namespace Altzone.Scripts.Model
             var taskCompletionSource = new TaskCompletionSource<RaidGameRoomModel>();
             try
             {
-                var result= _storage.GetAll().Find(x => x._name == name);
-                taskCompletionSource.SetResult(result);
+                var result= _storage.Find(x => x._name == name);
+                if (result.Count > 1)
+                {
+                    throw new InvalidOperationException($"collection has {result.Count} items with '{name}'");
+                }
+                taskCompletionSource.SetResult(result.Count == 0 ? null : result[0]);
             }
             catch (Exception x)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,6 +43,11 @@ namespace Altzone.Scripts.Model.LocalStorage
         public List<RaidGameRoomModel> GetAll()
         {
             return _models;
+        }
+
+        public List<RaidGameRoomModel> Find(Predicate<RaidGameRoomModel> selector)
+        {
+            return _models.Where(x => selector(x)).ToList();
         }
 
         public void Save(RaidGameRoomModel model)
