@@ -10,22 +10,21 @@ namespace Altzone.Scripts.Model
     /// </summary>
     public static class RaidGameRoomModels
     {
-        private const string StorageFilename = "RaidGameRoomModels.json";
-
         private static RaidGameRoomModelStorage _storage;
 
-        public static Task<bool> Connect()
+        public static Task<bool> Connect(string storageFilename)
         {
+            Debug.Log("here");
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try
             {
-                _storage = new RaidGameRoomModelStorage(StorageFilename);
-                Debug.Log($"storage file {_storage.StoragePath}");
+                _storage = new RaidGameRoomModelStorage(storageFilename);
+                Debug.Log($"storage {_storage.StorageFilename}");
                 taskCompletionSource.SetResult(true);
             }
             catch (Exception x)
             {
-                Debug.LogWarning($"storage file {_storage.StoragePath} error: {x.GetType().FullName} {x.Message}");
+                Debug.LogWarning($"storage file {_storage.StorageFilename} error: {x.GetType().FullName} {x.Message}");
                 taskCompletionSource.SetException(x);
             }
             return taskCompletionSource.Task;

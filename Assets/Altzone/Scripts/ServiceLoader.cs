@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using Altzone.Scripts.Service.Audio;
 using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Unity;
@@ -34,6 +35,8 @@ namespace Altzone.Scripts
             Debug.Log($"{name}");
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
+            // Parts of store can be initialized asynchronously and we start them now.
+            Storefront.Get();
             // Development vs production mode needs to be decided during build time!
             const bool isDevelopmentMode = true;
             StartLootLocker(isDevelopmentMode);

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -55,6 +57,10 @@ namespace Altzone.Scripts.Model
         Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels();
 
         #endregion
+
+        #region Inventory (Async)
+
+        #endregion
     }
 
     public class Storefront : IStorefront
@@ -71,13 +77,37 @@ namespace Altzone.Scripts.Model
             return _instance ??= new Storefront();
         }
 
+        private const string RaidGameRoomModelsFilename = "RaidGameRoomModels.json";
+        private const string InventoryItemsFilename = "InventoryItems.json";
+
         private static Storefront _instance;
+
+        private IInventory _inventory;
 
         private Storefront()
         {
+            Debug.Log($"start initialization");
             Models.Load();
             CustomCharacterModels.Load();
-            RaidGameRoomModels.Connect();
+            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, RaidGameRoomModelsFilename);
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
+            Task.Run(() =>
+            {
+                try
+                {
+                    var connectResult = RaidGameRoomModels.Connect(raidGameRoomModelsPath);
+                    var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
+                    Task.WaitAll(connectResult, inventoryResult);
+                    Assert.IsTrue(connectResult.Result);
+                    _inventory = inventoryResult.Result;
+                    Assert.IsNotNull(_inventory);
+                }
+                catch (Exception x)
+                {
+                    Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                }
+                Debug.Log($"done initialization");
+            });
         }
 
         CharacterClassModel IStorefront.GetCharacterClassModel(int id)

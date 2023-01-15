@@ -13,24 +13,24 @@ namespace Altzone.Scripts.Model.LocalStorage
     {
         private const int StorageVersionNUmber = 1;
 
-        private readonly string _storagePath;
+        private readonly string _storageFilename;
         private readonly List<RaidGameRoomModel> _models;
 
-        public string StoragePath => _storagePath;
+        public string StorageFilename => _storageFilename;
 
         public RaidGameRoomModelStorage(string storageFilename)
         {
-            _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
+            _storageFilename = storageFilename;
             if (AppPlatform.IsWindows)
             {
-                _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
+                _storageFilename = AppPlatform.ConvertToWindowsPath(_storageFilename);
             }
-            if (!File.Exists(_storagePath))
+            if (!File.Exists(_storageFilename))
             {
                 _models = new List<RaidGameRoomModel>();
                 return;
             }
-            var storageData = LoadStorage(_storagePath);
+            var storageData = LoadStorage(_storageFilename);
             _models = storageData.ModelList;
         }
 
@@ -55,7 +55,7 @@ namespace Altzone.Scripts.Model.LocalStorage
             {
                 _models.Add(model);
             }
-            SaveStorage(_models, _storagePath);
+            SaveStorage(_models, _storageFilename);
         }
 
         public void Delete(int id)
@@ -66,7 +66,7 @@ namespace Altzone.Scripts.Model.LocalStorage
                 return;
             }
             _models.RemoveAt(index);
-            SaveStorage(_models, _storagePath);
+            SaveStorage(_models, _storageFilename);
         }
 
         private static StorageData LoadStorage(string storagePath)

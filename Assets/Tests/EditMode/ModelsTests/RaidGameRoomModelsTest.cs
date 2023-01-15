@@ -20,7 +20,7 @@ namespace Assets.Tests.EditMode.ModelsTests
             DeleteStorage(DefaultStorageFilename);
 
             var storage = new RaidGameRoomModelStorage(DefaultStorageFilename);
-            Debug.Log($"storage {storage.StoragePath}");
+            Debug.Log($"storage {storage.StorageFilename}");
             var models = new List<RaidGameRoomModel>()
             {
                 new(1, "test10", 7, 12),
