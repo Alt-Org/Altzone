@@ -42,13 +42,13 @@ namespace Altzone.Scripts.Model
     
     internal class Inventory : IInventory
     {
-        private readonly string _storageFilename;
+        private readonly InventoryItemStorage<InventoryItem> _itemStorage;
 
-        public string StorageFilename => _storageFilename;
+        public string StorageFilename => _itemStorage.StorageFilename;
 
         public Inventory(string storageFilename)
         {
-            _storageFilename = storageFilename;
+            _itemStorage = new InventoryItemStorage<InventoryItem>(storageFilename);
         }
 
         public async Task<InventoryItem> GetById(int id)
