@@ -75,17 +75,17 @@ namespace Altzone.Scripts.Model.LocalStorage
             SaveStorage(_models, _storageFilename);
         }
 
-        private static StorageData<T> LoadStorage(string storagePath)
+        private static StorageData LoadStorage(string storagePath)
         {
             var jsonData = File.ReadAllText(storagePath);
-            var storageData = JsonUtility.FromJson<StorageData<T>>(jsonData);
+            var storageData = JsonUtility.FromJson<StorageData>(jsonData);
             Assert.AreEqual(StorageVersionNUmber, storageData.VersionNUmber);
             return storageData;
         }
 
         private static void SaveStorage(List<T> models, string storagePath)
         {
-            var storageData = new StorageData<T>
+            var storageData = new StorageData
             {
                 VersionNUmber = StorageVersionNUmber,
                 ModelList = models,
@@ -94,10 +94,10 @@ namespace Altzone.Scripts.Model.LocalStorage
             File.WriteAllText(storagePath, json);
         }
 
-        private class StorageData<TT> where TT : class
+        private class StorageData
         {
             public int VersionNUmber;
-            public List<TT> ModelList = new();
+            public List<T> ModelList = new();
         }
     }
 }

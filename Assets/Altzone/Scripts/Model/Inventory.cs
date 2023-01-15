@@ -39,7 +39,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
     }
-    
+
     internal class Inventory : IInventory
     {
         private readonly InventoryItemStorage<InventoryItem> _itemStorage;
@@ -69,22 +69,52 @@ namespace Altzone.Scripts.Model
             throw new NotImplementedException();
         }
 
-        public async Task<List<InventoryItem>> GetAll()
+        public Task<List<InventoryItem>> GetAll()
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            var taskCompletionSource = new TaskCompletionSource<List<InventoryItem>>();
+            try
+            {
+                var result = _itemStorage.GetAll();
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
         }
 
-        public async Task<bool> Save(InventoryItem item)
+        public Task<bool> Save(InventoryItem item)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            try
+            {
+                _itemStorage.Save(item);
+                taskCompletionSource.SetResult(true);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
         }
 
-        public async Task<bool> Delete(int id)
+        public Task<bool> Delete(int id)
         {
-            await Task.Delay(0);
-            throw new NotImplementedException();
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            try
+            {
+                _itemStorage.Delete(id);
+                taskCompletionSource.SetResult(true);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
         }
     }
 }
