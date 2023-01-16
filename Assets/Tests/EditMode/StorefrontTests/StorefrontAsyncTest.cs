@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
@@ -17,6 +18,17 @@ namespace Assets.Tests.EditMode.StorefrontTests
             Debug.Log("setup");
             _store = Storefront.Get();
             Assert.IsNotNull(_store);
+            
+            // Note that any file InventoryItems.json
+            // 1) must exist and
+            // 2) it must contain valid items that point to valid furniture
+            // for inventory via store tests to pass.
+            
+            // Stupid busy loop wait for external cloud services...
+            while (!_store.IsInventoryConnected)
+            {
+                Thread.Yield();
+            }
         }
 
         [Test, Description("Test that there is RaidGameRoomModels and we can fetch one by id and name")]
@@ -35,6 +47,24 @@ namespace Assets.Tests.EditMode.StorefrontTests
             model = await _store.GetRaidGameRoomModel(randomModel._name);
             Assert.IsNotNull(model);
             Assert.AreEqual(randomModel._id, model._id);
+        }
+
+        [Test]
+        public async Task GetAllInventoryItemsTest()
+        {
+            Debug.Log($"test");
+            var items = await _store.GetAllInventoryItems();
+            Assert.IsTrue(items.Count > 1);
+            Debug.Log($"test items {items.Count}");
+        }
+
+        [Test]
+        public async Task GetAllFurnitureModelsFromInventoryTest()
+        {
+            Debug.Log($"test");
+            var models = await _store.GetAllFurnitureModelsFromInventory();
+            Assert.IsTrue(models.Count > 1);
+            Debug.Log($"test models {models.Count}");
         }
 
         private static T GetRandomObject<T>(IReadOnlyList<T> objectList)
