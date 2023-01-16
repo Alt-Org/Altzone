@@ -23,7 +23,6 @@ namespace Altzone.Scripts.Model
     {
         public static Task<IInventory> Create(string storageFilename)
         {
-            Debug.Log("here");
             var taskCompletionSource = new TaskCompletionSource<IInventory>();
             try
             {

@@ -14,7 +14,6 @@ namespace Altzone.Scripts.Model
 
         public static Task<bool> Connect(string storageFilename)
         {
-            Debug.Log("here");
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try
             {
