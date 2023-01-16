@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Model
         ThreeSquaresStraight = 3,
         ThreeSquaresBend = 4,
         FourSquares = 5,
+        Bomb = 6,
     }
 
     /// <summary>

@@ -28,6 +28,7 @@ namespace Assets.Tests.EditMode.ModelsTests
             var gameObject = model.Instantiate(null);
             Assert.IsNotNull(gameObject);
             Assert.AreEqual(model.Name, gameObject.name);
+            Debug.Log($"gameObject {gameObject.name}");
         }        
 
         [Test]

@@ -12,6 +12,8 @@ namespace Altzone.Scripts.Model
     /// </summary>
     public interface IStorefront
     {
+        bool IsInventoryConnected { get; }
+        
         #region CharacterClassModel
 
         CharacterClassModel GetCharacterClassModel(int id);
@@ -60,6 +62,10 @@ namespace Altzone.Scripts.Model
 
         #region Inventory (Async)
 
+        Task<List<InventoryItem>> GetAllInventoryItems();
+
+        Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
+
         #endregion
     }
 
@@ -83,6 +89,8 @@ namespace Altzone.Scripts.Model
         private static Storefront _instance;
 
         private IInventory _inventory;
+
+        public bool IsInventoryConnected => _inventory != null;
 
         private Storefront()
         {
@@ -193,6 +201,16 @@ namespace Altzone.Scripts.Model
         public Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels()
         {
             return RaidGameRoomModels.GetAll();
+        }
+
+        public Task<List<InventoryItem>> GetAllInventoryItems()
+        {
+            return _inventory.GetAll();
+        }
+
+        public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
+        {
+            return _inventory.GetAllFurnitureModelsFromInventory();
         }
 
         /// <summary>

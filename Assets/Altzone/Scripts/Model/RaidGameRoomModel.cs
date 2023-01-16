@@ -13,19 +13,6 @@ namespace Altzone.Scripts.Model
     public class RaidGameRoomModel
     {
         [Serializable]
-        public class BombLocation
-        {
-            public int _x;
-            public int _y;
-
-            public BombLocation(int x, int y)
-            {
-                _x = x;
-                _y = y;
-            }
-        }
-
-        [Serializable]
         public class CoinLocation
         {
             public int _x;
@@ -60,7 +47,6 @@ namespace Altzone.Scripts.Model
         public int _width;
         public int _height;
 
-        public List<BombLocation> _bombLocations = new();
         public List<CoinLocation> _coinLocations = new();
         public List<FurnitureLocation> _furnitureLocations = new();
 
