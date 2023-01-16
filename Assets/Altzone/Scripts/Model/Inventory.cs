@@ -12,8 +12,8 @@ namespace Altzone.Scripts.Model
     {
         Task<InventoryItem> GetById(int id);
         Task<InventoryItem> GetByName(string name);
-        Task<List<InventoryItem>> GetByType(InventoryItemType type);
         Task<List<InventoryItem>> GetAll();
+        Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
 
         Task<bool> Save(InventoryItem item);
         Task<bool> Delete(int id);
@@ -63,18 +63,34 @@ namespace Altzone.Scripts.Model
             throw new NotImplementedException();
         }
 
-        public async Task<List<InventoryItem>> GetByType(InventoryItemType type)
-        {
-            await Task.Delay(0);
-            throw new NotImplementedException();
-        }
-
         public Task<List<InventoryItem>> GetAll()
         {
             var taskCompletionSource = new TaskCompletionSource<List<InventoryItem>>();
             try
             {
                 var result = _itemStorage.GetAll();
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+                taskCompletionSource.SetException(x);
+            }
+            return taskCompletionSource.Task;
+        }
+
+        public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
+        {
+            var taskCompletionSource = new TaskCompletionSource<List<FurnitureModel>>();
+            try
+            {
+                var items = _itemStorage.GetAll();
+                List<FurnitureModel> result = new List<FurnitureModel>();
+                foreach (var item in items)
+                {
+                    var furniture = Models.FindById<FurnitureModel>(item._furnitureId);
+                    result.Add(furniture);
+                }
                 taskCompletionSource.SetResult(result);
             }
             catch (Exception x)

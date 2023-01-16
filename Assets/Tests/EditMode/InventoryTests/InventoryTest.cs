@@ -23,12 +23,14 @@ namespace Assets.Tests.EditMode.InventoryTests
             }
             _inventory = await InventoryFactory.Create(inventoryItemsPath);
 
-            await _inventory.Save(new InventoryItem(1, "Test-1", InventoryItemType.Furniture));
-            await _inventory.Save(new InventoryItem(2, "Test-2", InventoryItemType.Furniture));
-            await _inventory.Save(new InventoryItem(3, "Test-3", InventoryItemType.Furniture));
-            await _inventory.Save(new InventoryItem(10, "Test-10", InventoryItemType.Furniture));
-            await _inventory.Save(new InventoryItem(20, "Test-20", InventoryItemType.Furniture));
-            await _inventory.Save(new InventoryItem(30, "Test-30", InventoryItemType.Furniture));
+            // FurnitureModelLoader uses same IDs
+            await _inventory.Save(new InventoryItem(10, "Test-1", 1));
+            await _inventory.Save(new InventoryItem(20, "Test-2", 2));
+            await _inventory.Save(new InventoryItem(30, "Test-3", 3));
+            await _inventory.Save(new InventoryItem(40, "Test-4", 4));
+            await _inventory.Save(new InventoryItem(50, "Test-5", 5));
+            await _inventory.Save(new InventoryItem(99, "Bomb", 6));
+            await _inventory.Save(new InventoryItem(70, "Test-7", 7));
         }
 
         [Test]
@@ -37,6 +39,16 @@ namespace Assets.Tests.EditMode.InventoryTests
             Debug.Log($"test {InventoryItemsFilename}");
             var items = await _inventory.GetAll();
             Assert.IsTrue(items.Count > 1);
+            Debug.Log($"test items {items.Count}");
+        }
+
+        [Test]
+        public async Task GetAllFurnitureTest()
+        {
+            Debug.Log($"test {InventoryItemsFilename}");
+            var models = await _inventory.GetAllFurnitureModelsFromInventory();
+            Assert.IsTrue(models.Count > 1);
+            Debug.Log($"test models {models.Count}");
         }
     }
 }

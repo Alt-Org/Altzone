@@ -60,6 +60,10 @@ namespace Altzone.Scripts.Model
 
         #region Inventory (Async)
 
+        Task<List<InventoryItem>> GetAllInventoryItems();
+
+        Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
+
         #endregion
     }
 
@@ -193,6 +197,16 @@ namespace Altzone.Scripts.Model
         public Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels()
         {
             return RaidGameRoomModels.GetAll();
+        }
+
+        public Task<List<InventoryItem>> GetAllInventoryItems()
+        {
+            return _inventory.GetAll();
+        }
+
+        public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
+        {
+            return _inventory.GetAllFurnitureModelsFromInventory();
         }
 
         /// <summary>
