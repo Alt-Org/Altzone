@@ -48,19 +48,21 @@ namespace Assets.Tests.EditMode.ModelsTests
                              new (4,11),
                          })
                 {
-                    roomModel._bombLocations.Add(new RaidGameRoomModel.BombLocation(data.Item1,data.Item2));
+                    const int bombId = (int)FurnitureType.Bomb;
+                    roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(data.Item1,data.Item2, bombId));
                 }
                 roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(0, 0, 10));
                 roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(0, 6, 10));
                 roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(11, 0, 10));
                 roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(11, 6, 10));
                 
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3,0,1));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,0,1));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(6,0,1));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1,6,1));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2,7,1));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,8,1));
+                const int squareId = (int)FurnitureType.OneSquare;
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3,0,squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,0,squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(6,0,squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1,6,squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2,7,squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4,8,squareId));
             }
         }
 
