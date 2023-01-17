@@ -12,7 +12,7 @@ namespace Assets.Tests.EditMode.InventoryTests
         private const string InventoryItemsFilename = "TestInventoryItems.json";
 
         private IInventory _inventory;
-        
+
         [OneTimeSetUp, Description("Create Inventory")]
         public async Task OneTimeSetUp()
         {
@@ -31,6 +31,26 @@ namespace Assets.Tests.EditMode.InventoryTests
             await _inventory.Save(new InventoryItem(50, "Test-5", 5));
             await _inventory.Save(new InventoryItem(99, "Bomb", 6));
             await _inventory.Save(new InventoryItem(70, "Test-7", 7));
+        }
+
+        [Test]
+        public async Task CreateInventoryTest()
+        {
+            const string TempInventoryFilename = "TestTempInventoryItems.json";
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, TempInventoryFilename);
+            if (File.Exists(inventoryItemsPath))
+            {
+                File.Delete(inventoryItemsPath);
+            }
+            // Should not create empty inventory file!?
+            _inventory = await InventoryFactory.Create(inventoryItemsPath);
+            var fileExists = File.Exists(inventoryItemsPath);
+            Assert.IsFalse(fileExists);
+            
+            // File should be created after Save.
+            await _inventory.Save(new InventoryItem(1, "Test", 1));
+            fileExists = File.Exists(inventoryItemsPath);
+            Assert.IsTrue(fileExists);
         }
 
         [Test]
