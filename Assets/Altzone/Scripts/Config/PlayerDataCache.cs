@@ -8,73 +8,6 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts.Config
 {
     /// <summary>
-    /// Player data cache - a common storage for player related data that is persisted somewhere (locally).
-    /// </summary>
-    /// <remarks>
-    /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
-    /// </remarks>
-    public interface IPlayerDataCache
-    {
-        string PlayerName { get; }
-        string PlayerGuid { get; }
-        int ClanId { get; }
-        int CustomCharacterModelId { get; }
-        SystemLanguage Language { get; set; }
-        bool IsDebugFlag { get; set; }
-        bool IsTosAccepted { get; set; }
-        bool IsFirstTimePlaying { get; set; }
-        bool IsAccountVerified { get; set; }
-
-        bool HasPlayerName { get; }
-        void SetPlayerName(string playerName);
-        void SetPlayerGuid(string newPlayerGuid);
-        void SetClanId(int clanId);
-        void SetCustomCharacterModelId(int customCharacterModelId);
-
-#if UNITY_EDITOR
-        void DebugSavePlayer();
-        void DebugResetPlayer();
-#endif
-    }
-
-    /// <summary>
-    /// Convenience class to keep all local storage related settings in one place.
-    /// </summary>
-    internal class PlayerData
-    {
-        public string PlayerName;
-        public string PlayerGuid;
-        public int ClanId;
-        public int CustomCharacterModelId;
-        public SystemLanguage Language;
-        public bool IsTosAccepted;
-        public bool IsFirstTimePlaying;
-        public bool IsAccountVerified;
-        public bool IsDebugFlag;
-
-        public void ResetData(string dummyPlayerName, int dummyModelId, SystemLanguage defaultLanguage)
-        {
-            PlayerName = dummyPlayerName;
-            PlayerGuid = string.Empty;
-            ClanId = dummyModelId;
-            CustomCharacterModelId = dummyModelId;
-            Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)defaultLanguage);
-            IsTosAccepted = false;
-            IsFirstTimePlaying = true;
-            IsAccountVerified = false;
-            IsDebugFlag = false;
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}" +
-                   $", {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
-                   $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
-                   $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
-        }
-    }
-
-    /// <summary>
     /// <c>IPlayerDataCache</c> default implementation.
     /// </summary>
     internal class PlayerDataCache : IPlayerDataCache
@@ -288,6 +221,43 @@ namespace Altzone.Scripts.Config
             // This is required for actual implementation to detect changes in our changeable properties!
             return
                 $"Name {PlayerName}, Model {CustomCharacterModelId}, Clan {ClanId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
+        }
+
+        /// <summary>
+        /// Convenience class to keep all local storage related settings in one place.
+        /// </summary>
+        private class PlayerData
+        {
+            public string PlayerName;
+            public string PlayerGuid;
+            public int ClanId;
+            public int CustomCharacterModelId;
+            public SystemLanguage Language;
+            public bool IsTosAccepted;
+            public bool IsFirstTimePlaying;
+            public bool IsAccountVerified;
+            public bool IsDebugFlag;
+
+            public void ResetData(string dummyPlayerName, int dummyModelId, SystemLanguage defaultLanguage)
+            {
+                PlayerName = dummyPlayerName;
+                PlayerGuid = string.Empty;
+                ClanId = dummyModelId;
+                CustomCharacterModelId = dummyModelId;
+                Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)defaultLanguage);
+                IsTosAccepted = false;
+                IsFirstTimePlaying = true;
+                IsAccountVerified = false;
+                IsDebugFlag = false;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(PlayerName)}: {PlayerName}, {nameof(CustomCharacterModelId)}: {CustomCharacterModelId}, {nameof(ClanId)}: {ClanId}" +
+                       $", {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
+                       $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
+                       $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
+            }
         }
 
         /// <summary>
