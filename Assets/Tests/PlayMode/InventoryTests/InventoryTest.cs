@@ -9,6 +9,9 @@ using UnityEngine.TestTools;
 
 namespace Tests.PlayMode.InventoryTests
 {
+    /// <summary>
+    /// Simple Inventory (Furniture) UI test.
+    /// </summary>
     public class InventoryTest
     {
         private const string TestCameraName = "TestCamera";
@@ -43,14 +46,15 @@ namespace Tests.PlayMode.InventoryTests
             var furnitureModels = task.Result;
             Assert.IsTrue(furnitureModels.Count > 0);
 
-            // Create one furniture.
+            // Find and show one furniture - fails if none found.
             var furniture = furnitureModels.First(x => x.FurnitureType == FurnitureType.OneSquare);
-            _monoBehaviour.StartCoroutine(ShowFurnitureFromInventory(furniture, new Vector2(-1f, 1f)));
+            _monoBehaviour.StartCoroutine(ShowFurniturePiece(furniture, new Vector2(-1f, 1f)));
 
-            // Create one bomb.
+            // Find and show one bomb - fails if none found.
             var bomb = furnitureModels.First(x => x.FurnitureType == FurnitureType.Bomb);
-            _monoBehaviour.StartCoroutine(ShowFurnitureFromInventory(bomb, new Vector2(1f, 1f)));
+            _monoBehaviour.StartCoroutine(ShowFurniturePiece(bomb, new Vector2(1f, 1f)));
 
+            // Test must be cancelled manually now.
             while (!_isTestDone)
             {
                 yield return null;
@@ -58,14 +62,13 @@ namespace Tests.PlayMode.InventoryTests
             Debug.Log($"done {Time.frameCount}");
         }
 
-        private IEnumerator ShowFurnitureFromInventory(FurnitureModel furnitureModel, Vector2 position)
+        private static IEnumerator ShowFurniturePiece(FurnitureModel furnitureModel, Vector2 position)
         {
             Debug.Log($"{furnitureModel.Id} {furnitureModel.PrefabName}");
             var instance = furnitureModel.Instantiate(null);
             Assert.IsNotNull(instance);
             instance.transform.position = position;
-            yield return new WaitForSeconds(5f * 60f);
-            _isTestDone = true;
+            yield return null;
         }
     }
 }
