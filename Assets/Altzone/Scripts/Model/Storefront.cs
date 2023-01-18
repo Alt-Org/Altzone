@@ -41,6 +41,8 @@ namespace Altzone.Scripts.Model
 
         ClanModel GetClanModel(int id);
         List<ClanModel> GetAllClanModels();
+        int Save(ClanModel clanModel);
+        void DeleteClanModel(int id);
 
         #endregion
 
@@ -148,6 +150,16 @@ namespace Altzone.Scripts.Model
         List<ClanModel> IStorefront.GetAllClanModels()
         {
             return Models.GetAll<ClanModel>();
+        }
+
+        public int Save(ClanModel clanModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteClanModel(int id)
+        {
+            throw new NotImplementedException();
         }
 
         FurnitureModel IStorefront.GetFurnitureModel(int id)
