@@ -6,7 +6,8 @@ namespace Assets.Tests.EditMode.ModelsTests
     [TestFixture]
     public class FurnitureModelTest
     {
-        private const string ModelName = "WhiteBall";
+        private const string WhiteBallName = "WhiteBall";
+        private const string NotFoundPrefabName = "NotFoundPrefab";
         
         private IStorefront _store;
 
@@ -22,9 +23,9 @@ namespace Assets.Tests.EditMode.ModelsTests
         public void FurnitureModelInstantiateTest()
         {
             Debug.Log("test");
-            var model = _store.GetFurnitureModel(ModelName);
+            var model = _store.GetFurnitureModel(WhiteBallName);
             Assert.IsNotNull(model);
-            Assert.AreEqual(model.Name, ModelName);
+            Assert.AreEqual(model.Name, WhiteBallName);
             var gameObject = model.Instantiate(null);
             Assert.IsNotNull(gameObject);
             Assert.AreEqual(model.Name, gameObject.name);
@@ -35,7 +36,7 @@ namespace Assets.Tests.EditMode.ModelsTests
         public void FurnitureModelInstantiateFailTest()
         {
             Debug.Log("test");
-            var model = _store.GetFurnitureModel(1);
+            var model = _store.GetFurnitureModel(NotFoundPrefabName);
             Assert.IsNotNull(model);
             var gameObject = model.Instantiate(null);
             Assert.IsNull(gameObject);

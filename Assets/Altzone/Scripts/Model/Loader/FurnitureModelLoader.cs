@@ -19,6 +19,8 @@ namespace Altzone.Scripts.Model.Loader
                 new(5, FurnitureType.FourSquares, "FourSquares", Color.red, "WhiteBall"),
                 new(6, FurnitureType.Bomb, "Bomb", Color.black, "Bomb"),
                 new(7, FurnitureType.OneSquare, "WhiteBall", Color.white, "WhiteBall"),
+                // This is for testing and must be fixed somehow if we want to test instantiation failures.
+                new(8, FurnitureType.OneSquare, "NotFoundPrefab", Color.red, "NotFoundPrefab"),
             };
         }
     }
