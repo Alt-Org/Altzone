@@ -75,6 +75,7 @@ namespace Assets.Tests.EditMode.StorefrontTests
         {
             Debug.Log("test");
             var customCharacterModels = _store.GetAllCustomCharacterModels();
+            Assert.IsTrue(customCharacterModels.Count > 0);
             var customCharacterModel = GetRandomObject(customCharacterModels);
             Assert.IsNotNull(customCharacterModel);
             var model = _store.GetCustomCharacterModel(customCharacterModel.Id);
