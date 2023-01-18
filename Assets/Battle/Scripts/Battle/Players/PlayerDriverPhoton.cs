@@ -60,7 +60,7 @@ namespace Battle.Scripts.Battle.Players
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
 
-            if (_teamNumber == PhotonBattle.TeamBlueValue)
+            if (_teamNumber == PhotonBattle.TeamRedValue)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }

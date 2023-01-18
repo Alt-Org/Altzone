@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
@@ -19,6 +20,9 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
+            CopyFile("CustomCharacterModels.json");
+            CopyFile("InventoryItems.json");
+            CopyFile("RaidGameRoomModels.json");
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
                 ? localDevConfig._loggerConfig
@@ -38,6 +42,16 @@ namespace Altzone.Scripts
             }
             UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
             UnitySingleton.CreateStaticSingleton<ServiceLoader>();
+        }
+
+        private static void CopyFile(string file)
+        {
+            var source = Resources.Load<TextAsset>("TestData/" +file);
+            var targetPath = Path.Combine(Application.persistentDataPath, file);
+            if (!File.Exists(targetPath))
+            {
+                File.WriteAllBytes(targetPath, source.bytes);
+            }
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
