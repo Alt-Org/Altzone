@@ -13,6 +13,19 @@ namespace Altzone.Scripts.Model
     public class RaidGameRoomModel
     {
         [Serializable]
+        public class FreeSpaceLocation
+        {
+            public int _x;
+            public int _y;
+
+            public FreeSpaceLocation(int x, int y)
+            {
+                _x = x;
+                _y = y;
+            }
+        }
+
+        [Serializable]
         public class CoinLocation
         {
             public int _x;
@@ -46,16 +59,19 @@ namespace Altzone.Scripts.Model
         public string _name;
         public int _width;
         public int _height;
+        public int _matchMakingValue;
 
+        public List<FreeSpaceLocation> _freeSpaceLocations = new();
         public List<CoinLocation> _coinLocations = new();
         public List<FurnitureLocation> _furnitureLocations = new();
 
-        public RaidGameRoomModel(int id, string name, int width, int height)
+        public RaidGameRoomModel(int id, string name, int width, int height, int matchMakingValue = 0)
         {
             _id = id;
             _name = name;
             _width = width;
             _height = height;
+            _matchMakingValue = matchMakingValue;
         }
     }
 }
