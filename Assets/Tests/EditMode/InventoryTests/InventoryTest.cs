@@ -16,6 +16,7 @@ namespace Assets.Tests.EditMode.InventoryTests
         [OneTimeSetUp, Description("Create Inventory")]
         public async Task OneTimeSetUp()
         {
+            Debug.Log($"setup {InventoryItemsFilename}");
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
             if (File.Exists(inventoryItemsPath))
             {
@@ -31,24 +32,27 @@ namespace Assets.Tests.EditMode.InventoryTests
             await _inventory.Save(new InventoryItem(50, "Test-5", 5));
             await _inventory.Save(new InventoryItem(99, "Bomb", 6));
             await _inventory.Save(new InventoryItem(70, "Test-7", 7));
+            await _inventory.Save(new InventoryItem(80, "Test-8", 8));
         }
 
         [Test]
         public async Task CreateInventoryTest()
         {
-            const string TempInventoryFilename = "TestTempInventoryItems.json";
-            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, TempInventoryFilename);
+            const string tempInventoryFilename = "TestTempInventoryItems.json";
+
+            Debug.Log($"test {tempInventoryFilename}");
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, tempInventoryFilename);
             if (File.Exists(inventoryItemsPath))
             {
                 File.Delete(inventoryItemsPath);
             }
             // Should not create empty inventory file!?
-            _inventory = await InventoryFactory.Create(inventoryItemsPath);
+            var inventory = await InventoryFactory.Create(inventoryItemsPath);
             var fileExists = File.Exists(inventoryItemsPath);
             Assert.IsFalse(fileExists);
             
             // File should be created after Save.
-            await _inventory.Save(new InventoryItem(1, "Test", 1));
+            await inventory.Save(new InventoryItem(1, "Test", 1));
             fileExists = File.Exists(inventoryItemsPath);
             Assert.IsTrue(fileExists);
         }
