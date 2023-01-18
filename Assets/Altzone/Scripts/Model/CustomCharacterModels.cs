@@ -28,9 +28,9 @@ namespace Altzone.Scripts.Model
             return _storage.GetAll();
         }
 
-        public static void Save(ICustomCharacterModel customCharacterModel)
+        public static int Save(ICustomCharacterModel customCharacterModel)
         {
-            _storage.Save(customCharacterModel);
+            return _storage.Save(customCharacterModel);
         }
 
         public static void Delete(int id)

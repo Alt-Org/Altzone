@@ -16,12 +16,12 @@ namespace Altzone.Scripts.Model.LocalStorage
     public class CustomCharacterModelStorage
     {
         private const int StorageVersionNUmber = 1;
-        
+
         private readonly string _storagePath;
         private readonly List<ICustomCharacterModel> _models;
 
         public string StoragePath => _storagePath;
-        
+
         public CustomCharacterModelStorage(string storageFilename)
         {
             _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
@@ -37,7 +37,7 @@ namespace Altzone.Scripts.Model.LocalStorage
             var storageData = LoadStorage(_storagePath);
             _models = storageData.ModelList.Cast<ICustomCharacterModel>().ToList();
         }
-        
+
         public ICustomCharacterModel GetCustomCharacterModel(int id)
         {
             return _models.FirstOrDefault(x => x.Id == id);
@@ -48,7 +48,7 @@ namespace Altzone.Scripts.Model.LocalStorage
             return _models;
         }
 
-        public void Save(ICustomCharacterModel customCharacterModel)
+        public int Save(ICustomCharacterModel customCharacterModel)
         {
             var index = _models.FindIndex(x => x.Id == customCharacterModel.Id);
             if (index >= 0)
@@ -57,9 +57,16 @@ namespace Altzone.Scripts.Model.LocalStorage
             }
             else
             {
-                _models.Add(customCharacterModel as CustomCharacterModel);
+                var plainModel = customCharacterModel as CustomCharacterModel;
+                Assert.IsNotNull(plainModel);
+                if (plainModel._id == 0)
+                {
+                    plainModel.SetId(_models.Count + 1);
+                }
+                _models.Add(plainModel);
             }
             SaveStorage(_models, _storagePath);
+            return customCharacterModel.Id;
         }
 
         public void Delete(int id)
@@ -72,7 +79,7 @@ namespace Altzone.Scripts.Model.LocalStorage
             _models.RemoveAt(index);
             SaveStorage(_models, _storagePath);
         }
-        
+
         private static StorageData LoadStorage(string storagePath)
         {
             var jsonData = File.ReadAllText(storagePath);
@@ -80,7 +87,7 @@ namespace Altzone.Scripts.Model.LocalStorage
             Assert.AreEqual(StorageVersionNUmber, storageData.VersionNUmber);
             return storageData;
         }
-        
+
         private static void SaveStorage(List<ICustomCharacterModel> models, string storagePath)
         {
             var storageData = new StorageData
@@ -91,11 +98,11 @@ namespace Altzone.Scripts.Model.LocalStorage
             var json = JsonUtility.ToJson(storageData);
             File.WriteAllText(storagePath, json);
         }
-        
+
         private class StorageData
         {
             public int VersionNUmber;
-            public List<CustomCharacterModel> ModelList = new ();
+            public List<CustomCharacterModel> ModelList = new();
         }
     }
 }

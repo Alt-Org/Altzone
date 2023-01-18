@@ -25,8 +25,8 @@ namespace Altzone.Scripts.Model
 
         ICustomCharacterModel GetCustomCharacterModel(int id);
         List<ICustomCharacterModel> GetAllCustomCharacterModels();
-        void Save(ICustomCharacterModel customCharacterModel);
-        void Delete(int id);
+        int Save(ICustomCharacterModel customCharacterModel);
+        void DeleteCustomCharacterModel(int id);
 
         #endregion
 
@@ -58,6 +58,9 @@ namespace Altzone.Scripts.Model
         Task<RaidGameRoomModel> GetRaidGameRoomModel(string name);
         Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels();
 
+        Task<int> Save(RaidGameRoomModel raidGameRoomModel);
+        Task DeleteRaidGameRoomModel(int id);
+        
         #endregion
 
         #region Inventory (Async)
@@ -66,6 +69,9 @@ namespace Altzone.Scripts.Model
 
         Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
 
+        Task<int> Save(InventoryItem inventoryItem);
+        Task DeleteInventoryItem(int id);
+        
         #endregion
     }
 
@@ -168,12 +174,12 @@ namespace Altzone.Scripts.Model
             return CustomCharacterModels.LoadModels();
         }
 
-        public void Save(ICustomCharacterModel customCharacterModel)
+        public int Save(ICustomCharacterModel customCharacterModel)
         {
-            CustomCharacterModels.Save(customCharacterModel);
+            return CustomCharacterModels.Save(customCharacterModel);
         }
 
-        public void Delete(int id)
+        public void DeleteCustomCharacterModel(int id)
         {
             CustomCharacterModels.Delete(id);
         }
@@ -203,6 +209,16 @@ namespace Altzone.Scripts.Model
             return RaidGameRoomModels.GetAll();
         }
 
+        public Task<int> Save(RaidGameRoomModel raidGameRoomModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteRaidGameRoomModel(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<InventoryItem>> GetAllInventoryItems()
         {
             return _inventory.GetAll();
@@ -211,6 +227,16 @@ namespace Altzone.Scripts.Model
         public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
         {
             return _inventory.GetAllFurnitureModelsFromInventory();
+        }
+
+        public Task<int> Save(InventoryItem inventoryItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteInventoryItem(int id)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

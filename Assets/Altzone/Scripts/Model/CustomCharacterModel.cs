@@ -21,6 +21,12 @@ namespace Altzone.Scripts.Model
         public int _attack;
         public int _defence;
 
+        public void SetId(int id)
+        {
+            Assert.AreEqual(0, _id);
+            _id = id;
+        }
+
         int ICustomCharacterModel.Id => _id;
 
         int ICustomCharacterModel.CharacterModelId => _characterModelId;
