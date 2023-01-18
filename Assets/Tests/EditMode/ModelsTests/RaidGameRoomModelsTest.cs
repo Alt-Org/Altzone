@@ -19,8 +19,7 @@ namespace Assets.Tests.EditMode.ModelsTests
             Debug.Log($"setup {DefaultStorageFilename}");
             DeleteStorage(DefaultStorageFilename);
 
-            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, DefaultStorageFilename);
-            var storage = new RaidGameRoomModelStorage(raidGameRoomModelsPath);
+            var storage = new RaidGameRoomModelStorage(GetStoragePath(DefaultStorageFilename));
             Debug.Log($"storage {storage.StorageFilename}");
             var models = new List<RaidGameRoomModel>()
             {
@@ -75,11 +74,16 @@ namespace Assets.Tests.EditMode.ModelsTests
         public void DefaultStorageTest()
         {
             Debug.Log($"test {DefaultStorageFilename}");
-            var storage = new RaidGameRoomModelStorage(DefaultStorageFilename);
+            var storage = new RaidGameRoomModelStorage(GetStoragePath(DefaultStorageFilename));
             var models = storage.GetAll();
             Assert.IsTrue(models.Count > 1);
         }
 
+        private static string GetStoragePath(string storageFilename)
+        {
+            return Path.Combine(Application.persistentDataPath, storageFilename);
+        }
+        
         private static void DeleteStorage(string storageFilename)
         {
             var storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
