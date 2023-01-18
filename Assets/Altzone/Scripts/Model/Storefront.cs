@@ -65,6 +65,7 @@ namespace Altzone.Scripts.Model
 
         #region Inventory (Async)
 
+        Task<InventoryItem> GetInventoryItem(int id);
         Task<List<InventoryItem>> GetAllInventoryItems();
 
         Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
@@ -215,6 +216,11 @@ namespace Altzone.Scripts.Model
         }
 
         public Task DeleteRaidGameRoomModel(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<InventoryItem> GetInventoryItem(int id)
         {
             throw new NotImplementedException();
         }
