@@ -1,3 +1,4 @@
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.UI;

@@ -86,7 +86,7 @@ namespace Battle.Scripts.Battle
             {
                 return PhotonNetwork.NickName;
             }
-            var playerData = GameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerSettings;
             return !string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : NoPlayerName;
         }
 

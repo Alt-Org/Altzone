@@ -113,7 +113,7 @@ namespace Altzone.Scripts.Service.LootLocker
         {
             get
             {
-                return GameConfig.Get().PlayerDataCache.PlayerName;
+                return GameConfig.Get().PlayerSettings.PlayerName;
             }
         }
 

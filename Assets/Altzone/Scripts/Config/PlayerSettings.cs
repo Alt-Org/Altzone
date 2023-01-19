@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Config
     /// <summary>
     /// <c>IPlayerDataCache</c> default implementation.
     /// </summary>
-    internal class PlayerDataCache : IPlayerDataCache
+    internal class PlayerSettings : IPlayerSettings
     {
-        internal static IPlayerDataCache Create()
+        internal static IPlayerSettings Create()
         {
-            return new PlayerDataCacheLocal();
+            return new PlayerSettingsLocal();
         }
 
         /// <summary>
@@ -263,12 +263,12 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
         /// </summary>
-        private class PlayerDataCacheLocal : PlayerDataCache
+        private class PlayerSettingsLocal : PlayerSettings
         {
             private readonly MonoBehaviour _host;
             private Coroutine _delayedSave;
 
-            public PlayerDataCacheLocal()
+            public PlayerSettingsLocal()
             {
                 _host = UnityMonoHelper.Instance;
                 _playerData.PlayerName = PlayerPrefs.GetString(PlayerPrefKeys.PlayerName, string.Empty);

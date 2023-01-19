@@ -90,7 +90,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
-            var playerDataCache = GameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerSettings;
             var defence = Storefront.Get().GetBattleCharacter(playerDataCache.CustomCharacterModelId).MainDefence;
             player.SetCustomProperties(new Hashtable
             {

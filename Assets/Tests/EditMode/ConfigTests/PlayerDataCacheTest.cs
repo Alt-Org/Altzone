@@ -19,7 +19,7 @@ namespace Assets.Tests.EditMode.ConfigTests
         public void NonDestructiveTest1()
         {
             Debug.Log($"test");
-            var playerDataCache = GameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerSettings;
 
             Assert.IsTrue(playerDataCache.HasPlayerName);
 
@@ -40,7 +40,7 @@ namespace Assets.Tests.EditMode.ConfigTests
         {
             const int dummyModelId = -1;
             
-            var playerDataCache = GameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerSettings;
             if (!playerDataCache.IsFirstTimePlaying && playerDataCache.IsAccountVerified)
             {
                 Debug.Log($"test SKIPPED");

@@ -3,12 +3,12 @@ using UnityEngine;
 namespace Altzone.Scripts.Config
 {
     /// <summary>
-    /// Player data cache - a common storage for player related data (settings) that is persisted locally on the device.
+    /// Player settings - a common storage for player related data that is persisted locally on the device.
     /// </summary>
     /// <remarks>
     /// See https://github.com/Alt-Org/Altzone/wiki/Battle-Pelihahmo
     /// </remarks>
-    public interface IPlayerDataCache
+    public interface IPlayerSettings
     {
         string PlayerName { get; }
         string PlayerGuid { get; }

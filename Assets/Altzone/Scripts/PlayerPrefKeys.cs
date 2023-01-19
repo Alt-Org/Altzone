@@ -1,4 +1,4 @@
-namespace Altzone.Scripts.Config
+namespace Altzone.Scripts
 {
     public static class PlayerPrefKeys
     {

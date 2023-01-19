@@ -10,7 +10,7 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            var playerDataCache = GameConfig.Get().PlayerDataCache;
+            var playerDataCache = GameConfig.Get().PlayerSettings;
             _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
             var clan = Storefront.Get().GetClanModel(playerDataCache.ClanId);

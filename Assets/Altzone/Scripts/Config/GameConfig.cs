@@ -19,7 +19,7 @@ namespace Altzone.Scripts.Config
         GameConstants Constants { get; }
         GameVariables Variables { get; }
         PlayerPrefabs PlayerPrefabs { get; }
-        IPlayerDataCache PlayerDataCache { get; }
+        IPlayerSettings PlayerSettings { get; }
         Characters Characters { get; }
     }
 
@@ -59,7 +59,7 @@ namespace Altzone.Scripts.Config
 
         public PlayerPrefabs PlayerPrefabs { get; }
 
-        public IPlayerDataCache PlayerDataCache { get; }
+        public IPlayerSettings PlayerSettings { get; }
 
         public Characters Characters { get; }
 
@@ -75,7 +75,7 @@ namespace Altzone.Scripts.Config
 
         private GameConfig()
         {
-            PlayerDataCache = Altzone.Scripts.Config.PlayerDataCache.Create();
+            PlayerSettings = Altzone.Scripts.Config.PlayerSettings.Create();
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

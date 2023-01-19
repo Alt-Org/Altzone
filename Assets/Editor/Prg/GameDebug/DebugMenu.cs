@@ -12,7 +12,7 @@ namespace Editor.Prg.GameDebug
         public static void ShowLocalPlayerData()
         {
             Debug.Log("*");
-            var playerData = GameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerSettings;
             Debug.Log(playerData.ToString());
         }
 
@@ -21,7 +21,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log("*");
             var language = Application.systemLanguage;
             Localizer.LoadTranslations(language);
-            var playerData = GameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerSettings;
             var playerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
             playerData.SetPlayerName(playerName);
             playerData.Language = language;
@@ -36,7 +36,7 @@ namespace Editor.Prg.GameDebug
             Debug.Log("*");
             const SystemLanguage language = SystemLanguage.English;
             Localizer.LoadTranslations(language);
-            var playerData = GameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerSettings;
             playerData.Language = language;
             Localizer.SetLanguage(language);
             playerData.DebugSavePlayer();
@@ -46,7 +46,7 @@ namespace Editor.Prg.GameDebug
         public static void ResetLocalPlayerData()
         {
             Debug.Log("*");
-            var playerData = GameConfig.Get().PlayerDataCache;
+            var playerData = GameConfig.Get().PlayerSettings;
             playerData.DebugResetPlayer();
             playerData.DebugSavePlayer();
             Debug.Log(playerData.ToString());
