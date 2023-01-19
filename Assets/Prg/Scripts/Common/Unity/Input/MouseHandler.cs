@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace Prg.Scripts.Common.Unity.Input
 {
     /// <summary>
-    /// Mouse handler implementation.
+    /// Simple Mouse handler implementation using polling in <c>Update</c> loop to read mouse state.
     /// </summary>
     public class MouseHandler : BaseHandler
     {

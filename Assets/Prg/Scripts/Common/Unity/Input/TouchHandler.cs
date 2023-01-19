@@ -8,7 +8,7 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 namespace Prg.Scripts.Common.Unity.Input
 {
     /// <summary>
-    /// Touch handler implementation using <c>EnhancedTouchSupport</c> and polling in <c>Update</c> loop.
+    /// Touch handler implementation using <c>EnhancedTouchSupport</c> and polling in <c>Update</c> loop to read touch state.
     /// </summary>
     /// <remarks>
     /// Pinch to Zoom Detection https://www.youtube.com/watch?v=5LEVj3PLufE <br />
