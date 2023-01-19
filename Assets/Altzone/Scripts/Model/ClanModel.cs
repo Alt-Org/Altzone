@@ -4,13 +4,13 @@ namespace Altzone.Scripts.Model
     {
         public readonly string Name;
         public readonly string Tag;
-        public readonly bool IsSpectator;
+        public readonly int GameCoins;
 
-        public ClanModel(int id, string name, string tag, bool isSpectator = false) : base(id)
+        public ClanModel(int id, string name, string tag, int gameCoins) : base(id)
         {
             Name = name;
             Tag = tag;
-            IsSpectator = isSpectator;
+            GameCoins = gameCoins;
         }
     }
 }

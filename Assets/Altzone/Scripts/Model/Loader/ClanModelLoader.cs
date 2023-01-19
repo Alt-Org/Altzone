@@ -11,9 +11,8 @@ namespace Altzone.Scripts.Model.Loader
         {
             return new List<ClanModel>()
             {
-                new(1, "Alpha", "ALPHA"),
-                new(2, "Beta", "BETA"),
-                new(9, "Viewer", "VIEW", true)
+                new(1, "Alpha", "A", 0),
+                new(2, "Beta", "B", 0),
             };
         }
     }
