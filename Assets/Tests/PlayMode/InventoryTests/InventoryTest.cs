@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace Tests.PlayMode.InventoryTests
+namespace Assets.Tests.PlayMode.InventoryTests
 {
     /// <summary>
     /// Simple Inventory (Furniture) UI test.
