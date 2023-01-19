@@ -13,7 +13,7 @@ namespace Altzone.Scripts.Model
     public interface IStorefront
     {
         bool IsInventoryConnected { get; }
-        
+
         #region CharacterClassModel
 
         CharacterClassModel GetCharacterClassModel(int id);
@@ -54,6 +54,16 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
+        #region PlayerData (Async)
+
+        Task<PlayerDataModel> GetPlayerDataModel(int id);
+        Task<List<PlayerDataModel>> GetAllPlayerDataModels();
+
+        Task<int> Save(PlayerDataModel inventoryItem);
+        Task DeletePlayerDataModel(int id);
+
+        #endregion
+
         #region RaidGameRoomModel (Async)
 
         Task<RaidGameRoomModel> GetRaidGameRoomModel(int id);
@@ -62,7 +72,7 @@ namespace Altzone.Scripts.Model
 
         Task<int> Save(RaidGameRoomModel raidGameRoomModel);
         Task DeleteRaidGameRoomModel(int id);
-        
+
         #endregion
 
         #region Inventory (Async)
@@ -74,7 +84,7 @@ namespace Altzone.Scripts.Model
 
         Task<int> Save(InventoryItem inventoryItem);
         Task DeleteInventoryItem(int id);
-        
+
         #endregion
     }
 
@@ -175,6 +185,26 @@ namespace Altzone.Scripts.Model
         List<FurnitureModel> IStorefront.GetAllFurnitureModels()
         {
             return Models.GetAll<FurnitureModel>();
+        }
+
+        public Task<PlayerDataModel> GetPlayerDataModel(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<PlayerDataModel>> GetAllPlayerDataModels()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> Save(PlayerDataModel inventoryItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeletePlayerDataModel(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public ICustomCharacterModel GetCustomCharacterModel(int id)
