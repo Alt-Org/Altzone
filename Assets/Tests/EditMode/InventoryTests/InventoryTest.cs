@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
 using UnityEngine;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
 using Prg.Scripts.Common.Unity.CameraUtil;
 using UnityEngine;
@@ -48,7 +49,7 @@ namespace Assets.Tests.PlayMode.InventoryTests
 
             // Find and show one furniture - fails if none found.
             var furniture = furnitureModels.First(x => x.FurnitureType == FurnitureType.OneSquare);
-            _monoBehaviour.StartCoroutine(ShowFurniturePiece(furniture, new Vector2(-1f, 1f)));
+            _monoBehaviour.StartCoroutine(ShowFurniturePiece(furniture, new Vector2(-1.5f, 1.5f)));
 
             // Find and show one bomb - fails if none found.
             var bomb = furnitureModels.First(x => x.FurnitureType == FurnitureType.Bomb);
@@ -62,12 +63,11 @@ namespace Assets.Tests.PlayMode.InventoryTests
             Debug.Log($"done {Time.frameCount}");
         }
 
-        private static IEnumerator ShowFurniturePiece(FurnitureModel furnitureModel, Vector2 position)
+        private static IEnumerator ShowFurniturePiece(IFurnitureModel furnitureModel, Vector2 position)
         {
             Debug.Log($"{furnitureModel.Id} {furnitureModel.PrefabName}");
-            var instance = furnitureModel.Instantiate(null);
+            var instance = FurnitureModel.Instantiate(furnitureModel, position, Quaternion.identity);
             Assert.IsNotNull(instance);
-            instance.transform.position = position;
             yield return null;
         }
     }

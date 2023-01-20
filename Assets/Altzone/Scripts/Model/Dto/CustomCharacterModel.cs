@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
     /// Serializable Model for character customization.

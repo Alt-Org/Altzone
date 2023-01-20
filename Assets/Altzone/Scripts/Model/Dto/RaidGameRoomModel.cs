@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
     /// Serializable Room model for Raid mini-game that can be sent over network or saved somewhere (e.h. as JSON string).

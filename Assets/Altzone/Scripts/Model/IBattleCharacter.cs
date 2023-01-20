@@ -1,3 +1,5 @@
+using Altzone.Scripts.Model.Dto;
+
 namespace Altzone.Scripts.Model
 {
     /// <summary>

@@ -1,13 +1,13 @@
 ﻿using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
-    /// Abstract base class for models, if we might need something that is common to all, like persisting data?
+    /// Base class for all generic models.
     /// </summary>
     public abstract class AbstractModel
     {
-        public readonly int Id;
+        public int Id { get; }
 
         protected AbstractModel(int id)
         {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Dto
 {
     [Serializable]
     public class PlayerDataModel

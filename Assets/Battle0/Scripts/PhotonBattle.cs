@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
 
 namespace Altzone.Scripts.Model
@@ -13,7 +14,7 @@ namespace Altzone.Scripts.Model
         Task<InventoryItem> GetById(int id);
         Task<InventoryItem> GetByName(string name);
         Task<List<InventoryItem>> GetAll();
-        Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
+        Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory();
 
         Task<bool> Save(InventoryItem item);
         Task<bool> Delete(int id);
@@ -78,13 +79,13 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
+        public Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory()
         {
-            var taskCompletionSource = new TaskCompletionSource<List<FurnitureModel>>();
+            var taskCompletionSource = new TaskCompletionSource<List<IFurnitureModel>>();
             try
             {
                 var items = _itemStorage.GetAll();
-                List<FurnitureModel> result = new List<FurnitureModel>();
+                var result = new List<IFurnitureModel>();
                 foreach (var item in items)
                 {
                     var furniture = Models.FindById<FurnitureModel>(item._furnitureId);

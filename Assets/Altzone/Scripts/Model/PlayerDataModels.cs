@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Altzone.Scripts.Model.Dto;
 
 namespace Altzone.Scripts.Model
 {

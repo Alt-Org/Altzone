@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Threading;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace Tests.PlayMode
+namespace Assets.Tests.PlayMode
 {
     /// <summary>
     /// This is PlayMode example tests of some UNITY PlayMode test features.

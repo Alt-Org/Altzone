@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 

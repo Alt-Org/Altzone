@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
 
 namespace Altzone.Scripts.Model

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 

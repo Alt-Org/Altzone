@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -14,10 +16,10 @@ namespace Altzone.Scripts.Model
     {
         bool IsInventoryConnected { get; }
 
-        #region CharacterClassModel
+        #region ICharacterClassModel
 
-        CharacterClassModel GetCharacterClassModel(int id);
-        List<CharacterClassModel> GetAllCharacterClassModels();
+        ICharacterClassModel GetCharacterClassModel(int id);
+        List<ICharacterClassModel> GetAllCharacterClassModels();
 
         #endregion
 
@@ -37,20 +39,20 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        #region ClanModel
+        #region IClanModel
 
-        ClanModel GetClanModel(int id);
-        List<ClanModel> GetAllClanModels();
-        int Save(ClanModel clanModel);
+        IClanModel GetClanModel(int id);
+        List<IClanModel> GetAllClanModels();
+        int Save(IClanModel clanModel);
         void DeleteClanModel(int id);
 
         #endregion
 
-        #region FurnitureModel
+        #region IFurnitureModel
 
-        FurnitureModel GetFurnitureModel(int id);
-        FurnitureModel GetFurnitureModel(string name);
-        List<FurnitureModel> GetAllFurnitureModels();
+        IFurnitureModel GetFurnitureModel(int id);
+        IFurnitureModel GetFurnitureModel(string name);
+        List<IFurnitureModel> GetAllFurnitureModels();
 
         #endregion
 
@@ -80,7 +82,7 @@ namespace Altzone.Scripts.Model
         Task<InventoryItem> GetInventoryItem(int id);
         Task<List<InventoryItem>> GetAllInventoryItems();
 
-        Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory();
+        Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory();
 
         Task<int> Save(InventoryItem inventoryItem);
         Task DeleteInventoryItem(int id);
@@ -137,7 +139,7 @@ namespace Altzone.Scripts.Model
             });
         }
 
-        CharacterClassModel IStorefront.GetCharacterClassModel(int id)
+        ICharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
             var model = Models.FindById<CharacterClassModel>(id);
             if (model == null)
@@ -147,22 +149,22 @@ namespace Altzone.Scripts.Model
             return model;
         }
 
-        List<CharacterClassModel> IStorefront.GetAllCharacterClassModels()
+        List<ICharacterClassModel> IStorefront.GetAllCharacterClassModels()
         {
-            return Models.GetAll<CharacterClassModel>();
+            return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
 
-        ClanModel IStorefront.GetClanModel(int id)
+        IClanModel IStorefront.GetClanModel(int id)
         {
             return Models.FindById<ClanModel>(id);
         }
 
-        List<ClanModel> IStorefront.GetAllClanModels()
+        List<IClanModel> IStorefront.GetAllClanModels()
         {
-            return Models.GetAll<ClanModel>();
+            return Models.GetAll<ClanModel>().Cast<IClanModel>().ToList();
         }
 
-        public int Save(ClanModel clanModel)
+        public int Save(IClanModel clanModel)
         {
             throw new NotImplementedException();
         }
@@ -172,19 +174,19 @@ namespace Altzone.Scripts.Model
             throw new NotImplementedException();
         }
 
-        FurnitureModel IStorefront.GetFurnitureModel(int id)
+        IFurnitureModel IStorefront.GetFurnitureModel(int id)
         {
             return Models.FindById<FurnitureModel>(id);
         }
 
-        FurnitureModel IStorefront.GetFurnitureModel(string name)
+        IFurnitureModel IStorefront.GetFurnitureModel(string name)
         {
             return Models.Find<FurnitureModel>(x => x.Name == name);
         }
 
-        List<FurnitureModel> IStorefront.GetAllFurnitureModels()
+        List<IFurnitureModel> IStorefront.GetAllFurnitureModels()
         {
-            return Models.GetAll<FurnitureModel>();
+            return Models.GetAll<FurnitureModel>().Cast<IFurnitureModel>().ToList();
         }
 
         public Task<PlayerDataModel> GetPlayerDataModel(int id)
@@ -272,7 +274,7 @@ namespace Altzone.Scripts.Model
             return _inventory.GetAll();
         }
 
-        public Task<List<FurnitureModel>> GetAllFurnitureModelsFromInventory()
+        public Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory()
         {
             return _inventory.GetAllFurnitureModelsFromInventory();
         }
@@ -304,7 +306,7 @@ namespace Altzone.Scripts.Model
             public int Attack { get; }
             public int Defence { get; }
 
-            public BattleCharacter(ICustomCharacterModel custom, CharacterClassModel classModel)
+            private BattleCharacter(ICustomCharacterModel custom, ICharacterClassModel classModel)
             {
                 Assert.IsTrue(custom.CharacterModelId == classModel.Id, "custom.CharacterId == model.Id");
                 Name = custom.Name;

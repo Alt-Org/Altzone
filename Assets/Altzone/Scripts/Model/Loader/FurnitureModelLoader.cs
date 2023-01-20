@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Loader

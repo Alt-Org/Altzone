@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 
 namespace Editor.Altzone
