@@ -13,26 +13,25 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private float _playerMoveSpeedMultiplier;
 
         private Transform _transform;
-        private Vector2 _targetPosition;
-        private Vector2 _tempPosition;
+        private Vector3 _tempPosition;
         private bool _hasTarget;
 
         private void Awake()
         {
             _transform = GetComponent<Transform>();
-            _targetPosition = transform.position;
         }
 
         private IEnumerator MoveCoroutine(Vector2 targetPosition)
         {
+            var targetPos3d = (Vector3)targetPosition;
             _hasTarget = true;
             while (_hasTarget)
             {
                 yield return null;
                 var maxDistanceDelta = _movementSpeed * _playerMoveSpeedMultiplier * Time.deltaTime;
-                _tempPosition = Vector2.MoveTowards(_transform.position, _targetPosition, maxDistanceDelta);
+                _tempPosition = Vector3.MoveTowards(_transform.position, targetPos3d, maxDistanceDelta);
                 _transform.position = _tempPosition;
-                _hasTarget = !(Mathf.Approximately(_tempPosition.x, _targetPosition.x) && Mathf.Approximately(_tempPosition.y, _targetPosition.y));
+                _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPos3d.x) && Mathf.Approximately(_tempPosition.y, targetPos3d.y));
             }
         }
 
@@ -42,7 +41,6 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
-            _targetPosition = targetPosition;
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
