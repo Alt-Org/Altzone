@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Raid_Grid : MonoBehaviour
 {
     public int AmountOfMines;
-    public GameObject[,] grid = new GameObject[9,9];
+    public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
     private void Start()
     {
@@ -15,6 +16,27 @@ public class Raid_Grid : MonoBehaviour
         }
 
         PlaceNumberTiles();
+        PlaceEmptyTiles();
+    }
+
+    private void Update()
+    {
+        CheckInput();
+    }
+
+    private void CheckInput()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            int x = Mathf.RoundToInt(mousePosition.x);
+            int y = Mathf.RoundToInt(mousePosition.y);
+
+            Raid_Tile raid_Tile = grid[x,y];
+
+            raid_Tile.SetIsCovered(false);
+        }
     }
 
     void PlaceFurniture()
@@ -29,7 +51,7 @@ public class Raid_Grid : MonoBehaviour
 
         if(grid[x,y] == null)
         {
-            GameObject MineTile = Instantiate(Resources.Load("Prefabs/Mine", typeof(GameObject)), new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+            Raid_Tile MineTile = Instantiate(Resources.Load("Prefabs/Mine", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
 
             grid[x,y] = MineTile;
             Debug.Log("(" + x + ", " + y + ")");
@@ -56,7 +78,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (y+1 < 9)
                     {
-                        if (grid[x, y + 1] != null)
+                        if (grid[x, y + 1] != null && grid[x, y+1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -64,7 +86,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x+1 < 9)
                     {
-                        if (grid[x+1, y] != null)
+                        if (grid[x+1, y] != null && grid[x+1, y].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -72,7 +94,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (y-1 >= 0)
                     {
-                        if (grid[x, y-1] != null)
+                        if (grid[x, y-1] != null && grid[x, y-1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -80,7 +102,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x - 1 >= 0)
                     {
-                        if (grid[x-1, y] != null)
+                        if (grid[x-1, y] != null && grid[x-1, y].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -88,7 +110,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x+1 < 9 && y+1 < 9)
                     {
-                        if (grid[x+1, y+1] != null)
+                        if (grid[x+1, y+1] != null && grid[x+1, y+1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -96,7 +118,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x + 1 < 9 && y - 1 >= 0)
                     {
-                        if (grid[x+1, y-1] != null)
+                        if (grid[x+1, y-1] != null && grid[x+1, y-1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -104,7 +126,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x - 1 >= 0 && y - 1 >= 0)
                     {
-                        if (grid[x-1, y-1] != null)
+                        if (grid[x-1, y-1] != null && grid[x-1, y-1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -112,7 +134,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (x - 1 >= 0 && y + 1 < 9)
                     {
-                        if (grid[x-1, y+1] != null)
+                        if (grid[x-1, y+1] != null && grid[x-1, y+1].tileType == Raid_Tile.TileType.Mine)
                         {
                             NearbyMines++;
                         }
@@ -120,8 +142,25 @@ public class Raid_Grid : MonoBehaviour
 
                     if (NearbyMines > 0)
                     {
-                        GameObject NumberTile = Instantiate(Resources.Load("Prefabs/" + NearbyMines, typeof(GameObject)), new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+                        Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/" + NearbyMines, typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+
+                        grid[x, y] = NumberTile;
                     }
+                }
+            }
+        }
+    }
+
+    void PlaceEmptyTiles()
+    {
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                if (grid[x, y] == null)
+                {
+                    Raid_Tile EmptyTile = Instantiate(Resources.Load("Prefabs/Empty_Tile", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                    grid[x, y] = EmptyTile;
                 }
             }
         }
