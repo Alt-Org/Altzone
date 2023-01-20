@@ -39,14 +39,14 @@ namespace Assets.Tests.EditMode.StorefrontTests
             var randomModel = GetRandomObject(models);
             
             // By Id.
-            var model = await _store.GetRaidGameRoomModel(randomModel._id);
+            var model = await _store.GetRaidGameRoomModel(randomModel.Id);
             Assert.IsNotNull(model);
-            Assert.AreEqual(randomModel._id, model._id);
+            Assert.AreEqual(randomModel.Id, model.Id);
             
             // By Name.
-            model = await _store.GetRaidGameRoomModel(randomModel._name);
+            model = await _store.GetRaidGameRoomModel(randomModel.Name);
             Assert.IsNotNull(model);
-            Assert.AreEqual(randomModel._id, model._id);
+            Assert.AreEqual(randomModel.Id, model.Id);
         }
 
         [Test]

@@ -12,6 +12,9 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Store CRUD operations for model and custom objects.
     /// </summary>
+    /// <remarks>
+    /// https://github.com/Alt-Org/Altzone/wiki/Pelin-Tietovarastot
+    /// </remarks>
     public interface IStorefront
     {
         bool IsInventoryConnected { get; }
@@ -68,9 +71,9 @@ namespace Altzone.Scripts.Model
 
         #region RaidGameRoomModel (Async)
 
-        Task<RaidGameRoomModel> GetRaidGameRoomModel(int id);
-        Task<RaidGameRoomModel> GetRaidGameRoomModel(string name);
-        Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels();
+        Task<IRaidGameRoomModel> GetRaidGameRoomModel(int id);
+        Task<IRaidGameRoomModel> GetRaidGameRoomModel(string name);
+        Task<List<IRaidGameRoomModel>> GetAllRaidGameRoomModels();
 
         Task<int> Save(RaidGameRoomModel raidGameRoomModel);
         Task DeleteRaidGameRoomModel(int id);
@@ -239,17 +242,17 @@ namespace Altzone.Scripts.Model
             return BattleCharacter.GetAllBattleCharacters(this);
         }
 
-        public Task<RaidGameRoomModel> GetRaidGameRoomModel(int id)
+        public Task<IRaidGameRoomModel> GetRaidGameRoomModel(int id)
         {
             return RaidGameRoomModels.GetById(id);
         }
 
-        public Task<RaidGameRoomModel> GetRaidGameRoomModel(string name)
+        public Task<IRaidGameRoomModel> GetRaidGameRoomModel(string name)
         {
             return RaidGameRoomModels.GetByName(name);
         }
 
-        public Task<List<RaidGameRoomModel>> GetAllRaidGameRoomModels()
+        public Task<List<IRaidGameRoomModel>> GetAllRaidGameRoomModels()
         {
             return RaidGameRoomModels.GetAll();
         }

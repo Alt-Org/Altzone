@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model.Dto
     /// Data coordinate system is: X = colum, Y = row, origo = top,left, zero based indexing.
     /// </remarks>
     [Serializable]
-    public class RaidGameRoomModel
+    public class RaidGameRoomModel : IRaidGameRoomModel
     {
         [Serializable]
         public class FreeSpaceLocation
@@ -64,6 +64,22 @@ namespace Altzone.Scripts.Model.Dto
         public List<FreeSpaceLocation> _freeSpaceLocations = new();
         public List<CoinLocation> _coinLocations = new();
         public List<FurnitureLocation> _furnitureLocations = new();
+
+        public int Id => _id;
+
+        public string Name => _name;
+
+        public int Width => _width;
+
+        public int Height => _height;
+
+        public int MatchMakingValue => _matchMakingValue;
+
+        public List<FreeSpaceLocation> FreeSpaceLocations => _freeSpaceLocations;
+
+        public List<CoinLocation> CoinLocations => _coinLocations;
+
+        public List<FurnitureLocation> FurnitureLocations => _furnitureLocations;
 
         public RaidGameRoomModel(int id, string name, int width, int height, int matchMakingValue = 0)
         {
