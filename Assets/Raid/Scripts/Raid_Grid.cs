@@ -26,9 +26,9 @@ public class Raid_Grid : MonoBehaviour
 
     private void CheckInput()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Mouse.current.leftButton.isPressed)
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
             int x = Mathf.RoundToInt(mousePosition.x);
             int y = Mathf.RoundToInt(mousePosition.y);
