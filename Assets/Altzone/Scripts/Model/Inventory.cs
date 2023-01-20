@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
@@ -11,12 +12,12 @@ namespace Altzone.Scripts.Model
     /// </summary>
     public interface IInventory
     {
-        Task<InventoryItem> GetById(int id);
-        Task<InventoryItem> GetByName(string name);
-        Task<List<InventoryItem>> GetAll();
+        Task<IInventoryItem> GetById(int id);
+        Task<IInventoryItem> GetByName(string name);
+        Task<List<IInventoryItem>> GetAll();
         Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory();
 
-        Task<bool> Save(InventoryItem item);
+        Task<bool> Save(IInventoryItem item);
         Task<bool> Delete(int id);
     }
 
@@ -51,24 +52,24 @@ namespace Altzone.Scripts.Model
             _itemStorage = new InventoryItemStorage<InventoryItem>(storageFilename);
         }
 
-        public async Task<InventoryItem> GetById(int id)
+        public async Task<IInventoryItem> GetById(int id)
         {
             await Task.Delay(0);
             throw new NotImplementedException();
         }
 
-        public async Task<InventoryItem> GetByName(string name)
+        public async Task<IInventoryItem> GetByName(string name)
         {
             await Task.Delay(0);
             throw new NotImplementedException();
         }
 
-        public Task<List<InventoryItem>> GetAll()
+        public Task<List<IInventoryItem>> GetAll()
         {
-            var taskCompletionSource = new TaskCompletionSource<List<InventoryItem>>();
+            var taskCompletionSource = new TaskCompletionSource<List<IInventoryItem>>();
             try
             {
-                var result = _itemStorage.GetAll();
+                var result = _itemStorage.GetAll().Cast<IInventoryItem>().ToList();
                 taskCompletionSource.SetResult(result);
             }
             catch (Exception x)
@@ -101,12 +102,12 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public Task<bool> Save(InventoryItem item)
+        public Task<bool> Save(IInventoryItem item)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try
             {
-                _itemStorage.Save(item);
+                _itemStorage.Save(item as InventoryItem);
                 taskCompletionSource.SetResult(true);
             }
             catch (Exception x)

@@ -58,10 +58,10 @@ namespace Altzone.Scripts.Model
 
         #region PlayerData (Async)
 
-        Task<PlayerDataModel> GetPlayerDataModel(int id);
-        Task<List<PlayerDataModel>> GetAllPlayerDataModels();
+        Task<IPlayerDataModel> GetPlayerDataModel(int id);
+        Task<List<IPlayerDataModel>> GetAllPlayerDataModels();
 
-        Task<int> Save(PlayerDataModel inventoryItem);
+        Task<int> Save(IPlayerDataModel inventoryItem);
         Task DeletePlayerDataModel(int id);
 
         #endregion
@@ -79,12 +79,12 @@ namespace Altzone.Scripts.Model
 
         #region Inventory (Async)
 
-        Task<InventoryItem> GetInventoryItem(int id);
-        Task<List<InventoryItem>> GetAllInventoryItems();
+        Task<IInventoryItem> GetInventoryItem(int id);
+        Task<List<IInventoryItem>> GetAllInventoryItems();
 
         Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory();
 
-        Task<int> Save(InventoryItem inventoryItem);
+        Task<int> Save(IInventoryItem inventoryItem);
         Task DeleteInventoryItem(int id);
 
         #endregion
@@ -189,17 +189,17 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<FurnitureModel>().Cast<IFurnitureModel>().ToList();
         }
 
-        public Task<PlayerDataModel> GetPlayerDataModel(int id)
+        public Task<IPlayerDataModel> GetPlayerDataModel(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<PlayerDataModel>> GetAllPlayerDataModels()
+        public Task<List<IPlayerDataModel>> GetAllPlayerDataModels()
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> Save(PlayerDataModel inventoryItem)
+        public Task<int> Save(IPlayerDataModel playerDataModel)
         {
             throw new NotImplementedException();
         }
@@ -264,12 +264,12 @@ namespace Altzone.Scripts.Model
             throw new NotImplementedException();
         }
 
-        public Task<InventoryItem> GetInventoryItem(int id)
+        public Task<IInventoryItem> GetInventoryItem(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<InventoryItem>> GetAllInventoryItems()
+        public Task<List<IInventoryItem>> GetAllInventoryItems()
         {
             return _inventory.GetAll();
         }
@@ -279,7 +279,7 @@ namespace Altzone.Scripts.Model
             return _inventory.GetAllFurnitureModelsFromInventory();
         }
 
-        public Task<int> Save(InventoryItem inventoryItem)
+        public Task<int> Save(IInventoryItem inventoryItem)
         {
             throw new NotImplementedException();
         }

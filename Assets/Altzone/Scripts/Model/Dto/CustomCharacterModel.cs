@@ -4,11 +4,8 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
-    /// Serializable Model for character customization.
+    /// Data Transfer Object for <c>ICustomCharacterModel</c>.
     /// </summary>
-    /// <remarks>
-    /// JsonUtility can only serialize public fields :-(
-    /// </remarks>
     [Serializable]
     public class CustomCharacterModel : ICustomCharacterModel
     {
