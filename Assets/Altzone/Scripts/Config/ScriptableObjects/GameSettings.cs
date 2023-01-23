@@ -81,7 +81,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         public GameObject GetPlayerPrefab(int prefabId)
         {
-            Assert.IsTrue(prefabId >= 0 && prefabId < _playerPrefabs.Length);
+            Assert.IsTrue(prefabId >= 0 && prefabId < _playerPrefabs.Length, 
+                $"invalid prefabId {prefabId} [0-{_playerPrefabs.Length - 1}]");
             return _playerPrefabs[prefabId];
         }
     }
