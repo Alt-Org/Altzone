@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Battle.Scripts.Battle;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Test
 {
@@ -17,6 +18,7 @@ namespace Battle.Scripts.Test
         {
             _transform = GetComponent<Transform>();
             _camera = Context.GetBattleCamera.Camera;
+            Assert.IsNotNull(_camera);
         }
 
         void Update()
