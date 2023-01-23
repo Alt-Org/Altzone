@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Assets.Tests.EditMode.ModelsTests
 {
     [TestFixture]
-    public class PlayerPrefabTests
+    public class PlayerPrefabTest
     {
         [Test]
         public void GetCurrentPlayerPrefabTest()
