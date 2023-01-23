@@ -16,7 +16,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
     public class InventoryTest : PlayModeTestSupport
     {
         [UnityTest]
-        public IEnumerator MainInventoryTestLoop()
+        public IEnumerator MainTestLoop()
         {
             var scene = SceneManager.GetActiveScene();
             Debug.Log($"test with scene {scene.buildIndex} {scene.name}");
