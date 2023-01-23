@@ -13,7 +13,7 @@ namespace Assets.Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var gameConfig = GameConfig.Get();
-            var playerDataCache = GameConfig.Get().PlayerSettings;
+            var playerDataCache = gameConfig.PlayerSettings;
             var customCharacterModelId = playerDataCache.CustomCharacterModelId;
             var store = Storefront.Get();
             var prefabId = 0;
