@@ -118,30 +118,37 @@ namespace Altzone.Scripts.Model
 
         private Storefront()
         {
-            Debug.Log($"start initialization");
+            Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
             var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, RaidGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
             Task.Run(() =>
             {
-                try
-                {
-                    var connectResult = RaidGameRoomModels.Connect(raidGameRoomModelsPath);
-                    var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
-                    Task.WaitAll(connectResult, inventoryResult);
-                    Assert.IsTrue(connectResult.Result);
-                    _inventory = inventoryResult.Result;
-                    Assert.IsNotNull(_inventory);
-                }
-                catch (Exception x)
-                {
-                    Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
-                }
-                Debug.Log($"done initialization");
+                AsyncInit(raidGameRoomModelsPath, inventoryItemsPath);
             });
+            Debug.Log($"exit");
         }
 
+        private void AsyncInit(string raidGameRoomModelsPath, string inventoryItemsPath)
+        {
+            Debug.Log($"start");
+            try
+            {
+                var connectResult = RaidGameRoomModels.Connect(raidGameRoomModelsPath);
+                var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
+                Task.WaitAll(connectResult, inventoryResult);
+                Assert.IsTrue(connectResult.Result);
+                _inventory = inventoryResult.Result;
+                Assert.IsNotNull(_inventory);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+            }
+            Debug.Log($"exit");
+        }
+        
         ICharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
             var model = Models.FindById<CharacterClassModel>(id);

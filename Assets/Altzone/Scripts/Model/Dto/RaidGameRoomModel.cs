@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Altzone.Scripts.Model.Dto
 {
@@ -13,10 +14,13 @@ namespace Altzone.Scripts.Model.Dto
     public class RaidGameRoomModel : IRaidGameRoomModel
     {
         [Serializable]
-        public class FreeSpaceLocation
+        public class FreeSpaceLocation : IRaidRoomLocation
         {
             public int _x;
             public int _y;
+
+            public int X => _x;
+            public int Y => _y;
 
             public FreeSpaceLocation(int x, int y)
             {
@@ -26,12 +30,16 @@ namespace Altzone.Scripts.Model.Dto
         }
 
         [Serializable]
-        public class CoinLocation
+        public class CoinLocation : IRaidCoinLocation
         {
             public int _x;
             public int _y;
             public int _amount;
 
+            public int X => _x;
+            public int Y => _y;
+            public int Amount => _amount;
+            
             public CoinLocation(int x, int y, int amount)
             {
                 _x = x;
@@ -41,12 +49,16 @@ namespace Altzone.Scripts.Model.Dto
         }
 
         [Serializable]
-        public class FurnitureLocation
+        public class FurnitureLocation : IRaidFurnitureLocation
         {
             public int _x;
             public int _y;
             public int _furnitureId;
 
+            public int X => _x;
+            public int Y => _y;
+            public int FurnitureId => _furnitureId;
+            
             public FurnitureLocation(int x, int y, int furnitureId)
             {
                 _x = x;
@@ -75,11 +87,11 @@ namespace Altzone.Scripts.Model.Dto
 
         public int MatchMakingValue => _matchMakingValue;
 
-        public List<FreeSpaceLocation> FreeSpaceLocations => _freeSpaceLocations;
+        public List<IRaidRoomLocation> FreeSpaceLocations => _freeSpaceLocations.Cast<IRaidRoomLocation>().ToList();
 
-        public List<CoinLocation> CoinLocations => _coinLocations;
+        public List<IRaidCoinLocation> CoinLocations => _coinLocations.Cast<IRaidCoinLocation>().ToList();
 
-        public List<FurnitureLocation> FurnitureLocations => _furnitureLocations;
+        public List<IRaidFurnitureLocation> FurnitureLocations => _furnitureLocations.Cast<IRaidFurnitureLocation>().ToList();
 
         public RaidGameRoomModel(int id, string name, int width, int height, int matchMakingValue = 0)
         {
