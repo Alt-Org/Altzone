@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -12,6 +13,11 @@ namespace Battle.Scripts.Battle.Game
         Camera IBattleCamera.Camera => _gameCamera;
 
         bool IBattleCamera.IsRotated => _gameCamera.transform.rotation.z != 0f;
+
+        private void Awake()
+        {
+            Assert.IsNotNull(_gameCamera, "_gameCamera must be assigned in Editor");
+        }
 
         void IBattleCamera.DisableAudio()
         {
