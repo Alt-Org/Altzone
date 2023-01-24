@@ -36,10 +36,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
             MonoBehaviour.StartCoroutine(ShowFurniturePiece(bomb, new Vector2(1f, 1f)));
 
             // This test must be manually cancelled.
-            while (!IsTestDone)
-            {
-                yield return null;
-            }
+            yield return new WaitUntil(() => IsTestDone);
             Debug.Log($"done {Time.frameCount}");
         }
 

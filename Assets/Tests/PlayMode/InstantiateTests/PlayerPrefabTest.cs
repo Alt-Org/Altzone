@@ -24,10 +24,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
             InstantiatePlayerPrefab();
 
             // This test must be manually cancelled.
-            while (!IsTestDone)
-            {
-                yield return null;
-            }
+            yield return new WaitUntil(() => IsTestDone);
             Debug.Log($"done {Time.frameCount}");
         }
 
