@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Model.Loader
         {
             return new List<FurnitureModel>
             {
+                // These are for testing and can used by test scripts!
                 new(1, FurnitureType.OneSquare, "OneSquare", Color.red, "WhiteBall"),
                 new(2, FurnitureType.TwoSquares, "TwoSquares", Color.red, "WhiteBall"),
                 new(3, FurnitureType.ThreeSquaresStraight, "ThreeSquaresStraight", Color.red, "WhiteBall"),
@@ -20,8 +21,9 @@ namespace Altzone.Scripts.Model.Loader
                 new(5, FurnitureType.FourSquares, "FourSquares", Color.red, "WhiteBall"),
                 new(6, FurnitureType.Bomb, "Bomb", Color.black, "Bomb"),
                 new(7, FurnitureType.OneSquare, "WhiteBall", Color.white, "WhiteBall"),
-                // This is for testing and must be fixed somehow if we want to test instantiation failures.
                 new(8, FurnitureType.OneSquare, "NotFoundPrefab", Color.red, "NotFoundPrefab"),
+                new(9, FurnitureType.OneSquare, "LetterA", Color.red, "LetterA"),
+                new(10, FurnitureType.OneSquare, "LetterB", Color.red, "LetterB"),
             };
         }
     }

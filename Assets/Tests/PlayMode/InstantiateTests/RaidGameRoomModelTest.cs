@@ -7,6 +7,8 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
+#pragma warning disable CS4014 // Ignore warnings about "not awaited" calls
+
 namespace Assets.Tests.PlayMode.InstantiateTests
 {
     /// <summary>
@@ -21,24 +23,37 @@ namespace Assets.Tests.PlayMode.InstantiateTests
         }
 
         [UnityTest]
-        public IEnumerator MainTestLoop()
+        public IEnumerator ShowRaidGameRoomOne()
         {
             Debug.Log($"test");
 
             yield return null;
-            GetFirstRaidGameRoomModel();
+            ShowRaidGameRoom(1);
 
             // This test must be manually cancelled.
             yield return new WaitUntil(() => IsTestDone);
             Debug.Log($"done {Time.frameCount}");
         }
 
-        private async Task GetFirstRaidGameRoomModel()
+        [UnityTest]
+        public IEnumerator ShowRaidGameRoomTwo()
+        {
+            Debug.Log($"test");
+
+            yield return null;
+            ShowRaidGameRoom(2);
+
+            // This test must be manually cancelled.
+            yield return new WaitUntil(() => IsTestDone);
+            Debug.Log($"done {Time.frameCount}");
+        }
+        
+        private async Task ShowRaidGameRoom(int id)
         {
             Debug.Log($"start {Time.frameCount}");
-            var models = await Store.GetAllRaidGameRoomModels();
-            Assert.IsTrue(models.Count > 0);
-            MonoBehaviour.StartCoroutine(ShowRaidGameRoom(models[0]));
+            var model = await Store.GetRaidGameRoomModel(id);
+            Assert.IsNotNull(model);
+            MonoBehaviour.StartCoroutine(ShowRaidGameRoom(model));
             Debug.Log($"done {Time.frameCount}");
         }
 
