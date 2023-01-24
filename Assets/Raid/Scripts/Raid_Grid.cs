@@ -29,7 +29,7 @@ public class Raid_Grid : MonoBehaviour
 
     private void CheckInput()
     {
-        if (Mouse.current.leftButton.isPressed)
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-public class Raid_Tile : MonoBehaviour, IPointerDownHandler
+public class Raid_Tile : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public enum TileType
     {
@@ -39,6 +39,11 @@ public class Raid_Tile : MonoBehaviour, IPointerDownHandler
     {
         IsCovered = false;
         GetComponent<SpriteRenderer>().sprite = DefaultSprite;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+
     }
 
     public void OnPointerDown(PointerEventData eventData)
