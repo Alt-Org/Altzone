@@ -19,16 +19,30 @@ MonoBehaviour:
   _colorForContextTagName: orange
   _loggerRules: '.*PhotonListener.*=1
 
+    .*SceneLoader.*=1
+
+    .*ScoreFlash.*=1
+
     ^Altzone.*=1
 
     ^Battle.*=1
 
+    ^Battle0.*=1
+
+    ^Editor.*=1
+
     ^MenuUi.*=1
+
+    ^Models.*=1
 
     ^Prg.*=1
 
     ^Raid.*=1
 
-    ^Tests\..*=1
+    ^Sounds.*=1
+
+    ^Sprites.*=1
+
+    ^Tests.*=1
 
     ^Assets\.Tests\..*=1'

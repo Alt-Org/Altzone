@@ -9,11 +9,13 @@ namespace Editor.Prg.Editors
     [CustomEditor(typeof(LoggerConfig))]
     public class LoggerConfigEditor : UnityEditor.Editor
     {
+        private const string DefaultLoggingState = "1";
+        
         private static readonly string[] RulesForReset =
         {
             ".*PhotonListener.*=1",
             ".*SceneLoader.*=1",
-            ".*ScoreFlash.*=0",
+            ".*ScoreFlash.*=1",
         };
 
         private static readonly string[] ExcludedFoldersForReset =
@@ -32,6 +34,7 @@ namespace Editor.Prg.Editors
             }
             if (GUILayout.Button("Reset Folders for Logger Rules"))
             {
+                Debug.Log("*");
                 serializedObject.Update();
                 UpdateState(serializedObject);
                 serializedObject.ApplyModifiedProperties();
@@ -61,10 +64,18 @@ namespace Editor.Prg.Editors
                     continue;
                 }
                 var line = folder.Replace("Assets/", "^");
-                line += ".*=0";
+                line += $".*={DefaultLoggingState}";
                 builder.Append(line).AppendLine();
+                if (line.StartsWith("^Tests.*"))
+                {
+                    // PlayMode tests namespace can be absolute for some reason!?
+                    builder.Append($"^Assets\\.Tests\\..*={DefaultLoggingState}").AppendLine();
+                }
             }
-            builder.Append("^.*=0");
+            while (builder[^1] == '\r' || builder[^1] == '\n')
+            {
+                builder.Length -= 1;
+            }
             return builder.ToString();
         }
     }
