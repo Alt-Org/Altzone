@@ -4,7 +4,6 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -18,8 +17,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
         [UnityTest]
         public IEnumerator MainTestLoop()
         {
-            var scene = SceneManager.GetActiveScene();
-            Debug.Log($"test with scene {scene.buildIndex} {scene.name}");
+            Debug.Log($"test");
 
             InstantiatePlayerPrefab();
 

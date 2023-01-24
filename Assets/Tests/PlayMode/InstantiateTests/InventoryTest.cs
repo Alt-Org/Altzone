@@ -3,9 +3,7 @@ using System.Linq;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
-using Prg.Scripts.Common.Unity.CameraUtil;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Assets.Tests.PlayMode.InstantiateTests
@@ -18,8 +16,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
         [UnityTest]
         public IEnumerator MainTestLoop()
         {
-            var scene = SceneManager.GetActiveScene();
-            Debug.Log($"test with scene {scene.buildIndex} {scene.name}");
+            Debug.Log($"test");
 
             var task = Store.GetAllFurnitureModelsFromInventory();
             yield return new WaitUntil(() => task.IsCompleted);

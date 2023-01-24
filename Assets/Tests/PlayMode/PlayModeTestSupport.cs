@@ -27,6 +27,12 @@ namespace Assets.Tests.PlayMode
             // Grab something that we need for testing, like starting coroutines.
             MonoBehaviour = instance.GetComponent<CameraAspectRatio>();
             IsTestDone = false;
+            MyOneTimeSetUp();
+            Debug.Log($"done");
+        }
+
+        protected virtual void MyOneTimeSetUp()
+        {
         }
     }
 }
