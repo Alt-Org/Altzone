@@ -101,5 +101,14 @@ namespace Altzone.Scripts.Model.Dto
             _height = height;
             _matchMakingValue = matchMakingValue;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, " +
+                   $"{nameof(Width)}: {Width}, {nameof(Height)}: {Height}, {nameof(MatchMakingValue)}: {MatchMakingValue}, " +
+                   $"{nameof(FreeSpaceLocations)}: {FreeSpaceLocations?.Count}, " +
+                   $"{nameof(CoinLocations)}: {CoinLocations?.Count}, " +
+                   $"{nameof(FurnitureLocations)}: {FurnitureLocations?.Count}";
+        }
     }
 }
