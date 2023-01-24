@@ -37,6 +37,12 @@ namespace Battle.Scripts.Battle.Players
             _camera = Context.GetBattleCamera.Camera;
         }
 
+        private void OnDestroy()
+        {
+            Debug.Log($"{name}");
+            ReleaseInput();
+        }
+
         private void SendMoveTo(Vector2 targetPosition)
         {
             _inputTarget.MoveTo(targetPosition);
@@ -46,6 +52,12 @@ namespace Battle.Scripts.Battle.Players
         {
             var clickAction = _clickInputAction.action;
             clickAction.performed += DoPointerClick;
+        }
+
+        private void ReleaseInput()
+        {
+            var clickAction = _clickInputAction.action;
+            clickAction.performed -= DoPointerClick;
         }
 
         private void DoPointerClick(InputAction.CallbackContext ctx)
