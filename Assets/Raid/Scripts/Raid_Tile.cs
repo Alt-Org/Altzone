@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 
-public class Raid_Tile : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class Raid_Tile : MonoBehaviour
 {
+    public Raid_Grid raid_Grid;
     public enum TileType
     {
         Empty, Furniture, Mine, Number
@@ -30,6 +30,7 @@ public class Raid_Tile : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void Start()
     {
+        raid_Grid = GetComponent<Raid_Grid>();
         DefaultSprite = GetComponent<SpriteRenderer>().sprite;
 
         GetComponent<SpriteRenderer>().sprite = CoveredTile;
@@ -41,16 +42,19 @@ public class Raid_Tile : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         GetComponent<SpriteRenderer>().sprite = DefaultSprite;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void CheckInputSlowTap(InputAction.CallbackContext context)
     {
-
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Right)
+        if (context.performed)
         {
-            if (IsCovered)
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+            int x = Mathf.RoundToInt(mousePosition.x);
+            int y = Mathf.RoundToInt(mousePosition.y);
+
+            Raid_Tile raid_Tile = raid_Grid.grid[x, y];
+
+            Debug.Log("SlowTap recognized");
+            if (raid_Tile.IsCovered)
             {
                 if (tileState == TileState.Normal)
                 {
@@ -59,7 +63,7 @@ public class Raid_Tile : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 }
                 else
                 {
-                    tileState = TileState.Normal;
+                    raid_Tile.tileState = TileState.Normal;
                     GetComponent<SpriteRenderer>().sprite = CoveredTile;
                 }
             }

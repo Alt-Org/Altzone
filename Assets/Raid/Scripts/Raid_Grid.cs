@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class Raid_Grid : MonoBehaviour
 {
     public int AmountOfMines;
+
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
     public List<Raid_Tile> TilesToCheck = new List<Raid_Tile>();
@@ -22,15 +23,11 @@ public class Raid_Grid : MonoBehaviour
         PlaceEmptyTiles();
     }
 
-    private void Update()
+    public void CheckInputQuickTap(InputAction.CallbackContext context)
     {
-        CheckInput();
-    }
-
-    private void CheckInput()
-    {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (context.performed)
         {
+            Debug.Log("QuickTap recognized");
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
             int x = Mathf.RoundToInt(mousePosition.x);
