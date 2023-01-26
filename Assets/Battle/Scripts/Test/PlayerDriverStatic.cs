@@ -27,7 +27,7 @@ namespace Battle.Scripts.Test
         private void Start()
         {
             _gridManager = Context.GetGridManager;
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(_playerPos, _playerPrefab);
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor);
             if (_teamNumber == PhotonBattle.TeamBlueValue)

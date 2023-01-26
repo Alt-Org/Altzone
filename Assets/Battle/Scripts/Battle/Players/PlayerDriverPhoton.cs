@@ -37,13 +37,13 @@ namespace Battle.Scripts.Battle.Players
         {
             if (_playerPrefab != null)
             {
-                return PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
+                return PlayerActorBase.InstantiatePrefabFor(_playerPos, _playerPrefab);
             }
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             var original = playerPrefabs.GetPlayerPrefab(playerPrefabId);
             var playerPrefab = original.GetComponent<PlayerActorBase>();
-            var playerActor = PlayerActorBase.InstantiatePrefabFor(this, playerPrefab);
+            var playerActor = PlayerActorBase.InstantiatePrefabFor(_playerPos, playerPrefab);
             return playerActor;
         }
 
