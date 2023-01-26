@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -116,14 +118,12 @@ namespace Prg.Scripts.Common.Http.RestApi
         /// <param name="url">API endpoint url</param>
         /// <param name="content">JSON string or FORM POST byte[]</param>
         /// <param name="headers">Optional headers for the request</param>
-        /// <returns><c>Response</c> object with success/failure status and JSON response (if any)</returns>
+        /// <returns><c>Response</c> object with success/failure status and JSON (or error) server response (if any)</returns>
         public static async Task<Response> ExecuteRequest(string verb, string url, object content = null, Headers headers = null)
         {
             Debug.Log($"ExecuteRequest start {url}");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            string responseContentType;
-            var httpResponse = string.Empty;
             try
             {
                 // (1) create web request.
@@ -133,45 +133,40 @@ namespace Prg.Scripts.Common.Http.RestApi
                     // (2) add post data to request.
                     await WriteRequestData(request, content);
                 }
-                // (3) submit and wait for response - handle errors if necessary.
-                if (await request.GetResponseAsync() is not HttpWebResponse response)
+                // (3) submit the request and wait for the response - handle errors if necessary.
+                var response = await request.GetResponseAsync();
+                if (response is not HttpWebResponse httpResponse)
                 {
-                    return new Response("Request failed: (NULL response)", string.Empty);
+                    return new Response("Request failed: (NULL/INVALID response)", string.Empty);
                 }
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
                 {
-                    return new Response((int)response.StatusCode, response.StatusDescription, string.Empty);
+                    return new Response((int)httpResponse.StatusCode, httpResponse.StatusDescription, string.Empty);
                 }
-                // (4) read response (if any).
-                responseContentType = response.ContentType;
-                await using var dataStream = response.GetResponseStream();
-                if (dataStream != null)
-                {
-                    var reader = new StreamReader(dataStream);
-                    httpResponse = await ReadToEndAsyncNonNull(reader);
-                }
-                // (5) return our own Response object.
+                // (4) read server response (if any).
+                await using var dataStream = httpResponse.GetResponseStream();
+                var serverResponse = await ReadStreamToEndAsync(dataStream);
                 stopWatch.Stop();
-                Debug.Log($"Request success: '{responseContentType}' len {httpResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
-                Debug.Log($"Response ({httpResponse.Length}) {LogHttpResponse()}");
-                return new Response(httpResponse);
+                var responseContentType = httpResponse.ContentType;
+                Debug.Log($"Request success: '{responseContentType}' len {serverResponse.Length} in {stopWatch.ElapsedMilliseconds} ms");
+                Debug.Log($"Response ({serverResponse.Length}) {FormatServerResponse(responseContentType, serverResponse)}");
+                // (5) return our own Response object.
+                return new Response(serverResponse);
             }
             catch (WebException e)
             {
+                // (A) read server error response (if any).
                 await using var dataStream = e.Response?.GetResponseStream();
-                if (dataStream != null)
-                {
-                    var reader = new StreamReader(dataStream);
-                    httpResponse = await ReadToEndAsyncNonNull(reader);
-                }
+                var serverResponse = await ReadStreamToEndAsync(dataStream);
                 stopWatch.Stop();
                 var status = GetWebExceptionStatus(e);
                 Debug.Log($"Request failed: {status.Item1} {status.Item2} in {stopWatch.ElapsedMilliseconds} ms");
-                if (httpResponse.Length > 0)
+                if (serverResponse.Length > 0)
                 {
-                    Debug.Log($"body ({httpResponse.Length}) {httpResponse}");
+                    Debug.Log($"body ({serverResponse.Length}) {FormatServerResponse("json", serverResponse)}");
                 }
-                return new Response(status.Item1, status.Item2, httpResponse ?? string.Empty);
+                // (B) return our own error Response object.
+                return new Response(status.Item1, status.Item2, serverResponse);
             }
             catch (Exception e)
             {
@@ -179,12 +174,12 @@ namespace Prg.Scripts.Common.Http.RestApi
                 return new Response(e.Message, string.Empty);
             }
 
-            string LogHttpResponse()
+            string FormatServerResponse(string contentType, string contentText)
             {
-                var response = responseContentType.Contains("json")
-                    ? httpResponse.Replace('\r', '.').Replace('\n', '.')
-                    : httpResponse;
-                return response.Length > 1000 ? response.Substring(0, 1000) : response;
+                var text = contentType.Contains("json")
+                    ? contentText.Replace('\r', '.').Replace('\n', '.')
+                    : contentText;
+                return text.Length > 1000 ? text.Substring(0, 1000) : text;
             }
         }
 
@@ -221,8 +216,14 @@ namespace Prg.Scripts.Common.Http.RestApi
             return new Tuple<int, string>((int)HttpStatusCode.InternalServerError, webException.Message);
         }
 
-        private static async Task<string> ReadToEndAsyncNonNull(TextReader streamReader)
+        [return: NotNull]
+        private static async Task<string> ReadStreamToEndAsync([AllowNull] Stream dataStream)
         {
+            if (dataStream == null)
+            {
+                return string.Empty;
+            }
+            var streamReader = new StreamReader(dataStream);
             var response = await streamReader.ReadToEndAsync();
             return response ?? string.Empty;
         }
