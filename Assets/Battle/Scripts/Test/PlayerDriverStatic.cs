@@ -1,6 +1,8 @@
+using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Players;
 using UnityEngine;
 
-namespace Battle.Scripts.Battle.Players
+namespace Battle.Scripts.Test
 {
     /// <summary>
     /// Static <c>PlayerDriver</c> implementation.
@@ -16,6 +18,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;
+        [SerializeField] private bool _isLocal;
 
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
@@ -27,12 +30,16 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _playerPrefab);
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor);
-            var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.SetPlayerDriver(this);
-            if (_teamNumber == 1)
+            if (_teamNumber == PhotonBattle.TeamBlueValue)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }
+            if (!_isLocal)
+            {
+                return;
+            }
+            var playerInputHandler = Context.GetPlayerInputHandler;
+            playerInputHandler.SetPlayerDriver(this);
         }
 
         #region IPlayerDriver
