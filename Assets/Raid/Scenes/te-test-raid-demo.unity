@@ -498,9 +498,8 @@ MonoBehaviour:
     m_ActionName: Raid_Tap/Tap[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -1870010288688715514, guid: 440d76f3e74fb35449c6888d6fa4ffe3,
-          type: 3}
-        m_TargetAssemblyTypeName: Raid_Tile, Raid
+      - m_Target: {fileID: 1245782072}
+        m_TargetAssemblyTypeName: Raid_Grid, Raid
         m_MethodName: CheckInputSlowTap
         m_Mode: 0
         m_Arguments:

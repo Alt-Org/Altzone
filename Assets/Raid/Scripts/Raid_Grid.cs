@@ -27,7 +27,6 @@ public class Raid_Grid : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log("QuickTap recognized");
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
             int x = Mathf.RoundToInt(mousePosition.x);
@@ -45,6 +44,32 @@ public class Raid_Grid : MonoBehaviour
                     {
                         RevealAdjacentTilesForTileAt(x, y);
                     }
+                }
+            }
+            Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
+        }
+    }
+
+    public void CheckInputSlowTap(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+            int x = Mathf.RoundToInt(mousePosition.x);
+            int y = Mathf.RoundToInt(mousePosition.y);
+
+            Raid_Tile raid_Tile = grid[x, y];
+            Debug.Log("SlowTap recognized at (" + x + ", " + y + ")");
+            if (raid_Tile.IsCovered)
+            {
+                if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
+                {
+                    raid_Tile.tileState = Raid_Tile.TileState.Flagged;
+                }
+                else
+                {
+                    raid_Tile.tileState = Raid_Tile.TileState.Normal;
                 }
             }
         }
