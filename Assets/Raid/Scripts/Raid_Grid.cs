@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class Raid_Grid : MonoBehaviour
 {
+    public Sprite CoveredTile;
+    public Sprite FlagTile;
     public int AmountOfMines;
 
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
@@ -14,6 +16,7 @@ public class Raid_Grid : MonoBehaviour
 
     private void Start()
     {
+
         for (int i = 0; i < AmountOfMines; i++)
         {
             PlaceMines();
@@ -66,10 +69,12 @@ public class Raid_Grid : MonoBehaviour
                 if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
                 {
                     raid_Tile.tileState = Raid_Tile.TileState.Flagged;
+                    raid_Tile.GetComponent<SpriteRenderer>().sprite = FlagTile;
                 }
                 else
                 {
                     raid_Tile.tileState = Raid_Tile.TileState.Normal;
+                    raid_Tile.GetComponent<SpriteRenderer>().sprite = CoveredTile;
                 }
             }
         }
