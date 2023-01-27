@@ -8,7 +8,10 @@ public class Raid_Grid : MonoBehaviour
 {
     public Sprite CoveredTile;
     public Sprite FlagTile;
+
     public int AmountOfMines;
+    public int AmountofH1R;
+    public int AmountofH2R;
 
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
@@ -21,6 +24,14 @@ public class Raid_Grid : MonoBehaviour
         {
             PlaceMines();
         }
+        for (int i = 0; i < AmountofH1R; i++)
+        {
+            PlaceSingleTileFurniture();
+        }
+        /*for (int i = 0; i < AmountofH2R; i++)
+        {
+            placeDoubleTileFurniture();
+        }*/
 
         PlaceNumberTiles();
         PlaceEmptyTiles();
@@ -80,9 +91,83 @@ public class Raid_Grid : MonoBehaviour
         }
     }
 
-    void PlaceFurniture()
+    void PlaceSingleTileFurniture()
     {
+        int x = UnityEngine.Random.Range(0, 9);
+        int y = UnityEngine.Random.Range(0, 9);
 
+        if (grid[x, y] == null)
+        {
+            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/H1R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+
+            grid[x, y] = FurnitureTile;
+        }
+        else
+        {
+            PlaceSingleTileFurniture();
+        }
+    }
+
+    void placeDoubleTileFurniture()
+    {
+        int x = UnityEngine.Random.Range(0, 9);
+        int y = UnityEngine.Random.Range(0, 9);
+
+        if (grid[x, y] == null)
+        {
+            if (x + 1 < 9)
+            {
+                if (grid[x + 1, y] == null)
+                {
+                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x + 1, y, 0), Quaternion.identity) as Raid_Tile;
+
+                    grid[x, y] = FurnitureTile;
+                    grid[x + 1, y] = FurnitureTile2;
+                }
+                else if (y + 1 < 9)
+                {
+                    if (grid[x, y + 1] == null)
+                    {
+                        Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                        Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y + 1, 0), Quaternion.identity) as Raid_Tile;
+
+                        grid[x, y] = FurnitureTile;
+                        grid[x, y + 1] = FurnitureTile2;
+                    }
+                    else if (x - 1 >= 0)
+                    {
+                        if (grid[x - 1, y] == null)
+                        {
+                            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                            Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x - 1, y, 0), Quaternion.identity) as Raid_Tile;
+
+                            grid[x, y] = FurnitureTile;
+                            grid[x - 1, y] = FurnitureTile2;
+                        }
+                        else if (y - 1 >= 0)
+                        {
+                            if (grid[x, y - 1] == null)
+                            {
+                                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y - 1, 0), Quaternion.identity) as Raid_Tile;
+
+                                grid[x, y] = FurnitureTile;
+                                grid[x, y - 1] = FurnitureTile2;
+                            }
+                        }
+                        else
+                        {
+                            placeDoubleTileFurniture();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            placeDoubleTileFurniture();
+        }
     }
 
     void PlaceMines()
