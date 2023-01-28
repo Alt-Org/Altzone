@@ -1,5 +1,7 @@
+using System;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Battle.Scripts.Test
@@ -14,27 +16,47 @@ namespace Battle.Scripts.Test
     [DefaultExecutionOrder(100)]
     internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver
     {
-        [SerializeField] private int _playerPos = PhotonBattle.PlayerPosition1;
-        [SerializeField] private int _teamNumber = PhotonBattle.TeamBlueValue;
+        [Serializable]
+        internal class Settings
+        {
+            public string _nickName;
+            public int _playerPos = PhotonBattle.PlayerPosition1;
+            public int _teamNumber = PhotonBattle.TeamBlueValue;
+            public bool _isLocal;
+        }
+
+        [Header("Settings"), SerializeField] private Settings _settings;
+
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;
-        [SerializeField] private bool _isLocal;
 
+        private float _defaultRotation;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IPlayerDriverState _state;
 
+        [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
+
         private void Start()
         {
-            _gridManager = Context.GetGridManager;
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(_playerPos, _playerPrefab);
-            _state = GetPlayerDriverState(this);
-            _state.ResetState(_playerActor);
-            if (_teamNumber == PhotonBattle.TeamBlueValue)
+            if (string.IsNullOrWhiteSpace(_settings._nickName))
             {
-                ((IPlayerDriver)this).Rotate(180f);
+                _settings._nickName = name;
             }
-            if (!_isLocal)
+            _gridManager = Context.GetGridManager;
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
+            _state = GetPlayerDriverState(this);
+            if (_settings._teamNumber == PhotonBattle.TeamBlueValue)
+            {
+                _defaultRotation = 180f;
+            }
+            if (_settings._teamNumber == PhotonBattle.TeamRedValue)
+            {
+                _defaultRotation = 0f;
+            }
+            _state.ResetState(_playerActor, _settings._teamNumber);
+            ((IPlayerDriver)this).Rotate(_defaultRotation);
+            if (!_settings._isLocal)
             {
                 return;
             }
@@ -44,11 +66,19 @@ namespace Battle.Scripts.Test
 
         #region IPlayerDriver
 
-        int IPlayerDriver.PlayerPos => _playerPos;
+        string IPlayerDriver.NickName => _settings._nickName;
+
+        int IPlayerDriver.TeamNumber => _settings._teamNumber;
+
+        int IPlayerDriver.ActorNumber => _actorNumber;
+
+        bool IPlayerDriver.IsLocal => _settings._isLocal;
+
+        int IPlayerDriver.PlayerPos => _settings._playerPos;
 
         void IPlayerDriver.Rotate(float angle)
         {
-            _playerActor.Rotate(angle);
+            _playerActor.SetRotation(angle);
         }
 
         void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
@@ -58,7 +88,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _teamNumber);
+            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _settings._teamNumber);
             if (!isSpaceFree)
             {
                 return;

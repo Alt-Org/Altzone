@@ -17,22 +17,25 @@ namespace Battle.Scripts.Test
         [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
         private IPlayerDriver _playerDriver;
         private PlayerDriverState _playerDriverState;
-
+        private IPlayerInputTarget _inputTarget;
+        private IGridManager _gridManager;
 
         private void OnEnable()
         {
             _playerDriver = _playerDriverInstance as IPlayerDriver;
+            _gridManager = Context.GetGridManager;
             Assert.IsNotNull(_playerDriver, "_playerDriver != null");
             Debug.Log($"playerDriver {_playerDriver}");
         }
 
         void Update()
         {
-            _playerDriverState = _playerDriverInstance.GetComponent<PlayerDriverState>();
             if (_moveTo)
             {
                 _moveTo = false;
-                ((IPlayerDriverState)_playerDriverState).DelayedMove(_movePosition, _moveExecuteDelay);
+                _inputTarget = _playerDriverInstance as IPlayerDriver;
+                var targetPosition = _gridManager.GridPositionToWorldPoint(_movePosition);
+                _inputTarget.MoveTo(targetPosition);
             }
         }
     }

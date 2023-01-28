@@ -22,6 +22,7 @@ namespace Battle.Scripts.Battle.Players
         private int _playerPos;
         private int _teamNumber;
         private bool _isLocal;
+        private float _defaultRotation;
 
         private void Awake()
         {
@@ -52,27 +53,39 @@ namespace Battle.Scripts.Battle.Players
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             _state = GetPlayerDriverState(this);
-            _state.ResetState(_playerActor);
+            if (_teamNumber == PhotonBattle.TeamBlueValue)
+            {
+                _defaultRotation = 180f;
+            }
+            if (_teamNumber == PhotonBattle.TeamRedValue)
+            {
+                _defaultRotation = 0f;
+            }
+            _state.ResetState(_playerActor, _teamNumber);
+            ((IPlayerDriver)this).Rotate(_defaultRotation);
             if (!_isLocal)
             {
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
             playerInputHandler.SetPlayerDriver(this);
-
-            if (_teamNumber == PhotonBattle.TeamRedValue)
-            {
-                ((IPlayerDriver)this).Rotate(180f);
-            }
         }
 
         #region IPlayerDriver
+
+        string IPlayerDriver.NickName => _photonView.Owner.NickName;
+
+        int IPlayerDriver.TeamNumber => _teamNumber;
+
+        int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
+
+        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
 
         int IPlayerDriver.PlayerPos => _playerPos;
 
         void IPlayerDriver.Rotate(float angle)
         {
-            _photonView.RPC(nameof(RotatePlayerRpc), RpcTarget.All, angle);
+            _playerActor.SetRotation(angle);
         }
 
         void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
@@ -102,12 +115,6 @@ namespace Battle.Scripts.Battle.Players
             var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
             var gridPos = new GridPos(row, col);
             _state.DelayedMove(gridPos, (float)moveExecuteDelay);
-        }
-
-        [PunRPC]
-        private void RotatePlayerRpc(float angle)
-        {
-            _playerActor.Rotate(angle);
         }
 
         #endregion

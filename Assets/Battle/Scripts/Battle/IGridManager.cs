@@ -29,6 +29,10 @@ namespace Battle.Scripts.Battle
 
         GridPos WorldPointToGridPosition(Vector2 targetPosition);
 
+        GridPos ShieldGridPosition(Vector2 targetPosition);
+
+        Vector2 ShieldSquareCorner(GridPos shieldGridPos, bool turnRight, int teamNumber);
+
         bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber);
     }
 }

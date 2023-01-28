@@ -44,9 +44,9 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        void IPlayerActor.Rotate(float angle)
+        void IPlayerActor.SetRotation(float angle)
         {
-            _geometryRoot.Rotate(0, 0, angle);
+            _geometryRoot.eulerAngles = new Vector3(0, 0, angle);
         }
 
         #endregion
