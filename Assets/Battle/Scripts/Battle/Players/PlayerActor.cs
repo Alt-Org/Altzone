@@ -21,17 +21,17 @@ namespace Battle.Scripts.Battle.Players
             _transform = GetComponent<Transform>();
         }
 
-        private IEnumerator MoveCoroutine(Vector2 targetPosition)
+        private IEnumerator MoveCoroutine(Vector2 position)
         {
-            var targetPos3d = (Vector3)targetPosition;
+            Vector3 targetPosition = position;
             _hasTarget = true;
             while (_hasTarget)
             {
                 yield return null;
                 var maxDistanceDelta = _movementSpeed * _playerMoveSpeedMultiplier * Time.deltaTime;
-                _tempPosition = Vector3.MoveTowards(_transform.position, targetPos3d, maxDistanceDelta);
+                _tempPosition = Vector3.MoveTowards(_transform.position, targetPosition, maxDistanceDelta);
                 _transform.position = _tempPosition;
-                _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPos3d.x) && Mathf.Approximately(_tempPosition.y, targetPos3d.y));
+                _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
         }
 
