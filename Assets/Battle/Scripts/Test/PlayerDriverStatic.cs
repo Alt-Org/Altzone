@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
@@ -44,7 +45,7 @@ namespace Battle.Scripts.Test
                 _settings._nickName = name;
             }
             _gridManager = Context.GetGridManager;
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
+            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
             _state = GetPlayerDriverState(this);
             if (_settings._teamNumber == PhotonBattle.TeamBlueValue)
             {

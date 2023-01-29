@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Photon.Pun;
 using Photon.Realtime;
@@ -38,13 +39,12 @@ namespace Battle.Scripts.Battle.Players
         {
             if (_playerPrefab != null)
             {
-                return PlayerActorBase.InstantiatePrefabFor(_playerPos, _playerPrefab);
+                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab);
             }
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
-            var original = playerPrefabs.GetPlayerPrefab(playerPrefabId);
-            var playerPrefab = original.GetComponent<PlayerActorBase>();
-            var playerActor = PlayerActorBase.InstantiatePrefabFor(_playerPos, playerPrefab);
+            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
+            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab);
             return playerActor;
         }
 

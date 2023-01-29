@@ -1,4 +1,5 @@
 using System.Collections;
+using Altzone.Scripts.Battle;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -50,5 +51,14 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #endregion
+
+        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab)
+        {
+            var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
+            var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
+            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            var playerActor = (IPlayerActor)playerActorBase;
+            return playerActor;
+        }
     }
 }

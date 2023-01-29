@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Battle;
 using Altzone.Scripts.Model;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -76,9 +77,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class PlayerPrefabs
     {
-        public GameObject[] _playerPrefabs;
+        public PlayerActorBase[] _playerPrefabs;
 
-        public GameObject GetPlayerPrefab(int prefabId)
+        public PlayerActorBase GetPlayerPrefab(int prefabId)
         {
             Assert.IsTrue(prefabId >= 0 && prefabId < _playerPrefabs.Length, 
                 $"invalid prefabId {prefabId} [0-{_playerPrefabs.Length - 1}]");
