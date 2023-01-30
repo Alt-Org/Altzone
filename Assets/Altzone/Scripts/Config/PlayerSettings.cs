@@ -141,6 +141,11 @@ namespace Altzone.Scripts.Config
         }
 
         /// <summary>
+        /// Version number for <c>IPlayerSettings</c> for future game updates.
+        /// </summary>
+        public int PlayerSettingsVersion => 1;
+        
+        /// <summary>
         /// Debug FLag for debugging and diagnostics purposes.
         /// </summary>
         /// <remarks>
