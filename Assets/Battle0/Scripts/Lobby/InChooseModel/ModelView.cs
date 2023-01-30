@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Altzone.Scripts;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battle0.Scripts.Lobby.InChooseModel
 {
     /// <summary>
-    /// <c>CharacterModel</c> view.
+    /// <c>CharacterModel</c> view - example using furniture prefabs as we do not have proper player prefabs for character selection yet.
     /// </summary>
     public class ModelView : MonoBehaviour
     {
@@ -18,19 +21,43 @@ namespace Battle0.Scripts.Lobby.InChooseModel
 
         [SerializeField] private Transform leftPane;
         [SerializeField] private Transform rightPane;
-        [SerializeField] private GameObject[] prefabs;
-        [SerializeField] private GameObject curPrefab;
+        [SerializeField] private Transform _prefabsRoot;
+        [SerializeField] private GameObject[] _prefabs;
+        [SerializeField] private GameObject _curPrefab;
+        [SerializeField] private bool _isReady;
 
         private Button[] _buttons;
         private Text[] _labels;
+
+        public bool IsReady => _isReady;
 
         private void Awake()
         {
             _buttons = leftPane.GetComponentsInChildren<Button>();
             _labels = rightPane.GetComponentsInChildren<Text>();
-            // Index 0 is not used but must be valid in order to prevent NRE at runtime.
-            // - we rely that prefab index is same as CharacterModel Id and table is setup accordingly.
-            curPrefab = prefabs[0];
+            LoadPrefabsAsync();
+        }
+
+        private void LoadPrefabsAsync()
+        {
+            // This will be async if custom character models are loaded from network.
+            var store = Storefront.Get();
+            var furnitureModels = store.GetAllFurnitureModels();
+            var maxIndex = furnitureModels.Max(x => x.Id);
+            _prefabs = new GameObject[1 + maxIndex];
+            var position = _prefabsRoot.position;
+            foreach (var furnitureModel in furnitureModels)
+            {
+                Debug.Log($"{furnitureModel.Id} {furnitureModel.PrefabName}");
+                var instance = FurnitureModel.Instantiate(furnitureModel, position, Quaternion.identity, _prefabsRoot);
+                if (instance == null)
+                {
+                    continue;
+                }
+                instance.SetActive(false);
+                _prefabs[furnitureModel.Id] = instance;
+            }
+            _isReady = true;
         }
 
         public string Title
@@ -60,14 +87,20 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             {
                 label.text = string.Empty;
             }
-            foreach (var prefab in prefabs)
+            foreach (var prefab in _prefabs)
             {
+                if (prefab == null)
+                {
+                    continue;
+                }
                 prefab.SetActive(false);
             }
+            _curPrefab = null;
         }
 
         public void SetCharacters(List<IBattleCharacter> characters, int currentCharacterId)
         {
+            Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
             for (var i = 0; i < characters.Count; ++i)
             {
@@ -101,10 +134,15 @@ namespace Battle0.Scripts.Lobby.InChooseModel
 
         private void SetCharacterPrefab(IBattleCharacter character)
         {
-            curPrefab.SetActive(false);
-            // HACK: we assume that prefabs are arranged by this same id! This worked well when all models were hard coded.
-            curPrefab = prefabs[character.CustomCharacterModelId];
-            curPrefab.SetActive(true);
+            if (_curPrefab != null)
+            {
+                _curPrefab.SetActive(false);
+            }
+            _curPrefab = _prefabs[character.PlayerPrefabId];
+            if (_curPrefab != null)
+            {
+                _curPrefab.SetActive(true);
+            }
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Battle.Scripts.Battle
 
         void MoveTo(Vector2 targetPosition);
 
-        void Rotate(float angle);
+        void SetRotation(float angle);
     }
 }

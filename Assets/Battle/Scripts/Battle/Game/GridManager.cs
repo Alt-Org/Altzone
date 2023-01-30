@@ -10,6 +10,8 @@ namespace Battle.Scripts.Battle.Game
     {
         private int _movementGridWidth;
         private int _movementGridHeight;
+        private int _shieldGridWidth;
+        private int _shieldGridHeight;
         private IBattlePlayArea _battlePlayArea;
         private float _arenaWidth;
         private float _arenaHeight;
@@ -26,6 +28,8 @@ namespace Battle.Scripts.Battle.Game
 
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
+            _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
+            _shieldGridHeight = _battlePlayArea.ShieldGridHeight;
 
             InitializeGridArrays();
         }
@@ -97,6 +101,41 @@ namespace Battle.Scripts.Battle.Game
             var row = Math.Min(_movementGridHeight - 1, (int)(posNew.y / (_arenaHeight / _movementGridHeight)));
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
+        }
+
+        GridPos IGridManager.ShieldGridPosition(Vector2 targetPosition)
+        {
+            var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
+            var col = Math.Min(_shieldGridWidth - 1, (int)(posNew.x / (_arenaWidth / _shieldGridWidth)));
+            var row = Math.Min(_shieldGridHeight - 1, (int)(posNew.y / (_arenaHeight / _shieldGridHeight)));
+            GridPos gridPos = new GridPos(row, col);
+            return gridPos;
+        }
+
+        Vector2 IGridManager.ShieldSquareCorner(GridPos shieldGridPos, bool turnRight, int teamNumber)
+        {
+            var row = 0;
+            var col = 0;
+            if (teamNumber == PhotonBattle.TeamBlueValue)
+            {
+                row = shieldGridPos.Row;
+            }
+            if (teamNumber == PhotonBattle.TeamRedValue)
+            {
+                row = shieldGridPos.Row + 1;
+            }
+            if (turnRight)
+            {
+                col = shieldGridPos.Col + 1;
+            }
+            if (!turnRight)
+            {
+                col = shieldGridPos.Col;
+            }
+            var xPos = col * _arenaWidth / _shieldGridWidth;
+            var yPos = row * _arenaHeight / _shieldGridHeight;
+            var corner = new Vector2(xPos - _arenaWidth / 2, yPos - _arenaHeight / 2);
+            return corner;
         }
 
         bool IGridManager.IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)

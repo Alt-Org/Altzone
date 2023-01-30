@@ -6,30 +6,40 @@ using UnityEngine.InputSystem;
 
 public class Raid_Grid : MonoBehaviour
 {
+    public Sprite CoveredTile;
+    public Sprite FlagTile;
+
     public int AmountOfMines;
+    public int AmountofH1R;
+    public int AmountofH2R;
+
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
     public List<Raid_Tile> TilesToCheck = new List<Raid_Tile>();
 
     private void Start()
     {
+
         for (int i = 0; i < AmountOfMines; i++)
         {
             PlaceMines();
         }
+        for (int i = 0; i < AmountofH1R; i++)
+        {
+            PlaceSingleTileFurniture();
+        }
+        /*for (int i = 0; i < AmountofH2R; i++)
+        {
+            placeDoubleTileFurniture();
+        }*/
 
         PlaceNumberTiles();
         PlaceEmptyTiles();
     }
 
-    private void Update()
+    public void CheckInputQuickTap(InputAction.CallbackContext context)
     {
-        CheckInput();
-    }
-
-    private void CheckInput()
-    {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (context.performed)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
@@ -50,12 +60,114 @@ public class Raid_Grid : MonoBehaviour
                     }
                 }
             }
+            Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
         }
     }
 
-    void PlaceFurniture()
+    public void CheckInputSlowTap(InputAction.CallbackContext context)
     {
+        if (context.performed)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
+            int x = Mathf.RoundToInt(mousePosition.x);
+            int y = Mathf.RoundToInt(mousePosition.y);
+
+            Raid_Tile raid_Tile = grid[x, y];
+            Debug.Log("SlowTap recognized at (" + x + ", " + y + ")");
+            if (raid_Tile.IsCovered)
+            {
+                if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
+                {
+                    raid_Tile.tileState = Raid_Tile.TileState.Flagged;
+                    raid_Tile.GetComponent<SpriteRenderer>().sprite = FlagTile;
+                }
+                else
+                {
+                    raid_Tile.tileState = Raid_Tile.TileState.Normal;
+                    raid_Tile.GetComponent<SpriteRenderer>().sprite = CoveredTile;
+                }
+            }
+        }
+    }
+
+    void PlaceSingleTileFurniture()
+    {
+        int x = UnityEngine.Random.Range(0, 9);
+        int y = UnityEngine.Random.Range(0, 9);
+
+        if (grid[x, y] == null)
+        {
+            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/H1R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+
+            grid[x, y] = FurnitureTile;
+        }
+        else
+        {
+            PlaceSingleTileFurniture();
+        }
+    }
+
+    void placeDoubleTileFurniture()
+    {
+        int x = UnityEngine.Random.Range(0, 9);
+        int y = UnityEngine.Random.Range(0, 9);
+
+        if (grid[x, y] == null)
+        {
+            if (x + 1 < 9)
+            {
+                if (grid[x + 1, y] == null)
+                {
+                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x + 1, y, 0), Quaternion.identity) as Raid_Tile;
+
+                    grid[x, y] = FurnitureTile;
+                    grid[x + 1, y] = FurnitureTile2;
+                }
+                else if (y + 1 < 9)
+                {
+                    if (grid[x, y + 1] == null)
+                    {
+                        Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                        Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y + 1, 0), Quaternion.identity) as Raid_Tile;
+
+                        grid[x, y] = FurnitureTile;
+                        grid[x, y + 1] = FurnitureTile2;
+                    }
+                    else if (x - 1 >= 0)
+                    {
+                        if (grid[x - 1, y] == null)
+                        {
+                            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                            Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x - 1, y, 0), Quaternion.identity) as Raid_Tile;
+
+                            grid[x, y] = FurnitureTile;
+                            grid[x - 1, y] = FurnitureTile2;
+                        }
+                        else if (y - 1 >= 0)
+                        {
+                            if (grid[x, y - 1] == null)
+                            {
+                                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefab/H2R", typeof(Raid_Tile)), new Vector3(x, y - 1, 0), Quaternion.identity) as Raid_Tile;
+
+                                grid[x, y] = FurnitureTile;
+                                grid[x, y - 1] = FurnitureTile2;
+                            }
+                        }
+                        else
+                        {
+                            placeDoubleTileFurniture();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            placeDoubleTileFurniture();
+        }
     }
 
     void PlaceMines()

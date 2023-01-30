@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Photon.Pun;
@@ -14,9 +15,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
     {
         [SerializeField] private ModelView _view;
 
-        private void Start()
+        private IEnumerator Start()
         {
             Debug.Log("Start");
+            yield return new WaitUntil(() => _view.IsReady);
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var playerDataCache = GameConfig.Get().PlayerSettings;
@@ -33,10 +35,12 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             Debug.Log("click");
             // Save player settings if changed before continuing!
             var playerDataCache = GameConfig.Get().PlayerSettings;
-            if (_view.PlayerName != playerDataCache.PlayerName ||
-                _view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
+            if (_view.PlayerName != playerDataCache.PlayerName)
             {
                 playerDataCache.SetPlayerName(_view.PlayerName);
+            }
+            if (_view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
+            {
                 playerDataCache.SetCustomCharacterModelId(_view.CurrentCharacterId);
             }
             if (PhotonNetwork.NickName != playerDataCache.PlayerName)

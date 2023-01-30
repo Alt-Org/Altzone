@@ -1,0 +1,54 @@
+{
+    "name": "Tap_Input",
+    "maps": [
+        {
+            "name": "Raid_Tap",
+            "id": "df89c0d0-acbe-40b2-9f6d-236a22c6bff5",
+            "actions": [
+                {
+                    "name": "Tap",
+                    "type": "Button",
+                    "id": "e2ee058d-4388-4d12-8364-d6bf0792482e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlowTap",
+                    "type": "Button",
+                    "id": "5d34cc79-3a60-4f3c-b250-63af1751d7a0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "SlowTap",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "434c6ac8-b030-4e05-94fd-dba18dd83b11",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "53ca0de3-d3d5-49ef-a949-90a7380f1efd",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "SlowTap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SlowTap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
