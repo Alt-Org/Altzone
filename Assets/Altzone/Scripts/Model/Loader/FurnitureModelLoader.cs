@@ -14,16 +14,16 @@ namespace Altzone.Scripts.Model.Loader
             return new List<FurnitureModel>
             {
                 // These are for testing and can used by test scripts!
-                new(1, FurnitureType.OneSquare, "OneSquare", Color.red, "WhiteBall"),
-                new(2, FurnitureType.TwoSquares, "TwoSquares", Color.red, "WhiteBall"),
-                new(3, FurnitureType.ThreeSquaresStraight, "ThreeSquaresStraight", Color.red, "WhiteBall"),
-                new(4, FurnitureType.ThreeSquaresBend, "ThreeSquaresBend", Color.red, "WhiteBall"),
-                new(5, FurnitureType.FourSquares, "FourSquares", Color.red, "WhiteBall"),
-                new(6, FurnitureType.Bomb, "Bomb", Color.black, "Bomb"),
-                new(7, FurnitureType.OneSquare, "WhiteBall", Color.white, "WhiteBall"),
-                new(8, FurnitureType.OneSquare, "NotFoundPrefab", Color.red, "NotFoundPrefab"),
-                new(9, FurnitureType.OneSquare, "LetterA", Color.red, "LetterA"),
-                new(10, FurnitureType.OneSquare, "LetterB", Color.red, "LetterB"),
+                new(1, FurnitureType.OneSquare, "Ruutu", "WhiteBall"),
+                new(2, FurnitureType.TwoSquares, "Tuplaruutu", "WhiteBall"),
+                new(3, FurnitureType.ThreeSquaresStraight, "Kolmen suora", "WhiteBall"),
+                new(4, FurnitureType.ThreeSquaresBend, "L-mutka", "WhiteBall"),
+                new(5, FurnitureType.FourSquares, "Neliö", "WhiteBall"),
+                new(6, FurnitureType.Bomb, "Pommi", "Bomb"),
+                new(7, FurnitureType.OneSquare, "Valkoinen pallo", "WhiteBall"),
+                new(8, FurnitureType.OneSquare, "Ei löydy testi", "NotFoundPrefab"),
+                new(9, FurnitureType.OneSquare, "Kirjain A", "LetterA"),
+                new(10, FurnitureType.OneSquare, "Kirjain B", "LetterB"),
             };
         }
     }

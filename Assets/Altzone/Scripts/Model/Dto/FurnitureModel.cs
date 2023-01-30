@@ -12,15 +12,13 @@ namespace Altzone.Scripts.Model.Dto
     {
         public FurnitureType FurnitureType { get; }
         public string Name { get; }
-        public Color Color { get; }
         public string PrefabName { get; }
 
-        public FurnitureModel(int id, FurnitureType furnitureType, string name, Color color, string prefabName) : base(id)
+        public FurnitureModel(int id, FurnitureType furnitureType, string name, string prefabName) : base(id)
         {
             Assert.IsFalse(furnitureType == FurnitureType.Invalid);
             FurnitureType = furnitureType;
             Name = name;
-            Color = color;
             PrefabName = prefabName;
         }
 

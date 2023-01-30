@@ -7,8 +7,8 @@ namespace Assets.Tests.EditMode.ModelsTests
     [TestFixture]
     public class FurnitureModelTest
     {
-        private const string WhiteBallName = "WhiteBall";
-        private const string NotFoundPrefabName = "NotFoundPrefab";
+        private const string WhiteBallName = "Valkoinen pallo";
+        private const string NotFoundTestName = "Ei löydy testi";
         
         private IStorefront _store;
 
@@ -37,7 +37,7 @@ namespace Assets.Tests.EditMode.ModelsTests
         public void FurnitureModelInstantiateFailTest()
         {
             Debug.Log("test");
-            var model = _store.GetFurnitureModel(NotFoundPrefabName);
+            var model = _store.GetFurnitureModel(NotFoundTestName);
             Assert.IsNotNull(model);
             var gameObject = FurnitureModel.Instantiate(model);
             Assert.IsNull(gameObject);

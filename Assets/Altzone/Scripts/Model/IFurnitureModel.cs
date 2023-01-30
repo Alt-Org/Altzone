@@ -20,7 +20,6 @@ namespace Altzone.Scripts.Model
     {
         FurnitureType FurnitureType { get; }
         string Name { get; }
-        Color Color { get; }
         string PrefabName { get; }
         int Id { get; }
     }
