@@ -27,7 +27,8 @@ public class Inventory : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.position = new Vector2(0, difBetween(transform.position.y, GetPressPos(press).))
+        Debug.Log("" + press.action.ReadValue<Vector2>());
+        //transform.localPosition += new Vector3(0, difBetween(transform.position.y, press.action.ReadValue<Vector2>().x), 0);
     }
 
     private void SortStored()
@@ -58,13 +59,9 @@ public class Inventory : MonoBehaviour
     private float difBetween(float a, float b)
     {
         // Returns the difference between float a and float b
-
+        return a - b;
     }
 
-    private void GetPressPos(InputAction.CallbackContext ctx)
-    {
-        Vector2 vec = ctx.ReadValue<Vector2>();
-    }
     // Task List
     // - Visible Inventory (Done)
     // - Sorting (Done)
