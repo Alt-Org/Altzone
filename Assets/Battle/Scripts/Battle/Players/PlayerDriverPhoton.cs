@@ -23,7 +23,6 @@ namespace Battle.Scripts.Battle.Players
         private int _playerPos;
         private int _teamNumber;
         private bool _isLocal;
-        private float _defaultRotation;
 
         private void Awake()
         {
@@ -53,16 +52,11 @@ namespace Battle.Scripts.Battle.Players
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
             _state = GetPlayerDriverState(this);
-            if (_teamNumber == PhotonBattle.TeamBlueValue)
-            {
-                _defaultRotation = 180f;
-            }
+            _state.ResetState(_playerActor, _teamNumber);
             if (_teamNumber == PhotonBattle.TeamRedValue)
             {
-                _defaultRotation = 0f;
+                ((IPlayerDriver)this).Rotate(180f);
             }
-            _state.ResetState(_playerActor, _teamNumber);
-            ((IPlayerDriver)this).Rotate(_defaultRotation);
             if (!_isLocal)
             {
                 return;

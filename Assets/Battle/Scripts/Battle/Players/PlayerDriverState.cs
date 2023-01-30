@@ -36,6 +36,7 @@ namespace Battle.Scripts.Battle.Players
                 _otherActorTransforms[i] = actor.GetComponent<Transform>();
                 i++;
             }
+            _otherPositions = new Vector3[_otherActorTransforms.Length];
         }
 
         private void Update()
@@ -45,7 +46,6 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _otherPositions = new Vector3[_otherActorTransforms.Length];
             for (int i = 0; i < _otherActorTransforms.Length; i++)
             {
                 _otherPositions[i] = _otherActorTransforms[i].position;
@@ -98,11 +98,11 @@ namespace Battle.Scripts.Battle.Players
             _teamNumber = teamNumber;
             if (_teamNumber == PhotonBattle.TeamBlueValue)
             {
-                _defaultRotation = 180f;
+                _defaultRotation = 0f;
             }
             if (_teamNumber == PhotonBattle.TeamRedValue)
             {
-                _defaultRotation = 0f;
+                _defaultRotation = 180f;
             }
             _gridManager = Context.GetGridManager;
         }
