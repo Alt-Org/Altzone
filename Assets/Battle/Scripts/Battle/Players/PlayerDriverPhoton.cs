@@ -4,7 +4,6 @@ using Altzone.Scripts.Config;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using Battle.Scripts.Battle.Test;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -15,18 +14,20 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;
-        [SerializeField] private bool _isTesting = false;
 
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IBattlePlayArea _battlePlayArea;
         private IPlayerDriverState _state;
         private PhotonView _photonView;
-        private TestPlayerControlPanel _testPlayerControlPanel;
         private int _playerPos;
         private int _teamNumber;
 
         private bool _isLocal;
+
+        [Header ("Testing")]
+        [SerializeField] private bool _isTesting = false;
+        [SerializeField] private int _playerPrefabID;
 
         private void Awake()
         {
@@ -49,8 +50,7 @@ namespace Battle.Scripts.Battle.Players
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             if (_isTesting)
             {
-                _testPlayerControlPanel = GameObject.Find("TestPlayerControlPanel").GetComponent<TestPlayerControlPanel>();
-                playerPrefabId = _testPlayerControlPanel._playerPrefabID;
+                playerPrefabId = _playerPrefabID;
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
             var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab);

@@ -17,6 +17,10 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _tempPosition;
         private bool _hasTarget;
 
+        [Header ("Testing")]
+            [SerializeField] private bool _moveTo;
+            [SerializeField] private Vector2 _targetPosition;
+
         private void Awake()
         {
             _transform = GetComponent<Transform>();
@@ -33,6 +37,14 @@ namespace Battle.Scripts.Battle.Players
                 _tempPosition = Vector3.MoveTowards(_transform.position, targetPosition, maxDistanceDelta);
                 _transform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
+            }
+        }
+
+        void Update()
+        {
+            if(_moveTo)
+            {
+                StartCoroutine(MoveCoroutine(_targetPosition));
             }
         }
 
