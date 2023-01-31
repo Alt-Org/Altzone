@@ -370,6 +370,7 @@ MonoBehaviour:
   LobbyButton: {fileID: 671105154}
   _bottomWallCollider: {fileID: 906938542}
   _topWallCollider: {fileID: 504247171}
+  TestLimit: 2
 --- !u!61 &504247171 stripped
 BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 4230088012655184481, guid: c5c41f82aa33699438e94e6b2118282d,
@@ -659,8 +660,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294575616
+  m_fontColor: {r: 0, g: 0.024987347, b: 0.9811321, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -749,6 +750,7 @@ MonoBehaviour:
   LobbyButton: {fileID: 671105154}
   _bottomWallCollider: {fileID: 906938542}
   _topWallCollider: {fileID: 504247171}
+  TestLimit: 2
 --- !u!61 &906938542 stripped
 BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 560921282802391219, guid: c5c41f82aa33699438e94e6b2118282d,

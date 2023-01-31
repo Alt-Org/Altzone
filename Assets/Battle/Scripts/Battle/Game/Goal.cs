@@ -14,6 +14,7 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] GameObject LobbyButton;
         [SerializeField] BoxCollider2D _bottomWallCollider;
         [SerializeField] BoxCollider2D _topWallCollider;
+        [SerializeField] int TestLimit;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -24,10 +25,10 @@ namespace Battle.Scripts.Battle.Game
                 LobbyButton.SetActive(true);   
             }
         }
-        //Kesken
+        
         private void Update()
         {
-            if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > 1) {
+            if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > TestLimit) {
                 _bottomWallCollider.isTrigger = true;
                 _topWallCollider.isTrigger = true;
             }
