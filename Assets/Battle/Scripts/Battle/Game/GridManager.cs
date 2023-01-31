@@ -15,10 +15,10 @@ namespace Battle.Scripts.Battle.Game
         private IBattlePlayArea _battlePlayArea;
         private float _arenaWidth;
         private float _arenaHeight;
-        private bool[,] _gridEmptySpacesBlue;
-        private bool[,] _gridEmptySpacesRed;
-        private Rect _startAreaBlue;
-        private Rect _startAreaRed;
+        private bool[,] _gridEmptySpacesAlpha;
+        private bool[,] _gridEmptySpacesBeta;
+        private Rect _startAreaAlpha;
+        private Rect _startAreaBeta;
 
         private void Start()
         {
@@ -36,34 +36,34 @@ namespace Battle.Scripts.Battle.Game
 
         private void InitializeGridArrays()
         {
-            _startAreaBlue = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBlueValue);
-            _startAreaRed = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamRedValue);
+            _startAreaAlpha = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamAlphaValue);
+            _startAreaBeta = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBetaValue);
 
             var smallOffset = 0.001f;
-            var blueAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.xMin, _startAreaBlue.yMin + smallOffset));
-            var redAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.xMin, _startAreaRed.yMin + smallOffset));
-            var blueAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBlue.xMax, _startAreaBlue.yMax - smallOffset));
-            var redAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaRed.xMax, _startAreaRed.yMax - smallOffset));
+            var alphaAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));
+            var betaAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBeta.xMin, _startAreaBeta.yMin + smallOffset));
+            var alphaAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMax, _startAreaAlpha.yMax - smallOffset));
+            var betaAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBeta.xMax, _startAreaBeta.yMax - smallOffset));
 
-            var blueRowMin = blueAreaStart.Row;
-            var redRowMin = redAreaStart.Row;
-            var blueRowMax = blueAreaEnd.Row;
-            var redRowMax = redAreaEnd.Row;
+            var alphaRowMin = alphaAreaStart.Row;
+            var betaRowMin = betaAreaStart.Row;
+            var alphaRowMax = alphaAreaEnd.Row;
+            var betaRowMax = betaAreaEnd.Row;
 
-            _gridEmptySpacesBlue = new bool[_movementGridHeight, _movementGridWidth];
-            _gridEmptySpacesRed = new bool[_movementGridHeight, _movementGridWidth];
+            _gridEmptySpacesAlpha = new bool[_movementGridHeight, _movementGridWidth];
+            _gridEmptySpacesBeta = new bool[_movementGridHeight, _movementGridWidth];
 
             for (int row = 0; row < _movementGridHeight; row++)
             {
                 for (int col = 0; col < _movementGridWidth; col++)
                 {
-                    if (row >= blueRowMin && row <= blueRowMax)
+                    if (row >= alphaRowMin && row <= alphaRowMax)
                     {
-                        _gridEmptySpacesBlue[row, col] = true;
+                        _gridEmptySpacesAlpha[row, col] = true;
                     }
                     else
                     {
-                        _gridEmptySpacesBlue[row, col] = false;
+                        _gridEmptySpacesAlpha[row, col] = false;
                     }
                 }
             }
@@ -72,13 +72,13 @@ namespace Battle.Scripts.Battle.Game
             {
                 for (int col = 0; col < _movementGridWidth; col++)
                 {
-                    if (row >= redRowMin && row <= redRowMax)
+                    if (row >= betaRowMin && row <= betaRowMax)
                     {
-                        _gridEmptySpacesRed[row, col] = true;
+                        _gridEmptySpacesBeta[row, col] = true;
                     }
                     else
                     {
-                        _gridEmptySpacesRed[row, col] = false;
+                        _gridEmptySpacesBeta[row, col] = false;
                     }
                 }
             }
@@ -116,11 +116,11 @@ namespace Battle.Scripts.Battle.Game
         {
             var row = 0;
             var col = 0;
-            if (teamNumber == PhotonBattle.TeamBlueValue)
+            if (teamNumber == PhotonBattle.TeamAlphaValue)
             {
                 row = shieldGridPos.Row;
             }
-            if (teamNumber == PhotonBattle.TeamRedValue)
+            if (teamNumber == PhotonBattle.TeamBetaValue)
             {
                 row = shieldGridPos.Row + 1;
             }
@@ -142,10 +142,10 @@ namespace Battle.Scripts.Battle.Game
         {
             switch (teamNumber)
             {
-                case PhotonBattle.TeamBlueValue:
-                    return _gridEmptySpacesBlue[gridPos.Row, gridPos.Col];
-                case PhotonBattle.TeamRedValue:
-                    return _gridEmptySpacesRed[gridPos.Row, gridPos.Col];
+                case PhotonBattle.TeamAlphaValue:
+                    return _gridEmptySpacesAlpha[gridPos.Row, gridPos.Col];
+                case PhotonBattle.TeamBetaValue:
+                    return _gridEmptySpacesBeta[gridPos.Row, gridPos.Col];
                 default:
                     throw new UnityException($"Invalid Team Number {teamNumber}");
             }

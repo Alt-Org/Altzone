@@ -79,7 +79,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1477915993
 Transform:
   m_ObjectHideFlags: 0
@@ -505,6 +505,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7291601673885329972}
   - component: {fileID: 560921282802391219}
+  - component: {fileID: 906938540}
   m_Layer: 0
   m_Name: BottomWall
   m_TagString: Untagged
@@ -553,6 +554,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &906938540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37722840573782679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WinLoseText: {fileID: 0}
+  LobbyButton: {fileID: 0}
+  _bottomWallCollider: {fileID: 560921282802391219}
+  _topWallCollider: {fileID: 4230088012655184481}
+  TestLimit: 2
 --- !u!1 &428402334129762466
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,18 +687,18 @@ MonoBehaviour:
   _bottomWall: {fileID: 37722840573782679}
   _topWall: {fileID: 6707511437302172081}
   _isBackWallsTriggers: 0
-  _blueTeamBrickWall: {fileID: 7754314476380310042}
-  _redTeamBrickWall: {fileID: 3394065157751883121}
-  _startPositionBlueA:
+  _alphaTeamBrickWall: {fileID: 7754314476380310042}
+  _betaTeamBrickWall: {fileID: 3394065157751883121}
+  _startPositionAlpha1:
     _row: 9
     _col: 5
-  _startPositionBlueB:
+  _startPositionAlpha2:
     _row: 9
     _col: 16
-  _startPositionRedA:
+  _startPositionBeta1:
     _row: 30
     _col: 16
-  _startPositionRedB:
+  _startPositionBeta2:
     _row: 30
     _col: 5
 --- !u!1 &1239007466319828630
@@ -754,7 +772,7 @@ GameObject:
   - component: {fileID: 6408344867640726588}
   - component: {fileID: 1909820922}
   m_Layer: 0
-  m_Name: RedBrick4
+  m_Name: BetaBrick4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -911,7 +929,7 @@ GameObject:
   - component: {fileID: 304241824952054533}
   - component: {fileID: 670289018}
   m_Layer: 0
-  m_Name: RedBrick2
+  m_Name: BetaBrick2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,7 +1053,7 @@ GameObject:
   - component: {fileID: 1824432217734089846}
   - component: {fileID: 1576536990}
   m_Layer: 0
-  m_Name: BlueBrick4
+  m_Name: AlphaBrick4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1156,7 +1174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6378013828000908076}
   m_Layer: 0
-  m_Name: RedTeamBrickWall
+  m_Name: BetaTeamBrickWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1195,7 +1213,7 @@ GameObject:
   - component: {fileID: 8600868658380882489}
   - component: {fileID: 66918624}
   m_Layer: 0
-  m_Name: BlueBrick2
+  m_Name: AlphaBrick2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1319,7 +1337,7 @@ GameObject:
   - component: {fileID: 78444886441657935}
   - component: {fileID: 73795351}
   m_Layer: 0
-  m_Name: BlueBrick3
+  m_Name: AlphaBrick3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1443,7 +1461,7 @@ GameObject:
   - component: {fileID: 160598038960550962}
   - component: {fileID: 1962996376}
   m_Layer: 0
-  m_Name: RedBrick3
+  m_Name: BetaBrick3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1567,7 +1585,7 @@ GameObject:
   - component: {fileID: 4020877150126323506}
   - component: {fileID: 861335788}
   m_Layer: 0
-  m_Name: BlueBrick1
+  m_Name: AlphaBrick1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1688,6 +1706,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1511181814832124130}
   - component: {fileID: 4230088012655184481}
+  - component: {fileID: 504247170}
   m_Layer: 0
   m_Name: TopWall
   m_TagString: Untagged
@@ -1736,6 +1755,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &504247170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6707511437302172081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WinLoseText: {fileID: 0}
+  LobbyButton: {fileID: 0}
+  _bottomWallCollider: {fileID: 560921282802391219}
+  _topWallCollider: {fileID: 4230088012655184481}
+  TestLimit: 2
 --- !u!1 &6928115954222428759
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,7 +1820,7 @@ GameObject:
   - component: {fileID: 6935206620151533554}
   - component: {fileID: 388693067}
   m_Layer: 0
-  m_Name: RedBrick1
+  m_Name: BetaBrick1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1908,7 +1944,7 @@ GameObject:
   - component: {fileID: 1214546716795975180}
   - component: {fileID: 562176812}
   m_Layer: 0
-  m_Name: BlueBrick5
+  m_Name: AlphaBrick5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2029,7 +2065,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6777664392660913704}
   m_Layer: 0
-  m_Name: BlueTeamBrickWall
+  m_Name: AlphaTeamBrickWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2068,7 +2104,7 @@ GameObject:
   - component: {fileID: 140201027042670956}
   - component: {fileID: 444947846}
   m_Layer: 0
-  m_Name: RedBrick5
+  m_Name: BetaBrick5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

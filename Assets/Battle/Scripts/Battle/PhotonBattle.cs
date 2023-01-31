@@ -18,6 +18,20 @@ namespace Battle.Scripts.Battle
         public const string PlayerPositionKey = "pp";
         public const string PlayerPrefabIdKey = "mk";
 
+        // Team positions in world coordinates (game arena when camera isn't rotated)
+        //  Beta team number 2
+        //  - Player positions 3 and 4
+        // | ======= |
+        // |  4 |  3 |      Team number 0
+        // | ======= |      - Guest number is 0
+        // |  1 |  2 |      - Spectator number is 10
+        // | ======= |
+        //  Alpha team number 1
+        //  - Player positions 1 and 2
+
+        // Player should be positioned so that if camera is rotated 180 degrees,
+        // player with smaller number is always at the bottom of the left corner of the gameplay area.
+
         public const int PlayerPositionGuest = 0;
         public const int PlayerPosition1 = 1;
         public const int PlayerPosition2 = 2;
@@ -26,8 +40,8 @@ namespace Battle.Scripts.Battle
         public const int PlayerPositionSpectator = 10;
 
         public const int NoTeamValue = 0;
-        public const int TeamBlueValue = 1;
-        public const int TeamRedValue = 2;
+        public const int TeamAlphaValue = 1;
+        public const int TeamBetaValue = 2;
 
         private const string NoPlayerName = "noname";
 
@@ -47,11 +61,11 @@ namespace Battle.Scripts.Battle
             {
                 case PlayerPosition1:
                 case PlayerPosition2:
-                    return TeamBlueValue;
+                    return TeamAlphaValue;
 
                 case PlayerPosition3:
                 case PlayerPosition4:
-                    return TeamRedValue;
+                    return TeamBetaValue;
 
                 default:
                     return NoTeamValue;

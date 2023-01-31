@@ -96,11 +96,11 @@ namespace Battle.Scripts.Battle.Players
         {
             _playerActor = playerActor;
             _teamNumber = teamNumber;
-            if (_teamNumber == PhotonBattle.TeamBlueValue)
+            if (_teamNumber == PhotonBattle.TeamAlphaValue)
             {
                 _defaultRotation = 0f;
             }
-            if (_teamNumber == PhotonBattle.TeamRedValue)
+            if (_teamNumber == PhotonBattle.TeamBetaValue)
             {
                 _defaultRotation = 180f;
             }

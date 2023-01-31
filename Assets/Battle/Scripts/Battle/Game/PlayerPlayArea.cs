@@ -21,16 +21,16 @@ namespace Battle.Scripts.Battle.Game
 
         [Tooltip("Set top and bottom wall colliders as triggers"), SerializeField] private bool _isBackWallsTriggers;
 
-        [SerializeField] private GameObject _blueTeamBrickWall;
-        [SerializeField] private GameObject _redTeamBrickWall;
+        [SerializeField] private GameObject _alphaTeamBrickWall;
+        [SerializeField] private GameObject _betaTeamBrickWall;
 
-        [Header("Player Start Positions"), SerializeField] private GridPos _startPositionBlueA;
-        [SerializeField] private GridPos _startPositionBlueB;
-        [SerializeField] private GridPos _startPositionRedA;
-        [SerializeField] private GridPos _startPositionRedB;
+        [Header("Player Start Positions"), SerializeField] private GridPos _startPositionAlpha1;
+        [SerializeField] private GridPos _startPositionAlpha2;
+        [SerializeField] private GridPos _startPositionBeta1;
+        [SerializeField] private GridPos _startPositionBeta2;
 
-        private GameObject[] _blueTeamBricks;
-        private GameObject[] _redTeamBricks;
+        private GameObject[] _alphaTeamBricks;
+        private GameObject[] _betaTeamBricks;
 
         private BoxCollider2D _rightWallCollider;
         private BoxCollider2D _leftWallCollider;
@@ -42,8 +42,8 @@ namespace Battle.Scripts.Battle.Game
         private const float BrickSpriteWidth = 2.35f;
         private const int BricksPerWall = 5;
 
-        private Rect _playStartAreaBlue;
-        private Rect _playStartAreaRed;
+        private Rect _playStartAreaAlpha;
+        private Rect _playStartAreaBeta;
 
         private void Awake()
         {
@@ -52,8 +52,8 @@ namespace Battle.Scripts.Battle.Game
 
             var middleAreaHeight = _middleAreaHeight * _arenaHeigth / _shieldGridHeight;
             var shieldSquareHeight = _arenaHeigth / _shieldGridHeight;
-            _playStartAreaBlue = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2 + shieldSquareHeight, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
-            _playStartAreaRed = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
+            _playStartAreaAlpha = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2 + shieldSquareHeight, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
+            _playStartAreaBeta = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
             _movementGridHeight = _movementGridMultiplier * _shieldGridHeight;
             _movementGridWidth = _movementGridMultiplier * _shieldGridWidth;
         }
@@ -81,18 +81,18 @@ namespace Battle.Scripts.Battle.Game
 
         private void SetupBrickWalls()
         {
-            _blueTeamBricks = new GameObject[BricksPerWall];
-            _redTeamBricks = new GameObject[BricksPerWall];
+            _alphaTeamBricks = new GameObject[BricksPerWall];
+            _betaTeamBricks = new GameObject[BricksPerWall];
             for (int i = 0; i < BricksPerWall; i++)
             {
-                _blueTeamBricks[i] = _blueTeamBrickWall.transform.GetChild(i).gameObject;
-                _redTeamBricks[i] = _redTeamBrickWall.transform.GetChild(i).gameObject;
-                _blueTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
-                _redTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
-                _blueTeamBricks[i].transform.position = new Vector2(_blueTeamBricks[i].transform.position.x, -_arenaHeigth / 2 + _arenaHeigth / (2 * _shieldGridHeight));
-                _redTeamBricks[i].transform.position = new Vector2(_redTeamBricks[i].transform.position.x, _arenaHeigth / 2 - _arenaHeigth / (2 * _shieldGridHeight));
-                _blueTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
-                _redTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
+                _alphaTeamBricks[i] = _alphaTeamBrickWall.transform.GetChild(i).gameObject;
+                _betaTeamBricks[i] = _betaTeamBrickWall.transform.GetChild(i).gameObject;
+                _alphaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
+                _betaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
+                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeigth / 2 + _arenaHeigth / (2 * _shieldGridHeight));
+                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeigth / 2 - _arenaHeigth / (2 * _shieldGridHeight));
+                _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
+                _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
             }
         }
 
@@ -110,11 +110,11 @@ namespace Battle.Scripts.Battle.Game
             Rect playArea;
             switch (teamNumber)
             {
-                case PhotonBattle.TeamBlueValue:
-                    playArea = _playStartAreaBlue;
+                case PhotonBattle.TeamAlphaValue:
+                    playArea = _playStartAreaAlpha;
                     break;
-                case PhotonBattle.TeamRedValue:
-                    playArea = _playStartAreaRed;
+                case PhotonBattle.TeamBetaValue:
+                    playArea = _playStartAreaBeta;
                     break;
                 default:
                     throw new UnityException($"Invalid Team Number {teamNumber}");
@@ -128,16 +128,16 @@ namespace Battle.Scripts.Battle.Game
             switch (playerPos)
             {
                 case PhotonBattle.PlayerPosition1:
-                    startPosition = _startPositionBlueA;
+                    startPosition = _startPositionAlpha1;
                     break;
                 case PhotonBattle.PlayerPosition2:
-                    startPosition = _startPositionBlueB;
+                    startPosition = _startPositionAlpha2;
                     break;
                 case PhotonBattle.PlayerPosition3:
-                    startPosition = _startPositionRedA;
+                    startPosition = _startPositionBeta1;
                     break;
                 case PhotonBattle.PlayerPosition4:
-                    startPosition = _startPositionRedB;
+                    startPosition = _startPositionBeta2;
                     break;
                 default:
                     throw new UnityException($"Invalid player position {playerPos}");
