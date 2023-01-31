@@ -8,7 +8,7 @@ namespace Battle.Scripts.Battle.Game
     internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
     {
         [Tooltip("Arena width in world coordinates"), SerializeField] private float _arenaWidth;
-        [Tooltip("Arena height in world coordinates"), SerializeField] private float _arenaHeigth;
+        [Tooltip("Arena height in world coordinates"), SerializeField] private float _arenaHeight;
         [Tooltip("Middle area height in shield grid squares"), SerializeField] private float _middleAreaHeight;
         [Tooltip("How many squares is the shield grid height"), SerializeField] private int _shieldGridHeight;
         [Tooltip("How many squares is the shield grid width"), SerializeField] private int _shieldGridWidth;
@@ -51,10 +51,10 @@ namespace Battle.Scripts.Battle.Game
             SetupArenaBorders();
             SetupBrickWalls();
 
-            var middleAreaHeight = _middleAreaHeight * _arenaHeigth / _shieldGridHeight;
-            var shieldSquareHeight = _arenaHeigth / _shieldGridHeight;
-            _playStartAreaAlpha = new Rect(-_arenaWidth / 2, -_arenaHeigth / 2 + shieldSquareHeight, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
-            _playStartAreaBeta = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeigth / 2 - middleAreaHeight / 2 - shieldSquareHeight);
+            var middleAreaHeight = _middleAreaHeight * _arenaHeight / _shieldGridHeight;
+            var shieldSquareHeight = _arenaHeight / _shieldGridHeight;
+            _playStartAreaAlpha = new Rect(-_arenaWidth / 2, -_arenaHeight / 2 + shieldSquareHeight, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - shieldSquareHeight);
+            _playStartAreaBeta = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - shieldSquareHeight);
             _movementGridHeight = _movementGridMultiplier * _shieldGridHeight;
             _movementGridWidth = _movementGridMultiplier * _shieldGridWidth;
         }
@@ -66,7 +66,7 @@ namespace Battle.Scripts.Battle.Game
             _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
             _topWallCollider = _topWall.GetComponent<BoxCollider2D>();
 
-            var arenaSize = new Vector2(_arenaWidth, _arenaHeigth);
+            var arenaSize = new Vector2(_arenaWidth, _arenaHeight);
             _rightWallCollider.size = arenaSize;
             _bottomWallCollider.size = arenaSize;
             _leftWallCollider.size = arenaSize;
@@ -76,8 +76,8 @@ namespace Battle.Scripts.Battle.Game
 
             _leftWall.transform.position = new Vector2(-_arenaWidth, 0);
             _rightWall.transform.position = new Vector2(_arenaWidth, 0);
-            _topWall.transform.position = new Vector2(0, _arenaHeigth);
-            _bottomWall.transform.position = new Vector2(0, -_arenaHeigth);
+            _topWall.transform.position = new Vector2(0, _arenaHeight);
+            _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
         }
 
         private void SetupBrickWalls()
@@ -88,19 +88,19 @@ namespace Battle.Scripts.Battle.Game
             {
                 _alphaTeamBricks[i] = _alphaTeamBrickWall.transform.GetChild(i).gameObject;
                 _betaTeamBricks[i] = _betaTeamBrickWall.transform.GetChild(i).gameObject;
-                _alphaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
-                _betaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeigth / _shieldGridHeight);
-                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeigth / 2 + _arenaHeigth / (2 * _shieldGridHeight));
-                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeigth / 2 - _arenaHeigth / (2 * _shieldGridHeight));
-                _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
-                _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeigth / _shieldGridHeight);
+                _alphaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeight / _shieldGridHeight);
+                _betaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _arenaHeight / _shieldGridHeight);
+                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeight / 2 + _arenaHeight / (2 * _shieldGridHeight));
+                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeight / 2 - _arenaHeight / (2 * _shieldGridHeight));
+                _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeight / _shieldGridHeight);
+                _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _arenaHeight / _shieldGridHeight);
             }
         }
 
         #region IBattlePlayArea
 
         float IBattlePlayArea.ArenaWidth => _arenaWidth;
-        float IBattlePlayArea.ArenaHeight => _arenaHeigth;
+        float IBattlePlayArea.ArenaHeight => _arenaHeight;
         int IBattlePlayArea.ShieldGridWidth => _shieldGridWidth;
         int IBattlePlayArea.ShieldGridHeight => _shieldGridHeight;
         int IBattlePlayArea.MovementGridWidth => _movementGridWidth;
