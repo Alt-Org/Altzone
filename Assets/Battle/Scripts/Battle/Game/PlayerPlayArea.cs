@@ -23,6 +23,7 @@ namespace Battle.Scripts.Battle.Game
 
         [SerializeField] private GameObject _blueTeamBrickWall;
         [SerializeField] private GameObject _redTeamBrickWall;
+        public int BrickHealth;
 
         [Header("Player Start Positions"), SerializeField] private GridPos _startPositionBlueA;
         [SerializeField] private GridPos _startPositionBlueB;
