@@ -63,7 +63,7 @@ namespace Battle.Scripts.Battle.Players
             _isLocal = player.IsLocal;
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor, _teamNumber);
-            if (_teamNumber == PhotonBattle.TeamRedValue)
+            if (_teamNumber == PhotonBattle.TeamBetaValue)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }

@@ -22,7 +22,7 @@ namespace Battle.Scripts.Test
         {
             public string _nickName;
             public int _playerPos = PhotonBattle.PlayerPosition1;
-            public int _teamNumber = PhotonBattle.TeamBlueValue;
+            public int _teamNumber = PhotonBattle.TeamAlphaValue;
             public bool _isLocal;
         }
 
@@ -47,7 +47,7 @@ namespace Battle.Scripts.Test
             _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor, _settings._teamNumber);
-            if (_settings._teamNumber == PhotonBattle.TeamRedValue)
+            if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
             {
                 ((IPlayerDriver)this).Rotate(180f);
             }
