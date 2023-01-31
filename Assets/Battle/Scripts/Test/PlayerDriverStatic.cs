@@ -1,4 +1,5 @@
 using System;
+using Altzone.Scripts.Battle;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
@@ -30,7 +31,6 @@ namespace Battle.Scripts.Test
         [SerializeField] private PlayerActorBase _playerPrefab;
         [SerializeField] private double _movementDelay;
 
-        private float _defaultRotation;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IPlayerDriverState _state;
@@ -44,18 +44,13 @@ namespace Battle.Scripts.Test
                 _settings._nickName = name;
             }
             _gridManager = Context.GetGridManager;
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
+            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
             _state = GetPlayerDriverState(this);
-            if (_settings._teamNumber == PhotonBattle.TeamBlueValue)
-            {
-                _defaultRotation = 180f;
-            }
+            _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamRedValue)
             {
-                _defaultRotation = 0f;
+                ((IPlayerDriver)this).Rotate(180f);
             }
-            _state.ResetState(_playerActor, _settings._teamNumber);
-            ((IPlayerDriver)this).Rotate(_defaultRotation);
             if (!_settings._isLocal)
             {
                 return;

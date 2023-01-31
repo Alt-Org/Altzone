@@ -49,7 +49,7 @@ namespace Assets.Tests.PlayMode.InstantiateTests
             var playerPrefabs = gameConfig.PlayerPrefabs;
             var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
             Assert.IsNotNull(playerPrefab);
-            var instance = InstantiatePrefab(playerPrefab, Vector3.one, Quaternion.identity, null);
+            var instance = InstantiatePrefab(playerPrefab.gameObject, Vector3.one, Quaternion.identity, null);
             instance.name = battleCharacter.Name;
         }
 

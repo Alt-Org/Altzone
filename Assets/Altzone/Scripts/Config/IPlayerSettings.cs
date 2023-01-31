@@ -19,6 +19,7 @@ namespace Altzone.Scripts.Config
         bool IsTosAccepted { get; set; }
         bool IsFirstTimePlaying { get; set; }
         bool IsAccountVerified { get; set; }
+        int PlayerSettingsVersion { get; }
 
         bool HasPlayerName { get; }
         void SetPlayerName(string playerName);

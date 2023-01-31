@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Altzone.Scripts.Model
 {
     public enum FurnitureType
@@ -14,13 +12,15 @@ namespace Altzone.Scripts.Model
     }
 
     /// <summary>
-    /// Furniture model for Clan Warehouse.
+    /// Furniture model for Clan Warehouse with default orientation (rotation up).
     /// </summary>
+    /// <remarks>
+    /// Furniture piece instances can be rotated when they are added into Clan Warehouse.
+    /// </remarks>
     public interface IFurnitureModel
     {
         FurnitureType FurnitureType { get; }
         string Name { get; }
-        Color Color { get; }
         string PrefabName { get; }
         int Id { get; }
     }
