@@ -54,7 +54,7 @@ namespace Battle.Scripts.Battle.Players
             foreach (var actor in _otherActorTransforms)
             {
                 var distVector = actor.position - _myActorTransform.position;
-                if (distVector.sqrMagnitude <= _shieldEffectSqr)
+                if (distVector.sqrMagnitude < _shieldEffectSqr)
                 {
                     actorRotation = Vector2.SignedAngle(_myActorTransform.up, new Vector2(distVector.x, distVector.y));
                 }
