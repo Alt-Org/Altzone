@@ -20,9 +20,6 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            CopyFile("CustomCharacterModels.json");
-            CopyFile("InventoryItems.json");
-            CopyFile("RaidGameRoomModels.json");
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
                 ? localDevConfig._loggerConfig
@@ -41,9 +38,23 @@ namespace Altzone.Scripts
                 }
             }
             UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
+            PrepareDevice();
             UnitySingleton.CreateStaticSingleton<ServiceLoader>();
         }
 
+        private static void PrepareDevice()
+        {
+            CopyFile("CustomCharacterModels.json");
+            CopyFile("InventoryItems.json");
+            CopyFile("RaidGameRoomModels.json");
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            if (playerSettings.IsFirstTimePlaying)
+            {
+                Debug.Log("IsFirstTimePlaying");
+            }
+        }
+        
         private static void CopyFile(string file)
         {
             var source = Resources.Load<TextAsset>("TestData/" +file);
