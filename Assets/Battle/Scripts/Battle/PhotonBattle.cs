@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle
     /// Custom property names and values and helper methods to create, update and read them.<br />
     /// Additionally this has methods that supports testing without dependencies to other modules like Lobby.
     /// </summary>
-    public static class PhotonBattle
+    internal static class PhotonBattle
     {
         public const string PlayerPositionKey = "pp";
         public const string PlayerPrefabIdKey = "mk";
