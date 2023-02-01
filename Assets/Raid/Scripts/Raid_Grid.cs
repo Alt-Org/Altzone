@@ -12,6 +12,7 @@ public class Raid_Grid : MonoBehaviour
     public int AmountOfMines;
     public int AmountofSingles;
     public int AmountofDoubles;
+    public int AmountofTriples;
 
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
@@ -29,7 +30,11 @@ public class Raid_Grid : MonoBehaviour
         }
         for (int i = 0; i < AmountofDoubles; i++)
         {
-            placeDoubleTileFurniture();
+            PlaceDoubleTileFurniture();
+        }
+        for (int i = 0; i < AmountofTriples; i++)
+        {
+            PlaceTripleTileFurniture();
         }
 
         PlaceNumberTiles();
@@ -100,6 +105,8 @@ public class Raid_Grid : MonoBehaviour
             Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Single", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
 
             grid[x, y] = FurnitureTile;
+
+            Debug.Log("Single furniture spawn at (" + x + ", " + y + ")");
         }
         else
         {
@@ -108,7 +115,7 @@ public class Raid_Grid : MonoBehaviour
         }
     }
 
-    void placeDoubleTileFurniture()
+    void PlaceDoubleTileFurniture()
     {
         int x = UnityEngine.Random.Range(0, 9);
         int y = UnityEngine.Random.Range(0, 9);
@@ -162,13 +169,252 @@ public class Raid_Grid : MonoBehaviour
             }
             else
             {
-                placeDoubleTileFurniture();
+                PlaceDoubleTileFurniture();
             }      
         }
         else
         {
-            Debug.Log("Tile (" + x + ", " + y + ") is not empty");
-            placeDoubleTileFurniture();
+            Debug.Log("Double furniture can't be placed on a non-vacant tile");
+            PlaceDoubleTileFurniture();
+        }
+    }
+
+    void PlaceTripleTileFurniture()
+    {
+        int x = UnityEngine.Random.Range(0, 9);
+        int y = UnityEngine.Random.Range(0, 9);
+
+        if (grid[x, y] == null)
+        {
+            if (x+2 < 9 && grid[x+1, y] == null && grid[x+2, y] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+2, y, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x+2, y] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+2) + ", " + y + ")");
+            }
+            else if (x+1 < 9 && x-1 >= 0 && grid[x+1, y] == null && grid[x-1, y] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x-1, y] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + y + ")");
+            }
+            else if (x-2 >= 0 && grid[x-1, y] == null && grid[x-2, y] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-2, y, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x-1, y] = FurnitureTile2;
+                grid[x-2, y] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-2) + ", " + y + ")");
+            }
+            else if (y+2 < 9 && grid[x, y+1] == null && grid[x, y+2] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+2, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y+1] = FurnitureTile2;
+                grid[x, y+2] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+1) + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+2) + ")");
+            }
+            else if (y+1 < 9 && y-1 >= 0 && grid[x, y+1] == null && grid[x, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y+1] = FurnitureTile2;
+                grid[x, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+1) + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-1) + ")");
+            }
+            else if (y-2 >= 0 && grid[x, y-1] == null && grid[x, y-2] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-2, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y-1] = FurnitureTile2;
+                grid[x, y-2] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-1) + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-2) + ")");
+            }
+            else if (x+1 < 9 && y+1 < 9 && grid[x+1, y] == null && grid[x+1, y+1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x+1, y+1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + (y+1) + ")");
+            }
+            else if (x+1 < 9 && y-1 >= 0 && grid[x+1, y] == null && grid[x+1, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x+1, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + (y-1) + ")");
+            }
+            else if (x+1 < 9 && y+1 < 9 && grid[x+1, y] == null && grid[x, y+1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x, y+1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+1) + ")");
+            }
+            else if (x+1 < 9 && y-1 >= 0 && grid[x+1, y] == null && grid[x, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
+                grid[x, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-1) + ")");
+            }
+            else if (y+1 < 9 && x+1 < 9 && grid[x, y+1] == null && grid[x+1, y+1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y+1] = FurnitureTile2;
+                grid[x+1, y+1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+1) + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + (y+1) + ")");
+            }
+            else if (y+1 < 9 && x-1 >= 0 && grid[x, y+1] == null && grid[x-1, y+1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y+1] = FurnitureTile2;
+                grid[x-1, y+1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y+1) + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + (y+1) + ")");
+            }
+            else if (y-1 >= 0 && x+1 < 9 && grid[x, y-1] == null && grid[x+1, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y-1] = FurnitureTile2;
+                grid[x+1, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-1) + ")");
+                Debug.Log("Triple furniture spawn at (" + (x+1) + ", " + (y-1) + ")");
+            }
+            else if (y-1 >= 0 && x-1 >= 0 && grid[x, y-1] == null && grid[x-1, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x, y-1] = FurnitureTile2;
+                grid[x-1, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + x + ", " + (y-1) + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + (y-1) + ")");
+            }
+            else if (x-1 >= 0 && y+1 < 9 && grid[x-1, y] == null && grid[x-1, y+1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x-1, y] = FurnitureTile2;
+                grid[x-1, y+1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + (y+1) + ")");
+            }
+            else if (x-1 >= 0 && y-1 >= 0 && grid[x-1, y] == null && grid[x-1, y-1] == null)
+            {
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity) as Raid_Tile;
+
+                grid[x, y] = FurnitureTile;
+                grid[x-1, y] = FurnitureTile2;
+                grid[x-1, y-1] = FurnitureTile3;
+
+                Debug.Log("Triple furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + y + ")");
+                Debug.Log("Triple furniture spawn at (" + (x-1) + ", " + (y-1) + ")");
+            }
+        }
+        else
+        {
+            Debug.Log("Triple furniture can't be placed on a non-vacant tile");
+            PlaceTripleTileFurniture();
         }
     }
 
