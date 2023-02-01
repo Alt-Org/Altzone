@@ -40,7 +40,7 @@ namespace Battle0.Scripts.Test
         {
             if (_playerDriverInstance == null)
             {
-                UnityEngine.Debug.Log($"{nameof(PlayerDriverTest)} is disabled, no PlayerDriver set");
+                Debug.Log($"{nameof(PlayerDriverTest)} is disabled, no PlayerDriver set");
                 enabled = false;
             }
         }
