@@ -19,7 +19,6 @@ public class Raid_Grid : MonoBehaviour
 
     private void Start()
     {
-
         for (int i = 0; i < AmountOfMines; i++)
         {
             PlaceMines();
@@ -104,6 +103,7 @@ public class Raid_Grid : MonoBehaviour
         }
         else
         {
+            Debug.Log("Single furniture can't be placed on a non-vacant tile");
             PlaceSingleTileFurniture();
         }
     }
@@ -115,74 +115,58 @@ public class Raid_Grid : MonoBehaviour
 
         if (grid[x, y] == null)
         {
-            if (x+1 < 9)
+            if (x+1 < 9 && grid[x+1, y] == null)
             {
-                if (grid[x+1, y] == null)
-                {
-                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x + 1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
 
-                    grid[x, y] = FurnitureTile;
-                    grid[x+1, y] = FurnitureTile2;
+                grid[x, y] = FurnitureTile;
+                grid[x+1, y] = FurnitureTile2;
 
-                    Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
-                    Debug.Log("Double furniture spawn at (" + (x + 1) + ", " + y + ")");
-                }
+                Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Double furniture spawn at (" + (x+1) + ", " + y + ")");
+
             }
-            else if (y+1 < 9)
+            else if (y+1 < 9 && grid[x, y+1] == null)
             {
-                if (grid[x, y+1] == null)
-                {
-                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y + 1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
 
-                    grid[x, y] = FurnitureTile;
-                    grid[x, y+1] = FurnitureTile2;
+                grid[x, y] = FurnitureTile;
+                grid[x, y+1] = FurnitureTile2;
 
-                    Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
-                    Debug.Log("Double furniture spawn at (" + x + ", " + (y + 1) + ")");
-                }
+                Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Double furniture spawn at (" + x + ", " + (y+1) + ")");
             }
-            else if (x-1 >= 0)
+            else if (x-1 >= 0 && grid[x-1, y] == null)
             {
-                if (grid[x-1, y] == null)
-                {
-                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x - 1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
 
-                    grid[x, y] = FurnitureTile;
-                    grid[x-1, y] = FurnitureTile2;
+                grid[x, y] = FurnitureTile;
+                grid[x-1, y] = FurnitureTile2;
 
-                    Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
-                    Debug.Log("Double furniture spawn at (" + (x - 1) + ", " + y + ")");
-                }
+                Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Double furniture spawn at (" + (x-1) + ", " + y + ")");
             }
-            else if (y-1 >= 0)
+            else if (y-1 >= 0 && grid[x, y-1] == null)
             {
-                if (grid[x, y-1] == null)
-                {
-                    Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                    Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y - 1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
 
-                    grid[x, y] = FurnitureTile;
-                    grid[x, y-1] = FurnitureTile2;
+                grid[x, y] = FurnitureTile;
+                grid[x, y-1] = FurnitureTile2;
 
-                    Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
-                    Debug.Log("Double furniture spawn at (" + x + ", " + (y - 1) + ")");
-                }
+                Debug.Log("Double furniture spawn at (" + x + ", " + y + ")");
+                Debug.Log("Double furniture spawn at (" + x + ", " + (y-1) + ")");
             }
             else
             {
                 placeDoubleTileFurniture();
-            }        
+            }      
         }
         else
         {
-            if(grid[x, y].tileType == Raid_Tile.TileType.Mine || grid[x, y].tileType == Raid_Tile.TileType.Furniture)
-            {
-                AmountofDoubles += 1;
-            }
-
             Debug.Log("Tile (" + x + ", " + y + ") is not empty");
             placeDoubleTileFurniture();
         }
