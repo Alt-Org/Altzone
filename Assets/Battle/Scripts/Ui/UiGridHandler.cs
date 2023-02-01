@@ -6,6 +6,7 @@ namespace Battle.Scripts.Ui
     /// <summary>
     /// Display a grid overlay in Battle scene.
     /// </summary>
+    [DefaultExecutionOrder(100)]
     internal class UiGridHandler : MonoBehaviour
     {
         [SerializeField] private LineRenderer myLineRenderer;
@@ -32,8 +33,8 @@ namespace Battle.Scripts.Ui
             _battlePlayArea = Context.GetBattlePlayArea;
             _movementGridWidth = _battlePlayArea.MovementGridWidth;
             _movementGridHeight = _battlePlayArea.MovementGridHeight;
-            _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
-            _shieldGridHeight = _battlePlayArea.ShieldGridHeight;
+            _shieldGridWidth = _movementGridWidth;
+            _shieldGridHeight = _movementGridHeight;
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
             _camera = Context.GetBattleCamera.Camera;
@@ -42,7 +43,7 @@ namespace Battle.Scripts.Ui
         private void Start()
         {
             DrawLineGrid();
-            DrawChessGrid();
+            //DrawChessGrid();
         }
 
         private void DrawLineGrid()
