@@ -6,9 +6,11 @@ namespace Battle.Scripts.Battle.Players
 {
     public class PlayerDriverState : MonoBehaviour, IPlayerDriverState
     {
-        private const int shieldEffectDist = 4;
+        private const int shieldEffectDistSquares = 2;
         private const float waitTime = 2f;
 
+        private float _shieldEffectSqr;
+        private IBattlePlayArea _battlePlayArea;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private Transform _myActorTransform;
@@ -17,11 +19,13 @@ namespace Battle.Scripts.Battle.Players
         private int _teamNumber;
 
         private Transform[] _otherActorTransforms;
-        private Vector3[] _otherPositions;
 
         private IEnumerator Start()
         {
             yield return new WaitForSeconds(waitTime);
+            _battlePlayArea = Context.GetBattlePlayArea;
+            var shieldEffectDist = shieldEffectDistSquares * _battlePlayArea.ArenaWidth / _battlePlayArea.MovementGridWidth;
+            _shieldEffectSqr = shieldEffectDist * shieldEffectDist + 0.001f;
             var allActors = FindObjectsOfType<PlayerActor>();
             var myActor = (PlayerActor)_playerActor;
             _myActorTransform = myActor.transform;
@@ -36,7 +40,6 @@ namespace Battle.Scripts.Battle.Players
                 _otherActorTransforms[i] = actor.GetComponent<Transform>();
                 i++;
             }
-            _otherPositions = new Vector3[_otherActorTransforms.Length];
         }
 
         private void Update()
@@ -46,35 +49,12 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            for (int i = 0; i < _otherActorTransforms.Length; i++)
-            {
-                _otherPositions[i] = _otherActorTransforms[i].position;
-            }
-            var myActorShieldGridPos = _gridManager.ShieldGridPosition(_myActorTransform.position);
             foreach (var actor in _otherActorTransforms)
             {
-                var otherShieldGridPos = _gridManager.ShieldGridPosition(actor.position);
-                if (myActorShieldGridPos.Row == otherShieldGridPos.Row)
+                var distVector = actor.position - _myActorTransform.position;
+                if (distVector.sqrMagnitude <= _shieldEffectSqr)
                 {
-                    var horizontalGridDist = myActorShieldGridPos.Col - otherShieldGridPos.Col;
-                    var turnRight = horizontalGridDist < 0;
-                    if (Math.Abs(horizontalGridDist) == shieldEffectDist)
-                    {
-                        var corner = _gridManager.ShieldSquareCorner(myActorShieldGridPos, turnRight, _teamNumber);
-                        var direction = corner - new Vector2(_myActorTransform.position.x, _myActorTransform.position.y);
-                        actorRotation = Vector2.SignedAngle(_myActorTransform.up, direction);
-                    }
-                    if (Math.Abs(horizontalGridDist) < shieldEffectDist)
-                    {
-                        if (turnRight)
-                        {
-                            actorRotation = -90f;
-                        }
-                        else
-                        {
-                            actorRotation = 90f;
-                        }
-                    }
+                    actorRotation = Vector2.SignedAngle(_myActorTransform.up, new Vector2(distVector.x, distVector.y));
                 }
             }
             _playerActor.SetRotation(actorRotation);

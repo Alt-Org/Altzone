@@ -677,7 +677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _arenaWidth: 9
-  _arenaHeigth: 16
+  _arenaHeight: 16
   _middleAreaHeight: 2
   _shieldGridHeight: 20
   _shieldGridWidth: 11
@@ -689,6 +689,7 @@ MonoBehaviour:
   _isBackWallsTriggers: 0
   _alphaTeamBrickWall: {fileID: 7754314476380310042}
   _betaTeamBrickWall: {fileID: 3394065157751883121}
+  BrickHealth: 3
   _startPositionAlpha1:
     _row: 9
     _col: 5
@@ -883,6 +884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &1978223462987190863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,6 +1042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &2842041399823671083
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,6 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &3394065157751883121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1324,6 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &4620814551009339550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,6 +1453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &5305971292805262437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1572,6 +1578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &5711794897460718039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,6 +1703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &6707511437302172081
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,6 +1939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &7426313485098558562
 GameObject:
   m_ObjectHideFlags: 0
@@ -2055,6 +2064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
 --- !u!1 &7754314476380310042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,3 +2225,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f3ee4ed60a3f943a07bf6ec3c7a4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerPlayArea: {fileID: 1284705050}
