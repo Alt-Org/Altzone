@@ -6,6 +6,8 @@ namespace Battle.Scripts.Battle.Players
 {
     public class PlayerDriverState : MonoBehaviour, IPlayerDriverState
     {
+        [SerializeField] private bool _autoRotate = true;
+
         private const int shieldEffectDistSquares = 2;
         private const float waitTime = 2f;
 
@@ -57,7 +59,10 @@ namespace Battle.Scripts.Battle.Players
                     actorRotation = Vector2.SignedAngle(_myActorTransform.up, new Vector2(distVector.x, distVector.y));
                 }
             }
-            _playerActor.SetRotation(actorRotation);
+            if (_autoRotate)
+            {
+                _playerActor.SetRotation(actorRotation);
+            }
         }
 
         private IEnumerator DelayTime(GridPos gridPos, float waitTime)

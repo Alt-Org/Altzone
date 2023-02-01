@@ -23,6 +23,7 @@ namespace Battle.Scripts.Battle.Test
                 _IPlayerInputTarget = GameObject.Find("PlayerDriverPhoton(Clone)").GetComponent<PlayerDriverPhoton>();
                 _IPlayerInputTarget.MoveTo(_targetPosition);
             }
+            //PlayerDriverState._autoRotate has to be false
             if (GameObject.Find("PlayerDriverPhoton(Clone)") != null && _startRotate)
             {
                 _startRotate = false;
