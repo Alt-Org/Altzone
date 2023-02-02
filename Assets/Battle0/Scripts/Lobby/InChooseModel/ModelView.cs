@@ -106,7 +106,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
-            for (var i = 0; i < characters.Count; ++i)
+            for (var i = 0; i < characters.Count && i < _buttons.Length; ++i)
             {
                 var character = characters[i];
                 var button = _buttons[i];
