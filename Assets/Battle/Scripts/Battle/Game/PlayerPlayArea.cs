@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle.Game
         [Tooltip("Arena height in world coordinates"), SerializeField] private float _arenaHeight;
         [Tooltip("How many squares is the grid height"), SerializeField] private int _gridHeight;
         [Tooltip("How many squares is the grid width"), SerializeField] private int _gridWidth;
-        [Tooltip("Middle area height in grid squares"), SerializeField] private float _middleAreaHeight;
+        [Tooltip("Middle area height in grid squares"), SerializeField] private int _middleAreaHeight;
         [Tooltip("How many squares is the brick wall height"), SerializeField] private int _brickHeight;
 
         [Header("Wall Colliders"), SerializeField] private GameObject _leftWall;
@@ -99,6 +99,7 @@ namespace Battle.Scripts.Battle.Game
         float IBattlePlayArea.ArenaHeight => _arenaHeight;
         int IBattlePlayArea.GridWidth => _gridWidth;
         int IBattlePlayArea.GridHeight => _gridHeight;
+        int IBattlePlayArea.MiddleAreaHeight => _middleAreaHeight;
 
         Rect IBattlePlayArea.GetPlayerPlayArea(int teamNumber)
         {

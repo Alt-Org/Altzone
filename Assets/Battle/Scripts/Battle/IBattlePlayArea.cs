@@ -11,6 +11,7 @@ namespace Battle.Scripts.Battle
         float ArenaHeight { get; }
         int GridWidth { get; }
         int GridHeight { get; }
+        int MiddleAreaHeight { get; }
 
         Rect GetPlayerPlayArea(int teamNumber);
 
