@@ -9,7 +9,7 @@ using UnityEngine.TestTools;
 
 #pragma warning disable CS4014 // Ignore warnings about "not awaited" calls
 
-namespace Assets.Tests.PlayMode.InstantiateTests
+namespace Tests.PlayMode.InstantiateTests
 {
     /// <summary>
     /// Simple <c>IRaidGameRoomModel</c> prefab instantiation test.

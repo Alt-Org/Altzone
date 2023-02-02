@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.ModelsTests
+namespace Tests.EditMode.ModelsTests
 {
     [TestFixture]
     public class RaidGameRoomModelsTest

@@ -3,7 +3,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 
-namespace Assets.Tests.EditMode.ModelsTests
+namespace Tests.EditMode.ModelsTests
 {
     [TestFixture]
     public class PlayerPrefabTest

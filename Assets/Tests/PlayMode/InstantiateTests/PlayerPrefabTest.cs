@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Assets.Tests.PlayMode.InstantiateTests
+namespace Tests.PlayMode.InstantiateTests
 {
     /// <summary>
     /// Simple PlayerPrefab <c>GameObject</c> prefab instantiation test.

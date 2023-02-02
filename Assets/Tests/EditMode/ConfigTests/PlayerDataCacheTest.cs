@@ -3,7 +3,7 @@ using Altzone.Scripts.Config;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.ConfigTests
+namespace Tests.EditMode.ConfigTests
 {
     /// <summary>
     /// Note that these tests should not change, add or delete existing data which makes these a bit poor tests.

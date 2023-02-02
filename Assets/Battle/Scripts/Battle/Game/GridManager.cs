@@ -8,10 +8,8 @@ namespace Battle.Scripts.Battle.Game
     /// </summary>
     internal class GridManager : MonoBehaviour, IGridManager
     {
-        private int _movementGridWidth;
-        private int _movementGridHeight;
-        private int _shieldGridWidth;
-        private int _shieldGridHeight;
+        private int _gridWidth;
+        private int _gridHeight;
         private IBattlePlayArea _battlePlayArea;
         private float _arenaWidth;
         private float _arenaHeight;
@@ -25,11 +23,8 @@ namespace Battle.Scripts.Battle.Game
             _battlePlayArea = Context.GetBattlePlayArea;
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
-
-            _movementGridWidth = _battlePlayArea.MovementGridWidth;
-            _movementGridHeight = _battlePlayArea.MovementGridHeight;
-            _shieldGridWidth = _battlePlayArea.ShieldGridWidth;
-            _shieldGridHeight = _battlePlayArea.ShieldGridHeight;
+            _gridWidth = _battlePlayArea.GridWidth;
+            _gridHeight = _battlePlayArea.GridHeight;
 
             InitializeGridArrays();
         }
@@ -50,12 +45,12 @@ namespace Battle.Scripts.Battle.Game
             var alphaRowMax = alphaAreaEnd.Row;
             var betaRowMax = betaAreaEnd.Row;
 
-            _gridEmptySpacesAlpha = new bool[_movementGridHeight, _movementGridWidth];
-            _gridEmptySpacesBeta = new bool[_movementGridHeight, _movementGridWidth];
+            _gridEmptySpacesAlpha = new bool[_gridHeight, _gridWidth];
+            _gridEmptySpacesBeta = new bool[_gridHeight, _gridWidth];
 
-            for (int row = 0; row < _movementGridHeight; row++)
+            for (int row = 0; row < _gridHeight; row++)
             {
-                for (int col = 0; col < _movementGridWidth; col++)
+                for (int col = 0; col < _gridWidth; col++)
                 {
                     if (row >= alphaRowMin && row <= alphaRowMax)
                     {
@@ -68,9 +63,9 @@ namespace Battle.Scripts.Battle.Game
                 }
             }
 
-            for (int row = 0; row < _movementGridHeight; row++)
+            for (int row = 0; row < _gridHeight; row++)
             {
-                for (int col = 0; col < _movementGridWidth; col++)
+                for (int col = 0; col < _gridWidth; col++)
                 {
                     if (row >= betaRowMin && row <= betaRowMax)
                     {
@@ -88,8 +83,8 @@ namespace Battle.Scripts.Battle.Game
 
         Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos)
         {
-            var xPosition = gridPos.Col * _arenaWidth / _movementGridWidth + _arenaWidth / _movementGridWidth * 0.5f;
-            var yPosition = gridPos.Row * _arenaHeight / _movementGridHeight + _arenaHeight / _movementGridHeight * 0.5f;
+            var xPosition = gridPos.Col * _arenaWidth / _gridWidth + _arenaWidth / _gridWidth * 0.5f;
+            var yPosition = gridPos.Row * _arenaHeight / _gridHeight + _arenaHeight / _gridHeight * 0.5f;
             Vector2 worldPosition = new Vector2(xPosition - _arenaWidth / 2, yPosition - _arenaHeight / 2);
             return worldPosition;
         }
@@ -97,45 +92,10 @@ namespace Battle.Scripts.Battle.Game
         GridPos IGridManager.WorldPointToGridPosition(Vector2 targetPosition)
         {
             var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
-            var col = Math.Min(_movementGridWidth - 1, (int)(posNew.x / (_arenaWidth / _movementGridWidth)));
-            var row = Math.Min(_movementGridHeight - 1, (int)(posNew.y / (_arenaHeight / _movementGridHeight)));
+            var col = Math.Min(_gridWidth - 1, (int)(posNew.x / (_arenaWidth / _gridWidth)));
+            var row = Math.Min(_gridHeight - 1, (int)(posNew.y / (_arenaHeight / _gridHeight)));
             GridPos gridPos = new GridPos(row, col);
             return gridPos;
-        }
-
-        GridPos IGridManager.ShieldGridPosition(Vector2 targetPosition)
-        {
-            var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
-            var col = Math.Min(_shieldGridWidth - 1, (int)(posNew.x / (_arenaWidth / _shieldGridWidth)));
-            var row = Math.Min(_shieldGridHeight - 1, (int)(posNew.y / (_arenaHeight / _shieldGridHeight)));
-            GridPos gridPos = new GridPos(row, col);
-            return gridPos;
-        }
-
-        Vector2 IGridManager.ShieldSquareCorner(GridPos shieldGridPos, bool turnRight, int teamNumber)
-        {
-            var row = 0;
-            var col = 0;
-            if (teamNumber == PhotonBattle.TeamAlphaValue)
-            {
-                row = shieldGridPos.Row;
-            }
-            if (teamNumber == PhotonBattle.TeamBetaValue)
-            {
-                row = shieldGridPos.Row + 1;
-            }
-            if (turnRight)
-            {
-                col = shieldGridPos.Col + 1;
-            }
-            if (!turnRight)
-            {
-                col = shieldGridPos.Col;
-            }
-            var xPos = col * _arenaWidth / _shieldGridWidth;
-            var yPos = row * _arenaHeight / _shieldGridHeight;
-            var corner = new Vector2(xPos - _arenaWidth / 2, yPos - _arenaHeight / 2);
-            return corner;
         }
 
         bool IGridManager.IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)

@@ -26,7 +26,7 @@ namespace Battle.Scripts.Battle.Players
         {
             yield return new WaitForSeconds(waitTime);
             _battlePlayArea = Context.GetBattlePlayArea;
-            var shieldEffectDist = shieldEffectDistSquares * _battlePlayArea.ArenaWidth / _battlePlayArea.MovementGridWidth;
+            var shieldEffectDist = shieldEffectDistSquares * _battlePlayArea.ArenaWidth / _battlePlayArea.GridWidth;
             _shieldEffectSqr = shieldEffectDist * shieldEffectDist + 0.001f;
             var allActors = FindObjectsOfType<PlayerActor>();
             var myActor = (PlayerActor)_playerActor;

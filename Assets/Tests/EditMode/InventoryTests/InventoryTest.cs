@@ -5,7 +5,7 @@ using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.InventoryTests
+namespace Tests.EditMode.InventoryTests
 {
     [TestFixture]
     public class InventoryTest

@@ -44,7 +44,8 @@ namespace Battle.Scripts.Test
                 _settings._nickName = name;
             }
             _gridManager = Context.GetGridManager;
-            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab);
+            var playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
+            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab, playerTag);
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)

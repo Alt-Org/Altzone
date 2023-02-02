@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Assets.Tests.PlayMode.InstantiateTests
+namespace Tests.PlayMode.InstantiateTests
 {
     /// <summary>
     /// Simple Inventory <c>IFurnitureModel</c> prefab instantiation test.

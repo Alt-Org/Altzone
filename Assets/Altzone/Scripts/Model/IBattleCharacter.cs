@@ -11,6 +11,7 @@ namespace Altzone.Scripts.Model
     public interface IBattleCharacter
     {
         string Name { get; }
+        string CharacterClassName { get; }
         int CustomCharacterModelId { get; }
         int PlayerPrefabId { get; }
         Defence MainDefence { get; }
