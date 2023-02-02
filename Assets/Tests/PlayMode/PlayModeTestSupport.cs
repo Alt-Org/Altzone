@@ -11,6 +11,7 @@ namespace Tests.PlayMode
         private const string TestCameraName = "TestCamera";
 
         protected IStorefront Store;
+        protected Camera Camera;
         protected MonoBehaviour MonoBehaviour;
         protected bool IsTestDone;
 
@@ -24,7 +25,8 @@ namespace Tests.PlayMode
             Debug.Log($"setup with scene {scene.buildIndex} {scene.name}");
             // Create Camera that we can see what is on the scene.
             var instance = (GameObject)Object.Instantiate(Resources.Load(TestCameraName));
-            // Grab something that we need for testing, like starting coroutines.
+            // Get our test components.
+            Camera = instance.GetComponent<Camera>();
             MonoBehaviour = instance.GetComponent<CameraAspectRatio>();
             IsTestDone = false;
             MyOneTimeSetUp();
