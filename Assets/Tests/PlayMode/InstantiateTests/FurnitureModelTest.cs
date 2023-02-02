@@ -1,7 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Dto;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
