@@ -54,9 +54,10 @@ MonoBehaviour:
   _gridColor1: {r: 0.22153282, g: 0.6792453, b: 0.2269177, a: 0.60784316}
   _gridColor2: {r: 0.21845597, g: 0.42856967, b: 0.6698113, a: 0.6862745}
   _lineColor: {r: 0, g: 0.9528302, b: 0.7799111, a: 0.19607843}
-  _shieldGridTile: {fileID: 4558718044221043952, guid: 223a6e3f3ec6dc741a0a3fb839f8cb0e,
+  _gridTile: {fileID: 4558718044221043952, guid: 223a6e3f3ec6dc741a0a3fb839f8cb0e,
     type: 3}
   _gridLineWidth: 0.04
+  _spriteSortingLayer: 1
 --- !u!120 &3206926510594435315
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -97,7 +98,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
