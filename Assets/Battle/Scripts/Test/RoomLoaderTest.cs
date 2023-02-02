@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Battle.Scripts.Battle;
 using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
@@ -56,8 +57,14 @@ namespace Battle.Scripts.Test
             {
                 _roomName = Environment.MachineName;
             }
+            RoomOptions roomOptions = new RoomOptions()
+            {
+                IsVisible = false,
+                IsOpen = false,
+                MaxPlayers = 5
+            };
             Debug.Log($"JoinOrCreateRoom {PhotonNetwork.NetworkClientState} room {_roomName}");
-            PhotonLobby.JoinOrCreateRoom(_roomName);
+            PhotonNetwork.JoinOrCreateRoom(_roomName, roomOptions, TypedLobby.Default);
         }
 
         public override void OnJoinRoomFailed(short returnCode, string message)
