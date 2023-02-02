@@ -20,6 +20,14 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
+            PrepareLocalTesting();
+            UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
+            PrepareDevice();
+            UnitySingleton.CreateStaticSingleton<ServiceLoader>();
+        }
+
+        private static void PrepareLocalTesting()
+        {
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
                 ? localDevConfig._loggerConfig
@@ -37,11 +45,8 @@ namespace Altzone.Scripts
                     PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
                 }
             }
-            UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
-            PrepareDevice();
-            UnitySingleton.CreateStaticSingleton<ServiceLoader>();
         }
-
+        
         private static void PrepareDevice()
         {
             CopyFile("CustomCharacterModels.json");
