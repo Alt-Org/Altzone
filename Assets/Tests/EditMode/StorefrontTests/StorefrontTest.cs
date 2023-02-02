@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.StorefrontTests
+namespace Tests.EditMode.StorefrontTests
 {
     /// <summary>
     /// Tests for <c>IStorefront</c> implementation.

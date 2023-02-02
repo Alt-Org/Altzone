@@ -2,7 +2,7 @@ using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
 
-namespace Assets.Tests.EditMode.ModelsTests
+namespace Tests.EditMode.ModelsTests
 {
     [TestFixture]
     public class FurnitureModelTest

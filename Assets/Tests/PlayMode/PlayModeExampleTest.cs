@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace Assets.Tests.PlayMode
+namespace Tests.PlayMode
 {
     /// <summary>
     /// This is PlayMode example tests of some UNITY PlayMode test features.

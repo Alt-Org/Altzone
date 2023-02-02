@@ -6,7 +6,7 @@ using Altzone.Scripts.Model.LocalStorage;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.ModelsTests
+namespace Tests.EditMode.ModelsTests
 {
     [TestFixture]
     public class CustomCharacterModelsTest

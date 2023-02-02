@@ -4,7 +4,7 @@ using Prg.Scripts.Common.Unity.CameraUtil;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Assets.Tests.PlayMode
+namespace Tests.PlayMode
 {
     public abstract class PlayModeTestSupport
     {

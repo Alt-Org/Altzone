@@ -5,7 +5,7 @@ using Altzone.Scripts.Model;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Assets.Tests.EditMode.StorefrontTests
+namespace Tests.EditMode.StorefrontTests
 {
     [TestFixture]
     public class StorefrontAsyncTest
