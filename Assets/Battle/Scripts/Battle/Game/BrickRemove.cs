@@ -1,5 +1,6 @@
 using UnityConstants;
 using UnityEngine;
+using Photon.Pun;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -19,12 +20,12 @@ namespace Battle.Scripts.Battle.Game
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball))
+            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.IsMasterClient)
             {
                 Health = Health - 1;
                 if (Health <= 0)
                 {
-                    Destroy(gameObject);
+                    PhotonNetwork.Destroy(gameObject);
                 }
             }
         }

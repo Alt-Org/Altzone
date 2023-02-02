@@ -13,6 +13,8 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _playerMoveSpeedMultiplier;
 
+        //public PhotonBattle PhotonBattle;
+
         private Transform _transform;
         private Vector3 _tempPosition;
         private bool _hasTarget;
@@ -20,6 +22,7 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             _transform = GetComponent<Transform>();
+            //PhotonBattle.GetTeamNumber();
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)
@@ -60,5 +63,10 @@ namespace Battle.Scripts.Battle.Players
             var playerActor = (IPlayerActor)playerActorBase;
             return playerActor;
         }
+
+        /*void PhotonBattle.GetTeamNumber(int playerPos)
+        {
+            Debug.Log(playerPos);
+        }*/
     }
 }
