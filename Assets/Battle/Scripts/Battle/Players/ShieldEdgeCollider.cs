@@ -15,7 +15,7 @@ namespace Battle.Scripts.Battle.Players
     public class ShieldEdgeCollider : MonoBehaviour
     {
         private EdgeCollider2D _edgeCollider;
-        private const float _bounceForce = 10f;
+        private const float _bounceForce = 7f;
         private GameObject _otherCollider;
         private Transform _transform;
 
