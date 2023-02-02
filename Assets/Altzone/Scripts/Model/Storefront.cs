@@ -306,6 +306,7 @@ namespace Altzone.Scripts.Model
         {
             public string Name { get; }
 
+            public string CharacterClassName { get; }
             public int CustomCharacterModelId { get; }
 
             public int PlayerPrefabId { get; }
@@ -320,6 +321,7 @@ namespace Altzone.Scripts.Model
             {
                 Assert.IsTrue(custom.CharacterModelId == classModel.Id, "custom.CharacterId == model.Id");
                 Name = custom.Name;
+                CharacterClassName = classModel.Name;
                 CustomCharacterModelId = custom.Id;
                 PlayerPrefabId = custom.PlayerPrefabId;
                 MainDefence = classModel.MainDefence;

@@ -95,6 +95,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 }
                 prefab.SetActive(false);
             }
+            foreach (var button in _buttons)
+            {
+                button.gameObject.SetActive(false);
+            }
             _curPrefab = null;
         }
 
@@ -106,6 +110,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             {
                 var character = characters[i];
                 var button = _buttons[i];
+                button.gameObject.SetActive(true);
                 button.interactable = true;
                 button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
@@ -123,7 +128,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void ShowCharacter(IBattleCharacter character)
         {
             var i = -1;
-            _labels[++i].text = $"{character.Name}";
+            var characterName = character.Name == character.CharacterClassName
+                ? character.Name
+                : $"{character.Name} [{character.CharacterClassName}]";
+            _labels[++i].text = $"{characterName}";
             _labels[++i].text = $"MainDefence:\r\n{character.MainDefence}";
             _labels[++i].text = $"Speed:\r\n{character.Speed}";
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
