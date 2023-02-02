@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Loader
                 new(1, FurnitureType.OneSquare, "Ruutu", "WhiteBall"),
                 new(2, FurnitureType.TwoSquares, "Vaaka-2a", "CapsuleHorizontal"),
                 new(3, FurnitureType.TwoSquares, "Vaaka-2b", "CapsuleVertical"),
-                new(4, FurnitureType.OneSquare, "Test-4", "WhiteBall"),
+                new(4, FurnitureType.ThreeSquaresBend, "Kolme palaa", "BendThreeSquares"),
                 new(5, FurnitureType.OneSquare, "Test-5", "WhiteBall"),
                 new(6, FurnitureType.Bomb, "Pommi", "Bomb"),
                 new(7, FurnitureType.OneSquare, "Valkoinen pallo", "WhiteBall"),
