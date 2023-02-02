@@ -52,11 +52,15 @@ namespace Battle.Scripts.Battle.Players
 
         #endregion
 
-        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab)
+        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName)
         {
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            if (playerActorBase != null)
+            {
+                playerActorBase.name = playerActorBase.name.Replace("Clone", gameObjectName);
+            }
             var playerActor = (IPlayerActor)playerActorBase;
             return playerActor;
         }

@@ -41,9 +41,11 @@ namespace Battle.Scripts.Battle.Players
 
         private IPlayerActor InstantiatePlayerPrefab(Player player)
         {
+            var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
+            name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
             {
-                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab);
+                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab, playerTag);
             }
 
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
@@ -53,7 +55,7 @@ namespace Battle.Scripts.Battle.Players
                 playerPrefabId = _playerPrefabID;
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
-            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab);
+            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab, playerTag);
             return playerActor;
         }
 
