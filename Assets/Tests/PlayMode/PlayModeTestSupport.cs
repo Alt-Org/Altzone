@@ -1,3 +1,4 @@
+using Altzone.Scripts;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 using Prg.Scripts.Common.Unity.CameraUtil;

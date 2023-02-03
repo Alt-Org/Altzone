@@ -1,3 +1,4 @@
+using Altzone.Scripts;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Dto;
 using NUnit.Framework;
