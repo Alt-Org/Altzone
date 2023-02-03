@@ -94,16 +94,6 @@ namespace Battle.Scripts.Battle
             return true;
         }
 
-        public static string GetLocalPlayerName()
-        {
-            if (PhotonNetwork.InRoom && !string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
-            {
-                return PhotonNetwork.NickName;
-            }
-            var playerData = GameConfig.Get().PlayerSettings;
-            return !string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : NoPlayerName;
-        }
-
         public static bool IsRealPlayer(Player player)
         {
             var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
