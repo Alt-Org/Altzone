@@ -65,14 +65,25 @@ namespace Altzone.Scripts
 
         #endregion
 
-        #region RaidGameRoomModel (Async)
+        #region RaidGameRoomModel for a Clan (Async)
 
         Task<IRaidGameRoomModel> GetClanGameRoomModel(int id);
         Task<IRaidGameRoomModel> GetClanGameRoomModel(string name);
         Task<List<IRaidGameRoomModel>> GetAllClanGameRoomModels();
 
-        Task<int> Save(RaidGameRoomModel raidGameRoomModel);
-        Task DeleteRaidGameRoomModel(int id);
+        Task<int> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel);
+        Task DeleteClanGameRoomModel(int clanId, int modelId);
+
+        #endregion
+
+        #region RaidGameRoomModel for a Player (Async)
+
+        Task<IRaidGameRoomModel> GetPlayerGameRoomModel(int id);
+        Task<IRaidGameRoomModel> GetPlayerGameRoomModel(string name);
+        Task<List<IRaidGameRoomModel>> GetAllPlayerGameRoomModels();
+
+        Task<int> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel);
+        Task DeletePlayerGameRoomModel(int id);
 
         #endregion
 

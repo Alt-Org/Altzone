@@ -40,10 +40,7 @@ namespace Altzone.Scripts.Model
             CustomCharacterModels.Load();
             var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, RaidGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
-            Task.Run(() =>
-            {
-                AsyncInit(raidGameRoomModelsPath, inventoryItemsPath);
-            });
+            Task.Run(() => { AsyncInit(raidGameRoomModelsPath, inventoryItemsPath); });
             Debug.Log($"exit");
         }
 
@@ -66,7 +63,7 @@ namespace Altzone.Scripts.Model
             }
             Debug.Log($"exit");
         }
-        
+
         ICharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
             var model = Models.FindById<CharacterClassModel>(id);
@@ -182,12 +179,37 @@ namespace Altzone.Scripts.Model
             return _clanGameRoomModels.GetAll();
         }
 
-        public Task<int> Save(RaidGameRoomModel raidGameRoomModel)
+        public Task<int> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteRaidGameRoomModel(int id)
+        public Task DeleteClanGameRoomModel(int clanId, int modelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<IRaidGameRoomModel>> GetAllPlayerGameRoomModels()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeletePlayerGameRoomModel(int id)
         {
             throw new NotImplementedException();
         }
