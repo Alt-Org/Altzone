@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
@@ -20,7 +21,8 @@ namespace Battle.Scripts.Test
 
         private IEnumerator Start()
         {
-            PhotonNetwork.NickName = PhotonBattle.GetLocalPlayerName();
+            var playerData = GameConfig.Get().PlayerSettings;
+            PhotonNetwork.NickName = string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : "Player";
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
 
             PhotonNetwork.OfflineMode = _isOfflineMode;
@@ -28,7 +30,10 @@ namespace Battle.Scripts.Test
             {
                 if (PhotonNetwork.InRoom)
                 {
-                    // We are in a room.
+                    // We are in a room - validate our player name.
+                    var room = PhotonNetwork.CurrentRoom;
+                    var player = PhotonNetwork.LocalPlayer;
+                    PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
                     enabled = false;
                     yield break;
                 }
