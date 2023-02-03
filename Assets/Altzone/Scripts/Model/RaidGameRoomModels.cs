@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Helper class for external <c>IRaidGameRoomModel</c> async operations.
     /// </summary>
-    public static class RaidGameRoomModels
+    public class RaidGameRoomModels
     {
-        private static RaidGameRoomModelStorage _storage;
+        private RaidGameRoomModelStorage _storage;
 
-        public static Task<bool> Connect(string storageFilename)
+        public Task<bool> Connect(string storageFilename)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try
@@ -31,7 +31,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public static Task<IRaidGameRoomModel> GetById(int id)
+        public Task<IRaidGameRoomModel> GetById(int id)
         {
             var taskCompletionSource = new TaskCompletionSource<IRaidGameRoomModel>();
             try
@@ -47,7 +47,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public static Task<IRaidGameRoomModel> GetByName(string name)
+        public Task<IRaidGameRoomModel> GetByName(string name)
         {
             var taskCompletionSource = new TaskCompletionSource<IRaidGameRoomModel>();
             try
@@ -67,7 +67,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public static Task<List<IRaidGameRoomModel>> GetAll()
+        public Task<List<IRaidGameRoomModel>> GetAll()
         {
             var taskCompletionSource = new TaskCompletionSource<List<IRaidGameRoomModel>>();
             try
@@ -83,7 +83,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public static Task<bool> Save(RaidGameRoomModel model)
+        public Task<bool> Save(RaidGameRoomModel model)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try
@@ -99,7 +99,7 @@ namespace Altzone.Scripts.Model
             return taskCompletionSource.Task;
         }
 
-        public static Task<bool> Delete(int id)
+        public Task<bool> Delete(int id)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             try

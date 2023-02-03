@@ -35,16 +35,16 @@ namespace Tests.EditMode.StorefrontTests
         public async Task RaidGameRoomModelTest()
         {
             Debug.Log("test");
-            var models = await _store.GetAllRaidGameRoomModels();
+            var models = await _store.GetAllClanGameRoomModels();
             var randomModel = GetRandomObject(models);
             
             // By Id.
-            var model = await _store.GetRaidGameRoomModel(randomModel.Id);
+            var model = await _store.GetClanGameRoomModel(randomModel.Id);
             Assert.IsNotNull(model);
             Assert.AreEqual(randomModel.Id, model.Id);
             
             // By Name.
-            model = await _store.GetRaidGameRoomModel(randomModel.Name);
+            model = await _store.GetClanGameRoomModel(randomModel.Name);
             Assert.IsNotNull(model);
             Assert.AreEqual(randomModel.Id, model.Id);
         }

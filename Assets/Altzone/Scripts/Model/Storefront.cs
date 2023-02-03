@@ -71,9 +71,9 @@ namespace Altzone.Scripts.Model
 
         #region RaidGameRoomModel (Async)
 
-        Task<IRaidGameRoomModel> GetRaidGameRoomModel(int id);
-        Task<IRaidGameRoomModel> GetRaidGameRoomModel(string name);
-        Task<List<IRaidGameRoomModel>> GetAllRaidGameRoomModels();
+        Task<IRaidGameRoomModel> GetClanGameRoomModel(int id);
+        Task<IRaidGameRoomModel> GetClanGameRoomModel(string name);
+        Task<List<IRaidGameRoomModel>> GetAllClanGameRoomModels();
 
         Task<int> Save(RaidGameRoomModel raidGameRoomModel);
         Task DeleteRaidGameRoomModel(int id);
@@ -107,12 +107,13 @@ namespace Altzone.Scripts.Model
             return _instance ??= new Storefront();
         }
 
-        private const string RaidGameRoomModelsFilename = "RaidGameRoomModels.json";
+        private const string RaidGameRoomModelsFilename = "ClanGameRoomModels.json";
         private const string InventoryItemsFilename = "InventoryItems.json";
 
         private static Storefront _instance;
 
         private IInventory _inventory;
+        private RaidGameRoomModels _clanGameRoomModels;
 
         public bool IsInventoryConnected => _inventory != null;
 
@@ -135,7 +136,8 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             try
             {
-                var connectResult = RaidGameRoomModels.Connect(raidGameRoomModelsPath);
+                _clanGameRoomModels = new RaidGameRoomModels();
+                var connectResult = _clanGameRoomModels.Connect(raidGameRoomModelsPath);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
                 Task.WaitAll(connectResult, inventoryResult);
                 Assert.IsTrue(connectResult.Result);
@@ -249,19 +251,19 @@ namespace Altzone.Scripts.Model
             return BattleCharacter.GetAllBattleCharacters(this);
         }
 
-        public Task<IRaidGameRoomModel> GetRaidGameRoomModel(int id)
+        public Task<IRaidGameRoomModel> GetClanGameRoomModel(int id)
         {
-            return RaidGameRoomModels.GetById(id);
+            return _clanGameRoomModels.GetById(id);
         }
 
-        public Task<IRaidGameRoomModel> GetRaidGameRoomModel(string name)
+        public Task<IRaidGameRoomModel> GetClanGameRoomModel(string name)
         {
-            return RaidGameRoomModels.GetByName(name);
+            return _clanGameRoomModels.GetByName(name);
         }
 
-        public Task<List<IRaidGameRoomModel>> GetAllRaidGameRoomModels()
+        public Task<List<IRaidGameRoomModel>> GetAllClanGameRoomModels()
         {
-            return RaidGameRoomModels.GetAll();
+            return _clanGameRoomModels.GetAll();
         }
 
         public Task<int> Save(RaidGameRoomModel raidGameRoomModel)

@@ -51,7 +51,7 @@ namespace Tests.PlayMode.InstantiateTests
         private async Task ShowRaidGameRoom(int id)
         {
             Debug.Log($"start {Time.frameCount}");
-            var model = await Store.GetRaidGameRoomModel(id);
+            var model = await Store.GetClanGameRoomModel(id);
             Assert.IsNotNull(model);
             MonoBehaviour.StartCoroutine(ShowRaidGameRoom(model));
             Debug.Log($"done {Time.frameCount}");

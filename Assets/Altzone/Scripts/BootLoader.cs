@@ -51,7 +51,7 @@ namespace Altzone.Scripts
         {
             CopyFile("CustomCharacterModels.json");
             CopyFile("InventoryItems.json");
-            CopyFile("RaidGameRoomModels.json");
+            CopyFile("ClanGameRoomModels.json");
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             if (playerSettings.IsFirstTimePlaying)

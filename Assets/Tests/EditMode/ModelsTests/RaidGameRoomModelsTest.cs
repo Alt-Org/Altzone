@@ -11,7 +11,7 @@ namespace Tests.EditMode.ModelsTests
     [TestFixture]
     public class RaidGameRoomModelsTest
     {
-        private const string DefaultStorageFilename = "TestRaidGameRoomModels.json";
+        private const string DefaultStorageFilename = "TestClanGameRoomModels.json";
 
         [OneTimeSetUp, Description("Create stable default test storage")]
         public void OneTimeSetUp()
