@@ -10,22 +10,22 @@ namespace Tests.EditMode.InventoryTests
     [TestFixture]
     public class InventoryTest
     {
-        private const string InventoryItemsFilename = "TestInventoryItems.json";
+        private const string ClanInventoryItemsFilename = "TestClanInventoryItems.json";
 
         private IInventory _inventory;
 
         [OneTimeSetUp, Description("Create Inventory")]
         public async Task OneTimeSetUp()
         {
-            Debug.Log($"setup {InventoryItemsFilename}");
-            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
+            Debug.Log($"setup {ClanInventoryItemsFilename}");
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, ClanInventoryItemsFilename);
             if (File.Exists(inventoryItemsPath))
             {
                 File.Delete(inventoryItemsPath);
             }
             _inventory = await InventoryFactory.Create(inventoryItemsPath);
 
-            // FurnitureModelLoader uses same IDs
+            // Hopefully FurnitureModelLoader uses same IDs
             await _inventory.Save(new InventoryItem(10, "Test-1", 1));
             await _inventory.Save(new InventoryItem(20, "Test-2", 2));
             await _inventory.Save(new InventoryItem(30, "Test-3", 3));
@@ -34,6 +34,8 @@ namespace Tests.EditMode.InventoryTests
             await _inventory.Save(new InventoryItem(99, "Bomb", 6));
             await _inventory.Save(new InventoryItem(70, "Test-7", 7));
             await _inventory.Save(new InventoryItem(80, "Test-8", 8));
+            await _inventory.Save(new InventoryItem(90, "Test-9", 9));
+            await _inventory.Save(new InventoryItem(100, "Test-!", 10));
         }
 
         [Test]
@@ -61,7 +63,7 @@ namespace Tests.EditMode.InventoryTests
         [Test]
         public async Task GetAllTest()
         {
-            Debug.Log($"test {InventoryItemsFilename}");
+            Debug.Log($"test {ClanInventoryItemsFilename}");
             var items = await _inventory.GetAll();
             Assert.IsTrue(items.Count > 1);
             Debug.Log($"test items {items.Count}");
@@ -70,7 +72,7 @@ namespace Tests.EditMode.InventoryTests
         [Test]
         public async Task GetAllFurnitureTest()
         {
-            Debug.Log($"test {InventoryItemsFilename}");
+            Debug.Log($"test {ClanInventoryItemsFilename}");
             var models = await _inventory.GetAllFurnitureModelsFromInventory();
             Assert.IsTrue(models.Count > 1);
             Debug.Log($"test models {models.Count}");
