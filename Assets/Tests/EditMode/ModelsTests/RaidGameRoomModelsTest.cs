@@ -73,8 +73,8 @@ namespace Tests.EditMode.ModelsTests
             {
                 const int twoH = 2;
                 const int twoV = 3;
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 0, 0, twoH));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 90, 0, twoV));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 0, 1, twoH));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 90, 2, twoV));
 
                 const int letterA = 9;
                 const int letterB = 10;

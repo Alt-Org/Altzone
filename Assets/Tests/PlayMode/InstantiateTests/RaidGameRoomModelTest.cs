@@ -64,10 +64,10 @@ namespace Tests.PlayMode.InstantiateTests
             {
                 var model = Store.GetFurnitureModel(location.FurnitureId);
                 Assert.IsNotNull(model);
-                Debug.Log($"furniture {model.Id} {model.PrefabName} x,y={location.X},{location.Y} r={location.Rotation}");
+                Debug.Log($"furniture {model.Id} {model.PrefabName} x,y={location.X},{location.Y} r={location.Rotation} s={location.SortingOrder}");
                 var position = new Vector3(location.X, location.Y, 0);
                 var rotation = Quaternion.Euler(0, 30, location.Rotation);
-                var gameObject = FurnitureModel.Instantiate(model, position, rotation);
+                var gameObject = FurnitureModel.Instantiate(model, position, rotation, location.SortingOrder);
                 Assert.NotNull(gameObject);
                 yield return null;
             }

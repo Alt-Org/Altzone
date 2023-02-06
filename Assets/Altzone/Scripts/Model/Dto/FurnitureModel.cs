@@ -24,10 +24,10 @@ namespace Altzone.Scripts.Model.Dto
 
         public static GameObject Instantiate(IFurnitureModel model, Transform parent = null)
         {
-            return Instantiate(model, Vector3.zero, Quaternion.identity, parent);
+            return Instantiate(model, Vector3.zero, Quaternion.identity, 0, parent);
         }
 
-        public static GameObject Instantiate(IFurnitureModel model, Vector3 position, Quaternion rotation, Transform parent = null)
+        public static GameObject Instantiate(IFurnitureModel model, Vector3 position, Quaternion rotation, int sortingOrder = 0, Transform parent = null)
         {
             var gameConfig = GameConfig.Get();
             var constants = gameConfig.Constants;
@@ -40,6 +40,16 @@ namespace Altzone.Scripts.Model.Dto
             }
             var instance = (GameObject)Object.Instantiate(prefab, position, rotation, parent);
             instance.name = model.Name;
+            if (sortingOrder == 0)
+            {
+                return instance;
+            }
+            // Assume that we want set SpriteRenderer sortingOrder only if it is not the default (0)!
+            Assert.IsTrue(sortingOrder is >= -32768 and <= 32767);
+            foreach (var renderer in instance.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.sortingOrder = sortingOrder;
+            }
             return instance;
         }
     }

@@ -49,7 +49,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             foreach (var furnitureModel in furnitureModels)
             {
                 Debug.Log($"{furnitureModel.Id} {furnitureModel.PrefabName}");
-                var instance = FurnitureModel.Instantiate(furnitureModel, position, Quaternion.identity, _prefabsRoot);
+                var instance = FurnitureModel.Instantiate(furnitureModel, position, Quaternion.identity, 0, _prefabsRoot);
                 if (instance == null)
                 {
                     continue;
