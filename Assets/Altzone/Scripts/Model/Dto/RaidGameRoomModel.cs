@@ -53,16 +53,22 @@ namespace Altzone.Scripts.Model.Dto
         {
             public int _x;
             public int _y;
+            public int _rotation;
+            public int _sortingOrder;
             public int _furnitureId;
 
             public int X => _x;
             public int Y => _y;
+            public int Rotation => _rotation;
+            public int SortingOrder => _sortingOrder;
             public int FurnitureId => _furnitureId;
             
-            public FurnitureLocation(int x, int y, int furnitureId)
+            public FurnitureLocation(int x, int y, int rotation, int sortingOrder, int furnitureId)
             {
                 _x = x;
                 _y = y;
+                _rotation = rotation;
+                _sortingOrder = sortingOrder;
                 _furnitureId = furnitureId;
             }
         }

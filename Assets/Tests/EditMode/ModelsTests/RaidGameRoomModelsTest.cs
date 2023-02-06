@@ -48,7 +48,7 @@ namespace Tests.EditMode.ModelsTests
                          })
                 {
                     const int bombId = 6;
-                    roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(data.Item1, data.Item2, bombId));
+                    roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(data.Item1, data.Item2, 0, 0, bombId));
                 }
                 roomModel._freeSpaceLocations.Add(new RaidGameRoomModel.FreeSpaceLocation(1, 0));
                 roomModel._freeSpaceLocations.Add(new RaidGameRoomModel.FreeSpaceLocation(6, 9));
@@ -60,28 +60,33 @@ namespace Tests.EditMode.ModelsTests
                 roomModel._coinLocations.Add(new RaidGameRoomModel.CoinLocation(6, 11, 10));
 
                 const int squareId = 1;
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3, 0, squareId));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4, 0, squareId));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(6, 0, squareId));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1, 6, squareId));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2, 7, squareId));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4, 8, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(3, 0, 0, 0, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4, 0, 0, 0, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(6, 0, 0, 0, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1, 6, 0, 0, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2, 7, 0, 0, squareId));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(4, 8, 0, 0, squareId));
                 return roomModel;
             }
 
             RaidGameRoomModel CreateRoomModelAbba(RaidGameRoomModel roomModel)
             {
+                const int twoH = 2;
+                const int twoV = 3;
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 0, 0, twoH));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(0, 3, 90, 0, twoV));
+
                 const int letterA = 9;
                 const int letterB = 10;
                 const int bombId = 6;
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(-2, 1, letterA));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(-1, 1, letterB));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1, 1, letterB));
-                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2, 1, letterA));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(-2, 1, 0, 0, letterA));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(-1, 1, 0, 0, letterB));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(1, 1, 0, 0, letterB));
+                roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(2, 1, 0, 0, letterA));
 
                 foreach (var x in new int[] { -4, -2, 0, 2, 4 })
                 {
-                    roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(x, -1, bombId));
+                    roomModel._furnitureLocations.Add(new RaidGameRoomModel.FurnitureLocation(x, -1, 0, 0, bombId));
                 }
                 return roomModel;
             }

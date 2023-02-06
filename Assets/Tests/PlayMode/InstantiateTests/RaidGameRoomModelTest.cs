@@ -60,13 +60,14 @@ namespace Tests.PlayMode.InstantiateTests
         private IEnumerator ShowRaidGameRoom(IRaidGameRoomModel room)
         {
             Debug.Log($"room {room}");
-            foreach (var furnitureLocation in room.FurnitureLocations)
+            foreach (var location in room.FurnitureLocations)
             {
-                var model = Store.GetFurnitureModel(furnitureLocation.FurnitureId);
+                var model = Store.GetFurnitureModel(location.FurnitureId);
                 Assert.IsNotNull(model);
-                Debug.Log($"furniture {model.Id} {model.PrefabName} x,y={furnitureLocation.X},{furnitureLocation.Y}");
-                var position = new Vector3(furnitureLocation.X, furnitureLocation.Y, 0);
-                var gameObject = FurnitureModel.Instantiate(model, position, Quaternion.identity);
+                Debug.Log($"furniture {model.Id} {model.PrefabName} x,y={location.X},{location.Y} r={location.Rotation}");
+                var position = new Vector3(location.X, location.Y, 0);
+                var rotation = Quaternion.Euler(0, 30, location.Rotation);
+                var gameObject = FurnitureModel.Instantiate(model, position, rotation);
                 Assert.NotNull(gameObject);
                 yield return null;
             }

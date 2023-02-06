@@ -15,7 +15,21 @@ namespace Altzone.Scripts.Model
     
     public interface IRaidFurnitureLocation : IRaidRoomLocation
     {
+        /// <summary>
+        /// Furniture Model Id in game furniture models storage.
+        /// </summary>
         int FurnitureId { get; }
+
+        /// <summary>
+        /// Furniture rotation 0, 90, 180 or 270.
+        /// </summary>
+        int Rotation { get; }
+
+        /// <summary>
+        /// Furniture sorting order on layer.
+        /// </summary>
+        int SortingOrder { get; }
+
     }
 
     /// <summary>
