@@ -51,9 +51,10 @@ namespace Altzone.Scripts
         {
             foreach (var filename in new[]
                      {
-                         GameFiles.PlayerCustomCharacterModelsFilename,
+                         GameFiles.ClanGameRoomModelsFilename,
                          GameFiles.ClanInventoryItemsFilename,
-                         GameFiles.ClanGameRoomModelsFilename
+                         //GameFiles.PlayerGameRoomModelsFilename,
+                         GameFiles.PlayerCustomCharacterModelsFilename,
                      })
             {
                 CopyFile(filename);

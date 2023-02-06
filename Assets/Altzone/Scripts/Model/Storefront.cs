@@ -27,6 +27,7 @@ namespace Altzone.Scripts.Model
 
         private IInventory _inventory;
         private RaidGameRoomModels _clanGameRoomModels;
+        private RaidGameRoomModels _playerGameRoomModels;
 
         public bool IsInventoryConnected => _inventory != null;
 
@@ -35,22 +36,26 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
-            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
+            var playerGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.PlayerGameRoomModelsFilename);
+            var clanGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanInventoryItemsFilename);
-            Task.Run(() => { AsyncInit(raidGameRoomModelsPath, inventoryItemsPath); });
+            Task.Run(() => { AsyncInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath); });
             Debug.Log($"exit");
         }
 
-        private void AsyncInit(string raidGameRoomModelsPath, string inventoryItemsPath)
+        private void AsyncInit(string playerGameRoomModelsFilename, string clanGameRoomModelsFilename, string inventoryItemsPath)
         {
             Debug.Log($"start");
             try
             {
+                _playerGameRoomModels = new RaidGameRoomModels();
+                var playerConnectResult = _playerGameRoomModels.Connect(playerGameRoomModelsFilename);
                 _clanGameRoomModels = new RaidGameRoomModels();
-                var connectResult = _clanGameRoomModels.Connect(raidGameRoomModelsPath);
+                var clanConnectResult = _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
-                Task.WaitAll(connectResult, inventoryResult);
-                Assert.IsTrue(connectResult.Result);
+                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult);
+                Assert.IsTrue(playerConnectResult.Result);
+                Assert.IsTrue(clanConnectResult.Result);
                 _inventory = inventoryResult.Result;
                 Assert.IsNotNull(_inventory);
             }
@@ -121,7 +126,7 @@ namespace Altzone.Scripts.Model
             throw new NotImplementedException();
         }
 
-        public Task<int> Save(IPlayerDataModel playerDataModel)
+        public Task<bool> Save(IPlayerDataModel playerDataModel)
         {
             throw new NotImplementedException();
         }
@@ -176,7 +181,7 @@ namespace Altzone.Scripts.Model
             return _clanGameRoomModels.GetAll();
         }
 
-        public Task<int> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel)
+        public Task<bool> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel)
         {
             throw new NotImplementedException();
         }
@@ -188,27 +193,27 @@ namespace Altzone.Scripts.Model
 
         public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(int id)
         {
-            throw new NotImplementedException();
+            return _playerGameRoomModels.GetById(id);
         }
 
         public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(string name)
         {
-            throw new NotImplementedException();
+            return _playerGameRoomModels.GetByName(name);
         }
 
         public Task<List<IRaidGameRoomModel>> GetAllPlayerGameRoomModels()
         {
-            throw new NotImplementedException();
+            return _playerGameRoomModels.GetAll();
         }
 
-        public Task<int> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel)
+        public Task<bool> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel)
         {
-            throw new NotImplementedException();
+            return _playerGameRoomModels.Save(raidGameRoomModel);
         }
 
         public Task DeletePlayerGameRoomModel(int id)
         {
-            throw new NotImplementedException();
+            return _playerGameRoomModels.Delete(id);
         }
 
         public Task<IInventoryItem> GetInventoryItem(int id)
@@ -226,7 +231,7 @@ namespace Altzone.Scripts.Model
             return _inventory.GetAllFurnitureModelsFromInventory();
         }
 
-        public Task<int> Save(IInventoryItem inventoryItem)
+        public Task<bool> Save(IInventoryItem inventoryItem)
         {
             throw new NotImplementedException();
         }

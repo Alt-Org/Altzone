@@ -11,9 +11,9 @@ namespace Altzone.Scripts
     public static class GameFiles
     {
         public const string ClanGameRoomModelsFilename = "GameClanGameRoomModels.json";
-        public const string PlayerGameRoomModelsFilename = "PlayerClanGameRoomModels.json";
-        public const string ClanInventoryItemsFilename = "GameInventoryItems.json";
-        public const string PlayerCustomCharacterModelsFilename = "GameCustomCharacterModels.json";
+        public const string ClanInventoryItemsFilename = "GameClanInventoryItems.json";
+        public const string PlayerGameRoomModelsFilename = "GamePlayerClanGameRoomModels.json";
+        public const string PlayerCustomCharacterModelsFilename = "GamePlayerCustomCharacterModels.json";
     }
     
     /// <summary>
@@ -71,7 +71,7 @@ namespace Altzone.Scripts
         Task<IPlayerDataModel> GetPlayerDataModel(int id);
         Task<List<IPlayerDataModel>> GetAllPlayerDataModels();
 
-        Task<int> Save(IPlayerDataModel inventoryItem);
+        Task<bool> Save(IPlayerDataModel inventoryItem);
         Task DeletePlayerDataModel(int id);
 
         #endregion
@@ -82,7 +82,7 @@ namespace Altzone.Scripts
         Task<IRaidGameRoomModel> GetClanGameRoomModel(string name);
         Task<List<IRaidGameRoomModel>> GetAllClanGameRoomModels();
 
-        Task<int> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel);
+        Task<bool> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel);
         Task DeleteClanGameRoomModel(int clanId, int modelId);
 
         #endregion
@@ -93,7 +93,7 @@ namespace Altzone.Scripts
         Task<IRaidGameRoomModel> GetPlayerGameRoomModel(string name);
         Task<List<IRaidGameRoomModel>> GetAllPlayerGameRoomModels();
 
-        Task<int> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel);
+        Task<bool> SavePlayerGameRoomModel(RaidGameRoomModel raidGameRoomModel);
         Task DeletePlayerGameRoomModel(int id);
 
         #endregion
@@ -105,7 +105,7 @@ namespace Altzone.Scripts
 
         Task<List<IFurnitureModel>> GetAllFurnitureModelsFromInventory();
 
-        Task<int> Save(IInventoryItem inventoryItem);
+        Task<bool> Save(IInventoryItem inventoryItem);
         Task DeleteInventoryItem(int id);
 
         #endregion
