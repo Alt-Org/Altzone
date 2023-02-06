@@ -12,7 +12,7 @@ namespace Altzone.Scripts.Model
 
         public static void Load()
         {
-            _storage = new CustomCharacterModelStorage(GameFiles.StorageFilename);
+            _storage = new CustomCharacterModelStorage(GameFiles.PlayerCustomCharacterModelsFilename);
             Debug.Log($"storage file {_storage.StoragePath}");
         }
         

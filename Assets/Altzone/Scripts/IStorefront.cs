@@ -10,9 +10,10 @@ namespace Altzone.Scripts
     /// </summary>
     public static class GameFiles
     {
-        public const string RaidGameRoomModelsFilename = "GameClanGameRoomModels.json";
-        public const string InventoryItemsFilename = "GameInventoryItems.json";
-        public const string StorageFilename = "GameCustomCharacterModels.json";
+        public const string ClanGameRoomModelsFilename = "GameClanGameRoomModels.json";
+        public const string PlayerGameRoomModelsFilename = "PlayerClanGameRoomModels.json";
+        public const string ClanInventoryItemsFilename = "GameInventoryItems.json";
+        public const string PlayerCustomCharacterModelsFilename = "GameCustomCharacterModels.json";
     }
     
     /// <summary>

@@ -35,8 +35,8 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
-            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, GameFiles.RaidGameRoomModelsFilename);
-            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.InventoryItemsFilename);
+            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanInventoryItemsFilename);
             Task.Run(() => { AsyncInit(raidGameRoomModelsPath, inventoryItemsPath); });
             Debug.Log($"exit");
         }
