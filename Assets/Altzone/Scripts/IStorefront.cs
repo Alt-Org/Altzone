@@ -6,6 +6,16 @@ using Altzone.Scripts.Model.Dto;
 namespace Altzone.Scripts
 {
     /// <summary>
+    /// Hardcoded files names for local storage.
+    /// </summary>
+    public static class GameFiles
+    {
+        public const string RaidGameRoomModelsFilename = "GameClanGameRoomModels.json";
+        public const string InventoryItemsFilename = "GameInventoryItems.json";
+        public const string StorageFilename = "GameCustomCharacterModels.json";
+    }
+    
+    /// <summary>
     /// Store CRUD operations for model and custom objects.
     /// </summary>
     /// <remarks>

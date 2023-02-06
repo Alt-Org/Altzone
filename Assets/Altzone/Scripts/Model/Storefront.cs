@@ -23,9 +23,6 @@ namespace Altzone.Scripts.Model
             return _instance ??= new Storefront();
         }
 
-        private const string RaidGameRoomModelsFilename = "ClanGameRoomModels.json";
-        private const string InventoryItemsFilename = "InventoryItems.json";
-
         private static Storefront _instance;
 
         private IInventory _inventory;
@@ -38,8 +35,8 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
-            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, RaidGameRoomModelsFilename);
-            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, InventoryItemsFilename);
+            var raidGameRoomModelsPath = Path.Combine(Application.persistentDataPath, GameFiles.RaidGameRoomModelsFilename);
+            var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.InventoryItemsFilename);
             Task.Run(() => { AsyncInit(raidGameRoomModelsPath, inventoryItemsPath); });
             Debug.Log($"exit");
         }

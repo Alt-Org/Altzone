@@ -46,12 +46,18 @@ namespace Altzone.Scripts
                 }
             }
         }
-        
+
         private static void PrepareDevice()
         {
-            CopyFile("CustomCharacterModels.json");
-            CopyFile("InventoryItems.json");
-            CopyFile("ClanGameRoomModels.json");
+            foreach (var filename in new[]
+                     {
+                         GameFiles.StorageFilename,
+                         GameFiles.InventoryItemsFilename,
+                         GameFiles.RaidGameRoomModelsFilename
+                     })
+            {
+                CopyFile(filename);
+            }
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             if (playerSettings.IsFirstTimePlaying)
@@ -59,10 +65,10 @@ namespace Altzone.Scripts
                 Debug.Log("IsFirstTimePlaying");
             }
         }
-        
+
         private static void CopyFile(string file)
         {
-            var source = Resources.Load<TextAsset>("TestData/" +file);
+            var source = Resources.Load<TextAsset>("TestData/" + file);
             var targetPath = Path.Combine(Application.persistentDataPath, file);
             if (!File.Exists(targetPath))
             {

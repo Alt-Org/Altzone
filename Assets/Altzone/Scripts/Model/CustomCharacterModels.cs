@@ -8,13 +8,11 @@ namespace Altzone.Scripts.Model
     /// </summary>
     public static class CustomCharacterModels
     {
-        private const string StorageFilename = "CustomCharacterModels.json";
-        
         private static CustomCharacterModelStorage _storage;
 
         public static void Load()
         {
-            _storage = new CustomCharacterModelStorage(StorageFilename);
+            _storage = new CustomCharacterModelStorage(GameFiles.StorageFilename);
             Debug.Log($"storage file {_storage.StoragePath}");
         }
         
