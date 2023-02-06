@@ -181,14 +181,14 @@ namespace Altzone.Scripts.Model
             return _clanGameRoomModels.GetAll();
         }
 
-        public Task<bool> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel)
+        public Task<bool> SaveClanGameRoomModel(RaidGameRoomModel raidGameRoomModel)
         {
-            throw new NotImplementedException();
+            return _clanGameRoomModels.Save(raidGameRoomModel);
         }
 
-        public Task DeleteClanGameRoomModel(int clanId, int modelId)
+        public Task DeleteClanGameRoomModel(int modelId)
         {
-            throw new NotImplementedException();
+            return _clanGameRoomModels.Delete(modelId);
         }
 
         public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(int id)

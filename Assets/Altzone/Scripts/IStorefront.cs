@@ -82,8 +82,8 @@ namespace Altzone.Scripts
         Task<IRaidGameRoomModel> GetClanGameRoomModel(string name);
         Task<List<IRaidGameRoomModel>> GetAllClanGameRoomModels();
 
-        Task<bool> SaveClanGameRoomModel(int clanId, RaidGameRoomModel raidGameRoomModel);
-        Task DeleteClanGameRoomModel(int clanId, int modelId);
+        Task<bool> SaveClanGameRoomModel(RaidGameRoomModel raidGameRoomModel);
+        Task DeleteClanGameRoomModel(int modelId);
 
         #endregion
 
@@ -98,7 +98,7 @@ namespace Altzone.Scripts
 
         #endregion
 
-        #region Inventory (Async)
+        #region Inventory for a Clan (Async)
 
         Task<IInventoryItem> GetInventoryItem(int id);
         Task<List<IInventoryItem>> GetAllInventoryItems();
