@@ -1,18 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    [Header("Game objects")]
     [SerializeField] private GameObject[] slots;
-
-    [Header("Control")]
-    [SerializeField] InputActionReference press;
+    [SerializeField] private TMP_Text pageText;
+    [SerializeField] private TMP_Text sortText;
 
     private List<GameObject> invStored;
+    private int page; // The value that dictates which page of the inventory is shown
+    private int maxPage; // The max page that can be entered, dictated by the amount of items owned
+
+    private int maxSortingBy = 1;
+    private int sortingBy; // used as a carrier for info on how to sort
 
     [Header("Test purpose")]
     [SerializeField] private List<GameObject> testStored; // Used to test that the images work correctly, the actual inventory will be taken from elsewhere
@@ -20,25 +26,43 @@ public class Inventory : MonoBehaviour
     {
         invStored = testStored;
 
-        SortStored(); // Sorts the invStored by name
+        sortingBy = -1; // So that the first sort style is Alphabet
+        SortStored();
 
-        FillSlots(); // Fills in the images to the UI
+        maxPage = Mathf.CeilToInt(invStored.Count / 20) + 1; // Sets the max pages
+        MovePage(0);
     }
 
-    private void Update()
+    public void MovePage(int by)
     {
-        Debug.Log("" + press.action.ReadValue<Vector2>());
-        //transform.localPosition += new Vector3(0, difBetween(transform.position.y, press.action.ReadValue<Vector2>().x), 0);
+        page = Mathf.Clamp(page + by, 1, maxPage); // Sets the next selected page, which is clamped between the min page and max page
+        pageText.text = page + " / " + maxPage;
+        FillSlots();
     }
 
-    private void SortStored()
+    public void SortStored() // A very much hardcoded system for sorting 
     {
-        invStored.OrderBy(x => x.name);
+        if (sortingBy < maxSortingBy) { sortingBy++; }
+        else { sortingBy = 0;}
+
+        switch (sortingBy)
+        {
+            case 0:
+                sortText.text = "Sorted by: Alphabet";
+                invStored.OrderBy(x => x.name);
+                break;
+            case 1:
+                sortText.text = "Sorted by: Nothing functional";
+                /* Sorts by the value, when that exists */
+                break;
+            default: sortText.text = "Something broke"; break; // Just as a safety measure
+        }
     }
 
     public void FillSlots()
     {
-        int i = 0;
+        // Sets the images of the items to their slots
+        int i = 20 * (page - 1);
         foreach (GameObject _slot in slots)
         {
             try
@@ -50,20 +74,18 @@ public class Inventory : MonoBehaviour
 
                 slotImage.GetComponent<Image>().sprite = furnitureImage.sprite;
                 slotImage.GetComponent<Image>().color = furnitureImage.color;
+
                 i++;
             }
-            catch {  break; /* Either all the slots are filled or it had problems doing so */}
+            catch {  break; }
         }
-    }
-
-    private float difBetween(float a, float b)
-    {
-        // Returns the difference between float a and float b
-        return a - b;
     }
 
     // Task List
     // - Visible Inventory (Done)
     // - Sorting (Done)
-    // - Scroll functionality 
+    // - Infinite capacity possibility (Done)
+    // - Reactive Scaling
+    // - Information Panel Instantiation
+
 }
