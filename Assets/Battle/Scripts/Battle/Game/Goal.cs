@@ -11,11 +11,12 @@ namespace Battle.Scripts.Battle.Game
     /// </summary>
     internal class Goal : MonoBehaviour
     {
-        [SerializeField] GameObject WinLoseText;
+        [SerializeField] GameObject WinText;
+        [SerializeField] GameObject LoseText;
         [SerializeField] GameObject LobbyButton;
-        [SerializeField] BoxCollider2D _bottomWallCollider;
-        [SerializeField] BoxCollider2D _topWallCollider;
+        [SerializeField] BoxCollider2D _WallCollider;
         [SerializeField] int TestLimit;
+        [SerializeField] int GoalNumber;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -30,9 +31,17 @@ namespace Battle.Scripts.Battle.Game
                     var playerPos = PhotonBattle.GetPlayerPos(player);
                     var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
                     Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                }
-                WinLoseText.SetActive(true);
-                LobbyButton.SetActive(true);   
+
+                    if (GoalNumber != teamNumber)
+                    {
+                        WinText.SetActive(true);
+                    }
+                    else
+                    {
+                        LoseText.SetActive(true);
+                    }
+                    LobbyButton.SetActive(true);
+                }   
             }
         }
 
@@ -45,13 +54,8 @@ namespace Battle.Scripts.Battle.Game
         private void Update()
         {
             if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > TestLimit) {
-                _bottomWallCollider.isTrigger = true;
-                _topWallCollider.isTrigger = true;
+                _WallCollider.isTrigger = true;
             }
-            /*if (PlayerActor > 1)
-            {
-                _isBackWallsTriggers = true;
-            }*/
         }
     }
 }

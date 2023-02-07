@@ -7,6 +7,6 @@ public class LobbyButton : MonoBehaviour
 {
     public void ToLobby()
     {
-        SceneManager.LoadScene("72-Battle-Lobby");
+        SceneManager.LoadScene("20-Lobby-Old");
     }
 }

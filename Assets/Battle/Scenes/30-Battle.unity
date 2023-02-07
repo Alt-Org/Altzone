@@ -1150,6 +1150,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67ced05579cccba49a1cc9557771d1cb, type: 3}
+--- !u!61 &1610941713 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4230088012655184481, guid: c5c41f82aa33699438e94e6b2118282d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7192120351933927697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1715143000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1480,6 +1486,12 @@ MonoBehaviour:
   sceneViewId: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!61 &2139642296 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 560921282802391219, guid: c5c41f82aa33699438e94e6b2118282d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7192120351933927697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2073224928152158223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1769,6 +1781,22 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: WinText
+      value: 
+      objectReference: {fileID: 1070883255}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: LoseText
+      value: 
+      objectReference: {fileID: 31162645}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: GoalNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
       objectReference: {fileID: 671105154}
@@ -1776,6 +1804,30 @@ PrefabInstance:
       propertyPath: WinLoseText
       value: 
       objectReference: {fileID: 1070883255}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _WallCollider
+      value: 
+      objectReference: {fileID: 1610941713}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _bottomWallCollider
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: WinText
+      value: 
+      objectReference: {fileID: 1070883255}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: LoseText
+      value: 
+      objectReference: {fileID: 31162645}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: GoalNumber
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
@@ -1784,6 +1836,22 @@ PrefabInstance:
       propertyPath: WinLoseText
       value: 
       objectReference: {fileID: 1070883255}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _WallCollider
+      value: 
+      objectReference: {fileID: 2139642296}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _topWallCollider
+      value: 
+      objectReference: {fileID: 2139642296}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _bottomWallCollider
+      value: 
+      objectReference: {fileID: 2139642296}
+    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: _gridHeight
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 671832651596286402, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_Name
