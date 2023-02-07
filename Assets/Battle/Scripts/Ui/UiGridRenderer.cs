@@ -6,8 +6,7 @@ namespace Battle.Scripts.Ui
     /// <summary>
     /// Display a grid overlay in Battle scene.
     /// </summary>
-    [DefaultExecutionOrder(100)]
-    internal class UiGridHandler : MonoBehaviour
+    internal class UiGridRenderer : MonoBehaviour
     {
         [SerializeField] private LineRenderer myLineRenderer;
         [SerializeField] private Color _gridColor1;
