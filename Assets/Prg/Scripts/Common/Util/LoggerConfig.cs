@@ -37,8 +37,11 @@ namespace Prg.Scripts.Common.Util
 
         [Header("Class Filter"), TextArea(5, 20), Tooltip(Tooltip6)] public string _loggerRules;
 
+        [Header("Classes Seen"), TextArea(5, 20), Tooltip(Tooltip6)] public string _loggedTypes;
+
         private static string _prefixTag;
         private static string _suffixTag;
+        private static readonly HashSet<string> LoggedTypesForEditor = new ();
 
         public static void CreateLoggerConfig(LoggerConfig config)
         {
@@ -70,6 +73,9 @@ namespace Prg.Scripts.Common.Util
                 {
                     Debug.SetContextTag($"<color={config._colorForContextTagName}>*</color>");
                 }
+                // Clear previous run.
+                LoggedTypesForEditor.Clear();
+                config._loggedTypes = string.Empty;
             }
             var filterList = config.BuildFilter();
             if (filterList.Count == 0)
@@ -90,6 +96,14 @@ namespace Prg.Scripts.Common.Util
                     // Should not happen in this context because a method should have a class (even anonymous).
                     return true;
                 }
+#if UNITY_EDITOR            
+                if (LoggedTypesForEditor.Add(type.FullName))
+                {
+                    var list = LoggedTypesForEditor.ToList();
+                    list.Sort();
+                    config._loggedTypes = string.Join('\n', list);
+                }
+#endif
                 if (config._isLogNoNamespaceForced && string.IsNullOrEmpty(type.Namespace))
                 {
                     // Should not have classes without a namespace but allow logging for them anyways.
