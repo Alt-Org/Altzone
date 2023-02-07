@@ -111,8 +111,11 @@ namespace Prg.Scripts.Common.Util
         private static int _prevLogLineCount;
 
         /// <summary>
-        /// Callback to listen UNITY Debug messages and write them to a file.
+        /// Thread safe callback to listen UNITY Debug messages and write them to a file.
         /// </summary>
+        /// <remarks>
+        /// This is thread safe because Debug.Log can be called from background threads as well.
+        /// </remarks>
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
         {
             lock (Lock)
