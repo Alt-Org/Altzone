@@ -19,8 +19,6 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GameObject _bottomWall;
         [SerializeField] private GameObject _topWall;
 
-        [Tooltip("Set top and bottom wall colliders as triggers"), SerializeField] private bool _isBackWallsTriggers;
-
         [SerializeField] private GameObject _alphaTeamBrickWall;
         [SerializeField] private GameObject _betaTeamBrickWall;
         public int BrickHealth;
@@ -67,8 +65,6 @@ namespace Battle.Scripts.Battle.Game
             _bottomWallCollider.size = arenaSize;
             _leftWallCollider.size = arenaSize;
             _topWallCollider.size = arenaSize;
-            _bottomWallCollider.isTrigger = _isBackWallsTriggers;
-            _topWallCollider.isTrigger = _isBackWallsTriggers;
 
             _leftWall.transform.position = new Vector2(-_arenaWidth, 0);
             _rightWall.transform.position = new Vector2(_arenaWidth, 0);
