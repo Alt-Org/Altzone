@@ -24,6 +24,13 @@ namespace Battle.Scripts.Battle.Game
             {
                 //string tempString = "gahgsahsgfahgsh";
 	            //photonView.RPC("SetAll", PhotonTargets.All, tempString);
+                if (PhotonNetwork.InRoom)
+                {
+                    var player = PhotonNetwork.LocalPlayer;
+                    var playerPos = PhotonBattle.GetPlayerPos(player);
+                    var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                    Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
+                }
                 WinLoseText.SetActive(true);
                 LobbyButton.SetActive(true);   
             }
