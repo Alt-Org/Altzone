@@ -8,7 +8,7 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private bool _autoRotate = true;
 
-        private const int shieldEffectDistSquares = 2;
+        private const int shieldEffectDistSquares = 6;
         private const float waitTime = 2f;
 
         private float _shieldEffectSqr;
