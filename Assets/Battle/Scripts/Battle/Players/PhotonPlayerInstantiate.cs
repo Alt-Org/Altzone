@@ -90,6 +90,7 @@ namespace Battle.Scripts.Battle.Players
 
         private IEnumerator OnLocalPlayerReadyForPlay()
         {
+            _isStopListeningForPlayerProperties = true;
             yield return null;
             var delay = new WaitForSeconds(_debug._waitForPlayerPropertiesToUpdate);
             yield return delay;
