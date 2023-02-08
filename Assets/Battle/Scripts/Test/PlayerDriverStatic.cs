@@ -1,5 +1,6 @@
 using System;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
@@ -29,13 +30,18 @@ namespace Battle.Scripts.Test
         [Header("Settings"), SerializeField] private Settings _settings;
 
         [SerializeField] private PlayerActorBase _playerPrefab;
-        [SerializeField] private double _movementDelay;
 
+        private double _movementDelay;
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IPlayerDriverState _state;
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
+
+        private void Awake()
+        {
+            _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
+        }
 
         private void Start()
         {

@@ -1,5 +1,6 @@
 using UnityConstants;
 using UnityEngine;
+using Altzone.Scripts.Config;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -15,7 +16,7 @@ namespace Battle.Scripts.Battle.Players
     public class ShieldEdgeCollider : MonoBehaviour
     {
         private EdgeCollider2D _edgeCollider;
-        private const float _bounceForce = 7f;
+        private float _attackMultiplier;
         private GameObject _otherCollider;
         private Transform _transform;
 
@@ -23,6 +24,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _transform = GetComponent<Transform>();
             _edgeCollider = GetComponent<EdgeCollider2D>();
+            _attackMultiplier = GameConfig.Get().Variables._playerAttackMultiplier;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -43,7 +45,7 @@ namespace Battle.Scripts.Battle.Players
                     return;
                 }
                 var rb = _otherCollider.GetComponentInParent<Rigidbody2D>();
-                rb.velocity = bounceDirection * _bounceForce;
+                rb.velocity = bounceDirection * _attackMultiplier;
                 UnityEngine.Debug.DrawRay(contact, bounceDirection * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             }
         }

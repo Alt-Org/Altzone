@@ -66,6 +66,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameVariables
     {
+        [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Min(0)] public float _playerAttackMultiplier;
+        [Min(0), Tooltip("Delay in seconds when movement starts after movement request has been made")] public float _playerMovementNetworkDelay;
     }
 
     /// <summary>
