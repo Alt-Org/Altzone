@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Service.Audio;
@@ -58,12 +59,31 @@ namespace Altzone.Scripts
             yield return null;
             var store = Storefront.Get();
             yield return new WaitUntil(() => store.IsInventoryConnected);
-            var characterClasses = store.GetAllCharacterClassModels();
-            Debug.Log($"characterClasses {characterClasses.Count}");
+            var characterClassModels = store.GetAllCharacterClassModels();
+            Debug.Log($"characterClasses {characterClassModels.Count}");
             var customCharacters = store.GetAllCustomCharacterModels();
+            var isCustomCharactersValid = true;
+            foreach (var customCharacter in customCharacters)
+            {
+                if (characterClassModels.All(x => x.Id != customCharacter.CharacterModelId))
+                {
+                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                     $"does not have CharacterModel {customCharacter.CharacterModelId}");
+                    isCustomCharactersValid = false;
+                }
+            }
             Debug.Log($"customCharacters {customCharacters.Count}");
             var battleCharacters = store.GetAllBattleCharacters();
             Debug.Log($"battleCharacters {battleCharacters.Count}");
+            if (isCustomCharactersValid)
+            {
+                yield break;
+            }
+            // Dump all battle characters if something is wrong in storage.
+            foreach (var battleCharacter in battleCharacters)
+            {
+                Debug.Log($"battleCharacter {battleCharacter}");
+            }
         }
 #endif
 

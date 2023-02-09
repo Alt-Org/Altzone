@@ -68,12 +68,7 @@ namespace Altzone.Scripts.Model
 
         ICharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
-            var model = Models.FindById<CharacterClassModel>(id);
-            if (model == null)
-            {
-                model = new CharacterClassModel(id, "Ööö", Defence.Desensitisation, 1, 1, 1, 1);
-            }
-            return model;
+            return Models.FindById<CharacterClassModel>(id);
         }
 
         List<ICharacterClassModel> IStorefront.GetAllCharacterClassModels()
@@ -250,6 +245,7 @@ namespace Altzone.Scripts.Model
 
             public string CharacterClassName { get; }
             public int CustomCharacterModelId { get; }
+            public int CharacterClassModelId { get; }
 
             public int PlayerPrefabId { get; }
 
@@ -265,12 +261,21 @@ namespace Altzone.Scripts.Model
                 Name = custom.Name;
                 CharacterClassName = classModel.Name;
                 CustomCharacterModelId = custom.Id;
+                CharacterClassModelId = classModel.Id;
                 PlayerPrefabId = custom.PlayerPrefabId;
                 MainDefence = classModel.MainDefence;
                 Speed = classModel.Speed + custom.Speed;
                 Resistance = classModel.Resistance + custom.Resistance;
                 Attack = classModel.Attack + custom.Attack;
                 Defence = classModel.Defence + custom.Defence;
+            }
+
+            public override string ToString()
+            {
+                return $"Name: {Name}, CharacterClass: {CharacterClassName}, " +
+                       $"CustomCharacterModel: {CustomCharacterModelId}, CharacterClassModel: {CharacterClassModelId}, " +
+                       $"Defence: {MainDefence}, Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}, " +
+                       $"PlayerPrefab: {PlayerPrefabId}";
             }
 
             public static IBattleCharacter GetBattleCharacter(IStorefront store, int customCharacterId)
@@ -283,7 +288,9 @@ namespace Altzone.Scripts.Model
                 var character = store.GetCharacterClassModel(customCharacter.CharacterModelId);
                 if (character == null)
                 {
-                    throw new UnityException($"CustomCharacter {customCharacterId} CharacterModel not found for {customCharacter.CharacterModelId}");
+                    // Patch BattleCharacter to make it return ok even if custom character exists without corresponding character class.
+                    character = new CharacterClassModel(customCharacter.CharacterModelId, 
+                        "Ööö", Altzone.Scripts.Model.Defence.Desensitisation, 1, 1, 1, 1);
                 }
                 return new BattleCharacter(customCharacter, character);
             }

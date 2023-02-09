@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Model
         string Name { get; }
         string CharacterClassName { get; }
         int CustomCharacterModelId { get; }
+        int CharacterClassModelId { get; }
         int PlayerPrefabId { get; }
         Defence MainDefence { get; }
         int Speed { get; }
