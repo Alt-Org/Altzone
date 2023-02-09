@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Altzone.Scripts;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,8 +20,8 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         [SerializeField] private Transform leftPane;
         [SerializeField] private Transform rightPane;
         [SerializeField] private Transform _prefabsRoot;
-        [SerializeField] private PlayerActorBase[] _prefabs;
-        [SerializeField] private PlayerActorBase _curPrefab;
+        [SerializeField] private MonoBehaviour[] _prefabs;
+        [SerializeField] private MonoBehaviour _curPrefab;
         [SerializeField] private bool _isReady;
 
         private Button[] _buttons;
@@ -46,7 +42,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             var store = Storefront.Get();
             var characterModels = store.GetAllCharacterClassModels();
             var maxIndex = characterModels.Max(x => x.Id);
-            _prefabs = new PlayerActorBase[1 + maxIndex];
+            _prefabs = new MonoBehaviour[1 + maxIndex];
             var position = _prefabsRoot.position;
             foreach (var characterModel in characterModels)
             {
