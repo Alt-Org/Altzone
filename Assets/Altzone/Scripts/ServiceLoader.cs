@@ -50,50 +50,48 @@ namespace Altzone.Scripts
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void ShowDebugGameInfo(MonoBehaviour monoBehaviour)
         {
-            monoBehaviour.StartCoroutine(ShowDebugGameInfo());
-        }
+            monoBehaviour.StartCoroutine(CheckDebugGameInfo());
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || FORCE_LOG
-        private static IEnumerator ShowDebugGameInfo()
-        {
-            yield return null;
-            var store = Storefront.Get();
-            yield return new WaitUntil(() => store.IsInventoryConnected);
-            var characterClassModels = store.GetAllCharacterClassModels();
-            Debug.Log($"characterClasses {characterClassModels.Count}");
-            var customCharacters = store.GetAllCustomCharacterModels();
-            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            var isCustomCharactersValid = true;
-            foreach (var customCharacter in customCharacters)
+            IEnumerator CheckDebugGameInfo()
             {
-                if (characterClassModels.All(x => x.Id != customCharacter.CharacterModelId))
+                yield return null;
+                var store = Storefront.Get();
+                yield return new WaitUntil(() => store.IsInventoryConnected);
+                var characterClassModels = store.GetAllCharacterClassModels();
+                Debug.Log($"characterClasses {characterClassModels.Count}");
+                var customCharacters = store.GetAllCustomCharacterModels();
+                var playerPrefabs = GameConfig.Get().PlayerPrefabs;
+                var isCustomCharactersValid = true;
+                foreach (var customCharacter in customCharacters)
                 {
-                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have CharacterModel {customCharacter.CharacterModelId}");
-                    isCustomCharactersValid = false;
-                }
-                if (playerPrefabs.GetPlayerPrefab(customCharacter.PlayerPrefabId) == null)
-                {
-                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
-                    isCustomCharactersValid = false;
-                }
+                    if (characterClassModels.All(x => x.Id != customCharacter.CharacterModelId))
+                    {
+                        Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                         $"does not have CharacterModel {customCharacter.CharacterModelId}");
+                        isCustomCharactersValid = false;
+                    }
+                    if (playerPrefabs.GetPlayerPrefab(customCharacter.PlayerPrefabId) == null)
+                    {
+                        Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                         $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
+                        isCustomCharactersValid = false;
+                    }
 
-            }
-            Debug.Log($"customCharacters {customCharacters.Count}");
-            var battleCharacters = store.GetAllBattleCharacters();
-            Debug.Log($"battleCharacters {battleCharacters.Count}");
-            if (isCustomCharactersValid)
-            {
-                yield break;
-            }
-            // Dump all battle characters if something is wrong in storage.
-            foreach (var battleCharacter in battleCharacters)
-            {
-                Debug.Log($"battleCharacter {battleCharacter}");
+                }
+                Debug.Log($"customCharacters {customCharacters.Count}");
+                var battleCharacters = store.GetAllBattleCharacters();
+                Debug.Log($"battleCharacters {battleCharacters.Count}");
+                if (isCustomCharactersValid)
+                {
+                    yield break;
+                }
+                // Dump all battle characters if something is wrong in storage.
+                foreach (var battleCharacter in battleCharacters)
+                {
+                    Debug.Log($"battleCharacter {battleCharacter}");
+                }
             }
         }
-#endif
 
         [Conditional("USE_LOOTLOCKER")]
         private void StartLootLocker(bool isDevelopmentMode)
