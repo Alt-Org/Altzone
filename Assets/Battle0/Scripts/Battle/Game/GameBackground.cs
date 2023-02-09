@@ -21,6 +21,12 @@ namespace Battle0.Scripts.Battle.Game
             _transform = GetComponent<Transform>();
         }
 
+        private void Start()
+        {
+            // Set default background image on start.
+            SetBackgroundImageByIndex(0);
+        }
+
         public void Rotate(bool isUpsideDown)
         {
             _transform.Rotate(isUpsideDown);
