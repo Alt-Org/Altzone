@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Model.Loader
     /// <summary>
     /// Utility class to load <c>CharacterClassModel</c> models for runtime from external storage.
     /// </summary>
-    public static class CharacterModelLoader
+    internal static class CharacterModelLoader
     {
         public static List<CharacterClassModel> LoadModels()
         {

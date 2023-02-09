@@ -7,7 +7,7 @@ namespace Altzone.Scripts.Model.Loader
     /// <summary>
     /// Utility class to load <c>FurnitureModel</c> models for runtime from external storage.
     /// </summary>
-    public static class FurnitureModelLoader
+    internal static class FurnitureModelLoader
     {
         public static List<FurnitureModel> LoadModels()
         {

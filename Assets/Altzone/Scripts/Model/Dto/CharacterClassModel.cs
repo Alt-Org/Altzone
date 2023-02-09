@@ -5,7 +5,7 @@ namespace Altzone.Scripts.Model.Dto
     /// <summary>
     /// Data Transfer Object for <c>ICharacterClassModel</c>.
     /// </summary>
-    public class CharacterClassModel : AbstractModel, ICharacterClassModel
+    internal class CharacterClassModel : AbstractModel, ICharacterClassModel
     {
         public string Name { get; }
         public Defence MainDefence { get; }

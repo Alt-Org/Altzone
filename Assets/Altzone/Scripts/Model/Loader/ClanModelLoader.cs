@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Model.Loader
     /// <summary>
     /// Utility class to load <c>ClanModel</c> models for runtime from external storage.
     /// </summary>
-    public static class ClanModelLoader
+    internal static class ClanModelLoader
     {
         public static List<ClanModel> LoadModels()
         {

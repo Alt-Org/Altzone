@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Container for application model objects.
     /// </summary>
-    public static class Models
+    internal static class Models
     {
         private static readonly Dictionary<string, AbstractModel> ModelsMap = new();
 
