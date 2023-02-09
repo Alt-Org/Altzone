@@ -13,7 +13,6 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerDriverPhoton : PlayerDriver, IPlayerDriver
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
-        [SerializeField] private double _movementDelay;
 
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
@@ -22,6 +21,7 @@ namespace Battle.Scripts.Battle.Players
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
+        private double _movementDelay;
 
         private bool _isLocal;
 
@@ -37,6 +37,7 @@ namespace Battle.Scripts.Battle.Players
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
+            _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
         }
 
         private IPlayerActor InstantiatePlayerPrefab(Player player)

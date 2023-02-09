@@ -66,6 +66,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameVariables
     {
+        [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Min(0)] public float _playerAttackMultiplier;
+        [Min(0), Tooltip("Delay in seconds when movement starts after movement request has been made")] public float _playerMovementNetworkDelay;
     }
 
     /// <summary>
@@ -81,8 +84,10 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
         public PlayerActorBase GetPlayerPrefab(int prefabId)
         {
-            Assert.IsTrue(prefabId >= 0 && prefabId < _playerPrefabs.Length, 
-                $"invalid prefabId {prefabId} [0-{_playerPrefabs.Length - 1}]");
+            if (prefabId < 0 || prefabId >= _playerPrefabs.Length)
+            {
+                return null;
+            }
             return _playerPrefabs[prefabId];
         }
     }

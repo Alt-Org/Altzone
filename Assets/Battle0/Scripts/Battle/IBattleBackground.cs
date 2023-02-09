@@ -7,7 +7,7 @@ namespace Battle0.Scripts.Battle
     /// </summary>
     internal interface IBattleBackground
     {
-        GameObject Background { get; }
+        void Rotate(bool isUpsideDown);
         bool IsRotated { get; }
         void SetBackgroundImageByIndex(int index);
     }

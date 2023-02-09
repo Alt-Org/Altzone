@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,8 +20,8 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         [SerializeField] private Transform leftPane;
         [SerializeField] private Transform rightPane;
         [SerializeField] private Transform _prefabsRoot;
-        [SerializeField] private GameObject[] _prefabs;
-        [SerializeField] private GameObject _curPrefab;
+        [SerializeField] private MonoBehaviour[] _prefabs;
+        [SerializeField] private MonoBehaviour _curPrefab;
         [SerializeField] private bool _isReady;
 
         private Button[] _buttons;
@@ -42,20 +40,21 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             // This will be async if custom character models are loaded from network.
             var store = Storefront.Get();
-            var furnitureModels = store.GetAllFurnitureModels();
-            var maxIndex = furnitureModels.Max(x => x.Id);
-            _prefabs = new GameObject[1 + maxIndex];
+            var characterModels = store.GetAllCharacterClassModels();
+            var maxIndex = characterModels.Max(x => x.Id);
+            _prefabs = new MonoBehaviour[1 + maxIndex];
             var position = _prefabsRoot.position;
-            foreach (var furnitureModel in furnitureModels)
+            foreach (var characterModel in characterModels)
             {
-                Debug.Log($"{furnitureModel.Id} {furnitureModel.PrefabName}");
-                var instance = FurnitureModel.Instantiate(furnitureModel, position, Quaternion.identity, 0, _prefabsRoot);
+                Debug.Log($"Character: {characterModel}");
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(characterModel.Id);
+                var instance = Instantiate(playerPrefab, _prefabsRoot);
                 if (instance == null)
                 {
                     continue;
                 }
-                instance.SetActive(false);
-                _prefabs[furnitureModel.Id] = instance;
+                instance.gameObject.SetActive(false);
+                _prefabs[characterModel.Id] = instance;
             }
             _isReady = true;
         }
@@ -93,7 +92,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 {
                     continue;
                 }
-                prefab.SetActive(false);
+                prefab.gameObject.SetActive(false);
             }
             foreach (var button in _buttons)
             {
@@ -144,12 +143,12 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             if (_curPrefab != null)
             {
-                _curPrefab.SetActive(false);
+                _curPrefab.gameObject.SetActive(false);
             }
             _curPrefab = _prefabs[character.PlayerPrefabId];
             if (_curPrefab != null)
             {
-                _curPrefab.SetActive(true);
+                _curPrefab.gameObject.SetActive(true);
             }
         }
     }

@@ -9,14 +9,21 @@ namespace Battle.Scripts.Battle.Game
     internal class GameCamera : MonoBehaviour, IBattleCamera
     {
         [SerializeField] private Camera _gameCamera;
-
+        private Transform _transform;
+        
         Camera IBattleCamera.Camera => _gameCamera;
 
-        bool IBattleCamera.IsRotated => _gameCamera.transform.rotation.z != 0f;
+        bool IBattleCamera.IsRotated => _transform.rotation.z != 0f;
 
         private void Awake()
         {
             Assert.IsNotNull(_gameCamera, "_gameCamera must be assigned in Editor");
+            _transform = GetComponent<Transform>();
+        }
+
+        void IBattleCamera.Rotate(bool isUpsideDown)
+        {
+            _transform.Rotate(isUpsideDown);
         }
 
         void IBattleCamera.DisableAudio()

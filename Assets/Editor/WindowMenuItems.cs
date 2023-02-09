@@ -41,9 +41,6 @@ namespace Editor
         [MenuItem(GameDebug + "Reset Local Player Data", false, 13)]
         private static void ResetLocalPlayerData() => DebugMenu.ResetLocalPlayerData();
 
-        [MenuItem(GameDebug + "Models/Dump Character Models to Wiki", false, 24)]
-        private static void DumpModelsToWikiTable() => MenuModels.DumpModelsToWikiTable();
-
         #endregion
 
         #region Localization

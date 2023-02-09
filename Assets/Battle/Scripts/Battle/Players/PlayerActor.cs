@@ -1,5 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -11,8 +12,8 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
-        [SerializeField] private float _playerMoveSpeedMultiplier;
 
+        private float _playerMoveSpeedMultiplier;
         private Transform _transform;
         private Vector3 _tempPosition;
         private bool _hasTarget;
@@ -20,6 +21,8 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             _transform = GetComponent<Transform>();
+            var variables = GameConfig.Get().Variables;
+            _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)

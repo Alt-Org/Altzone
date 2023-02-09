@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _constants:
     _furniturePrefabFolder: Prefabs/Furniture
+  _variables:
+    _playerMoveSpeedMultiplier: 7
+    _playerAttackMultiplier: 7
+    _playerMovementNetworkDelay: 0.1
   _playerPrefabs:
     _playerPrefabs:
     - {fileID: 8975400094333793158, guid: 92ec9ec2b3caa58428adab586a98fddf, type: 3}
