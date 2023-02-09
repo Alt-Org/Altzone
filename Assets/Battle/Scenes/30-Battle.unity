@@ -348,6 +348,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &310529677 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5756210811780550964, guid: beeca0598aa323045953bf66df53ccbf,
+    type: 3}
+  m_PrefabInstance: {fileID: 5756210812238161093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &310529682 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5756210811780550961, guid: beeca0598aa323045953bf66df53ccbf,
+    type: 3}
+  m_PrefabInstance: {fileID: 5756210812238161093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &310529683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310529677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e060e160b50bf434aa67985bc58715e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Camera: {fileID: 310529682}
+  Background: {fileID: 7732533816888444517}
+  GridOverlay: {fileID: 598841265}
 --- !u!1 &482608501 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1253440901854599680, guid: c5c41f82aa33699438e94e6b2118282d,
@@ -432,6 +459,12 @@ MonoBehaviour:
   sceneViewId: 10
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!224 &598841265 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3206926510594435318, guid: 67ced05579cccba49a1cc9557771d1cb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1595985728}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &671105154
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,7 +477,7 @@ GameObject:
   - component: {fileID: 671105158}
   - component: {fileID: 671105157}
   - component: {fileID: 671105156}
-  - component: {fileID: 671105159}
+  - component: {fileID: 671105160}
   m_Layer: 5
   m_Name: LobbyButton
   m_TagString: Untagged
@@ -516,19 +549,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 671105157}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 671105159}
-        m_TargetAssemblyTypeName: LobbyButton, Battle
-        m_MethodName: ToLobby
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &671105157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,7 +588,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671105154}
   m_CullTransparentMesh: 1
---- !u!114 &671105159
+--- !u!114 &671105160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -576,9 +597,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 671105154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f80e455269627894db9846871f9dd09d, type: 3}
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 49456bc2e3f05254bb9bf031f48128d4, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &681193345
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,3 +2006,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3a082e879120504aa52f8e368d7fe52, type: 3}
+--- !u!4 &7732533816888444517 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3440205131502962468, guid: d3a082e879120504aa52f8e368d7fe52,
+    type: 3}
+  m_PrefabInstance: {fileID: 7732533816888444516}
+  m_PrefabAsset: {fileID: 0}
