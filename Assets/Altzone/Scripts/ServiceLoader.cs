@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
@@ -29,7 +30,7 @@ namespace Altzone.Scripts
         [SerializeField, ReadOnly] private bool _isLootLocker;
 
         public bool IsLootLocker => _isLootLocker;
-        
+
         private void OnEnable()
         {
             Debug.Log($"{name}");
@@ -42,7 +43,29 @@ namespace Altzone.Scripts
             StartLootLocker(isDevelopmentMode);
             // Start the UI now.
             WindowManager.Get();
+            ShowDebugGameInfo(this);
         }
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
+        private static void ShowDebugGameInfo(MonoBehaviour monoBehaviour)
+        {
+            monoBehaviour.StartCoroutine(ShowDebugGameInfo());
+        }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || FORCE_LOG
+        private static IEnumerator ShowDebugGameInfo()
+        {
+            yield return null;
+            var store = Storefront.Get();
+            yield return new WaitUntil(() => store.IsInventoryConnected);
+            var characterClasses = store.GetAllCharacterClassModels();
+            Debug.Log($"characterClasses {characterClasses.Count}");
+            var customCharacters = store.GetAllCustomCharacterModels();
+            Debug.Log($"customCharacters {customCharacters.Count}");
+            var battleCharacters = store.GetAllBattleCharacters();
+            Debug.Log($"battleCharacters {battleCharacters.Count}");
+        }
+#endif
 
         [Conditional("USE_LOOTLOCKER")]
         private void StartLootLocker(bool isDevelopmentMode)

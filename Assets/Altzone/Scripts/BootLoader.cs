@@ -21,7 +21,7 @@ namespace Altzone.Scripts
         private static void BeforeSceneLoad()
         {
             PrepareLocalTesting();
-            UnityEngine.Debug.Log($"{Application.productName} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
+            UnityEngine.Debug.Log($"{Application.productName} Version {Application.version} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
             PrepareDevice();
             UnitySingleton.CreateStaticSingleton<ServiceLoader>();
         }
