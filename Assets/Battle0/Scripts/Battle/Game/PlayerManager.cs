@@ -494,10 +494,10 @@ namespace Battle0.Scripts.Battle.Game
             {
                 return;
             }
-            RotateLocalPlayerGameplayExperience(gameCamera, gameBackground.Background);
+            RotateLocalPlayerGameplayExperience(gameCamera, gameBackground);
         }
 
-        private static void RotateLocalPlayerGameplayExperience(Camera gameCamera, GameObject gameBackground)
+        private static void RotateLocalPlayerGameplayExperience(Camera gameCamera, IBattleBackground gameBackground)
         {
             var features = Battle0GameConfig.Get().Features;
             var isRotateGameCamera = features._isRotateGameCamera && gameCamera != null;
@@ -512,7 +512,7 @@ namespace Battle0.Scripts.Battle.Game
             {
                 // Rotate background.
                 Debug.Log($"RotateGameBackground upsideDown");
-                gameBackground.GetComponent<Transform>().Rotate(true);
+                gameBackground.Rotate(true);
                 // Separate sprites for each team gameplay area - these might not be visible in final game
                 // - see Battle.Scripts.Room.RoomSetup.SetupLocalPlayer() how this is done in Altzone project.
             }
