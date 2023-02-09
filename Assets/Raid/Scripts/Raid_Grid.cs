@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class Raid_Grid : MonoBehaviour
 {
@@ -17,6 +20,16 @@ public class Raid_Grid : MonoBehaviour
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
     public List<Raid_Tile> TilesToCheck = new List<Raid_Tile>();
+
+    private void OnEnable()
+    {
+        EnhancedTouchSupport.Enable();
+    }
+
+    private void OnDisable()
+    {
+        EnhancedTouchSupport.Disable();
+    }
 
     private void Start()
     {
