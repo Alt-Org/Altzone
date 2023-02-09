@@ -59,16 +59,13 @@ namespace Tests.EditMode.StorefrontTests
             Assert.AreEqual(characterClassModel.Id, model.Id);
         }
 
-        [Test, Description("Test that non existing Character Model is returned (all values should be '1')")]
+        [Test, Description("Test that non existing Character Model is not returned")]
         public void CharacterModelNotFoundTest()
         {
             Debug.Log("test");
             const int modelId = int.MaxValue;
             var model = _store.GetCharacterClassModel(modelId);
-            Assert.IsNotNull(model);
-            Assert.AreEqual(modelId, model.Id);
-            Assert.AreEqual(Defence.Desensitisation, model.MainDefence);
-            Assert.AreEqual(4, model.Attack + model.Defence + model.Resistance + model.Speed);
+            Assert.IsNull(model);
         }
 
         [Test, Description("Test that there is Custom Character Models and we can fetch one by id")]

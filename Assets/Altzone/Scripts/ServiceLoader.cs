@@ -62,6 +62,7 @@ namespace Altzone.Scripts
             var characterClassModels = store.GetAllCharacterClassModels();
             Debug.Log($"characterClasses {characterClassModels.Count}");
             var customCharacters = store.GetAllCustomCharacterModels();
+            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
             var isCustomCharactersValid = true;
             foreach (var customCharacter in customCharacters)
             {
@@ -71,6 +72,13 @@ namespace Altzone.Scripts
                                      $"does not have CharacterModel {customCharacter.CharacterModelId}");
                     isCustomCharactersValid = false;
                 }
+                if (playerPrefabs.GetPlayerPrefab(customCharacter.PlayerPrefabId) == null)
+                {
+                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                     $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
+                    isCustomCharactersValid = false;
+                }
+
             }
             Debug.Log($"customCharacters {customCharacters.Count}");
             var battleCharacters = store.GetAllBattleCharacters();
