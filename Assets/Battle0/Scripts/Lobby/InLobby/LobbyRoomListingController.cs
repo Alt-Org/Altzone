@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
@@ -41,8 +42,14 @@ namespace Battle0.Scripts.Lobby.InLobby
         private static void CreateRoomOnClick()
         {
             var roomName = $"Room{DateTime.Now.Second:00}";
+            RoomOptions roomOptions = new RoomOptions()
+            {
+                IsVisible = true,
+                IsOpen = true,
+                MaxPlayers = 4
+            };
             Debug.Log($"{roomName}");
-            PhotonLobby.CreateRoom(roomName);
+            PhotonLobby.CreateRoom(roomName, roomOptions);
         }
 
         private void JoinRoom(string roomName)
