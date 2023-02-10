@@ -1,5 +1,6 @@
 using Battle.Scripts.Battle;
 using UnityEngine;
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Ui
 {
@@ -8,6 +9,8 @@ namespace Battle.Scripts.Ui
     /// </summary>
     internal class UiGridRenderer : MonoBehaviour
     {
+        public CameraRotate CameraRotate;
+
         [SerializeField] private LineRenderer myLineRenderer;
         [SerializeField] private Color _gridColor1;
         [SerializeField] private Color _gridColor2;
@@ -145,6 +148,7 @@ namespace Battle.Scripts.Ui
                 yPos = yPosStart;
                 xPos += tileSize.x;
             }
+            CameraRotate.enabled = true;
         }
 
         private void DrawGridTile(int row, int col, Sprite sprite, Color color, Vector2 tileSize, float xPos, float yPos)

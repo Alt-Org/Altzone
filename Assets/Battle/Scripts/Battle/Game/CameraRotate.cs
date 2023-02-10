@@ -24,17 +24,9 @@ namespace Battle.Scripts.Battle.Game
                 {
                     Camera.eulerAngles = new Vector3(0, 0, 180);
                     Background.eulerAngles = new Vector3(0, 0, 180);
-                    //GridOverlay.eulerAngles = new Vector3(0, 0, 180);
+                    GridOverlay.eulerAngles = new Vector3(0, 0, 180);
                     team2 = true;
                 }
-            }
-        }
-
-        private void Update()
-        {
-            if (team2 == true)
-            {
-                //GridOverlay.eulerAngles = new Vector3(0, 0, 0);
             }
         }
     }
