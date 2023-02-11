@@ -54,7 +54,7 @@ public class Raid_Grid : MonoBehaviour
         PlaceEmptyTiles();
     }
 
-    public void CheckInputQuickTap(InputAction.CallbackContext context)
+    public void QuickTapPerformed(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -81,7 +81,7 @@ public class Raid_Grid : MonoBehaviour
         }
     }
 
-    public void CheckInputSlowTap(InputAction.CallbackContext context)
+    public void SlowTapPerformed(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -553,7 +553,7 @@ public class Raid_Grid : MonoBehaviour
         }
     }
 
-    void RevealAdjacentTilesForTileAt (int x, int y)
+    public void RevealAdjacentTilesForTileAt (int x, int y)
     {
         // Check all directions to the end of the grid.
 

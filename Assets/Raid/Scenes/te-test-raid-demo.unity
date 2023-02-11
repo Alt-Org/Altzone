@@ -418,6 +418,7 @@ GameObject:
   - component: {fileID: 1245782073}
   - component: {fileID: 1245782072}
   - component: {fileID: 1245782074}
+  - component: {fileID: 1245782075}
   m_Layer: 0
   m_Name: GridCreator
   m_TagString: Untagged
@@ -487,9 +488,9 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1245782072}
-        m_TargetAssemblyTypeName: Raid_Grid, Raid
-        m_MethodName: CheckInputQuickTap
+      - m_Target: {fileID: 1245782075}
+        m_TargetAssemblyTypeName: Raid_Input, Raid
+        m_MethodName: QuickTapPerformed
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -503,9 +504,9 @@ MonoBehaviour:
     m_ActionName: Raid_Tap/Tap[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1245782072}
-        m_TargetAssemblyTypeName: Raid_Grid, Raid
-        m_MethodName: CheckInputSlowTap
+      - m_Target: {fileID: 1245782075}
+        m_TargetAssemblyTypeName: Raid_Input, Raid
+        m_MethodName: SlowTapPerformed
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -517,8 +518,24 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5d34cc79-3a60-4f3c-b250-63af1751d7a0
     m_ActionName: Raid_Tap/SlowTap[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d9558e75-e0d7-4475-96f9-2a3d9af0ffe2
+    m_ActionName: Touch/TapPosition[/Simulated Touchscreen/primaryTouch/position]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Raid_Tap
+  m_DefaultActionMap: Touch
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1245782075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245782071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d391aa085cf235741b719e65f8699482, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

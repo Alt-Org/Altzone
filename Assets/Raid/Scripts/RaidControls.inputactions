@@ -1,8 +1,8 @@
 {
-    "name": "Tap_Input",
+    "name": "RaidControls",
     "maps": [
         {
-            "name": "Raid_Tap",
+            "name": "Touch",
             "id": "df89c0d0-acbe-40b2-9f6d-236a22c6bff5",
             "actions": [
                 {
@@ -22,39 +22,26 @@
                     "processors": "",
                     "interactions": "SlowTap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TapPosition",
+                    "type": "PassThrough",
+                    "id": "d9558e75-e0d7-4475-96f9-2a3d9af0ffe2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "434c6ac8-b030-4e05-94fd-dba18dd83b11",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Tap",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Tap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b28a7633-c7fe-4656-a4f2-c6c6ee48ec1f",
                     "path": "<Touchscreen>/primaryTouch/press",
-                    "interactions": "Tap",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Tap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "53ca0de3-d3d5-49ef-a949-90a7380f1efd",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "SlowTap",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SlowTap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -62,10 +49,21 @@
                     "name": "",
                     "id": "55135b00-fdc3-48e9-8fd4-fccb17da55ea",
                     "path": "<Touchscreen>/primaryTouch/press",
-                    "interactions": "Tap",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "SlowTap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a4537a07-5801-4546-b000-7ac74a50be1b",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TapPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
