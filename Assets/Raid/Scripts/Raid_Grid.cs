@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class Raid_Grid : MonoBehaviour
 {
@@ -23,16 +17,17 @@ public class Raid_Grid : MonoBehaviour
 
     private void OnEnable()
     {
-        EnhancedTouchSupport.Enable();
+        Debug.Log($"");
     }
 
     private void OnDisable()
     {
-        EnhancedTouchSupport.Disable();
+        Debug.Log($"");
     }
 
     private void Start()
     {
+        Debug.Log($"");
         for (int i = 0; i < AmountOfMines; i++)
         {
             PlaceMines();
@@ -54,64 +49,58 @@ public class Raid_Grid : MonoBehaviour
         PlaceEmptyTiles();
     }
 
-    public void QuickTapPerformed(InputAction.CallbackContext context)
+    public void QuickTapPerformed(Vector2 pointerPosition)
     {
-        if (context.performed)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(pointerPosition);
+
+        int x = Mathf.RoundToInt(mousePosition.x);
+        int y = Mathf.RoundToInt(mousePosition.y);
+
+        Raid_Tile raid_Tile = grid[x,y];
+
+        if(raid_Tile.tileState == Raid_Tile.TileState.Normal)
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            int x = Mathf.RoundToInt(mousePosition.x);
-            int y = Mathf.RoundToInt(mousePosition.y);
-
-            Raid_Tile raid_Tile = grid[x,y];
-
-            if(raid_Tile.tileState == Raid_Tile.TileState.Normal)
+            if(raid_Tile.IsCovered)
             {
-                if(raid_Tile.IsCovered)
-                {
-                    raid_Tile.SetIsCovered(false);
+                raid_Tile.SetIsCovered(false);
 
-                    if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
-                    {
-                        RevealAdjacentTilesForTileAt(x, y);
-                    }
+                if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
+                {
+                    RevealAdjacentTilesForTileAt(x, y);
                 }
             }
-            Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
         }
+        Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
     }
 
-    public void SlowTapPerformed(InputAction.CallbackContext context)
+    public void SlowTapPerformed(Vector2 pointerPosition)
     {
-        if (context.performed)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(pointerPosition);
+
+        int x = Mathf.RoundToInt(mousePosition.x);
+        int y = Mathf.RoundToInt(mousePosition.y);
+
+        Raid_Tile raid_Tile = grid[x, y];
+        Debug.Log("SlowTap recognized at (" + x + ", " + y + ")");
+        if (raid_Tile.IsCovered)
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            int x = Mathf.RoundToInt(mousePosition.x);
-            int y = Mathf.RoundToInt(mousePosition.y);
-
-            Raid_Tile raid_Tile = grid[x, y];
-            Debug.Log("SlowTap recognized at (" + x + ", " + y + ")");
-            if (raid_Tile.IsCovered)
+            if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
             {
-                if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
-                {
-                    raid_Tile.tileState = Raid_Tile.TileState.Flagged;
-                    raid_Tile.GetComponent<SpriteRenderer>().sprite = FlagTile;
-                }
-                else
-                {
-                    raid_Tile.tileState = Raid_Tile.TileState.Normal;
-                    raid_Tile.GetComponent<SpriteRenderer>().sprite = CoveredTile;
-                }
+                raid_Tile.tileState = Raid_Tile.TileState.Flagged;
+                raid_Tile.GetComponent<SpriteRenderer>().sprite = FlagTile;
+            }
+            else
+            {
+                raid_Tile.tileState = Raid_Tile.TileState.Normal;
+                raid_Tile.GetComponent<SpriteRenderer>().sprite = CoveredTile;
             }
         }
     }
 
     void PlaceSingleTileFurniture()
     {
-        int x = UnityEngine.Random.Range(0, 9);
-        int y = UnityEngine.Random.Range(0, 9);
+        int x = Random.Range(0, 9);
+        int y = Random.Range(0, 9);
 
         if (grid[x, y] == null)
         {
@@ -130,8 +119,8 @@ public class Raid_Grid : MonoBehaviour
 
     void PlaceDoubleTileFurniture()
     {
-        int x = UnityEngine.Random.Range(0, 9);
-        int y = UnityEngine.Random.Range(0, 9);
+        int x = Random.Range(0, 9);
+        int y = Random.Range(0, 9);
 
         if (grid[x, y] == null)
         {
@@ -194,8 +183,8 @@ public class Raid_Grid : MonoBehaviour
 
     void PlaceTripleTileFurniture()
     {
-        int x = UnityEngine.Random.Range(0, 9);
-        int y = UnityEngine.Random.Range(0, 9);
+        int x = Random.Range(0, 9);
+        int y = Random.Range(0, 9);
 
         if (grid[x, y] == null)
         {
@@ -433,8 +422,8 @@ public class Raid_Grid : MonoBehaviour
 
     void PlaceMines()
     {
-        int x = UnityEngine.Random.Range(0, 9);
-        int y = UnityEngine.Random.Range(0, 9);
+        int x = Random.Range(0, 9);
+        int y = Random.Range(0, 9);
 
         if(grid[x,y] == null)
         {

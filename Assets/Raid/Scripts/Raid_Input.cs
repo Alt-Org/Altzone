@@ -1,96 +1,92 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 public class Raid_Input : MonoBehaviour
 {
-    public delegate void QuickTapped();
-    public event QuickTapped OnQuickTapped;
+    [SerializeField, Header("Grid")] private Raid_Grid raid_Grid;
 
-    public delegate void SlowTapped();
-    public event SlowTapped OnSlowTapped;
-
-    private RaidControls raidControls;
-    private Raid_Grid raid_Grid;
-
-    public Sprite CoveredTile { get; private set; }
-    public Sprite FlagTile { get; private set; }
-
+    [SerializeField, Header("Settings"), Range(0, 100)] private float _trackingSensitivityPercent = 1.0f;
+    [SerializeField] private InputActionReference _tapActionRef;
+    [SerializeField] private InputActionReference _positionActionRef;
+    
+    private InputAction _tapAction;
+    private InputAction _positionAction;
+    private Vector2 _startPosition;
+    private Vector2 _inputPosition;
+    private bool _isCheckSensitivity;
+    private float _sensitivityScreenX;
+    private float _sensitivityScreenY;
+    
     private void Awake()
     {
-        raidControls = new RaidControls();
-        raid_Grid = new Raid_Grid();
+        Debug.Log($"");
+        Assert.IsNotNull(raid_Grid);
+        
+        Debug.Log($"{_tapActionRef} | {_positionActionRef}");
+        Assert.IsTrue(_tapActionRef != null && _positionActionRef != null);
+        _tapAction = _tapActionRef.action;
+        _positionAction = _positionActionRef.action;
+        Assert.IsFalse(string.IsNullOrWhiteSpace(_tapAction.interactions));
+        Debug.Log($"interactions {_tapAction.interactions}");
+        if (!(_trackingSensitivityPercent > 0))
+        {
+            return;
+        }
+        var resolution = Screen.currentResolution;
+        _isCheckSensitivity = true;
+        _sensitivityScreenX = resolution.width / 100f * _trackingSensitivityPercent;
+        _sensitivityScreenY = resolution.height / 100f * _trackingSensitivityPercent;
+        Debug.Log($"tracking {_trackingSensitivityPercent}% : x,y {_sensitivityScreenX:0},{_sensitivityScreenY:0} from {resolution}");
     }
 
     private void OnEnable()
     {
-        raidControls.Enable();
+        Debug.Log($"{_tapAction} | {_positionAction}");
+        _tapAction.started += TapStarted;
+        _tapAction.performed += TapPerformed;
+        _tapAction.Enable();
+        _positionAction.Enable();
     }
+    
     private void OnDisable()
     {
-        raidControls.Disable();
+        Debug.Log($"{_tapAction} | {_positionAction}");
+        _tapAction.started -= TapStarted;
+        _tapAction.performed -= TapPerformed;
+        _tapAction.Disable();
+        _positionAction.Disable();
     }
 
-    private void Start()
+    private void TapStarted(InputAction.CallbackContext ctx)
     {
-        raidControls.Touch.Tap.performed += ctx => raid_Grid.QuickTapPerformed(ctx);
-        raidControls.Touch.SlowTap.performed += ctx => raid_Grid.SlowTapPerformed(ctx);
+        _startPosition = _positionAction.ReadValue<Vector2>();
+        Debug.Log($"duration {ctx.duration:0.000} pos {_startPosition} {ctx.interaction?.GetType().Name}");
     }
 
-    public void QuickTapPerformed(InputAction.CallbackContext context)
+    private void TapPerformed(InputAction.CallbackContext ctx)
     {
-        if (OnQuickTapped != null) OnQuickTapped();
+        _inputPosition = _positionAction.ReadValue<Vector2>();
+        Debug.Log($"duration {ctx.duration:0.000} pos {_inputPosition} delta {_startPosition - _inputPosition} {ctx.interaction?.GetType().Name}");
+        if (_isCheckSensitivity)
         {
-            Vector2 pos = ScreenPosition();
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            int x = Mathf.RoundToInt(pos.x);
-            int y = Mathf.RoundToInt(pos.y);
-
-            Raid_Tile raid_Tile = raid_Grid.grid[x, y];
-
-            if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
+            var delta = _startPosition - _inputPosition;
+            if (Mathf.Abs(delta.x) > _sensitivityScreenX || Mathf.Abs(delta.y) > _sensitivityScreenY)
             {
-                if (raid_Tile.IsCovered)
-                {
-                    raid_Tile.SetIsCovered(false);
-
-                    if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
-                    {
-                        raid_Grid.RevealAdjacentTilesForTileAt(x, y);
-                    }
-                }
-            }
-            Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
-        }
-    }
-
-    public void SlowTapPerformed(InputAction.CallbackContext context)
-    {
-        if (OnSlowTapped != null) OnSlowTapped();
-        {
-            Vector2 pos = ScreenPosition();
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-            int x = Mathf.RoundToInt(pos.x);
-            int y = Mathf.RoundToInt(pos.y);
-
-            Raid_Tile raid_Tile = raid_Grid.grid[x, y];
-            Debug.Log("SlowTap recognized at (" + x + ", " + y + ")");
-            if (raid_Tile.IsCovered)
-            {
-                if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
-                {
-                    raid_Tile.tileState = Raid_Tile.TileState.Flagged;
-                    raid_Tile.GetComponent<SpriteRenderer>().sprite = FlagTile;
-                }
-                else
-                {
-                    raid_Tile.tileState = Raid_Tile.TileState.Normal;
-                    raid_Tile.GetComponent<SpriteRenderer>().sprite = CoveredTile;
-                }
+                Debug.Log($"IGNORED delta {delta}");
+                return;
             }
         }
+        var interaction = ctx.interaction;
+        switch (interaction)
+        {
+            case SlowTapInteraction:
+                raid_Grid.QuickTapPerformed(_inputPosition);
+                break;
+            case TapInteraction:
+                raid_Grid.SlowTapPerformed(_inputPosition);
+                break;
+        }
     }
-
-    private Vector2 ScreenPosition() => raidControls.Touch.TapPosition.ReadValue<Vector2>();
 }
