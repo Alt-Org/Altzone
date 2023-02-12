@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -23,10 +24,12 @@ public class Raid_Grid : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
-        if (_randomSeed != 0)
+        if (_randomSeed == 0)
         {
-            Random.InitState(_randomSeed);
+            _randomSeed = (int)DateTime.Now.Ticks;
         }
+        Debug.Log($"randomSeed {_randomSeed}");
+        Random.InitState(_randomSeed);
     }
 
     private void OnEnable()
