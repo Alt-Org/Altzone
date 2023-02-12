@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Raid_Grid : MonoBehaviour
 {
@@ -14,6 +15,19 @@ public class Raid_Grid : MonoBehaviour
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
     public List<Raid_Tile> TilesToCheck = new List<Raid_Tile>();
+
+    [SerializeField, Header("Debug")] private int _randomSeed;
+    
+    private Transform _transform;
+
+    private void Awake()
+    {
+        _transform = transform;
+        if (_randomSeed != 0)
+        {
+            Random.InitState(_randomSeed);
+        }
+    }
 
     private void OnEnable()
     {
@@ -104,7 +118,7 @@ public class Raid_Grid : MonoBehaviour
 
         if (grid[x, y] == null)
         {
-            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Single", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+            Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Single", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
             grid[x, y] = FurnitureTile;
 
@@ -126,8 +140,8 @@ public class Raid_Grid : MonoBehaviour
         {
             if (x+1 < 9 && grid[x+1, y] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -138,8 +152,8 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y+1 < 9 && grid[x, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -149,8 +163,8 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x-1 >= 0 && grid[x-1, y] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
@@ -160,8 +174,8 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y-1 >= 0 && grid[x, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -190,9 +204,9 @@ public class Raid_Grid : MonoBehaviour
         {
             if (x+2 < 9 && grid[x+1, y] == null && grid[x+2, y] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+2, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+2, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -204,9 +218,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x+1 < 9 && x-1 >= 0 && grid[x+1, y] == null && grid[x-1, y] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -218,9 +232,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x-2 >= 0 && grid[x-1, y] == null && grid[x-2, y] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-2, y, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-2, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
@@ -232,9 +246,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y+2 < 9 && grid[x, y+1] == null && grid[x, y+2] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+2, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+2, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -246,9 +260,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y+1 < 9 && y-1 >= 0 && grid[x, y+1] == null && grid[x, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -260,9 +274,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y-2 >= 0 && grid[x, y-1] == null && grid[x, y-2] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-2, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-2, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -274,9 +288,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x+1 < 9 && y+1 < 9 && grid[x+1, y] == null && grid[x+1, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -288,9 +302,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x+1 < 9 && y-1 >= 0 && grid[x+1, y] == null && grid[x+1, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -302,9 +316,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x+1 < 9 && y+1 < 9 && grid[x+1, y] == null && grid[x, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -316,9 +330,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x+1 < 9 && y-1 >= 0 && grid[x+1, y] == null && grid[x, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -330,9 +344,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y+1 < 9 && x+1 < 9 && grid[x, y+1] == null && grid[x+1, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -344,9 +358,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y+1 < 9 && x-1 >= 0 && grid[x, y+1] == null && grid[x-1, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -358,9 +372,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y-1 >= 0 && x+1 < 9 && grid[x, y-1] == null && grid[x+1, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -372,9 +386,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (y-1 >= 0 && x-1 >= 0 && grid[x, y-1] == null && grid[x-1, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -386,9 +400,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x-1 >= 0 && y+1 < 9 && grid[x-1, y] == null && grid[x-1, y+1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
@@ -400,9 +414,9 @@ public class Raid_Grid : MonoBehaviour
             }
             else if (x-1 >= 0 && y-1 >= 0 && grid[x-1, y] == null && grid[x-1, y-1] == null)
             {
-                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity) as Raid_Tile;
-                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity) as Raid_Tile;
+                Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
@@ -427,7 +441,7 @@ public class Raid_Grid : MonoBehaviour
 
         if(grid[x,y] == null)
         {
-            Raid_Tile MineTile = Instantiate(Resources.Load("Prefabs/Mine", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+            Raid_Tile MineTile = Instantiate(Resources.Load("Prefabs/Mine", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
             grid[x,y] = MineTile;
             Debug.Log("(" + x + ", " + y + ")");
@@ -518,7 +532,7 @@ public class Raid_Grid : MonoBehaviour
 
                     if (NearbyMines > 0)
                     {
-                        Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/" + NearbyMines, typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                        Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/" + NearbyMines, typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                         grid[x, y] = NumberTile;
                     }
@@ -535,7 +549,7 @@ public class Raid_Grid : MonoBehaviour
             {
                 if (grid[x, y] == null)
                 {
-                    Raid_Tile EmptyTile = Instantiate(Resources.Load("Prefabs/Empty_Tile", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity) as Raid_Tile;
+                    Raid_Tile EmptyTile = Instantiate(Resources.Load("Prefabs/Empty_Tile", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                     grid[x, y] = EmptyTile;
                 }
             }
