@@ -630,7 +630,6 @@ public class Raid_Grid : MonoBehaviour
             raid_Tile.DidCheck = true;
             raid_Tile.SetIsCovered(false);
 
-            Debug.Log("x, y values are now (" + x + ", " + y + ")");
             RevealAdjacentTilesForTileAt(x, y);
         }
     }
