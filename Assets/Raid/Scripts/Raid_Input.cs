@@ -81,10 +81,10 @@ public class Raid_Input : MonoBehaviour
         var interaction = ctx.interaction;
         switch (interaction)
         {
-            case SlowTapInteraction:
+            case TapInteraction:
                 raid_Grid.QuickTapPerformed(_inputPosition);
                 break;
-            case TapInteraction:
+            case SlowTapInteraction:
                 raid_Grid.SlowTapPerformed(_inputPosition);
                 break;
         }

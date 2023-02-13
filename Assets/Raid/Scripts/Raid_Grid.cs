@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class Raid_Grid : MonoBehaviour
@@ -593,7 +594,7 @@ public class Raid_Grid : MonoBehaviour
             CheckTileAt(x+1, y-1);
         }
 
-        if ((x-1) > 0 && (y-1) >= 0)
+        if ((x-1) >= 0 && (y-1) >= 0)
         {
             CheckTileAt(x-1, y-1);
         }
@@ -623,12 +624,13 @@ public class Raid_Grid : MonoBehaviour
         {
             Raid_Tile raid_Tile = TilesToCheck[i];
 
-            int x = (int)raid_Tile.gameObject.transform.localPosition.x;
+            int x = (int)raid_Tile.gameObject.transform.localPosition.x;  
             int y = (int)raid_Tile.gameObject.transform.localPosition.y;
 
             raid_Tile.DidCheck = true;
             raid_Tile.SetIsCovered(false);
 
+            Debug.Log("x, y values are now (" + x + ", " + y + ")");
             RevealAdjacentTilesForTileAt(x, y);
         }
     }
