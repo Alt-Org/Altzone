@@ -28,23 +28,8 @@ namespace Altzone.Scripts
 
         private static void PrepareLocalTesting()
         {
-            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
-            var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
-                ? localDevConfig._loggerConfig
-                : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
-            if (loggerConfig != null)
-            {
-                LoggerConfig.CreateLoggerConfig(loggerConfig);
-            }
             SetEditorStatus();
-            if (localDevConfig != null)
-            {
-                if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
-                {
-                    var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
-                    PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
-                }
-            }
+            SetupLogging();
         }
 
         private static void PrepareDevice()
@@ -80,6 +65,26 @@ namespace Altzone.Scripts
             }
         }
 
+        private static void SetupLogging()
+        {
+            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
+            var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
+                ? localDevConfig._loggerConfig
+                : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
+            if (loggerConfig != null)
+            {
+                LoggerConfig.CreateLoggerConfig(loggerConfig);
+            }
+            if (localDevConfig != null)
+            {
+                if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
+                {
+                    var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
+                    PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
+                }
+            }
+        }
+        
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void SetEditorStatus()
         {
