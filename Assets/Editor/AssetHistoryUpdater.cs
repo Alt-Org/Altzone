@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace Editor
         private static void OnDelayCall()
         {
             EditorApplication.delayCall -= OnDelayCall;
-            
+
             var dayOfYear = DateTime.Now.DayOfYear;
             if (dayOfYear == PlayerPrefs.GetInt(DayNumberKey, 0) && File.Exists(AssetHistoryFilename))
             {
@@ -51,7 +52,7 @@ namespace Editor
             assetLines.Sort();
 
             Debug.Log($"Checking {folderNames.Count} folders against {assetLines.Count} assets in {AssetHistoryFilename}");
-            
+
             foreach (var folderName in folderNames)
             {
                 CheckDeletedGuids(folderName, assetLines);
@@ -63,55 +64,58 @@ namespace Editor
             // This works only on Windows for now :-(
             folderName = folderName.Replace('/', '\\');
 
-            var assetHistory = new List<Tuple<string,string>>();
+            var assetHistory = new List<Tuple<string, string>>();
+            var folderNamePrefix = folderName + '\\';
             foreach (var assetLine in assetLines)
             {
-                if (assetLine.StartsWith(folderName))
+                if (assetLine.StartsWith(folderNamePrefix))
                 {
                     var tokens = assetLine.Split('\t');
                     assetHistory.Add(new Tuple<string, string>(tokens[0], tokens[1]));
                 }
             }
 
-            var fileArray = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
-            var fileList = CreateFileList();
+            var metaFileArray = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
+            var allMetaFilesArray = AssetPath == folderName
+                ? metaFileArray
+                : Directory.GetFiles(AssetPath, "*.meta", SearchOption.AllDirectories);
+            var fileList = CreateFileList(metaFileArray);
             Debug.Log($"Check {folderName} with {fileList.Count} asset files and {assetHistory.Count} history");
             if (!SanityCheck())
             {
                 return;
             }
-            
+
             // Check that a history file exists - to find deleted files.
-            var deletedCount = 0;
+            var missingAssets = new List<Tuple<string, string>>();
             foreach (var tuple in assetHistory)
             {
                 var assetFilename = tuple.Item1;
                 if (!fileList.Contains(assetFilename))
                 {
-                    deletedCount += 1;
-                    Debug.Log($"Asset {RichText.Yellow(assetFilename)} has been deleted");
+                    missingAssets.Add(tuple);
                 }
             }
-            if (deletedCount > 0)
+            if (missingAssets.Count > 0)
             {
-                Debug.Log($"Deleted asset count {deletedCount}");
+                // Check if deleted file is used by existing files.
+                var useCount = CheckIfGuidIsUsed(missingAssets, allMetaFilesArray);
+                Debug.Log($"Deleted asset count {missingAssets.Count} with {useCount} invalid references");
             }
 
             #region Local helper functions
 
-            List<string> CreateFileList()
+            List<string> CreateFileList(string[] metaFilenames)
             {
                 var list = new List<string>();
-                foreach (var file in fileArray)
+                foreach (var file in metaFilenames)
                 {
                     var filename = file.Substring(0, file.Length - MetaExtensionLength);
                     list.Add(filename);
                 }
-                // Add root folder manually so it is found always.
-                list.Insert(0, folderName);
                 return list;
             }
-            
+
             bool SanityCheck()
             {
                 // Just a sanity check that history file is up-to-date with file system.
@@ -131,16 +135,78 @@ namespace Editor
                 }
                 return true;
             }
+
             #endregion
         }
-        
+
+        private static int CheckIfGuidIsUsed(List<Tuple<string, string>> missingAssets, string[] metaFileArray)
+        {
+            var invalidExtensions = new[]
+            {
+                ".anim",
+                ".blend",
+                ".controller",
+                ".cubemap",
+                ".flare",
+                ".gif",
+                ".inputactions",
+                ".mat",
+                ".mp3",
+                ".otf",
+                ".physicMaterial",
+                ".physicsmaterial2d",
+                ".png",
+                ".psd",
+                ".tga",
+                ".tif",
+                ".ttf",
+                ".wav",
+            };
+            
+            var stopwatch = Stopwatch.StartNew(); 
+            var foundCount = 0;
+            foreach (var metaFilename in metaFileArray)
+            {
+                var metaContentFilename = metaFilename.Substring(0, metaFilename.Length - MetaExtensionLength);
+                if (Directory.Exists(metaContentFilename))
+                {
+                    continue;
+                }
+                var contentExtension = Path.GetExtension(metaContentFilename);
+                if (invalidExtensions.Contains(contentExtension))
+                {
+                    continue;
+                }
+                var text = File.ReadAllText(metaContentFilename);
+                foreach (var tuple in missingAssets)
+                {
+                    var missingFilename = tuple.Item1;
+                    if (metaContentFilename == missingFilename)
+                    {
+                        continue;
+                    }
+                    var guid = tuple.Item2;
+                    if (text.Contains(guid))
+                    {
+                        foundCount += 1;
+                        var asset = AssetDatabase.LoadMainAssetAtPath(metaContentFilename);
+                        Debug.Log($"{RichText.White(missingFilename)} guid: {guid} is deleted but referenced in");
+                        Debug.Log($"{RichText.Yellow(metaFilename)} ", asset);
+                    }
+                }
+            }
+            stopwatch.Stop();
+            Debug.Log($"Check all files took {stopwatch.ElapsedMilliseconds/1000d:0.000} s");
+            return foundCount;
+        }
+
         private static void UpdateAssetHistory()
         {
             var lines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
             var hasLines = lines.Length > 0;
             var fileHistory = new HashSet<string>(lines);
             var files = Directory.GetFiles(AssetPath, "*.meta", SearchOption.AllDirectories);
-            var currentStatus = 
+            var currentStatus =
                 $"{RichText.Magenta("UpdateAssetHistory")} {AssetHistoryFilename} with {fileHistory.Count} entries and {files.Length} meta files";
             var newFileCount = 0;
             var isShowNewFiles = Math.Abs(fileHistory.Count - files.Length) < 100;
