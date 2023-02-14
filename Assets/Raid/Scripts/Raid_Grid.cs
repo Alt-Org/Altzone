@@ -7,6 +7,26 @@ public class Raid_Grid : MonoBehaviour
 {
     public Sprite CoveredTile;
     public Sprite FlagTile;
+    public Sprite SFurnitureSprite0;
+    public Sprite SFurnitureSprite1;
+    public Sprite SFurnitureSprite2;
+    public Sprite SFurnitureSprite3;
+
+    public Sprite DFurnitureSprite0a;
+    public Sprite DFurnitureSprite0b;
+    public Sprite DFurnitureSprite1a;
+    public Sprite DFurnitureSprite1b;
+    public Sprite DFurnitureSprite2a;
+    public Sprite DFurnitureSprite2b;
+    public Sprite DFurnitureSprite3a;
+    public Sprite DFurnitureSprite3b;
+
+    /*public Sprite TFurnitureSprite0a;
+    public Sprite TFurnitureSprite0b;
+    public Sprite TFurnitureSprite0c;*/
+    public Sprite TFurnitureSprite1a;
+    public Sprite TFurnitureSprite1b;
+    public Sprite TFurnitureSprite1c;
 
     public int AmountOfMines;
     public int AmountofSingles;
@@ -123,6 +143,22 @@ public class Raid_Grid : MonoBehaviour
         {
             Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Single", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+            int FurnitureSpriteNumber = Random.Range(0, 4);
+            switch(FurnitureSpriteNumber)
+            {
+                case 0:
+                    FurnitureTile.GetComponent<SpriteRenderer>().sprite = SFurnitureSprite0;
+                    break;
+                case 1:
+                    FurnitureTile.GetComponent<SpriteRenderer>().sprite = SFurnitureSprite1;
+                    break;
+                case 2:
+                    FurnitureTile.GetComponent<SpriteRenderer>().sprite = SFurnitureSprite2;
+                    break;
+                case 3:
+                    FurnitureTile.GetComponent<SpriteRenderer>().sprite = SFurnitureSprite3;
+                    break;
+            }
             grid[x, y] = FurnitureTile;
 
             Debug.Log("Single furniture spawn at (" + x + ", " + y + ")");
@@ -146,6 +182,40 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 4);
+
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                    case 1:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                    case 2:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                    case 3:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
 
@@ -158,6 +228,40 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 4);
+
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                    case 1:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0,180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                    case 2:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                    case 3:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
 
@@ -169,6 +273,40 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 4);
+
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                    case 1:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                    case 2:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                    case 3:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3b;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
 
@@ -179,6 +317,28 @@ public class Raid_Grid : MonoBehaviour
             {
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Double", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 4);
+
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite0b;
+                        break;
+                    case 1:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite1b;
+                        break;
+                    case 2:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite2b;
+                        break;
+                    case 3:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = DFurnitureSprite3b;
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -211,6 +371,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+2, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
+
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
                 grid[x+2, y] = FurnitureTile3;
@@ -224,6 +394,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -239,6 +419,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-2, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
+
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
                 grid[x-2, y] = FurnitureTile3;
@@ -252,6 +442,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+2, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -267,6 +467,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
+
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
                 grid[x, y-1] = FurnitureTile3;
@@ -280,6 +490,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-2, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                /*int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite0c;
+                        break;
+                }*/
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -295,6 +515,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch(FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
                 grid[x+1, y+1] = FurnitureTile3;
@@ -308,6 +538,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -323,6 +567,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
                 grid[x, y+1] = FurnitureTile3;
@@ -336,6 +594,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x+1, y] = FurnitureTile2;
@@ -351,6 +623,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
                 grid[x+1, y+1] = FurnitureTile3;
@@ -364,6 +650,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y+1] = FurnitureTile2;
@@ -379,6 +679,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x+1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
                 grid[x+1, y-1] = FurnitureTile3;
@@ -392,6 +706,16 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x, y-1] = FurnitureTile2;
@@ -407,6 +731,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y+1, 0), Quaternion.identity, _transform) as Raid_Tile;
 
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, -90);
+                        break;
+                }
+
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
                 grid[x-1, y+1] = FurnitureTile3;
@@ -420,6 +758,20 @@ public class Raid_Grid : MonoBehaviour
                 Raid_Tile FurnitureTile = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile2 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y, 0), Quaternion.identity, _transform) as Raid_Tile;
                 Raid_Tile FurnitureTile3 = Instantiate(Resources.Load("Prefabs/Triple", typeof(Raid_Tile)), new Vector3(x-1, y-1, 0), Quaternion.identity, _transform) as Raid_Tile;
+
+                int FurnitureSpriteNumber = Random.Range(0, 1);
+                switch (FurnitureSpriteNumber)
+                {
+                    case 0:
+                        FurnitureTile.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1c;
+                        FurnitureTile2.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1b;
+                        FurnitureTile3.GetComponent<SpriteRenderer>().sprite = TFurnitureSprite1a;
+
+                        FurnitureTile.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile2.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        FurnitureTile3.transform.rotation = Quaternion.Euler(0, 0, 180);
+                        break;
+                }
 
                 grid[x, y] = FurnitureTile;
                 grid[x-1, y] = FurnitureTile2;
