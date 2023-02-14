@@ -18,6 +18,8 @@ namespace Editor.Prg.Build
     /// </remarks>
     internal static class MenuBuildReport
     {
+        private static readonly Encoding Encoding = Encoding.UTF8;
+
         private static readonly string[] ExcludedFolders =
         {
             "Assets/Photon",
@@ -352,7 +354,7 @@ namespace Editor.Prg.Build
 
             public void Save(string fileName)
             {
-                File.WriteAllText(fileName, _builder.ToString());
+                File.WriteAllText(fileName, _builder.ToString(), Encoding);
             }
         }
     }

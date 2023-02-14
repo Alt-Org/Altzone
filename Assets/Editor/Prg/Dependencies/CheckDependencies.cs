@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -199,11 +200,12 @@ namespace Editor.Prg.Dependencies
 
         private static int CheckForGuidInAssets(string[] selectedGuids, ref int[] foundCount, string[] assetGuids)
         {
+            var encoding = Encoding.UTF8;
             var count = 0;
             foreach (var assetGuid in assetGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(assetGuid);
-                var assetContent = File.ReadAllText(path);
+                var assetContent = File.ReadAllText(path, encoding);
                 for (var guidIndex = 0; guidIndex < selectedGuids.Length; ++guidIndex)
                 {
                     var guid = selectedGuids[guidIndex];

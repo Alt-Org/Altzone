@@ -173,7 +173,7 @@ namespace Prg.Scripts.Common.Unity.Localization
                 path = AppPlatform.ConvertToWindowsPath(path);
             }
             Debug.Log($"Save {_debugWords.Count} NEW 'dirty' words to {path}");
-            File.WriteAllText(path, text);
+            File.WriteAllText(path, text, Encoding.UTF8);
         }
 #else
         internal void SaveIfDirty(){}

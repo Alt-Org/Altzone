@@ -22,6 +22,7 @@ namespace Editor
         private const string AssetPath = "Assets";
         private const string DayNumberKey = "AssetHistory.DayNumber";
         private static readonly int MetaExtensionLength = ".meta".Length;
+        private static readonly Encoding Encoding = Encoding.UTF8;
 
         /*[MenuItem("Window/ALT-Zone/Update Asset History", false, 55)]
         private static void UpdateAssetHistoryMenu() => OnDelayCall();*/
@@ -47,7 +48,7 @@ namespace Editor
 
         public static void CheckDeletedGuids(List<string> folderNames)
         {
-            var assetLines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
+            var assetLines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename, Encoding) : Array.Empty<string>();
 
             Debug.Log($"Checking {folderNames.Count} folders against {assetLines.Length} assets in {AssetHistoryFilename}");
 
@@ -154,8 +155,6 @@ namespace Editor
 
         private static int CheckIfGuidIsUsed(List<Tuple<string, string>> missingAssets, string[] metaFileArray)
         {
-            var encoding = Encoding.UTF8;
-
             var validExtensions = new[]
             {
                 // These are YAML files that can(?) have references to other files.
@@ -182,7 +181,7 @@ namespace Editor
                 {
                     continue;
                 }
-                var text = File.ReadAllText(metaContentFilename, encoding);
+                var text = File.ReadAllText(metaContentFilename, Encoding);
                 foreach (var tuple in missingAssets)
                 {
                     var missingFilename = tuple.Item1;
@@ -207,7 +206,7 @@ namespace Editor
 
         private static void UpdateAssetHistory()
         {
-            var lines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
+            var lines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename, Encoding) : Array.Empty<string>();
             var hasLines = lines.Length > 0;
             var fileHistory = new HashSet<string>(lines);
             var files = Directory.GetFiles(AssetPath, "*.meta", SearchOption.AllDirectories);
@@ -251,7 +250,7 @@ namespace Editor
             }
             else
             {
-                File.WriteAllText(AssetHistoryFilename, newLines.ToString());
+                File.WriteAllText(AssetHistoryFilename, newLines.ToString(), Encoding);
             }
             UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} new entries")}");
         }

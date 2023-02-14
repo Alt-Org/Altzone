@@ -26,6 +26,8 @@ namespace Editor
         private const string OutputFolderWebgl = "buildWebGL";
         private const string OutputFolderWin64 = "buildWin64";
 
+        private static readonly Encoding Encoding = Encoding.UTF8;
+        
         private static readonly List<string> LogMessages = new List<string>
         {
             $"{LogPrefix} {LogSeparator}",
@@ -54,7 +56,7 @@ namespace Editor
             const string scriptName = "m_BuildScript_PostProcess.bat";
             var symbolsName = $"{OutputBaseFilename}-{Application.version}-v{PlayerSettings.Android.bundleVersionCode}.symbols";
             var script = MyCmdLineScripts.AndroidPostProcessScript.Replace("<<altzone_symbols_name>>", symbolsName);
-            File.WriteAllText(scriptName, script);
+            File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
@@ -71,7 +73,7 @@ namespace Editor
                 oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
                 newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
 #endif
-                var htmlContent = File.ReadAllText(htmlFile);
+                var htmlContent = File.ReadAllText(htmlFile, Encoding);
                 var newHtmlContent = htmlContent.Replace(oldTitleText, newTitleText);
                 if (newHtmlContent == htmlContent)
                 {
@@ -81,7 +83,7 @@ namespace Editor
                 Log($"update file {htmlFile}");
                 Log($"old html title '{oldTitleText}'");
                 Log($"new html title '{newTitleText}'");
-                File.WriteAllText(htmlFile, newHtmlContent);
+                File.WriteAllText(htmlFile, newHtmlContent, Encoding);
             }
 
             var indexHtml = Path.Combine(OutputFolderWebgl, "index.html");
@@ -94,7 +96,7 @@ namespace Editor
             PatchIndexHtml(indexHtml, curName, gitTagCompliantLabel);
 
             const string scriptName = "m_BuildScript_PostProcess.bat";
-            File.WriteAllText(scriptName, MyCmdLineScripts.WebGLPostProcessScript);
+            File.WriteAllText(scriptName, MyCmdLineScripts.WebGLPostProcessScript, Encoding);
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
@@ -109,14 +111,14 @@ namespace Editor
                 .Replace("<<unity_version>>", Application.unityVersion)
                 .Replace("<<unity_name>>", unityName)
                 .Replace("<<method_name>>", methodName);
-            File.WriteAllText(scriptName, script);
+            File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"Build script '{scriptName}' written");
             var buildTargetName = CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
             var driverScript = MyCmdLineScripts.BuildDriverScript
                 .Replace("<<build_script_name>>", scriptName)
                 .Replace("<<build_target_name>>", buildTargetName);
-            File.WriteAllText(driverName, driverScript);
+            File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
         }
 
