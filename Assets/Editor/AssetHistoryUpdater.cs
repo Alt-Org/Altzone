@@ -22,7 +22,7 @@ namespace Editor
         private const string AssetPath = "Assets";
         private const string DayNumberKey = "AssetHistory.DayNumber";
         private static readonly int MetaExtensionLength = ".meta".Length;
-        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         /*[MenuItem("Window/ALT-Zone/Update Asset History", false, 55)]
         private static void UpdateAssetHistoryMenu() => OnDelayCall();*/

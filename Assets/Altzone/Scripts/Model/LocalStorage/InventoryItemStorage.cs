@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Model.LocalStorage
     {
         private const int StorageVersionNUmber = 1;
 
-        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
         private readonly string _storageFilename;
         private readonly List<T> _models;
 

@@ -26,7 +26,7 @@ namespace Editor
         private const string OutputFolderWebgl = "buildWebGL";
         private const string OutputFolderWin64 = "buildWin64";
 
-        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
         
         private static readonly List<string> LogMessages = new List<string>
         {

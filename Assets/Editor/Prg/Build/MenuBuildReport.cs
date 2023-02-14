@@ -18,7 +18,7 @@ namespace Editor.Prg.Build
     /// </remarks>
     internal static class MenuBuildReport
     {
-        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private static readonly string[] ExcludedFolders =
         {
