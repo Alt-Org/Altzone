@@ -67,6 +67,9 @@ namespace Editor
 
         #region Dependencies
 
+        [MenuItem(Dependencies + "Check Deleted GUIDs", false, 9)]
+        private static void CheckDeletedGuids() => CheckDependencies.CheckDeletedGuids();
+
         [MenuItem(Dependencies + "Check Usages", false, 10)]
         private static void CheckUsages() => CheckDependencies.CheckUsages();
 
