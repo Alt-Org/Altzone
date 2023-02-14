@@ -47,11 +47,9 @@ namespace Editor
 
         public static void CheckDeletedGuids(List<string> folderNames)
         {
-            var assetLines = (File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>())
-                .ToList();
-            assetLines.Sort();
+            var assetLines = File.Exists(AssetHistoryFilename) ? File.ReadAllLines(AssetHistoryFilename) : Array.Empty<string>();
 
-            Debug.Log($"Checking {folderNames.Count} folders against {assetLines.Count} assets in {AssetHistoryFilename}");
+            Debug.Log($"Checking {folderNames.Count} folders against {assetLines.Length} assets in {AssetHistoryFilename}");
 
             foreach (var folderName in folderNames)
             {
@@ -59,20 +57,33 @@ namespace Editor
             }
         }
 
-        private static void CheckDeletedGuids(string folderName, List<string> assetLines)
+        private static void CheckDeletedGuids(string folderName, string[] assetLines)
         {
             // This works only on Windows for now :-(
             folderName = folderName.Replace('/', '\\');
 
             var assetHistory = new List<Tuple<string, string>>();
             var folderNamePrefix = folderName + '\\';
+            var didRename = false;
             foreach (var assetLine in assetLines)
             {
                 if (assetLine.StartsWith(folderNamePrefix))
                 {
                     var tokens = assetLine.Split('\t');
+                    // Check if asset has been renamed - and remove previous names as guid is the same all the time.
+                    var previousNameIndex = assetHistory.FindIndex(x => x.Item2 == tokens[1]);
+                    if (previousNameIndex != -1)
+                    {
+                        Debug.Log($"{assetHistory[previousNameIndex].Item1} -> {tokens[0]} guid: {tokens[1]}");
+                        assetHistory.RemoveAt(previousNameIndex);
+                        didRename = true;
+                    }
                     assetHistory.Add(new Tuple<string, string>(tokens[0], tokens[1]));
                 }
+            }
+            if (didRename)
+            {
+                Debug.Log("");
             }
 
             var metaFileArray = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
@@ -98,10 +109,12 @@ namespace Editor
             }
             if (missingAssets.Count > 0)
             {
-                // Check if deleted file is used by existing files.
-                var useCount = CheckIfGuidIsUsed(missingAssets, allMetaFilesArray);
-                Debug.Log($"Deleted asset count {missingAssets.Count} with {useCount} invalid references");
+                Debug.Log("No missing assets");
+                return;
             }
+            // Check if deleted files are used by existing files.
+            var useCount = CheckIfGuidIsUsed(missingAssets, allMetaFilesArray);
+            Debug.Log($"Deleted asset count {missingAssets.Count} with {useCount} invalid references");
 
             #region Local helper functions
 
@@ -141,29 +154,21 @@ namespace Editor
 
         private static int CheckIfGuidIsUsed(List<Tuple<string, string>> missingAssets, string[] metaFileArray)
         {
-            var invalidExtensions = new[]
+            var encoding = Encoding.UTF8;
+
+            var validExtensions = new[]
             {
+                // These are YAML files that can(?) have references to other files.
                 ".anim",
-                ".blend",
+                ".asset",
                 ".controller",
-                ".cubemap",
-                ".flare",
-                ".gif",
-                ".inputactions",
+                ".lightning",
                 ".mat",
-                ".mp3",
-                ".otf",
-                ".physicMaterial",
-                ".physicsmaterial2d",
-                ".png",
-                ".psd",
-                ".tga",
-                ".tif",
-                ".ttf",
-                ".wav",
+                ".prefab",
+                ".unity",
             };
-            
-            var stopwatch = Stopwatch.StartNew(); 
+
+            var stopwatch = Stopwatch.StartNew();
             var foundCount = 0;
             foreach (var metaFilename in metaFileArray)
             {
@@ -173,11 +178,11 @@ namespace Editor
                     continue;
                 }
                 var contentExtension = Path.GetExtension(metaContentFilename);
-                if (invalidExtensions.Contains(contentExtension))
+                if (!validExtensions.Contains(contentExtension))
                 {
                     continue;
                 }
-                var text = File.ReadAllText(metaContentFilename);
+                var text = File.ReadAllText(metaContentFilename, encoding);
                 foreach (var tuple in missingAssets)
                 {
                     var missingFilename = tuple.Item1;
@@ -196,7 +201,7 @@ namespace Editor
                 }
             }
             stopwatch.Stop();
-            Debug.Log($"Check all files took {stopwatch.ElapsedMilliseconds/1000d:0.000} s");
+            Debug.Log($"Check all files took {stopwatch.ElapsedMilliseconds / 1000d:0.000} s");
             return foundCount;
         }
 

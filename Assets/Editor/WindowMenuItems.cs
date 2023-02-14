@@ -67,9 +67,6 @@ namespace Editor
 
         #region Dependencies
 
-        [MenuItem(Dependencies + "Check Deleted GUIDs", false, 9)]
-        private static void CheckDeletedGuids() => CheckDependencies.CheckDeletedGuids();
-
         [MenuItem(Dependencies + "Check Usages", false, 10)]
         private static void CheckUsages() => CheckDependencies.CheckUsages();
 
@@ -78,6 +75,9 @@ namespace Editor
 
         [MenuItem(Dependencies + "Sort Selection", false, 12)]
         private static void SortSelection() => CheckDependencies.SortSelection();
+
+        [MenuItem(Dependencies + "Check Deleted GUIDs", false, 13)]
+        private static void CheckDeletedGuids() => CheckDependencies.CheckDeletedGuids();
 
         [MenuItem(MissingReferences + "Search in scene", false, 20)]
         private static void FindMissingReferencesInCurrentScene() => MissingReferencesFinder.FindMissingReferencesInCurrentScene();
