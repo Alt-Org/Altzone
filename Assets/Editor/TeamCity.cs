@@ -27,7 +27,7 @@ namespace Editor
         private const string OutputFolderWin64 = "buildWin64";
 
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
-        
+
         private static readonly List<string> LogMessages = new()
         {
             $"{LogPrefix} {LogSeparator}",
@@ -127,6 +127,7 @@ namespace Editor
             try
             {
                 DumpEnvironment();
+                WriteSourceCodeChanges(PlayerSettings.Android.bundleVersionCode);
                 var args = CommandLine.Parse(Environment.GetCommandLineArgs());
                 Log($"build with args: {args}");
                 var buildOptions = BuildOptions.None;
@@ -209,6 +210,40 @@ namespace Editor
             {
                 EditorApplication.Exit(1);
             }
+        }
+
+        private static void WriteSourceCodeChanges(int bundleVersionCode)
+        {
+            const string bundleVersionCodeFilename = @"Assets\Prg\BundleVersionCode.cs";
+            const string bundleVersionCodeText1 = @"private const string BundleVersionCodeValue = """;
+            const string bundleVersionCodeText2 = @""";";
+
+            if (!File.Exists(bundleVersionCodeFilename))
+            {
+                Log($"File not found {bundleVersionCodeFilename}");
+                return;
+            }
+            var sourceText = File.ReadAllText(bundleVersionCodeFilename, Encoding);
+            var index1 = sourceText.IndexOf(bundleVersionCodeText1, StringComparison.Ordinal);
+            if (index1 > 0)
+            {
+                index1 += bundleVersionCodeText1.Length;
+            }
+            var index2 = sourceText.IndexOf(bundleVersionCodeText2, StringComparison.Ordinal);
+            var isValid = index1 > 0 && index1 <= index2;
+            if (!isValid)
+            {
+                Log($"Original BundleVersionCodeText not found {bundleVersionCodeFilename}");
+                return;
+            }
+            var builder = new StringBuilder();
+            builder.Append(sourceText.Substring(0, index1));
+            builder.Append('.');
+            builder.Append(bundleVersionCode);
+            builder.Append(sourceText.Substring(index2));
+            
+            File.WriteAllText(bundleVersionCodeFilename, builder.ToString(), Encoding);
+            AssetDatabase.Refresh(ImportAssetOptions.Default);
         }
 
         private static string GetOutputFile(BuildTarget buildTarget)
