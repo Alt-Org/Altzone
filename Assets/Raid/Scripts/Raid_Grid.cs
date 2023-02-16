@@ -28,6 +28,8 @@ public class Raid_Grid : MonoBehaviour
     public Sprite TFurnitureSprite1b;
     public Sprite TFurnitureSprite1c;
 
+    private bool TilesColouredRed = false;
+
     public int AmountOfMines;
     public int AmountofSingles;
     public int AmountofDoubles;
@@ -104,6 +106,20 @@ public class Raid_Grid : MonoBehaviour
                 if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
                 {
                     RevealAdjacentTilesForTileAt(x, y);
+                }
+            }
+            else if(!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Number)
+            {
+                if(TilesColouredRed)
+                {
+                    ColourAdjacentTilesWhite(x, y);
+                    TilesColouredRed = false;
+                }
+                else
+                {
+                    ColourAdjacentTilesRed(x, y);
+                    TilesColouredRed = true;
+                    Debug.Log("TilesAreColoured");
                 }
             }
         }
@@ -1018,6 +1034,110 @@ public class Raid_Grid : MonoBehaviour
         else if (raid_Tile.tileType == Raid_Tile.TileType.Furniture)
         {
             Debug.Log("Tile at (" + x + ", " + y + ") is a Furniture tile");
+        }
+    }
+
+    private void ColourAdjacentTilesRed(int x, int y)
+    {
+        Raid_Tile raid_Tile1 = grid[x, y+1];
+        Raid_Tile raid_Tile2 = grid[x+1, y+1];
+        Raid_Tile raid_Tile3 = grid[x+1, y];
+        Raid_Tile raid_Tile4 = grid[x+1, y-1];
+        Raid_Tile raid_Tile5 = grid[x, y-1];
+        Raid_Tile raid_Tile6 = grid[x-1, y-1];
+        Raid_Tile raid_Tile7 = grid[x-1, y];
+        Raid_Tile raid_Tile8 = grid[x-1, y+1];
+
+        if ((y + 1) < 9)
+        {
+            raid_Tile1.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x + 1) < 9)
+        {
+            raid_Tile3.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((y - 1) >= 0)
+        {
+            raid_Tile5.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x - 1) >= 0)
+        {
+            raid_Tile7.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x + 1) < 9 && (y + 1) < 9)
+        {
+            raid_Tile2.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x + 1) < 9 && (y - 1) >= 0)
+        {
+            raid_Tile4.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x - 1) >= 0 && (y - 1) >= 0)
+        {
+            raid_Tile6.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
+        if ((x - 1) >= 0 && (y + 1) < 9)
+        {
+            raid_Tile8.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    private void ColourAdjacentTilesWhite(int x, int y)
+    {
+        Raid_Tile raid_Tile1 = grid[x, y + 1];
+        Raid_Tile raid_Tile2 = grid[x + 1, y + 1];
+        Raid_Tile raid_Tile3 = grid[x + 1, y];
+        Raid_Tile raid_Tile4 = grid[x + 1, y - 1];
+        Raid_Tile raid_Tile5 = grid[x, y - 1];
+        Raid_Tile raid_Tile6 = grid[x - 1, y - 1];
+        Raid_Tile raid_Tile7 = grid[x - 1, y];
+        Raid_Tile raid_Tile8 = grid[x - 1, y + 1];
+
+        if ((y + 1) < 9)
+        {
+            raid_Tile1.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x + 1) < 9)
+        {
+            raid_Tile3.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((y - 1) >= 0)
+        {
+            raid_Tile5.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x - 1) >= 0)
+        {
+            raid_Tile7.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x + 1) < 9 && (y + 1) < 9)
+        {
+            raid_Tile2.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x + 1) < 9 && (y - 1) >= 0)
+        {
+            raid_Tile4.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x - 1) >= 0 && (y - 1) >= 0)
+        {
+            raid_Tile6.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if ((x - 1) >= 0 && (y + 1) < 9)
+        {
+            raid_Tile8.GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 }
