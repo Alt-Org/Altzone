@@ -38,7 +38,7 @@ namespace Editor.Prg.Dependencies
                 }
                 paths.Add(path);
             }
-            AssetHistoryUpdater.CheckDeletedGuids(paths);
+            AssetHistoryVerifier.CheckDeletedGuids(paths);
         }
         
         public static void CheckUsages()
