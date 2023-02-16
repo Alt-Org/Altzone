@@ -20,9 +20,12 @@ namespace Editor
 
     /// <summary>
     /// Keeps a list of files (assets) we have ever seen for a later case when files has been deleted or renamed and
-    /// we need to find out what was the original name or location.
+    /// we need to find out what was the original name or location.<br />
+    /// Initially files are in the order OS reports them and later additions are appended as they are found.<br />
+    /// This facilitates tracking renamed files unambiguously.
     /// </summary>
     /// <remarks>
+    /// File format (for lines) is: &lt;asset_name&gt; \t &lt;asset_guid&gt; \t &lt;asset_extension&gt;<br />
     /// We try to run this once a day when UNITY Editor is started first time.
     /// </remarks>
     public static class AssetHistoryUpdater
@@ -70,7 +73,8 @@ namespace Editor
                 }
                 var assetPath = file.Substring(0, file.Length - AssetHistory.MetaExtensionLength);
                 var guid = AssetDatabase.GUIDFromAssetPath(assetPath);
-                var line = $"{assetPath}\t{guid}";
+                var dirMarker = AssetDatabase.IsValidFolder(assetPath) ? "\tDIR" : Path.GetExtension(assetPath);
+                var line = $"{assetPath}\t{guid}{dirMarker}";
                 if (fileHistory.Add(line))
                 {
                     newFileCount += 1;
