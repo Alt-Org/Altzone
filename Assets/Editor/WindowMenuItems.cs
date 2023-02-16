@@ -76,6 +76,9 @@ namespace Editor
         [MenuItem(Dependencies + "Sort Selection", false, 12)]
         private static void SortSelection() => CheckDependencies.SortSelection();
 
+        [MenuItem(Dependencies + "Check Deleted GUIDs", false, 13)]
+        private static void CheckDeletedGuids() => CheckDependencies.CheckDeletedGuids();
+
         [MenuItem(MissingReferences + "Search in scene", false, 20)]
         private static void FindMissingReferencesInCurrentScene() => MissingReferencesFinder.FindMissingReferencesInCurrentScene();
 
@@ -141,6 +144,9 @@ namespace Editor
 
         [MenuItem(Build + "Test Android Build Config", false, 12)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
+
+        [MenuItem(Build + "Set Android Build for Local APK Test", false, 13)]
+        private static void SetAndroidBuildTestApk() => MenuBuildReport.SetAndroidBuildTestApk();
 
         #endregion
 

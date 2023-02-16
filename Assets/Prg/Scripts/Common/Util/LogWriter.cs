@@ -21,8 +21,8 @@ namespace Prg.Scripts.Common.Util
         private static Func<string, string> _logLineContentFilter;
 
         private static LogWriter _instance;
-        private static readonly object Lock = new object();
-        private static readonly UTF8Encoding FileEncoding = new UTF8Encoding(false, false);
+        private static readonly object Lock = new();
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         [Header("Live Data"), SerializeField] private string _fileName;
         private StreamWriter _file;
@@ -53,7 +53,7 @@ namespace Prg.Scripts.Common.Util
                     try
                     {
                         // Open for overwrite!
-                        _file = new StreamWriter(_fileName, false, FileEncoding) { AutoFlush = true };
+                        _file = new StreamWriter(_fileName, false, Encoding) { AutoFlush = true };
                         break;
                     }
                     catch (IOException) // Sharing violation if more than one instance at the same time

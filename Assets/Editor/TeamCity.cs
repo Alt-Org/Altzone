@@ -26,7 +26,9 @@ namespace Editor
         private const string OutputFolderWebgl = "buildWebGL";
         private const string OutputFolderWin64 = "buildWin64";
 
-        private static readonly List<string> LogMessages = new List<string>
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
+        
+        private static readonly List<string> LogMessages = new()
         {
             $"{LogPrefix} {LogSeparator}",
         };
@@ -41,8 +43,7 @@ namespace Editor
 
         internal static void CheckAndroidBuild()
         {
-            // We assume that local keystore and password folder is one level up from current working directory
-            // - that should be UNITY project folder
+            // We assume that local keystore and password folder is one level up from current working directory (the UNITY project folder)
             var keystore = Path.Combine("..", $"local_{GetCurrentUser()}", "altzone.keystore");
             var args = CommandLine.Parse(new[] { "-buildTarget", "Android", "-keystore", keystore });
             configure_Android(args);
@@ -53,8 +54,8 @@ namespace Editor
         {
             const string scriptName = "m_BuildScript_PostProcess.bat";
             var symbolsName = $"{OutputBaseFilename}-{Application.version}-v{PlayerSettings.Android.bundleVersionCode}.symbols";
-            var script = MyCmdLineScripts.AndroidPostProcessScript.Replace("<<altzone_symbols_name>>", symbolsName);
-            File.WriteAllText(scriptName, script);
+            var script = CommandLineTemplate.AndroidPostProcessScript.Replace("<<altzone_symbols_name>>", symbolsName);
+            File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
@@ -71,7 +72,7 @@ namespace Editor
                 oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
                 newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
 #endif
-                var htmlContent = File.ReadAllText(htmlFile);
+                var htmlContent = File.ReadAllText(htmlFile, Encoding);
                 var newHtmlContent = htmlContent.Replace(oldTitleText, newTitleText);
                 if (newHtmlContent == htmlContent)
                 {
@@ -81,7 +82,7 @@ namespace Editor
                 Log($"update file {htmlFile}");
                 Log($"old html title '{oldTitleText}'");
                 Log($"new html title '{newTitleText}'");
-                File.WriteAllText(htmlFile, newHtmlContent);
+                File.WriteAllText(htmlFile, newHtmlContent, Encoding);
             }
 
             var indexHtml = Path.Combine(OutputFolderWebgl, "index.html");
@@ -94,7 +95,7 @@ namespace Editor
             PatchIndexHtml(indexHtml, curName, gitTagCompliantLabel);
 
             const string scriptName = "m_BuildScript_PostProcess.bat";
-            File.WriteAllText(scriptName, MyCmdLineScripts.WebGLPostProcessScript);
+            File.WriteAllText(scriptName, CommandLineTemplate.WebGLPostProcessScript, Encoding);
             Debug.Log($"PostProcess script '{scriptName}' written");
         }
 
@@ -105,18 +106,18 @@ namespace Editor
             var sep2 = Path.DirectorySeparatorChar.ToString();
             var unityName = EditorApplication.applicationPath.Replace(sep1, sep2);
             var methodName = $"{typeof(TeamCity).FullName}.{nameof(Build)}";
-            var script = MyCmdLineScripts.BuildScript
+            var script = CommandLineTemplate.BuildScript
                 .Replace("<<unity_version>>", Application.unityVersion)
                 .Replace("<<unity_name>>", unityName)
                 .Replace("<<method_name>>", methodName);
-            File.WriteAllText(scriptName, script);
+            File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"Build script '{scriptName}' written");
             var buildTargetName = CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
-            var driverScript = MyCmdLineScripts.BuildDriverScript
+            var driverScript = CommandLineTemplate.BuildDriverScript
                 .Replace("<<build_script_name>>", scriptName)
                 .Replace("<<build_target_name>>", buildTargetName);
-            File.WriteAllText(driverName, driverScript);
+            File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
         }
 
@@ -145,7 +146,6 @@ namespace Editor
                     case BuildTarget.WebGL:
                         outputDir = OutputFolderWebgl;
                         targetGroup = BuildTargetGroup.WebGL;
-                        configure_WebGL(args);
                         break;
                     case BuildTarget.StandaloneWindows64:
                         outputDir = Path.Combine(OutputFolderWin64, GetOutputFile(args.BuildTarget));
@@ -310,14 +310,6 @@ namespace Editor
             LogObfuscated("keyaliasPass", PlayerSettings.keyaliasPass);
         }
 
-        private static void configure_WebGL(CommandLine args)
-        {
-#if UNITY_2019
-#else
-            Log($"WebGL.compressionFormat={PlayerSettings.WebGL.compressionFormat}");
-#endif
-        }
-
         private static string SanitizePath(string path)
         {
             // https://www.mtu.edu/umc/services/websites/writing/characters-avoid/
@@ -407,7 +399,7 @@ namespace Editor
             // Build target parameter mapping
             // See: https://docs.unity3d.com/Manual/CommandLineArguments.html
             // See: https://docs.unity3d.com/2019.4/Documentation/ScriptReference/BuildTarget.html
-            private static readonly Dictionary<string, BuildTarget> KnownBuildTargets = new Dictionary<string, BuildTarget>
+            private static readonly Dictionary<string, BuildTarget> KnownBuildTargets = new()
             {
                 { "Win64", BuildTarget.StandaloneWindows64 },
                 { "Android", BuildTarget.Android },
@@ -460,9 +452,9 @@ namespace Editor
         }
 
         /// <summary>
-        /// Collection of command line scripts our build "system".
+        /// Collection of command line script templates our build system.
         /// </summary>
-        private static class MyCmdLineScripts
+        private static class CommandLineTemplate
         {
             public static string BuildScript => BuildScriptContent;
             public static string BuildDriverScript => BuildDriverScriptContent;

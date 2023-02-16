@@ -3,6 +3,7 @@ using Altzone.Scripts.Config;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Battle0.Scripts.Lobby.InLobby
 {
@@ -13,6 +14,7 @@ namespace Battle0.Scripts.Lobby.InLobby
         private void Awake()
         {
             _view.CharacterButtonOnClick = CharacterButtonOnClick;
+            _view.RaidButtonOnClick = RaidButtonOnClick;
             _view.RoomButtonOnClick = RoomButtonOnClick;
             _view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
@@ -82,6 +84,11 @@ namespace Battle0.Scripts.Lobby.InLobby
         private void CharacterButtonOnClick()
         {
             Debug.Log($"{PhotonNetwork.NetworkClientState}");
+        }
+
+        private void RaidButtonOnClick()
+        {
+            SceneManager.LoadScene("te-test-raid-demo");
         }
 
         private void RoomButtonOnClick()

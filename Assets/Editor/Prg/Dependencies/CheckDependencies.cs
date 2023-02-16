@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,29 @@ namespace Editor.Prg.Dependencies
     {
         private const string AssetRootName = "Assets";
 
+        public static void CheckDeletedGuids()
+        {
+            Debug.Log("*");
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
+            {
+                Debug.Log("Select one directory to check");
+                return;
+            }
+            var paths = new List<string>();
+            foreach (var guid in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!Directory.Exists(path))
+                {
+                    Debug.LogWarning($"Selected object is not a directory: {path}");
+                    return;
+                }
+                paths.Add(path);
+            }
+            AssetHistoryUpdater.CheckDeletedGuids(paths);
+        }
+        
         public static void CheckUsages()
         {
             Debug.Log("*");
@@ -176,11 +200,12 @@ namespace Editor.Prg.Dependencies
 
         private static int CheckForGuidInAssets(string[] selectedGuids, ref int[] foundCount, string[] assetGuids)
         {
+            var encoding = Encoding.UTF8;
             var count = 0;
             foreach (var assetGuid in assetGuids)
             {
                 var path = AssetDatabase.GUIDToAssetPath(assetGuid);
-                var assetContent = File.ReadAllText(path);
+                var assetContent = File.ReadAllText(path, encoding);
                 for (var guidIndex = 0; guidIndex < selectedGuids.Length; ++guidIndex)
                 {
                     var guid = selectedGuids[guidIndex];

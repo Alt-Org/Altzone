@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Altzone.Scripts.Model.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -18,6 +19,7 @@ namespace Altzone.Scripts.Model.LocalStorage
     {
         private const int StorageVersionNUmber = 1;
 
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
         private readonly string _storagePath;
         private readonly List<ICustomCharacterModel> _models;
 
@@ -83,7 +85,7 @@ namespace Altzone.Scripts.Model.LocalStorage
 
         private static StorageData LoadStorage(string storagePath)
         {
-            var jsonData = File.ReadAllText(storagePath);
+            var jsonData = File.ReadAllText(storagePath, Encoding);
             var storageData = JsonUtility.FromJson<StorageData>(jsonData);
             Assert.AreEqual(StorageVersionNUmber, storageData.VersionNUmber);
             return storageData;
@@ -97,7 +99,7 @@ namespace Altzone.Scripts.Model.LocalStorage
                 ModelList = models.Cast<CustomCharacterModel>().ToList(),
             };
             var json = JsonUtility.ToJson(storageData);
-            File.WriteAllText(storagePath, json);
+            File.WriteAllText(storagePath, json, Encoding);
         }
 
         private class StorageData

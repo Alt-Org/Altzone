@@ -18,6 +18,8 @@ namespace Editor.Prg.Build
     /// </remarks>
     internal static class MenuBuildReport
     {
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
+
         private static readonly string[] ExcludedFolders =
         {
             "Assets/Photon",
@@ -44,6 +46,24 @@ namespace Editor.Prg.Build
         {
             Debug.Log("*");
             TeamCity.CheckAndroidBuild();
+        }
+
+        public static void SetAndroidBuildTestApk()
+        {
+            Debug.Log("*");
+            Debug.Log($"* {RichText.Yellow("DO NOT COMMIT <b>THESE CHANGES</b> TO VERSION CONTROL")}");
+            Debug.Log("*");
+            // Fix settings for APK.
+            EditorUserBuildSettings.buildAppBundle = false;
+            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
+            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
+            // Reset settings.
+            PlayerSettings.Android.useCustomKeystore = false;
+            PlayerSettings.Android.keystoreName = string.Empty;
+            PlayerSettings.Android.keyaliasName = string.Empty;
+            PlayerSettings.keystorePass = string.Empty;
+            PlayerSettings.keyaliasPass = string.Empty;
+            SettingsService.OpenProjectSettings("Project/Player");
         }
 
         public static void CheckBuildReport()
@@ -352,7 +372,7 @@ namespace Editor.Prg.Build
 
             public void Save(string fileName)
             {
-                File.WriteAllText(fileName, _builder.ToString());
+                File.WriteAllText(fileName, _builder.ToString(), Encoding);
             }
         }
     }

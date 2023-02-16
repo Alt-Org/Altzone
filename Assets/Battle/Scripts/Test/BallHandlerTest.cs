@@ -5,12 +5,14 @@ using UnityEngine;
 public class BallHandlerTest : MonoBehaviour
 {
     [SerializeField] private int startingSpeed;
+    private Transform _transform;
     private const float waitTime = 2f;
 
     private Rigidbody2D rb;
 
     private void Start()
     {
+        _transform = transform;
         rb = GetComponent<Rigidbody2D>();     
         StartCoroutine(LaunchBall());
     }
@@ -30,5 +32,11 @@ public class BallHandlerTest : MonoBehaviour
             yield break;
         }
         rb.velocity = startingSpeed * randomDir.normalized;
+    }
+    private void Update()
+    {
+        var velocity = rb.velocity;
+        var angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+        _transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 }
