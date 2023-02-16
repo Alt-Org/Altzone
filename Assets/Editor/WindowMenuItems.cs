@@ -145,6 +145,9 @@ namespace Editor
         [MenuItem(Build + "Test Android Build Config", false, 12)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
 
+        [MenuItem(Build + "Set Android Build for Local APK Test", false, 13)]
+        private static void SetAndroidBuildTestApk() => MenuBuildReport.SetAndroidBuildTestApk();
+
         #endregion
 
         #region LootLocker

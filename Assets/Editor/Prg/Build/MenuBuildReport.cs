@@ -48,6 +48,24 @@ namespace Editor.Prg.Build
             TeamCity.CheckAndroidBuild();
         }
 
+        public static void SetAndroidBuildTestApk()
+        {
+            Debug.Log("*");
+            Debug.Log($"* {RichText.Yellow("DO NOT COMMIT <b>THESE CHANGES</b> TO VERSION CONTROL")}");
+            Debug.Log("*");
+            // Fix settings for APK.
+            EditorUserBuildSettings.buildAppBundle = false;
+            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
+            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
+            // Reset settings.
+            PlayerSettings.Android.useCustomKeystore = false;
+            PlayerSettings.Android.keystoreName = string.Empty;
+            PlayerSettings.Android.keyaliasName = string.Empty;
+            PlayerSettings.keystorePass = string.Empty;
+            PlayerSettings.keyaliasPass = string.Empty;
+            SettingsService.OpenProjectSettings("Project/Player");
+        }
+
         public static void CheckBuildReport()
         {
             Debug.Log("*");
