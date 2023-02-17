@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -7,13 +8,44 @@ using UnityEngine;
 
 namespace Editor
 {
+    /// <summary>
+    /// Constants for <c>AssetHistory</c>.
+    /// </summary>
     public static class AssetHistory
     {
         public const string AssetHistoryFilename = "m_Build_AssetHistory.txt";
+        public const string AssetHistoryStateFilename = "m_Build_AssetHistoryState.txt";
         public const string AssetPath = "Assets";
         public const string DayNumberKey = "AssetHistory.DayNumber";
         public static readonly int MetaExtensionLength = ".meta".Length;
         public static readonly Encoding Encoding = new UTF8Encoding(false, false);
+    }
+
+    /// <summary>
+    /// Local state for <c>AssetHistory</c>.
+    /// </summary>
+    [Serializable]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class AssetHistoryState
+    {
+        public int DayNumber;
+        public List<string> Lines = new();
+
+        public static AssetHistoryState Load()
+        {
+            if (!File.Exists(AssetHistory.AssetHistoryStateFilename))
+            {
+                return new AssetHistoryState();
+            }
+            var jsonData = File.ReadAllText(AssetHistory.AssetHistoryStateFilename, AssetHistory.Encoding);
+            return JsonUtility.FromJson<AssetHistoryState>(jsonData);
+        }
+
+        public static void Save(AssetHistoryState state)
+        {
+            var json = JsonUtility.ToJson(state);
+            File.WriteAllText(AssetHistory.AssetHistoryStateFilename, json, AssetHistory.Encoding);
+        }
     }
 
     /// <summary>
@@ -38,13 +70,15 @@ namespace Editor
         {
             EditorApplication.delayCall -= OnDelayCall;
 
+            var state = AssetHistoryState.Load();
             var dayOfYear = DateTime.Now.DayOfYear;
-            if (dayOfYear == PlayerPrefs.GetInt(AssetHistory.DayNumberKey, 0) && File.Exists(AssetHistory.AssetHistoryFilename))
+            if (dayOfYear == state.DayNumber && File.Exists(AssetHistory.AssetHistoryFilename))
             {
                 return;
             }
             UpdateAssetHistory();
-            PlayerPrefs.SetInt(AssetHistory.DayNumberKey, dayOfYear);
+            state.DayNumber = dayOfYear;
+            AssetHistoryState.Save(state);
         }
 
         public static void UpdateAssetHistory()
