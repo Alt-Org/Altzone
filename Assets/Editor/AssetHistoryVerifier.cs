@@ -11,57 +11,86 @@ namespace Editor
     {
         public static void CheckDeletedGuids(List<string> folderNames)
         {
-            var assetHistoryFilename = AssetHistory.AssetHistoryFilename;
-            var assetLines = File.Exists(assetHistoryFilename) ? File.ReadAllLines(assetHistoryFilename, AssetHistory.Encoding) : Array.Empty<string>();
-
-            Debug.Log($"Checking {folderNames.Count} folders against {assetLines.Length} assets in {assetHistoryFilename}");
+            var timer = Stopwatch.StartNew();
+            var assetLines = AssetHistory.Load();
+            var assetHistory = RemoveRenamedEntries(assetLines);
+            Debug.Log($"Checking {folderNames.Count} folders against {assetHistory.Count} unique assets in {AssetHistory.AssetHistoryFilename}");
 
             foreach (var folderName in folderNames)
             {
-                CheckDeletedGuids(folderName, assetLines);
+                CheckDeletedGuids(folderName, assetHistory, timer);
             }
+            timer.Stop();
+            Debug.Log($"Check took {timer.ElapsedMilliseconds / 1000f:0.000} s");
         }
 
-        private static void CheckDeletedGuids(string folderName, string[] assetLines)
+        private static List<Tuple<string, string>> RemoveRenamedEntries(string[] assetLines)
         {
-            // This works only on Windows for now :-(
-            folderName = folderName.Replace('/', '\\');
-
             var assetHistory = new List<Tuple<string, string>>();
-            var folderNamePrefix = folderName + '\\';
-            var didRename = false;
             foreach (var assetLine in assetLines)
             {
-                if (assetLine.StartsWith(folderNamePrefix))
+                var tokens = assetLine.Split('\t');
+                // Check if asset has been renamed - and remove previous names as guid is same all the time.
+                var previousNameIndex = assetHistory.FindIndex(x => x.Item2 == tokens[1]);
+                if (previousNameIndex != -1)
                 {
-                    var tokens = assetLine.Split('\t');
-                    // Check if asset has been renamed - and remove previous names as guid is the same all the time.
-                    var previousNameIndex = assetHistory.FindIndex(x => x.Item2 == tokens[1]);
-                    if (previousNameIndex != -1)
-                    {
-                        Debug.Log($"{assetHistory[previousNameIndex].Item1} -> {tokens[0]} guid: {tokens[1]}");
-                        assetHistory.RemoveAt(previousNameIndex);
-                        didRename = true;
-                    }
-                    assetHistory.Add(new Tuple<string, string>(tokens[0], tokens[1]));
+                    assetHistory.RemoveAt(previousNameIndex);
                 }
+                assetHistory.Add(new Tuple<string, string>(tokens[0], tokens[1]));
             }
-            if (didRename)
-            {
-                Debug.Log("");
-            }
-
-            var metaFileArray = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
-            var allMetaFilesArray = AssetHistory.AssetPath == folderName
-                ? metaFileArray
+            return assetHistory;
+        }
+        
+        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory, Stopwatch timer)
+        {
+            var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
+            var allMetaFiles = AssetHistory.AssetPath == folderName
+                ? folderMetaFiles
                 : Directory.GetFiles(AssetHistory.AssetPath, "*.meta", SearchOption.AllDirectories);
-            var fileList = CreateFileList(metaFileArray);
-            Debug.Log($"Check {folderName} with {fileList.Count} asset files and {assetHistory.Count} history");
-            if (!SanityCheck())
+            var folderFiles = new List<string>();
+            foreach (var file in folderMetaFiles)
+            {
+                var filename = file.Substring(0, file.Length - AssetHistory.MetaExtensionLength);
+                folderFiles.Add(filename);
+            }
+            Debug.Log($"Check {folderName} with {folderFiles.Count} asset files against {allMetaFiles.Count()}/{assetHistory.Count} actual/history");
+            if (!SanityCheck(folderFiles, assetHistory))
             {
                 return;
             }
 
+            #region Local helper functions
+
+            List<string> CreateFileList(string[] metaFilenames)
+            {
+                var list = new List<string>();
+                return list;
+            }
+
+            #endregion
+        }
+
+        private static bool SanityCheck(List<string> fileList, List<Tuple<string, string>> assetHistory)
+        {
+            // Just a sanity check that asset history (file) is up-to-date with current file system.
+            foreach (var filename in fileList)
+            {
+                if (Directory.Exists(filename))
+                {
+                    continue;
+                }
+                var index = assetHistory.FindIndex(x => x.Item1 == filename);
+                if (index == -1)
+                {
+                    Debug.Log($"{RichText.Yellow(filename)} not found in asset history");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static void OldCode(List<string> fileList, List<Tuple<string, string>> assetHistory)
+        {
             // Check that a history file exists - to find deleted files.
             var missingAssets = new List<Tuple<string, string>>();
             foreach (var tuple in assetHistory)
@@ -78,45 +107,10 @@ namespace Editor
                 return;
             }
             // Check if deleted files are used by existing files.
-            var useCount = CheckIfGuidIsUsed(missingAssets, allMetaFilesArray);
+            var useCount = 0;//CheckIfGuidIsUsed(missingAssets, allMetaFiles);
             Debug.Log($"Deleted asset count {missingAssets.Count} with {useCount} invalid references");
-
-            #region Local helper functions
-
-            List<string> CreateFileList(string[] metaFilenames)
-            {
-                var list = new List<string>();
-                foreach (var file in metaFilenames)
-                {
-                    var filename = file.Substring(0, file.Length - AssetHistory.MetaExtensionLength);
-                    list.Add(filename);
-                }
-                return list;
-            }
-
-            bool SanityCheck()
-            {
-                // Just a sanity check that history file is up-to-date with file system.
-                foreach (var filename in fileList)
-                {
-                    if (Directory.Exists(filename))
-                    {
-                        continue;
-                    }
-                    //var index = Array.FindIndex(files, x => x.StartsWith(filename));
-                    var index = assetHistory.FindIndex(x => x.Item1 == filename);
-                    if (index == -1)
-                    {
-                        Debug.Log($"{RichText.Yellow(filename)} not found in asset history");
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            #endregion
         }
-
+        
         private static int CheckIfGuidIsUsed(List<Tuple<string, string>> missingAssets, string[] metaFileArray)
         {
             var validExtensions = new[]

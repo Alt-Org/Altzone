@@ -19,6 +19,14 @@ namespace Editor
         public const string DayNumberKey = "AssetHistory.DayNumber";
         public static readonly int MetaExtensionLength = ".meta".Length;
         public static readonly Encoding Encoding = new UTF8Encoding(false, false);
+
+        public static string[] Load()
+        {
+            var lines = File.Exists(AssetHistory.AssetHistoryFilename)
+                ? File.ReadAllLines(AssetHistory.AssetHistoryFilename, AssetHistory.Encoding)
+                : Array.Empty<string>();
+            return lines;
+        }
     }
 
     /// <summary>
@@ -83,9 +91,7 @@ namespace Editor
 
         public static void UpdateAssetHistory()
         {
-            var lines = File.Exists(AssetHistory.AssetHistoryFilename)
-                ? File.ReadAllLines(AssetHistory.AssetHistoryFilename, AssetHistory.Encoding)
-                : Array.Empty<string>();
+            var lines = AssetHistory.Load();
             var hasLines = lines.Length > 0;
             var fileHistory = new HashSet<string>(lines);
             var files = Directory.GetFiles(AssetHistory.AssetPath, "*.meta", SearchOption.AllDirectories);
