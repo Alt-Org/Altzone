@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -30,9 +28,6 @@ namespace Editor
     /// </remarks>
     public static class AssetHistoryUpdater
     {
-        /*[MenuItem("Window/ALT-Zone/Force Update Asset History", false, 9)]
-        private static void UpdateAssetHistoryMenu() => UpdateAssetHistory();*/
-
         [InitializeOnLoadMethod]
         private static void InitializeOnLoadMethod()
         {
@@ -52,7 +47,7 @@ namespace Editor
             PlayerPrefs.SetInt(AssetHistory.DayNumberKey, dayOfYear);
         }
 
-        private static void UpdateAssetHistory()
+        public static void UpdateAssetHistory()
         {
             var lines = File.Exists(AssetHistory.AssetHistoryFilename)
                 ? File.ReadAllLines(AssetHistory.AssetHistoryFilename, AssetHistory.Encoding)
@@ -73,8 +68,7 @@ namespace Editor
                 }
                 var assetPath = file.Substring(0, file.Length - AssetHistory.MetaExtensionLength);
                 var guid = AssetDatabase.GUIDFromAssetPath(assetPath);
-                var dirMarker = AssetDatabase.IsValidFolder(assetPath) ? "\tDIR" : Path.GetExtension(assetPath);
-                var line = $"{assetPath}\t{guid}{dirMarker}";
+                var line = $"{assetPath}\t{guid}";
                 if (fileHistory.Add(line))
                 {
                     newFileCount += 1;

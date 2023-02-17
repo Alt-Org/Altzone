@@ -91,6 +91,9 @@ namespace Editor
         [MenuItem(MissingReferences + "Search in selection", false, 23)]
         private static void FindMissingReferencesInSelection() => MissingReferencesFinder.FindMissingReferencesInSelection();
 
+        [MenuItem(Dependencies + "Force Update Local Asset History", false, 24)]
+        private static void UpdateAssetHistoryMenu() => AssetHistoryUpdater.UpdateAssetHistory();
+
         #endregion
 
         #region Util
