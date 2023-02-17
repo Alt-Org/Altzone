@@ -21,7 +21,7 @@ namespace Editor
             {
                 foreach (var folderName in folderNames)
                 {
-                    CheckDeletedGuids(folderName, assetHistory, state, timer);
+                    CheckDeletedGuids(folderName, assetHistory, state);
                 }
             }
             finally
@@ -48,8 +48,7 @@ namespace Editor
             return assetHistory;
         }
 
-        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory,
-            AssetHistoryState state, Stopwatch timer)
+        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory, AssetHistoryState state)
         {
             var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
             var isFullCheck = AssetHistory.AssetPath == folderName;
@@ -109,13 +108,14 @@ namespace Editor
                     state.Save();
                     Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
                 }
-                guidFileCount += CheckFileReferences(contentFilename, textLines, referencedGuids, otherGuids);
+                guidFileCount += CheckFileReferences(textLines, referencedGuids, otherGuids);
             }
             Debug.Log($"Found {referencedGuids.Count} different guids and {otherGuids.Count} other guids in {guidFileCount} files");
-            var guidList = otherGuids.ToList();
-            guidList.Sort();
-            File.WriteAllText("m_Build_AssetHistory_GUIDs.txt", string.Join("\r\n", guidList));
-
+            {
+                var guidList = otherGuids.ToList();
+                guidList.Sort();
+                File.WriteAllText("m_Build_AssetHistory_GUIDs.txt", string.Join("\r\n", guidList));
+            }
             // Find all current existing file guids in given folder
             var folderGuids = new HashSet<string>();
             foreach (var assetFile in folderFiles)
@@ -154,20 +154,9 @@ namespace Editor
                 }
             }
             Debug.Log($"MissingReferenceCount {missingReferenceCount}");
-            return;
-            foreach (var referencedGuid in referencedGuids)
-            {
-                if (!folderGuids.Contains(referencedGuid))
-                {
-                    missingReferenceCount += 1;
-                    var tuple = assetHistory.FirstOrDefault(x => x.Item2 == referencedGuid);
-                    Debug.Log($"Missing reference {referencedGuid} {tuple?.Item1}");
-                }
-            }
         }
 
-        private static int CheckFileReferences(string contentFilename, string[] textLines, HashSet<string> referencedGuids,
-            HashSet<string> otherGuids)
+        private static int CheckFileReferences(string[] textLines, HashSet<string> referencedGuids, HashSet<string> otherGuids)
         {
             var guidCount = 0;
             foreach (var textLine in textLines)
@@ -193,8 +182,6 @@ namespace Editor
                     otherGuids.Add(textLine.Trim());
                 }
             }
-            //var asset = AssetDatabase.LoadAssetAtPath<Object>(contentFilename.Replace('\\', '/'));
-            //Debug.Log($"{Path.GetFileName(contentFilename)} lines {textLines.Length} guidCount {guidCount}", asset);
             return guidCount;
         }
 
