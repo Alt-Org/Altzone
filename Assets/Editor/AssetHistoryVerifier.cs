@@ -12,13 +12,14 @@ namespace Editor
         public static void CheckDeletedGuids(List<string> folderNames)
         {
             var timer = Stopwatch.StartNew();
+            var state = AssetHistoryState.Load();
             var assetLines = AssetHistory.Load();
             var assetHistory = RemoveRenamedEntries(assetLines);
             Debug.Log($"Checking {folderNames.Count} folders against {assetHistory.Count} unique assets in {AssetHistory.AssetHistoryFilename}");
 
             foreach (var folderName in folderNames)
             {
-                CheckDeletedGuids(folderName, assetHistory, timer);
+                CheckDeletedGuids(folderName, assetHistory, state, timer);
             }
             timer.Stop();
             Debug.Log($"Check took {timer.ElapsedMilliseconds / 1000f:0.000} s");
@@ -40,8 +41,9 @@ namespace Editor
             }
             return assetHistory;
         }
-        
-        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory, Stopwatch timer)
+
+        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory,
+            AssetHistoryState state, Stopwatch timer)
         {
             var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
             var allMetaFiles = AssetHistory.AssetPath == folderName
@@ -58,16 +60,39 @@ namespace Editor
             {
                 return;
             }
-
-            #region Local helper functions
-
-            List<string> CreateFileList(string[] metaFilenames)
+            // Read all project YAML files for checking that all GUIDs in them are valid-
+            foreach (var metaFilename in allMetaFiles)
             {
-                var list = new List<string>();
-                return list;
+                var metaContentFilename = metaFilename.Substring(0, metaFilename.Length - AssetHistory.MetaExtensionLength);
+                if (Directory.Exists(metaContentFilename))
+                {
+                    continue;
+                }
+                var contentExtension = Path.GetExtension(metaContentFilename);
+                if (state.OtherExtensions.Contains(contentExtension))
+                {
+                    continue;
+                }
+                // https://docs.unity3d.com/Manual/YAMLSceneExample.html
+                var text = File.ReadAllText(metaContentFilename, AssetHistory.Encoding);
+                var isValid = text.StartsWith("%YAML ") && text.Contains("%TAG !u! ");
+                if (!isValid)
+                {
+                    if (!state.OtherExtensions.Contains(contentExtension))
+                    {
+                        state.OtherExtensions.Add(contentExtension);
+                        state.Save();
+                        Debug.Log($"New asset extension {RichText.White(contentExtension)} found");
+                    }
+                    continue;
+                }
+                if (!state.YamlExtensions.Contains(contentExtension))
+                {
+                    state.YamlExtensions.Add(contentExtension);
+                    state.Save();
+                    Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
+                }
             }
-
-            #endregion
         }
 
         private static bool SanityCheck(List<string> fileList, List<Tuple<string, string>> assetHistory)
@@ -88,79 +113,5 @@ namespace Editor
             }
             return true;
         }
-
-        private static void OldCode(List<string> fileList, List<Tuple<string, string>> assetHistory)
-        {
-            // Check that a history file exists - to find deleted files.
-            var missingAssets = new List<Tuple<string, string>>();
-            foreach (var tuple in assetHistory)
-            {
-                var assetFilename = tuple.Item1;
-                if (!fileList.Contains(assetFilename))
-                {
-                    missingAssets.Add(tuple);
-                }
-            }
-            if (missingAssets.Count > 0)
-            {
-                Debug.Log("No missing assets");
-                return;
-            }
-            // Check if deleted files are used by existing files.
-            var useCount = 0;//CheckIfGuidIsUsed(missingAssets, allMetaFiles);
-            Debug.Log($"Deleted asset count {missingAssets.Count} with {useCount} invalid references");
-        }
-        
-        private static int CheckIfGuidIsUsed(List<Tuple<string, string>> missingAssets, string[] metaFileArray)
-        {
-            var validExtensions = new[]
-            {
-                // These are YAML files that can(?) have references to other files.
-                ".anim",
-                ".asset",
-                ".controller",
-                ".lightning",
-                ".mat",
-                ".prefab",
-                ".unity",
-            };
-
-            var stopwatch = Stopwatch.StartNew();
-            var foundCount = 0;
-            foreach (var metaFilename in metaFileArray)
-            {
-                var metaContentFilename = metaFilename.Substring(0, metaFilename.Length - AssetHistory.MetaExtensionLength);
-                if (Directory.Exists(metaContentFilename))
-                {
-                    continue;
-                }
-                var contentExtension = Path.GetExtension(metaContentFilename);
-                if (!validExtensions.Contains(contentExtension))
-                {
-                    continue;
-                }
-                var text = File.ReadAllText(metaContentFilename, AssetHistory.Encoding);
-                foreach (var tuple in missingAssets)
-                {
-                    var missingFilename = tuple.Item1;
-                    if (metaContentFilename == missingFilename)
-                    {
-                        continue;
-                    }
-                    var guid = tuple.Item2;
-                    if (text.Contains(guid))
-                    {
-                        foundCount += 1;
-                        var asset = AssetDatabase.LoadMainAssetAtPath(metaContentFilename);
-                        Debug.Log($"{RichText.White(missingFilename)} guid: {guid} is deleted but referenced in");
-                        Debug.Log($"{RichText.Yellow(metaFilename)} ", asset);
-                    }
-                }
-            }
-            stopwatch.Stop();
-            Debug.Log($"Check all files took {stopwatch.ElapsedMilliseconds / 1000d:0.000} s");
-            return foundCount;
-        }
-
     }
 }

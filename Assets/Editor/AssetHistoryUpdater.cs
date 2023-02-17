@@ -37,7 +37,8 @@ namespace Editor
     public class AssetHistoryState
     {
         public int DayNumber;
-        public List<string> Lines = new();
+        public List<string> YamlExtensions = new();
+        public List<string> OtherExtensions = new();
 
         public static AssetHistoryState Load()
         {
@@ -49,9 +50,9 @@ namespace Editor
             return JsonUtility.FromJson<AssetHistoryState>(jsonData);
         }
 
-        public static void Save(AssetHistoryState state)
+        public void Save()
         {
-            var json = JsonUtility.ToJson(state);
+            var json = JsonUtility.ToJson(this);
             File.WriteAllText(AssetHistory.AssetHistoryStateFilename, json, AssetHistory.Encoding);
         }
     }
@@ -86,7 +87,7 @@ namespace Editor
             }
             UpdateAssetHistory();
             state.DayNumber = dayOfYear;
-            AssetHistoryState.Save(state);
+            state.Save();
         }
 
         public static void UpdateAssetHistory()
