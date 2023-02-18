@@ -59,7 +59,9 @@ namespace Editor.Prg.Dependencies
                 return;
             }
             Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount}</b>");
-            foreach (var unusedGuid in verifier.UnusedGuids)
+            var unusedGuids = verifier.UnusedGuids;
+            unusedGuids.Sort();
+            foreach (var unusedGuid in unusedGuids)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(unusedGuid);
                 var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
@@ -193,6 +195,7 @@ namespace Editor.Prg.Dependencies
         {
             public Stopwatch Timer { get; }
             private readonly AssetHistoryState _state;
+            private readonly List<string> _scenesForBuild = new();
             private readonly HashSet<string> _unusedGuids = new();
 
             public int UnusedGuidCount => _unusedGuids.Count;
@@ -202,6 +205,9 @@ namespace Editor.Prg.Dependencies
             {
                 Timer = Stopwatch.StartNew();
                 _state = AssetHistoryState.Load();
+                _scenesForBuild.AddRange(EditorBuildSettings.scenes
+                    .Where(x => x.enabled)
+                    .Select(x => x.guid.ToString()));
             }
 
             public void CheckUnusedReferences(string folderName)
@@ -261,9 +267,14 @@ namespace Editor.Prg.Dependencies
                 }
             }
 
-            private static HashSet<string> GetInterestingFolderGuids(string folderName)
+            private HashSet<string> GetInterestingFolderGuids(string folderName)
             {
-                string[] excludedExtensions = 
+                string[] excludedDirectories =
+                {
+                        @"Assets\Photon\",
+                        @"Assets\TextMesh Pro\",
+                };
+                string[] excludedExtensions =
                 {
                     ".asmdef",
                     ".bytes",
@@ -283,6 +294,10 @@ namespace Editor.Prg.Dependencies
                     {
                         continue;
                     }
+                    if (excludedDirectories.Any(x => contentFilename.StartsWith(x)))
+                    {
+                        continue;
+                    }
                     var contentExtension = Path.GetExtension(contentFilename);
                     if (excludedExtensions.Contains(contentExtension))
                     {
@@ -299,6 +314,11 @@ namespace Editor.Prg.Dependencies
                         continue;
                     }
                     var guid = textLines[1].Split(':')[1].Trim();
+                    if (_scenesForBuild.Contains(guid))
+                    {
+                        // Scene in build settings.
+                        continue;
+                    }
                     Assert.IsFalse(folderGuids.Contains(guid));
                     folderGuids.Add(guid);
                 }
