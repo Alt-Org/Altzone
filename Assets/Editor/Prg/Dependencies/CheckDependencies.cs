@@ -63,7 +63,30 @@ namespace Editor.Prg.Dependencies
             }
             AssetHistoryVerifier.CheckUnusedReferences(paths);
         }
-        
+
+        public static void SetLabel(string labelName)
+        {
+            Debug.Log("*");
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
+            {
+                Debug.Log("Select one directory to check");
+                return;
+            }
+            foreach (var guid in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                var labels = AssetDatabase.GetLabels(asset).ToList();
+                if (labels.Contains(labelName))
+                {
+                    continue;
+                }
+                labels.Add(labelName);
+                AssetDatabase.SetLabels(asset, labels.ToArray());
+            }
+        }
+
         public static void CheckUsages()
         {
             Debug.Log("*");

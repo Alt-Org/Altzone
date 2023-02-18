@@ -119,6 +119,9 @@ namespace Editor
         [MenuItem(Util + "Show Version Info", false, 15)]
         private static void ShowVersionInfo() => MenuShowVersionInfo.ShowVersionInfo();
 
+        [MenuItem(Util + "Set Label 'Altzone'", false, 16)]
+        private static void SetLabelAltzone() => CheckDependencies.SetLabel("Altzone");
+
         #endregion
 
         #region Logging
