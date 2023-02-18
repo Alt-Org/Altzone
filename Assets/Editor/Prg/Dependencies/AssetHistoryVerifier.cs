@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 namespace Editor.Prg.Dependencies
@@ -57,7 +58,13 @@ namespace Editor.Prg.Dependencies
                 Debug.Log("<b>No unused assets found</b>");
                 return;
             }
-            Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount} in {verifier.UnusedFileCount} asset file</b>");
+            Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount}</b>");
+            foreach (var unusedGuid in verifier.UnusedGuids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(unusedGuid);
+                var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+                Debug.Log($"Unused {RichText.Yellow(assetPath)} {unusedGuid}", asset);
+            }
         }
 
         private class MissingReferences
@@ -149,6 +156,9 @@ namespace Editor.Prg.Dependencies
                 }
             }
 
+            /// <summary>
+            /// Checks that given <c>GUID</c> is a valid reference to existing asset.
+            /// </summary>
             private void CheckGuid(string contentFilename, string textLine, string guid, ref Object currentAsset)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(guid);
@@ -182,17 +192,146 @@ namespace Editor.Prg.Dependencies
         private class UnusedReferences
         {
             public Stopwatch Timer { get; }
+            private readonly AssetHistoryState _state;
+            private readonly HashSet<string> _unusedGuids = new();
 
-            public int UnusedGuidCount { get; private set; }
-            public int UnusedFileCount { get; private set; }
+            public int UnusedGuidCount => _unusedGuids.Count;
+            public List<string> UnusedGuids => _unusedGuids.ToList();
 
             public UnusedReferences()
             {
                 Timer = Stopwatch.StartNew();
+                _state = AssetHistoryState.Load();
             }
 
             public void CheckUnusedReferences(string folderName)
             {
+                var folderGuids = GetInterestingFolderGuids(folderName);
+                Debug.Log($"Check {folderName} with {folderGuids.Count} asset files");
+
+                CheckUnusedReferences(folderGuids);
+                if (folderGuids.Count > 0)
+                {
+                    _unusedGuids.UnionWith(folderGuids);
+                }
+            }
+
+            private void CheckUnusedReferences(HashSet<string> folderGuids)
+            {
+                // Read all files that can have a GUID reference in it.
+                var allMetaFiles = Directory.GetFiles(AssetHistory.AssetPath, "*.meta", SearchOption.AllDirectories);
+                foreach (var metaFile in allMetaFiles)
+                {
+                    // Using Windows path separator!  
+                    var contentFilename = metaFile.Substring(0, metaFile.Length - AssetHistory.MetaExtensionLength)
+                        .Replace('/', '\\');
+                    if (Directory.Exists(contentFilename))
+                    {
+                        continue;
+                    }
+                    var contentExtension = Path.GetExtension(contentFilename);
+                    if (_state.OtherExtensions.Contains(contentExtension))
+                    {
+                        continue;
+                    }
+                    // https://docs.unity3d.com/Manual/YAMLSceneExample.html
+                    var textLines = File.ReadAllLines(contentFilename, AssetHistory.Encoding);
+                    if (textLines.Length < 2)
+                    {
+                        continue;
+                    }
+                    var isValid = textLines[0].StartsWith("%YAML ") && textLines[1].StartsWith("%TAG !u! ");
+                    if (!isValid)
+                    {
+                        if (!_state.OtherExtensions.Contains(contentExtension))
+                        {
+                            _state.OtherExtensions.Add(contentExtension);
+                            _state.Save();
+                            Debug.Log($"New other asset extension {RichText.White(contentExtension)} found");
+                        }
+                        continue;
+                    }
+                    if (!_state.YamlExtensions.Contains(contentExtension))
+                    {
+                        _state.YamlExtensions.Add(contentExtension);
+                        _state.Save();
+                        Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
+                    }
+                    CheckFileReferences(textLines, folderGuids);
+                }
+            }
+
+            private static HashSet<string> GetInterestingFolderGuids(string folderName)
+            {
+                string[] excludedExtensions = 
+                {
+                    ".asmdef",
+                    ".bytes",
+                    ".cs",
+                    ".csv",
+                    ".txt",
+                };
+
+                var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
+                var folderGuids = new HashSet<string>();
+                foreach (var metaFile in folderMetaFiles)
+                {
+                    // Using Windows path separator!  
+                    var contentFilename = metaFile.Substring(0, metaFile.Length - AssetHistory.MetaExtensionLength)
+                        .Replace('/', '\\');
+                    if (Directory.Exists(contentFilename))
+                    {
+                        continue;
+                    }
+                    var contentExtension = Path.GetExtension(contentFilename);
+                    if (excludedExtensions.Contains(contentExtension))
+                    {
+                        continue;
+                    }
+                    var textLines = File.ReadAllLines(metaFile, AssetHistory.Encoding);
+                    if (textLines.Length < 2)
+                    {
+                        continue;
+                    }
+                    // Check for labels.
+                    if (textLines.Contains("labels:"))
+                    {
+                        continue;
+                    }
+                    var guid = textLines[1].Split(':')[1].Trim();
+                    Assert.IsFalse(folderGuids.Contains(guid));
+                    folderGuids.Add(guid);
+                }
+                return folderGuids;
+            }
+
+            private void CheckFileReferences(string[] textLines, HashSet<string> folderGuids)
+            {
+                foreach (var textLine in textLines)
+                {
+                    if (!(textLine.Contains("guid") || textLine.Contains("GUID")))
+                    {
+                        continue;
+                    }
+                    if (textLine.Contains("guid: 0000000000000000"))
+                    {
+                        continue;
+                    }
+                    var pos1 = textLine.IndexOf(", guid:", StringComparison.Ordinal);
+                    if (pos1 > 0)
+                    {
+                        var pos2 = textLine.LastIndexOf(",", StringComparison.Ordinal);
+                        if (pos2 > pos1 && pos2 - pos1 == 40)
+                        {
+                            var realGuid = textLine.Substring(pos1 + 8, 32);
+                            if (folderGuids.Contains(realGuid))
+                            {
+                                // What is left here is unused.
+                                folderGuids.Remove(realGuid);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
