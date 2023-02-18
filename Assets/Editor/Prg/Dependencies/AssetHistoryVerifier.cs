@@ -19,7 +19,7 @@ namespace Editor.Prg.Dependencies
             {
                 foreach (var folderName in folderNames)
                 {
-                    verifier.CheckDeletedGuids(folderName);
+                    verifier.CheckMissingReferences(folderName);
                 }
             }
             finally
@@ -27,18 +27,39 @@ namespace Editor.Prg.Dependencies
                 verifier.Timer.Stop();
             }
             Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
-            if (verifier.InvalidGuidCount == 0)
+            if (verifier.MissingGuidCount == 0)
             {
                 Debug.Log("<b>No missing references found</b>");
                 return;
             }
-            Debug.Log($"<b>Missing references count: {verifier.InvalidGuidCount} in {verifier.MissingReferencesCount} asset(s)</b>");
+            Debug.Log($"<b>Missing references count: {verifier.MissingGuidCount} in {verifier.MissingFileCount} asset file</b>");
         }
 
         public static void CheckUnusedReferences(List<string> folderNames)
         {
-            
+            Debug.Log($"Checking {folderNames.Count} folders");
+
+            var verifier = new UnusedReferences();
+            try
+            {
+                foreach (var folderName in folderNames)
+                {
+                    verifier.CheckUnusedReferences(folderName);
+                }
+            }
+            finally
+            {
+                verifier.Timer.Stop();
+            }
+            Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
+            if (verifier.UnusedGuidCount == 0)
+            {
+                Debug.Log("<b>No unused assets found</b>");
+                return;
+            }
+            Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount} in {verifier.UnusedFileCount} asset file</b>");
         }
+
         private class MissingReferences
         {
             private readonly AssetHistoryState _state;
@@ -47,8 +68,8 @@ namespace Editor.Prg.Dependencies
             private readonly HashSet<string> _assetsWithMissingReferences = new();
 
             public Stopwatch Timer { get; }
-            public int InvalidGuidCount { get; private set; }
-            public int MissingReferencesCount => _assetsWithMissingReferences.Count;
+            public int MissingGuidCount { get; private set; }
+            public int MissingFileCount => _assetsWithMissingReferences.Count;
 
             public MissingReferences()
             {
@@ -57,7 +78,7 @@ namespace Editor.Prg.Dependencies
                 _assetLines = AssetHistory.Load();
             }
 
-            public void CheckDeletedGuids(string folderName)
+            public void CheckMissingReferences(string folderName)
             {
                 var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
                 Debug.Log($"Check {folderName} with {folderMetaFiles.Length} asset files");
@@ -135,7 +156,7 @@ namespace Editor.Prg.Dependencies
                 {
                     return;
                 }
-                InvalidGuidCount += 1;
+                MissingGuidCount += 1;
                 _assetsWithMissingReferences.Add(contentFilename);
                 if (_invalidGuids.Contains(guid))
                 {
@@ -155,6 +176,23 @@ namespace Editor.Prg.Dependencies
                 }
                 var lastSeen = lines.Last().Split('\t')[0];
                 Debug.Log($"Last seen in {RichText.White(lastSeen)}");
+            }
+        }
+
+        private class UnusedReferences
+        {
+            public Stopwatch Timer { get; }
+
+            public int UnusedGuidCount { get; private set; }
+            public int UnusedFileCount { get; private set; }
+
+            public UnusedReferences()
+            {
+                Timer = Stopwatch.StartNew();
+            }
+
+            public void CheckUnusedReferences(string folderName)
+            {
             }
         }
     }
