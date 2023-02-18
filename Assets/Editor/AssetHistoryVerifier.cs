@@ -7,81 +7,62 @@ using UnityEditor;
 
 namespace Editor
 {
-    public static class AssetHistoryVerifier
+    public class AssetHistoryVerifier
     {
         public static void CheckDeletedGuids(List<string> folderNames)
         {
-            var timer = Stopwatch.StartNew();
-            var state = AssetHistoryState.Load();
-            var assetLines = AssetHistory.Load();
-            var assetHistory = RemoveRenamedEntries(assetLines);
-            Debug.Log($"Checking {folderNames.Count} folders against {assetHistory.Count} unique assets in {AssetHistory.AssetHistoryFilename}");
+            Debug.Log($"Checking {folderNames.Count} folders");
 
+            var verifier = new AssetHistoryVerifier();
             try
             {
                 foreach (var folderName in folderNames)
                 {
-                    CheckDeletedGuids(folderName, assetHistory, state);
+                    verifier.CheckDeletedGuids(folderName);
                 }
             }
             finally
             {
-                timer.Stop();
+                verifier._timer.Stop();
             }
-            Debug.Log($"Check took {timer.ElapsedMilliseconds / 1000f:0.000} s");
-        }
-
-        private static List<Tuple<string, string>> RemoveRenamedEntries(string[] assetLines)
-        {
-            var assetHistory = new List<Tuple<string, string>>();
-            foreach (var assetLine in assetLines)
+            Debug.Log($"Check took {verifier._timer.ElapsedMilliseconds / 1000f:0.000} s");
+            if (verifier._invalidGuidCount == 0)
             {
-                var tokens = assetLine.Split('\t');
-                // Check if asset has been renamed - and remove previous names as guid is same all the time.
-                var previousNameIndex = assetHistory.FindIndex(x => x.Item2 == tokens[1]);
-                if (previousNameIndex != -1)
-                {
-                    assetHistory.RemoveAt(previousNameIndex);
-                }
-                assetHistory.Add(new Tuple<string, string>(tokens[0], tokens[1]));
-            }
-            return assetHistory;
-        }
-
-        private static void CheckDeletedGuids(string folderName, List<Tuple<string, string>> assetHistory, AssetHistoryState state)
-        {
-            var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
-            var isFullCheck = AssetHistory.AssetPath == folderName;
-            var allMetaFiles = isFullCheck
-                ? folderMetaFiles
-                : Directory.GetFiles(AssetHistory.AssetPath, "*.meta", SearchOption.AllDirectories);
-            var folderFiles = new List<string>();
-            foreach (var file in folderMetaFiles)
-            {
-                // Using Windows path separator!  
-                var filename = file.Substring(0, file.Length - AssetHistory.MetaExtensionLength)
-                    .Replace('/', '\\');
-                folderFiles.Add(filename);
-            }
-            Debug.Log(
-                $"Check {folderName} with {folderFiles.Count} asset files against {allMetaFiles.Count()}/{assetHistory.Count} actual/history");
-            if (!SanityCheck(folderFiles, assetHistory))
-            {
+                Debug.Log("There was zero missing references found");
                 return;
             }
-            // Read all project YAML files for checking that all GUIDs in them are valid.
-            var referencedGuids = new HashSet<string>();
-            var otherGuids = new HashSet<string>();
-            var guidFileCount = 0;
-            foreach (var metaFilename in allMetaFiles)
+            Debug.Log($"Missing references count: {verifier._invalidGuidCount}");
+        }
+
+        private readonly Stopwatch _timer;
+        private readonly AssetHistoryState _state;
+        private readonly string[] _assetLines;
+        private readonly HashSet<string> _invalidGuids = new();
+
+        private int _invalidGuidCount;
+
+        private AssetHistoryVerifier()
+        {
+            _timer = Stopwatch.StartNew();
+            _state = AssetHistoryState.Load();
+            _assetLines = AssetHistory.Load();
+        }
+
+        private void CheckDeletedGuids(string folderName)
+        {
+            var folderMetaFiles = Directory.GetFiles(folderName, "*.meta", SearchOption.AllDirectories);
+            Debug.Log($"Check {folderName} with {folderMetaFiles.Length} asset files");
+            foreach (var metaFile in folderMetaFiles)
             {
-                var contentFilename = metaFilename.Substring(0, metaFilename.Length - AssetHistory.MetaExtensionLength);
+                // Using Windows path separator!  
+                var contentFilename = metaFile.Substring(0, metaFile.Length - AssetHistory.MetaExtensionLength)
+                    .Replace('/', '\\');
                 if (Directory.Exists(contentFilename))
                 {
                     continue;
                 }
                 var contentExtension = Path.GetExtension(contentFilename);
-                if (state.OtherExtensions.Contains(contentExtension))
+                if (_state.OtherExtensions.Contains(contentExtension))
                 {
                     continue;
                 }
@@ -94,114 +75,76 @@ namespace Editor
                 var isValid = textLines[0].StartsWith("%YAML ") && textLines[1].StartsWith("%TAG !u! ");
                 if (!isValid)
                 {
-                    if (!state.OtherExtensions.Contains(contentExtension))
+                    if (!_state.OtherExtensions.Contains(contentExtension))
                     {
-                        state.OtherExtensions.Add(contentExtension);
-                        state.Save();
-                        Debug.Log($"New asset extension {RichText.White(contentExtension)} found");
+                        _state.OtherExtensions.Add(contentExtension);
+                        _state.Save();
+                        Debug.Log($"New other asset extension {RichText.White(contentExtension)} found");
                     }
                     continue;
                 }
-                if (!state.YamlExtensions.Contains(contentExtension))
+                if (!_state.YamlExtensions.Contains(contentExtension))
                 {
-                    state.YamlExtensions.Add(contentExtension);
-                    state.Save();
+                    _state.YamlExtensions.Add(contentExtension);
+                    _state.Save();
                     Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
                 }
-                guidFileCount += CheckFileReferences(textLines, referencedGuids, otherGuids);
+                CheckFileReferences(contentFilename, textLines);
             }
-            Debug.Log($"Found {referencedGuids.Count} different guids and {otherGuids.Count} other guids in {guidFileCount} files");
+        }
+
+        private void CheckFileReferences(string contentFilename, string[] textLines)
+        {
+            UnityEngine.Object currentAsset = null;
+            foreach (var textLine in textLines)
             {
-                var guidList = otherGuids.ToList();
-                guidList.Sort();
-                File.WriteAllText("m_Build_AssetHistory_GUIDs.txt", string.Join("\r\n", guidList));
-            }
-            // Find all current existing file guids in given folder
-            var folderGuids = new HashSet<string>();
-            foreach (var assetFile in folderFiles)
-            {
-                var guid = AssetDatabase.GUIDFromAssetPath(assetFile);
-                folderGuids.Add(guid.ToString());
-            }
-            Debug.Log($"Check folderGuids {folderGuids.Count}");
-            var unusedReferenceCount = 0;
-            foreach (var folderGuid in folderGuids)
-            {
-                if (!referencedGuids.Contains(folderGuid))
+                if (!(textLine.Contains("guid") || textLine.Contains("GUID")))
                 {
-                    unusedReferenceCount += 1;
-                    var tuple = assetHistory.FirstOrDefault(x => x.Item2 == folderGuid);
-                    Debug.Log($"Unused reference to {folderGuid} {tuple?.Item1}");
+                    continue;
+                }
+                if (textLine.Contains("guid: 0000000000000000"))
+                {
+                    continue;
+                }
+                var pos1 = textLine.IndexOf(", guid:", StringComparison.Ordinal);
+                if (pos1 > 0)
+                {
+                    var pos2 = textLine.LastIndexOf(",", StringComparison.Ordinal);
+                    if (pos2 > pos1 && pos2 - pos1 == 40)
+                    {
+                        var realGuid = textLine.Substring(pos1 + 8, 32);
+                        CheckGuid(contentFilename, textLine, realGuid, ref currentAsset);
+                    }
                 }
             }
-            Debug.Log($"UnusedReferenceCount {unusedReferenceCount}");
-            if (!isFullCheck)
+        }
+
+        private void CheckGuid(string contentFilename, string textLine, string guid, ref UnityEngine.Object currentAsset)
+        {
+            var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if (!string.IsNullOrEmpty(assetPath))
             {
                 return;
             }
-            var missingReferenceCount = 0;
-            foreach (var tuple in assetHistory)
+            _invalidGuidCount += 1;
+            if (_invalidGuids.Contains(guid))
             {
-                var guid = tuple.Item2;
-                if (folderGuids.Contains(guid))
-                {
-                    continue;
-                }
-                if (referencedGuids.Contains(guid))
-                {
-                    missingReferenceCount += 1;
-                    Debug.Log($"Missing reference {guid} {tuple.Item1}");
-                }
+                return;
             }
-            Debug.Log($"MissingReferenceCount {missingReferenceCount}");
-        }
-
-        private static int CheckFileReferences(string[] textLines, HashSet<string> referencedGuids, HashSet<string> otherGuids)
-        {
-            var guidCount = 0;
-            foreach (var textLine in textLines)
+            _invalidGuids.Add(guid);
+            if (currentAsset == null)
             {
-                if (textLine.Contains("guid") || textLine.Contains("GUID"))
-                {
-                    if (textLine.Contains("guid: 0000000000000000"))
-                    {
-                        continue;
-                    }
-                    guidCount += 1;
-                    var pos1 = textLine.IndexOf(", guid:", StringComparison.Ordinal);
-                    if (pos1 > 0)
-                    {
-                        var pos2 = textLine.LastIndexOf(",", StringComparison.Ordinal);
-                        if (pos2 > pos1 && pos2 - pos1 == 40)
-                        {
-                            var realGuid = textLine.Substring(pos1 + 8, 32);
-                            referencedGuids.Add(realGuid);
-                            continue;
-                        }
-                    }
-                    otherGuids.Add(textLine.Trim());
-                }
+                currentAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(contentFilename);
             }
-            return guidCount;
-        }
-
-        private static bool SanityCheck(List<string> fileList, List<Tuple<string, string>> assetHistory)
-        {
-            // Just a sanity check that asset history (file) is up-to-date with current file system.
-            foreach (var filename in fileList)
+            Debug.Log($"{RichText.Yellow(contentFilename)} GUID not found {guid}", currentAsset);
+            var lines = _assetLines.Where(x => x.EndsWith(guid)).ToList();
+            if (lines.Count == 0)
             {
-                if (Directory.Exists(filename))
-                {
-                    continue;
-                }
-                var index = assetHistory.FindIndex(x => x.Item1 == filename);
-                if (index == -1)
-                {
-                    Debug.Log($"{RichText.Yellow(filename)} not found in asset history");
-                    return false;
-                }
+                Debug.Log(textLine.Trim());
+                return;
             }
-            return true;
+            var lastSeen = lines.Last().Split('\t')[0];
+            Debug.Log($"Last seen in {RichText.White(lastSeen)}");
         }
     }
 }
