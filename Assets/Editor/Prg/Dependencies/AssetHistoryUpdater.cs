@@ -6,7 +6,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Editor.Prg.Dependencies
 {
     /// <summary>
     /// Constants for <c>AssetHistory</c>.

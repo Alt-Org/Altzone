@@ -18,7 +18,7 @@ namespace Editor.Prg.Dependencies
     {
         private const string AssetRootName = "Assets";
 
-        public static void CheckDeletedGuids()
+        public static void CheckMissingReferences()
         {
             Debug.Log("*");
             var selectedGuids = Selection.assetGUIDs;
@@ -38,7 +38,12 @@ namespace Editor.Prg.Dependencies
                 }
                 paths.Add(path);
             }
-            AssetHistoryVerifier.CheckDeletedGuids(paths);
+            AssetHistoryVerifier.CheckMissingReferences(paths);
+        }
+
+        public static void CheckUnusedReferences()
+        {
+            
         }
         
         public static void CheckUsages()

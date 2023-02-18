@@ -76,8 +76,11 @@ namespace Editor
         [MenuItem(Dependencies + "Sort Selection", false, 12)]
         private static void SortSelection() => CheckDependencies.SortSelection();
 
-        [MenuItem(Dependencies + "Check Deleted GUIDs", false, 13)]
-        private static void CheckDeletedGuids() => CheckDependencies.CheckDeletedGuids();
+        [MenuItem(Dependencies + "Check for Missing References", false, 13)]
+        private static void CheckDeletedGuids() => CheckDependencies.CheckMissingReferences();
+
+        [MenuItem(Dependencies + "Check for Unused References", false, 14)]
+        private static void CheckUnusedReferences() => CheckDependencies.CheckUnusedReferences();
 
         [MenuItem(MissingReferences + "Search in scene", false, 20)]
         private static void FindMissingReferencesInCurrentScene() => MissingReferencesFinder.FindMissingReferencesInCurrentScene();

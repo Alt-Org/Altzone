@@ -4,12 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using Object = UnityEngine.Object;
 
-namespace Editor
+namespace Editor.Prg.Dependencies
 {
     public class AssetHistoryVerifier
     {
-        public static void CheckDeletedGuids(List<string> folderNames)
+        public static void CheckMissingReferences(List<string> folderNames)
         {
             Debug.Log($"Checking {folderNames.Count} folders");
 
@@ -28,17 +29,17 @@ namespace Editor
             Debug.Log($"Check took {verifier._timer.ElapsedMilliseconds / 1000f:0.000} s");
             if (verifier._invalidGuidCount == 0)
             {
-                Debug.Log("There was zero missing references found");
+                Debug.Log("<b>No missing references found</b>");
                 return;
             }
-            Debug.Log($"Missing references count: {verifier._invalidGuidCount}");
+            Debug.Log($"<b>Missing references count: {verifier._invalidGuidCount} in {verifier._assetsWithMissingReferences.Count} asset(s)</b>");
         }
 
         private readonly Stopwatch _timer;
         private readonly AssetHistoryState _state;
         private readonly string[] _assetLines;
         private readonly HashSet<string> _invalidGuids = new();
-
+        private readonly HashSet<string> _assetsWithMissingReferences = new();
         private int _invalidGuidCount;
 
         private AssetHistoryVerifier()
@@ -95,7 +96,7 @@ namespace Editor
 
         private void CheckFileReferences(string contentFilename, string[] textLines)
         {
-            UnityEngine.Object currentAsset = null;
+            Object currentAsset = null;
             foreach (var textLine in textLines)
             {
                 if (!(textLine.Contains("guid") || textLine.Contains("GUID")))
@@ -119,7 +120,7 @@ namespace Editor
             }
         }
 
-        private void CheckGuid(string contentFilename, string textLine, string guid, ref UnityEngine.Object currentAsset)
+        private void CheckGuid(string contentFilename, string textLine, string guid, ref Object currentAsset)
         {
             var assetPath = AssetDatabase.GUIDToAssetPath(guid);
             if (!string.IsNullOrEmpty(assetPath))
@@ -127,6 +128,7 @@ namespace Editor
                 return;
             }
             _invalidGuidCount += 1;
+            _assetsWithMissingReferences.Add(contentFilename);
             if (_invalidGuids.Contains(guid))
             {
                 return;
@@ -134,7 +136,7 @@ namespace Editor
             _invalidGuids.Add(guid);
             if (currentAsset == null)
             {
-                currentAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(contentFilename);
+                currentAsset = AssetDatabase.LoadAssetAtPath<Object>(contentFilename);
             }
             Debug.Log($"{RichText.Yellow(contentFilename)} GUID not found {guid}", currentAsset);
             var lines = _assetLines.Where(x => x.EndsWith(guid)).ToList();
