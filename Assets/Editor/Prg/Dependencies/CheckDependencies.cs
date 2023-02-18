@@ -43,7 +43,25 @@ namespace Editor.Prg.Dependencies
 
         public static void CheckUnusedReferences()
         {
-            
+            Debug.Log("*");
+            var selectedGuids = Selection.assetGUIDs;
+            if (selectedGuids.Length == 0)
+            {
+                Debug.Log("Select one directory to check");
+                return;
+            }
+            var paths = new List<string>();
+            foreach (var guid in selectedGuids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!Directory.Exists(path))
+                {
+                    Debug.LogWarning($"Selected object is not a directory: {path}");
+                    return;
+                }
+                paths.Add(path);
+            }
+            AssetHistoryVerifier.CheckUnusedReferences(paths);
         }
         
         public static void CheckUsages()
