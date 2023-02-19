@@ -44,7 +44,18 @@ namespace Editor.Prg.Dependencies
         {
             if (!File.Exists(AssetHistory.AssetHistoryStateFilename))
             {
-                return new AssetHistoryState();
+                return new AssetHistoryState()
+                {
+                    YamlExtensions = new List<string>()
+                    {
+                        ".anim", ".asset", ".controller", ".lighting", ".mat", ".physicsMaterial2D", ".prefab", ".unity",
+                    },
+                    OtherExtensions = new List<string>()
+                    {
+                        ".asmdef", ".cginc", ".chm", ".cs", ".dll", ".fbx", ".gif", ".inputactions", ".jpg", ".jslib",
+                        ".json", ".mp3", ".pdf", ".png", ".psd", ".README", ".shader", ".ttf", ".txt", ".wav", ".xml",
+                    },
+                };
             }
             var jsonData = File.ReadAllText(AssetHistory.AssetHistoryStateFilename, AssetHistory.Encoding);
             return JsonUtility.FromJson<AssetHistoryState>(jsonData);
@@ -138,7 +149,7 @@ namespace Editor.Prg.Dependencies
             {
                 File.WriteAllText(AssetHistory.AssetHistoryFilename, newLines.ToString(), AssetHistory.Encoding);
             }
-            UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} new entries")}");
+            UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} entries")}");
         }
     }
 }
