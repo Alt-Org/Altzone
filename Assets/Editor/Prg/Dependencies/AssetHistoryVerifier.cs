@@ -52,13 +52,6 @@ namespace Editor.Prg.Dependencies
             {
                 verifier.Timer.Stop();
             }
-            Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
-            if (verifier.UnusedGuidCount == 0)
-            {
-                Debug.Log("<b>No unused assets found</b>");
-                return;
-            }
-            Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount}</b>");
             var unusedGuids = verifier.UnusedGuids;
             unusedGuids.Sort();
             foreach (var unusedGuid in unusedGuids)
@@ -67,6 +60,13 @@ namespace Editor.Prg.Dependencies
                 var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
                 Debug.Log($"Unused {RichText.Yellow(assetPath)} {unusedGuid}", asset);
             }
+            Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
+            if (verifier.UnusedGuidCount == 0)
+            {
+                Debug.Log("<b>No unused assets found</b>");
+                return;
+            }
+            Debug.Log($"<b>Unused asset count: {verifier.UnusedGuidCount}</b>");
         }
 
         private class MissingReferences
