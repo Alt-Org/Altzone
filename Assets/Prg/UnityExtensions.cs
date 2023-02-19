@@ -198,11 +198,6 @@ public static class UnityExtensions
 
     #region Debugging
 
-    public static string GetFullPath(this Transform transform)
-    {
-        return transform == null ? string.Empty : GetFullPath(transform.gameObject);
-    }
-
     public static string GetFullPath(this Component component)
     {
         return component == null ? string.Empty : GetFullPath(component.gameObject);
@@ -214,11 +209,11 @@ public static class UnityExtensions
         {
             return string.Empty;
         }
-        var path = new StringBuilder("\\").Append(gameObject.name);
+        var path = new StringBuilder(gameObject.name);
         while (gameObject.transform.parent != null)
         {
             gameObject = gameObject.transform.parent.gameObject;
-            path.Insert(0, gameObject.name).Insert(0, '\\');
+            path.Insert(0, '/').Insert(0, gameObject.name);
         }
         return path.ToString();
     }
