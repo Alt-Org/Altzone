@@ -271,9 +271,13 @@ namespace Editor.Prg.Dependencies
             {
                 string[] excludedDirectories =
                 {
-                        @"Assets\Photon\",
-                        @"Assets\TextMesh Pro\",
+                    @"Assets\Photon\",
+                    @"Assets\Photon Unity Networking",
+                    @"Assets\TextMesh Pro\",
                 };
+
+                // These files are rarely dragged in Editor to create a reference to it.
+                // - and if it is and there is error it should be found during runtime when testing the app.
                 string[] excludedExtensions =
                 {
                     ".asmdef",
@@ -304,7 +308,7 @@ namespace Editor.Prg.Dependencies
                         continue;
                     }
                     var textLines = File.ReadAllLines(metaFile, AssetHistory.Encoding);
-                    if (textLines.Length < 2)
+                    if (textLines.Length < 3)
                     {
                         continue;
                     }
@@ -313,7 +317,10 @@ namespace Editor.Prg.Dependencies
                     {
                         continue;
                     }
-                    var guid = textLines[1].Split(':')[1].Trim();
+                    // Some meta files can contain empty lines we have to skip.
+                    // - typically due to version control line end conversion errors when using not suitable settings
+                    var line2 = textLines[1] == string.Empty ? textLines[2] : textLines[1];
+                    var guid = line2.Split(':')[1].Trim();
                     if (_scenesForBuild.Contains(guid))
                     {
                         // Scene in build settings.
