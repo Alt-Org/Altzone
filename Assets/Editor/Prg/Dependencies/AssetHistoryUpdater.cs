@@ -48,12 +48,15 @@ namespace Editor.Prg.Dependencies
                 {
                     YamlExtensions = new List<string>()
                     {
-                        ".anim", ".asset", ".controller", ".lighting", ".mat", ".physicsMaterial2D", ".prefab", ".unity",
+                        ".anim", ".asset", ".controller", ".cubemap", ".flare", ".guiskin", ".lighting",
+                        ".mat", ".overrideController", ".physicmaterial", ".physicMaterial", ".physicsMaterial2D",
+                        ".prefab", ".unity",
                     },
                     OtherExtensions = new List<string>()
                     {
-                        ".asmdef", ".cginc", ".chm", ".cs", ".dll", ".fbx", ".gif", ".inputactions", ".jpg", ".jslib",
-                        ".json", ".mp3", ".pdf", ".png", ".psd", ".README", ".shader", ".ttf", ".txt", ".wav", ".xml",
+                        ".aar", ".asmdef", ".asset", ".blend", ".bmp", ".cginc", ".chm", ".cs", ".csv", ".dll", ".exr",
+                        ".fbx", ".FBX", ".gif", ".inputactions", ".jpg", ".jslib", ".json", ".lib", ".mp3", ".otf", ".pdb",
+                        ".pdf", ".png", ".psd", ".README", ".shader", ".tga", ".tif", ".ttf", ".txt", ".wav", ".xlsx", ".xml",
                     },
                 };
             }
