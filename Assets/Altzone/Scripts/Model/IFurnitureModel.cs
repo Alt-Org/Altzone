@@ -1,5 +1,9 @@
 namespace Altzone.Scripts.Model
 {
+    /// <summary>
+    /// Allowed <c>FurnitureType</c> types.<br />
+    /// Actually better name would be <c>FurnitureShape</c> (except for the Bomb).
+    /// </summary>
     public enum FurnitureType
     {
         Invalid = 0,
