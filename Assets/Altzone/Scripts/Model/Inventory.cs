@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
+using Altzone.Scripts.Model.ModelStorage;
 
 namespace Altzone.Scripts.Model
 {

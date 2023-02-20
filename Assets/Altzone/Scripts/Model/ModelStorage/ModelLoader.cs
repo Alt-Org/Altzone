@@ -1,4 +1,4 @@
-﻿namespace Altzone.Scripts.Model.Loader
+﻿namespace Altzone.Scripts.Model.ModelStorage
 {
     /// <summary>
     /// Utility class to load all static models for runtime.

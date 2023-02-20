@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Dto;
-using Altzone.Scripts.Model.Loader;
 using UnityEngine;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.ModelStorage
 {
     /// <summary>
     /// Container for application model objects.

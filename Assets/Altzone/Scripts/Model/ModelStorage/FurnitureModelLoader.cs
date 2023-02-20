@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Dto;
-using UnityEngine;
 
-namespace Altzone.Scripts.Model.Loader
+namespace Altzone.Scripts.Model.ModelStorage
 {
     /// <summary>
     /// Utility class to load <c>FurnitureModel</c> models for runtime from external storage.
