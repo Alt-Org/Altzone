@@ -1,17 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour
+public class InvFront : MonoBehaviour
 {
     [Header("Game objects")]
     [SerializeField] private GameObject[] slots;
     [SerializeField] private TMP_Text pageText;
     [SerializeField] private TMP_Text sortText;
+
+    [Header("Prefabs")]
+    [SerializeField] private GameObject informationScreen;
 
     private List<GameObject> invStored;
     private int page; // The value that dictates which page of the inventory is shown
@@ -57,6 +58,12 @@ public class Inventory : MonoBehaviour
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
+        FillSlots();
+    }
+
+    public void SlotInformation(Transform button) // Instantiates the information screen to the position of the button
+    {
+        Instantiate(informationScreen, button.position, transform.rotation);
     }
 
     public void FillSlots()
@@ -72,6 +79,13 @@ public class Inventory : MonoBehaviour
 
                 slotImage.SetActive(true);
 
+                if (furnitureImage.size.x > 200 || furnitureImage.size.y > 200) // Limits the size of an image if it is too large
+                {
+                    Vector2 imageNewSize = furnitureImage.size;
+                    if (furnitureImage.size.x > 200) { imageNewSize.x = 200; }
+                    if (furnitureImage.size.y > 200) { imageNewSize.y = 200; }
+                }
+
                 slotImage.GetComponent<Image>().sprite = furnitureImage.sprite;
                 slotImage.GetComponent<Image>().color = furnitureImage.color;
 
@@ -85,7 +99,8 @@ public class Inventory : MonoBehaviour
     // - Visible Inventory (Done)
     // - Sorting (Done)
     // - Infinite capacity possibility (Done)
-    // - Reactive Scaling
-    // - Information Panel Instantiation
+    // - Reactive Scaling (Done)
+    // - Information Panel Instantiation (Done)
+    // - Information Panel information (Requires outsider work - AKA: Attachment of information given through Inventory.cs to the GameObject)
 
 }
