@@ -1,0 +1,54 @@
+{
+    "name": "MenuInputs",
+    "maps": [
+        {
+            "name": "Swipe",
+            "id": "280f7748-71f5-462c-af6b-9862399cd347",
+            "actions": [
+                {
+                    "name": "TouchPosition",
+                    "type": "Value",
+                    "id": "2e59856f-cc92-4219-8194-3e620d136ccc",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "IsTouching",
+                    "type": "Button",
+                    "id": "a50e5891-4b16-4f79-b9fd-fd3eaf70c922",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0849bada-b34b-40c5-99a5-91cecf1cc272",
+                    "path": "<Touchscreen>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6f9bc48a-ef9b-4e82-9d08-22389da0eaa9",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "IsTouching",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
