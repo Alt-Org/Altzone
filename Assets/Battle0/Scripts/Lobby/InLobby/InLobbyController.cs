@@ -14,8 +14,8 @@ namespace Battle0.Scripts.Lobby.InLobby
         private void Awake()
         {
             _view.CharacterButtonOnClick = CharacterButtonOnClick;
-            _view.RaidButtonOnClick = RaidButtonOnClick;
             _view.RoomButtonOnClick = RoomButtonOnClick;
+            _view.RaidButtonOnClick = RaidButtonOnClick;
             _view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
 
@@ -86,14 +86,14 @@ namespace Battle0.Scripts.Lobby.InLobby
             Debug.Log($"{PhotonNetwork.NetworkClientState}");
         }
 
-        private void RaidButtonOnClick()
-        {
-            SceneManager.LoadScene("te-test-raid-demo");
-        }
-
         private void RoomButtonOnClick()
         {
             Debug.Log($"{PhotonNetwork.NetworkClientState}");
+        }
+
+        private void RaidButtonOnClick()
+        {
+            SceneManager.LoadScene("te-test-raid-demo");
         }
 
         private void QuickGameButtonOnClick()
