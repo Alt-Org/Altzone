@@ -5,13 +5,15 @@ using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battle0.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private LobbyRoomListingView _view;
-        
+        [SerializeField] private InputField _roomName;
+
         private PhotonRoomList _photonRoomList;
 
         private void Awake()
@@ -39,9 +41,13 @@ namespace Battle0.Scripts.Lobby.InLobby
             _view.Reset();
         }
 
-        private static void CreateRoomOnClick()
+        private void CreateRoomOnClick()
         {
             var roomName = $"Room{DateTime.Now.Second:00}";
+            if (_roomName.text != "")
+            {
+                roomName = _roomName.text;
+            }
             RoomOptions roomOptions = new RoomOptions()
             {
                 IsVisible = true,
