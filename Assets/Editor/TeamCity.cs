@@ -53,7 +53,7 @@ namespace Editor
         private static void do_Android_Build_Post_processing()
         {
             const string scriptName = "m_BuildScript_PostProcess.bat";
-            var symbolsName = $"{OutputBaseFilename}-{Application.version}-v{PlayerSettings.Android.bundleVersionCode}.symbols";
+            var symbolsName = $"{OutputBaseFilename}.symbols";
             var script = CommandLineTemplate.AndroidPostProcessScript.Replace("<<altzone_symbols_name>>", symbolsName);
             File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"PostProcess script '{scriptName}' written");
