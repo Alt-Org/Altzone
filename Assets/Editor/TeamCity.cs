@@ -63,14 +63,12 @@ namespace Editor
         {
             void PatchIndexHtml(string htmlFile, string curTitle, string newTitle)
             {
-                string oldTitleText;
-                string newTitleText;
 #if UNITY_2019
-                oldTitleText = $"<div class=\"title\">{curTitle}</div>";
-                newTitleText = $"<div class=\"title\">{newTitle}</div>";
+                var oldTitleText = $"<div class=\"title\">{curTitle}</div>";
+                var newTitleText = $"<div class=\"title\">{newTitle}</div>";
 #else
-                oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
-                newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
+                var oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
+                var newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
 #endif
                 var htmlContent = File.ReadAllText(htmlFile, Encoding);
                 var newHtmlContent = htmlContent.Replace(oldTitleText, newTitleText);
@@ -92,7 +90,8 @@ namespace Editor
                 title.Substring(0, title.Length - 4) // remove seconds
                     .Replace(" ", "_")
                     .Replace(":", ".");
-            PatchIndexHtml(indexHtml, curName, gitTagCompliantLabel);
+            var bundleVersionCode = PlayerSettings.Android.bundleVersionCode;
+            PatchIndexHtml(indexHtml, curName, $"{gitTagCompliantLabel} ({bundleVersionCode})");
 
             const string scriptName = "m_BuildScript_PostProcess.bat";
             File.WriteAllText(scriptName, CommandLineTemplate.WebGLPostProcessScript, Encoding);
@@ -515,7 +514,7 @@ if ""%BUILDTARGET%"" == ""WebGL"" goto :valid_build
 echo *
 echo * Can not build: invalid build target '%BUILDTARGET%'
 echo *
-echo * Build target must be one of UNITY command line build target:
+echo * Build target must be one of UNITY command line build targets:
 echo *
 echo *	Win64
 echo *	Android
