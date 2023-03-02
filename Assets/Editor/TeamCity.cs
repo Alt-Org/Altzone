@@ -587,7 +587,10 @@ rem .
 rem . This scipt is machine generated, do not edit!
 rem .
 set BUILD_DIR=BuildAndroid
-set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildAndroid
+set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\%BUILD_DIR%
+if not exist %DROPBOX_DIR% (
+	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\%BUILD_DIR%
+)
 set ZIP=C:\Program Files\7-Zip\7z.exe
 
 echo BUILD_DIR=%BUILD_DIR%
@@ -637,14 +640,21 @@ goto :dropbox
 
 :dropbox
 if not exist ""%DROPBOX_DIR%"" (
+    echo *
+    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo *
     goto :eof
 )
 if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
 )
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
-set RESULT=%ERRORLEVEL%
-echo ROBOCOPY result %RESULT%
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG:%LOGFILE%
+echo.
+echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
+if %errorlevel% leq 8 goto :eof
+echo *
+echo * Check DROPBOX log %LOGFILE% for possible errors
+echo *
 goto :eof
 ";
 
@@ -657,8 +667,10 @@ rem .
 rem . This scipt is machine generated, do not edit!
 rem .
 set BUILD_DIR=BuildWebGL
-if ""%USERNAME%"" == ""petays"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
-if ""%USERNAME%"" == ""psykk"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
+set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
+if not exist %DROPBOX_DIR% (
+	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
+)
 
 echo USERNAME=%USERNAME%
 echo BUILD_DIR=%BUILD_DIR%
@@ -671,14 +683,14 @@ if ""%BUILD_DIR%"" == """" (
 )
 if not exist %DROPBOX_DIR% (
     echo *
-    echo * skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
     echo *
     goto :eof
 )
 if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
 )
-robocopy %BUILD_DIR% %DROPBOX_DIR% /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG:%LOGFILE%
 echo.
 echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
 if %errorlevel% leq 8 goto :eof
