@@ -656,10 +656,19 @@ goto :eof
 rem .
 rem . This scipt is machine generated, do not edit!
 rem .
+set BUILD_DIR=BuildWebGL
 if ""%USERNAME%"" == ""petays"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
 if ""%USERNAME%"" == ""psykk"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
+
+echo USERNAME=%USERNAME%
 echo BUILD_DIR=%BUILD_DIR%
 echo DROPBOX_DIR=%DROPBOX_DIR%
+if ""%BUILD_DIR%"" == """" (
+    echo *
+    echo * Config error, BUILD_DIR not set for user %USERNAME%
+    echo *
+    goto :eof
+)
 if not exist %DROPBOX_DIR% (
     echo *
     echo * skip DROPBOX copy, %DROPBOX_DIR% not found
