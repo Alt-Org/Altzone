@@ -583,6 +583,9 @@ pause";
             #region AndroidPostProcessScriptContent
 
             private const string AndroidPostProcessScriptContent = @"@echo off
+rem .
+rem . This scipt is machine generated, do not edit!
+rem .
 set BUILD_DIR=BuildAndroid
 set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildAndroid
 set ZIP=C:\Program Files\7-Zip\7z.exe
@@ -636,7 +639,7 @@ goto :dropbox
 if not exist ""%DROPBOX_DIR%"" (
     goto :eof
 )
-if ""%LOGFILE%""  == """" (
+if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
 )
 robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
@@ -650,17 +653,29 @@ goto :eof
             #region WebGLPostProcessScriptContent
 
             private const string WebGLPostProcessScriptContent = @"@echo off
-set BUILD_DIR=BuildWebGL
-set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
+rem .
+rem . This scipt is machine generated, do not edit!
+rem .
+if ""%USERNAME%"" == ""petays"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
+if ""%USERNAME%"" == ""psykk"" set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
 echo BUILD_DIR=%BUILD_DIR%
 echo DROPBOX_DIR=%DROPBOX_DIR%
 if not exist %DROPBOX_DIR% (
+    echo *
+    echo * skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo *
     goto :eof
 )
-if ""%LOGFILE%""  == """" (
+if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
 )
 robocopy %BUILD_DIR% %DROPBOX_DIR% /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
+echo.
+echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
+if %errorlevel% leq 8 goto :eof
+echo *
+echo * Check DROPBOX log %LOGFILE% for possible errors
+echo *
 goto :eof
 ";
 
