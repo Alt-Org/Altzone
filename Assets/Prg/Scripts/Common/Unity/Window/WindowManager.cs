@@ -146,6 +146,19 @@ namespace Prg.Scripts.Common.Unity.Window
             _goBackOnceHandler?.Remove(handler);
         }
 
+        WindowDef IWindowManager.CurrentWindow
+        {
+            get
+            {
+                if (_currentWindows.Count == 0)
+                {
+                    return null;
+                }
+                var currentWindow = _currentWindows[0];
+                return currentWindow._windowDef;
+            }
+        }
+
         int IWindowManager.WindowCount => _currentWindows.Count;
 
         List<MyWindow> IWindowManager.WindowStack => _currentWindows;
@@ -425,6 +438,8 @@ namespace Prg.Scripts.Common.Unity.Window
                 // NOP
             }
 
+            public WindowDef CurrentWindow => null;
+            
             public int WindowCount => 0;
 
             public List<MyWindow> WindowStack => new();

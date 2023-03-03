@@ -25,6 +25,12 @@ namespace Prg.Scripts.Common.Unity.Window
         /// </summary>
         void UnRegisterGoBackHandlerOnce(Func<WindowManager.GoBackAction> handler);
 
+        
+        /// <summary>
+        /// Gets current (top most) window.
+        /// </summary>
+        WindowDef CurrentWindow { get; }
+        
         /// <summary>
         /// Gets current window count including pop-out windows.
         /// </summary>
