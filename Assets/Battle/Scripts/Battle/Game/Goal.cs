@@ -18,15 +18,22 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] int TestLimit;
         [SerializeField] int GoalNumber;
 
+        private void Start()
+        {
+            if (PhotonNetwork.CurrentRoom.Players.Count > TestLimit);
+            {
+                _WallCollider.isTrigger = true;
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball))      // && PhotonNetwork.IsMasterClient
+            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.CurrentRoom.Players.Count > TestLimit)      // && PhotonNetwork.IsMasterClient
             {
-                //string tempString = "gahgsahsgfahgsh";
-	            //photonView.RPC("SetAll", PhotonTargets.All, tempString);
                 if (PhotonNetwork.InRoom)
                 {
+                    //_WallCollider.isTrigger = true;
                     var player = PhotonNetwork.LocalPlayer;
                     var playerPos = PhotonBattle.GetPlayerPos(player);
                     var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
@@ -44,18 +51,12 @@ namespace Battle.Scripts.Battle.Game
                 }   
             }
         }
-
-        /*[PunRPC]
-        void SetAll (string tempString, int number) 
-        {
-            Debug.Log(tempString + " " + number);
-        }*/
         
-        private void Update()
+        /*private void Update()
         {
             if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > TestLimit) {
                 _WallCollider.isTrigger = true;
             }
-        }
+        }*/
     }
 }
