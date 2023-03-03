@@ -646,8 +646,11 @@ if not exist ""%DROPBOX_DIR%"" (
 )
 if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
+    if exist %LOGFILE% (
+        del /Q %LOGFILE%
+    )
 )
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG:%LOGFILE%
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
 echo.
 echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
 if %errorlevel% leq 8 goto :eof
@@ -688,8 +691,11 @@ if not exist %DROPBOX_DIR% (
 )
 if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
+    if exist %LOGFILE% (
+        del /Q %LOGFILE%
+    )
 )
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG:%LOGFILE%
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
 echo.
 echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
 if %errorlevel% leq 8 goto :eof
