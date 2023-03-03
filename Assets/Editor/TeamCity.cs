@@ -63,14 +63,12 @@ namespace Editor
         {
             void PatchIndexHtml(string htmlFile, string curTitle, string newTitle)
             {
-                string oldTitleText;
-                string newTitleText;
 #if UNITY_2019
-                oldTitleText = $"<div class=\"title\">{curTitle}</div>";
-                newTitleText = $"<div class=\"title\">{newTitle}</div>";
+                var oldTitleText = $"<div class=\"title\">{curTitle}</div>";
+                var newTitleText = $"<div class=\"title\">{newTitle}</div>";
 #else
-                oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
-                newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
+                var oldTitleText = $"<div id=\"unity-build-title\">{curTitle}</div>";
+                var newTitleText = $"<div id=\"unity-build-title\">{newTitle}</div>";
 #endif
                 var htmlContent = File.ReadAllText(htmlFile, Encoding);
                 var newHtmlContent = htmlContent.Replace(oldTitleText, newTitleText);
@@ -92,7 +90,8 @@ namespace Editor
                 title.Substring(0, title.Length - 4) // remove seconds
                     .Replace(" ", "_")
                     .Replace(":", ".");
-            PatchIndexHtml(indexHtml, curName, gitTagCompliantLabel);
+            var bundleVersionCode = PlayerSettings.Android.bundleVersionCode;
+            PatchIndexHtml(indexHtml, curName, $"{gitTagCompliantLabel} ({bundleVersionCode})");
 
             const string scriptName = "m_BuildScript_PostProcess.bat";
             File.WriteAllText(scriptName, CommandLineTemplate.WebGLPostProcessScript, Encoding);
@@ -515,7 +514,7 @@ if ""%BUILDTARGET%"" == ""WebGL"" goto :valid_build
 echo *
 echo * Can not build: invalid build target '%BUILDTARGET%'
 echo *
-echo * Build target must be one of UNITY command line build target:
+echo * Build target must be one of UNITY command line build targets:
 echo *
 echo *	Win64
 echo *	Android
@@ -583,8 +582,14 @@ pause";
             #region AndroidPostProcessScriptContent
 
             private const string AndroidPostProcessScriptContent = @"@echo off
+rem .
+rem . This scipt is machine generated, do not edit!
+rem .
 set BUILD_DIR=BuildAndroid
-set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildAndroid
+set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\%BUILD_DIR%
+if not exist %DROPBOX_DIR% (
+	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\%BUILD_DIR%
+)
 set ZIP=C:\Program Files\7-Zip\7z.exe
 
 echo BUILD_DIR=%BUILD_DIR%
@@ -634,14 +639,24 @@ goto :dropbox
 
 :dropbox
 if not exist ""%DROPBOX_DIR%"" (
+    echo *
+    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo *
     goto :eof
 )
-if ""%LOGFILE%""  == """" (
+if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
+    if exist %LOGFILE% (
+        del /Q %LOGFILE%
+    )
 )
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
-set RESULT=%ERRORLEVEL%
-echo ROBOCOPY result %RESULT%
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
+echo.
+echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
+if %errorlevel% leq 8 goto :eof
+echo *
+echo * Check DROPBOX log %LOGFILE% for possible errors
+echo *
 goto :eof
 ";
 
@@ -650,17 +665,43 @@ goto :eof
             #region WebGLPostProcessScriptContent
 
             private const string WebGLPostProcessScriptContent = @"@echo off
+rem .
+rem . This scipt is machine generated, do not edit!
+rem .
 set BUILD_DIR=BuildWebGL
 set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
+if not exist %DROPBOX_DIR% (
+	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
+)
+
+echo USERNAME=%USERNAME%
 echo BUILD_DIR=%BUILD_DIR%
 echo DROPBOX_DIR=%DROPBOX_DIR%
-if not exist %DROPBOX_DIR% (
+if ""%BUILD_DIR%"" == """" (
+    echo *
+    echo * Config error, BUILD_DIR not set for user %USERNAME%
+    echo *
     goto :eof
 )
-if ""%LOGFILE%""  == """" (
-    set LOGFILE=%0.log
+if not exist %DROPBOX_DIR% (
+    echo *
+    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo *
+    goto :eof
 )
-robocopy %BUILD_DIR% %DROPBOX_DIR% /S /E /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
+if ""%LOGFILE%"" == """" (
+    set LOGFILE=%0.log
+    if exist %LOGFILE% (
+        del /Q %LOGFILE%
+    )
+)
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
+echo.
+echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
+if %errorlevel% leq 8 goto :eof
+echo *
+echo * Check DROPBOX log %LOGFILE% for possible errors
+echo *
 goto :eof
 ";
 
