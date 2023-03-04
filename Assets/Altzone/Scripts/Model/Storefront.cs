@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.ModelStorage;
+using GameServer.Scripts;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -26,6 +27,7 @@ namespace Altzone.Scripts.Model
 
         private static Storefront _instance;
 
+        private readonly IGameServer _gameServer;
         private IInventory _inventory;
         private RaidGameRoomModels _clanGameRoomModels;
         private RaidGameRoomModels _playerGameRoomModels;
@@ -37,9 +39,11 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
+            var gameServerFolder = Path.Combine(Application.persistentDataPath, "GameServer");
             var playerGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.PlayerGameRoomModelsFilename);
             var clanGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanInventoryItemsFilename);
+            _gameServer = GameServerFactory.CreateLocal(gameServerFolder);
             Task.Run(() => { AsyncInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath); });
             Debug.Log($"exit");
         }
@@ -54,11 +58,13 @@ namespace Altzone.Scripts.Model
                 _clanGameRoomModels = new RaidGameRoomModels();
                 var clanConnectResult = _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
-                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult);
+                var gameServerResult = _gameServer.Initialize();
+                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult, gameServerResult);
                 Assert.IsTrue(playerConnectResult.Result);
                 Assert.IsTrue(clanConnectResult.Result);
                 _inventory = inventoryResult.Result;
                 Assert.IsNotNull(_inventory);
+                Assert.IsTrue(gameServerResult.Result);
             }
             catch (Exception x)
             {

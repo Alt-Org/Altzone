@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using GameServer.Scripts.Dto;
 
 namespace GameServer.Scripts
 {
@@ -7,6 +9,7 @@ namespace GameServer.Scripts
     /// </summary>
     public interface IGameServer
     {
+        Task<bool> Initialize();
         IClan Clan { get; }
     }
 
@@ -15,10 +18,10 @@ namespace GameServer.Scripts
     /// </summary>
     public interface IClan
     {
-        int Save();
-        IClan Get(int id);
-        List<IClan> GetAll();
-        void Update();
-        void Delete(int id);
+        Task<bool> Save(ClanDto clan);
+        Task<ClanDto> Get(int id);
+        List<ClanDto> GetAll();
+        Task<bool> Update(ClanDto clan);
+        Task<bool> Delete(int id);
     }
 }

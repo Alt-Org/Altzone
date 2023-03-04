@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using GameServer.Scripts.Dto;
+using UnityEngine;
 
 namespace GameServer.Scripts.Local
 {
@@ -14,31 +17,37 @@ namespace GameServer.Scripts.Local
             _storageFolder = storageFolder;
             _clan = new LocalClan();
         }
+
+        public Task<bool> Initialize()
+        {
+            Debug.Log($"{nameof(LocalGameServer)} initialized");
+            return Task.FromResult(true);
+        }
     }
 
     internal class LocalClan : IClan
     {
-        public int Save()
+        public Task<bool> Save(ClanDto clan)
         {
             throw new System.NotImplementedException();
         }
 
-        public IClan Get(int id)
+        public Task<ClanDto> Get(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public List<IClan> GetAll()
+        public List<ClanDto> GetAll()
         {
             throw new System.NotImplementedException();
         }
 
-        public void Update()
+        public Task<bool> Update(ClanDto clan)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Delete(int id)
+        public Task<bool> Delete(int id)
         {
             throw new System.NotImplementedException();
         }
