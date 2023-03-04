@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,17 @@ namespace GameServer.Scripts.Local
 {
     internal class LocalClan : IClan
     {
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private class StorageData
+        {
+            public List<ClanDto> models;
+
+            public StorageData(List<ClanDto> models)
+            {
+                this.models = models;
+            }
+        }
+
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storageFilename;
@@ -27,20 +39,16 @@ namespace GameServer.Scripts.Local
             _models = LoadStorage(_storageFilename);
         }
 
-        internal void Initialize()
-        {
-        }
-
         private static List<ClanDto> LoadStorage(string storageFilename)
         {
             var jsonData = File.ReadAllText(storageFilename, Encoding);
-            var models = JsonUtility.FromJson<List<ClanDto>>(jsonData);
-            return models;
+            var data = JsonUtility.FromJson<StorageData>(jsonData);
+            return data.models;
         }
 
         private static void SaveStorage(List<ClanDto> models, string storageFilename)
         {
-            var json = JsonUtility.ToJson(models);
+            var json = JsonUtility.ToJson(new StorageData(models));
             File.WriteAllText(storageFilename, json, Encoding);
         }
 
