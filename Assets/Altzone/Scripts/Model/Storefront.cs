@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.ModelStorage;
 using GameServer.Scripts;
+using GameServer.Scripts.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -83,12 +84,10 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
 
-        Task<IClanModel> IStorefront.GetClanModel(int id)
+        async Task<IClanModel> IStorefront.GetClanModel(int id)
         {
-            var taskCompletionSource = new TaskCompletionSource<IClanModel>();
-            var clan = new ClanModel(id, "DEMO", "[D]", 0);
-            taskCompletionSource.SetResult(clan);
-            return taskCompletionSource.Task;
+            var clan = await _gameServer.Clan.Get(id);
+            return clan != null ? new ClanModel(clan) : null;
         }
 
         Task<List<IClanModel>> IStorefront.GetAllClanModels()
@@ -299,7 +298,7 @@ namespace Altzone.Scripts.Model
                 if (character == null)
                 {
                     // Patch BattleCharacter to make it return ok even if custom character exists without corresponding character class.
-                    character = new CharacterClassModel(customCharacter.CharacterModelId, 
+                    character = new CharacterClassModel(customCharacter.CharacterModelId,
                         "Ööö", Altzone.Scripts.Model.Defence.Desensitisation, 1, 1, 1, 1);
                 }
                 return new BattleCharacter(customCharacter, character);

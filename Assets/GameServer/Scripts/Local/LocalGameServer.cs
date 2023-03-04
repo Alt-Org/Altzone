@@ -34,7 +34,14 @@ namespace GameServer.Scripts.Local
 
         public Task<ClanDto> Get(int id)
         {
-            throw new System.NotImplementedException();
+            var clan = new ClanDto()
+            {
+                Id = id,
+                GameCoins = 0,
+                Name = $"Demo{id:00}",
+                Tag = "[DM]"
+            };
+            return Task.FromResult(clan);
         }
 
         public List<ClanDto> GetAll()
