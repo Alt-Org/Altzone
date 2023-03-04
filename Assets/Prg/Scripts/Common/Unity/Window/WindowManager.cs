@@ -5,7 +5,6 @@ using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.Common.Unity.Window
 {
@@ -251,7 +250,6 @@ namespace Prg.Scripts.Common.Unity.Window
 
         void IWindowManager.ShowWindow(WindowDef windowDef)
         {
-            Debug.Log(""+windowDef);
             void DoShowWindow()
             {
                 Assert.IsNotNull(windowDef, "windowDef != null");
