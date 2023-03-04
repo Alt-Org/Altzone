@@ -9,6 +9,7 @@ namespace GameServer.Scripts
     /// </summary>
     public interface IGameServer
     {
+        string PathOrUrl { get; }
         Task<bool> Initialize();
         IClan Clan { get; }
     }
