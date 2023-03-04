@@ -1,3 +1,5 @@
+using GameServer.Scripts.Dto;
+
 namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
@@ -14,6 +16,24 @@ namespace Altzone.Scripts.Model.Dto
             Name = name;
             Tag = tag;
             GameCoins = gameCoins;
+        }
+
+        internal ClanModel(ClanDto dto) : base(dto.Id)
+        {
+            Name = dto.Name;
+            Tag = dto.Tag;
+            GameCoins = dto.GameCoins;
+        }
+
+        internal ClanDto ToDto()
+        {
+            return new ClanDto
+            {
+                Id = Id,
+                GameCoins = GameCoins,
+                Name = Name,
+                Tag = Tag
+            };
         }
     }
 }

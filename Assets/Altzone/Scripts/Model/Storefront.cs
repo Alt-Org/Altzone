@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.ModelStorage;
+using GameServer.Scripts;
+using GameServer.Scripts.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -26,6 +28,7 @@ namespace Altzone.Scripts.Model
 
         private static Storefront _instance;
 
+        private readonly IGameServer _gameServer;
         private IInventory _inventory;
         private RaidGameRoomModels _clanGameRoomModels;
         private RaidGameRoomModels _playerGameRoomModels;
@@ -37,9 +40,11 @@ namespace Altzone.Scripts.Model
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
+            var gameServerFolder = Path.Combine(Application.persistentDataPath, "GameServer");
             var playerGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.PlayerGameRoomModelsFilename);
             var clanGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanInventoryItemsFilename);
+            _gameServer = GameServerFactory.CreateLocal(gameServerFolder);
             Task.Run(() => { AsyncInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath); });
             Debug.Log($"exit");
         }
@@ -54,11 +59,13 @@ namespace Altzone.Scripts.Model
                 _clanGameRoomModels = new RaidGameRoomModels();
                 var clanConnectResult = _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
-                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult);
+                var gameServerResult = _gameServer.Initialize();
+                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult, gameServerResult);
                 Assert.IsTrue(playerConnectResult.Result);
                 Assert.IsTrue(clanConnectResult.Result);
                 _inventory = inventoryResult.Result;
                 Assert.IsNotNull(_inventory);
+                Assert.IsTrue(gameServerResult.Result);
             }
             catch (Exception x)
             {
@@ -77,24 +84,29 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
 
-        IClanModel IStorefront.GetClanModel(int id)
+        async Task<IClanModel> IStorefront.GetClanModel(int id)
         {
-            return Models.FindById<ClanModel>(id);
+            var clan = await _gameServer.Clan.Get(id);
+            return clan != null ? new ClanModel(clan) : null;
         }
 
-        List<IClanModel> IStorefront.GetAllClanModels()
+        async Task<List<IClanModel>> IStorefront.GetAllClanModels()
         {
-            return Models.GetAll<ClanModel>().Cast<IClanModel>().ToList();
+            var dtoList = await _gameServer.Clan.GetAll();
+            return dtoList.Select(x => new ClanModel(x)).Cast<IClanModel>().ToList();
         }
 
-        public int Save(IClanModel clanModel)
+        Task<bool> IStorefront.Save(IClanModel clanModel)
         {
-            throw new NotImplementedException();
+            var dto = clanModel is ClanModel model ? model.ToDto() : null;
+            return clanModel.Id == 0 
+                ? _gameServer.Clan.Save(dto)
+                : _gameServer.Clan.Update(dto);
         }
 
-        public void DeleteClanModel(int id)
+        Task IStorefront.DeleteClanModel(int id)
         {
-            throw new NotImplementedException();
+            return _gameServer.Clan.Delete(id);
         }
 
         IFurnitureModel IStorefront.GetFurnitureModel(int id)
@@ -290,7 +302,7 @@ namespace Altzone.Scripts.Model
                 if (character == null)
                 {
                     // Patch BattleCharacter to make it return ok even if custom character exists without corresponding character class.
-                    character = new CharacterClassModel(customCharacter.CharacterModelId, 
+                    character = new CharacterClassModel(customCharacter.CharacterModelId,
                         "Ööö", Altzone.Scripts.Model.Defence.Desensitisation, 1, 1, 1, 1);
                 }
                 return new BattleCharacter(customCharacter, character);

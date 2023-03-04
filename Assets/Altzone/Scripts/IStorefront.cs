@@ -49,12 +49,12 @@ namespace Altzone.Scripts
 
         #endregion
 
-        #region IClanModel
+        #region IClanModel (Async)
 
-        IClanModel GetClanModel(int id);
-        List<IClanModel> GetAllClanModels();
-        int Save(IClanModel clanModel);
-        void DeleteClanModel(int id);
+        Task<IClanModel> GetClanModel(int id);
+        Task<List<IClanModel>> GetAllClanModels();
+        Task<bool> Save(IClanModel clanModel);
+        Task DeleteClanModel(int id);
 
         #endregion
 
