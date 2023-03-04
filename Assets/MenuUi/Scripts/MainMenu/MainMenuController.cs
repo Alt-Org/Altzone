@@ -8,16 +8,15 @@ namespace MenuUi.Scripts.MainMenu
     {
         [SerializeField] private MainMenuView _view;
 
-        private void OnEnable()
+        private async void OnEnable()
         {
             var playerDataCache = GameConfig.Get().PlayerSettings;
             _view.Reset();
             _view.PlayerName = playerDataCache.PlayerName;
-            var clan = Storefront.Get().GetClanModel(playerDataCache.ClanId);
-            if (clan != null)
-            {
-                _view.ClanName = clan.Name;
-            }
+            var clanId = playerDataCache.ClanId;
+            _view.ClanName = string.Empty;
+            var clan = await Storefront.Get().GetClanModel(clanId);
+            _view.ClanName = clan?.Name ?? $"Clan {clanId} not found";
         }
     }
 }

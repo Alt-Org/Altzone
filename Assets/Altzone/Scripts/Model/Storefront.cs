@@ -77,22 +77,25 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
 
-        IClanModel IStorefront.GetClanModel(int id)
+        Task<IClanModel> IStorefront.GetClanModel(int id)
         {
-            return Models.FindById<ClanModel>(id);
+            var taskCompletionSource = new TaskCompletionSource<IClanModel>();
+            var clan = new ClanModel(id, "DEMO", "[D]", 0);
+            taskCompletionSource.SetResult(clan);
+            return taskCompletionSource.Task;
         }
 
-        List<IClanModel> IStorefront.GetAllClanModels()
-        {
-            return Models.GetAll<ClanModel>().Cast<IClanModel>().ToList();
-        }
-
-        public int Save(IClanModel clanModel)
+        Task<List<IClanModel>> IStorefront.GetAllClanModels()
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteClanModel(int id)
+        Task<bool> IStorefront.Save(IClanModel clanModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IStorefront.DeleteClanModel(int id)
         {
             throw new NotImplementedException();
         }
