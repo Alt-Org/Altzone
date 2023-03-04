@@ -44,7 +44,7 @@ namespace GameServer.Scripts.Local
             return Task.FromResult(clan);
         }
 
-        public List<ClanDto> GetAll()
+        public Task<List<ClanDto>> GetAll()
         {
             throw new System.NotImplementedException();
         }

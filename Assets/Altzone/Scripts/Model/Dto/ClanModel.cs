@@ -18,11 +18,22 @@ namespace Altzone.Scripts.Model.Dto
             GameCoins = gameCoins;
         }
 
-        public ClanModel(ClanDto dto) : base(dto.Id)
+        internal ClanModel(ClanDto dto) : base(dto.Id)
         {
             Name = dto.Name;
             Tag = dto.Tag;
             GameCoins = dto.GameCoins;
+        }
+
+        internal ClanDto ToDto()
+        {
+            return new ClanDto
+            {
+                Id = Id,
+                GameCoins = GameCoins,
+                Name = Name,
+                Tag = Tag
+            };
         }
     }
 }

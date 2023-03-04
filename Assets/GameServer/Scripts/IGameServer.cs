@@ -20,7 +20,7 @@ namespace GameServer.Scripts
     {
         Task<bool> Save(ClanDto clan);
         Task<ClanDto> Get(int id);
-        List<ClanDto> GetAll();
+        Task<List<ClanDto>> GetAll();
         Task<bool> Update(ClanDto clan);
         Task<bool> Delete(int id);
     }

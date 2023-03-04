@@ -90,19 +90,23 @@ namespace Altzone.Scripts.Model
             return clan != null ? new ClanModel(clan) : null;
         }
 
-        Task<List<IClanModel>> IStorefront.GetAllClanModels()
+        async Task<List<IClanModel>> IStorefront.GetAllClanModels()
         {
-            throw new NotImplementedException();
+            var dtoList = await _gameServer.Clan.GetAll();
+            return dtoList.Select(x => new ClanModel(x)).Cast<IClanModel>().ToList();
         }
 
         Task<bool> IStorefront.Save(IClanModel clanModel)
         {
-            throw new NotImplementedException();
+            var dto = clanModel is ClanModel model ? model.ToDto() : null;
+            return clanModel.Id == 0 
+                ? _gameServer.Clan.Save(dto)
+                : _gameServer.Clan.Update(dto);
         }
 
         Task IStorefront.DeleteClanModel(int id)
         {
-            throw new NotImplementedException();
+            return _gameServer.Clan.Delete(id);
         }
 
         IFurnitureModel IStorefront.GetFurnitureModel(int id)
