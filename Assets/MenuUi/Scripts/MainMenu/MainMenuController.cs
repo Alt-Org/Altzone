@@ -16,7 +16,7 @@ namespace MenuUi.Scripts.MainMenu
             var clanId = playerDataCache.ClanId;
             _view.ClanName = string.Empty;
             var clan = await Storefront.Get().GetClanModel(clanId);
-            _view.ClanName = clan?.Name ?? $"Clan {clanId} not found";
+            _view.ClanName = clan?.Name ?? $"«Clan {clanId} not found»";
         }
     }
 }
