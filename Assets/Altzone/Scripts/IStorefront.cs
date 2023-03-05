@@ -15,7 +15,7 @@ namespace Altzone.Scripts
         public const string PlayerGameRoomModelsFilename = "GamePlayerClanGameRoomModels.json";
         public const string PlayerCustomCharacterModelsFilename = "GamePlayerCustomCharacterModels.json";
     }
-    
+
     /// <summary>
     /// Store CRUD operations for model and custom objects.
     /// </summary>
@@ -24,6 +24,7 @@ namespace Altzone.Scripts
     /// </remarks>
     public interface IStorefront
     {
+        bool IsGameServerConnected { get; }
         bool IsInventoryConnected { get; }
 
         #region ICharacterClassModel

@@ -9,7 +9,9 @@ namespace GameServer.Scripts.Local
         private readonly string _storageFolder;
         private readonly LocalClan _clan;
 
+        public bool IsConnected { get; private set; }
         public string PathOrUrl => _storageFolder;
+        
         public IClan Clan => _clan;
 
         public LocalGameServer(string storageFolder)
@@ -29,6 +31,7 @@ namespace GameServer.Scripts.Local
         public Task<bool> Initialize()
         {
             Debug.Log($"Initialize {GetType().Name} in {_storageFolder}");
+            IsConnected = true;
             return Task.FromResult(true);
         }
     }

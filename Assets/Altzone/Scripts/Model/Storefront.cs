@@ -33,6 +33,7 @@ namespace Altzone.Scripts.Model
         private RaidGameRoomModels _clanGameRoomModels;
         private RaidGameRoomModels _playerGameRoomModels;
 
+        public bool IsGameServerConnected => _gameServer.IsConnected;
         public bool IsInventoryConnected => _inventory != null;
 
         private Storefront()
