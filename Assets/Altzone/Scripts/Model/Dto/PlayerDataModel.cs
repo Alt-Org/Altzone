@@ -1,4 +1,3 @@
-using System;
 using GameServer.Scripts.Dto;
 
 namespace Altzone.Scripts.Model.Dto
@@ -6,7 +5,9 @@ namespace Altzone.Scripts.Model.Dto
     /// <summary>
     /// Data Transfer Object for <c>IPlayerDataModel</c>.
     /// </summary>
-    [Serializable]
+    /// <remarks>
+    /// Object Id is assigned by remote server.
+    /// </remarks>
     public class PlayerDataModel : AbstractModel, IPlayerDataModel
     {
         public int ClanId { get; set; }
@@ -14,7 +15,7 @@ namespace Altzone.Scripts.Model.Dto
         public string Name { get; set; }
         public int BackpackCapacity { get; set; }
 
-        public PlayerDataModel(int id, int clanId, int currentCharacterModelId, string name, int backpackCapacity) : base(id)
+        public PlayerDataModel(int clanId, int currentCharacterModelId, string name, int backpackCapacity) : base(0)
         {
             ClanId = clanId;
             CurrentCharacterModelId = currentCharacterModelId;

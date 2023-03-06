@@ -5,13 +5,16 @@ namespace Altzone.Scripts.Model.Dto
     /// <summary>
     /// Data Transfer Object for <c>IClanModel</c>.
     /// </summary>
+    /// <remarks>
+    /// Object Id is assigned by remote server.
+    /// </remarks>
     public class ClanModel : AbstractModel, IClanModel
     {
         public string Name { get; set; }
         public string Tag { get; set; }
         public int GameCoins { get; set; }
 
-        public ClanModel(int id, string name, string tag, int gameCoins) : base(id)
+        public ClanModel(string name, string tag, int gameCoins) : base(0)
         {
             Name = name;
             Tag = tag;

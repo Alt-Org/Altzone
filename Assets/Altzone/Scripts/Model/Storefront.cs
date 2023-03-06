@@ -96,12 +96,22 @@ namespace Altzone.Scripts.Model
             return dtoList.Select(x => new ClanModel(x)).Cast<IClanModel>().ToList();
         }
 
-        Task<bool> IStorefront.Save(IClanModel clanModel)
+        async Task<bool> IStorefront.Save(IClanModel clanModel)
         {
-            var dto = clanModel is ClanModel model ? model.ToDto() : null;
-            return clanModel.Id == 0
-                ? _gameServer.Clan.Save(dto)
-                : _gameServer.Clan.Update(dto);
+            if (clanModel is not ClanModel model)
+            {
+                throw new UnityException($"Invalid model object {clanModel}");
+            }
+            var dto = model.ToDto();
+            var isNew = clanModel.Id == 0;
+            var result = isNew
+                ? await _gameServer.Clan.Save(dto)
+                : await _gameServer.Clan.Update(dto);
+            if (result && isNew)
+            {
+                model.SetId(dto.Id);
+            }
+            return result;
         }
 
         Task IStorefront.DeleteClanModel(int id)
@@ -136,12 +146,22 @@ namespace Altzone.Scripts.Model
             return dtoList.Select(x => new PlayerDataModel(x)).Cast<IPlayerDataModel>().ToList();
         }
 
-        public Task<bool> SavePlayerDataModel(IPlayerDataModel playerDataModel)
+        public async Task<bool> SavePlayerDataModel(IPlayerDataModel playerDataModel)
         {
-            var dto = playerDataModel is PlayerDataModel model ? model.ToDto() : null;
-            return playerDataModel.Id == 0
-                ? _gameServer.Player.Save(dto)
-                : _gameServer.Player.Update(dto);
+            if (playerDataModel is not PlayerDataModel model)
+            {
+                throw new UnityException($"Invalid model object {playerDataModel}");
+            }
+            var dto = model.ToDto();
+            var isNew = playerDataModel.Id == 0;
+            var result = isNew
+                ? await _gameServer.Player.Save(dto)
+                : await _gameServer.Player.Update(dto);
+            if (result && isNew)
+            {
+                model.SetId(dto.Id);
+            }
+            return result;
         }
 
         public Task DeletePlayerDataModel(int id)

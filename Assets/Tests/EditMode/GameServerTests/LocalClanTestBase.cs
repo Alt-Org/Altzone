@@ -18,6 +18,7 @@ namespace Tests.EditMode.GameServerTests
         [Test]
         public async Task SaveNewTest()
         {
+            Debug.Log("test");
             var clan = new ClanDto
             {
                 Id = 55,
@@ -30,8 +31,25 @@ namespace Tests.EditMode.GameServerTests
         }
 
         [Test]
+        public async Task SaveAutoIncTest()
+        {
+            Debug.Log("test");
+            var clan = new ClanDto
+            {
+                Id = 0,
+                GameCoins = 123,
+                Name = "Clan-123",
+                Tag = "OO"
+            };
+            var result = await ClanService.Save(clan);
+            Assert.IsTrue(result);
+            Assert.IsTrue(clan.Id > 0);
+        }
+        
+        [Test]
         public async Task SaveExistingTest()
         {
+            Debug.Log("test");
             var clan = new ClanDto
             {
                 Id = 10,
@@ -46,6 +64,7 @@ namespace Tests.EditMode.GameServerTests
         [Test]
         public async Task UpdateNewTest()
         {
+            Debug.Log("test");
             var clan = new ClanDto
             {
                 Id = 100,
@@ -60,6 +79,7 @@ namespace Tests.EditMode.GameServerTests
         [Test]
         public async Task UpdateExistingTest()
         {
+            Debug.Log("test");
             var clan = new ClanDto
             {
                 Id = 55,
@@ -78,6 +98,7 @@ namespace Tests.EditMode.GameServerTests
         [Test]
         public async Task GetByIdOkTest()
         {
+            Debug.Log("test");
             var clan = await ClanService.Get(3);
             Assert.IsNotNull(clan);
         }
@@ -85,13 +106,15 @@ namespace Tests.EditMode.GameServerTests
         [Test]
         public async Task GetByIdFailTest()
         {
-            var clan = await ClanService.Get(33);
+            Debug.Log("test");
+            var clan = await ClanService.Get(334455);
             Assert.IsNull(clan);
         }
 
         [Test]
         public async Task GetAllTest()
         {
+            Debug.Log("test");
             var clans = await GameServer.Clan.GetAll();
             Assert.IsTrue(clans.Count > 0);
         }

@@ -46,14 +46,15 @@ namespace Altzone.Scripts
             // Parts of store can be initialized asynchronously and we start it now (if not running already).
             var store = Storefront.Get();
             yield return new WaitUntil(() => store.IsGameServerConnected);
-            var task = store.GetPlayerDataModel(1);
-            yield return new WaitUntil(() => task.IsCompleted);
-            var playerDataModel = task.Result;
+            var getPlayer = store.GetPlayerDataModel(1);
+            yield return new WaitUntil(() => getPlayer.IsCompleted);
+            var playerDataModel = getPlayer.Result;
             if (playerDataModel == null)
             {
                 // Create new player for us - currentCharacterModelId must be valid because it is not checked later.
-                playerDataModel = new PlayerDataModel(0, 0, 1, "Player", 0);
-                store.SavePlayerDataModel(playerDataModel);
+                playerDataModel = new PlayerDataModel(0, 1, "Player", 0);
+                var savePlayer = store.SavePlayerDataModel(playerDataModel);
+                yield return new WaitUntil(() => savePlayer.IsCompleted);
                 Debug.Log($"Create player {playerDataModel}");
             }
             else
