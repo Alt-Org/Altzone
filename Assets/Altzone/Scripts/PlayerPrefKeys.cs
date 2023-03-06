@@ -2,9 +2,7 @@ namespace Altzone.Scripts
 {
     public static class PlayerPrefKeys
     {
-        public const string PlayerName = "PlayerData.PlayerName";
         public const string PlayerGuid = "PlayerData.PlayerGuid";
-        public const string ClanId = "PlayerData.ClanId";
         public const string CharacterModelId = "PlayerData.CharacterModelId";
         public const string LanguageCode = "PlayerData.LanguageCode";
         public const string TermsOfServiceAccepted = "PlayerData.TermsOfService";
