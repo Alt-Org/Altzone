@@ -136,7 +136,7 @@ namespace Altzone.Scripts.Model
             return dtoList.Select(x => new PlayerDataModel(x)).Cast<IPlayerDataModel>().ToList();
         }
 
-        public Task<bool> Save(IPlayerDataModel playerDataModel)
+        public Task<bool> SavePlayerDataModel(IPlayerDataModel playerDataModel)
         {
             var dto = playerDataModel is PlayerDataModel model ? model.ToDto() : null;
             return playerDataModel.Id == 0
