@@ -14,6 +14,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
         private static readonly Rect FixedRect = new(0, 0, 1, 1);
 
         [Tooltip(Tooltip), SerializeField] private Vector2 _targetAspectRatio = new(9, 16);
+        [SerializeField] private Color _boxOrPillarColor = Color.magenta;
 
         private Camera _camera;
         private Rect _tempRect;
@@ -58,7 +59,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
             // https://forum.unity.com/threads/force-camera-aspect-ratio-16-9-in-viewport.385541/
             _tempRect = _camera.rect;
             _camera.rect = FixedRect;
-            GL.Clear(true, true, Color.black);
+            GL.Clear(true, true, _boxOrPillarColor);
             _camera.rect = _tempRect;
         }
 
