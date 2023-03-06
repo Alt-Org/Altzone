@@ -29,17 +29,17 @@ namespace Editor
 
         #region GameDebug
 
-        [MenuItem(GameDebug + "Show Player Data", false, 10)]
-        private static void ShowLocalPlayerData() => DebugMenu.ShowLocalPlayerData();
+        [MenuItem(GameDebug + "Show Player Settings", false, 10)]
+        private static void ShowLocalPlayerSettings() => DebugMenu.ShowLocalPlayerSettings();
 
-        [MenuItem(GameDebug + "Create Dummy Player Data", false, 11)]
-        private static void CreateDummyPlayerData() => DebugMenu.CreateDummyPlayerData();
+        [MenuItem(GameDebug + "Create Dummy Player Settings", false, 11)]
+        private static void CreateDummyPlayerSettings() => DebugMenu.CreateDummyPlayerSettings();
 
-        [MenuItem(GameDebug + "Set Player Language to 'EN'", false, 12)]
+        [MenuItem(GameDebug + "Reset Player Settings", false, 12)]
+        private static void ResetPlayerSettings() => DebugMenu.ResetPlayerSettings();
+
+        [MenuItem(GameDebug + "Set Player Language to 'EN'", false, 13)]
         private static void SetLanguageToEn() => DebugMenu.SetLanguageToEn();
-
-        [MenuItem(GameDebug + "Reset Local Player Data", false, 13)]
-        private static void ResetLocalPlayerData() => DebugMenu.ResetLocalPlayerData();
 
         #endregion
 

@@ -28,8 +28,8 @@ namespace Altzone.Scripts.Settings
         void SetCustomCharacterModelId(int customCharacterModelId);
 
 #if UNITY_EDITOR
-        void DebugSavePlayer();
-        void DebugResetPlayer();
+        void DebugSavePlayerSettings();
+        void DebugResetPlayerSettings();
 #endif
     }
 }

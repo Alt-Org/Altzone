@@ -213,12 +213,12 @@ namespace Altzone.Scripts.Settings
         }
 
 #if UNITY_EDITOR
-        public void DebugResetPlayer()
+        public void DebugResetPlayerSettings()
         {
             _playerData.ResetData(DefaultPlayerName, DummyModelId, DefaultLanguage);
         }
 
-        public void DebugSavePlayer()
+        public void DebugSavePlayerSettings()
         {
             InternalSave();
         }

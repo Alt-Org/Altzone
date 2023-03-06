@@ -9,14 +9,14 @@ namespace Editor.Prg.GameDebug
 {
     internal static class DebugMenu
     {
-        public static void ShowLocalPlayerData()
+        public static void ShowLocalPlayerSettings()
         {
             Debug.Log("*");
             var playerData = GameConfig.Get().PlayerSettings;
             Debug.Log(playerData.ToString());
         }
 
-        public static void CreateDummyPlayerData()
+        public static void CreateDummyPlayerSettings()
         {
             Debug.Log("*");
             var language = Application.systemLanguage;
@@ -27,7 +27,7 @@ namespace Editor.Prg.GameDebug
             playerData.Language = language;
             Localizer.SetLanguage(language);
             playerData.SetCustomCharacterModelId(1);
-            playerData.DebugSavePlayer();
+            playerData.DebugSavePlayerSettings();
             Debug.Log(playerData.ToString());
         }
 
@@ -39,16 +39,16 @@ namespace Editor.Prg.GameDebug
             var playerData = GameConfig.Get().PlayerSettings;
             playerData.Language = language;
             Localizer.SetLanguage(language);
-            playerData.DebugSavePlayer();
+            playerData.DebugSavePlayerSettings();
             Debug.Log(playerData.ToString());
         }
 
-        public static void ResetLocalPlayerData()
+        public static void ResetPlayerSettings()
         {
             Debug.Log("*");
             var playerData = GameConfig.Get().PlayerSettings;
-            playerData.DebugResetPlayer();
-            playerData.DebugSavePlayer();
+            playerData.DebugResetPlayerSettings();
+            playerData.DebugSavePlayerSettings();
             Debug.Log(playerData.ToString());
         }
     }
