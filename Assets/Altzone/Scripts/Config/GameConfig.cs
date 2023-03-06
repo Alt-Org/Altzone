@@ -22,7 +22,7 @@ namespace Altzone.Scripts.Config
         GameVariables Variables { get; }
         PlayerPrefabs PlayerPrefabs { get; }
         IPlayerSettings PlayerSettings { get; }
-        IPlayerDataModel PlayerDataModel { get; }
+        IPlayerDataModel PlayerDataModel { get; set; }
         Characters Characters { get; }
     }
 
@@ -64,7 +64,8 @@ namespace Altzone.Scripts.Config
 
         public IPlayerSettings PlayerSettings { get; }
 
-        public IPlayerDataModel PlayerDataModel { get; }
+        public IPlayerDataModel PlayerDataModel { get; set; }
+
         public Characters Characters { get; }
 
         #region Private serializable variables
@@ -80,7 +81,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = Settings.PlayerSettings.Create();
-            PlayerDataModel = new PlayerDataModel(1, 0, "pelaaja", 0);
+            PlayerDataModel = new PlayerDataModel(0, 0, "pelaaja", 0);
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

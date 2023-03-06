@@ -3,12 +3,12 @@ using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Service.Audio;
 using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Attributes;
 using Prg.Scripts.Common.Unity.Localization;
-using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;
 
 namespace Altzone.Scripts
@@ -16,6 +16,7 @@ namespace Altzone.Scripts
     /// <summary>
     /// Loads all services used by this game.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class ServiceLoader : MonoBehaviour
     {
         /// <summary>
@@ -29,21 +30,39 @@ namespace Altzone.Scripts
         private const string Prefix2 = "生产"; // Shēngchǎn
 
         [SerializeField, ReadOnly] private bool _isLootLocker;
+        [SerializeField, ReadOnly] private bool _isLoaded;
 
         public bool IsLootLocker => _isLootLocker;
+        public bool IsLoaded => _isLoaded;
 
-        private void OnEnable()
+        private IEnumerator Start()
         {
             Debug.Log($"{name}");
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
-            // Parts of store can be initialized asynchronously and we start them now.
-            Storefront.Get();
             // Development vs production mode needs to be decided during build time!
             const bool isDevelopmentMode = true;
             StartLootLocker(isDevelopmentMode);
-            // Start the UI now.
-            WindowManager.Get();
+            // Parts of store can be initialized asynchronously and we start it now (if not running already).
+            var store = Storefront.Get();
+            yield return new WaitUntil(() => store.IsGameServerConnected);
+            var task = store.GetPlayerDataModel(1);
+            yield return new WaitUntil(() => task.IsCompleted);
+            var playerDataModel = task.Result;
+            if (playerDataModel == null)
+            {
+                // Create new player for us.
+                playerDataModel = new PlayerDataModel(0, 0, "Pelaaja", 0);
+                store.SavePlayerDataModel(playerDataModel);
+                Debug.Log($"Create player {playerDataModel}");
+            }
+            else
+            {
+                Debug.Log($"Load player {playerDataModel}");
+            }
+            var gameConfig = GameConfig.Get();
+            gameConfig.PlayerDataModel = playerDataModel;
+            _isLoaded = true;
             ShowDebugGameInfo(this);
         }
 
@@ -76,7 +95,6 @@ namespace Altzone.Scripts
                                          $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
                         isCustomCharactersValid = false;
                     }
-
                 }
                 Debug.Log($"customCharacters {customCharacters.Count}");
                 var battleCharacters = store.GetAllBattleCharacters();
