@@ -35,5 +35,10 @@ namespace Altzone.Scripts.Model.Dto
                 Tag = Tag
             };
         }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(Name)}: {Name}, {nameof(Tag)}: {Tag}, {nameof(GameCoins)}: {GameCoins}";
+        }
     }
 }

@@ -37,5 +37,10 @@ namespace Altzone.Scripts.Model.Dto
                 BackpackCapacity = BackpackCapacity
             };
         }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(ClanId)}: {ClanId}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}";
+        }
     }
 }
