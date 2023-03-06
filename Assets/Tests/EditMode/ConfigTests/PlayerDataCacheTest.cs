@@ -24,7 +24,6 @@ namespace Tests.EditMode.ConfigTests
 
             // Execute every getter.
             var playerGuid = playerDataCache.PlayerGuid;
-            var customCharacterModelId = playerDataCache.CustomCharacterModelId;
             var language = playerDataCache.Language;
             var isDebugFlag = playerDataCache.IsDebugFlag;
             var isTosAccepted = playerDataCache.IsTosAccepted;
@@ -35,8 +34,6 @@ namespace Tests.EditMode.ConfigTests
         [Test]
         public void DestructiveTest()
         {
-            const int dummyModelId = -1;
-
             var playerDataCache = GameConfig.Get().PlayerSettings;
             if (!playerDataCache.IsFirstTimePlaying && playerDataCache.IsAccountVerified)
             {
@@ -44,17 +41,6 @@ namespace Tests.EditMode.ConfigTests
                 return;
             }
             Debug.Log($"test");
-            var customCharacterModelId = playerDataCache.CustomCharacterModelId;
-            if (customCharacterModelId <= 0)
-            {
-                playerDataCache.SetCustomCharacterModelId(1);
-                Assert.AreEqual(1, playerDataCache.CustomCharacterModelId);
-            }
-            else
-            {
-                playerDataCache.SetCustomCharacterModelId(-123);
-                Assert.AreEqual(dummyModelId, playerDataCache.CustomCharacterModelId);
-            }
             var language = playerDataCache.Language;
             if (language == SystemLanguage.English)
             {
@@ -81,9 +67,6 @@ namespace Tests.EditMode.ConfigTests
             var isAccountVerified = !playerDataCache.IsAccountVerified;
             playerDataCache.IsAccountVerified = isAccountVerified;
             Assert.AreEqual(isAccountVerified, playerDataCache.IsAccountVerified);
-
-            playerDataCache.SetCustomCharacterModelId(1);
-            Assert.AreEqual(1, playerDataCache.CustomCharacterModelId);
 
             // Keep GUID.
             var playerGuid = playerDataCache.PlayerGuid;

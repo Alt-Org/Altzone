@@ -11,6 +11,7 @@ namespace GameServer.Scripts.Dto
     {
         public int Id;
         public int ClanId;
+        public int CurrentCharacterModelId;
         public string Name;
         public int BackpackCapacity;
     }

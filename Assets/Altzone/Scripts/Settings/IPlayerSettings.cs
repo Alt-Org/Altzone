@@ -11,7 +11,6 @@ namespace Altzone.Scripts.Settings
     public interface IPlayerSettings
     {
         string PlayerGuid { get; }
-        int CustomCharacterModelId { get; }
         SystemLanguage Language { get; set; }
         bool IsDebugFlag { get; set; }
         bool IsTosAccepted { get; set; }
@@ -20,7 +19,6 @@ namespace Altzone.Scripts.Settings
         int PlayerSettingsVersion { get; }
 
         void SetPlayerGuid(string newPlayerGuid);
-        void SetCustomCharacterModelId(int customCharacterModelId);
 
 #if UNITY_EDITOR
         void DebugSavePlayerSettings();

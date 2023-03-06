@@ -118,11 +118,12 @@ namespace Tests.EditMode.StorefrontTests
         [Test, Description("Test that Battle Character can be found from PlayerDataCache")]
         public void PlayerDataCacheTest()
         {
-            var playerDataCache = GameConfig.Get().PlayerSettings;
-            var characterModelId = playerDataCache.CustomCharacterModelId;
-            var battleCharacter = _store.GetBattleCharacter(characterModelId);
+            var gameConfig = GameConfig.Get();
+            var playerDataModel = gameConfig.PlayerDataModel;
+            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
+            var battleCharacter = _store.GetBattleCharacter(currentCharacterModelId);
             Assert.IsNotNull(battleCharacter);
-            Assert.AreEqual(characterModelId, battleCharacter.CustomCharacterModelId);
+            Assert.AreEqual(currentCharacterModelId, battleCharacter.CustomCharacterModelId);
         }
 
         private static T GetRandomObject<T>(IReadOnlyList<T> objectList)

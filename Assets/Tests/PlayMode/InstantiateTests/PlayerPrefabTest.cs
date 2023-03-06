@@ -30,7 +30,8 @@ namespace Tests.PlayMode.InstantiateTests
         {
             var gameConfig = GameConfig.Get();
             var playerDataCache = gameConfig.PlayerSettings;
-            var customCharacterModelId = playerDataCache.CustomCharacterModelId;
+            var playerDataModel = gameConfig.PlayerDataModel;
+            var customCharacterModelId = playerDataModel.CurrentCharacterModelId;
             var store = Storefront.Get();
             IBattleCharacter battleCharacter = null;
             var prefabId = 0;

@@ -51,8 +51,8 @@ namespace Altzone.Scripts
             var playerDataModel = task.Result;
             if (playerDataModel == null)
             {
-                // Create new player for us.
-                playerDataModel = new PlayerDataModel(0, 0, "Pelaaja", 0);
+                // Create new player for us - currentCharacterModelId must be valid because it is not checked later.
+                playerDataModel = new PlayerDataModel(0, 0, 1, "Player", 0);
                 store.SavePlayerDataModel(playerDataModel);
                 Debug.Log($"Create player {playerDataModel}");
             }

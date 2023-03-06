@@ -10,12 +10,14 @@ namespace Altzone.Scripts.Model.Dto
     public class PlayerDataModel : AbstractModel, IPlayerDataModel
     {
         public int ClanId { get; set; }
+        public int CurrentCharacterModelId { get; set; }
         public string Name { get; set; }
         public int BackpackCapacity { get; set; }
 
-        public PlayerDataModel(int id, int clanId, string name, int backpackCapacity) : base(id)
+        public PlayerDataModel(int id, int clanId, int currentCharacterModelId, string name, int backpackCapacity) : base(id)
         {
             ClanId = clanId;
+            CurrentCharacterModelId = currentCharacterModelId;
             Name = name;
             BackpackCapacity = backpackCapacity;
         }
@@ -23,6 +25,7 @@ namespace Altzone.Scripts.Model.Dto
         internal PlayerDataModel(PlayerDto dto) : base(dto.Id)
         {
             ClanId = dto.ClanId;
+            CurrentCharacterModelId = dto.CurrentCharacterModelId;
             Name = dto.Name;
             BackpackCapacity = dto.BackpackCapacity;
         }
@@ -33,6 +36,7 @@ namespace Altzone.Scripts.Model.Dto
             {
                 Id = Id,
                 ClanId = ClanId,
+                CurrentCharacterModelId = CurrentCharacterModelId,
                 Name = Name,
                 BackpackCapacity = BackpackCapacity
             };
@@ -40,7 +44,8 @@ namespace Altzone.Scripts.Model.Dto
 
         public override string ToString()
         {
-            return $"{base.ToString()}, {nameof(ClanId)}: {ClanId}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}";
+            return
+                $"{base.ToString()}, {nameof(ClanId)}: {ClanId}, {nameof(CurrentCharacterModelId)}: {CurrentCharacterModelId}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}";
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
@@ -22,11 +21,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var gameConfig = GameConfig.Get();
-            var playerDataCache = gameConfig.PlayerSettings;
             var playerDataModel = gameConfig.PlayerDataModel;
             _view.PlayerName = playerDataModel.Name;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
-            var currentCharacterId = playerDataCache.CustomCharacterModelId;
+            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
             var characters = Storefront.Get().GetAllBattleCharacters();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             _view.SetCharacters(characters, currentCharacterId);
@@ -35,6 +33,15 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void ContinueButtonOnClick()
         {
             Debug.Log("click");
+            var gameConfig = GameConfig.Get();
+            var playerDataModel = gameConfig.PlayerDataModel;
+            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
+            if (_view.CurrentCharacterId != currentCharacterId)
+            {
+                playerDataModel.CurrentCharacterModelId = _view.CurrentCharacterId;
+                var store = Storefront.Get();
+                store.SavePlayerDataModel(playerDataModel);
+            }
         }
     }
 }

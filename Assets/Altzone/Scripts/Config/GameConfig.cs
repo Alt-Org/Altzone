@@ -81,7 +81,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = Settings.PlayerSettings.Create();
-            PlayerDataModel = new PlayerDataModel(0, 0, "pelaaja", 0);
+            PlayerDataModel = new PlayerDataModel(0, 0, 0, "☹☹☹", 0);
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

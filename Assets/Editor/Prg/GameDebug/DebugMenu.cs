@@ -24,7 +24,6 @@ namespace Editor.Prg.GameDebug
             var playerSettings = GameConfig.Get().PlayerSettings;
             playerSettings.Language = language;
             Localizer.SetLanguage(language);
-            playerSettings.SetCustomCharacterModelId(1);
             playerSettings.DebugSavePlayerSettings();
             Debug.Log(playerSettings.ToString());
         }

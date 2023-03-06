@@ -359,8 +359,10 @@ namespace Battle0.Scripts
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (!Enum.TryParse(skillId.ToString(), out Defence defence))
             {
-                var playerDataCache = GameConfig.Get().PlayerSettings;
-                defence = Storefront.Get().GetBattleCharacter(playerDataCache.CustomCharacterModelId).MainDefence;
+                var gameConfig = GameConfig.Get();
+                var playerDataModel = gameConfig.PlayerDataModel;
+                var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
+                defence = Storefront.Get().GetBattleCharacter(currentCharacterModelId).MainDefence;
             }
             return Storefront.Get().GetBattleCharacter((int)defence);
         }

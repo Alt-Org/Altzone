@@ -13,13 +13,13 @@ namespace Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var gameConfig = GameConfig.Get();
-            var playerDataCache = gameConfig.PlayerSettings;
-            var customCharacterModelId = playerDataCache.CustomCharacterModelId;
+            var playerDataModel = gameConfig.PlayerDataModel;
+            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
             var store = Storefront.Get();
             var prefabId = 0;
             try
             {
-                var battleCharacter = store.GetBattleCharacter(customCharacterModelId);
+                var battleCharacter = store.GetBattleCharacter(currentCharacterModelId);
                 Debug.Log($"{battleCharacter}");
                 prefabId = battleCharacter.PlayerPrefabId;
                 Assert.IsTrue(prefabId >= 0);
