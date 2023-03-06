@@ -33,6 +33,7 @@ namespace GameServer.Scripts
     {
         Task<bool> Save(PlayerDto clan);
         Task<PlayerDto> Get(int id);
+        Task<PlayerDto> Get(string uniqueIdentifier);
         Task<List<PlayerDto>> GetAll();
         Task<bool> Update(PlayerDto clan);
         Task<bool> Delete(int id);

@@ -140,6 +140,12 @@ namespace Altzone.Scripts.Model
             return player != null ? new PlayerDataModel(player) : null;
         }
 
+        public async Task<IPlayerDataModel> GetPlayerDataModel(string uniqueIdentifier)
+        {
+            var player = await _gameServer.Player.Get(uniqueIdentifier);
+            return player != null ? new PlayerDataModel(player) : null;
+        }
+        
         public async Task<List<IPlayerDataModel>> GetAllPlayerDataModels()
         {
             var dtoList = await _gameServer.Player.GetAll();

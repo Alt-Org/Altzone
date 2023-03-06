@@ -78,6 +78,12 @@ namespace GameServer.Scripts.Local
             return Task.FromResult(player);
         }
 
+        public Task<PlayerDto> Get(string uniqueIdentifier)
+        {
+            var player = _models.FirstOrDefault(x => x.PlayerGuid == uniqueIdentifier);
+            return Task.FromResult(player);
+        }
+
         public Task<List<PlayerDto>> GetAll()
         {
             return Task.FromResult(_models);

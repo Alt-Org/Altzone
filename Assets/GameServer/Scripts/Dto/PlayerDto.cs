@@ -10,6 +10,7 @@ namespace GameServer.Scripts.Dto
     public class PlayerDto
     {
         public int Id;
+        public string PlayerGuid;
         public int ClanId;
         public int CurrentCharacterModelId;
         public string Name;

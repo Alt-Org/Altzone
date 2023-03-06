@@ -70,6 +70,7 @@ namespace Altzone.Scripts
         #region PlayerData (Async)
 
         Task<IPlayerDataModel> GetPlayerDataModel(int id);
+        Task<IPlayerDataModel> GetPlayerDataModel(string uniqueIdentifier);
         Task<List<IPlayerDataModel>> GetAllPlayerDataModels();
 
         Task<bool> SavePlayerDataModel(IPlayerDataModel playerDataModel);
