@@ -1,4 +1,6 @@
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Settings;
+using ExitGames.Client.Photon.StructWrapping;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -75,7 +77,7 @@ namespace Altzone.Scripts.Config
 
         private GameConfig()
         {
-            PlayerSettings = Altzone.Scripts.Config.PlayerSettings.Create();
+            PlayerSettings = Altzone.Scripts.Settings.PlayerSettings.Create();
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

@@ -5,18 +5,21 @@ using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Altzone.Scripts.Config
+namespace Altzone.Scripts.Settings
 {
     /// <summary>
-    /// <c>IPlayerDataCache</c> default implementation.
+    /// Factory access method to <c>IPlayerSettings</c>. 
     /// </summary>
-    internal class PlayerSettings : IPlayerSettings
+    public static class PlayerSettings
     {
-        internal static IPlayerSettings Create()
-        {
-            return new PlayerSettingsLocal();
-        }
+        public static IPlayerSettings Create() => new PlayerSettingsImpl.PlayerSettingsLocal();
+    }
 
+    /// <summary>
+    /// <c>IPlayerSettings</c> default implementation.
+    /// </summary>
+    internal class PlayerSettingsImpl : IPlayerSettings
+    {
         /// <summary>
         /// Negative model IDs are considered invalid.
         /// </summary>
@@ -144,7 +147,7 @@ namespace Altzone.Scripts.Config
         /// Version number for <c>IPlayerSettings</c> for future game updates.
         /// </summary>
         public int PlayerSettingsVersion => 1;
-        
+
         /// <summary>
         /// Debug FLag for debugging and diagnostics purposes.
         /// </summary>
@@ -268,7 +271,7 @@ namespace Altzone.Scripts.Config
         /// <summary>
         /// <c>PlayerDataCache</c> implementation using UNITY <c>PlayerPrefs</c> as backing storage.
         /// </summary>
-        private class PlayerSettingsLocal : PlayerSettings
+        internal class PlayerSettingsLocal : PlayerSettingsImpl
         {
             private readonly MonoBehaviour _host;
             private Coroutine _delayedSave;

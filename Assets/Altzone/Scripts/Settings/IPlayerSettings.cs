@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Altzone.Scripts.Config
+namespace Altzone.Scripts.Settings
 {
     /// <summary>
     /// Player settings - a common storage for player related data that is persisted locally on the device.
