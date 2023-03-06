@@ -6,6 +6,7 @@ namespace Altzone.Scripts.Model
     public interface IPlayerDataModel
     {
         int Id { get; }
+        int ClanId { get; }
         int BackpackCapacity { get; }
     }
 }

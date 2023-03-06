@@ -72,7 +72,7 @@ namespace Altzone.Scripts
         Task<IPlayerDataModel> GetPlayerDataModel(int id);
         Task<List<IPlayerDataModel>> GetAllPlayerDataModels();
 
-        Task<bool> Save(IPlayerDataModel inventoryItem);
+        Task<bool> Save(IPlayerDataModel playerDataModel);
         Task DeletePlayerDataModel(int id);
 
         #endregion

@@ -6,19 +6,15 @@ namespace Altzone.Scripts.Model.Dto
     /// Data Transfer Object for <c>IPlayerDataModel</c>.
     /// </summary>
     [Serializable]
-    public class PlayerDataModel : IPlayerDataModel
+    public class PlayerDataModel : AbstractModel, IPlayerDataModel
     {
-        public int _id;
-        public int _backpackCapacity;
+        public int ClanId { get; set; }
+        public int BackpackCapacity { get; set; }
 
-        public int Id => _id;
-
-        public int BackpackCapacity => _backpackCapacity;
-
-        public PlayerDataModel(int id, int backpackCapacity)
+        public PlayerDataModel(int id, int clanId, int backpackCapacity) : base(id)
         {
-            _id = id;
-            _backpackCapacity = backpackCapacity;
+            ClanId = clanId;
+            BackpackCapacity = backpackCapacity;
         }
     }
 }

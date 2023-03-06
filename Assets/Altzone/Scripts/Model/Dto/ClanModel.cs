@@ -7,9 +7,9 @@ namespace Altzone.Scripts.Model.Dto
     /// </summary>
     public class ClanModel : AbstractModel, IClanModel
     {
-        public string Name { get; }
-        public string Tag { get; }
-        public int GameCoins { get; }
+        public string Name { get; set; }
+        public string Tag { get; set; }
+        public int GameCoins { get; set; }
 
         public ClanModel(int id, string name, string tag, int gameCoins) : base(id)
         {
