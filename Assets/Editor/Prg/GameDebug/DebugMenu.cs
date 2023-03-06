@@ -21,14 +21,12 @@ namespace Editor.Prg.GameDebug
             Debug.Log("*");
             var language = Application.systemLanguage;
             Localizer.LoadTranslations(language);
-            var playerData = GameConfig.Get().PlayerSettings;
-            var playerName = $"Player{1000 * (1 + DateTime.Now.Second % 10) + DateTime.Now.Millisecond:00}";
-            playerData.SetPlayerName(playerName);
-            playerData.Language = language;
+            var playerSettings = GameConfig.Get().PlayerSettings;
+            playerSettings.Language = language;
             Localizer.SetLanguage(language);
-            playerData.SetCustomCharacterModelId(1);
-            playerData.DebugSavePlayerSettings();
-            Debug.Log(playerData.ToString());
+            playerSettings.SetCustomCharacterModelId(1);
+            playerSettings.DebugSavePlayerSettings();
+            Debug.Log(playerSettings.ToString());
         }
 
         public static void SetLanguageToEn()

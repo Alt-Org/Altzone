@@ -10,10 +10,10 @@ namespace MenuUi.Scripts.MainMenu
 
         private async void OnEnable()
         {
-            var playerDataCache = GameConfig.Get().PlayerSettings;
+            var playerData = GameConfig.Get().PlayerDataModel;
             _view.Reset();
-            _view.PlayerName = playerDataCache.PlayerName;
-            var clanId = playerDataCache.ClanId;
+            _view.PlayerName = playerData.Name;
+            var clanId = playerData.ClanId;
             _view.ClanName = string.Empty;
             var clan = await Storefront.Get().GetClanModel(clanId);
             _view.ClanName = clan?.Name ?? $"«Clan {clanId} not found»";

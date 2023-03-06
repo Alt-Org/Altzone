@@ -21,8 +21,8 @@ namespace Battle.Scripts.Test
 
         private IEnumerator Start()
         {
-            var playerData = GameConfig.Get().PlayerSettings;
-            PhotonNetwork.NickName = string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : "Player";
+            var playerData = GameConfig.Get().PlayerDataModel;
+            PhotonNetwork.NickName = string.IsNullOrWhiteSpace(playerData.Name) ? playerData.Name : "Player";
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
 
             PhotonNetwork.OfflineMode = _isOfflineMode;

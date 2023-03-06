@@ -13,9 +13,10 @@ namespace Altzone.Scripts.Model.Dto
         public string Name { get; set; }
         public int BackpackCapacity { get; set; }
 
-        public PlayerDataModel(int id, int clanId, int backpackCapacity) : base(id)
+        public PlayerDataModel(int id, int clanId, string name, int backpackCapacity) : base(id)
         {
             ClanId = clanId;
+            Name = name;
             BackpackCapacity = backpackCapacity;
         }
 

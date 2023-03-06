@@ -10,9 +10,7 @@ namespace Altzone.Scripts.Settings
     /// </remarks>
     public interface IPlayerSettings
     {
-        string PlayerName { get; }
         string PlayerGuid { get; }
-        int ClanId { get; }
         int CustomCharacterModelId { get; }
         SystemLanguage Language { get; set; }
         bool IsDebugFlag { get; set; }
@@ -21,10 +19,7 @@ namespace Altzone.Scripts.Settings
         bool IsAccountVerified { get; set; }
         int PlayerSettingsVersion { get; }
 
-        bool HasPlayerName { get; }
-        void SetPlayerName(string playerName);
         void SetPlayerGuid(string newPlayerGuid);
-        void SetClanId(int clanId);
         void SetCustomCharacterModelId(int customCharacterModelId);
 
 #if UNITY_EDITOR

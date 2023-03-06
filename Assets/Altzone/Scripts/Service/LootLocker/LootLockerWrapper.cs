@@ -109,13 +109,7 @@ namespace Altzone.Scripts.Service.LootLocker
             return CreateError("USE_LOOTLOCKER not defined");
         }
 
-        public static string PlayerName
-        {
-            get
-            {
-                return GameConfig.Get().PlayerSettings.PlayerName;
-            }
-        }
+        public static string PlayerName => GameConfig.Get().PlayerDataModel.Name;
 
         public static void SetPlayerName(string playerName)
         {

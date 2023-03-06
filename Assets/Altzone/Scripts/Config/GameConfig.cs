@@ -1,9 +1,9 @@
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Settings;
-using ExitGames.Client.Photon.StructWrapping;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Config
 {
@@ -22,6 +22,7 @@ namespace Altzone.Scripts.Config
         GameVariables Variables { get; }
         PlayerPrefabs PlayerPrefabs { get; }
         IPlayerSettings PlayerSettings { get; }
+        IPlayerDataModel PlayerDataModel { get; }
         Characters Characters { get; }
     }
 
@@ -63,6 +64,7 @@ namespace Altzone.Scripts.Config
 
         public IPlayerSettings PlayerSettings { get; }
 
+        public IPlayerDataModel PlayerDataModel { get; }
         public Characters Characters { get; }
 
         #region Private serializable variables
@@ -77,7 +79,8 @@ namespace Altzone.Scripts.Config
 
         private GameConfig()
         {
-            PlayerSettings = Altzone.Scripts.Settings.PlayerSettings.Create();
+            PlayerSettings = Settings.PlayerSettings.Create();
+            PlayerDataModel = new PlayerDataModel(1, 0, "pelaaja", 0);
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

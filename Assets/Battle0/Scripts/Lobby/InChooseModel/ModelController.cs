@@ -21,8 +21,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             yield return new WaitUntil(() => _view.IsReady);
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
-            var playerDataCache = GameConfig.Get().PlayerSettings;
-            _view.PlayerName = playerDataCache.PlayerName;
+            var gameConfig = GameConfig.Get();
+            var playerDataCache = gameConfig.PlayerSettings;
+            var playerDataModel = gameConfig.PlayerDataModel;
+            _view.PlayerName = playerDataModel.Name;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
             var currentCharacterId = playerDataCache.CustomCharacterModelId;
             var characters = Storefront.Get().GetAllBattleCharacters();
@@ -33,21 +35,6 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void ContinueButtonOnClick()
         {
             Debug.Log("click");
-            // Save player settings if changed before continuing!
-            var playerDataCache = GameConfig.Get().PlayerSettings;
-            if (_view.PlayerName != playerDataCache.PlayerName)
-            {
-                playerDataCache.SetPlayerName(_view.PlayerName);
-            }
-            if (_view.CurrentCharacterId != playerDataCache.CustomCharacterModelId)
-            {
-                playerDataCache.SetCustomCharacterModelId(_view.CurrentCharacterId);
-            }
-            if (PhotonNetwork.NickName != playerDataCache.PlayerName)
-            {
-                // Fix player name if it has been changed.
-                PhotonNetwork.NickName = playerDataCache.PlayerName;
-            }
         }
     }
 }

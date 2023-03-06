@@ -60,7 +60,6 @@ namespace Altzone.Scripts
                 Debug.Log("IsFirstTimePlaying");
                 playerSettings.IsFirstTimePlaying=false;
                 playerSettings.SetCustomCharacterModelId(1);
-                playerSettings.SetClanId(1);
             }
         }
 

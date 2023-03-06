@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,18 +16,14 @@ namespace Tests.EditMode.ConfigTests
     [TestFixture]
     public class PlayerDataCacheTest
     {
-        [Test]
+        [Test, SuppressMessage("ReSharper", "UnusedVariable")]
         public void NonDestructiveTest1()
         {
             Debug.Log($"test");
             var playerDataCache = GameConfig.Get().PlayerSettings;
 
-            Assert.IsTrue(playerDataCache.HasPlayerName);
-
             // Execute every getter.
-            var playerName = playerDataCache.PlayerName;
             var playerGuid = playerDataCache.PlayerGuid;
-            var clanId = playerDataCache.ClanId;
             var customCharacterModelId = playerDataCache.CustomCharacterModelId;
             var language = playerDataCache.Language;
             var isDebugFlag = playerDataCache.IsDebugFlag;
@@ -39,7 +36,7 @@ namespace Tests.EditMode.ConfigTests
         public void DestructiveTest()
         {
             const int dummyModelId = -1;
-            
+
             var playerDataCache = GameConfig.Get().PlayerSettings;
             if (!playerDataCache.IsFirstTimePlaying && playerDataCache.IsAccountVerified)
             {
@@ -84,16 +81,6 @@ namespace Tests.EditMode.ConfigTests
             var isAccountVerified = !playerDataCache.IsAccountVerified;
             playerDataCache.IsAccountVerified = isAccountVerified;
             Assert.AreEqual(isAccountVerified, playerDataCache.IsAccountVerified);
-
-            // Keep PlayerName.
-            var playerName = playerDataCache.PlayerName;
-            const string name = nameof(PlayerDataCacheTest);
-            playerDataCache.SetPlayerName(name);
-            Assert.AreEqual(name, playerDataCache.PlayerName);
-            playerDataCache.SetPlayerName(playerName);
-
-            playerDataCache.SetClanId(1);
-            Assert.AreEqual(1, playerDataCache.ClanId);
 
             playerDataCache.SetCustomCharacterModelId(1);
             Assert.AreEqual(1, playerDataCache.CustomCharacterModelId);

@@ -193,8 +193,8 @@ namespace Battle0.Scripts
             {
                 return PhotonNetwork.NickName;
             }
-            var playerData = GameConfig.Get().PlayerSettings;
-            return !string.IsNullOrWhiteSpace(playerData.PlayerName) ? playerData.PlayerName : NoPlayerName;
+            var playerData = GameConfig.Get().PlayerDataModel;
+            return !string.IsNullOrWhiteSpace(playerData.Name) ? playerData.Name : NoPlayerName;
         }
 
         public static int GetPlayerIndex(int playerPos)
