@@ -32,7 +32,7 @@ namespace GameServer.Scripts.Local
 
         internal LocalClan(string storageFolder)
         {
-            _storageFilename = Path.Combine(storageFolder, $"{nameof(LocalClan)}.json");
+            _storageFilename = Path.Combine(storageFolder, $"{GetType().Name}.json");
             if (!File.Exists(_storageFilename))
             {
                 _models = new List<ClanDto>();
@@ -61,6 +61,11 @@ namespace GameServer.Scripts.Local
             if (index >= 0)
             {
                 return Task.FromResult(false);
+            }
+            if (clan.Id == 0)
+            {
+                // Auto increment
+                clan.Id = _models.Count > 0 ? _models.Max(x => x.Id) + 1 : 1;
             }
             _models.Add(clan);
             SaveStorage(_models, _storageFilename);

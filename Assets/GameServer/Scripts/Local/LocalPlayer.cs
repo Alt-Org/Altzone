@@ -32,7 +32,7 @@ namespace GameServer.Scripts.Local
 
         internal LocalPlayer(string storageFolder)
         {
-            _storageFilename = Path.Combine(storageFolder, $"{nameof(LocalClan)}.json");
+            _storageFilename = Path.Combine(storageFolder, $"{GetType().Name}.json");
             if (!File.Exists(_storageFilename))
             {
                 _models = new List<PlayerDto>();
@@ -55,22 +55,27 @@ namespace GameServer.Scripts.Local
             File.WriteAllText(storageFilename, json, Encoding);
         }
 
-        public Task<bool> Save(PlayerDto clan)
+        public Task<bool> Save(PlayerDto player)
         {
-            var index = _models.FindIndex(x => x.Id == clan.Id);
+            var index = _models.FindIndex(x => x.Id == player.Id);
             if (index >= 0)
             {
                 return Task.FromResult(false);
             }
-            _models.Add(clan);
+            if (player.Id == 0)
+            {
+                // Auto increment
+                player.Id = _models.Count > 0 ? _models.Max(x => x.Id) + 1 : 1;
+            }
+            _models.Add(player);
             SaveStorage(_models, _storageFilename);
             return Task.FromResult(true);
         }
 
         public Task<PlayerDto> Get(int id)
         {
-            var clan = _models.FirstOrDefault(x => x.Id == id);
-            return Task.FromResult(clan);
+            var player = _models.FirstOrDefault(x => x.Id == id);
+            return Task.FromResult(player);
         }
 
         public Task<List<PlayerDto>> GetAll()
@@ -78,14 +83,14 @@ namespace GameServer.Scripts.Local
             return Task.FromResult(_models);
         }
 
-        public Task<bool> Update(PlayerDto clan)
+        public Task<bool> Update(PlayerDto player)
         {
-            var index = _models.FindIndex(x => x.Id == clan.Id);
+            var index = _models.FindIndex(x => x.Id == player.Id);
             if (index == -1)
             {
                 return Task.FromResult(false);
             }
-            _models[index] = clan;
+            _models[index] = player;
             SaveStorage(_models, _storageFilename);
             return Task.FromResult(true);
         }
