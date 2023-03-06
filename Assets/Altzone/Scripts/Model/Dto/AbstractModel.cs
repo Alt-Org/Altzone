@@ -1,6 +1,4 @@
-﻿using UnityEngine.Assertions;
-
-namespace Altzone.Scripts.Model.Dto
+﻿namespace Altzone.Scripts.Model.Dto
 {
     /// <summary>
     /// Base class for all generic models.
@@ -11,7 +9,6 @@ namespace Altzone.Scripts.Model.Dto
 
         protected AbstractModel(int id)
         {
-            Assert.IsTrue(id > 0, "id > 0");
             Id = id;
         }
 
