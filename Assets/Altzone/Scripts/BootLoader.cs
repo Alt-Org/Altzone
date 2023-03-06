@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
@@ -21,7 +22,15 @@ namespace Altzone.Scripts
         private static void BeforeSceneLoad()
         {
             PrepareLocalTesting();
-            UnityEngine.Debug.Log($"{Application.productName} Version {Application.version} Photon {PhotonLobby.GameVersion} IsSimulator {AppPlatform.IsSimulator}");
+            var startupMessage = new StringBuilder()
+                .Append(" Game ").Append(Application.productName)
+                .Append(" Version ").Append(Application.version)
+                .Append(" Photon ").Append(PhotonLobby.GameVersion)
+                .Append(" IsSimulator ").Append(AppPlatform.IsSimulator)
+                .Append(" Photon ").Append(PhotonLobby.GameVersion)
+                .Append(" Screen ").Append(Screen.currentResolution)
+                .ToString();
+            UnityEngine.Debug.Log(startupMessage);
             PrepareDevice();
             UnitySingleton.CreateStaticSingleton<ServiceLoader>();
         }
