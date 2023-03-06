@@ -8,11 +8,13 @@ namespace GameServer.Scripts.Local
     {
         private readonly string _storageFolder;
         private readonly LocalClan _clan;
+        private readonly LocalPlayer _player;
 
         public bool IsConnected { get; private set; }
         public string PathOrUrl => _storageFolder;
         
         public IClan Clan => _clan;
+        public IPlayer Player => _player;
 
         public LocalGameServer(string storageFolder)
         {
@@ -26,6 +28,7 @@ namespace GameServer.Scripts.Local
                 }
             }
             _clan = new LocalClan(storageFolder);
+            _player = new LocalPlayer(storageFolder);
         }
 
         public Task<bool> Initialize()

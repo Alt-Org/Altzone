@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.ModelStorage;
 using GameServer.Scripts;
-using GameServer.Scripts.Dto;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -100,7 +99,7 @@ namespace Altzone.Scripts.Model
         Task<bool> IStorefront.Save(IClanModel clanModel)
         {
             var dto = clanModel is ClanModel model ? model.ToDto() : null;
-            return clanModel.Id == 0 
+            return clanModel.Id == 0
                 ? _gameServer.Clan.Save(dto)
                 : _gameServer.Clan.Update(dto);
         }
@@ -125,24 +124,29 @@ namespace Altzone.Scripts.Model
             return Models.GetAll<FurnitureModel>().Cast<IFurnitureModel>().ToList();
         }
 
-        public Task<IPlayerDataModel> GetPlayerDataModel(int id)
+        public async Task<IPlayerDataModel> GetPlayerDataModel(int id)
         {
-            throw new NotImplementedException();
+            var player = await _gameServer.Player.Get(id);
+            return player != null ? new PlayerDataModel(player) : null;
         }
 
-        public Task<List<IPlayerDataModel>> GetAllPlayerDataModels()
+        public async Task<List<IPlayerDataModel>> GetAllPlayerDataModels()
         {
-            throw new NotImplementedException();
+            var dtoList = await _gameServer.Player.GetAll();
+            return dtoList.Select(x => new PlayerDataModel(x)).Cast<IPlayerDataModel>().ToList();
         }
 
         public Task<bool> Save(IPlayerDataModel playerDataModel)
         {
-            throw new NotImplementedException();
+            var dto = playerDataModel is PlayerDataModel model ? model.ToDto() : null;
+            return playerDataModel.Id == 0
+                ? _gameServer.Player.Save(dto)
+                : _gameServer.Player.Update(dto);
         }
 
         public Task DeletePlayerDataModel(int id)
         {
-            throw new NotImplementedException();
+            return _gameServer.Player.Delete(id);
         }
 
         public ICustomCharacterModel GetCustomCharacterModel(int id)
@@ -304,7 +308,7 @@ namespace Altzone.Scripts.Model
                 {
                     // Patch BattleCharacter to make it return ok even if custom character exists without corresponding character class.
                     character = new CharacterClassModel(customCharacter.CharacterModelId,
-                        "Ööö", Altzone.Scripts.Model.Defence.Desensitisation, 1, 1, 1, 1);
+                        "Ööö", Model.Defence.Desensitisation, 1, 1, 1, 1);
                 }
                 return new BattleCharacter(customCharacter, character);
             }

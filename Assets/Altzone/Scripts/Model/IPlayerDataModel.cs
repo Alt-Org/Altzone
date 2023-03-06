@@ -7,6 +7,7 @@ namespace Altzone.Scripts.Model
     {
         int Id { get; }
         int ClanId { get; }
+        string Name { get; set; }
         int BackpackCapacity { get; }
     }
 }

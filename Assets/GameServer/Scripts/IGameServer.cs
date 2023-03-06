@@ -14,6 +14,7 @@ namespace GameServer.Scripts
         Task<bool> Initialize();
         
         IClan Clan { get; }
+        IPlayer Player { get; }
     }
 
     /// <summary>
@@ -25,6 +26,15 @@ namespace GameServer.Scripts
         Task<ClanDto> Get(int id);
         Task<List<ClanDto>> GetAll();
         Task<bool> Update(ClanDto clan);
+        Task<bool> Delete(int id);
+    }
+
+    public interface IPlayer
+    {
+        Task<bool> Save(PlayerDto clan);
+        Task<PlayerDto> Get(int id);
+        Task<List<PlayerDto>> GetAll();
+        Task<bool> Update(PlayerDto clan);
         Task<bool> Delete(int id);
     }
 }
