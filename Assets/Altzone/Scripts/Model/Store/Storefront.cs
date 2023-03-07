@@ -11,6 +11,9 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Store
 {
+    /// <summary>
+    /// <c>IStorefront</c> front end dispatcher to actual worker classes.
+    /// </summary>
     internal class Storefront : IStorefront
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -74,6 +77,8 @@ namespace Altzone.Scripts.Model.Store
             Debug.Log($"exit");
         }
 
+        #region ICharacterClassModel
+
         ICharacterClassModel IStorefront.GetCharacterClassModel(int id)
         {
             return Models.FindById<CharacterClassModel>(id);
@@ -83,6 +88,10 @@ namespace Altzone.Scripts.Model.Store
         {
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
+
+        #endregion
+
+        #region IClanModel (Async)
 
         async Task<IClanModel> IStorefront.GetClanModel(int id)
         {
@@ -119,6 +128,10 @@ namespace Altzone.Scripts.Model.Store
             return _gameServer.Clan.Delete(id);
         }
 
+        #endregion
+
+        #region IFurnitureModel
+
         IFurnitureModel IStorefront.GetFurnitureModel(int id)
         {
             return Models.FindById<FurnitureModel>(id);
@@ -134,6 +147,10 @@ namespace Altzone.Scripts.Model.Store
             return Models.GetAll<FurnitureModel>().Cast<IFurnitureModel>().ToList();
         }
 
+        #endregion
+
+        #region PlayerData (Async)
+
         public async Task<IPlayerDataModel> GetPlayerDataModel(int id)
         {
             var player = await _gameServer.Player.Get(id);
@@ -145,7 +162,7 @@ namespace Altzone.Scripts.Model.Store
             var player = await _gameServer.Player.Get(uniqueIdentifier);
             return player != null ? new PlayerDataModel(player) : null;
         }
-        
+
         public async Task<List<IPlayerDataModel>> GetAllPlayerDataModels()
         {
             var dtoList = await _gameServer.Player.GetAll();
@@ -175,6 +192,10 @@ namespace Altzone.Scripts.Model.Store
             return _gameServer.Player.Delete(id);
         }
 
+        #endregion
+
+        #region ICustomCharacterModel
+
         public ICustomCharacterModel GetCustomCharacterModel(int id)
         {
             return CustomCharacterModels.GetCustomCharacterModel(id);
@@ -195,6 +216,10 @@ namespace Altzone.Scripts.Model.Store
             CustomCharacterModels.Delete(id);
         }
 
+        #endregion
+
+        #region IBattleCharacter
+
         public IBattleCharacter GetBattleCharacter(int customCharacterId)
         {
             return BattleCharacter.GetBattleCharacter(this, customCharacterId);
@@ -204,6 +229,10 @@ namespace Altzone.Scripts.Model.Store
         {
             return BattleCharacter.GetAllBattleCharacters(this);
         }
+
+        #endregion
+
+        #region RaidGameRoomModel for a Clan (Async)
 
         public Task<IRaidGameRoomModel> GetClanGameRoomModel(int id)
         {
@@ -230,6 +259,10 @@ namespace Altzone.Scripts.Model.Store
             return _clanGameRoomModels.Delete(modelId);
         }
 
+        #endregion
+
+        #region RaidGameRoomModel for a Player (Async)
+
         public Task<IRaidGameRoomModel> GetPlayerGameRoomModel(int id)
         {
             return _playerGameRoomModels.GetById(id);
@@ -254,6 +287,10 @@ namespace Altzone.Scripts.Model.Store
         {
             return _playerGameRoomModels.Delete(id);
         }
+
+        #endregion
+
+        #region Inventory for a Clan (Async)
 
         public Task<IInventoryItem> GetInventoryItem(int id)
         {
@@ -280,8 +317,10 @@ namespace Altzone.Scripts.Model.Store
             throw new NotImplementedException();
         }
 
+        #endregion
+
         /// <summary>
-        /// Dummy <c>IBattleCharacter</c> implementation for Battle game.
+        /// Default <c>IBattleCharacter</c> implementation.
         /// </summary>
         private class BattleCharacter : IBattleCharacter
         {
