@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.LocalStorage;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Store
 {
     /// <summary>
     /// Helper class for external <c>ICustomCharacterModel</c> operations.
     /// </summary>
-    public static class CustomCharacterModels
+    internal static class CustomCharacterModels
     {
         private static CustomCharacterModelStorage _storage;
 

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Altzone.Scripts.Model.Dto;
 using Altzone.Scripts.Model.LocalStorage;
 
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Store
 {
     /// <summary>
     /// Helper class for external <c>IRaidGameRoomModel</c> async operations.
     /// </summary>
-    public class RaidGameRoomModels
+    internal class RaidGameRoomModels
     {
         private RaidGameRoomModelStorage _storage;
 
