@@ -61,7 +61,7 @@ namespace Tests.EditMode.InventoryTests
         }
 
         [Test]
-        public async Task GetAllTest()
+        public async Task GetAllInventoryItemsTest()
         {
             Debug.Log($"test {ClanInventoryItemsFilename}");
             var items = await _inventory.GetAll();
