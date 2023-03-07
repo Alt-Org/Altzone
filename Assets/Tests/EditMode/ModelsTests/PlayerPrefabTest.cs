@@ -1,6 +1,6 @@
 using System;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using NUnit.Framework;
 
 namespace Tests.EditMode.ModelsTests

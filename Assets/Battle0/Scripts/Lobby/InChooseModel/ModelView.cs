@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using UnityEngine;

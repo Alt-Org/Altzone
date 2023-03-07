@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
