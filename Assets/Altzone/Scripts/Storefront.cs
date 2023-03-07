@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Altzone.Scripts
 {
     /// <summary>
@@ -18,16 +16,9 @@ namespace Altzone.Scripts
     /// </summary>
     public static class Storefront
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void SubsystemRegistration()
-        {
-            // Manual reset if UNITY Domain Reloading is disabled.
-            Model.Store.Storefront.Instance = null;
-        }
-
-        public static IStorefront Get()
-        {
-            return Model.Store.Storefront.Instance ??= new Model.Store.Storefront();
-        }
+        /// <summary>
+        /// Gets or creates an <c>IStorefront</c> static instance. 
+        /// </summary>
+        public static IStorefront Get() => Model.Store.Storefront.Get();
     }
 }

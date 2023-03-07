@@ -13,7 +13,19 @@ namespace Altzone.Scripts.Model.Store
 {
     internal class Storefront : IStorefront
     {
-        public static IStorefront Instance;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+
+        public static IStorefront Get()
+        {
+            return _instance ??= new Storefront();
+        }
+
+        private static IStorefront _instance;
 
         private readonly IGameServer _gameServer;
         private IInventory _inventory;
