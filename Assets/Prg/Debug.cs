@@ -235,12 +235,12 @@ public static class Debug
             if (isAllowed)
             {
                 AddMethod(true);
-                // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+                // UnityEngine.Debug.Log($"[{RichText.Brown("ACCEPT")}] {method.Name} in {method.ReflectedType?.FullName}");
                 return true;
             }
             // Nobody accepted so it is rejected.
             AddMethod(false);
-            // UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+            // UnityEngine.Debug.Log($"[{RichText.Brown("REJECT")}] {method.Name} in {method.ReflectedType?.FullName}");
             return false;
         }
         return true;
