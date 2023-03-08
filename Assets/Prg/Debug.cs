@@ -20,7 +20,7 @@ public static class Debug
     // Method: https://stackoverflow.com/questions/2483023/how-to-test-if-a-type-is-anonymous
 
 #if FORCE_LOG
-#warning NOTE: Compiling WITH debug logging FORCE_LOG
+#warning <b>NOTE</b>: Compiling WITH debug logging define <b>FORCE_LOG</b>
 #endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
