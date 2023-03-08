@@ -15,25 +15,27 @@ namespace MenuUi.Scripts.Loader
     public class GameLoader : MonoBehaviour
     {
         private const string Tooltip1 = "First window to show after services has been loaded";
+        private const float ServiceTimeoutTime = 3f;
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
 
-
         private IStorefront _storefront;
+        private float _timeOutTime;
+
         private IEnumerator Start()
         {
             Debug.Log("loading");
             _storefront = Storefront.Get();
+            _timeOutTime = Time.time + ServiceTimeoutTime;
             yield return new WaitUntil(AllServicesAreRunning);
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
             windowManager.ShowWindow(_mainWindow);
         }
 
-
         private bool AllServicesAreRunning()
         {
-            return _storefront.IsInventoryConnected && _storefront.IsGameServerConnected;
+            return (_storefront.IsInventoryConnected && _storefront.IsGameServerConnected) || Time.time > _timeOutTime;
         }
     }
 }
