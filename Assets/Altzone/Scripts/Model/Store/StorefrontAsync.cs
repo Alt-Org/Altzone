@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Model.Store
     /// <summary>
     /// <c>IStorefront</c> front end dispatcher to actual worker classes.
     /// </summary>
-    internal class Storefront : IStorefront
+    internal class StorefrontAsync : IStorefront
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
@@ -26,7 +26,7 @@ namespace Altzone.Scripts.Model.Store
 
         public static IStorefront Get()
         {
-            return _instance ??= new Storefront();
+            return _instance ??= new StorefrontAsync();
         }
 
         private const int ServiceTimeoutTimeMs = 3000;
@@ -35,13 +35,13 @@ namespace Altzone.Scripts.Model.Store
 
         private readonly IGameServer _gameServer;
         private IInventory _inventory;
-        private RaidGameRoomModels _clanGameRoomModels;
-        private RaidGameRoomModels _playerGameRoomModels;
+        private RaidGameRoomModelsAsync _clanGameRoomModels;
+        private RaidGameRoomModelsAsync _playerGameRoomModels;
 
         public bool IsGameServerConnected => _gameServer.IsConnected;
         public bool IsInventoryConnected => _inventory != null;
 
-        internal Storefront()
+        internal StorefrontAsync()
         {
             Debug.Log($"start");
             Models.Load();
@@ -82,9 +82,9 @@ namespace Altzone.Scripts.Model.Store
             Debug.Log($"start webgl");
             try
             {
-                _playerGameRoomModels = new RaidGameRoomModels();
+                _playerGameRoomModels = new RaidGameRoomModelsAsync();
                 _playerGameRoomModels.Connect(playerGameRoomModelsFilename);
-                _clanGameRoomModels = new RaidGameRoomModels();
+                _clanGameRoomModels = new RaidGameRoomModelsAsync();
                 _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 _inventory = InventoryFactory.Create(inventoryItemsPath).Result;
                 _gameServer.Initialize();
@@ -102,9 +102,9 @@ namespace Altzone.Scripts.Model.Store
             Debug.Log($"start async");
             try
             {
-                _playerGameRoomModels = new RaidGameRoomModels();
+                _playerGameRoomModels = new RaidGameRoomModelsAsync();
                 var playerConnectResult = _playerGameRoomModels.Connect(playerGameRoomModelsFilename);
-                _clanGameRoomModels = new RaidGameRoomModels();
+                _clanGameRoomModels = new RaidGameRoomModelsAsync();
                 var clanConnectResult = _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
                 var gameServerResult = _gameServer.Initialize();

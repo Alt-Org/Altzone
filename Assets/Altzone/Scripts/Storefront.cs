@@ -19,6 +19,6 @@ namespace Altzone.Scripts
         /// <summary>
         /// Gets or creates an <c>IStorefront</c> static instance. 
         /// </summary>
-        public static IStorefront Get() => Model.Store.Storefront.Get();
+        public static IStorefront Get() => Model.Store.StorefrontAsync.Get();
     }
 }

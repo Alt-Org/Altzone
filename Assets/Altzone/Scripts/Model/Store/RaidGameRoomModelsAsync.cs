@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model.Store
     /// <summary>
     /// Helper class for external <c>IRaidGameRoomModel</c> async operations.
     /// </summary>
-    internal class RaidGameRoomModels
+    internal class RaidGameRoomModelsAsync
     {
         private RaidGameRoomModelStorage _storage;
 
