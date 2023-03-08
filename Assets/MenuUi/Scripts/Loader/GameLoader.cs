@@ -18,29 +18,18 @@ namespace MenuUi.Scripts.Loader
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
 
-        //private PlayerInput playerInput;
 
         private IStorefront _storefront;
         private IEnumerator Start()
         {
-            //playerInput = GetComponent<PlayerInput>();
             Debug.Log("loading");
             _storefront = Storefront.Get();
             yield return new WaitUntil(AllServicesAreRunning);
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
-            //yield return new WaitForSeconds(19);
             windowManager.ShowWindow(_mainWindow);
         }
 
-        /*public void Click(InputAction.CallbackContext context)
-        {
-            if (context.canceled)
-            {
-                var windowManager = WindowManager.Get();
-                windowManager.ShowWindow(_mainWindow);
-            }
-        }*/
 
         private bool AllServicesAreRunning()
         {
