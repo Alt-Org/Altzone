@@ -45,7 +45,6 @@ namespace Altzone.Scripts
                      {
                          GameFiles.ClanGameRoomModelsFilename,
                          GameFiles.ClanInventoryItemsFilename,
-                         //GameFiles.PlayerGameRoomModelsFilename,
                          GameFiles.PlayerCustomCharacterModelsFilename,
                      })
             {

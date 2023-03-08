@@ -3,6 +3,7 @@ using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Temp;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

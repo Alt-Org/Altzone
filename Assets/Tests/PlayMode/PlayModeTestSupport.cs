@@ -11,7 +11,7 @@ namespace Tests.PlayMode
     {
         private const string TestCameraName = "TestCamera";
 
-        protected IStorefront Store;
+        protected DataStore Store;
         protected Camera Camera;
         protected MonoBehaviour MonoBehaviour;
         protected bool IsTestDone;

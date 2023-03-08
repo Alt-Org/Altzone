@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Altzone.Scripts.Service.LootLocker;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;

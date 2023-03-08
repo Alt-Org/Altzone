@@ -5,7 +5,7 @@ using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
+using Altzone.Scripts.Temp;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -355,7 +355,8 @@ namespace Battle0.Scripts
         /// </summary>
         public static IBattleCharacter GetCharacterModelForPlayer(Player player)
         {
-            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
+            throw new NotImplementedException();
+            /*Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (!Enum.TryParse(skillId.ToString(), out Defence defence))
             {
@@ -364,7 +365,7 @@ namespace Battle0.Scripts
                 var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
                 defence = Storefront.Get().GetBattleCharacter(currentCharacterModelId).MainDefence;
             }
-            return Storefront.Get().GetBattleCharacter((int)defence);
+            return Storefront.Get().GetBattleCharacter((int)defence);*/
         }
 
         #endregion
