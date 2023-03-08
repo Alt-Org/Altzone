@@ -41,7 +41,7 @@ namespace Prg.Scripts.Common.Util
 
         private static string _prefixTag;
         private static string _suffixTag;
-        private static readonly HashSet<string> LoggedTypesForEditor = new ();
+        private static readonly HashSet<string> LoggedTypesForEditor = new();
 
         public static void CreateLoggerConfig(LoggerConfig config)
         {
@@ -96,7 +96,7 @@ namespace Prg.Scripts.Common.Util
                     // Should not happen in this context because a method should have a class (even anonymous).
                     return true;
                 }
-#if UNITY_EDITOR            
+#if UNITY_EDITOR
                 if (LoggedTypesForEditor.Add(type.FullName))
                 {
                     var list = LoggedTypesForEditor.ToList();
@@ -116,7 +116,7 @@ namespace Prg.Scripts.Common.Util
             Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
 #if FORCE_LOG || UNITY_EDITOR
 #else
-            UnityEngine.Debug.LogWarning($"<b>NOTE!</b> Application logging is totally disabled on platform: {Application.platform}");
+            UnityEngine.Debug.LogWarning($"NOTE! Application logging is totally disabled on platform: {Application.platform}");
 #endif
         }
 
