@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace Altzone.Scripts.Model.Store
             return _instance ??= new Storefront();
         }
 
+        private const int ServiceTimeoutTimeMs = 3000;
+
         private static IStorefront _instance;
 
         private readonly IGameServer _gameServer;
@@ -43,18 +46,60 @@ namespace Altzone.Scripts.Model.Store
             Debug.Log($"start");
             Models.Load();
             CustomCharacterModels.Load();
-            var gameServerFolder = Path.Combine(Application.persistentDataPath, "GameServer");
+            var gameServerFolder = GetGameServerFolder();
+            _gameServer = GameServerFactory.CreateLocal(gameServerFolder);
             var playerGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.PlayerGameRoomModelsFilename);
             var clanGameRoomModelsFilename = Path.Combine(Application.persistentDataPath, GameFiles.ClanGameRoomModelsFilename);
             var inventoryItemsPath = Path.Combine(Application.persistentDataPath, GameFiles.ClanInventoryItemsFilename);
-            _gameServer = GameServerFactory.CreateLocal(gameServerFolder);
-            Task.Run(() => { AsyncInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath); });
+            StartServices(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath);
             Debug.Log($"exit");
+        }
+
+        private static string GetGameServerFolder()
+        {
+#if UNITY_WEBGL
+            // Problem: Files saved to Application.persistentDataPath don’t persist
+            // Unity WebGL stores all files that must persist between sessions (files saved in persistentDataPath) to the browser IndexedDB.
+            // This is an asynchronous API, so you don’t know when it’s going to complete.
+            return Application.persistentDataPath;
+#else
+            return Path.Combine(Application.persistentDataPath, "GameServer");
+#endif
+        }
+        
+        private void StartServices(string playerGameRoomModelsFilename, string clanGameRoomModelsFilename, string inventoryItemsPath)
+        {
+#if UNITY_WEBGL
+            WebGlInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath);
+#else
+            Task.Run(() => { AsyncInit(playerGameRoomModelsFilename, clanGameRoomModelsFilename, inventoryItemsPath); });
+#endif
+        }
+        
+        [Conditional("UNITY_WEBGL")]
+        private void WebGlInit(string playerGameRoomModelsFilename, string clanGameRoomModelsFilename, string inventoryItemsPath)
+        {
+            Debug.Log($"start webgl");
+            try
+            {
+                _playerGameRoomModels = new RaidGameRoomModels();
+                _playerGameRoomModels.Connect(playerGameRoomModelsFilename);
+                _clanGameRoomModels = new RaidGameRoomModels();
+                _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
+                _inventory = InventoryFactory.Create(inventoryItemsPath).Result;
+                _gameServer.Initialize();
+                Assert.IsNotNull(_inventory);
+            }
+            catch (Exception x)
+            {
+                Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
+            }
+            Debug.Log($"exit webgl");
         }
 
         private void AsyncInit(string playerGameRoomModelsFilename, string clanGameRoomModelsFilename, string inventoryItemsPath)
         {
-            Debug.Log($"start");
+            Debug.Log($"start async");
             try
             {
                 _playerGameRoomModels = new RaidGameRoomModels();
@@ -63,7 +108,8 @@ namespace Altzone.Scripts.Model.Store
                 var clanConnectResult = _clanGameRoomModels.Connect(clanGameRoomModelsFilename);
                 var inventoryResult = InventoryFactory.Create(inventoryItemsPath);
                 var gameServerResult = _gameServer.Initialize();
-                Task.WaitAll(playerConnectResult, clanConnectResult, inventoryResult, gameServerResult);
+                Task.WaitAll(new Task[] { playerConnectResult, clanConnectResult, inventoryResult, gameServerResult }, ServiceTimeoutTimeMs);
+                Debug.Log($"{playerConnectResult.Result} {clanConnectResult.Result} {inventoryResult.Result} {gameServerResult.Result}");
                 Assert.IsTrue(playerConnectResult.Result);
                 Assert.IsTrue(clanConnectResult.Result);
                 _inventory = inventoryResult.Result;
@@ -74,7 +120,7 @@ namespace Altzone.Scripts.Model.Store
             {
                 Debug.LogWarning($"error: {x.GetType().FullName} {x.Message}");
             }
-            Debug.Log($"exit");
+            Debug.Log($"exit async");
         }
 
         #region ICharacterClassModel
