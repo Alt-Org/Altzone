@@ -1,10 +1,8 @@
 using System.Collections;
 using Altzone.Scripts;
-using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -35,7 +33,12 @@ namespace MenuUi.Scripts.Loader
 
         private bool AllServicesAreRunning()
         {
-            return (_storefront.IsInventoryConnected && _storefront.IsGameServerConnected) || Time.time > _timeOutTime;
+            if (Time.time > _timeOutTime)
+            {
+                Debug.Log($"timeout {ServiceTimeoutTime:0.0}");
+                return true;
+            }
+            return _storefront.IsInventoryConnected && _storefront.IsGameServerConnected;
         }
     }
 }
