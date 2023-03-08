@@ -43,11 +43,11 @@ namespace Editor.Prg.Util
                 var path = Path.Combine(parentFolder, folder);
                 if (Directory.Exists(path) || File.Exists(path))
                 {
-                    Debug.Log($"Skip: {RichText.White(folder)}");
+                    Debug.Log($"Skip: <color=white>{folder}</color>");
                     continue;
                 }
                 var guid = AssetDatabase.CreateFolder(parentFolder, folder);
-                Debug.Log($"Folder: {RichText.White(folder)} created with guid {guid}");
+                Debug.Log($"Folder: <color=white>{folder}</color> created with guid {guid}");
             }
             Debug.Log("Done");
         }

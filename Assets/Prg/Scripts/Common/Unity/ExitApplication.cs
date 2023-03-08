@@ -10,7 +10,7 @@ namespace Prg.Scripts.Common.Unity
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
 #if UNITY_EDITOR
-                Debug.Log(RichText.Yellow("stop playing"));
+                Debug.Log("<color=yellow>stop playing</color>");
                 EditorApplication.isPlaying = false;
 #endif
                 return;
