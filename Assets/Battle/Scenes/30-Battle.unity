@@ -590,33 +590,18 @@ MonoBehaviour:
   sceneViewId: 22
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!1 &310529677 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5756210811780550964, guid: beeca0598aa323045953bf66df53ccbf,
-    type: 3}
-  m_PrefabInstance: {fileID: 5756210812238161093}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &310529682 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5756210811780550961, guid: beeca0598aa323045953bf66df53ccbf,
-    type: 3}
-  m_PrefabInstance: {fileID: 5756210812238161093}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &310529683
+--- !u!114 &310529683 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+    type: 3}
+  m_PrefabInstance: {fileID: 5756210812238161093}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 310529677}
+  m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e060e160b50bf434aa67985bc58715e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Camera: {fileID: 310529682}
-  Background: {fileID: 7732533816888444517}
-  GridOverlay: {fileID: 598841265}
 --- !u!1001 &334507563
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3505,18 +3490,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1183916497, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
-      propertyPath: _letterBoxOrPillarColor.b
-      value: 0.23137257
-      objectReference: {fileID: 0}
-    - target: {fileID: 1183916497, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
-      propertyPath: _letterBoxOrPillarColor.g
-      value: 0.23137257
-      objectReference: {fileID: 0}
-    - target: {fileID: 1183916497, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
-      propertyPath: _letterBoxOrPillarColor.r
-      value: 0.23137257
-      objectReference: {fileID: 0}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: Background
+      value: 
+      objectReference: {fileID: 7732533816888444517}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: GridOverlay
+      value: 
+      objectReference: {fileID: 598841265}
     - target: {fileID: 5756210811780550961, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
       propertyPath: m_RootOrder

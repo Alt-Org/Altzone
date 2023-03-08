@@ -55,6 +55,10 @@ namespace UnityConstants
         public const int Player = 12;
         public const int Arena = 13;
         public const int Brick = 14;
+        public const int Player1 = 17;
+        public const int Player2 = 18;
+        public const int Player3 = 19;
+        public const int Player4 = 20;
 
         // Bitmask of layer
         public const int TransparentFXMask = 1 << 1;
@@ -68,5 +72,9 @@ namespace UnityConstants
         public const int PlayerMask = 1 << 12;
         public const int ArenaMask = 1 << 13;
         public const int BrickMask = 1 << 14;
+        public const int Player1Mask = 1 << 17;
+        public const int Player2Mask = 1 << 18;
+        public const int Player3Mask = 1 << 19;
+        public const int Player4Mask = 1 << 20;
     }
 }
