@@ -24,7 +24,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             var playerDataModel = gameConfig.PlayerDataModel;
             _view.PlayerName = playerDataModel.Name;
             _view.ContinueButtonOnClick = ContinueButtonOnClick;
-            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
+            var currentCharacterId = playerDataModel.CurrentCustomCharacterId;
             var characters = Storefront.Get().GetAllBattleCharacters();
             characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
             _view.SetCharacters(characters, currentCharacterId);
@@ -35,10 +35,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             Debug.Log("click");
             var gameConfig = GameConfig.Get();
             var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
+            var currentCharacterId = playerDataModel.CurrentCustomCharacterId;
             if (_view.CurrentCharacterId != currentCharacterId)
             {
-                playerDataModel.CurrentCharacterModelId = _view.CurrentCharacterId;
+                playerDataModel.CurrentCustomCharacterId = _view.CurrentCharacterId;
                 var store = Storefront.Get();
                 store.SavePlayerData(playerDataModel);
             }

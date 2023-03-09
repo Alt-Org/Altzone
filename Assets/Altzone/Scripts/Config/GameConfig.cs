@@ -1,8 +1,6 @@
 using Altzone.Scripts.Config.ScriptableObjects;
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Settings;
-using Altzone.Scripts.Temp;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
-using Altzone.Scripts.Temp;
+using Altzone.Scripts.Model.Poco;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +41,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             // This will be async if custom character models are loaded from network.
             var store = Storefront.Get();
-            var characterModels = store.GetAllCharacterClassModels();
+            var characterModels = store.GetAllCharacterClasses();
             var maxIndex = characterModels.Max(x => x.Id);
             _prefabs = new MonoBehaviour[1 + maxIndex];
             var position = _prefabsRoot.position;
@@ -103,7 +102,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _curPrefab = null;
         }
 
-        public void SetCharacters(List<IBattleCharacter> characters, int currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, int currentCharacterId)
         {
             Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
@@ -116,17 +115,17 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 //button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    CurrentCharacterId = character.CustomCharacterModelId;
+                    CurrentCharacterId = character.CustomCharacterId;
                     ShowCharacter(character);
                 });
-                if (currentCharacterId == character.CustomCharacterModelId)
+                if (currentCharacterId == character.CustomCharacterId)
                 {
                     ShowCharacter(character);
                 }
             }
         }
 
-        private void ShowCharacter(IBattleCharacter character)
+        private void ShowCharacter(BattleCharacter character)
         {
             var i = -1;
             var characterName = character.Name == character.CharacterClassName
@@ -141,13 +140,13 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             SetCharacterPrefab(character);
         }
 
-        private void SetCharacterPrefab(IBattleCharacter character)
+        private void SetCharacterPrefab(BattleCharacter character)
         {
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(false);
             }
-            _curPrefab = _prefabs[character.PlayerPrefabId];
+            _curPrefab = int.TryParse(character.PlayerPrefabKey, out var index) ? _prefabs[index] : null;
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(true);

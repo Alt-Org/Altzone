@@ -92,7 +92,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var gameConfig = GameConfig.Get();
             var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
+            var currentCharacterModelId = playerDataModel.CurrentCustomCharacterId;
             var defence = Storefront.Get().GetBattleCharacter(currentCharacterModelId).MainDefence;
             player.SetCustomProperties(new Hashtable
             {

@@ -14,14 +14,15 @@ namespace Tests.EditMode.ModelsTests
             Debug.Log($"test");
             var gameConfig = GameConfig.Get();
             var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
+            var currentCharacterModelId = playerDataModel.CurrentCustomCharacterId;
             var store = Storefront.Get();
             var prefabId = 0;
             try
             {
                 var battleCharacter = store.GetBattleCharacter(currentCharacterModelId);
                 Debug.Log($"{battleCharacter}");
-                prefabId = battleCharacter.PlayerPrefabId;
+                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
+                prefabId =  int.Parse(battleCharacter.PlayerPrefabKey);
                 Assert.IsTrue(prefabId >= 0);
             }
             catch (Exception e)
@@ -43,7 +44,9 @@ namespace Tests.EditMode.ModelsTests
             var battleCharacters = Storefront.Get().GetAllBattleCharacters();
             foreach (var battleCharacter in battleCharacters)
             {
-                var prefabId = battleCharacter.PlayerPrefabId;
+                var prefabId = 0;
+                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
+                prefabId =  int.Parse(battleCharacter.PlayerPrefabKey);
                 Assert.IsTrue(prefabId >= 0);
                 var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
                 Assert.IsNotNull(playerPrefab);

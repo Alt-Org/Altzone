@@ -21,11 +21,11 @@ namespace Altzone.Scripts.Model
     /// <remarks>
     /// WebGl builds have to manually flush changes to browser local storage/database after changes to be on the safe side.
     /// </remarks>
-    internal class Models
+    internal class LocalModels
     {
         private const string StorageFilename = "LocalModels.json";
         private const int StorageVersionNumber = 1;
-        private const int WebGlFramesToWaitCount = 30;
+        private const int WebGlFramesToWaitFlush = 30;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         public readonly string StoragePath;
@@ -43,7 +43,7 @@ namespace Altzone.Scripts.Model
         private static Coroutine _fsSync;
         private static int _framesToWait;
 
-        internal Models(string storagePath)
+        internal LocalModels(string storagePath)
         {
             StoragePath = Path.Combine(storagePath, StorageFilename);
             if (AppPlatform.IsWindows)
@@ -78,7 +78,7 @@ namespace Altzone.Scripts.Model
             {
                 return;
             }
-            _framesToWait = WebGlFramesToWaitCount;
+            _framesToWait = WebGlFramesToWaitFlush;
             if (_fsSync != null)
             {
                 Debug.Log("FsSyncFs - SKIP");
@@ -100,6 +100,8 @@ namespace Altzone.Scripts.Model
 #endif
             }
         }
+
+        #region PlayerData
 
         internal PlayerData GetPlayerData(string uniqueIdentifier)
         {
@@ -130,6 +132,57 @@ namespace Altzone.Scripts.Model
             return playerData;
         }
 
+        #endregion
+
+        #region BattleCharacter
+
+        internal BattleCharacter GetBattleCharacter(int customCharacterId)
+        {
+            return _GetBattleCharacter(customCharacterId);
+        }
+
+        internal List<BattleCharacter> GetAllBattleCharacters()
+        {
+            var battleCharacters = new List<BattleCharacter>();
+            foreach (var customCharacter in _storageData.CustomCharacters)
+            {
+                battleCharacters.Add(_GetBattleCharacter(customCharacter.Id));
+            }
+            return battleCharacters;
+        }
+
+        private BattleCharacter _GetBattleCharacter(int customCharacterId)
+        {
+            var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
+            if (customCharacter == null)
+            {
+                throw new UnityException($"CustomCharacter not found for {customCharacterId}");
+            }
+            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+            if (characterClass == null)
+            {
+                // Create fake CharacterClass so we can return even character class has been deleted.
+                characterClass = new CharacterClass(customCharacter.CharacterClassId, "deleted", (Defence)1, 1, 1, 1, 1);
+            }
+            return BattleCharacter.Create(customCharacter, characterClass);
+        }
+
+        #endregion
+
+        #region CharacterClass
+
+        public List<CharacterClass> GetAllCharacterClassModels()
+        {
+            return _storageData.CharacterClasses;
+        }
+
+        public List<CustomCharacter> GetAllCustomCharacterModels()
+        {
+            return _storageData.CustomCharacters;
+        }
+        
+
+        #endregion
         private static StorageData CreateDefaultStorage(string storagePath)
         {
             var storageData = new StorageData

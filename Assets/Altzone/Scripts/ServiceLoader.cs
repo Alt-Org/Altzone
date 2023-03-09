@@ -20,49 +20,58 @@ namespace Altzone.Scripts
             Debug.Log($"{name}");
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
-            // Parts of store can be initialized asynchronously and we start it now (if not running already).
             var store = Storefront.Get();
             var gameConfig = GameConfig.Get();
+            CheckPlayerDataAndState(store, gameConfig);
+            ShowDebugGameInfo(store);
+        }
+
+        private static void CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
+        {
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
             var playerData = store.GetPlayerData(playerGuid);
             if (playerData == null)
             {
-                // Create new player for us - currentCharacterModelId must be valid because it is not checked later.
-                playerData = new PlayerData(1, 0, 1, "Player", 0, playerGuid);
+                // Create new player for us with first custom character we have - if any.
+                var customCharacters = store.GetAllCustomCharacters();
+                var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
                 playerData = store.SavePlayerData(playerData);
                 Debug.Log($"Create player {playerData}");
             }
             else
             {
                 Debug.Log($"Load player {playerData}");
-                Assert.AreEqual(playerGuid, playerData.UniqueIdentifier);
+            }
+            if (playerSettings.IsFirstTimePlaying)
+            {
+                Debug.Log("This Is First Time Playing");
             }
             gameConfig.PlayerDataModel = playerData;
-            ShowDebugGameInfo();
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
-        private static void ShowDebugGameInfo()
+        private static void ShowDebugGameInfo(DataStore store)
         {
-            var store = Storefront.Get();
-            var characterClassModels = store.GetAllCharacterClassModels();
+            var characterClassModels = store.GetAllCharacterClasses();
             Debug.Log($"characterClasses {characterClassModels.Count}");
-            var customCharacters = store.GetAllCustomCharacterModels();
+            var customCharacters = store.GetAllCustomCharacters();
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
             var isCustomCharactersValid = true;
             foreach (var customCharacter in customCharacters)
             {
-                if (characterClassModels.All(x => x.Id != customCharacter.CharacterModelId))
+                if (characterClassModels.All(x => x.Id != customCharacter.CharacterClassId))
                 {
                     Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have CharacterModel {customCharacter.CharacterModelId}");
+                                     $"does not have CharacterModel {customCharacter.CharacterClassId}");
                     isCustomCharactersValid = false;
                 }
-                if (playerPrefabs.GetPlayerPrefab(customCharacter.PlayerPrefabId) == null)
+                var prefabIndex = int.Parse(customCharacter.PlayerPrefabKey);
+                if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
                 {
                     Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
+                                     $"does not have PlayerPrefab {customCharacter.PlayerPrefabKey}");
                     isCustomCharactersValid = false;
                 }
             }

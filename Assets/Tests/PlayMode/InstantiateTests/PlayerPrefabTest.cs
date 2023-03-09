@@ -2,8 +2,7 @@ using System;
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
-using Altzone.Scripts.Temp;
+using Altzone.Scripts.Model.Poco;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -33,15 +32,16 @@ namespace Tests.PlayMode.InstantiateTests
             var gameConfig = GameConfig.Get();
             var playerDataCache = gameConfig.PlayerSettings;
             var playerDataModel = gameConfig.PlayerDataModel;
-            var customCharacterModelId = playerDataModel.CurrentCharacterModelId;
+            var customCharacterModelId = playerDataModel.CurrentCustomCharacterId;
             var store = Storefront.Get();
-            IBattleCharacter battleCharacter = null;
+            BattleCharacter battleCharacter = null;
             var prefabId = 0;
             try
             {
                 battleCharacter = store.GetBattleCharacter(customCharacterModelId);
                 Debug.Log($"{battleCharacter}");
-                prefabId = battleCharacter.PlayerPrefabId;
+                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
+                prefabId =  int.Parse(battleCharacter.PlayerPrefabKey);
                 Assert.IsTrue(prefabId >= 0);
             }
             catch (Exception e)

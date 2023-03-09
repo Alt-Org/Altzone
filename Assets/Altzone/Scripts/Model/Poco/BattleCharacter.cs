@@ -9,29 +9,42 @@ namespace Altzone.Scripts.Model.Poco
     public class BattleCharacter
     {
         public readonly string Name;
+        public readonly int CustomCharacterId;
         public readonly string CharacterClassName;
-        public readonly int CustomCharacterModelId;
-        public readonly int CharacterClassModelId;
-        public readonly int PlayerPrefabId;
+        public readonly int CharacterClassId;
+        public readonly string PlayerPrefabKey;
         public readonly Defence MainDefence;
         public readonly int Speed;
         public readonly int Resistance;
         public readonly int Attack;
         public readonly int Defence;
 
-        internal BattleCharacter(string name, string characterClassName, int customCharacterModelId, int characterClassModelId, int playerPrefabId,
+        private BattleCharacter(string name, int customCharacterId, string characterClassName, int characterClassId, string playerPrefabKey,
             Defence mainDefence, int speed, int resistance, int attack, int defence)
         {
             Name = name;
             CharacterClassName = characterClassName;
-            CustomCharacterModelId = customCharacterModelId;
-            CharacterClassModelId = characterClassModelId;
-            PlayerPrefabId = playerPrefabId;
+            CustomCharacterId = customCharacterId;
+            CharacterClassId = characterClassId;
+            PlayerPrefabKey = playerPrefabKey;
             MainDefence = mainDefence;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
             Defence = defence;
+        }
+
+        internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
+        {
+            return new BattleCharacter(
+                customCharacter.Name, customCharacter.CharacterClassId,
+                characterClass.Name, characterClass.Id,
+                customCharacter.PlayerPrefabKey,
+                (Defence)characterClass.Defence,
+                customCharacter.Speed + characterClass.Speed,
+                customCharacter.Resistance + characterClass.Resistance,
+                customCharacter.Attack + characterClass.Attack,
+                customCharacter.Defence + characterClass.Defence);
         }
     }
 }
