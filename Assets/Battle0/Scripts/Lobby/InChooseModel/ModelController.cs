@@ -40,7 +40,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             {
                 playerDataModel.CurrentCharacterModelId = _view.CurrentCharacterId;
                 var store = Storefront.Get();
-                store.SavePlayerDataModel(playerDataModel);
+                store.SavePlayerData(playerDataModel);
             }
         }
     }

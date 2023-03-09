@@ -32,13 +32,5 @@ namespace Altzone.Scripts.Model
                 new(7, 7, "7", "Confluence", 0, 0, 0, 06)
             };
         }
-
-        internal static List<PlayerData> CreatePlayerData()
-        {
-            return new List<PlayerData>
-            {
-                new(1, 0, 1, "Player", 0, string.Empty)
-            };
-        }
     }
 }

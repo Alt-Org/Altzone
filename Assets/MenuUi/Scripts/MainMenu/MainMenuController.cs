@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using UnityEngine;
 
 namespace MenuUi.Scripts.MainMenu
 {
@@ -9,8 +11,13 @@ namespace MenuUi.Scripts.MainMenu
         private void OnEnable()
         {
             _view.Reset();
-            _view.PlayerName = "Player";
-            _view.ClanName = "Clan";
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            var playerData = store.GetPlayerData(playerGuid);
+            _view.PlayerName = playerData?.Name ?? "Player?";
+            _view.ClanName = "Clan?";
         }
     }
 }

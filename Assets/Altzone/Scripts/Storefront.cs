@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Temp;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -23,26 +24,34 @@ namespace Altzone.Scripts
     /// </summary>
     public static class Storefront
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void SubsystemRegistration()
+        {
+            // Manual reset if UNITY Domain Reloading is disabled.
+            _instance = null;
+        }
+
+        private static DataStore _instance;
+
         /// <summary>
         /// Gets or creates an <c>IStorefront</c> static instance. 
         /// </summary>
-        public static DataStore Get() => new();
+        public static DataStore Get() => _instance ??= new DataStore();
     }
 
     public class DataStore
     {
         private readonly Altzone.Scripts.Model.Models _models = new(Application.persistentDataPath);
-        
+
         public DataStore()
         {
             Models.Load();
             CustomCharacterModels.Load();
         }
-        
-        internal IPlayerDataModel GetPlayerDataModel(string uniqueIdentifier)
-            => new PlayerDataModel("guid", 0, 1, "Player", 0);
 
-        public IPlayerDataModel SavePlayerDataModel(IPlayerDataModel playerDataModel) => playerDataModel;
+        public PlayerData GetPlayerData(string uniqueIdentifier) => _models.GetPlayerData(uniqueIdentifier);
+
+        public PlayerData SavePlayerData(PlayerData playerData) => _models.SavePlayerData(playerData);
 
         public IBattleCharacter GetBattleCharacter(int customCharacterId)
         {
@@ -58,13 +67,13 @@ namespace Altzone.Scripts
         {
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
-        
+
         public List<ICustomCharacterModel> GetAllCustomCharacterModels()
         {
             return CustomCharacterModels.LoadModels();
         }
 
-         /// <summary>
+        /// <summary>
         /// Default <c>IBattleCharacter</c> implementation.
         /// </summary>
         private class BattleCharacter : IBattleCharacter
@@ -140,5 +149,5 @@ namespace Altzone.Scripts
                 return Models.FindById<CharacterClassModel>(id);
             }
         }
-   }
+    }
 }

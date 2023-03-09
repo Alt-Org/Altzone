@@ -1,5 +1,6 @@
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Settings;
 using Altzone.Scripts.Temp;
 using Prg.Scripts.Common.Util;
@@ -22,7 +23,7 @@ namespace Altzone.Scripts.Config
         GameVariables Variables { get; }
         PlayerPrefabs PlayerPrefabs { get; }
         IPlayerSettings PlayerSettings { get; }
-        IPlayerDataModel PlayerDataModel { get; set; }
+        PlayerData PlayerDataModel { get; set; }
         Characters Characters { get; }
     }
 
@@ -37,10 +38,7 @@ namespace Altzone.Scripts.Config
 
         private static GameConfig _instance;
 
-        public static IGameConfig Get()
-        {
-            return _instance ??= new GameConfig();
-        }
+        public static IGameConfig Get() => _instance ??= new GameConfig();
 
         public GameFeatures Features
         {
@@ -64,7 +62,7 @@ namespace Altzone.Scripts.Config
 
         public IPlayerSettings PlayerSettings { get; }
 
-        public IPlayerDataModel PlayerDataModel { get; set; }
+        public PlayerData PlayerDataModel { get; set; }
 
         public Characters Characters { get; }
 
@@ -81,7 +79,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = Settings.PlayerSettings.Create();
-            PlayerDataModel = new PlayerDataModel(PlayerSettings.PlayerGuid, 0, 0, "☹☹☹", 0);
+            PlayerDataModel = new PlayerData(1, 0, 1, "☹☹☹", 0, string.Empty);
             var settings = GameSettings.Load();
             Characters = settings._characters;
             _gameFeatures = CreateCopyFrom(settings._features);

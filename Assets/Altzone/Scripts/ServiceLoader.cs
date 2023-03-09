@@ -1,10 +1,11 @@
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Service.Audio;
-using Altzone.Scripts.Temp;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {
@@ -24,19 +25,20 @@ namespace Altzone.Scripts
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
-            var playerDataModel = store.GetPlayerDataModel(playerGuid);
-            if (playerDataModel == null)
+            var playerData = store.GetPlayerData(playerGuid);
+            if (playerData == null)
             {
                 // Create new player for us - currentCharacterModelId must be valid because it is not checked later.
-                playerDataModel = new PlayerDataModel(playerGuid, 0, 1, "Player", 0);
-                playerDataModel = store.SavePlayerDataModel(playerDataModel);
-                Debug.Log($"Create player {playerDataModel}");
+                playerData = new PlayerData(1, 0, 1, "Player", 0, playerGuid);
+                playerData = store.SavePlayerData(playerData);
+                Debug.Log($"Create player {playerData}");
             }
             else
             {
-                Debug.Log($"Load player {playerDataModel}");
+                Debug.Log($"Load player {playerData}");
+                Assert.AreEqual(playerGuid, playerData.UniqueIdentifier);
             }
-            gameConfig.PlayerDataModel = playerDataModel;
+            gameConfig.PlayerDataModel = playerData;
             ShowDebugGameInfo();
         }
 
