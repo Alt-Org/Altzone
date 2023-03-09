@@ -9,6 +9,9 @@ using Altzone.Scripts.Model.Poco;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
+#if UNITY_WEBGL
+using System.Runtime.InteropServices;
+#endif
 
 namespace Altzone.Scripts.Model
 {
