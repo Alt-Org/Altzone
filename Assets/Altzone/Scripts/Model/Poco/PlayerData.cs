@@ -22,5 +22,12 @@ namespace Altzone.Scripts.Model.Poco
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
         }
+
+        public override string ToString()
+        {
+            return 
+                $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(CurrentCharacterModelId)}: {CurrentCharacterModelId}" +
+                $", {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+        }
     }
 }

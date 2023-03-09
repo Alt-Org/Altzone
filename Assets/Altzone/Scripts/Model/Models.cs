@@ -29,8 +29,9 @@ namespace Altzone.Scripts.Model
             {
                 StoragePath = AppPlatform.ConvertToWindowsPath(StoragePath);
             }
-            Debug.Log($"StoragePath {StoragePath}");
-            _storageData = File.Exists(StoragePath)
+            var exists = File.Exists(StoragePath);
+            Debug.Log($"StoragePath {StoragePath} exists {exists}");
+            _storageData = exists
                 ? LoadStorage(StoragePath)
                 : CreateDefaultStorage(StoragePath);
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}");
@@ -75,7 +76,7 @@ namespace Altzone.Scripts.Model
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
             // Player data should not be created automatically!
-            Assert.IsTrue(storageData.CustomCharacters.Count == 0);
+            Assert.IsTrue(storageData.PlayerData.Count == 0, "do not create PlayerData here");
             SaveStorage(storageData, storagePath);
             return storageData;
         }
