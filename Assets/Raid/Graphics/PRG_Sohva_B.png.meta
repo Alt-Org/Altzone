@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0dc9bb952da48f3408e063eccc314f2d
+guid: 89975939aa7478d46b552aa5bbfbd966
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 164
+  spritePixelsToUnits: 408
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -117,64 +117,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TableTop_H3R
+      name: Empty
       rect:
         serializedVersion: 2
         x: 0
-        y: 328
-        width: 163
-        height: 164
+        y: 408
+        width: 408
+        height: 408
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 39fe397634ebc094996539317efac319
-      internalID: 302163454
+      spriteID: 84608e023dac45d48994e22786514d8a
+      internalID: 1779443987
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TableMid_H3R
+      name: LargeCouchTop_B
       rect:
         serializedVersion: 2
-        x: 0
-        y: 164
-        width: 163
-        height: 164
+        x: 408
+        y: 408
+        width: 408
+        height: 408
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd1bed835d2673047ac33586db548ddf
-      internalID: -33501662
+      spriteID: ec78522da35ab7d4fa68eef790e99951
+      internalID: 20649566
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TableLow_H3R
+      name: LargeCouchLow_B
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 163
-        height: 164
+        width: 408
+        height: 408
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4f2ddeb10873f7d4781f20d6e6f5bc7e
-      internalID: -659690215
+      spriteID: 6d6f5bb2989082b4cb5b4a027ae60136
+      internalID: -1439288500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LargeCouchMid_B
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 0
+        width: 408
+        height: 408
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bac87a88b5351cb4a8df0e280090e0af
+      internalID: 1553698710
       vertices: []
       indices: 
       edges: []
@@ -182,7 +203,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 761ce8ccbb1711f4685093e5150fe036
+    spriteID: 119d486381981ba42a7bc097f0186ef3
     internalID: 0
     vertices: []
     indices: 
@@ -190,9 +211,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TableMid_H3R: -33501662
-      TableTop_H3R: 302163454
-      TableLow_H3R: -659690215
+      LargeCouchLow_B: -1439288500
+      Empty: 1779443987
+      LargeCouchMid_B: 1553698710
+      LargeCouchTop_B: 20649566
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

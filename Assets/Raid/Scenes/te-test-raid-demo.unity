@@ -323,7 +323,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -383,7 +383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wireColor: {r: 1, g: 1, b: 1, a: 1}
-  UnitsSize: 5
+  UnitsSize: 20
   constraint: 1
   camera: {fileID: 726239947}
 --- !u!1 &767397240
@@ -693,44 +693,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CoveredTile: {fileID: 21300000, guid: e07fa73a8b4bafc4893b4ed1fc1608a9, type: 3}
   FlagTile: {fileID: 21300000, guid: 04e390900e5a8ef4090580b4a5992154, type: 3}
-  SFurnitureSprite0: {fileID: -1162396198, guid: e0603870738158344a562397370ed9f9,
+  SFurnitureSprite0: {fileID: 1018516561, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  SFurnitureSprite1: {fileID: 856471351, guid: e0603870738158344a562397370ed9f9, type: 3}
-  SFurnitureSprite2: {fileID: 1786140474, guid: e0603870738158344a562397370ed9f9,
+  SFurnitureSprite1: {fileID: 1503764929, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  SFurnitureSprite3: {fileID: 1216719517, guid: e0603870738158344a562397370ed9f9,
+  SFurnitureSprite2: {fileID: 1171698196, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite0a: {fileID: -574219001, guid: e0603870738158344a562397370ed9f9,
+  SFurnitureSprite3: {fileID: 2035579567, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite0b: {fileID: 1743608257, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite0a: {fileID: -680512363, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite1a: {fileID: -702425061, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite0b: {fileID: 1737121229, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite1b: {fileID: 1075449786, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite1a: {fileID: 306425834, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite2a: {fileID: 287910674, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite1b: {fileID: -1958241667, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite2b: {fileID: 1796402554, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite2a: {fileID: 315461130, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  DFurnitureSprite3a: {fileID: 54665540, guid: e0603870738158344a562397370ed9f9, type: 3}
-  DFurnitureSprite3b: {fileID: 1239942047, guid: e0603870738158344a562397370ed9f9,
+  DFurnitureSprite2b: {fileID: 587891173, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  TFurnitureSprite0a: {fileID: 302163454, guid: 0dc9bb952da48f3408e063eccc314f2d,
+  DFurnitureSprite3a: {fileID: -1777443028, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  TFurnitureSprite0b: {fileID: -33501662, guid: 0dc9bb952da48f3408e063eccc314f2d,
+  DFurnitureSprite3b: {fileID: -1379891021, guid: abe5b294a1acc844fb0b6febbf18b833,
     type: 3}
-  TFurnitureSprite0c: {fileID: -659690215, guid: 0dc9bb952da48f3408e063eccc314f2d,
+  TFurnitureSprite0a: {fileID: -1292821421, guid: 3167d6f1a89612b4883a85e6ba0c1e73,
     type: 3}
-  TFurnitureSprite1a: {fileID: -1698467732, guid: 7cb42a63a0fc82440bb283d2c8af4596,
+  TFurnitureSprite0b: {fileID: 1727177938, guid: 3167d6f1a89612b4883a85e6ba0c1e73,
     type: 3}
-  TFurnitureSprite1b: {fileID: 1113977702, guid: 7cb42a63a0fc82440bb283d2c8af4596,
+  TFurnitureSprite0c: {fileID: 611918679, guid: 3167d6f1a89612b4883a85e6ba0c1e73,
     type: 3}
-  TFurnitureSprite1c: {fileID: -1244840817, guid: 7cb42a63a0fc82440bb283d2c8af4596,
+  TFurnitureSprite1a: {fileID: 20649566, guid: 89975939aa7478d46b552aa5bbfbd966, type: 3}
+  TFurnitureSprite1b: {fileID: 1553698710, guid: 89975939aa7478d46b552aa5bbfbd966,
+    type: 3}
+  TFurnitureSprite1c: {fileID: -1439288500, guid: 89975939aa7478d46b552aa5bbfbd966,
     type: 3}
   AmountOfMines: 8
   AmountofSingles: 6
   AmountofDoubles: 4
-  AmountofTriples: 2
+  AmountofTriples: 5
   TilesToCheck: []
   _randomSeed: 0
 --- !u!4 &1245782073
