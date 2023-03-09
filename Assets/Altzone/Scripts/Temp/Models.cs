@@ -15,10 +15,13 @@ namespace Altzone.Scripts.Temp
         public static void Load()
         {
             ModelsMap.Clear();
-            ModelLoader.LoadModels();
+            foreach (var model in CharacterModelLoader.LoadModels())
+            {
+                Add(model, model.Name);
+            }
         }
 
-        public static void Add(AbstractModel model, string modelName)
+        private static void Add(AbstractModel model, string modelName)
         {
             var modelType = model.GetType();
             var key = $"{modelType.Name}.{modelName}";

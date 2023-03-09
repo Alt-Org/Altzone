@@ -36,7 +36,7 @@ namespace Altzone.Scripts
             CustomCharacterModels.Load();
         }
         
-        public IPlayerDataModel GetPlayerDataModel(string uniqueIdentifier)
+        internal IPlayerDataModel GetPlayerDataModel(string uniqueIdentifier)
             => new PlayerDataModel("guid", 0, 1, "Player", 0);
 
         public IPlayerDataModel SavePlayerDataModel(IPlayerDataModel playerDataModel) => playerDataModel;
@@ -48,7 +48,7 @@ namespace Altzone.Scripts
 
         public List<IBattleCharacter> GetAllBattleCharacters()
         {
-            return BattleCharacter.GetAllBattleCharacters(this);
+            return BattleCharacter.GetAllBattleCharacters();
         }
 
         public List<ICharacterClassModel> GetAllCharacterClassModels()
@@ -56,11 +56,6 @@ namespace Altzone.Scripts
             return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
         }
         
-        public ICustomCharacterModel GetCustomCharacterModel(int id)
-        {
-            return CustomCharacterModels.GetCustomCharacterModel(id);
-        }
-
         public List<ICustomCharacterModel> GetAllCustomCharacterModels()
         {
             return CustomCharacterModels.LoadModels();
@@ -125,11 +120,11 @@ namespace Altzone.Scripts
                 return new BattleCharacter(customCharacter, character);
             }
 
-            public static List<IBattleCharacter> GetAllBattleCharacters(DataStore dataStore)
+            public static List<IBattleCharacter> GetAllBattleCharacters()
             {
                 // Same as Custom Characters.
                 var battleCharacters = new List<IBattleCharacter>();
-                var customCharacters = dataStore.GetAllCustomCharacterModels();
+                var customCharacters = CustomCharacterModels.LoadModels();
                 foreach (var customCharacter in customCharacters)
                 {
                     battleCharacters.Add(GetBattleCharacter(customCharacter.Id));
@@ -140,11 +135,6 @@ namespace Altzone.Scripts
             private static ICharacterClassModel GetCharacterClassModel(int id)
             {
                 return Models.FindById<CharacterClassModel>(id);
-            }
-
-            private static List<ICharacterClassModel> GetAllCharacterClassModels()
-            {
-                return Models.GetAll<CharacterClassModel>().Cast<ICharacterClassModel>().ToList();
             }
         }
    }
