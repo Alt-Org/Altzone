@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Altzone.Scripts.Model.Poco;
 using Prg.Scripts.Common.Unity;
@@ -93,11 +92,12 @@ namespace Altzone.Scripts.Model
                 }
                 _fsSync = null;
                 Debug.Log("FsSyncFs - SYNC");
+#if UNITY_WEBGL
                 FsSyncFs();
+#endif
             }
         }
 
-       
         internal PlayerData GetPlayerData(string uniqueIdentifier)
         {
             return _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
@@ -117,6 +117,7 @@ namespace Altzone.Scripts.Model
                     var id = _storageData.PlayerData.Count == 0
                         ? 1
                         : _storageData.PlayerData.Max(x => x.Id) + 1;
+                    playerData.Id = id;
                 }
                 _storageData.PlayerData.Add(playerData);
             }
