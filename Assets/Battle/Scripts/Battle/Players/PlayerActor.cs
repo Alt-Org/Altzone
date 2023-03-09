@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Test;
 using UnityConstants;
 using UnityEngine;
 
@@ -14,16 +15,24 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
 
+        private IShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
         private Vector3 _tempPosition;
         private bool _hasTarget;
+        private int _shieldResistance;
+        private int _shieldHitPoints;
+        private float _shieldDeformDelay;
 
         private void Awake()
         {
             _transform = GetComponent<Transform>();
             var variables = GameConfig.Get().Variables;
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
+            _shieldResistance = variables._shieldResistance;
+            _shieldHitPoints = _shieldResistance;
+            _shieldDeformDelay = variables._shieldDeformDelay;
+            _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)
@@ -40,6 +49,12 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
+        private IEnumerator ShieldHitDelay()
+        {
+            yield return new WaitForSeconds(_shieldDeformDelay);
+            _shieldPoseManager.SetNextPose();
+        }
+
         #region IPlayerActor
 
         bool IPlayerActor.IsBusy => _hasTarget;
@@ -54,6 +69,19 @@ namespace Battle.Scripts.Battle.Players
             _geometryRoot.eulerAngles = new Vector3(0, 0, angle);
         }
 
+        void IPlayerActor.ShieldHit(int damage)
+        {
+            if (_shieldPoseManager == null)
+            {
+                return;
+            }
+            _shieldHitPoints -= damage;
+            if (_shieldHitPoints <= 0)
+            {
+                StartCoroutine(ShieldHitDelay());
+                _shieldHitPoints = _shieldResistance;
+            }
+        }
         #endregion
 
         public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName)

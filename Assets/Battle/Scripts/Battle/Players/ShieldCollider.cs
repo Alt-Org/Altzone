@@ -6,8 +6,9 @@ using System.Collections;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class Shield : MonoBehaviour
+    public class ShieldCollider : MonoBehaviour
     {
+        private IPlayerActor _playerActor;
         private PolygonCollider2D _shieldCollider;
         private float _ballSpeedCompensation;
         private float _attackMultiplier;
@@ -20,6 +21,8 @@ namespace Battle.Scripts.Battle.Players
             _attackMultiplier = GameConfig.Get().Variables._playerAttackMultiplier;
             _ballSpeedCompensation = GameConfig.Get().Variables._ballSpeedCompensation;
             _layerMask = 1 << gameObject.layer;
+            _playerActor = (IPlayerActor)gameObject.transform.root.GetComponent<PlayerActor>();
+            Debug.Log($"{_playerActor}");
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -38,6 +41,7 @@ namespace Battle.Scripts.Battle.Players
                         var normal = hit.normal;
                         rb.velocity = normal * _attackMultiplier;
                         UnityEngine.Debug.DrawRay(hit.point, normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
+                        _playerActor.ShieldHit(1);
                     }
                 }
             }

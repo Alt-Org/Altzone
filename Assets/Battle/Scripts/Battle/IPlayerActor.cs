@@ -9,5 +9,7 @@ namespace Battle.Scripts.Battle
         void MoveTo(Vector2 targetPosition);
 
         void SetRotation(float angle);
+
+        void ShieldHit(int damage);
     }
 }
