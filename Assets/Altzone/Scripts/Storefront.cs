@@ -4,6 +4,7 @@ using Altzone.Scripts.Model;
 using Altzone.Scripts.Temp;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Models = Altzone.Scripts.Temp.Models;
 
 namespace Altzone.Scripts
 {
@@ -30,6 +31,8 @@ namespace Altzone.Scripts
 
     public class DataStore
     {
+        private readonly Altzone.Scripts.Model.Models _models = new(Application.persistentDataPath);
+        
         public DataStore()
         {
             Models.Load();
