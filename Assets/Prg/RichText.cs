@@ -8,7 +8,7 @@ public static class RichText
 #if UNITY_EDITOR
         return $"<b>{text}</b>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
@@ -17,7 +17,7 @@ public static class RichText
 #if UNITY_EDITOR
         return $"<color=white>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
@@ -26,7 +26,7 @@ public static class RichText
 #if UNITY_EDITOR
         return $"<color=red>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
@@ -35,25 +35,25 @@ public static class RichText
 #if UNITY_EDITOR
         return $"<color=blue>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
     public static string Green(object text)
     {
 #if UNITY_EDITOR
-            return $"<color=green>{text}</color>";
+        return $"<color=green>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
     public static string Magenta(object text)
     {
 #if UNITY_EDITOR
-            return $"<color=magenta>{text}</color>";
+        return $"<color=magenta>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 
@@ -61,7 +61,7 @@ public static class RichText
     {
 #if UNITY_EDITOR
 #else
-        return text;
+        return text?.ToString();
 #endif
         return $"<color=yellow>{text}</color>";
     }
@@ -71,7 +71,7 @@ public static class RichText
 #if UNITY_EDITOR
         return $"<color=brown>{text}</color>";
 #else
-        return text;
+        return text?.ToString();
 #endif
     }
 }
