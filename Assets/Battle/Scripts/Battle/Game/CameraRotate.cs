@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
+using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -19,7 +17,7 @@ namespace Battle.Scripts.Battle.Game
                 var player = PhotonNetwork.LocalPlayer;
                 var playerPos = PhotonBattle.GetPlayerPos(player);
                 var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"teaugygygggum {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
+                Debug.Log($"teamNumber {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
                 if (teamNumber == 2)   //2
                 {
                     Camera.eulerAngles = new Vector3(0, 0, 180);
