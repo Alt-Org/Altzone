@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Entry point to local POCO models.
+    /// Entry point to local POCO models with 'built-in' WebGL support.
     /// </summary>
     /// <remarks>
     /// WebGl builds have to manually flush changes to browser local storage/database after changes to be on the safe side.

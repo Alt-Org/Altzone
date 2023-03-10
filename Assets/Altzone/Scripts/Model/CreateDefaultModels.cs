@@ -3,8 +3,15 @@ using Altzone.Scripts.Model.Poco;
 
 namespace Altzone.Scripts.Model
 {
+    /// <summary>
+    /// Initializes game model objects to a known state for a new player (installation).
+    /// </summary>
     internal static class CreateDefaultModels
     {
+        /// <summary>
+        /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
+        /// </summary>
+        /// <returns></returns>
         internal static List<CharacterClass> CreateCharacterClasses()
         {
             return new List<CharacterClass>
@@ -19,6 +26,11 @@ namespace Altzone.Scripts.Model
             };
         }
 
+        /// <summary>
+        /// Player custom character classes are created by the player itself (or given to the player by the game).<br />
+        /// This collection should be the initial set of custom character classes the player has when game is started first time.
+        /// </summary>
+        /// <returns></returns>
         internal static List<CustomCharacter> CreateCustomCharacters()
         {
             return new List<CustomCharacter>

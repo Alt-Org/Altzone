@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Altzone.Scripts
 {
     /// <summary>
-    /// Factory class for <c>IStorefront</c>.
+    /// Factory class for our <c>DataStore</c> implementation.
     /// </summary>
     public static class Storefront
     {
@@ -20,11 +20,15 @@ namespace Altzone.Scripts
         private static DataStore _instance;
 
         /// <summary>
-        /// Gets or creates an <c>IStorefront</c> static instance. 
+        /// Gets or creates an <c>DataStore</c> static singleton instance. 
         /// </summary>
         public static DataStore Get() => _instance ??= new DataStore();
     }
 
+    /// <summary>
+    /// General Data Store for game data.<br />
+    /// Data can be local, in our own hosted server or in some cloud based service.
+    /// </summary>
     public class DataStore
     {
         private readonly LocalModels _localModels = new(Application.persistentDataPath);

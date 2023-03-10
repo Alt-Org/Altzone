@@ -4,7 +4,7 @@ namespace Altzone.Scripts.Model
     /// Enum values for Defence "attribute".
     /// </summary>
     /// <remarks>
-    /// This can be serialized so do not change or remove enum values.
+    /// This can be serialized so do not change or remove enum values - only add new ones.
     /// </remarks>
     public enum Defence
     {
@@ -17,5 +17,4 @@ namespace Altzone.Scripts.Model
         Egotism = 6,
         Confluence = 7,
     }
-
 }
