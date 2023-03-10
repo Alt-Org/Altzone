@@ -97,13 +97,15 @@ namespace Battle0.Scripts.Lobby.InRoom
             store.GetPlayerData(playerGuid, playerData =>
             {
                 var currentCharacterModelId = playerData.CurrentCustomCharacterId;
-                Storefront.Get().GetBattleCharacter(currentCharacterModelId, character =>
+                Storefront.Get().GetBattleCharacter(currentCharacterModelId, battleCharacter =>
                 {
-                    var defence = character.MainDefence;
+                    var defence = (int)battleCharacter.MainDefence;
+                    Debug.Log($"{battleCharacter}");
+                    Debug.Log($"defence {battleCharacter.MainDefence} prefab id key {defence} playerPos {playerPos}");
                     player.SetCustomProperties(new Hashtable
                     {
                         { PlayerPositionKey, playerPos },
-                        { PlayerMainSkillKey, (int)defence }
+                        { PlayerMainSkillKey, defence }
                     });
                     UpdateStatus();
                 });
