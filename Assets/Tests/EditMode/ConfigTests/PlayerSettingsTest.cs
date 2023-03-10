@@ -14,7 +14,7 @@ namespace Tests.EditMode.ConfigTests
     /// Also note that <c>PlayerDataCache</c> is cached and will not reset 'easily'.
     /// </remarks>
     [TestFixture]
-    public class PlayerDataCacheTest
+    public class PlayerSettingsTest
     {
         [Test, SuppressMessage("ReSharper", "UnusedVariable")]
         public void NonDestructiveTest1()
