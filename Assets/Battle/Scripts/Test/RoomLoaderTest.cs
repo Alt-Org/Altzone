@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco;
 using Battle.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;
@@ -21,7 +23,13 @@ namespace Battle.Scripts.Test
 
         private IEnumerator Start()
         {
-            var playerData = GameConfig.Get().PlayerDataModel;
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            PlayerData playerData = null;
+            store.GetPlayerData(playerGuid, p => playerData = p);
+            yield return new WaitUntil(() => playerData != null);
             PhotonNetwork.NickName = string.IsNullOrWhiteSpace(playerData.Name) ? playerData.Name : "Player";
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
 

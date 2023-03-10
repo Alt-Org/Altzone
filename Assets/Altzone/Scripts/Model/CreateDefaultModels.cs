@@ -35,13 +35,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new(1, 1, "1", "Desensitisation", 0, 0, 0, 0),
-                new(2, 2, "2", "Deflection", 0, 0, 0, 0),
-                new(3, 3, "3", "Introjection", 0, 0, 0, 0),
-                new(4, 4, "4", "Projection", 0, 0, 0, 0),
-                new(5, 5, "5", "Retroflection", 0, 0, 0, 0),
-                new(6, 6, "6", "Egotism", 0, 0, 0, 0),
-                new(7, 7, "7", "Confluence", 0, 0, 0, 06)
+                new(1, 1, "1", "<1>", 0, 0, 0, 0),
+                new(2, 2, "2", "<2>", 0, 0, 0, 0),
+                new(3, 3, "3", "<3>", 0, 0, 0, 0),
+                new(4, 4, "4", "<4>", 0, 0, 0, 0),
+                new(5, 5, "5", "<5>", 0, 0, 0, 0),
+                new(6, 6, "6", "<6>", 0, 0, 0, 0),
+                new(7, 7, "7", "<7>", 0, 0, 0, 06)
             };
         }
     }

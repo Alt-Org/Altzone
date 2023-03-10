@@ -91,17 +91,22 @@ namespace Battle0.Scripts.Lobby.InRoom
             player.CustomProperties.Clear();
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var gameConfig = GameConfig.Get();
-            var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterModelId = playerDataModel.CurrentCustomCharacterId;
-            Storefront.Get().GetBattleCharacter(currentCharacterModelId, character =>
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            store.GetPlayerData(playerGuid, playerData =>
             {
-                var defence = character.MainDefence;
-                player.SetCustomProperties(new Hashtable
+                var currentCharacterModelId = playerData.CurrentCustomCharacterId;
+                Storefront.Get().GetBattleCharacter(currentCharacterModelId, character =>
                 {
-                    { PlayerPositionKey, playerPos },
-                    { PlayerMainSkillKey, (int)defence }
+                    var defence = character.MainDefence;
+                    player.SetCustomProperties(new Hashtable
+                    {
+                        { PlayerPositionKey, playerPos },
+                        { PlayerMainSkillKey, (int)defence }
+                    });
+                    UpdateStatus();
                 });
-                UpdateStatus();
             });
         }
 

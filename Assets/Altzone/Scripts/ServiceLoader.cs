@@ -51,7 +51,6 @@ namespace Altzone.Scripts
                 {
                     Debug.Log($"Load player {playerData}");
                 }
-                gameConfig.PlayerDataModel = playerData;
             });
         }
 
