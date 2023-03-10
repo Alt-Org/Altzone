@@ -7,7 +7,7 @@ namespace Battle0.Scripts.Test
     internal class SimplePingHelper : MonoBehaviour
     {
         [SerializeField] private string _pingFormat = "ping\r\n{0}";
-        [SerializeField] private TMP_Text _pingText;
+        [SerializeField] private TextMeshProUGUI _pingText;
 
         private void FixedUpdate()
         {
