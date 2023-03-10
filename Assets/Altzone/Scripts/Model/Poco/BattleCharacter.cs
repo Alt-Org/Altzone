@@ -8,10 +8,10 @@ namespace Altzone.Scripts.Model.Poco
     /// </remarks>
     public class BattleCharacter
     {
-        public readonly string Name;
         public readonly int CustomCharacterId;
-        public readonly string CharacterClassName;
+        public readonly string Name;
         public readonly int CharacterClassId;
+        public readonly string CharacterClassName;
         public readonly string PlayerPrefabKey;
         public readonly Defence MainDefence;
         public readonly int Speed;
@@ -19,13 +19,13 @@ namespace Altzone.Scripts.Model.Poco
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(string name, int customCharacterId, string characterClassName, int characterClassId, string playerPrefabKey,
+        private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string playerPrefabKey,
             Defence mainDefence, int speed, int resistance, int attack, int defence)
         {
-            Name = name;
-            CharacterClassName = characterClassName;
             CustomCharacterId = customCharacterId;
+            Name = name;
             CharacterClassId = characterClassId;
+            CharacterClassName = characterClassName;
             PlayerPrefabKey = playerPrefabKey;
             MainDefence = mainDefence;
             Speed = speed;
@@ -37,14 +37,22 @@ namespace Altzone.Scripts.Model.Poco
         internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
         {
             return new BattleCharacter(
-                customCharacter.Name, customCharacter.CharacterClassId,
-                characterClass.Name, characterClass.Id,
+                customCharacter.CharacterClassId, customCharacter.Name,
+                characterClass.Id, characterClass.Name,
                 customCharacter.PlayerPrefabKey,
                 (Defence)characterClass.Defence,
                 customCharacter.Speed + characterClass.Speed,
                 customCharacter.Resistance + characterClass.Resistance,
                 customCharacter.Attack + characterClass.Attack,
                 customCharacter.Defence + characterClass.Defence);
+        }
+
+        public override string ToString()
+        {
+            return $"CustomCharacter: {CustomCharacterId} : {Name}" +
+                   $", CharacterClass: {CharacterClassId} : {CharacterClassName}" +
+                   $", PlayerPrefabKey: {PlayerPrefabKey}, MainDefence: {MainDefence}" +
+                   $", Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }
 }

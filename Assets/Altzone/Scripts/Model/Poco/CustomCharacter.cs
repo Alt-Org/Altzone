@@ -29,5 +29,12 @@ namespace Altzone.Scripts.Model.Poco
             Attack = attack;
             Defence = defence;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(CharacterClassId)}: {CharacterClassId}" +
+                   $", {nameof(PlayerPrefabKey)}: {PlayerPrefabKey}, {nameof(Name)}: {Name}" +
+                   $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+        }
     }
 }
