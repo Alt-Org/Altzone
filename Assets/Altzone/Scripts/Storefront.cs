@@ -34,16 +34,41 @@ namespace Altzone.Scripts
     {
         private readonly LocalModels _localModels = new(Application.persistentDataPath);
 
+        #region Public API
+
         public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback) => _localModels.GetPlayerData(uniqueIdentifier, callback);
 
         public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
 
-        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) => _localModels.GetBattleCharacter(customCharacterId, callback);
+        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
+            _localModels.GetBattleCharacter(customCharacterId, callback);
 
         public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
 
         public void GetAllCharacterClasses(Action<List<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
         public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
+
+        #endregion
+
+        #region Internal API
+
+        internal int CharacterClassesVersion
+        {
+            get => _localModels.CharacterClassesVersion;
+            set => _localModels.CharacterClassesVersion = value;
+        }
+
+        internal int CustomCharactersVersion
+        {
+            get => _localModels.CustomCharactersVersion;
+            set => _localModels.CustomCharactersVersion = value;
+        }
+
+        internal void Set(List<CharacterClass> characterClasses) => new NotImplementedException();
+
+        internal void Set(List<CustomCharacter> characterClasses) => new NotImplementedException();
+
+        #endregion
     }
 }

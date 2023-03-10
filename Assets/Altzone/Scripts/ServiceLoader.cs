@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Service.Audio;
 using Prg.Scripts.Common.Unity.Localization;
@@ -22,6 +23,7 @@ namespace Altzone.Scripts
             var store = Storefront.Get();
             var gameConfig = GameConfig.Get();
             CheckPlayerDataAndState(store, gameConfig);
+            CheckDataStoreDataAndState(store);
             ShowDebugGameInfo(store);
         }
 
@@ -54,12 +56,44 @@ namespace Altzone.Scripts
             });
         }
 
+        private static void CheckDataStoreDataAndState(DataStore store)
+        {
+            #region Production data in this section
+
+            if (store.CharacterClassesVersion != CreateDefaultModels.CharacterClassesVersion)
+            {
+                // Replace default CharacterClass models.
+                Debug.LogWarning($"Update CharacterClassesVersion {store.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
+                store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
+                store.Set(CreateDefaultModels.CreateCharacterClasses());
+            }
+
+            #endregion
+
+            if (!AppPlatform.IsEditor)
+            {
+                return;
+            }
+
+            #region Development data in this section
+
+            if (store.CustomCharactersVersion != CreateDefaultModels.CustomCharactersVersion)
+            {
+                // Replace default CustomCharacter models.
+                Debug.LogWarning($"Update CustomCharactersVersion {store.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
+                store.CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion;
+                store.Set(CreateDefaultModels.CreateCustomCharacters());
+            }
+
+            #endregion
+        }
+
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void ShowDebugGameInfo(DataStore store)
         {
             store.GetAllCharacterClasses(characterClasses =>
             {
-                Debug.Log($"characterClasses {characterClasses.Count}");
+                Debug.Log($"characterClasses {characterClasses.Count} ver {store.CharacterClassesVersion}");
                 store.GetAllCustomCharacters(customCharacters =>
                 {
                     var playerPrefabs = GameConfig.Get().PlayerPrefabs;
@@ -80,7 +114,7 @@ namespace Altzone.Scripts
                             isCustomCharactersValid = false;
                         }
                     }
-                    Debug.Log($"customCharacters {customCharacters.Count}");
+                    Debug.Log($"customCharacters {customCharacters.Count} ver {store.CustomCharactersVersion}");
                     store.GetAllBattleCharacters(battleCharacters =>
                     {
                         Debug.Log($"battleCharacters {battleCharacters.Count}");

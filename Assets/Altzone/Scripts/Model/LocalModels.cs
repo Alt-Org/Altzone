@@ -29,9 +29,28 @@ namespace Altzone.Scripts.Model
         private const int WebGlFramesToWaitFlush = 30;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
-        public readonly string StoragePath;
-
+        private readonly string _storagePath;
         private readonly StorageData _storageData;
+
+        public int CharacterClassesVersion
+        {
+            get => _storageData.CharacterClassesVersion;
+            set
+            {
+                _storageData.CharacterClassesVersion = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
+
+        public int CustomCharactersVersion
+        {
+            get => _storageData.CustomCharactersVersion;
+            set
+            {
+                _storageData.CustomCharactersVersion = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
 
 #if UNITY_WEBGL
         [DllImport("__Internal")]
@@ -46,16 +65,16 @@ namespace Altzone.Scripts.Model
 
         internal LocalModels(string storagePath)
         {
-            StoragePath = Path.Combine(storagePath, StorageFilename);
+            _storagePath = Path.Combine(storagePath, StorageFilename);
             if (AppPlatform.IsWindows)
             {
-                StoragePath = AppPlatform.ConvertToWindowsPath(StoragePath);
+                _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
-            var exists = File.Exists(StoragePath);
-            Debug.Log($"StoragePath {StoragePath} exists {exists}");
+            var exists = File.Exists(_storagePath);
+            Debug.Log($"StoragePath {_storagePath} exists {exists}");
             _storageData = exists
-                ? LoadStorage(StoragePath)
-                : CreateDefaultStorage(StoragePath);
+                ? LoadStorage(_storagePath)
+                : CreateDefaultStorage(_storagePath);
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}");
             Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count}");
             Debug.Log($"PlayerData {_storageData.PlayerData.Count}");
@@ -130,8 +149,7 @@ namespace Altzone.Scripts.Model
                 _storageData.PlayerData.Add(playerData);
             }
             Debug.Log($"playerData {playerData}");
-            SaveStorage(_storageData, StoragePath);
-            WebGlFsSyncFs();
+            SaveStorage(_storageData, _storagePath);
             callback?.Invoke(playerData);
         }
 
@@ -212,13 +230,16 @@ namespace Altzone.Scripts.Model
         {
             var json = JsonUtility.ToJson(storageData);
             File.WriteAllText(storagePath, json, Encoding);
+            WebGlFsSyncFs();
         }
     }
 
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     internal class StorageData
     {
-        public int VersionNumber;
+        public int VersionNumber = 1;
+        public int CharacterClassesVersion = 1;
+        public int CustomCharactersVersion = 1;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<PlayerData> PlayerData = new();
