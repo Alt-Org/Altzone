@@ -99,13 +99,13 @@ namespace Battle0.Scripts.Lobby.InRoom
                 var currentCharacterModelId = playerData.CurrentCustomCharacterId;
                 Storefront.Get().GetBattleCharacter(currentCharacterModelId, battleCharacter =>
                 {
-                    var defence = (int)battleCharacter.MainDefence;
                     Debug.Log($"{battleCharacter}");
-                    Debug.Log($"defence {battleCharacter.MainDefence} prefab id key {defence} playerPos {playerPos}");
+                    var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter, 0);
+                    Debug.Log($"playerPos {playerPos} prefabIndex {prefabIndex}");
                     player.SetCustomProperties(new Hashtable
                     {
                         { PlayerPositionKey, playerPos },
-                        { PlayerMainSkillKey, defence }
+                        { PlayerMainSkillKey, prefabIndex }
                     });
                     UpdateStatus();
                 });

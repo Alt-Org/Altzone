@@ -34,30 +34,28 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             _buttons = leftPane.GetComponentsInChildren<Button>();
             _labels = rightPane.GetComponentsInChildren<Text>();
-            LoadPrefabsAsync();
+            LoadAndCachePrefabs();
         }
 
-        private void LoadPrefabsAsync()
+        private void LoadAndCachePrefabs()
         {
-            var store = Storefront.Get();
-            store.GetAllCharacterClasses(characterClasses =>
+            var gameConfig = GameConfig.Get();
+            var playerPrefabs = gameConfig.PlayerPrefabs;
+            var prefabs = playerPrefabs._playerPrefabs;
+            _prefabs = new MonoBehaviour[prefabs.Length];
+            for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
-                var maxIndex = characterClasses.Max(x => x.Id);
-                _prefabs = new MonoBehaviour[1 + maxIndex];
-                foreach (var characterModel in characterClasses)
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
+                var instance = Instantiate(playerPrefab, _prefabsRoot);
+                if (instance == null)
                 {
-                    Debug.Log($"Character: {characterModel}");
-                    var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(characterModel.Id);
-                    var instance = Instantiate(playerPrefab, _prefabsRoot);
-                    if (instance == null)
-                    {
-                        continue;
-                    }
-                    instance.gameObject.SetActive(false);
-                    _prefabs[characterModel.Id] = instance;
+                    continue;
                 }
-                _isReady = true;
-            });
+                Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
+                instance.gameObject.SetActive(false);
+                _prefabs[prefabIndex] = instance;
+            }
+            _isReady = true;
         }
 
         public string Title
@@ -137,16 +135,17 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
             _labels[++i].text = $"Attack:\r\n{character.Attack}";
             _labels[++i].text = $"Defence:\r\n{character.Defence}";
-            SetCharacterPrefab(character);
+            var prefabIndex = PhotonBattle.GetPrefabIndex(character, -1);
+            SetCharacterPrefab(prefabIndex);
         }
 
-        private void SetCharacterPrefab(BattleCharacter character)
+        private void SetCharacterPrefab(int prefabIndex)
         {
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(false);
             }
-            _curPrefab = int.TryParse(character.PlayerPrefabKey, out var index) ? _prefabs[index] : null;
+            _curPrefab = prefabIndex >= 0 ? _prefabs[prefabIndex] : null;
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(true);

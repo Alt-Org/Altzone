@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Temp;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -347,8 +346,20 @@ namespace Battle0.Scripts
 
         #endregion
 
-        #region MyRegion
+        #region BattleCharacter
 
+        /// <summary>
+        /// Converts <c>BattleCharacter</c> PlayerPrefabKey (string) to integer for convenience.
+        /// </summary>
+        public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
+        {
+            if (int.TryParse(battleCharacter.PlayerPrefabKey, out var prefabIndex))
+            {
+                return prefabIndex;
+            }
+            return defaultValue;
+        }
+        
         /// <summary>
         /// Gets <c>IBattleCharacter</c> for a player in a room.
         /// </summary>
