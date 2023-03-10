@@ -85,15 +85,23 @@ public static class UnityExtensions
 
     public static void SetCaption(this Button button, string caption)
     {
+        var textMeshProUGUI = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (textMeshProUGUI != null)
+        {
+            textMeshProUGUI.text = caption;
+            return;
+        }
         var text = button.GetComponentInChildren<Text>();
         if (text != null)
         {
+            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {button.GetFullPath()}");
             text.text = caption;
             return;
         }
         var tmpText = button.GetComponentInChildren<TMP_Text>();
         if (tmpText != null)
         {
+            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {button.GetFullPath()}");
             tmpText.text = caption;
             return;
         }
@@ -102,14 +110,21 @@ public static class UnityExtensions
 
     public static string GetCaption(this Button button)
     {
+        var textMeshProUGUI = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (textMeshProUGUI != null)
+        {
+            return textMeshProUGUI.text;
+        }
         var text = button.GetComponentInChildren<Text>();
         if (text != null)
         {
+            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {button.GetFullPath()}");
             return text.text;
         }
         var tmpText = button.GetComponentInChildren<TMP_Text>();
         if (tmpText != null)
         {
+            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {button.GetFullPath()}");
             return tmpText.text;
         }
         Assert.IsTrue(false, "button does not have a text component");
