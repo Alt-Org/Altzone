@@ -28,6 +28,12 @@ namespace Altzone.Scripts
         private static void CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
         {
             var playerSettings = gameConfig.PlayerSettings;
+            if (playerSettings.IsFirstTimePlaying)
+            {
+                Debug.Log("This Is First Time Playing");
+                // TODO: this might have some effect to game server operations to set it up correctly for first time!? 
+                playerSettings.IsFirstTimePlaying = false;
+            }
             var playerGuid = playerSettings.PlayerGuid;
             store.GetPlayerData(playerGuid, playerData =>
             {
@@ -44,10 +50,6 @@ namespace Altzone.Scripts
                 else
                 {
                     Debug.Log($"Load player {playerData}");
-                }
-                if (playerSettings.IsFirstTimePlaying)
-                {
-                    Debug.Log("This Is First Time Playing");
                 }
                 gameConfig.PlayerDataModel = playerData;
             });

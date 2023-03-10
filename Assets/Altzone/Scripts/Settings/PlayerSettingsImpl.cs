@@ -19,12 +19,6 @@ namespace Altzone.Scripts.Settings
     /// </summary>
     internal class PlayerSettingsImpl : IPlayerSettings
     {
-        /// <summary>
-        /// Negative model IDs are considered invalid.
-        /// </summary>
-        private const int DummyModelId = -1;
-
-        private const string DefaultPlayerName = "Player";
         private const SystemLanguage DefaultLanguage = SystemLanguage.Finnish;
 
         private readonly PlayerData _playerData = new();
@@ -41,19 +35,6 @@ namespace Altzone.Scripts.Settings
             private set
             {
                 _playerData.PlayerGuid = value ?? string.Empty;
-                Save();
-            }
-        }
-
-        /// <summary>
-        /// Player custom character model id.
-        /// </summary>
-        public int CustomCharacterModelId
-        {
-            get => _playerData.CustomCharacterModelId;
-            private set
-            {
-                _playerData.CustomCharacterModelId = value;
                 Save();
             }
         }
@@ -145,11 +126,6 @@ namespace Altzone.Scripts.Settings
             PlayerGuid = newPlayerGuid;
         }
 
-        public void SetCustomCharacterModelId(int customCharacterModelId)
-        {
-            CustomCharacterModelId = customCharacterModelId <= 0 ? DummyModelId : customCharacterModelId;
-        }
-
         /// <summary>
         /// Protected <c>Save</c> method to handle single property change.
         /// </summary>
@@ -169,7 +145,7 @@ namespace Altzone.Scripts.Settings
 #if UNITY_EDITOR
         public void DebugResetPlayerSettings()
         {
-            _playerData.ResetData(DefaultPlayerName, DummyModelId, DefaultLanguage);
+            _playerData.ResetData(DefaultLanguage);
         }
 
         public void DebugSavePlayerSettings()
@@ -178,30 +154,21 @@ namespace Altzone.Scripts.Settings
         }
 #endif
 
-        public override string ToString()
-        {
-            // This is required for actual implementation to detect changes in our changeable properties!
-            return
-                $"Model {CustomCharacterModelId}, ToS {(IsTosAccepted ? 1 : 0)}, Lang {Language}, Guid {PlayerGuid}";
-        }
-
         /// <summary>
         /// Convenience class to keep all local storage related settings in one place.
         /// </summary>
         private class PlayerData
         {
             public string PlayerGuid;
-            public int CustomCharacterModelId;
             public SystemLanguage Language;
             public bool IsTosAccepted;
             public bool IsFirstTimePlaying;
             public bool IsAccountVerified;
             public bool IsDebugFlag;
 
-            public void ResetData(string dummyPlayerName, int dummyModelId, SystemLanguage defaultLanguage)
+            public void ResetData(SystemLanguage defaultLanguage)
             {
                 PlayerGuid = string.Empty;
-                CustomCharacterModelId = dummyModelId;
                 Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)defaultLanguage);
                 IsTosAccepted = false;
                 IsFirstTimePlaying = true;
@@ -211,8 +178,7 @@ namespace Altzone.Scripts.Settings
 
             public override string ToString()
             {
-                return $"{nameof(CustomCharacterModelId)}: {CustomCharacterModelId}" +
-                       $", {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
+                return $"{nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
                        $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
                        $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
             }
@@ -230,7 +196,6 @@ namespace Altzone.Scripts.Settings
             {
                 _host = UnityMonoHelper.Instance;
                 _playerData.PlayerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
-                _playerData.CustomCharacterModelId = PlayerPrefs.GetInt(PlayerPrefKeys.CharacterModelId, DummyModelId);
                 _playerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
                 _playerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
                 _playerData.IsFirstTimePlaying = PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
@@ -253,7 +218,6 @@ namespace Altzone.Scripts.Settings
             protected override void InternalSave()
             {
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
-                PlayerPrefs.SetInt(PlayerPrefKeys.CharacterModelId, CustomCharacterModelId);
                 PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)_playerData.Language);
                 PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
                 PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, IsFirstTimePlaying ? 1 : 0);
