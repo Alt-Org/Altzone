@@ -39,25 +39,25 @@ namespace Battle0.Scripts.Lobby.InChooseModel
 
         private void LoadPrefabsAsync()
         {
-            // This will be async if custom character models are loaded from network.
             var store = Storefront.Get();
-            var characterModels = store.GetAllCharacterClasses();
-            var maxIndex = characterModels.Max(x => x.Id);
-            _prefabs = new MonoBehaviour[1 + maxIndex];
-            var position = _prefabsRoot.position;
-            foreach (var characterModel in characterModels)
+            store.GetAllCharacterClasses(characterClasses =>
             {
-                Debug.Log($"Character: {characterModel}");
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(characterModel.Id);
-                var instance = Instantiate(playerPrefab, _prefabsRoot);
-                if (instance == null)
+                var maxIndex = characterClasses.Max(x => x.Id);
+                _prefabs = new MonoBehaviour[1 + maxIndex];
+                foreach (var characterModel in characterClasses)
                 {
-                    continue;
+                    Debug.Log($"Character: {characterModel}");
+                    var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(characterModel.Id);
+                    var instance = Instantiate(playerPrefab, _prefabsRoot);
+                    if (instance == null)
+                    {
+                        continue;
+                    }
+                    instance.gameObject.SetActive(false);
+                    _prefabs[characterModel.Id] = instance;
                 }
-                instance.gameObject.SetActive(false);
-                _prefabs[characterModel.Id] = instance;
-            }
-            _isReady = true;
+                _isReady = true;
+            });
         }
 
         public string Title

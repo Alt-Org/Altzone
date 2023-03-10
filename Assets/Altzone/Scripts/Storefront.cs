@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
@@ -33,16 +34,16 @@ namespace Altzone.Scripts
     {
         private readonly LocalModels _localModels = new(Application.persistentDataPath);
 
-        public PlayerData GetPlayerData(string uniqueIdentifier) => _localModels.GetPlayerData(uniqueIdentifier);
+        public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback) => _localModels.GetPlayerData(uniqueIdentifier, callback);
 
-        public PlayerData SavePlayerData(PlayerData playerData) => _localModels.SavePlayerData(playerData);
+        public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
 
-        public BattleCharacter GetBattleCharacter(int customCharacterId) => _localModels.GetBattleCharacter(customCharacterId);
+        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) => _localModels.GetBattleCharacter(customCharacterId, callback);
 
-        public List<BattleCharacter> GetAllBattleCharacters() => _localModels.GetAllBattleCharacters();
+        public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
 
-        public List<CharacterClass> GetAllCharacterClasses() => _localModels.GetAllCharacterClassModels();
+        public void GetAllCharacterClasses(Action<List<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
-        public List<CustomCharacter> GetAllCustomCharacters() => _localModels.GetAllCustomCharacterModels();
+        public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
     }
 }

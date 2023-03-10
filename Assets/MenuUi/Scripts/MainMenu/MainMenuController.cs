@@ -15,9 +15,11 @@ namespace MenuUi.Scripts.MainMenu
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
             var store = Storefront.Get();
-            var playerData = store.GetPlayerData(playerGuid);
-            _view.PlayerName = playerData?.Name ?? "Player?";
-            _view.ClanName = "Clan?";
+            store.GetPlayerData(playerGuid, playerData =>
+            {
+                _view.PlayerName = playerData?.Name ?? "Player?";
+                _view.ClanName = "Clan?";
+            });
         }
     }
 }

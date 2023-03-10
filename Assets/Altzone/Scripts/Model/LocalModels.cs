@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -64,6 +65,7 @@ namespace Altzone.Scripts.Model
 #if UNITY_WEBGL
             if (!AppPlatform.IsEditor)
             {
+                // Javascript call.
                 HelloWebGl();
             }
             _monoHelper = UnityMonoHelper.Instance;
@@ -96,6 +98,7 @@ namespace Altzone.Scripts.Model
                 _fsSync = null;
                 Debug.Log("FsSyncFs - SYNC");
 #if UNITY_WEBGL
+                // Javascript call.
                 FsSyncFs();
 #endif
             }
@@ -103,12 +106,12 @@ namespace Altzone.Scripts.Model
 
         #region PlayerData
 
-        internal PlayerData GetPlayerData(string uniqueIdentifier)
+        internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
-            return _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
+            callback(_storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier));
         }
 
-        internal PlayerData SavePlayerData(PlayerData playerData)
+        internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
         {
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
             if (index >= 0)
@@ -129,26 +132,26 @@ namespace Altzone.Scripts.Model
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, StoragePath);
             WebGlFsSyncFs();
-            return playerData;
+            callback?.Invoke(playerData);
         }
 
         #endregion
 
         #region BattleCharacter
 
-        internal BattleCharacter GetBattleCharacter(int customCharacterId)
+        internal void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback)
         {
-            return _GetBattleCharacter(customCharacterId);
+            callback(_GetBattleCharacter(customCharacterId));
         }
 
-        internal List<BattleCharacter> GetAllBattleCharacters()
+        internal void GetAllBattleCharacters(Action<List<BattleCharacter>> callback)
         {
             var battleCharacters = new List<BattleCharacter>();
             foreach (var customCharacter in _storageData.CustomCharacters)
             {
                 battleCharacters.Add(_GetBattleCharacter(customCharacter.Id));
             }
-            return battleCharacters;
+            callback(battleCharacters);
         }
 
         private BattleCharacter _GetBattleCharacter(int customCharacterId)
@@ -171,18 +174,18 @@ namespace Altzone.Scripts.Model
 
         #region CharacterClass
 
-        public List<CharacterClass> GetAllCharacterClassModels()
+        public void GetAllCharacterClassModels(Action<List<CharacterClass>> callback)
         {
-            return _storageData.CharacterClasses;
+            callback(_storageData.CharacterClasses);
         }
 
-        public List<CustomCharacter> GetAllCustomCharacterModels()
+        public void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
         {
-            return _storageData.CustomCharacters;
+            callback(_storageData.CustomCharacters);
         }
-        
 
         #endregion
+
         private static StorageData CreateDefaultStorage(string storagePath)
         {
             var storageData = new StorageData

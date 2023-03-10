@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -34,29 +33,30 @@ namespace Tests.PlayMode.InstantiateTests
             var playerDataModel = gameConfig.PlayerDataModel;
             var customCharacterModelId = playerDataModel.CurrentCustomCharacterId;
             var store = Storefront.Get();
-            BattleCharacter battleCharacter = null;
             var prefabId = 0;
             try
             {
-                battleCharacter = store.GetBattleCharacter(customCharacterModelId);
-                Debug.Log($"{battleCharacter}");
-                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
-                prefabId =  int.Parse(battleCharacter.PlayerPrefabKey);
-                Assert.IsTrue(prefabId >= 0);
+                store.GetBattleCharacter(customCharacterModelId, battleCharacter =>
+                {
+                    Debug.Log($"{battleCharacter}");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
+                    prefabId = int.Parse(battleCharacter.PlayerPrefabKey);
+                    Assert.IsTrue(prefabId >= 0);
+                    var playerPrefabs = gameConfig.PlayerPrefabs;
+                    var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                    Assert.IsNotNull(playerPrefab);
+                    var instance = InstantiatePrefab(playerPrefab.gameObject, Vector3.one, Quaternion.identity, null);
+                    instance.name = battleCharacter.Name;
+                });
             }
             catch (Exception e)
             {
                 Debug.Log($"GetBattleCharacter failed {e.Message}");
                 Assert.Fail("Check that CustomCharacterModels exist or restart UNITY to reset Storefront");
             }
-            var playerPrefabs = gameConfig.PlayerPrefabs;
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
-            Assert.IsNotNull(playerPrefab);
-            var instance = InstantiatePrefab(playerPrefab.gameObject, Vector3.one, Quaternion.identity, null);
-            instance.name = battleCharacter.Name;
         }
 
-        private GameObject InstantiatePrefab(GameObject template, Vector3 position, Quaternion rotation, Transform parent = null)
+        private static GameObject InstantiatePrefab(GameObject template, Vector3 position, Quaternion rotation, Transform parent = null)
         {
             var instance = Object.Instantiate(template, position, rotation, parent);
             return instance;

@@ -5,7 +5,6 @@ using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Service.Audio;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {
@@ -30,63 +29,72 @@ namespace Altzone.Scripts
         {
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
-            var playerData = store.GetPlayerData(playerGuid);
-            if (playerData == null)
+            store.GetPlayerData(playerGuid, playerData =>
             {
-                // Create new player for us with first custom character we have - if any.
-                var customCharacters = store.GetAllCustomCharacters();
-                var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
-                playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
-                playerData = store.SavePlayerData(playerData);
-                Debug.Log($"Create player {playerData}");
-            }
-            else
-            {
-                Debug.Log($"Load player {playerData}");
-            }
-            if (playerSettings.IsFirstTimePlaying)
-            {
-                Debug.Log("This Is First Time Playing");
-            }
-            gameConfig.PlayerDataModel = playerData;
+                if (playerData == null)
+                {
+                    // Create new player for us with first custom character we have - if any.
+                    store.GetAllCustomCharacters(customCharacters =>
+                    {
+                        var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                        playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
+                        store.SavePlayerData(playerData, updatedPlayerData => { Debug.Log($"Create player {updatedPlayerData}"); });
+                    });
+                }
+                else
+                {
+                    Debug.Log($"Load player {playerData}");
+                }
+                if (playerSettings.IsFirstTimePlaying)
+                {
+                    Debug.Log("This Is First Time Playing");
+                }
+                gameConfig.PlayerDataModel = playerData;
+            });
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void ShowDebugGameInfo(DataStore store)
         {
-            var characterClassModels = store.GetAllCharacterClasses();
-            Debug.Log($"characterClasses {characterClassModels.Count}");
-            var customCharacters = store.GetAllCustomCharacters();
-            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            var isCustomCharactersValid = true;
-            foreach (var customCharacter in customCharacters)
+            store.GetAllCharacterClasses(characterClasses =>
             {
-                if (characterClassModels.All(x => x.Id != customCharacter.CharacterClassId))
+                Debug.Log($"characterClasses {characterClasses.Count}");
+                store.GetAllCustomCharacters(customCharacters =>
                 {
-                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have CharacterModel {customCharacter.CharacterClassId}");
-                    isCustomCharactersValid = false;
-                }
-                var prefabIndex = int.Parse(customCharacter.PlayerPrefabKey);
-                if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
-                {
-                    Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                     $"does not have PlayerPrefab {customCharacter.PlayerPrefabKey}");
-                    isCustomCharactersValid = false;
-                }
-            }
-            Debug.Log($"customCharacters {customCharacters.Count}");
-            var battleCharacters = store.GetAllBattleCharacters();
-            Debug.Log($"battleCharacters {battleCharacters.Count}");
-            if (isCustomCharactersValid)
-            {
-                return;
-            }
-            // Dump all battle characters if something is wrong in storage.
-            foreach (var battleCharacter in battleCharacters)
-            {
-                Debug.Log($"battleCharacter {battleCharacter}");
-            }
+                    var playerPrefabs = GameConfig.Get().PlayerPrefabs;
+                    var isCustomCharactersValid = true;
+                    foreach (var customCharacter in customCharacters)
+                    {
+                        if (characterClasses.All(x => x.Id != customCharacter.CharacterClassId))
+                        {
+                            Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                             $"does not have CharacterModel {customCharacter.CharacterClassId}");
+                            isCustomCharactersValid = false;
+                        }
+                        var prefabIndex = int.Parse(customCharacter.PlayerPrefabKey);
+                        if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
+                        {
+                            Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                             $"does not have PlayerPrefab {customCharacter.PlayerPrefabKey}");
+                            isCustomCharactersValid = false;
+                        }
+                    }
+                    Debug.Log($"customCharacters {customCharacters.Count}");
+                    store.GetAllBattleCharacters(battleCharacters =>
+                    {
+                        Debug.Log($"battleCharacters {battleCharacters.Count}");
+                        if (isCustomCharactersValid)
+                        {
+                            return;
+                        }
+                        // Dump all battle characters if something is wrong in storage.
+                        foreach (var battleCharacter in battleCharacters)
+                        {
+                            Debug.Log($"battleCharacter {battleCharacter}");
+                        }
+                    });
+                });
+            });
         }
     }
 }
