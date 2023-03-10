@@ -60,10 +60,10 @@ public static class RichText
     public static string Yellow(object text)
     {
 #if UNITY_EDITOR
+        return $"<color=yellow>{text}</color>";
 #else
         return text?.ToString();
 #endif
-        return $"<color=yellow>{text}</color>";
     }
 
     public static string Brown(object text)
