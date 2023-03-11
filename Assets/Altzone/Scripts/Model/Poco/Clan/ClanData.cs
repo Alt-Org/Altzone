@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -10,5 +11,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string Name;
         public string Tag;
         public int GameCoins;
+
+        public List<ClanMember> Members = new();
+        public ClanInventory Inventory;
+        public List<RaidRoom> Rooms;
     }
 }

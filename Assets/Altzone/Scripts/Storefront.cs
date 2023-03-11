@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -38,10 +39,20 @@ namespace Altzone.Scripts
 
         #region Public API
 
+        // PLayer
+        
         public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback) => _localModels.GetPlayerData(uniqueIdentifier, callback);
 
         public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
 
+        // Clan
+
+        public void GetClanData(int id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
+
+        public void SaveClanData(ClanData clanData, Action<ClanData> callback) => _localModels.SaveClanData(clanData, callback);
+        
+        // Game
+        
         public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
             _localModels.GetBattleCharacter(customCharacterId, callback);
 
