@@ -85,9 +85,21 @@ namespace Altzone.Scripts
             set => _localModels.CustomCharactersVersion = value;
         }
 
-        internal void Set(List<CharacterClass> characterClasses) => new NotImplementedException();
+        internal int PlayerDataVersion
+        {
+            get => _localModels.PlayerDataVersion;
+            set => _localModels.PlayerDataVersion = value;
+        }
 
-        internal void Set(List<CustomCharacter> characterClasses) => new NotImplementedException();
+        internal int ClanDataVersion
+        {
+            get => _localModels.ClanDataVersion;
+            set => _localModels.ClanDataVersion = value;
+        }
+
+        internal void Set(List<CharacterClass> characterClasses) => throw new NotImplementedException();
+
+        internal void Set(List<CustomCharacter> characterClasses) => throw new NotImplementedException();
 
         #endregion
     }

@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Service.Audio;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {
@@ -68,6 +69,9 @@ namespace Altzone.Scripts
                 store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
                 store.Set(CreateDefaultModels.CreateCharacterClasses());
             }
+            // No conversion rules for Player or Clan data yet.
+            Assert.AreEqual(1, store.PlayerDataVersion);
+            Assert.AreEqual(1, store.ClanDataVersion);
 
             #endregion
 

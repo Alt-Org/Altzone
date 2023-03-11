@@ -34,7 +34,7 @@ namespace Altzone.Scripts.Model
         private readonly string _storagePath;
         private readonly StorageData _storageData;
 
-        public int CharacterClassesVersion
+        internal int CharacterClassesVersion
         {
             get => _storageData.CharacterClassesVersion;
             set
@@ -44,7 +44,7 @@ namespace Altzone.Scripts.Model
             }
         }
 
-        public int CustomCharactersVersion
+        internal int CustomCharactersVersion
         {
             get => _storageData.CustomCharactersVersion;
             set
@@ -54,6 +54,26 @@ namespace Altzone.Scripts.Model
             }
         }
 
+        internal int PlayerDataVersion
+        {
+            get => _storageData.PlayerDataVersion;
+            set
+            {
+                _storageData.PlayerDataVersion = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
+
+        internal int ClanDataVersion
+        {
+            get => _storageData.ClanDataVersion;
+            set
+            {
+                _storageData.ClanDataVersion = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
+        
 #if UNITY_WEBGL
         [DllImport("__Internal")]
         private static extern void HelloWebGl();
@@ -226,12 +246,12 @@ namespace Altzone.Scripts.Model
 
         #region CharacterClass
 
-        public void GetAllCharacterClassModels(Action<List<CharacterClass>> callback)
+        internal void GetAllCharacterClassModels(Action<List<CharacterClass>> callback)
         {
             callback(_storageData.CharacterClasses);
         }
 
-        public void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
+        internal void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
         {
             callback(_storageData.CustomCharacters);
         }
@@ -274,6 +294,8 @@ namespace Altzone.Scripts.Model
         public int VersionNumber = 1;
         public int CharacterClassesVersion = 1;
         public int CustomCharactersVersion = 1;
+        public int PlayerDataVersion = 1;
+        public int ClanDataVersion = 1;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<PlayerData> PlayerData = new();
