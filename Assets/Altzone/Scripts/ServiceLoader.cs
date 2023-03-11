@@ -111,11 +111,11 @@ namespace Altzone.Scripts
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");
                             isCustomCharactersValid = false;
                         }
-                        var prefabIndex = int.Parse(customCharacter.PlayerPrefabKey);
+                        var prefabIndex = int.Parse(customCharacter.PrefabKey);
                         if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
                         {
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                             $"does not have PlayerPrefab {customCharacter.PlayerPrefabKey}");
+                                             $"does not have PlayerPrefab {customCharacter.PrefabKey}");
                             isCustomCharactersValid = false;
                         }
                     }

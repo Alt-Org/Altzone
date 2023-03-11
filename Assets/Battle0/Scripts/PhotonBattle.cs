@@ -354,7 +354,7 @@ namespace Battle0.Scripts
         /// </summary>
         public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
         {
-            if (int.TryParse(battleCharacter.PlayerPrefabKey, out var prefabIndex))
+            if (int.TryParse(battleCharacter.PrefabKey, out var prefabIndex))
             {
                 return prefabIndex;
             }

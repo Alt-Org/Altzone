@@ -12,21 +12,21 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly string Name;
         public readonly int CharacterClassId;
         public readonly string CharacterClassName;
-        public readonly string PlayerPrefabKey;
+        public readonly string PrefabKey;
         public readonly Defence MainDefence;
         public readonly int Speed;
         public readonly int Resistance;
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string playerPrefabKey,
+        private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string prefabKey,
             Defence mainDefence, int speed, int resistance, int attack, int defence)
         {
             CustomCharacterId = customCharacterId;
             Name = name;
             CharacterClassId = characterClassId;
             CharacterClassName = characterClassName;
-            PlayerPrefabKey = playerPrefabKey;
+            PrefabKey = prefabKey;
             MainDefence = mainDefence;
             Speed = speed;
             Resistance = resistance;
@@ -39,7 +39,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             return new BattleCharacter(
                 customCharacter.CharacterClassId, customCharacter.Name,
                 characterClass.Id, characterClass.Name,
-                customCharacter.PlayerPrefabKey,
+                customCharacter.PrefabKey,
                 (Defence)characterClass.Defence,
                 customCharacter.Speed + characterClass.Speed,
                 customCharacter.Resistance + characterClass.Resistance,
@@ -51,7 +51,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return $"CustomCharacter: {CustomCharacterId} : {Name}" +
                    $", CharacterClass: {CharacterClassId} : {CharacterClassName}" +
-                   $", PlayerPrefabKey: {PlayerPrefabKey}, MainDefence: {MainDefence}" +
+                   $", PlayerPrefabKey: {PrefabKey}, MainDefence: {MainDefence}" +
                    $", Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }

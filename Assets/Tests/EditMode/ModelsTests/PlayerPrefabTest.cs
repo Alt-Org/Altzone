@@ -25,8 +25,8 @@ namespace Tests.EditMode.ModelsTests
                     store.GetBattleCharacter(currentCharacterModelId, battleCharacter =>
                     {
                         Debug.Log($"{battleCharacter}");
-                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
-                        prefabId = int.Parse(battleCharacter.PlayerPrefabKey);
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PrefabKey));
+                        prefabId = int.Parse(battleCharacter.PrefabKey);
                         Assert.IsTrue(prefabId >= 0);
                         var playerPrefabs = gameConfig.PlayerPrefabs;
                         var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
@@ -51,8 +51,8 @@ namespace Tests.EditMode.ModelsTests
                 foreach (var battleCharacter in battleCharacters)
                 {
                     var prefabId = 0;
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PlayerPrefabKey));
-                    prefabId = int.Parse(battleCharacter.PlayerPrefabKey);
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PrefabKey));
+                    prefabId = int.Parse(battleCharacter.PrefabKey);
                     Assert.IsTrue(prefabId >= 0);
                     var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
                     Assert.IsNotNull(playerPrefab);
