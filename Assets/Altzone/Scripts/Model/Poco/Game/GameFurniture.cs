@@ -14,12 +14,19 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class GameFurniture
     {
         public int Id;
-        private string Name;
-        private string Shape;
-        private int Weight;
-        private string Material;
-        private string Recycling;
+        public string Name;
+        public string Shape;
+        public double Weight;
+        public string Material;
+        public string Recycling;
         public string PrefabKey;
-        private string Filename;
+        public string Filename;
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Shape)}: {Shape}, {nameof(Weight)}: {Weight}" +
+                   $", {nameof(Material)}: {Material}, {nameof(Recycling)}: {Recycling}" +
+                   $", {nameof(PrefabKey)}: {PrefabKey}, {nameof(Filename)}: {Filename}";
+        }
     }
 }

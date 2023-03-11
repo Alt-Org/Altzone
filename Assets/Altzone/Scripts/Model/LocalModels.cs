@@ -288,6 +288,7 @@ namespace Altzone.Scripts.Model
             };
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
+            storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
             // Player data should not be created automatically!
             Assert.IsTrue(storageData.PlayerData.Count == 0, "do not create PlayerData here");
             SaveStorage(storageData, storagePath);
