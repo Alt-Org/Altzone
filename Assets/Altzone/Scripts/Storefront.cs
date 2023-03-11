@@ -69,6 +69,8 @@ namespace Altzone.Scripts
 
         public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
 
+        public void GetAllGameFurniture(Action<List<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
+
         #endregion
 
         #region Internal API
@@ -85,6 +87,12 @@ namespace Altzone.Scripts
             set => _localModels.CustomCharactersVersion = value;
         }
 
+        internal int GameFurnitureVersion
+        {
+            get => _localModels.GameFurnitureVersion;
+            set => _localModels.GameFurnitureVersion = value;
+        }
+
         internal int PlayerDataVersion
         {
             get => _localModels.PlayerDataVersion;
@@ -99,7 +107,9 @@ namespace Altzone.Scripts
 
         internal void Set(List<CharacterClass> characterClasses) => throw new NotImplementedException();
 
-        internal void Set(List<CustomCharacter> characterClasses) => throw new NotImplementedException();
+        internal void Set(List<CustomCharacter> customCharacters) => throw new NotImplementedException();
+
+        internal void Set(List<GameFurniture> gameFurniture) => throw new NotImplementedException();
 
         #endregion
     }

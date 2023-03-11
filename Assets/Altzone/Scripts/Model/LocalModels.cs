@@ -34,6 +34,8 @@ namespace Altzone.Scripts.Model
         private readonly string _storagePath;
         private readonly StorageData _storageData;
 
+        #region Version numbers
+
         internal int CharacterClassesVersion
         {
             get => _storageData.CharacterClassesVersion;
@@ -50,6 +52,16 @@ namespace Altzone.Scripts.Model
             set
             {
                 _storageData.CustomCharactersVersion = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
+
+        internal int GameFurnitureVersion
+        {
+            get => _storageData.GameFurnitureVersion;
+            set
+            {
+                _storageData.GameFurnitureVersion = value;
                 SaveStorage(_storageData, _storagePath);
             }
         }
@@ -73,7 +85,9 @@ namespace Altzone.Scripts.Model
                 SaveStorage(_storageData, _storagePath);
             }
         }
-        
+
+        #endregion
+
 #if UNITY_WEBGL
         [DllImport("__Internal")]
         private static extern void HelloWebGl();
@@ -100,6 +114,7 @@ namespace Altzone.Scripts.Model
                 : CreateDefaultStorage(_storagePath);
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count} ver {CharacterClassesVersion}");
             Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count} ver {CustomCharactersVersion}");
+            Debug.Log($"Furniture {_storageData.GameFurniture.Count} ver {GameFurnitureVersion}");
             Debug.Log($"PlayerData {_storageData.PlayerData.Count} ver {PlayerDataVersion}");
             Debug.Log($"ClanData {_storageData.ClanData.Count} ver {ClanDataVersion}");
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
@@ -178,7 +193,7 @@ namespace Altzone.Scripts.Model
         }
 
         #endregion
-        
+
         #region ClanData
 
         internal void GetClanData(int id, Action<ClanData> callback)
@@ -208,6 +223,7 @@ namespace Altzone.Scripts.Model
             SaveStorage(_storageData, _storagePath);
             callback?.Invoke(clanData);
         }
+
         #endregion
 
         #region BattleCharacter
@@ -245,7 +261,7 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        #region CharacterClass
+        #region Game non-mutable internal static data created by game designers
 
         internal void GetAllCharacterClassModels(Action<List<CharacterClass>> callback)
         {
@@ -255,6 +271,11 @@ namespace Altzone.Scripts.Model
         internal void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
         {
             callback(_storageData.CustomCharacters);
+        }
+
+        internal void GetAllGameFurniture(Action<List<GameFurniture>> callback)
+        {
+            callback(_storageData.GameFurniture);
         }
 
         #endregion
@@ -295,10 +316,12 @@ namespace Altzone.Scripts.Model
         public int VersionNumber = 1;
         public int CharacterClassesVersion = 1;
         public int CustomCharactersVersion = 1;
+        public int GameFurnitureVersion = 1;
         public int PlayerDataVersion = 1;
         public int ClanDataVersion = 1;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
+        public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
     }
