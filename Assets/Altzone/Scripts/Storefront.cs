@@ -105,11 +105,11 @@ namespace Altzone.Scripts
             set => _localModels.ClanDataVersion = value;
         }
 
-        internal void Set(List<CharacterClass> characterClasses) => throw new NotImplementedException();
+        internal void Set(List<CharacterClass> characterClasses, Action<bool> callback) => _localModels.Set(characterClasses, callback);
 
-        internal void Set(List<CustomCharacter> customCharacters) => throw new NotImplementedException();
+        internal void Set(List<CustomCharacter> customCharacters, Action<bool> callback) => _localModels.Set(customCharacters, callback);
 
-        internal void Set(List<GameFurniture> gameFurniture) => throw new NotImplementedException();
+        internal void Set(List<GameFurniture> gameFurniture, Action<bool> callback) => _localModels.Set(gameFurniture, callback);
 
         #endregion
     }

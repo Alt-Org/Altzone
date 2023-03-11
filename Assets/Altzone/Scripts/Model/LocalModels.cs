@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -280,6 +279,30 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
+        #region Setters for bulk data updates for base models.
+
+        internal void Set(List<CharacterClass> characterClasses, Action<bool> callback)
+        {
+            _storageData.CharacterClasses = characterClasses;
+            SaveStorage(_storageData, _storagePath);
+            callback?.Invoke(true);
+        }
+
+        internal void Set(List<CustomCharacter> customCharacters, Action<bool> callback)
+        { 
+            _storageData.CustomCharacters = customCharacters;
+            SaveStorage(_storageData, _storagePath);
+            callback?.Invoke(true);
+        }
+
+        internal void Set(List<GameFurniture> gameFurniture, Action<bool> callback)
+        {
+            _storageData.GameFurniture = gameFurniture;
+            SaveStorage(_storageData, _storagePath);
+            callback?.Invoke(true);
+        }
+
+        #endregion
         private static StorageData CreateDefaultStorage(string storagePath)
         {
             var storageData = new StorageData

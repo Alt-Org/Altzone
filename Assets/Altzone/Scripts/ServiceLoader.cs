@@ -66,8 +66,27 @@ namespace Altzone.Scripts
             {
                 // Replace default CharacterClass models.
                 Debug.LogWarning($"Update CharacterClassesVersion {store.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
-                store.Set(CreateDefaultModels.CreateCharacterClasses());
-                store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
+                store.Set(CreateDefaultModels.CreateCharacterClasses(), success =>
+                {
+                    if (success)
+                    {
+                        store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
+                    }
+                });
+                
+            }
+            if (store.GameFurnitureVersion != CreateDefaultModels.GameFurnitureVersion)
+            {
+                // Replace default CharacterClass models.
+                Debug.LogWarning($"Update GameFurniture {store.GameFurnitureVersion} <- {CreateDefaultModels.GameFurnitureVersion}");
+                store.Set(CreateDefaultModels.CreateGameFurniture(), success =>
+                {
+                    if (success)
+                    {
+                        store.GameFurnitureVersion = CreateDefaultModels.GameFurnitureVersion;
+                    }
+                });
+                
             }
             // No conversion rules for Player or Clan data yet.
             Assert.AreEqual(1, store.PlayerDataVersion);
@@ -86,8 +105,13 @@ namespace Altzone.Scripts
             {
                 // Replace default CustomCharacter models.
                 Debug.LogWarning($"Update CustomCharactersVersion {store.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
-                store.Set(CreateDefaultModels.CreateCustomCharacters());
-                store.CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion;
+                store.Set(CreateDefaultModels.CreateCustomCharacters(), success =>
+                {
+                    if (success)
+                    {
+                        store.CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion;
+                    }
+                });
             }
 
             #endregion
