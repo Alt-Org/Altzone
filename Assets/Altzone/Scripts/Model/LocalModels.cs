@@ -98,9 +98,10 @@ namespace Altzone.Scripts.Model
             _storageData = exists
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
-            Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}");
-            Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count}");
-            Debug.Log($"PlayerData {_storageData.PlayerData.Count}");
+            Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count} ver {CharacterClassesVersion}");
+            Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count} ver {CustomCharactersVersion}");
+            Debug.Log($"PlayerData {_storageData.PlayerData.Count} ver {PlayerDataVersion}");
+            Debug.Log($"ClanData {_storageData.ClanData.Count} ver {ClanDataVersion}");
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
             Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
             // Player data validity can not be detected here!
