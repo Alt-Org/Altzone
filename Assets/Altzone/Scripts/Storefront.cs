@@ -21,12 +21,14 @@ namespace Altzone.Scripts
             _instance = null;
         }
 
+        private const string StorageFilename = "LocalModels.json";
+        
         private static DataStore _instance;
 
         /// <summary>
         /// Gets or creates an <c>DataStore</c> static singleton instance. 
         /// </summary>
-        public static DataStore Get() => _instance ??= new DataStore();
+        public static DataStore Get() => _instance ??= new DataStore(StorageFilename);
     }
 
     /// <summary>
@@ -35,12 +37,17 @@ namespace Altzone.Scripts
     /// </summary>
     public class DataStore
     {
-        private readonly LocalModels _localModels = new(Application.persistentDataPath);
+        private readonly LocalModels _localModels;
+
+        public DataStore(string storageFilename)
+        {
+            _localModels = new LocalModels(storageFilename);
+        }
 
         #region Public API
 
         // PLayer
-        
+
         public void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback) => _localModels.GetPlayerData(uniqueIdentifier, callback);
 
         public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
@@ -50,9 +57,9 @@ namespace Altzone.Scripts
         public void GetClanData(int id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
 
         public void SaveClanData(ClanData clanData, Action<ClanData> callback) => _localModels.SaveClanData(clanData, callback);
-        
+
         // Game
-        
+
         public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
             _localModels.GetBattleCharacter(customCharacterId, callback);
 

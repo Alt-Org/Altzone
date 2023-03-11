@@ -27,7 +27,6 @@ namespace Altzone.Scripts.Model
     /// </remarks>
     internal class LocalModels
     {
-        private const string StorageFilename = "LocalModels.json";
         private const int StorageVersionNumber = 1;
         private const int WebGlFramesToWaitFlush = 30;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
@@ -66,9 +65,10 @@ namespace Altzone.Scripts.Model
         private static Coroutine _fsSync;
         private static int _framesToWait;
 
-        internal LocalModels(string storagePath)
+        internal LocalModels(string storageFilename)
         {
-            _storagePath = Path.Combine(storagePath, StorageFilename);
+            // Files can only be in Application.persistentDataPath for WebGL compatibility! 
+            _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
             if (AppPlatform.IsWindows)
             {
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
@@ -162,12 +162,30 @@ namespace Altzone.Scripts.Model
 
         internal void GetClanData(int id, Action<ClanData> callback)
         {
-            
+            callback(_storageData.ClanData.FirstOrDefault(x => x.Id == id));
         }
 
         internal void SaveClanData(ClanData clanData, Action<ClanData> callback)
         {
-            
+            var index = _storageData.ClanData.FindIndex(x => x.Id == clanData.Id);
+            if (index >= 0)
+            {
+                _storageData.ClanData[index] = clanData;
+            }
+            else
+            {
+                if (clanData.Id == 0)
+                {
+                    var id = _storageData.ClanData.Count == 0
+                        ? 1
+                        : _storageData.ClanData.Max(x => x.Id) + 1;
+                    clanData.Id = id;
+                }
+                _storageData.ClanData.Add(clanData);
+            }
+            Debug.Log($"playerData {clanData}");
+            SaveStorage(_storageData, _storagePath);
+            callback?.Invoke(clanData);
         }
         #endregion
 

@@ -8,5 +8,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
     public class ClanInventory
     {
         public List<ClanFurniture> Furniture = new();
+
+        public override string ToString()
+        {
+            return $"{nameof(Furniture)}: {Furniture.Count}";
+        }
     }
 }

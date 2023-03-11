@@ -12,8 +12,16 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string Tag;
         public int GameCoins;
 
+        public ClanInventory Inventory = new();
+
         public List<ClanMember> Members = new();
-        public ClanInventory Inventory;
-        public List<RaidRoom> Rooms;
+        public List<RaidRoom> Rooms = new();
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Tag)}: {Tag}, {nameof(GameCoins)}: {GameCoins}" +
+                   $", {nameof(Inventory)}: {Inventory}" +
+                   $", {nameof(Members)}: {Members.Count}, {nameof(Rooms)}: {Rooms.Count}";
+        }
     }
 }
