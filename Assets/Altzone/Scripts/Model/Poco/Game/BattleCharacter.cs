@@ -1,4 +1,4 @@
-namespace Altzone.Scripts.Model.Poco
+namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
     /// Gameplay character for Battle.

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Temp;
 using ExitGames.Client.Photon;
 using Photon.Pun;

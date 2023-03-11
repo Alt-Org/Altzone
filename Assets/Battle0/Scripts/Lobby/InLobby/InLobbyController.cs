@@ -2,6 +2,7 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;

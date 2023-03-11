@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;

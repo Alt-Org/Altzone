@@ -3,6 +3,7 @@ using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Service.Audio;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;

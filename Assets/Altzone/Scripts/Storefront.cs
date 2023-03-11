@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace Altzone.Scripts

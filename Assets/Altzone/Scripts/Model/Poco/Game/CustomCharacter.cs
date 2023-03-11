@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Altzone.Scripts.Model.Poco
+namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
     /// Player created custom 'game' character based on given <c>CharacterClass</c>.

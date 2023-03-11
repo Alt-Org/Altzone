@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Altzone.Scripts.Model.Poco
+namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
     /// Non-mutable <c>CharacterClass</c> that acts as base archetype for player created characters.

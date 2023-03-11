@@ -3,6 +3,7 @@ using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Battle.Scripts.Battle;
 using Photon.Pun;
 using Photon.Realtime;

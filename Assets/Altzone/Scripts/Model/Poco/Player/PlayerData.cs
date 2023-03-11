@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Altzone.Scripts.Model.Poco
+namespace Altzone.Scripts.Model.Poco.Player
 {
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData

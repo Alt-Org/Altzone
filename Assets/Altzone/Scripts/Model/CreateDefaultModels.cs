@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model
 {
