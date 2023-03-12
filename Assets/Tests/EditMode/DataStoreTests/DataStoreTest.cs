@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using NUnit.Framework;
+using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -15,12 +16,21 @@ namespace Tests.EditMode.DataStoreTests
     public class DataStoreTest
     {
         private DataStore _store;
+        private LogFileWriter _logFileWriter;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            _logFileWriter = LogFileWriter.CreateLogFileWriter();
             Debug.Log("setup");
             _store = Storefront.Get();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTeardown()
+        {
+            Debug.Log("exit");
+            _logFileWriter.Close();
         }
 
         [UnityTest, Description("Gets Player Data and optionally Clan Data")]
