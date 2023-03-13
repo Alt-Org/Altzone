@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections;
+using TMPro;
 
 public class Raid_Grid : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class Raid_Grid : MonoBehaviour
     public int AmountofSingles;
     public int AmountofDoubles;
     public int AmountofTriples;
+
+    private int AmountOfSurroundingMines;
 
     public Raid_Tile[,] grid = new Raid_Tile[9,9];
 
@@ -114,6 +117,12 @@ public class Raid_Grid : MonoBehaviour
                 if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
                 {
                     RevealAdjacentTilesForTileAt(x, y);
+                }
+                if (raid_Tile.tileType == Raid_Tile.TileType.Number)
+                {
+                    CalculateAmountOfSurroundingMines(x, y);
+                    Raid_Tile NumberTile = grid[x, y];
+                    NumberTile.GetComponentInChildren<TextMeshPro>().text = AmountOfSurroundingMines.ToString();
                 }
             }
             else if(!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Number)
@@ -833,6 +842,44 @@ public class Raid_Grid : MonoBehaviour
         }
     }
 
+    void CalculateAmountOfSurroundingMines(int x, int y)
+    {
+        AmountOfSurroundingMines = 0;
+
+        if ((y + 1) < 9 && grid[x, y + 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x + 1) < 9 && (y + 1) < 9 && grid[x + 1, y + 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x + 1) < 9 && grid[x + 1, y].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x + 1) < 9 && (y - 1) >= 0 && grid[x + 1, y - 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((y - 1) >= 0 && grid[x, y - 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x - 1) >= 0 && (y - 1) >= 0 && grid[x - 1, y - 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x - 1) >= 0 && grid[x - 1, y].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+        if ((x - 1) >= 0 && (y + 1) < 9 && grid[x - 1, y + 1].tileType == Raid_Tile.TileType.Mine)
+        {
+            AmountOfSurroundingMines += 1;
+        }
+    }
+
     void PlaceNumberTiles()
     {
         for (int y = 0; y < 9; y++)
@@ -913,9 +960,10 @@ public class Raid_Grid : MonoBehaviour
 
                     if (NearbyMines > 0)
                     {
-                        Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/" + NearbyMines, typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
+                        Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/NumberTile", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                         grid[x, y] = NumberTile;
+                        NumberTile.GetComponentInChildren<TextMeshPro>().text = ""; // Replace '""' to 'NearbyMines.ToString()' when tiles don't need to be covered.
                     }
                 }
             }
@@ -1027,6 +1075,8 @@ public class Raid_Grid : MonoBehaviour
         else if (raid_Tile.tileType == Raid_Tile.TileType.Number)
         {
             raid_Tile.SetIsCovered(false);
+            CalculateAmountOfSurroundingMines(x, y);
+            raid_Tile.GetComponentInChildren<TextMeshPro>().text = AmountOfSurroundingMines.ToString();
             Debug.Log("Tile at (" + x + ", " + y + ") is a Number tile");
         }
         else if (raid_Tile.tileType == Raid_Tile.TileType.Furniture)

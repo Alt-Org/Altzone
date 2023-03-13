@@ -30,7 +30,7 @@ public class Raid_Tile : MonoBehaviour
     {
         DefaultSprite = GetComponent<SpriteRenderer>().sprite;
 
-        GetComponent<SpriteRenderer>().sprite = CoveredTile; // Replace 'DefaultSprite' with 'CoveredTile' when tiles need to be covered
+        GetComponent<SpriteRenderer>().sprite = CoveredTile; // Replace 'CoveredTile' with 'DefaultSprite' when tiles don't need to be covered
     }
 
     public void SetIsCovered(bool Covered)
