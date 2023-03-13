@@ -416,7 +416,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.00075113773, y: 0.29027358}
+  m_Offset: {x: 0.005392015, y: 0.25541133}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -427,7 +427,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.75, y: 1.1466947}
+  m_Size: {x: 1.9935762, y: 1.0769708}
   m_EdgeRadius: 0
 --- !u!50 &8101932597867765947
 Rigidbody2D:
@@ -463,6 +463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiamondCount: 0
+  TeamDiamonds: {fileID: 0}
 --- !u!1 &8975400094333793159
 GameObject:
   m_ObjectHideFlags: 0

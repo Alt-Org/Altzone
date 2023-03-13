@@ -20,7 +20,7 @@ namespace Battle.Scripts.Battle.Game
 
         private void Start()
         {
-            if (PhotonNetwork.CurrentRoom.Players.Count > TestLimit);
+            if (PhotonNetwork.CurrentRoom.Players.Count > TestLimit)
             {
                 _WallCollider.isTrigger = true;
             }

@@ -38,6 +38,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
         }
 
         private IPlayerActor InstantiatePlayerPrefab(Player player)

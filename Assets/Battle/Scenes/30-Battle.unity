@@ -388,11 +388,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 233460026}
+  - component: {fileID: 233460029}
   - component: {fileID: 233460028}
   - component: {fileID: 233460027}
+  - component: {fileID: 233460030}
   m_Layer: 5
   m_Name: BetaDiamondsText
-  m_TagString: Untagged
+  m_TagString: BetaDiamonds
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -515,6 +517,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 233460025}
   m_CullTransparentMesh: 1
+--- !u!114 &233460029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233460025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb8cfc2ddad1543a5481ef8f3059d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamDiamondCounter: 0
+--- !u!114 &233460030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233460025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 26
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &289940267
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,6 +871,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 577966835}
+  - component: {fileID: 577966836}
   m_Layer: 5
   m_Name: BetaDiamonds
   m_TagString: Untagged
@@ -863,6 +901,19 @@ RectTransform:
   m_AnchoredPosition: {x: 297, y: 674.0049}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: -2.78, y: -6.26}
+--- !u!114 &577966836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577966834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb8cfc2ddad1543a5481ef8f3059d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamDiamondCounter: 0
 --- !u!1 &595202043
 GameObject:
   m_ObjectHideFlags: 0
@@ -2628,8 +2679,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1835597693}
+  - component: {fileID: 1835597696}
   - component: {fileID: 1835597695}
   - component: {fileID: 1835597694}
+  - component: {fileID: 1835597697}
   m_Layer: 5
   m_Name: AlphaDiamondsText
   m_TagString: AlphaDiamonds
@@ -2755,6 +2808,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1835597692}
   m_CullTransparentMesh: 1
+--- !u!114 &1835597696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835597692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdb8cfc2ddad1543a5481ef8f3059d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamDiamondCounter: 0
+--- !u!114 &1835597697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835597692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 27
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1842472380
 GameObject:
   m_ObjectHideFlags: 0
