@@ -111,7 +111,18 @@ namespace Editor
                 .Replace("<<method_name>>", methodName);
             File.WriteAllText(scriptName, script, Encoding);
             Debug.Log($"Build script '{scriptName}' written");
-            var buildTargetName = CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
+
+            var buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            if (buildTarget == BuildTarget.WebGL)
+            {
+                const string copyScriptName = "m_BuildScript_CopyOutput.bat";
+                if (!File.Exists(copyScriptName))
+                {
+                    File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
+                    Debug.Log($"Copy build output script '{copyScriptName}' written");
+                }
+            }
+            var buildTargetName = CommandLine.BuildTargetNameFrom(buildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
             var driverScript = CommandLineTemplate.BuildDriverScript
                 .Replace("<<build_script_name>>", scriptName)
@@ -240,7 +251,7 @@ namespace Editor
             builder.Append('.');
             builder.Append(bundleVersionCode);
             builder.Append(sourceText.Substring(index2));
-            
+
             File.WriteAllText(bundleVersionCodeFilename, builder.ToString(), Encoding);
             AssetDatabase.Refresh(ImportAssetOptions.Default);
         }
@@ -491,6 +502,7 @@ namespace Editor
         private static class CommandLineTemplate
         {
             public static string BuildScript => BuildScriptContent;
+            public static string CopyBuildOutputScript => CopyBuildOutputScriptContent;
             public static string BuildDriverScript => BuildDriverScriptContent;
             public static string AndroidPostProcessScript => AndroidPostProcessScriptContent;
             public static string WebGLPostProcessScript => WebGLPostProcessScriptContent;
@@ -569,6 +581,58 @@ goto :eof
 
             #endregion
 
+            #region CopyBuildOutputScriptContent
+
+            private const string CopyBuildOutputScriptContent = @"@echo off
+rem .
+rem . This scipt is machine generated, do not edit!
+rem .
+set BUILD_DIR=%1
+echo BUILD_DIR=%BUILD_DIR%
+if ""%BUILD_DIR%"" == """" (
+    echo *
+    echo * Config error, BUILD_DIR not given as parameter for this script
+    echo *
+    goto :eof
+)
+if not exist %BUILD_DIR% (
+    echo *
+    echo * Config error, BUILD_DIR not found
+    echo *
+    goto :eof
+)
+set DROPBOX_DIR=???
+echo DROPBOX_DIR=%DROPBOX_DIR%
+if not exist %DROPBOX_DIR% (
+    echo *
+    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo *
+    goto :eof
+)
+if ""%LOGFILE%"" == """" (
+    set LOGFILE=%0.log
+    if exist %LOGFILE% (
+        del /Q %LOGFILE%
+    )
+)
+set OPTIONS=/S /E /PURGE /V /NP /R:0 /W:0
+robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" %OPTIONS% /LOG+:%LOGFILE%
+echo.
+echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
+if %errorlevel% leq 8 (
+	echo *
+	echo * Copy SUCCESS %BUILD_DIR% to %DROPBOX_DIR%
+	echo *
+	goto :eof
+)
+echo *
+echo * Check DROPBOX log %LOGFILE% for possible errors
+echo *
+goto :eof
+";
+
+            #endregion
+
             #region BuildDriverScriptContent
 
             private const string BuildDriverScriptContent = @"@echo off
@@ -586,10 +650,6 @@ rem .
 rem . This scipt is machine generated, do not edit!
 rem .
 set BUILD_DIR=BuildAndroid
-set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\%BUILD_DIR%
-if not exist %DROPBOX_DIR% (
-	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\%BUILD_DIR%
-)
 set ZIP=C:\Program Files\7-Zip\7z.exe
 
 echo BUILD_DIR=%BUILD_DIR%
@@ -638,25 +698,15 @@ if exist ""%TEMP_SYMBOLS%"" rmdir /S /Q ""%TEMP_SYMBOLS%""
 goto :dropbox
 
 :dropbox
-if not exist ""%DROPBOX_DIR%"" (
-    echo *
-    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
-    echo *
+if not exist m_BuildScript_CopyOutput.bat (
+    echo Copy build output is skipped
     goto :eof
 )
-if ""%LOGFILE%"" == """" (
-    set LOGFILE=%0.log
-    if exist %LOGFILE% (
-        del /Q %LOGFILE%
-    )
-)
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
-echo.
-echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
-if %errorlevel% leq 8 goto :eof
+echo Build done, copy output
 echo *
-echo * Check DROPBOX log %LOGFILE% for possible errors
+call m_BuildScript_CopyOutput.bat ""%BUILD_DIR%""
 echo *
+echo Copy build output done
 goto :eof
 ";
 
@@ -669,39 +719,16 @@ rem .
 rem . This scipt is machine generated, do not edit!
 rem .
 set BUILD_DIR=BuildWebGL
-set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\tekstit\altgame\BuildWebGL
-if not exist %DROPBOX_DIR% (
-	set DROPBOX_DIR=C:\Users\%USERNAME%\Dropbox\altgame\BuildWebGL
-)
-
-echo USERNAME=%USERNAME%
-echo BUILD_DIR=%BUILD_DIR%
-echo DROPBOX_DIR=%DROPBOX_DIR%
-if ""%BUILD_DIR%"" == """" (
-    echo *
-    echo * Config error, BUILD_DIR not set for user %USERNAME%
-    echo *
+:dropbox
+if not exist m_BuildScript_CopyOutput.bat (
+    echo Copy build output is skipped
     goto :eof
 )
-if not exist %DROPBOX_DIR% (
-    echo *
-    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
-    echo *
-    goto :eof
-)
-if ""%LOGFILE%"" == """" (
-    set LOGFILE=%0.log
-    if exist %LOGFILE% (
-        del /Q %LOGFILE%
-    )
-)
-robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" /S /E /PURGE /V /NP /R:0 /W:0 /LOG+:%LOGFILE%
-echo.
-echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
-if %errorlevel% leq 8 goto :eof
+echo Build done, copy output
 echo *
-echo * Check DROPBOX log %LOGFILE% for possible errors
+call m_BuildScript_CopyOutput.bat ""%BUILD_DIR%""
 echo *
+echo Copy build output done
 goto :eof
 ";
 
