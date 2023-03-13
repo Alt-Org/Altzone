@@ -1,6 +1,7 @@
 using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
+using System.Collections;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -22,6 +23,7 @@ namespace MenuUi.Scripts.Loader
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
             windowManager.ShowWindow(_mainWindow);
+            
         }
     }
 }
