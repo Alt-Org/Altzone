@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model
@@ -31,7 +30,7 @@ namespace Altzone.Scripts.Model
             };
         }
 
-        internal const int CustomCharactersVersion = 3;
+        internal const int CustomCharactersVersion = 4;
 
         /// <summary>
         /// Player custom character classes are created by the player itself (or given to the player by the game).<br />
@@ -52,7 +51,7 @@ namespace Altzone.Scripts.Model
             };
         }
 
-        internal const int GameFurnitureVersion = 1;
+        internal const int GameFurnitureVersion = 2;
 
         /// <summary>
         /// Game Furniture is based from data in Google Sheets.<br />
@@ -61,8 +60,8 @@ namespace Altzone.Scripts.Model
         /// <returns></returns>
         internal static List<GameFurniture> CreateGameFurniture()
         {
-            const char Separator = '\t';
-            const int ColumnCount = 8;
+            const char separator = '\t';
+            const int columnCount = 8;
             var cultureInfo = CultureInfo.GetCultureInfo("en-US");
 
             var gameFurniture = new List<GameFurniture>();
@@ -80,10 +79,10 @@ namespace Altzone.Scripts.Model
                 {
                     continue;
                 }
-                var tokens = line.Split(Separator);
-                if (tokens.Length < ColumnCount)
+                var tokens = line.Split(separator);
+                if (tokens.Length < columnCount)
                 {
-                    Debug.Log($"Line is too short: {line.Replace(Separator, '|')}");
+                    Debug.Log($"Line is too short: {line.Replace(separator, '|')}");
                     continue;
                 }
                 var furniture = new GameFurniture
@@ -94,7 +93,7 @@ namespace Altzone.Scripts.Model
                     Weight = ParseDouble(tokens[3]),
                     Material = tokens[4],
                     Recycling = tokens[5],
-                    PrefabKey = tokens[6],
+                    UnityKey = tokens[6],
                     Filename = tokens[7],
                 };
                 if (furniture.Id == 0)

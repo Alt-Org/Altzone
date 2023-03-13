@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Service.Audio;
 using Prg.Scripts.Common.Unity.Localization;
@@ -135,11 +134,11 @@ namespace Altzone.Scripts
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");
                             isCustomCharactersValid = false;
                         }
-                        var prefabIndex = int.Parse(customCharacter.PrefabKey);
+                        var prefabIndex = int.Parse(customCharacter.UnityKey);
                         if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
                         {
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                             $"does not have PlayerPrefab {customCharacter.PrefabKey}");
+                                             $"does not have PlayerPrefab {customCharacter.UnityKey}");
                             isCustomCharactersValid = false;
                         }
                     }
