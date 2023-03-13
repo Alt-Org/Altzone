@@ -113,15 +113,6 @@ namespace Editor
             Debug.Log($"Build script '{scriptName}' written");
 
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
-            if (buildTarget == BuildTarget.WebGL)
-            {
-                const string copyScriptName = "m_BuildScript_CopyOutput.bat";
-                if (!File.Exists(copyScriptName))
-                {
-                    File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
-                    Debug.Log($"Copy build output script '{copyScriptName}' written");
-                }
-            }
             var buildTargetName = CommandLine.BuildTargetNameFrom(buildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
             var driverScript = CommandLineTemplate.BuildDriverScript
@@ -129,6 +120,33 @@ namespace Editor
                 .Replace("<<build_target_name>>", buildTargetName);
             File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
+
+            if (buildTarget != BuildTarget.WebGL)
+            {
+                return;
+            }
+            const string copyScriptName = "m_BuildScript_CopyOutput.bat";
+            if (!File.Exists(copyScriptName))
+            {
+                File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
+                Debug.Log($"Copy build output script '{copyScriptName}' written");
+            }
+            else
+            {
+                Debug.Log($"Copy build output script '{copyScriptName}' was not modified");
+            }
+            const string copyScriptEnvName = "m_BuildScript_CopyOutput.env";
+            if (!File.Exists(copyScriptEnvName))
+            {
+                var username = Environment.GetEnvironmentVariable("USERNAME");
+                var envLines = $@"DROPBOX_PATH=C:\Users\{username}\Dropbox\altgame";
+                File.WriteAllText(copyScriptEnvName, envLines, Encoding);
+                Debug.Log($"Copy build output .env file '{copyScriptEnvName}' written");
+            }
+            else
+            {
+                Debug.Log($"Copy build output script '{copyScriptEnvName}' was not modified");
+            }
         }
 
         internal static void Build()
@@ -601,7 +619,23 @@ if not exist %BUILD_DIR% (
     echo *
     goto :eof
 )
-set DROPBOX_DIR=???
+set ENVFILE=%~n0.env
+echo ENVFILE=%ENVFILE%
+if not exist %BUILD_DIR% (
+    echo *
+    echo * Config error, environment file not found
+    echo *
+    goto :eof
+)
+
+FOR /F ""eol=# tokens=*"" %%i IN (%ENVFILE%) DO SET %%i
+if ""%DROPBOX_PATH%"" == """" (
+    echo *
+    echo * Config error, environment file missing DROPBOX_PATH setting
+    echo *
+    goto :eof
+)
+set DROPBOX_DIR=%DROPBOX_PATH%\%BUILD_DIR%
 echo DROPBOX_DIR=%DROPBOX_DIR%
 if not exist %DROPBOX_DIR% (
     echo *
@@ -609,13 +643,15 @@ if not exist %DROPBOX_DIR% (
     echo *
     goto :eof
 )
+if exist %0.log (
+	del /Q %0.log
+)
 if ""%LOGFILE%"" == """" (
     set LOGFILE=%0.log
-    if exist %LOGFILE% (
-        del /Q %LOGFILE%
-    )
 )
+echo LOGFILE=%LOGFILE%
 set OPTIONS=/S /E /PURGE /V /NP /R:0 /W:0
+echo robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" %OPTIONS% /LOG+:%LOGFILE%
 robocopy ""%BUILD_DIR%"" ""%DROPBOX_DIR%"" %OPTIONS% /LOG+:%LOGFILE%
 echo.
 echo DROPBOX copy %DROPBOX_DIR% status %errorlevel%
@@ -704,7 +740,7 @@ if not exist m_BuildScript_CopyOutput.bat (
 )
 echo Build done, copy output
 echo *
-call m_BuildScript_CopyOutput.bat ""%BUILD_DIR%""
+call m_BuildScript_CopyOutput.bat %BUILD_DIR%
 echo *
 echo Copy build output done
 goto :eof
@@ -726,7 +762,7 @@ if not exist m_BuildScript_CopyOutput.bat (
 )
 echo Build done, copy output
 echo *
-call m_BuildScript_CopyOutput.bat ""%BUILD_DIR%""
+call m_BuildScript_CopyOutput.bat %BUILD_DIR%
 echo *
 echo Copy build output done
 goto :eof
