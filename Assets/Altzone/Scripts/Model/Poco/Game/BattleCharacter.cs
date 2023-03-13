@@ -51,7 +51,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return $"CustomCharacter: {CustomCharacterId} : {Name}" +
                    $", CharacterClass: {CharacterClassId} : {CharacterClassName}" +
-                   $", PlayerUnityKey: {UnityKey}, MainDefence: {MainDefence}" +
+                   $", UnityKey: {UnityKey}, MainDefence: {MainDefence}" +
                    $", Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }
