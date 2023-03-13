@@ -2,6 +2,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model;
 using NUnit.Framework;
 using Prg.Scripts.Common.Unity.CameraUtil;
+using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,14 +12,16 @@ namespace Tests.PlayMode
     {
         private const string TestCameraName = "TestCamera";
 
-        protected IStorefront Store;
+        protected DataStore Store;
         protected Camera Camera;
         protected MonoBehaviour MonoBehaviour;
         protected bool IsTestDone;
+        private LogFileWriter _logFileWriter;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            _logFileWriter = LogFileWriter.CreateLogFileWriter();
             Store = Storefront.Get();
             Assert.IsNotNull(Store);
 
@@ -32,6 +35,13 @@ namespace Tests.PlayMode
             IsTestDone = false;
             MyOneTimeSetUp();
             Debug.Log($"done");
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTeardown()
+        {
+            Debug.Log("exit");
+            _logFileWriter.Close();
         }
 
         protected virtual void MyOneTimeSetUp()

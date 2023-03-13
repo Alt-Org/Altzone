@@ -3,7 +3,6 @@ namespace Altzone.Scripts
     public static class PlayerPrefKeys
     {
         public const string PlayerGuid = "PlayerData.PlayerGuid";
-        public const string CharacterModelId = "PlayerData.CharacterModelId";
         public const string LanguageCode = "PlayerData.LanguageCode";
         public const string TermsOfServiceAccepted = "PlayerData.TermsOfService";
         public const string IsDebugFlag = "PlayerData.IsDebugFlag";

@@ -1,9 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using System.Threading;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
@@ -41,32 +39,7 @@ namespace Altzone.Scripts
 
         private static void PrepareDevice()
         {
-            foreach (var filename in new[]
-                     {
-                         GameFiles.ClanGameRoomModelsFilename,
-                         GameFiles.ClanInventoryItemsFilename,
-                         //GameFiles.PlayerGameRoomModelsFilename,
-                         GameFiles.PlayerCustomCharacterModelsFilename,
-                     })
-            {
-                CopyFile(filename);
-            }
-            var gameConfig = GameConfig.Get();
-            var playerSettings = gameConfig.PlayerSettings;
-            if (playerSettings.IsFirstTimePlaying)
-            {
-                Debug.Log("IsFirstTimePlaying");
-            }
-        }
-
-        private static void CopyFile(string file)
-        {
-            var source = Resources.Load<TextAsset>("TestData/" + file);
-            var targetPath = Path.Combine(Application.persistentDataPath, file);
-            if (!File.Exists(targetPath))
-            {
-                File.WriteAllBytes(targetPath, source.bytes);
-            }
+            // Nothing to do here, ServiceLoader & co takes care of things for now.
         }
 
         private static void SetupLogging()
@@ -88,7 +61,7 @@ namespace Altzone.Scripts
                 }
             }
         }
-        
+
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void SetEditorStatus()
         {

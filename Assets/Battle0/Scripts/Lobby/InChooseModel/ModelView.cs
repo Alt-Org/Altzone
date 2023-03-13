@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,28 +35,26 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         {
             _buttons = leftPane.GetComponentsInChildren<Button>();
             _labels = rightPane.GetComponentsInChildren<Text>();
-            LoadPrefabsAsync();
+            LoadAndCachePrefabs();
         }
 
-        private void LoadPrefabsAsync()
+        private void LoadAndCachePrefabs()
         {
-            // This will be async if custom character models are loaded from network.
-            var store = Storefront.Get();
-            var characterModels = store.GetAllCharacterClassModels();
-            var maxIndex = characterModels.Max(x => x.Id);
-            _prefabs = new MonoBehaviour[1 + maxIndex];
-            var position = _prefabsRoot.position;
-            foreach (var characterModel in characterModels)
+            var gameConfig = GameConfig.Get();
+            var playerPrefabs = gameConfig.PlayerPrefabs;
+            var prefabs = playerPrefabs._playerPrefabs;
+            _prefabs = new MonoBehaviour[prefabs.Length];
+            for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
-                Debug.Log($"Character: {characterModel}");
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(characterModel.Id);
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
                 var instance = Instantiate(playerPrefab, _prefabsRoot);
                 if (instance == null)
                 {
                     continue;
                 }
+                Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
                 instance.gameObject.SetActive(false);
-                _prefabs[characterModel.Id] = instance;
+                _prefabs[prefabIndex] = instance;
             }
             _isReady = true;
         }
@@ -101,7 +101,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _curPrefab = null;
         }
 
-        public void SetCharacters(List<IBattleCharacter> characters, int currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, int currentCharacterId)
         {
             Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
@@ -114,17 +114,17 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 //button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    CurrentCharacterId = character.CustomCharacterModelId;
+                    CurrentCharacterId = character.CustomCharacterId;
                     ShowCharacter(character);
                 });
-                if (currentCharacterId == character.CustomCharacterModelId)
+                if (currentCharacterId == character.CustomCharacterId)
                 {
                     ShowCharacter(character);
                 }
             }
         }
 
-        private void ShowCharacter(IBattleCharacter character)
+        private void ShowCharacter(BattleCharacter character)
         {
             var i = -1;
             var characterName = character.Name == character.CharacterClassName
@@ -136,16 +136,17 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
             _labels[++i].text = $"Attack:\r\n{character.Attack}";
             _labels[++i].text = $"Defence:\r\n{character.Defence}";
-            SetCharacterPrefab(character);
+            var prefabIndex = PhotonBattle.GetPrefabIndex(character, -1);
+            SetCharacterPrefab(prefabIndex);
         }
 
-        private void SetCharacterPrefab(IBattleCharacter character)
+        private void SetCharacterPrefab(int prefabIndex)
         {
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(false);
             }
-            _curPrefab = _prefabs[character.PlayerPrefabId];
+            _curPrefab = prefabIndex >= 0 ? _prefabs[prefabIndex] : null;
             if (_curPrefab != null)
             {
                 _curPrefab.gameObject.SetActive(true);

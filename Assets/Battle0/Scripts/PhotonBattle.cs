@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Temp;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -193,8 +193,7 @@ namespace Battle0.Scripts
             {
                 return PhotonNetwork.NickName;
             }
-            var playerData = GameConfig.Get().PlayerDataModel;
-            return !string.IsNullOrWhiteSpace(playerData.Name) ? playerData.Name : NoPlayerName;
+            throw new UnityException("Can not get player name outside a room");
         }
 
         public static int GetPlayerIndex(int playerPos)
@@ -348,14 +347,27 @@ namespace Battle0.Scripts
 
         #endregion
 
-        #region MyRegion
+        #region BattleCharacter
 
+        /// <summary>
+        /// Converts <c>BattleCharacter</c> PlayerPrefabKey (string) to integer for convenience.
+        /// </summary>
+        public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
+        {
+            if (int.TryParse(battleCharacter.PrefabKey, out var prefabIndex))
+            {
+                return prefabIndex;
+            }
+            return defaultValue;
+        }
+        
         /// <summary>
         /// Gets <c>IBattleCharacter</c> for a player in a room.
         /// </summary>
         public static IBattleCharacter GetCharacterModelForPlayer(Player player)
         {
-            Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
+            throw new NotImplementedException();
+            /*Assert.IsTrue(PhotonNetwork.InRoom, "PhotonNetwork.InRoom");
             var skillId = player.GetCustomProperty(PlayerMainSkillKey, -1);
             if (!Enum.TryParse(skillId.ToString(), out Defence defence))
             {
@@ -364,7 +376,7 @@ namespace Battle0.Scripts
                 var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
                 defence = Storefront.Get().GetBattleCharacter(currentCharacterModelId).MainDefence;
             }
-            return Storefront.Get().GetBattleCharacter((int)defence);
+            return Storefront.Get().GetBattleCharacter((int)defence);*/
         }
 
         #endregion

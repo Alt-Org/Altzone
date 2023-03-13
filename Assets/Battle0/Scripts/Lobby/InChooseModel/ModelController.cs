@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
@@ -14,6 +16,8 @@ namespace Battle0.Scripts.Lobby.InChooseModel
     {
         [SerializeField] private ModelView _view;
 
+        private PlayerData _playerData;
+
         private IEnumerator Start()
         {
             Debug.Log("Start");
@@ -21,26 +25,31 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _view.Reset();
             _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var gameConfig = GameConfig.Get();
-            var playerDataModel = gameConfig.PlayerDataModel;
-            _view.PlayerName = playerDataModel.Name;
-            _view.ContinueButtonOnClick = ContinueButtonOnClick;
-            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
-            var characters = Storefront.Get().GetAllBattleCharacters();
-            characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-            _view.SetCharacters(characters, currentCharacterId);
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            store.GetPlayerData(playerGuid, playerData =>
+            {
+                _playerData = playerData;
+                _view.PlayerName = playerData.Name;
+                _view.ContinueButtonOnClick = ContinueButtonOnClick;
+                var currentCharacterId = playerData.CurrentCustomCharacterId;
+                Storefront.Get().GetAllBattleCharacters(characters =>
+                {
+                    characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+                    _view.SetCharacters(characters, currentCharacterId);
+                });
+            });
         }
 
         private void ContinueButtonOnClick()
         {
             Debug.Log("click");
-            var gameConfig = GameConfig.Get();
-            var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterId = playerDataModel.CurrentCharacterModelId;
-            if (_view.CurrentCharacterId != currentCharacterId)
+            if (_view.CurrentCharacterId != _playerData.CurrentCustomCharacterId)
             {
-                playerDataModel.CurrentCharacterModelId = _view.CurrentCharacterId;
+                _playerData.CurrentCustomCharacterId = _view.CurrentCharacterId;
                 var store = Storefront.Get();
-                store.SavePlayerDataModel(playerDataModel);
+                store.SavePlayerData(_playerData, null);
             }
         }
     }

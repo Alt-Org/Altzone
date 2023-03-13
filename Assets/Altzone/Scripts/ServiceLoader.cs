@@ -1,15 +1,13 @@
-using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Service.Audio;
-using Altzone.Scripts.Service.LootLocker;
-using Prg.Scripts.Common.Unity;
-using Prg.Scripts.Common.Unity.Attributes;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {
@@ -19,133 +17,148 @@ namespace Altzone.Scripts
     [DefaultExecutionOrder(-100)]
     public class ServiceLoader : MonoBehaviour
     {
-        /// <summary>
-        /// Development mode API Key suffix (simplified chinese) for <c>LootLocker</c> SDK API.
-        /// </summary>
-        private const string Prefix1 = "发展"; // Fāzhǎn
-
-        /// <summary>
-        /// Production mode API Key suffix (simplified chinese) for <c>LootLocker</c> SDK API.
-        /// </summary>
-        private const string Prefix2 = "生产"; // Shēngchǎn
-
-        [SerializeField, ReadOnly] private bool _isLootLocker;
-        [SerializeField, ReadOnly] private bool _isLoaded;
-
-        public bool IsLootLocker => _isLootLocker;
-        public bool IsLoaded => _isLoaded;
-
-        private IEnumerator Start()
+        private void Start()
         {
             Debug.Log($"{name}");
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
-            // Development vs production mode needs to be decided during build time!
-            const bool isDevelopmentMode = true;
-            StartLootLocker(isDevelopmentMode);
-            // Parts of store can be initialized asynchronously and we start it now (if not running already).
             var store = Storefront.Get();
-            yield return new WaitUntil(() => store.IsGameServerConnected);
             var gameConfig = GameConfig.Get();
+            CheckPlayerDataAndState(store, gameConfig);
+            CheckDataStoreDataAndState(store);
+            ShowDebugGameInfo(store);
+        }
+
+        private static void CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
+        {
             var playerSettings = gameConfig.PlayerSettings;
+            if (playerSettings.IsFirstTimePlaying)
+            {
+                Debug.Log("This Is First Time Playing");
+                // TODO: this might have some effect to game server operations to set it up correctly for first time!? 
+                playerSettings.IsFirstTimePlaying = false;
+            }
             var playerGuid = playerSettings.PlayerGuid;
-            var getPlayer = store.GetPlayerDataModel(playerGuid);
-            yield return new WaitUntil(() => getPlayer.IsCompleted);
-            var playerDataModel = getPlayer.Result;
-            if (playerDataModel == null)
+            store.GetPlayerData(playerGuid, playerData =>
             {
-                // Create new player for us - currentCharacterModelId must be valid because it is not checked later.
-                playerDataModel = new PlayerDataModel(playerGuid, 0, 1, "Player", 0);
-                var savePlayer = store.SavePlayerDataModel(playerDataModel);
-                yield return new WaitUntil(() => savePlayer.IsCompleted);
-                Debug.Log($"Create player {playerDataModel}");
-            }
-            else
+                if (playerData == null)
+                {
+                    // Create new player for us with first custom character we have - if any.
+                    store.GetAllCustomCharacters(customCharacters =>
+                    {
+                        var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                        playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
+                        store.SavePlayerData(playerData, updatedPlayerData => { Debug.Log($"Create player {updatedPlayerData}"); });
+                    });
+                }
+                else
+                {
+                    Debug.Log($"Load player {playerData}");
+                }
+            });
+        }
+
+        private static void CheckDataStoreDataAndState(DataStore store)
+        {
+            #region Production data in this section
+
+            if (store.CharacterClassesVersion != CreateDefaultModels.CharacterClassesVersion)
             {
-                Debug.Log($"Load player {playerDataModel}");
+                // Replace default CharacterClass models.
+                Debug.LogWarning($"Update CharacterClassesVersion {store.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
+                store.Set(CreateDefaultModels.CreateCharacterClasses(), success =>
+                {
+                    if (success)
+                    {
+                        store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
+                    }
+                });
+                
             }
-            gameConfig.PlayerDataModel = playerDataModel;
-            _isLoaded = true;
-            ShowDebugGameInfo(this);
+            if (store.GameFurnitureVersion != CreateDefaultModels.GameFurnitureVersion)
+            {
+                // Replace default CharacterClass models.
+                Debug.LogWarning($"Update GameFurniture {store.GameFurnitureVersion} <- {CreateDefaultModels.GameFurnitureVersion}");
+                store.Set(CreateDefaultModels.CreateGameFurniture(), success =>
+                {
+                    if (success)
+                    {
+                        store.GameFurnitureVersion = CreateDefaultModels.GameFurnitureVersion;
+                    }
+                });
+                
+            }
+            // No conversion rules for Player or Clan data yet.
+            Assert.AreEqual(1, store.PlayerDataVersion);
+            Assert.AreEqual(1, store.ClanDataVersion);
+
+            #endregion
+
+            if (!AppPlatform.IsEditor)
+            {
+                return;
+            }
+
+            #region Development data in this section
+
+            if (store.CustomCharactersVersion != CreateDefaultModels.CustomCharactersVersion)
+            {
+                // Replace default CustomCharacter models.
+                Debug.LogWarning($"Update CustomCharactersVersion {store.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
+                store.Set(CreateDefaultModels.CreateCustomCharacters(), success =>
+                {
+                    if (success)
+                    {
+                        store.CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion;
+                    }
+                });
+            }
+
+            #endregion
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
-        private static void ShowDebugGameInfo(MonoBehaviour monoBehaviour)
+        private static void ShowDebugGameInfo(DataStore store)
         {
-            monoBehaviour.StartCoroutine(CheckDebugGameInfo());
-
-            IEnumerator CheckDebugGameInfo()
+            store.GetAllCharacterClasses(characterClasses =>
             {
-                yield return null;
-                var store = Storefront.Get();
-                yield return new WaitUntil(() => store.IsInventoryConnected);
-                var characterClassModels = store.GetAllCharacterClassModels();
-                Debug.Log($"characterClasses {characterClassModels.Count}");
-                var customCharacters = store.GetAllCustomCharacterModels();
-                var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-                var isCustomCharactersValid = true;
-                foreach (var customCharacter in customCharacters)
+                Debug.Log($"characterClasses {characterClasses.Count} ver {store.CharacterClassesVersion}");
+                store.GetAllCustomCharacters(customCharacters =>
                 {
-                    if (characterClassModels.All(x => x.Id != customCharacter.CharacterModelId))
+                    var playerPrefabs = GameConfig.Get().PlayerPrefabs;
+                    var isCustomCharactersValid = true;
+                    foreach (var customCharacter in customCharacters)
                     {
-                        Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                         $"does not have CharacterModel {customCharacter.CharacterModelId}");
-                        isCustomCharactersValid = false;
+                        if (characterClasses.All(x => x.Id != customCharacter.CharacterClassId))
+                        {
+                            Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                             $"does not have CharacterModel {customCharacter.CharacterClassId}");
+                            isCustomCharactersValid = false;
+                        }
+                        var prefabIndex = int.Parse(customCharacter.PrefabKey);
+                        if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
+                        {
+                            Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
+                                             $"does not have PlayerPrefab {customCharacter.PrefabKey}");
+                            isCustomCharactersValid = false;
+                        }
                     }
-                    if (playerPrefabs.GetPlayerPrefab(customCharacter.PlayerPrefabId) == null)
+                    Debug.Log($"customCharacters {customCharacters.Count} ver {store.CustomCharactersVersion}");
+                    store.GetAllBattleCharacters(battleCharacters =>
                     {
-                        Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
-                                         $"does not have PlayerPrefab {customCharacter.PlayerPrefabId}");
-                        isCustomCharactersValid = false;
-                    }
-                }
-                Debug.Log($"customCharacters {customCharacters.Count}");
-                var battleCharacters = store.GetAllBattleCharacters();
-                Debug.Log($"battleCharacters {battleCharacters.Count}");
-                if (isCustomCharactersValid)
-                {
-                    yield break;
-                }
-                // Dump all battle characters if something is wrong in storage.
-                foreach (var battleCharacter in battleCharacters)
-                {
-                    Debug.Log($"battleCharacter {battleCharacter}");
-                }
-            }
+                        Debug.Log($"battleCharacters {battleCharacters.Count}");
+                        if (isCustomCharactersValid)
+                        {
+                            return;
+                        }
+                        // Dump all battle characters if something is wrong in storage.
+                        foreach (var battleCharacter in battleCharacters)
+                        {
+                            Debug.Log($"battleCharacter {battleCharacter}");
+                        }
+                    });
+                });
+            });
         }
-
-        [Conditional("USE_LOOTLOCKER")]
-        private void StartLootLocker(bool isDevelopmentMode)
-        {
-            // We need player name and guid in order to start LootLocker.
-            var gameConfig = GameConfig.Get();
-            var playerDataCache = gameConfig.PlayerSettings;
-            var playerDataModel = gameConfig.PlayerDataModel;
-            if (string.IsNullOrWhiteSpace(playerDataModel.Name) || string.IsNullOrWhiteSpace(playerDataCache.PlayerGuid))
-            {
-                Debug.Log("Can not start LootLocker because player name and/or guid is missing");
-                return;
-            }
-            var suffix = isDevelopmentMode ? Prefix1 : Prefix2;
-            Debug.Log($"Start LootLocker IsRunning {LootLockerWrapper.IsRunning} suffix {suffix}");
-            LootLockerWrapper.Start(isDevelopmentMode,
-                () => Resources.Load<StringProperty>($"{nameof(StringProperty)}{suffix}")?.PropertyValue);
-            _isLootLocker = true;
-        }
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// Helper class for UNITY Editor operations.
-        /// </summary>
-        public static class Support
-        {
-            public static StringProperty GetLootLockerResource() => _GetLootLockerResource();
-        }
-
-        private static StringProperty _GetLootLockerResource()
-        {
-            return Resources.Load<StringProperty>($"{nameof(StringProperty)}{Prefix1}");
-        }
-#endif
     }
 }

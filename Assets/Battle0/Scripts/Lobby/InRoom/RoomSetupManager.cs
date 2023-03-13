@@ -1,6 +1,6 @@
 using System.Collections;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -91,15 +91,25 @@ namespace Battle0.Scripts.Lobby.InRoom
             player.CustomProperties.Clear();
             var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
             var gameConfig = GameConfig.Get();
-            var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
-            var defence = Storefront.Get().GetBattleCharacter(currentCharacterModelId).MainDefence;
-            player.SetCustomProperties(new Hashtable
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            store.GetPlayerData(playerGuid, playerData =>
             {
-                { PlayerPositionKey, playerPos },
-                { PlayerMainSkillKey, (int)defence }
+                var currentCharacterModelId = playerData.CurrentCustomCharacterId;
+                Storefront.Get().GetBattleCharacter(currentCharacterModelId, battleCharacter =>
+                {
+                    Debug.Log($"{battleCharacter}");
+                    var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter, 0);
+                    Debug.Log($"playerPos {playerPos} prefabIndex {prefabIndex}");
+                    player.SetCustomProperties(new Hashtable
+                    {
+                        { PlayerPositionKey, playerPos },
+                        { PlayerMainSkillKey, prefabIndex }
+                    });
+                    UpdateStatus();
+                });
             });
-            UpdateStatus();
         }
 
         private void UpdateStatus()

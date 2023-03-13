@@ -1,6 +1,6 @@
 using System;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using NUnit.Framework;
 
 namespace Tests.EditMode.ModelsTests
@@ -13,26 +13,32 @@ namespace Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var gameConfig = GameConfig.Get();
-            var playerDataModel = gameConfig.PlayerDataModel;
-            var currentCharacterModelId = playerDataModel.CurrentCharacterModelId;
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
             var store = Storefront.Get();
-            var prefabId = 0;
-            try
+            store.GetPlayerData(playerGuid, playerData =>
             {
-                var battleCharacter = store.GetBattleCharacter(currentCharacterModelId);
-                Debug.Log($"{battleCharacter}");
-                prefabId = battleCharacter.PlayerPrefabId;
-                Assert.IsTrue(prefabId >= 0);
-            }
-            catch (Exception e)
-            {
-                Debug.Log($"GetBattleCharacter failed {e.Message}");
-                Assert.Fail("Check that CustomCharacterModels exist or restart UNITY to reset Storefront");
-            }
-
-            var playerPrefabs = gameConfig.PlayerPrefabs;
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
-            Assert.IsNotNull(playerPrefab);
+                var currentCharacterModelId = playerData.CurrentCustomCharacterId;
+                var prefabId = 0;
+                try
+                {
+                    store.GetBattleCharacter(currentCharacterModelId, battleCharacter =>
+                    {
+                        Debug.Log($"{battleCharacter}");
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PrefabKey));
+                        prefabId = int.Parse(battleCharacter.PrefabKey);
+                        Assert.IsTrue(prefabId >= 0);
+                        var playerPrefabs = gameConfig.PlayerPrefabs;
+                        var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                        Assert.IsNotNull(playerPrefab);
+                    });
+                }
+                catch (Exception e)
+                {
+                    Debug.Log($"GetBattleCharacter failed {e.Message}");
+                    Assert.Fail("Check that CustomCharacterModels exist or restart UNITY to reset Storefront");
+                }
+            });
         }
 
         [Test]
@@ -40,14 +46,18 @@ namespace Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            var battleCharacters = Storefront.Get().GetAllBattleCharacters();
-            foreach (var battleCharacter in battleCharacters)
+            Storefront.Get().GetAllBattleCharacters((battleCharacters =>
             {
-                var prefabId = battleCharacter.PlayerPrefabId;
-                Assert.IsTrue(prefabId >= 0);
-                var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
-                Assert.IsNotNull(playerPrefab);
-            }
+                foreach (var battleCharacter in battleCharacters)
+                {
+                    var prefabId = 0;
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PrefabKey));
+                    prefabId = int.Parse(battleCharacter.PrefabKey);
+                    Assert.IsTrue(prefabId >= 0);
+                    var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                    Assert.IsNotNull(playerPrefab);
+                }
+            }));
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Editor.Prg.Logging
 
         private static string GetLogFilePath()
         {
-            var path = Path.Combine(Application.persistentDataPath, LogWriter.GetLogName());
+            var path = Path.Combine(Application.persistentDataPath, LogFileWriter.GetLogName());
             if (AppPlatform.IsWindows)
             {
                 path = AppPlatform.ConvertToWindowsPath(path);

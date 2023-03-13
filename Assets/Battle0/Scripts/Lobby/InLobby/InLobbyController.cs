@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -44,7 +47,13 @@ namespace Battle0.Scripts.Lobby.InLobby
                 }
                 else if (PhotonWrapper.CanConnect)
                 {
-                    var playerData = GameConfig.Get().PlayerDataModel;
+                    var gameConfig = GameConfig.Get();
+                    var playerSettings = gameConfig.PlayerSettings;
+                    var playerGuid = playerSettings.PlayerGuid;
+                    var store = Storefront.Get();
+                    PlayerData playerData = null;
+                    store.GetPlayerData(playerGuid, p => playerData = p);
+                    yield return new WaitUntil(() => playerData != null);
                     PhotonLobby.Connect(playerData.Name);
                 }
                 else if (PhotonWrapper.CanJoinLobby)

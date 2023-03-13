@@ -85,23 +85,20 @@ namespace Battle0.Scripts.Lobby.InRoom
             instance.SetActive(true);
         }
 
-        private static readonly string[] SkillNames = { "---", "Des", "Def", "Int", "Pro", "Ret", "Ego", "Con" };
-
         private static void UpdatePlayerLine(Text line, Player player)
         {
             var text = line.GetComponent<Text>();
-            var nickName = player.IsLocal ? $"<color=blue>{player.NickName}</color>" : player.NickName;
+            var nickName = player.IsLocal ? RichText.Blue(player.NickName) : player.NickName;
             var pos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             var status = $" p={pos}";
             if (pos >= PlayerPosition1 && pos <= PlayerPosition4)
             {
-                var skill = Mathf.Clamp(player.GetCustomProperty(PlayerMainSkillKey, 0), 0, SkillNames.Length - 1);
-                var skillName = SkillNames[skill];
-                status += $" s=<color=green>{skillName}</color>";
+                var prefabIndex = player.GetCustomProperty(PlayerMainSkillKey, 0);
+                status += $" #={RichText.Green(prefabIndex)}";
             }
             if (player.IsMasterClient)
             {
-                status += " <color=yellow>[M]</color>";
+                status += $" {RichText.Yellow("M")}";
             }
             var playerText = $"{nickName} {status}";
             Debug.Log($"update '{text.text}' -> '{playerText}'");

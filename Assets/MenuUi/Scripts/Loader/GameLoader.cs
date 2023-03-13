@@ -1,15 +1,12 @@
-using System.Collections;
-using Altzone.Scripts;
-using Altzone.Scripts.Model;
 using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using System.Collections;
 
 namespace MenuUi.Scripts.Loader
 {
     /// <summary>
-    /// Loader to check that game can be started with all required services.<br />
+    /// Loader to check that game can be started with all required services running.<br />
     /// Waits until game and services has been loaded and then opens the main window.
     /// </summary>
     public class GameLoader : MonoBehaviour
@@ -18,33 +15,15 @@ namespace MenuUi.Scripts.Loader
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
 
-        private PlayerInput playerInput;
+        private float _timeOutTime;
 
-        private IStorefront _storefront;
-        private IEnumerator Start()
+        private void Start()
         {
-            playerInput = GetComponent<PlayerInput>();
             Debug.Log("loading");
-            _storefront = Storefront.Get();
-            yield return new WaitUntil(AllServicesAreRunning);
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
-            yield return new WaitForSeconds(19);
             windowManager.ShowWindow(_mainWindow);
-        }
-
-        public void Click(InputAction.CallbackContext context)
-        {
-            if (context.canceled)
-            {
-                var windowManager = WindowManager.Get();
-                windowManager.ShowWindow(_mainWindow);
-            }
-        }
-
-        private bool AllServicesAreRunning()
-        {
-            return _storefront.IsInventoryConnected && _storefront.IsGameServerConnected;
+            
         }
     }
 }

@@ -6,29 +6,21 @@ using UnityEngine;
 namespace Prg.Scripts.Common.Util
 {
     /// <summary>
-    /// Simple file logger that catches all log messages from UNITY and writes them to a file.
+    /// UNITY wrapper for <c>LogFileWriter</c> that catches all log messages from UNITY and writes them to a file.
     /// </summary>
     [DefaultExecutionOrder(-100)]
     public class LogWriter : MonoBehaviour
     {
-        private const string LogFileSuffix = "game.log";
-
         public static void AddLogLineContentFilter(Func<string, string> filter)
         {
-            _logLineContentFilter += filter;
+            // By design there is now way to remove filter once it has been installed.
+            LogFileWriter.LogLineContentFilter += filter;
         }
 
-        private static Func<string, string> _logLineContentFilter;
-
         private static LogWriter _instance;
-        private static readonly object Lock = new();
-        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         [Header("Live Data"), SerializeField] private string _fileName;
-        private StreamWriter _file;
-
-        // Formatted log messages share this.
-        private static readonly StringBuilder Builder = new StringBuilder(500);
+        private LogFileWriter _logFileWriter;
 
         private void Awake()
         {
@@ -42,73 +34,105 @@ namespace Prg.Scripts.Common.Util
 
         private void OnEnable()
         {
-            var baseName = GetLogName();
-            try
-            {
-                var baseFileName = Path.Combine(Application.persistentDataPath, baseName);
-                _fileName = baseFileName;
-                var retry = 1;
-                for (;;)
-                {
-                    try
-                    {
-                        // Open for overwrite!
-                        _file = new StreamWriter(_fileName, false, Encoding) { AutoFlush = true };
-                        break;
-                    }
-                    catch (IOException) // Sharing violation if more than one instance at the same time
-                    {
-                        if (++retry > 10) throw new UnityException("Unable to allocate log file");
-                        var newSuffix = $"{retry:D2}_{LogFileSuffix}";
-                        _fileName = baseFileName.Replace(LogFileSuffix, newSuffix);
-                    }
-                }
-                // Show effective log filename.
-                if (AppPlatform.IsWindows)
-                {
-                    _fileName = AppPlatform.ConvertToWindowsPath(_fileName);
-                }
-                UnityEngine.Debug.Log($"LogWriter Open file {_fileName}");
-                Application.logMessageReceivedThreaded += UnityLogCallback;
-            }
-            catch (Exception x)
-            {
-                _file = null;
-                UnityEngine.Debug.LogWarning($"unable to create log file '{_fileName}'");
-                UnityEngine.Debug.LogException(x);
-            }
+            _logFileWriter = LogFileWriter.CreateLogFileWriter();
+            _fileName = _logFileWriter.Filename;
         }
 
         private void OnDestroy()
         {
             // OnApplicationQuit() comes before OnDestroy() so we are *not* interested to listen it.
 
-            Application.logMessageReceivedThreaded -= UnityLogCallback;
-            UnityEngine.Debug.Log($"LogWriter OnDestroy Close file {_fileName}");
+            _logFileWriter?.Close();
             _instance = null;
-            _logLineContentFilter = null;
-            if (_file != null)
-            {
-                _file.Close();
-            }
         }
+    }
 
-        private void WriteLogInternal(string message)
-        {
-            if (_file != null)
-            {
-                _file.WriteLine(message);
-                _file.Flush();
-            }
-        }
+    /// <summary>
+    /// Simple file logger that catches all log messages from UNITY and writes them to a file.
+    /// </summary>
+    public class LogFileWriter
+    {
+        private const string LogFileSuffix = "game.log";
 
-        private static void WriteLog(string message)
-        {
-            _instance.WriteLogInternal(message);
-        }
+        private static readonly Encoding Encoding = new UTF8Encoding(false, false);
+        private static readonly object Lock = new();
+        private static readonly StringBuilder Builder = new(500);
 
-        private static string _prevLogString = string.Empty;
         private static int _prevLogLineCount;
+        private static string _prevLogString = string.Empty;
+
+        private static LogFileWriter _instance;
+
+        public static Func<string, string> LogLineContentFilter;
+
+        public string Filename { get; }
+
+        public static LogFileWriter CreateLogFileWriter() => new();
+
+        private readonly StreamWriter _writer;
+
+        private LogFileWriter()
+        {
+            try
+            {
+                var baseName = GetLogName();
+                var baseFileName = Path.Combine(Application.persistentDataPath, baseName);
+                Filename = baseFileName;
+                var retry = 1;
+                for (;;)
+                {
+                    try
+                    {
+                        // Open for overwrite!
+                        _writer = new StreamWriter(Filename, false, Encoding) { AutoFlush = true };
+                        break;
+                    }
+                    catch (IOException)
+                    {
+                        // Sharing violation if more than one instance at the same time
+                        if (++retry > 10)
+                        {
+                            throw new UnityException("Unable to allocate log file");
+                        }
+                        var newSuffix = $"{retry:D2}_{LogFileSuffix}";
+                        Filename = baseFileName.Replace(LogFileSuffix, newSuffix);
+                    }
+                }
+                // Show effective log filename.
+                if (AppPlatform.IsWindows)
+                {
+                    Filename = AppPlatform.ConvertToWindowsPath(Filename);
+                }
+            }
+            catch (Exception x)
+            {
+                _writer = null;
+                UnityEngine.Debug.LogWarning($"unable to create log file '{Filename}'");
+                UnityEngine.Debug.LogException(x);
+                throw;
+            }
+            UnityEngine.Debug.Log($"LogWriter Open file {Filename}");
+            _instance = this;
+            Application.logMessageReceivedThreaded += UnityLogCallback;
+        }
+
+        public void Close()
+        {
+            Application.logMessageReceivedThreaded -= UnityLogCallback;
+            _instance = null;
+            LogLineContentFilter = null;
+            UnityEngine.Debug.Log($"LogWriter Close file {Filename}");
+        }
+
+        private void WriteLog(string message)
+        {
+            if (_writer == null)
+            {
+                return;
+            }
+            _writer.WriteLine(message);
+            _writer.Flush();
+        }
 
         /// <summary>
         /// Thread safe callback to listen UNITY Debug messages and write them to a file.
@@ -129,20 +153,20 @@ namespace Prg.Scripts.Common.Util
                     return;
                 }
 
-                if (_prevLogLineCount > 1)
+                if (_prevLogLineCount > 2)
                 {
-                    WriteLog($"duplicate_lines {_prevLogLineCount}");
+                    _instance.WriteLog($"duplicate_lines {_prevLogLineCount}");
                     _prevLogLineCount = 0;
                 }
                 _prevLogString = logString;
-                if (_logLineContentFilter != null)
+                if (LogLineContentFilter != null)
                 {
                     // As we can modify the input parameter on the fly we must call each delegate separately with correct input.
                     // - avoid DynamicInvoke because it can be order of magnitude slower than "function pointer".
-                    var invocationList = _logLineContentFilter.GetInvocationList();
+                    var invocationList = LogLineContentFilter.GetInvocationList();
                     if (invocationList.Length == 1)
                     {
-                        logString = _logLineContentFilter(logString);
+                        logString = LogLineContentFilter(logString);
                     }
                     else
                     {
@@ -163,20 +187,25 @@ namespace Prg.Scripts.Common.Util
                 }
 
                 Builder.Append(logString);
-                WriteLog(Builder.ToString());
-                if (type == LogType.Error || type == LogType.Exception)
+                _instance.WriteLog(Builder.ToString());
+                if (type != LogType.Error && type != LogType.Exception)
                 {
-                    // Show stack trace only for real errors.
-                    if (stackTrace.Length > 5)
-                    {
-                        Builder.Length = 0;
-                        Builder.AppendFormat("{0:HH:mm:ss.fff}\t{1}\t{2}", DateTime.Now, "STACK", stackTrace);
-                        WriteLog(Builder.ToString());
-                    }
+                    return;
+                }
+                // Show stack trace only for real errors with proper call stack.
+                if (stackTrace.Length > 5)
+                {
+                    Builder.Length = 0;
+                    Builder.AppendFormat("{0:HH:mm:ss.fff}\t{1}\t{2}", DateTime.Now, "STACK", stackTrace);
+                    _instance.WriteLog(Builder.ToString());
                 }
             }
         }
 
+        /// <summary>
+        /// Gets log file name for current platform.
+        /// </summary>
+        /// <returns></returns>
         public static string GetLogName()
         {
             var isEditor = AppPlatform.IsEditor;

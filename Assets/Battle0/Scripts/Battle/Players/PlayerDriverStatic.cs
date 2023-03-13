@@ -2,7 +2,7 @@ using System;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Dto;
+using Altzone.Scripts.Temp;
 using Battle0.Scripts.Battle.Game;
 using Battle0.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
@@ -72,7 +72,8 @@ namespace Battle0.Scripts.Battle.Players
             }
             var gameplayManager = Context.PlayerManager;
             _actorNumber = -(gameplayManager.PlayerCount + 1);
-            _characterModel = Storefront.Get().GetBattleCharacter((int)_settings._playerMainSkill);
+            throw new NotImplementedException();
+            /*_characterModel = null;//Storefront.Get().GetBattleCharacter((int)_settings._playerMainSkill);
             _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
@@ -89,7 +90,7 @@ namespace Battle0.Scripts.Battle.Players
             }
             var playerInputHandler = PlayerInputHandler.Get();
             var playArea = Context.GetBattlePlayArea.GetPlayerPlayArea(_settings._playerPos);
-            playerInputHandler.SetPlayerDriver(this, _playerActor.Transform, playArea);
+            playerInputHandler.SetPlayerDriver(this, _playerActor.Transform, playArea);*/
         }
 
         private void OnDestroy()

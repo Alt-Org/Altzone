@@ -20,7 +20,7 @@ public static class Debug
     // Method: https://stackoverflow.com/questions/2483023/how-to-test-if-a-type-is-anonymous
 
 #if FORCE_LOG
-#warning NOTE: Compiling WITH debug logging FORCE_LOG
+#warning <b>NOTE</b>: Compiling WITH debug logging define <b>FORCE_LOG</b>
 #endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -120,6 +120,16 @@ public static class Debug
         }
         return _currentFrameCount;
     }
+
+    #region Just for compability or notice to use fully qualified version in UnityEngine namespace
+
+    public static void Break() => UnityEngine.Debug.Break();
+    public static void DebugBreak() => UnityEngine.Debug.DebugBreak();
+    private const string NotHere = "Use fully qualified version in UnityEngine.Debug namespace";
+    public static void DrawLine() => throw new NotImplementedException(NotHere);
+    public static void DrawRay() => throw new NotImplementedException(NotHere);
+
+    #endregion
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void Log(string message, Object context = null, [CallerMemberName] string memberName = null)
@@ -235,12 +245,12 @@ public static class Debug
             if (isAllowed)
             {
                 AddMethod(true);
-                // UnityEngine.Debug.Log($"[<color=brown>ACCEPT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+                // UnityEngine.Debug.Log($"[{RichText.Brown("ACCEPT")}] {method.Name} in {method.ReflectedType?.FullName}");
                 return true;
             }
             // Nobody accepted so it is rejected.
             AddMethod(false);
-            // UnityEngine.Debug.Log($"[<color=brown>REJECT</color>] {method.Name} in {method.ReflectedType?.FullName}");
+            // UnityEngine.Debug.Log($"[{RichText.Brown("REJECT")}] {method.Name} in {method.ReflectedType?.FullName}");
             return false;
         }
         return true;

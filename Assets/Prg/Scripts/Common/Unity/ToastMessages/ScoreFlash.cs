@@ -67,7 +67,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
         [SerializeField] private GameObject _root;
         [SerializeField] private RectTransform _rectTransform;
 
-        [SerializeField] private TMP_Text _text;
+        [SerializeField] private TextMeshProUGUI _uiText;
         [SerializeField] private RectTransform _textRectTransform;
         [SerializeField] private Vector3 _position;
         [SerializeField] private Rect _rect;
@@ -76,13 +76,13 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         public Vector2 Position => _position;
 
-        public ScoreFlashItem(int index, GameObject root, TMP_Text text)
+        public ScoreFlashItem(int index, GameObject root, TextMeshProUGUI uiText)
         {
             Index = index;
             _root = root;
             _rectTransform = _root.GetComponent<RectTransform>();
-            _text = text;
-            _textRectTransform = _text.GetComponent<RectTransform>();
+            _uiText = uiText;
+            _textRectTransform = _uiText.GetComponent<RectTransform>();
             _position.z = _root.GetComponent<Transform>().position.z;
         }
 
@@ -99,7 +99,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         public void SetText(string text)
         {
-            _text.text = text;
+            _uiText.text = text;
         }
 
         public void SetPosition(float x, float y)
@@ -130,7 +130,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
 
         public void SetColor(Color color)
         {
-            _text.color = color;
+            _uiText.color = color;
         }
 
         public void Show()
@@ -197,7 +197,7 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
             Assert.IsTrue(_canvas.isRootCanvas, "_canvas.isRootCanvas");
             _canvasRectTransform = _canvas.GetComponent<RectTransform>();
 
-            var children = _canvas.GetComponentsInChildren<TMP_Text>(true);
+            var children = _canvas.GetComponentsInChildren<TextMeshProUGUI>(true);
             Debug.Log($"children {children.Length}");
             _entries = new ScoreFlashItem[children.Length];
             _animators = new Animator[children.Length];
