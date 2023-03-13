@@ -601,6 +601,7 @@ goto :eof
 
             #region CopyBuildOutputScriptContent
 
+            // See 'for /f .. in' usage: https://stackoverflow.com/questions/8797983/can-a-windows-batch-file-determine-its-own-file-name
             private const string CopyBuildOutputScriptContent = @"@echo off
 rem .
 rem . This scipt is machine generated, do not edit!
