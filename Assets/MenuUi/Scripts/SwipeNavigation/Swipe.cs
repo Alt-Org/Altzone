@@ -1,8 +1,9 @@
+using Prg.Scripts.Common.Unity.Window;
 using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.SwipeNavigation
 {
     public class Swipe : MonoBehaviour
     {

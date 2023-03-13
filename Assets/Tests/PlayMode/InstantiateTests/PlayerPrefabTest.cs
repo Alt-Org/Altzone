@@ -41,8 +41,8 @@ namespace Tests.PlayMode.InstantiateTests
                     store.GetBattleCharacter(currentCharacterModelId, battleCharacter =>
                     {
                         Debug.Log($"{battleCharacter}");
-                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.PrefabKey));
-                        prefabId = int.Parse(battleCharacter.PrefabKey);
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
+                        prefabId = int.Parse(battleCharacter.UnityKey);
                         Assert.IsTrue(prefabId >= 0);
                         var playerPrefabs = gameConfig.PlayerPrefabs;
                         var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);

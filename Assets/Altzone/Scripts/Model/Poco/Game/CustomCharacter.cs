@@ -12,18 +12,18 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public int Id;
         public int CharacterClassId;
-        public string PrefabKey;
+        public string UnityKey;
         public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CustomCharacter(int id, int characterClassId, string prefabKey, string name, int speed, int resistance, int attack, int defence)
+        public CustomCharacter(int id, int characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
         {
             Id = id;
             CharacterClassId = characterClassId;
-            PrefabKey = prefabKey;
+            UnityKey = unityKey;
             Name = name;
             Speed = speed;
             Resistance = resistance;
@@ -34,7 +34,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(CharacterClassId)}: {CharacterClassId}" +
-                   $", {nameof(PrefabKey)}: {PrefabKey}, {nameof(Name)}: {Name}" +
+                   $", {nameof(UnityKey)}: {UnityKey}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }

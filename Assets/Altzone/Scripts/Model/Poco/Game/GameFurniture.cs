@@ -19,14 +19,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         public double Weight;
         public string Material;
         public string Recycling;
-        public string PrefabKey;
+        public string UnityKey;
         public string Filename;
 
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Shape)}: {Shape}, {nameof(Weight)}: {Weight}" +
                    $", {nameof(Material)}: {Material}, {nameof(Recycling)}: {Recycling}" +
-                   $", {nameof(PrefabKey)}: {PrefabKey}, {nameof(Filename)}: {Filename}";
+                   $", {nameof(UnityKey)}: {UnityKey}, {nameof(Filename)}: {Filename}";
         }
     }
 }
