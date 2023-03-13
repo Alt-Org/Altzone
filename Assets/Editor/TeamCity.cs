@@ -622,9 +622,9 @@ if not exist %BUILD_DIR% (
 )
 set ENVFILE=%~n0.env
 echo ENVFILE=%ENVFILE%
-if not exist %BUILD_DIR% (
+if not exist %ENVFILE% (
     echo *
-    echo * Config error, environment file not found
+    echo * Skip DROPBOX copy, environment file %ENVFILE% not found
     echo *
     goto :eof
 )
@@ -640,7 +640,7 @@ set DROPBOX_DIR=%DROPBOX_PATH%\%BUILD_DIR%
 echo DROPBOX_DIR=%DROPBOX_DIR%
 if not exist %DROPBOX_DIR% (
     echo *
-    echo * Skip DROPBOX copy, %DROPBOX_DIR% not found
+    echo * Skip DROPBOX copy, output folder %DROPBOX_DIR% not found
     echo *
     goto :eof
 )
