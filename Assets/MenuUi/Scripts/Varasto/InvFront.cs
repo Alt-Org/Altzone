@@ -2,43 +2,59 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts;
+using System.Collections;
 
 public class InvFront : MonoBehaviour
 {
-    [Header("Game objects")]
-    [SerializeField] private GameObject[] slots;
-    [SerializeField] private TMP_Text pageText;
+    [Header("Information")]
     [SerializeField] private TMP_Text sortText;
 
-    [Header("Prefabs")]
-    [SerializeField] private GameObject informationScreen;
+    [Header("GameObjects")]
+    [SerializeField] private Transform content;
+    [SerializeField] private GameObject invSlot;
+    private List<GameFurniture> items;
+    private DataStore _store;
 
-    private List<GameObject> invStored;
-    private int page; // The value that dictates which page of the inventory is shown
-    private int maxPage; // The max page that can be entered, dictated by the amount of items owned
+    private List<GameObject> slotsList = new List<GameObject>();
 
     private int maxSortingBy = 1;
     private int sortingBy; // used as a carrier for info on how to sort
-
-    [Header("Test purpose")]
-    [SerializeField] private List<GameObject> testStored; // Used to test that the images work correctly, the actual inventory will be taken from elsewhere
     private void Start()
     {
-        invStored = testStored;
+        _store = Storefront.Get();
 
         sortingBy = -1; // So that the first sort style is Alphabet
-        SortStored();
-
-        maxPage = Mathf.CeilToInt(invStored.Count / 20) + 1; // Sets the max pages
-        MovePage(0);
+        StartCoroutine(MakeSlots());
     }
 
-    public void MovePage(int by)
+    private IEnumerator MakeSlots()
     {
-        page = Mathf.Clamp(page + by, 1, maxPage); // Sets the next selected page, which is clamped between the min page and max page
-        pageText.text = page + " / " + maxPage;
-        FillSlots();
+        var isCallbackDone = false;
+        _store.GetAllGameFurniture(result =>
+        {
+            items = result;
+            isCallbackDone = true;
+        });
+        yield return new WaitUntil(() => isCallbackDone);
+
+        foreach (GameFurniture item in items)
+        {
+            Transform slotMade = Instantiate(invSlot, content).transform;
+
+            // Icon - Not done
+            //Image slotIcon = slotMade.GetChild(0).GetComponent<Image>();
+
+            // Name
+            slotMade.GetChild(1).GetComponent<TMP_Text>().text = item.Name;
+
+            // Weight
+            slotMade.GetChild(2).GetComponent<TMP_Text>().text = item.Weight + "KG";
+
+            // Shape - Not done
+            //slotMade.GetChild(3).GetComponent<Image>().sprite = 
+        }
     }
 
     public void SortStored() // A very much hardcoded system for sorting 
@@ -50,57 +66,64 @@ public class InvFront : MonoBehaviour
         {
             case 0:
                 sortText.text = "Sorted by: Alphabet";
-                invStored.OrderBy(x => x.name);
+                slotsList.OrderBy(x => x.name);
                 break;
             case 1:
                 sortText.text = "Sorted by: Nothing functional";
-                /* Sorts by the value, when that exists */
+                /* Should be made to order by the value, when that exists */
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
-        FillSlots();
+        //FillSlots();
     }
 
-    public void SlotInformation(Transform button) // Instantiates the information screen to the position of the button
+    public void SlotInformation()
     {
-        Instantiate(informationScreen, button.position, transform.rotation);
-    }
-
-    public void FillSlots()
-    {
-        // Sets the images of the items to their slots
-        int i = 20 * (page - 1);
-        foreach (GameObject _slot in slots)
+        try
         {
-            try
-            {
-                GameObject slotImage = _slot.transform.Find("Image").gameObject;
-                SpriteRenderer furnitureImage = invStored[i].GetComponent<SpriteRenderer>();
-
-                slotImage.SetActive(true);
-
-                if (furnitureImage.size.x > 200 || furnitureImage.size.y > 200) // Limits the size of an image if it is too large
-                {
-                    Vector2 imageNewSize = furnitureImage.size;
-                    if (furnitureImage.size.x > 200) { imageNewSize.x = 200; }
-                    if (furnitureImage.size.y > 200) { imageNewSize.y = 200; }
-                }
-
-                slotImage.GetComponent<Image>().sprite = furnitureImage.sprite;
-                slotImage.GetComponent<Image>().color = furnitureImage.color;
-
-                i++;
-            }
-            catch {  break; }
+            //IInventoryItem item = 
         }
+        catch { /* Slot is empty */ }
     }
+
+    //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
+
+    //public void FillSlots()
+    //{
+    //    // Sets the images of the items to their slots
+    //    int i = 0;
+    //    //List<IFurnitureModel> models = _storefront.GetAllFurnitureModels();
+    //    foreach (GameObject _slot in slots)
+    //    {
+    //        try
+    //        {
+    //            GameObject slotImage = _slot.transform.Find("Image").gameObject;
+    //            Image furnitureImage = invStored[i].
+
+    //            slotImage.SetActive(true);
+
+    //            if (furnitureImage.size.x > 200 || furnitureImage.size.y > 200) // Limits the size of an image if it is too large
+    //            {
+    //                Vector2 imageNewSize = furnitureImage.size;
+    //                if (furnitureImage.size.x > 200) { imageNewSize.x = 200; }
+    //                if (furnitureImage.size.y > 200) { imageNewSize.y = 200; }
+    //            }
+
+    //            slotImage.GetComponent<Image>().sprite = furnitureImage.sprite;
+    //            slotImage.GetComponent<Image>().color = furnitureImage.color;
+
+    //            i++;
+    //        }
+    //        catch {  break; }
+    //    }
+    //}
 
     // Task List
     // - Visible Inventory (Done)
     // - Sorting (Done)
-    // - Infinite capacity possibility (Done)
+    // - Infinite capacity possibility (Scroll down)
     // - Reactive Scaling (Done)
-    // - Information Panel Instantiation (Done)
-    // - Information Panel information (Requires outsider work - AKA: Attachment of information given through Inventory.cs to the GameObject)
+    // - Information Panel Instantiation
+    // - Information Panel information
 
 }
