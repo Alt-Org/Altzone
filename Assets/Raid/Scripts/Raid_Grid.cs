@@ -963,7 +963,7 @@ public class Raid_Grid : MonoBehaviour
                         Raid_Tile NumberTile = Instantiate(Resources.Load("Prefabs/NumberTile", typeof(Raid_Tile)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Tile;
 
                         grid[x, y] = NumberTile;
-                        NumberTile.GetComponentInChildren<TextMeshPro>().text = ""; // Replace '""' to 'NearbyMines.ToString()' when tiles don't need to be covered.
+                        NumberTile.GetComponentInChildren<TextMeshPro>().text = ""; // Replace '""' with 'NearbyMines.ToString()' when tiles don't need to be covered.
                     }
                 }
             }
