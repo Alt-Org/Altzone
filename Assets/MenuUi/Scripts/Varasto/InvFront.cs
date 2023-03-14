@@ -19,7 +19,7 @@ public class InvFront : MonoBehaviour
 
     private List<GameObject> slotsList = new List<GameObject>();
 
-    private int maxSortingBy = 1;
+    private int maxSortingBy = 2;
     private int sortingBy; // used as a carrier for info on how to sort
     private void Start()
     {
@@ -41,19 +41,9 @@ public class InvFront : MonoBehaviour
 
         foreach (GameFurniture item in items)
         {
-            Transform slotMade = Instantiate(invSlot, content).transform;
-
-            // Icon - Not done
-            //Image slotIcon = slotMade.GetChild(0).GetComponent<Image>();
-
-            // Name
-            slotMade.GetChild(1).GetComponent<TMP_Text>().text = item.Name;
-
-            // Weight
-            slotMade.GetChild(2).GetComponent<TMP_Text>().text = item.Weight + "KG";
-
-            // Shape - Not done
-            //slotMade.GetChild(3).GetComponent<Image>().sprite = 
+            GameObject newObject = Instantiate(invSlot, content);
+            newObject.GetComponent<InvSlot>().contains = item;
+            slotsList.Add(newObject);
         }
     }
 
@@ -66,15 +56,23 @@ public class InvFront : MonoBehaviour
         {
             case 0:
                 sortText.text = "Sorted by: Alphabet";
-                slotsList.OrderBy(x => x.name);
+                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Name);
                 break;
             case 1:
-                sortText.text = "Sorted by: Nothing functional";
-                /* Should be made to order by the value, when that exists */
+                sortText.text = "Sorted by: Weight";
+                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Weight);
+                break;
+            case 2:
+                sortText.text = "Sorted by: Material?";
+                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Material);
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
-        //FillSlots();
+    }
+
+    private void ReOrderChildren()
+    {
+
     }
 
     public void SlotInformation()
@@ -87,36 +85,6 @@ public class InvFront : MonoBehaviour
     }
 
     //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
-
-    //public void FillSlots()
-    //{
-    //    // Sets the images of the items to their slots
-    //    int i = 0;
-    //    //List<IFurnitureModel> models = _storefront.GetAllFurnitureModels();
-    //    foreach (GameObject _slot in slots)
-    //    {
-    //        try
-    //        {
-    //            GameObject slotImage = _slot.transform.Find("Image").gameObject;
-    //            Image furnitureImage = invStored[i].
-
-    //            slotImage.SetActive(true);
-
-    //            if (furnitureImage.size.x > 200 || furnitureImage.size.y > 200) // Limits the size of an image if it is too large
-    //            {
-    //                Vector2 imageNewSize = furnitureImage.size;
-    //                if (furnitureImage.size.x > 200) { imageNewSize.x = 200; }
-    //                if (furnitureImage.size.y > 200) { imageNewSize.y = 200; }
-    //            }
-
-    //            slotImage.GetComponent<Image>().sprite = furnitureImage.sprite;
-    //            slotImage.GetComponent<Image>().color = furnitureImage.color;
-
-    //            i++;
-    //        }
-    //        catch {  break; }
-    //    }
-    //}
 
     // Task List
     // - Visible Inventory (Done)

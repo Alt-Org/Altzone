@@ -14,6 +14,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField] private WindowDef _prevNaviTarget;
         [SerializeField] private WindowDef _nextNaviTarget;
 
+        [SerializeField] private float _distanceToSwitch;
+
         private void Awake()
         {
             _playerInput = GetComponent<PlayerInput>();
@@ -29,12 +31,12 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
 
                 endPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
-                if (startPosition.x - 50f > endPosition.x && _nextNaviTarget != null)
+                if (startPosition.x - _distanceToSwitch > endPosition.x && _nextNaviTarget != null)
                 {
                     var windowManager = WindowManager.Get();
                     windowManager.ShowWindow(_nextNaviTarget);
                 }
-                if (startPosition.x + 50f < endPosition.x && _prevNaviTarget != null)
+                if (startPosition.x + _distanceToSwitch < endPosition.x && _prevNaviTarget != null)
                 {
                     var windowManager = WindowManager.Get();
                     windowManager.ShowWindow(_prevNaviTarget);
