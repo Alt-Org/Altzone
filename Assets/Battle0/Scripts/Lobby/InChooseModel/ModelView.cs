@@ -111,7 +111,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 var button = _buttons[i];
                 button.gameObject.SetActive(true);
                 button.interactable = true;
-                //button.SetCaption(character.Name);
+                button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
                     CurrentCharacterId = character.CustomCharacterId;

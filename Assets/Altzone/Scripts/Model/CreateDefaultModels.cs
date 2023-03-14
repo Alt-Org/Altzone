@@ -41,13 +41,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new(1, 1, "1", "<1>", 0, 0, 0, 0),
-                new(2, 2, "2", "<2>", 0, 0, 0, 0),
-                new(3, 3, "3", "<3>", 0, 0, 0, 0),
-                new(4, 4, "4", "<4>", 0, 0, 0, 0),
-                new(5, 5, "5", "<5>", 0, 0, 0, 0),
-                new(6, 6, "6", "<6>", 0, 0, 0, 0),
-                new(7, 7, "7", "<7>", 0, 0, 0, 06)
+                new(1, 1, "1", "Keijo Kelmi", 0, 0, 0, 0),
+                new(2, 2, "2", "Huugo Hupaisa", 0, 0, 0, 0),
+                new(3, 3, "3", "Paavali Pappila", 0, 0, 0, 0),
+                new(4, 4, "4", "Tarmo Taide", 0, 0, 0, 0),
+                new(5, 5, "5", "Poju Pullukka", 0, 0, 0, 0),
+                new(6, 6, "6", "Albert Älypää", 0, 0, 0, 0),
+                new(7, 7, "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 06)
             };
         }
 
