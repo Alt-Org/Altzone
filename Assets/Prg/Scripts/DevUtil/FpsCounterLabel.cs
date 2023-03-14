@@ -1,23 +1,20 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Prg.Scripts.DevUtil
 {
+    /// <summary>
+    /// Calculates FPS label once in a second in order to avoid too much garbage collection in <c>OnGUI</c>.
+    /// </summary>
     public class FpsCounterLabel : MonoBehaviour
     {
-        [Header("This only runs in Editor or Development Build")] public bool _visible;
-        public Key _controlKey = Key.F2;
-        public Key _shiftKey = Key.LeftShift;
+        [Header("This only runs in Editor or Development Build")] public int _note;
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         private readonly GUIStyle _guiLabelStyle = new();
         private readonly Rect _guiLabelPosition = new(5, 5, 100, 25);
 
-        private float _timeLeft;
-        private float _accumulator;
-        private int _frames;
-        private float _fps;
+        private string _fpsLabel = string.Empty;
 
         private IEnumerator Start()
         {
@@ -28,43 +25,26 @@ namespace Prg.Scripts.DevUtil
             }
             _guiLabelStyle.fontStyle = FontStyle.Bold;
             _guiLabelStyle.normal.textColor = Color.white;
-            var savedVisible = _visible;
-            _visible = false;
-            yield return new WaitForSeconds(1f);
-            _visible = savedVisible;
+            StartCoroutine(FrameRateCalculator());
         }
 
-        private void Update()
+        private IEnumerator FrameRateCalculator()
         {
-            if (Keyboard.current[_controlKey].wasPressedThisFrame && Keyboard.current[_shiftKey].isPressed)
+            var delay = new WaitForSeconds(1.0f);
+            yield return delay;
+            for (; enabled;)
             {
-                ToggleWindowState();
-            }
-            _accumulator += Time.timeScale / Time.deltaTime;
-            ++_frames;
-            _timeLeft -= Time.deltaTime;
-            if (_timeLeft <= 0.0)
-            {
-                _fps = (_accumulator / _frames);
-                _timeLeft = 0.5f;
-                _accumulator = 0.0f;
-                _frames = 0;
+                var startTime = Time.time;
+                var startFrames = Time.frameCount;
+                yield return delay;
+                var fps = (int)((Time.frameCount - startFrames) / (Time.time - startTime));
+                _fpsLabel = $"{fps} fps";
             }
         }
 
         private void OnGUI()
         {
-            if (!_visible)
-            {
-                return;
-            }
-            var label = $"{_fps:0} fps";
-            GUI.Label(_guiLabelPosition, label, _guiLabelStyle);
-        }
-
-        private void ToggleWindowState()
-        {
-            _visible = !_visible;
+            GUI.Label(_guiLabelPosition, _fpsLabel, _guiLabelStyle);
         }
 #endif
     }
