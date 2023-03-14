@@ -1,12 +1,10 @@
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+using MenuUi.Scripts.Window.ScriptableObjects;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
-#if PHOTON_UNITY_NETWORKING
-using Photon.Pun;
-#endif
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Simple scene loader for <c>WindowManager</c>.

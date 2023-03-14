@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
+namespace MenuUi.Scripts.Window.ScriptableObjects
 {
     /// <summary>
     /// Window definition for <c>WindowManager</c>.<br />

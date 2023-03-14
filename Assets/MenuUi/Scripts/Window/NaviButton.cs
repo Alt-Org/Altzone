@@ -1,8 +1,8 @@
-﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+﻿using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Default navigation button for <c>WindowManager</c>.

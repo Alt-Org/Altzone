@@ -1,10 +1,10 @@
 using System;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Tracks Escape key press (and similar functionality on other devices) on behalf of <c>WindowManager</c>

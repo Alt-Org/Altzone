@@ -1,7 +1,7 @@
-﻿using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+﻿using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Traps Escape key press and replaces current window with this window if Escape key is pressed.

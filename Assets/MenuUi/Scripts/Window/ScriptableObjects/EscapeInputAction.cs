@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
+namespace MenuUi.Scripts.Window.ScriptableObjects
 {
     /// <summary>
     /// New Input System Package <c>InputActionReference</c> configuration for ESCAPE or BACK "key" action.

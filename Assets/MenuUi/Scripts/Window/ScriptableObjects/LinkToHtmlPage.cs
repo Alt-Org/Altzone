@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
+namespace MenuUi.Scripts.Window.ScriptableObjects
 {
     [CreateAssetMenu(menuName = "ALT-Zone/LinkToHtmlPage", fileName = "link-")]
     public class LinkToHtmlPage : ScriptableObject

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Initial window loader for any level that uses <c>WindowManager</c>.

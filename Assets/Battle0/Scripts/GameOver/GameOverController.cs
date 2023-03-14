@@ -1,6 +1,6 @@
 ﻿using System.Collections;
+using MenuUi.Scripts.Window;
 using Photon.Pun;
-using Prg.Scripts.Common.Unity.Window;
 using UnityEngine;
 
 namespace Battle0.Scripts.GameOver

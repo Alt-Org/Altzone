@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Prg.Scripts.Common.Unity;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Prg.Scripts.Common.Unity.Window.ScriptableObjects
+namespace MenuUi.Scripts.Window.ScriptableObjects
 {
     /// <summary>
     /// Scene definition for <c>WindowManager</c> and <c>SceneLoader</c>.<br />

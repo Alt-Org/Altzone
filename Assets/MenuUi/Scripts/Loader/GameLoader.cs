@@ -1,7 +1,7 @@
-using Prg.Scripts.Common.Unity.Window;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using System.Collections;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
 
 namespace MenuUi.Scripts.Loader
 {

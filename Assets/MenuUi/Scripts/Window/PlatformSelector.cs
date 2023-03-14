@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Allow this component on selected platform(s).<br />

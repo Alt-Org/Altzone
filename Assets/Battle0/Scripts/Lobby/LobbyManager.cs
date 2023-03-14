@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Linq;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity.Window;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;

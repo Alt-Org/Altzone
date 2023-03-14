@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
+using MenuUi.Scripts.Window.ScriptableObjects;
+using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-namespace Prg.Scripts.Common.Unity.Window
+namespace MenuUi.Scripts.Window
 {
     /// <summary>
     /// Simple <c>WindowManager</c> with managed window bread crumbs list.

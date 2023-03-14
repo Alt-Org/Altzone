@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using Altzone.Scripts.Config;
 using Battle0.Scripts.Ui;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity.Window;
-using Prg.Scripts.Common.Unity.Window.ScriptableObjects;
 using UnityConstants;
 using UnityEngine;
 
