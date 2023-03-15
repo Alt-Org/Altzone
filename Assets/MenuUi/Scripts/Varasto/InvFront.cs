@@ -17,7 +17,7 @@ public class InvFront : MonoBehaviour
     private List<GameFurniture> items;
     private DataStore _store;
 
-    private List<GameObject> slotsList = new List<GameObject>();
+    [SerializeField] private List<GameObject> slotsList;
 
     private int maxSortingBy = 2;
     private int sortingBy; // used as a carrier for info on how to sort
@@ -31,7 +31,7 @@ public class InvFront : MonoBehaviour
 
     private IEnumerator MakeSlots()
     {
-        var isCallbackDone = false;
+        bool isCallbackDone = false;
         _store.GetAllGameFurniture(result =>
         {
             items = result;
@@ -39,11 +39,14 @@ public class InvFront : MonoBehaviour
         });
         yield return new WaitUntil(() => isCallbackDone);
 
+        int i = 1;
         foreach (GameFurniture item in items)
         {
             GameObject newObject = Instantiate(invSlot, content);
             newObject.GetComponent<InvSlot>().contains = item;
+            newObject.name = item.Name;
             slotsList.Add(newObject);
+            i++;
         }
     }
 
@@ -68,11 +71,6 @@ public class InvFront : MonoBehaviour
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
-    }
-
-    private void ReOrderChildren()
-    {
-
     }
 
     public void SlotInformation()
