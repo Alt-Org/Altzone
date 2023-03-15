@@ -30,7 +30,7 @@ namespace Altzone.Scripts.Model
             };
         }
 
-        internal const int CustomCharactersVersion = 4;
+        internal const int CustomCharactersVersion = 5;
 
         /// <summary>
         /// Player custom character classes are created by the player itself (or given to the player by the game).<br />
