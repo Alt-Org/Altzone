@@ -61,11 +61,11 @@ public class InvFront : MonoBehaviour
         List<GameObject> reSlots = slotsList;
         int forVal = reSlots.Count;
 
+        // Depending on the value of sortingBy, orders reSlots to the wanted order which will be fed forward
         switch (sortingBy)
         {
             case 0:
                 sortText.text = "Sorted by: Alphabet";
-                //slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Name);
                 for (int a = 0; a < forVal; a++)
                 {
                     reSlots.Sort((GameObject t1, GameObject t2) =>
@@ -76,7 +76,6 @@ public class InvFront : MonoBehaviour
                 break;
             case 1:
                 sortText.text = "Sorted by: Weight";
-                //slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Weight);
                 for (int a = 0; a < forVal; a++)
                 {
                     reSlots.Sort((GameObject t1, GameObject t2) =>
@@ -87,7 +86,6 @@ public class InvFront : MonoBehaviour
                 break;
             case 2:
                 sortText.text = "Sorted by: Material?";
-                //slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Material);
                 for (int a = 0; a < forVal; a++)
                 {
                     reSlots.Sort((GameObject t1, GameObject t2) =>
@@ -99,11 +97,21 @@ public class InvFront : MonoBehaviour
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
 
+        // Gets the order of objects in reSlots and sets the slots to that order
         for (int i = 0; i < forVal; ++i)
         {
             Undo.SetTransformParent(reSlots[i].transform, reSlots[i].transform.parent, "Sort Children");
             reSlots[i].transform.SetSiblingIndex(i);
         }
+
+        // If more sorts are needed : 
+        // for (int a = 0; a < forVal; a++)
+        // {
+        //       reSlots.Sort((GameObject t1, GameObject t2) =>
+        //       {
+        //           return t1.GetComponent<"StringContainingScript">()."StringName".CompareTo(t2.GetComponent<"StringContainingScript">()."StringName");
+        //       });
+        // }
     }
 
     public void SlotInformation()
@@ -114,28 +122,6 @@ public class InvFront : MonoBehaviour
         }
         catch { /* Slot is empty */ }
     }
-
-    //private void SortByString()
-    //{
-    //    List<Transform> reSlots = ToTransforms(slotsList);
-    //    int forVal = reSlots.Count;
-    //    for (int a = 0; a < forVal; a++) { reSlots.Sort((Transform t1, Transform t2) => { return t1.name.CompareTo(t2.name); }); }
-    //    for (int i = 0; i < forVal; ++i)
-    //    {
-    //        Undo.SetTransformParent(reSlots[i], reSlots[i].parent, "Sort Children");
-    //        reSlots[i].SetSiblingIndex(i);
-    //    }
-    //}
-
-    //private List<Transform> ToTransforms(List<GameObject> objects)
-    //{
-    //    List<Transform> result = new List<Transform>();
-    //    foreach(GameObject obj in objects)
-    //    {
-    //        result.Add(obj.transform);
-    //    }
-    //    return result;
-    //}
 
     //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
 
