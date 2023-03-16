@@ -12,7 +12,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Vector2 endPosition;
         private Vector2 _currentPosition;
         private bool _touching;
-        [SerializeField] private bool _canSlide;
+        private bool _isSliding;
+        private bool _canSlide;
 
         [SerializeField] private GameObject _slidingUI;
         
@@ -42,7 +43,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             if(_canSlide && _currentPosition.x > startPosition.x + 50 ||
             _canSlide && _currentPosition.x < startPosition.x - 50 )
             {
-                _slidingUI.transform.position = Vector3.MoveTowards(_slidingUI.transform.position, new Vector3(_currentPosition.x - startPosition.x, 0, 0), 2000 * Time.deltaTime);
+                _isSliding = true;
                 return;
             }
         }
@@ -69,7 +70,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     windowManager.ShowWindow(_prevNaviTarget);
                 }
                 _touching = false;
-                _canSlide = false;
+                _isSliding = false;
             }
         }
 
@@ -78,15 +79,19 @@ namespace MenuUi.Scripts.SwipeNavigation
             if (_touching == true)
             {
                 _currentPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
-                if(startPosition.y + _YdistanceToNotSwitch !< _currentPosition.y && startPosition.y - _YdistanceToNotSwitch !> _currentPosition.y)
-                {
-                    
-                }
-                else
+                if(startPosition.y - _YdistanceToNotSwitch !< _currentPosition.y && startPosition.y + _YdistanceToNotSwitch !> _currentPosition.y)
                 {
                     _canSlide = true;
                 }
+                else
+                {
+                    _canSlide = false;
+                }
                 
+            }
+            if (_isSliding)
+            {
+                _slidingUI.transform.position = Vector3.MoveTowards(_slidingUI.transform.position, new Vector3(_currentPosition.x - startPosition.x, 0, 0), 2000 * Time.deltaTime);
             }
             slideAnimation();
         }
