@@ -249,11 +249,11 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
-            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.CharacterClassId == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return even character class has been deleted.
-                characterClass = new CharacterClass(customCharacter.CharacterClassId, "deleted", (Defence)1, 1, 1, 1, 1);
+                characterClass = new CharacterClass(customCharacter.CharacterClassId, (Defence)1,"deleted",  1, 1, 1, 1);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }

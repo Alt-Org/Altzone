@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model
     /// </summary>
     internal static class CreateDefaultModels
     {
-        internal const int CharacterClassesVersion = 1;
+        internal const int CharacterClassesVersion = 2;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
@@ -20,13 +20,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(1, "Koulukiusaaja", Defence.Desensitisation, 3, 9, 7, 3),
-                new(2, "Vitsiniekka", Defence.Deflection, 9, 3, 3, 4),
-                new(3, "Pappi", Defence.Introjection, 5, 5, 4, 4),
-                new(4, "Taiteilija", Defence.Projection, 4, 2, 9, 5),
-                new(5, "Hodariläski", Defence.Retroflection, 3, 7, 2, 9),
-                new(6, "Älykkö", Defence.Egotism, 6, 2, 6, 5),
-                new(7, "Tytöt", Defence.Confluence, 5, 6, 2, 6)
+                new(1, Defence.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
+                new(2, Defence.Deflection, "Vitsiniekka", 9, 3, 3, 4),
+                new(3, Defence.Introjection, "Pappi", 5, 5, 4, 4),
+                new(4, Defence.Projection, "Taiteilija", 4, 2, 9, 5),
+                new(5, Defence.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new(6, Defence.Egotism, "Älykkö", 6, 2, 6, 5),
+                new(7, Defence.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
 

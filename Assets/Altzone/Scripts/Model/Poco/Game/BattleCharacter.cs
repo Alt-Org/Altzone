@@ -1,3 +1,5 @@
+using UnityEngine.Assertions;
+
 namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
@@ -36,9 +38,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
         {
+            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.CharacterClassId, "CharacterClassId mismatch");
             return new BattleCharacter(
                 customCharacter.CharacterClassId, customCharacter.Name,
-                characterClass.Id, characterClass.Name,
+                characterClass.CharacterClassId, characterClass.Name,
                 customCharacter.UnityKey,
                 (Defence)characterClass.Defence,
                 customCharacter.Speed + characterClass.Speed,

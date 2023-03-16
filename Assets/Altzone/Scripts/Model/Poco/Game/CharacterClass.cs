@@ -9,19 +9,19 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        public int Id;
-        public string Name;
+        public int CharacterClassId;
         public Defence MainDefence;
+        public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CharacterClass(int id, string name, Defence mainDefence, int speed, int resistance, int attack, int defence)
+        public CharacterClass(int characterClassId, Defence mainDefence, string name, int speed, int resistance, int attack, int defence)
         {
-            Id = id;
-            Name = name;
+            CharacterClassId = characterClassId;
             MainDefence = mainDefence;
+            Name = name;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -30,7 +30,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(MainDefence)}: {MainDefence}" +
+            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(MainDefence)}: {MainDefence}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }
