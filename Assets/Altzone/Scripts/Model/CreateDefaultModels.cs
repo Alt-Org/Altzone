@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model
     /// </summary>
     internal static class CreateDefaultModels
     {
-        internal const int CharacterClassesVersion = 2;
+        internal const int CharacterClassesVersion = 3;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.

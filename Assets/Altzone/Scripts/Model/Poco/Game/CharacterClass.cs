@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -10,17 +11,17 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class CharacterClass
     {
         public int CharacterClassId;
-        public Defence MainDefence;
+        public Defence DefenceClass;
         public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CharacterClass(int characterClassId, Defence mainDefence, string name, int speed, int resistance, int attack, int defence)
+        public CharacterClass(int characterClassId, Defence defenceClass, string name, int speed, int resistance, int attack, int defence)
         {
             CharacterClassId = characterClassId;
-            MainDefence = mainDefence;
+            DefenceClass = defenceClass;
             Name = name;
             Speed = speed;
             Resistance = resistance;
@@ -30,7 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override string ToString()
         {
-            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(MainDefence)}: {MainDefence}, {nameof(Name)}: {Name}" +
+            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(DefenceClass)}: {DefenceClass}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }
