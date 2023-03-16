@@ -69,27 +69,25 @@ namespace MenuUi.Scripts.SwipeNavigation
                     windowManager.ShowWindow(_prevNaviTarget);
                 }
                 _touching = false;
-                _canSlide = true;
+                _canSlide = false;
             }
         }
 
         private void Update()
         {
-
             if (_touching == true)
             {
                 _currentPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
-                if(startPosition.y - _YdistanceToNotSwitch !< _currentPosition.y && startPosition.y + _YdistanceToNotSwitch !> _currentPosition.y)
+                if(startPosition.y + _YdistanceToNotSwitch !< _currentPosition.y && startPosition.y - _YdistanceToNotSwitch !> _currentPosition.y)
                 {
                     
                 }
                 else
                 {
-                    _canSlide = false;
+                    _canSlide = true;
                 }
-
+                
             }
-            
             slideAnimation();
         }
     }
