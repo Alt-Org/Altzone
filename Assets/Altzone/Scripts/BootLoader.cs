@@ -29,6 +29,35 @@ namespace Altzone.Scripts
             UnityEngine.Debug.Log(startupMessage);
             PrepareDevice();
             UnitySingleton.CreateStaticSingleton<ServiceLoader>();
+            PlatformInfo();
+        }
+
+        /// <summary>
+        /// Throw error is platform is not known, supported or tested. 
+        /// </summary>
+        /// <remarks>
+        /// https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
+        /// </remarks>
+        private static void PlatformInfo()
+        {
+#if UNITY_EDITOR
+            return;
+#elif UNITY_STANDALONE_WIN
+            return;
+#elif UNITY_STANDALONE_LINUX
+            return;
+#elif UNITY_STANDALONE_OSX
+            return;
+#elif UNITY_ANDROID
+            return;
+#elif UNITY_IOS
+            return;
+#elif UNITY_WEBGL
+            return;
+#else
+            // This is 'harmless' but gets logged into analytics system for resolving.
+            throw new UnityException($"Platform {Application.platform} is not supported or tested");
+#endif
         }
 
         private static void PrepareLocalTesting()
@@ -39,7 +68,7 @@ namespace Altzone.Scripts
 
         private static void PrepareDevice()
         {
-            // Nothing to do here, ServiceLoader & co takes care of things for now.
+            // Nothing special to do here, ServiceLoader & co takes care of things for now.
         }
 
         private static void SetupLogging()
