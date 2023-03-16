@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -22,7 +21,7 @@ namespace Altzone.Scripts
         }
 
         private const string StorageFilename = "LocalModels.json";
-        
+
         private static DataStore _instance;
 
         /// <summary>
