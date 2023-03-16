@@ -100,12 +100,11 @@ public class InvFront : MonoBehaviour
         // Gets the order of objects in reSlots and sets the slots to that order
         for (int i = 0; i < forVal; ++i)
         {
-            Undo.SetTransformParent(reSlots[i].transform, reSlots[i].transform.parent, "Sort Children");
             reSlots[i].transform.SetSiblingIndex(i);
         }
 
         // If more sorts are needed : 
-        // for (int a = 0; a < forVal; a++)
+        // for (int a = 0; a < "ListLenghtInt"; a++)
         // {
         //       reSlots.Sort((GameObject t1, GameObject t2) =>
         //       {
@@ -116,11 +115,7 @@ public class InvFront : MonoBehaviour
 
     public void SlotInformation()
     {
-        try
-        {
-            //IInventoryItem item = 
-        }
-        catch { /* Slot is empty */ }
+
     }
 
     //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
@@ -128,8 +123,8 @@ public class InvFront : MonoBehaviour
     // Task List
     // - Visible Inventory (Done)
     // - Sorting (Done)
-    // - Infinite capacity possibility (Scroll down)
-    // - Reactive Scaling (Done)
+    // - Infinite capacity possibility (Done)
+    // - Reactive Scaling (Done?)
     // - Information Panel Instantiation
     // - Information Panel information
 
