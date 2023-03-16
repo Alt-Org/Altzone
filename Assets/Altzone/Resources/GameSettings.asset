@@ -15,11 +15,12 @@ MonoBehaviour:
   _constants:
     _furniturePrefabFolder: Prefabs/Furniture
   _variables:
+    _angleLimit: 45
     _playerMoveSpeedMultiplier: 7
     _playerAttackMultiplier: 7
     _ballSpeedCompensation: 0.2
     _shieldResistance: 3
-    _shieldDeformDelay: 0.1
+    _shieldDeformDelay: 0.3
     _playerMovementNetworkDelay: 0.1
   _playerPrefabs:
     _playerPrefabs:

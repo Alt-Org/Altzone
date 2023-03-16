@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8937611941576476504}
   m_Layer: 0
   m_Name: Pickup
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d86e41d81ec448438c14ac9436f5bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DiamondCount: 0
   TeamDiamonds: {fileID: 0}
+  TeamDiamondCount: {fileID: 0}
 --- !u!1 &478594815964907735
 GameObject:
   m_ObjectHideFlags: 0
