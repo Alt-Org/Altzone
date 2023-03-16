@@ -16,7 +16,7 @@ public class Raid_Timer : MonoBehaviour
     public bool HasLimit;
     public float TimerLimit;
 
-    [Header("Gormat settings")]
+    [Header("Format settings")]
     public bool HasFormat;
     public TimerFormat Format;
     private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
@@ -28,7 +28,6 @@ public class Raid_Timer : MonoBehaviour
         TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
     }
 
-    // Update is called once per frame
     void Update()
     {
         CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
