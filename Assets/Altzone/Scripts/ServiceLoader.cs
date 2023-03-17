@@ -94,11 +94,6 @@ namespace Altzone.Scripts
 
             #endregion
 
-            if (!AppPlatform.IsEditor)
-            {
-                return;
-            }
-
             #region Development data in this section
 
             if (store.CustomCharactersVersion != CreateDefaultModels.CustomCharactersVersion)
