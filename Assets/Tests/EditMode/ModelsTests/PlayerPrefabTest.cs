@@ -18,26 +18,15 @@ namespace Tests.EditMode.ModelsTests
             var store = Storefront.Get();
             store.GetPlayerData(playerGuid, playerData =>
             {
-                var currentCharacterModelId = playerData.CurrentCustomCharacterId;
-                var prefabId = 0;
-                try
-                {
-                    store.GetBattleCharacterTest(currentCharacterModelId, battleCharacter =>
-                    {
-                        Debug.Log($"{battleCharacter}");
-                        Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
-                        prefabId = int.Parse(battleCharacter.UnityKey);
-                        Assert.IsTrue(prefabId >= 0);
-                        var playerPrefabs = gameConfig.PlayerPrefabs;
-                        var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
-                        Assert.IsNotNull(playerPrefab);
-                    });
-                }
-                catch (Exception e)
-                {
-                    Debug.Log($"GetBattleCharacter failed {e.Message}");
-                    Assert.Fail("Check that CustomCharacterModels exist or restart UNITY to reset Storefront");
-                }
+                var battleCharacter = playerData.BattleCharacter;
+                Assert.IsNotNull(battleCharacter);
+                Debug.Log($"{battleCharacter}");
+                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
+                var prefabId = int.Parse(battleCharacter.UnityKey);
+                Assert.IsTrue(prefabId >= 0);
+                var playerPrefabs = gameConfig.PlayerPrefabs;
+                var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                Assert.IsNotNull(playerPrefab);
             });
         }
 
