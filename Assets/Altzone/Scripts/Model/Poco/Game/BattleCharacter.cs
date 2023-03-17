@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
-    /// Gameplay character for Battle.
+    /// Non-mutable gameplay character for Battle.
     /// </summary>
     /// <remarks>
     /// This is a combination of <c>CustomCharacter</c> and its related <c>CharacterClass</c>
