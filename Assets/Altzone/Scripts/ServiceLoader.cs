@@ -43,7 +43,8 @@ namespace Altzone.Scripts
                 if (playerData == null)
                 {
                     // Create new player for us with first custom character we have - if any.
-                    store.GetAllCustomCharacters(customCharacters =>
+                    // This is temporary solution until we have something more robust way to create first player.
+                    store.GetAllCustomCharactersTest(customCharacters =>
                     {
                         var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
                         playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
@@ -121,14 +122,13 @@ namespace Altzone.Scripts
         {
             store.GetAllCharacterClasses(characterClasses =>
             {
-                Debug.Log($"characterClasses {characterClasses.Count} ver {store.CharacterClassesVersion}");
-                store.GetAllCustomCharacters(customCharacters =>
+                store.GetAllCustomCharactersTest(customCharacters =>
                 {
                     var playerPrefabs = GameConfig.Get().PlayerPrefabs;
                     var isCustomCharactersValid = true;
                     foreach (var customCharacter in customCharacters)
                     {
-                        if (characterClasses.All(x => x.Id != customCharacter.CharacterClassId))
+                        if (characterClasses.All(x => x.CharacterClassId != customCharacter.CharacterClassId))
                         {
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");
@@ -137,13 +137,17 @@ namespace Altzone.Scripts
                         var prefabIndex = int.Parse(customCharacter.UnityKey);
                         if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
                         {
+                            if (isCustomCharactersValid)
+                            {
+                                Debug.Log($"characterClasses {characterClasses.Count} ver {store.CharacterClassesVersion}");
+                                Debug.Log($"customCharacters {customCharacters.Count} ver {store.CustomCharactersVersion}");
+                            }
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
                                              $"does not have PlayerPrefab {customCharacter.UnityKey}");
                             isCustomCharactersValid = false;
                         }
                     }
-                    Debug.Log($"customCharacters {customCharacters.Count} ver {store.CustomCharactersVersion}");
-                    store.GetAllBattleCharacters(battleCharacters =>
+                    store.GetAllBattleCharactersTest(battleCharacters =>
                     {
                         Debug.Log($"battleCharacters {battleCharacters.Count}");
                         if (isCustomCharactersValid)

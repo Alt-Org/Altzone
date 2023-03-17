@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -165,7 +166,13 @@ namespace Altzone.Scripts.Model
 
         internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
-            callback(_storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier));
+            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
+            if (playerData != null)
+            {
+                // This storage is by no means a complete object model we want to serve.
+                playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
+            }
+            callback(playerData);
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -225,21 +232,31 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        #region BattleCharacter
+        #region Temporary Test API
 
-        internal void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback)
+        internal void GetAllCustomCharacterModelsTest(Action<List<CustomCharacter>> callback)
+        {
+            callback(_storageData.CustomCharacters);
+        }
+
+        internal void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
 
-        internal void GetAllBattleCharacters(Action<List<BattleCharacter>> callback)
+        internal void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback)
+        {
+            callback(_GetAllBattleCharacters());
+        }
+
+        private List<BattleCharacter> _GetAllBattleCharacters()
         {
             var battleCharacters = new List<BattleCharacter>();
             foreach (var customCharacter in _storageData.CustomCharacters)
             {
                 battleCharacters.Add(_GetBattleCharacter(customCharacter.Id));
             }
-            callback(battleCharacters);
+            return battleCharacters;
         }
 
         private BattleCharacter _GetBattleCharacter(int customCharacterId)
@@ -249,11 +266,11 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
-            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.CharacterClassId == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return even character class has been deleted.
-                characterClass = new CharacterClass(customCharacter.CharacterClassId, "deleted", (Defence)1, 1, 1, 1, 1);
+                characterClass = new CharacterClass(customCharacter.CharacterClassId, (Defence)1, "deleted", 1, 1, 1, 1);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
@@ -262,19 +279,14 @@ namespace Altzone.Scripts.Model
 
         #region Game non-mutable internal static data created by game designers
 
-        internal void GetAllCharacterClassModels(Action<List<CharacterClass>> callback)
+        internal void GetAllCharacterClassModels(Action<ReadOnlyCollection<CharacterClass>> callback)
         {
-            callback(_storageData.CharacterClasses);
+            callback(new ReadOnlyCollection<CharacterClass>(_storageData.CharacterClasses));
         }
 
-        internal void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
+        internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            callback(_storageData.CustomCharacters);
-        }
-
-        internal void GetAllGameFurniture(Action<List<GameFurniture>> callback)
-        {
-            callback(_storageData.GameFurniture);
+            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
         #endregion
@@ -289,7 +301,7 @@ namespace Altzone.Scripts.Model
         }
 
         internal void Set(List<CustomCharacter> customCharacters, Action<bool> callback)
-        { 
+        {
             _storageData.CustomCharacters = customCharacters;
             SaveStorage(_storageData, _storagePath);
             callback?.Invoke(true);
@@ -303,6 +315,7 @@ namespace Altzone.Scripts.Model
         }
 
         #endregion
+
         private static StorageData CreateDefaultStorage(string storagePath)
         {
             var storageData = new StorageData

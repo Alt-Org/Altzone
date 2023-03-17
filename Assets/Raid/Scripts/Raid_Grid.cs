@@ -7,6 +7,7 @@ using TMPro;
 
 public class Raid_Grid : MonoBehaviour
 {
+    public Sprite EmptyTile;
     public Sprite CoveredTile;
     public Sprite FlagTile;
     public Sprite SFurnitureSprite0;
@@ -129,6 +130,10 @@ public class Raid_Grid : MonoBehaviour
             {
                 StartCoroutine(RedMarkTiles(x, y));
             }
+            /*else if(!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Furniture)
+            {
+                raid_Tile.GetComponent<SpriteRenderer>().sprite = EmptyTile;
+            }*/
         }
         Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
     }

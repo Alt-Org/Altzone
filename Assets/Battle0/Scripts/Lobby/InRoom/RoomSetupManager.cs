@@ -96,19 +96,16 @@ namespace Battle0.Scripts.Lobby.InRoom
             var store = Storefront.Get();
             store.GetPlayerData(playerGuid, playerData =>
             {
-                var currentCharacterModelId = playerData.CurrentCustomCharacterId;
-                Storefront.Get().GetBattleCharacter(currentCharacterModelId, battleCharacter =>
+                var battleCharacter = playerData.BattleCharacter;
+                Debug.Log($"{battleCharacter}");
+                var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter, 0);
+                Debug.Log($"playerPos {playerPos} prefabIndex {prefabIndex}");
+                player.SetCustomProperties(new Hashtable
                 {
-                    Debug.Log($"{battleCharacter}");
-                    var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter, 0);
-                    Debug.Log($"playerPos {playerPos} prefabIndex {prefabIndex}");
-                    player.SetCustomProperties(new Hashtable
-                    {
-                        { PlayerPositionKey, playerPos },
-                        { PlayerMainSkillKey, prefabIndex }
-                    });
-                    UpdateStatus();
+                    { PlayerPositionKey, playerPos },
+                    { PlayerMainSkillKey, prefabIndex }
                 });
+                UpdateStatus();
             });
         }
 

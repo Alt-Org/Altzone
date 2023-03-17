@@ -22,7 +22,7 @@ namespace Tests.EditMode.ModelsTests
                 var prefabId = 0;
                 try
                 {
-                    store.GetBattleCharacter(currentCharacterModelId, battleCharacter =>
+                    store.GetBattleCharacterTest(currentCharacterModelId, battleCharacter =>
                     {
                         Debug.Log($"{battleCharacter}");
                         Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
@@ -46,7 +46,7 @@ namespace Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            Storefront.Get().GetAllBattleCharacters((battleCharacters =>
+            Storefront.Get().GetAllBattleCharactersTest(battleCharacters =>
             {
                 foreach (var battleCharacter in battleCharacters)
                 {
@@ -57,7 +57,7 @@ namespace Tests.EditMode.ModelsTests
                     var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
                     Assert.IsNotNull(playerPrefab);
                 }
-            }));
+            });
         }
     }
 }

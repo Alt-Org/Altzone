@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -9,19 +10,19 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        public int Id;
+        public int CharacterClassId;
+        public Defence DefenceClass;
         public string Name;
-        public Defence MainDefence;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CharacterClass(int id, string name, Defence mainDefence, int speed, int resistance, int attack, int defence)
+        public CharacterClass(int characterClassId, Defence defenceClass, string name, int speed, int resistance, int attack, int defence)
         {
-            Id = id;
+            CharacterClassId = characterClassId;
+            DefenceClass = defenceClass;
             Name = name;
-            MainDefence = mainDefence;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -30,7 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(MainDefence)}: {MainDefence}" +
+            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(DefenceClass)}: {DefenceClass}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }

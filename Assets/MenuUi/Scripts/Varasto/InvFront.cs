@@ -5,6 +5,7 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
+using UnityEditor;
 
 public class InvFront : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class InvFront : MonoBehaviour
         bool isCallbackDone = false;
         _store.GetAllGameFurniture(result =>
         {
-            items = result;
+            items = result.ToList();
             isCallbackDone = true;
         });
         yield return new WaitUntil(() => isCallbackDone);
@@ -48,38 +49,73 @@ public class InvFront : MonoBehaviour
             slotsList.Add(newObject);
             i++;
         }
+
+        //SortByString();
     }
 
     public void SortStored() // A very much hardcoded system for sorting 
     {
         if (sortingBy < maxSortingBy) { sortingBy++; }
-        else { sortingBy = 0;}
+        else { sortingBy = 0; }
 
+        List<GameObject> reSlots = slotsList;
+        int forVal = reSlots.Count;
+
+        // Depending on the value of sortingBy, orders reSlots to the wanted order which will be fed forward
         switch (sortingBy)
         {
             case 0:
                 sortText.text = "Sorted by: Alphabet";
-                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Name);
+                for (int a = 0; a < forVal; a++)
+                {
+                    reSlots.Sort((GameObject t1, GameObject t2) =>
+                    {
+                        return t1.GetComponent<InvSlot>().contains.Name.CompareTo(t2.GetComponent<InvSlot>().contains.Name);
+                    });
+                }
                 break;
             case 1:
                 sortText.text = "Sorted by: Weight";
-                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Weight);
+                for (int a = 0; a < forVal; a++)
+                {
+                    reSlots.Sort((GameObject t1, GameObject t2) =>
+                    {
+                        return t1.GetComponent<InvSlot>().contains.Weight.CompareTo(t2.GetComponent<InvSlot>().contains.Weight);
+                    });
+                }
                 break;
             case 2:
                 sortText.text = "Sorted by: Material?";
-                slotsList.OrderBy(x => x.GetComponent<InvSlot>().contains.Material);
+                for (int a = 0; a < forVal; a++)
+                {
+                    reSlots.Sort((GameObject t1, GameObject t2) =>
+                    {
+                        return t1.GetComponent<InvSlot>().contains.Material.CompareTo(t2.GetComponent<InvSlot>().contains.Material);
+                    });
+                }
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
+
+        // Gets the order of objects in reSlots and sets the slots to that order
+        for (int i = 0; i < forVal; ++i)
+        {
+            reSlots[i].transform.SetSiblingIndex(i);
+        }
+
+        // If more sorts are needed : 
+        // for (int a = 0; a < "ListLenghtInt"; a++)
+        // {
+        //       reSlots.Sort((GameObject t1, GameObject t2) =>
+        //       {
+        //           return t1.GetComponent<"StringContainingScript">()."StringName".CompareTo(t2.GetComponent<"StringContainingScript">()."StringName");
+        //       });
+        // }
     }
 
     public void SlotInformation()
     {
-        try
-        {
-            //IInventoryItem item = 
-        }
-        catch { /* Slot is empty */ }
+
     }
 
     //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
@@ -87,8 +123,8 @@ public class InvFront : MonoBehaviour
     // Task List
     // - Visible Inventory (Done)
     // - Sorting (Done)
-    // - Infinite capacity possibility (Scroll down)
-    // - Reactive Scaling (Done)
+    // - Infinite capacity possibility (Done)
+    // - Reactive Scaling (Done?)
     // - Information Panel Instantiation
     // - Information Panel information
 

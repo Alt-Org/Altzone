@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -22,7 +22,7 @@ namespace Altzone.Scripts
         }
 
         private const string StorageFilename = "LocalModels.json";
-        
+
         private static DataStore _instance;
 
         /// <summary>
@@ -58,18 +58,22 @@ namespace Altzone.Scripts
 
         public void SaveClanData(ClanData clanData, Action<ClanData> callback) => _localModels.SaveClanData(clanData, callback);
 
-        // Game
+        // Game static data
 
-        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
-            _localModels.GetBattleCharacter(customCharacterId, callback);
+        public void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
-        public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
+        public void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
 
-        public void GetAllCharacterClasses(Action<List<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
+        #endregion
 
-        public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
+        #region Temporary Test API
 
-        public void GetAllGameFurniture(Action<List<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
+        public void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback) =>
+            _localModels.GetBattleCharacterTest(customCharacterId, callback);
+
+        public void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharactersTest(callback);
+
+        public void GetAllCustomCharactersTest(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModelsTest(callback);
 
         #endregion
 

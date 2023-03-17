@@ -66,6 +66,8 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameVariables
     {
+        [Header("Battle"), Min(1), Tooltip("Ball movement and character turning is limited to certain angles")] public float _angleLimit;
+
         [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0), Tooltip("How far from shield collision should raycast take place to compensate for high speed")] public float _ballSpeedCompensation;

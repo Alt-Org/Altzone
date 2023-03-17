@@ -23,6 +23,7 @@ namespace Battle.Scripts.Battle.Players
         private int _shieldResistance;
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
+        private float _angleLimit;
 
         public static string PlayerName;
 
@@ -34,6 +35,7 @@ namespace Battle.Scripts.Battle.Players
             _shieldResistance = variables._shieldResistance;
             _shieldHitPoints = _shieldResistance;
             _shieldDeformDelay = variables._shieldDeformDelay;
+            _angleLimit = variables._angleLimit;
             _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
         }
 
@@ -68,7 +70,9 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActor.SetRotation(float angle)
         {
-            _geometryRoot.eulerAngles = new Vector3(0, 0, angle);
+            var multiplier = Mathf.Round (angle / _angleLimit);
+            var newAngle = _angleLimit * multiplier;
+            _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         void IPlayerActor.ShieldHit(int damage)

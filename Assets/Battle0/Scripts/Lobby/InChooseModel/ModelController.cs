@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -34,11 +34,9 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 _view.PlayerName = playerData.Name;
                 _view.ContinueButtonOnClick = ContinueButtonOnClick;
                 var currentCharacterId = playerData.CurrentCustomCharacterId;
-                Storefront.Get().GetAllBattleCharacters(characters =>
-                {
-                    characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-                    _view.SetCharacters(characters, currentCharacterId);
-                });
+                var characters = playerData.BattleCharacters.ToList();
+                characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+                _view.SetCharacters(characters, currentCharacterId);
             });
         }
 

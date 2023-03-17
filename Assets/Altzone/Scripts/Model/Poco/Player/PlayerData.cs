@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
@@ -12,7 +16,12 @@ namespace Altzone.Scripts.Model.Poco.Player
         public string Name;
         public int BackpackCapacity;
         public string UniqueIdentifier;
+        
+        public List<CustomCharacter> CustomCharacters { get; private set; }
 
+        public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
+        public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
+        
         public PlayerData(int id, int clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Id = id;
@@ -23,6 +32,12 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = uniqueIdentifier;
         }
 
+        internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
+        {
+            BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
+            CustomCharacters = new ReadOnlyCollection<CustomCharacter>(customCharacters).ToList();
+        }
+        
         public override string ToString()
         {
             return 
