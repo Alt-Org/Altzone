@@ -35,7 +35,7 @@ public class InvFront : MonoBehaviour
         bool isCallbackDone = false;
         _store.GetAllGameFurniture(result =>
         {
-            items = result;
+            items = result.ToList();
             isCallbackDone = true;
         });
         yield return new WaitUntil(() => isCallbackDone);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
@@ -51,24 +52,24 @@ namespace Altzone.Scripts
 
         public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
 
+        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
+            _localModels.GetBattleCharacter(customCharacterId, callback);
+
+        public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
+
+        public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
+
         // Clan
 
         public void GetClanData(int id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
 
         public void SaveClanData(ClanData clanData, Action<ClanData> callback) => _localModels.SaveClanData(clanData, callback);
 
-        // Game
+        // Game static data
 
-        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
-            _localModels.GetBattleCharacter(customCharacterId, callback);
+        public void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
-        public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
-
-        public void GetAllCharacterClasses(Action<List<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
-
-        public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
-
-        public void GetAllGameFurniture(Action<List<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
+        public void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
 
         #endregion
 
