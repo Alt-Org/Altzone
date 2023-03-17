@@ -15,10 +15,10 @@ public class InvFront : MonoBehaviour
     [Header("GameObjects")]
     [SerializeField] private Transform content;
     [SerializeField] private GameObject invSlot;
-    private List<GameFurniture> items;
     private DataStore _store;
 
-    [SerializeField] private List<GameObject> slotsList;
+    private List<GameFurniture> items;
+    private List<GameObject> slotsList = new List<GameObject>();
 
     private int maxSortingBy = 2;
     private int sortingBy; // used as a carrier for info on how to sort
@@ -27,10 +27,10 @@ public class InvFront : MonoBehaviour
         _store = Storefront.Get();
 
         sortingBy = -1; // So that the first sort style is Alphabet
-        StartCoroutine(MakeSlots());
+        StartCoroutine(SetInventory());
     }
 
-    private IEnumerator MakeSlots()
+    private IEnumerator SetInventory()
     {
         bool isCallbackDone = false;
         _store.GetAllGameFurniture(result =>
@@ -40,17 +40,40 @@ public class InvFront : MonoBehaviour
         });
         yield return new WaitUntil(() => isCallbackDone);
 
-        int i = 1;
-        foreach (GameFurniture item in items)
+        MakeSlots();
+
+        SetSlots();
+    }
+
+    private void MakeSlots()
+    {
+        for (int i = 0; i < items.Count; i++)
         {
-            GameObject newObject = Instantiate(invSlot, content);
-            newObject.GetComponent<InvSlot>().contains = item;
-            newObject.name = item.Name;
-            slotsList.Add(newObject);
+            slotsList.Add(Instantiate(invSlot, content));
+        }
+    }
+
+    private void SetSlots()
+    {
+        int i = 0;
+        foreach (GameFurniture furn in items)
+        {
+            GameObject toSet = slotsList[i];
+
+            // Icon - Not done
+            //toSet.Image slotIcon = transform.GetChild(0).GetComponent<Image>();
+
+            // Name
+            toSet.transform.GetChild(1).GetComponent<TMP_Text>().text = furn.Name;
+
+            // Weight
+            toSet.transform.GetChild(2).GetComponent<TMP_Text>().text = furn.Weight + " KG";
+
+            // Shape - Not done
+            //toSet.transform.GetChild(3).GetComponent<Image>().sprite = 
+
             i++;
         }
-
-        //SortByString();
     }
 
     public void SortStored() // A very much hardcoded system for sorting 
@@ -61,56 +84,25 @@ public class InvFront : MonoBehaviour
         List<GameObject> reSlots = slotsList;
         int forVal = reSlots.Count;
 
-        // Depending on the value of sortingBy, orders reSlots to the wanted order which will be fed forward
         switch (sortingBy)
         {
             case 0:
                 sortText.text = "Sorted by: Alphabet";
-                for (int a = 0; a < forVal; a++)
-                {
-                    reSlots.Sort((GameObject t1, GameObject t2) =>
-                    {
-                        return t1.GetComponent<InvSlot>().contains.Name.CompareTo(t2.GetComponent<InvSlot>().contains.Name);
-                    });
-                }
+                items.OrderBy(v => v.Name);
+                items.Sort((GameFurniture a, GameFurniture b) => { return a.Name.CompareTo(b.Name); });
                 break;
             case 1:
                 sortText.text = "Sorted by: Weight";
-                for (int a = 0; a < forVal; a++)
-                {
-                    reSlots.Sort((GameObject t1, GameObject t2) =>
-                    {
-                        return t1.GetComponent<InvSlot>().contains.Weight.CompareTo(t2.GetComponent<InvSlot>().contains.Weight);
-                    });
-                }
+                items.Sort((GameFurniture a, GameFurniture b) => { return a.Weight.CompareTo(b.Weight); });
                 break;
             case 2:
-                sortText.text = "Sorted by: Material?";
-                for (int a = 0; a < forVal; a++)
-                {
-                    reSlots.Sort((GameObject t1, GameObject t2) =>
-                    {
-                        return t1.GetComponent<InvSlot>().contains.Material.CompareTo(t2.GetComponent<InvSlot>().contains.Material);
-                    });
-                }
+                sortText.text = "Sorted by: Material";
+                items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
                 break;
             default: sortText.text = "Something broke"; break; // Just as a safety measure
         }
 
-        // Gets the order of objects in reSlots and sets the slots to that order
-        for (int i = 0; i < forVal; ++i)
-        {
-            reSlots[i].transform.SetSiblingIndex(i);
-        }
-
-        // If more sorts are needed : 
-        // for (int a = 0; a < "ListLenghtInt"; a++)
-        // {
-        //       reSlots.Sort((GameObject t1, GameObject t2) =>
-        //       {
-        //           return t1.GetComponent<"StringContainingScript">()."StringName".CompareTo(t2.GetComponent<"StringContainingScript">()."StringName");
-        //       });
-        // }
+        SetSlots();
     }
 
     public void SlotInformation()
