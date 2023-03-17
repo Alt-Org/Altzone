@@ -23,6 +23,8 @@ namespace Battle.Scripts.Battle.Players
         private int _teamNumber;
         private double _movementDelay;
 
+        public string PlayerName;
+
         private bool _isLocal;
 
         [Header ("Testing")]
@@ -44,6 +46,8 @@ namespace Battle.Scripts.Battle.Players
         private IPlayerActor InstantiatePlayerPrefab(Player player)
         {
             var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
+            PlayerName = playerTag;
+            Debug.Log($"heoooo22{playerTag}");
             name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
             {

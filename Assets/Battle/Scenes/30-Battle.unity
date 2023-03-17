@@ -871,15 +871,15 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577966834}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 668191976}
   - {fileID: 233460026}
-  m_Father: {fileID: 1715143004}
-  m_RootOrder: 3
+  m_Father: {fileID: 1563842759}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1509,15 +1509,15 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 740033386}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1860009745}
   - {fileID: 1835597693}
-  m_Father: {fileID: 1715143004}
-  m_RootOrder: 4
+  m_Father: {fileID: 1563842759}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2162,6 +2162,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d1b57febbfb159e41849c41fc6074286, type: 3}
+--- !u!1 &1563842758
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1563842759}
+  m_Layer: 5
+  m_Name: DiamondCounters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1563842759
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1563842758}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 577966835}
+  - {fileID: 740033387}
+  m_Father: {fileID: 1715143004}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1595985728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2418,8 +2456,7 @@ RectTransform:
   - {fileID: 1070883256}
   - {fileID: 31162646}
   - {fileID: 671105155}
-  - {fileID: 577966835}
-  - {fileID: 740033387}
+  - {fileID: 1563842759}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3590,6 +3627,21 @@ PrefabInstance:
       propertyPath: GridOverlay
       value: 
       objectReference: {fileID: 598841265}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: BetaDiamonds
+      value: 
+      objectReference: {fileID: 577966835}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: AlphaDiamonds
+      value: 
+      objectReference: {fileID: 740033387}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: DiamondCounters
+      value: 
+      objectReference: {fileID: 1563842759}
     - target: {fileID: 5756210811780550961, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
       propertyPath: m_RootOrder
@@ -3650,7 +3702,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 310529683, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
+    - {fileID: 803708654618171327, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
+    - {fileID: 3680074202352173382, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
 --- !u!1001 &7192120351933927697
 PrefabInstance:
