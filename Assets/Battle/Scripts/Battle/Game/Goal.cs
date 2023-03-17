@@ -29,9 +29,16 @@ namespace Battle.Scripts.Battle.Game
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.CurrentRoom.Players.Count > TestLimit)      // && PhotonNetwork.IsMasterClient
+            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.CurrentRoom.Players.Count > TestLimit && PhotonNetwork.IsMasterClient)      // && PhotonNetwork.IsMasterClient
             {
-                if (PhotonNetwork.InRoom)
+                transform.GetComponent<PhotonView>().RPC("GoalRPC",  RpcTarget.All);
+            }
+        }
+        
+        [PunRPC]
+        private void GoalRPC()
+        {
+            if (PhotonNetwork.InRoom)
                 {
                     //_WallCollider.isTrigger = true;
                     var player = PhotonNetwork.LocalPlayer;
@@ -48,10 +55,8 @@ namespace Battle.Scripts.Battle.Game
                         LoseText.SetActive(true);
                     }
                     LobbyButton.SetActive(true);
-                }   
-            }
+                }  
         }
-        
         /*private void Update()
         {
             if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > TestLimit) {
