@@ -51,7 +51,7 @@ namespace Altzone.Scripts.Model
             };
         }
 
-        internal const int GameFurnitureVersion = 2;
+        internal const int GameFurnitureVersion = 3;
 
         /// <summary>
         /// Game Furniture is based from data in Google Sheets.<br />
@@ -87,7 +87,7 @@ namespace Altzone.Scripts.Model
                 }
                 var furniture = new GameFurniture
                 {
-                    Id = ParseInt(tokens[0]),
+                    Id = tokens[0],
                     Name = tokens[1],
                     Shape = tokens[2],
                     Weight = ParseDouble(tokens[3]),
@@ -96,31 +96,19 @@ namespace Altzone.Scripts.Model
                     UnityKey = tokens[6],
                     Filename = tokens[7],
                 };
-                if (furniture.Id == 0)
-                {
-                    furniture.Id = gameFurniture.Count + 1;
-                }
                 if (string.IsNullOrWhiteSpace(furniture.Name))
                 {
-                    furniture.Name = $"Furniture-{furniture.Id}";
+                    furniture.Name = $"Furniture-{101 + gameFurniture.Count}";
                 }
+                if (string.IsNullOrWhiteSpace(furniture.Id))
+                {
+                    furniture.Id = furniture.Name;
+                }
+                furniture.Id = furniture.Id.Trim().ToLower(cultureInfo).Replace(" ", ".");
                 Debug.Log(furniture.ToString());
                 gameFurniture.Add(furniture);
             }
             return gameFurniture;
-
-            int ParseInt(string token)
-            {
-                if (token.Contains(','))
-                {
-                    token = token.Replace(',', '.');
-                }
-                if (int.TryParse(token, NumberStyles.None, cultureInfo, out var number))
-                {
-                    return number;
-                }
-                return 0;
-            }
 
             double ParseDouble(string token)
             {

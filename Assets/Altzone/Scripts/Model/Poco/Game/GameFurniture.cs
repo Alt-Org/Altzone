@@ -13,7 +13,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class GameFurniture
     {
-        public int Id;
+        public string Id;
         public string Name;
         public string Shape;
         public double Weight;
