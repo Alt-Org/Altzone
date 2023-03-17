@@ -202,7 +202,7 @@ namespace Altzone.Scripts.Model
 
         #region ClanData
 
-        internal void GetClanData(int id, Action<ClanData> callback)
+        internal void GetClanData(string id, Action<ClanData> callback)
         {
             callback(_storageData.ClanData.FirstOrDefault(x => x.Id == id));
         }
@@ -216,16 +216,14 @@ namespace Altzone.Scripts.Model
             }
             else
             {
-                if (clanData.Id == 0)
+                if (string.IsNullOrWhiteSpace(clanData.Id))
                 {
-                    var id = _storageData.ClanData.Count == 0
-                        ? 1
-                        : _storageData.ClanData.Max(x => x.Id) + 1;
-                    clanData.Id = id;
+                    var id = _storageData.ClanData.Count + 1001;
+                    clanData.Id = id.ToString();
                 }
                 _storageData.ClanData.Add(clanData);
             }
-            Debug.Log($"playerData {clanData}");
+            Debug.Log($"clanData {clanData}");
             SaveStorage(_storageData, _storagePath);
             callback?.Invoke(clanData);
         }

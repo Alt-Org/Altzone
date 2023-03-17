@@ -7,7 +7,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanData
     {
-        public int Id;
+        public string Id;
         public string Name;
         public string Tag;
         public int GameCoins;
@@ -16,6 +16,14 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
+
+        public ClanData(string id, string name, string tag, int gameCoins)
+        {
+            Id = id;
+            Name = name;
+            Tag = tag;
+            GameCoins = gameCoins;
+        }
 
         public override string ToString()
         {

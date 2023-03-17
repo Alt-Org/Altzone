@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
@@ -16,20 +17,26 @@ namespace Altzone.Scripts
     [DefaultExecutionOrder(-100)]
     public class ServiceLoader : MonoBehaviour
     {
-        private void Start()
+        public bool isReady;
+
+        private IEnumerator Start()
         {
-            Debug.Log($"{name}");
+            Debug.Log($"start");
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
             var store = Storefront.Get();
             var gameConfig = GameConfig.Get();
-            CheckPlayerDataAndState(store, gameConfig);
-            CheckDataStoreDataAndState(store);
-            ShowDebugGameInfo(store);
+            yield return StartCoroutine(CheckDataStoreDataAndState(store));
+            yield return StartCoroutine(CheckPlayerDataAndState(store, gameConfig));
+            CheckGameInfoDebugOnly(store);
+            Debug.Log($"exit");
+            isReady = true;
         }
 
-        private static void CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
+        private static IEnumerator CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
         {
+            Debug.Log($"start");
+
             var playerSettings = gameConfig.PlayerSettings;
             if (playerSettings.IsFirstTimePlaying)
             {
@@ -37,33 +44,57 @@ namespace Altzone.Scripts
                 // TODO: this might have some effect to game server operations to set it up correctly for first time!? 
                 playerSettings.IsFirstTimePlaying = false;
             }
+
+            // Get current player.
             var playerGuid = playerSettings.PlayerGuid;
-            store.GetPlayerData(playerGuid, playerData =>
+            PlayerData playerData = null;
+            var isCallbackDone = false;
+            store.GetPlayerData(playerGuid, foundPlayerData =>
             {
-                if (playerData == null)
-                {
-                    // Create new player for us with first custom character we have - if any.
-                    // This is temporary solution until we have something more robust way to create first player.
-                    store.GetAllCustomCharactersTest(customCharacters =>
-                    {
-                        var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
-                        playerData = new PlayerData(0, 0, currentCustomCharacterId, "Player", 0, playerGuid);
-                        store.SavePlayerData(playerData, updatedPlayerData => { Debug.Log($"Create player {updatedPlayerData}"); });
-                    });
-                }
-                else
-                {
-                    Debug.Log($"Load player {playerData}");
-                }
+                playerData = foundPlayerData;
+                isCallbackDone = true;
             });
+            yield return new WaitUntil(() => isCallbackDone);
+
+            if (playerData == null || store.PlayerDataVersion != CreateDefaultModels.PlayerDataVersion)
+            {
+                isCallbackDone = false;
+                store.GetAllCustomCharactersTest(customCharacters =>
+                {
+                    var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                    if (playerData == null)
+                    {
+                        playerData = CreateDefaultModels.CreatePlayerData(playerGuid, "abba", currentCustomCharacterId);
+                    }
+                    else
+                    {
+                        playerData.CurrentCustomCharacterId = currentCustomCharacterId;
+                    }
+                    store.SavePlayerData(playerData, updatedPlayerData =>
+                    {
+                        playerData = updatedPlayerData;
+                        store.PlayerDataVersion = CreateDefaultModels.PlayerDataVersion;
+                        isCallbackDone = true;
+                    });
+                });
+            }
+            yield return new WaitUntil(() => isCallbackDone);
+            Debug.Log($"PlayerData {playerData}");
+            Assert.AreEqual(CreateDefaultModels.PlayerDataVersion, store.PlayerDataVersion);
+
+            Debug.Log($"exit");
         }
 
-        private static void CheckDataStoreDataAndState(DataStore store)
+        private static IEnumerator CheckDataStoreDataAndState(DataStore store)
         {
+            Debug.Log($"start");
+            var isCallbackDone = true;
+
             #region Production data in this section
 
             if (store.CharacterClassesVersion != CreateDefaultModels.CharacterClassesVersion)
             {
+                isCallbackDone = false;
                 // Replace default CharacterClass models.
                 Debug.LogWarning($"Update CharacterClassesVersion {store.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
                 store.Set(CreateDefaultModels.CreateCharacterClasses(), success =>
@@ -72,11 +103,15 @@ namespace Altzone.Scripts
                     {
                         store.CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion;
                     }
+                    isCallbackDone = true;
                 });
-                
             }
+            yield return new WaitUntil(() => isCallbackDone);
+            Assert.AreEqual(CreateDefaultModels.CharacterClassesVersion, store.CharacterClassesVersion);
+
             if (store.GameFurnitureVersion != CreateDefaultModels.GameFurnitureVersion)
             {
+                isCallbackDone = false;
                 // Replace default CharacterClass models.
                 Debug.LogWarning($"Update GameFurniture {store.GameFurnitureVersion} <- {CreateDefaultModels.GameFurnitureVersion}");
                 store.Set(CreateDefaultModels.CreateGameFurniture(), success =>
@@ -85,19 +120,33 @@ namespace Altzone.Scripts
                     {
                         store.GameFurnitureVersion = CreateDefaultModels.GameFurnitureVersion;
                     }
+                    isCallbackDone = true;
                 });
-                
             }
-            // No conversion rules for Player or Clan data yet.
-            Assert.AreEqual(1, store.PlayerDataVersion);
-            Assert.AreEqual(1, store.ClanDataVersion);
+            yield return new WaitUntil(() => isCallbackDone);
+            Assert.AreEqual(CreateDefaultModels.GameFurnitureVersion, store.GameFurnitureVersion);
 
             #endregion
 
             #region Development data in this section
 
+            if (store.ClanDataVersion != CreateDefaultModels.ClanDataVersion)
+            {
+                isCallbackDone = false;
+                store.GetAllGameFurniture(furniture =>
+                {
+                    var clanData = CreateDefaultModels.CreateClanData("abba", furniture);
+                    store.SaveClanData(clanData, updatedClanData => { Debug.Log($"Create clan {updatedClanData}"); });
+                    store.ClanDataVersion = CreateDefaultModels.ClanDataVersion;
+                    isCallbackDone = true;
+                });
+            }
+            yield return new WaitUntil(() => isCallbackDone);
+            Assert.AreEqual(CreateDefaultModels.ClanDataVersion, store.ClanDataVersion);
+
             if (store.CustomCharactersVersion != CreateDefaultModels.CustomCharactersVersion)
             {
+                isCallbackDone = false;
                 // Replace default CustomCharacter models.
                 Debug.LogWarning($"Update CustomCharactersVersion {store.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
                 store.Set(CreateDefaultModels.CreateCustomCharacters(), success =>
@@ -106,14 +155,19 @@ namespace Altzone.Scripts
                     {
                         store.CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion;
                     }
+                    isCallbackDone = true;
                 });
             }
+            yield return new WaitUntil(() => isCallbackDone);
+            Assert.AreEqual(CreateDefaultModels.CustomCharactersVersion, store.CustomCharactersVersion);
 
             #endregion
+
+            Debug.Log($"exit");
         }
 
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
-        private static void ShowDebugGameInfo(DataStore store)
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        private static void CheckGameInfoDebugOnly(DataStore store)
         {
             store.GetAllCharacterClasses(characterClasses =>
             {

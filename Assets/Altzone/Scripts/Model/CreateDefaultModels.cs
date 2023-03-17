@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 
 namespace Altzone.Scripts.Model
 {
@@ -10,6 +13,26 @@ namespace Altzone.Scripts.Model
     /// </summary>
     internal static class CreateDefaultModels
     {
+        internal const int PlayerDataVersion = 2;
+
+        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
+        {
+            return new PlayerData(0, clanId, currentCustomCharacterId, "Player", 0, playerGuid);
+        }
+
+        internal const int ClanDataVersion = 2;
+        
+        internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
+        {
+            var clanData = new ClanData(clanId, "DemoClan", "[D]", 0);
+            var idCounter = 0;
+            foreach (var gameFurniture in furniture)
+            {
+                clanData.Rooms.Add(new RaidRoom(++idCounter, 0, gameFurniture.Id, RaidRoomType.Public));
+            }
+            return clanData;
+        }
+
         internal const int CharacterClassesVersion = 3;
 
         /// <summary>

@@ -54,7 +54,7 @@ namespace Tests.EditMode.DataStoreTests
             yield return new WaitUntil(() => isCallbackDone);
             Assert.IsNotNull(playerData);
 
-            if (playerData.ClanId == 0)
+            if (!playerData.HasClanId)
             {
                 yield break;
             }

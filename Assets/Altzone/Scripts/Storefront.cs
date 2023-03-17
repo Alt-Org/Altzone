@@ -54,7 +54,7 @@ namespace Altzone.Scripts
 
         // Clan
 
-        public void GetClanData(int id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
+        public void GetClanData(string id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
 
         public void SaveClanData(ClanData clanData, Action<ClanData> callback) => _localModels.SaveClanData(clanData, callback);
 

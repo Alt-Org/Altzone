@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Altzone.Scripts;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 
@@ -17,13 +18,18 @@ namespace MenuUi.Scripts.Loader
 
         private float _timeOutTime;
 
-        private void Start()
+        private IEnumerator Start()
         {
-            Debug.Log("loading");
+            Debug.Log("start");
+            
+            ServiceLoader serviceLoader = null;
+            yield return new WaitUntil(() => (serviceLoader = FindObjectOfType<ServiceLoader>()) != null);
+            yield return new WaitUntil(() => serviceLoader.isReady);
+
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
             windowManager.ShowWindow(_mainWindow);
-            
+            Debug.Log("exit");
         }
     }
 }

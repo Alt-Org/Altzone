@@ -11,18 +11,20 @@ namespace Altzone.Scripts.Model.Poco.Player
     public class PlayerData
     {
         public int Id;
-        public int ClanId;
+        public string ClanId;
         public int CurrentCustomCharacterId;
         public string Name;
         public int BackpackCapacity;
         public string UniqueIdentifier;
+        
+        public bool HasClanId => string.IsNullOrEmpty(ClanId);
         
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
         
-        public PlayerData(int id, int clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(int id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Id = id;
             ClanId = clanId;

@@ -8,7 +8,15 @@ namespace Altzone.Scripts.Model.Poco.Clan
     {
         public int Id;
         public int ClanMemberId;
-        public int GameFurnitureId;
+        public string GameFurnitureId;
         public RaidRoomType Type;
+
+        public RaidRoom(int id, int clanMemberId, string gameFurnitureId, RaidRoomType type)
+        {
+            Id = id;
+            ClanMemberId = clanMemberId;
+            GameFurnitureId = gameFurnitureId;
+            Type = type;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Tests.EditMode.ClanTests
             var dataStore = new DataStore(CreateClanDataTestFilename);
             ClanData clanData = null;
             var isCallbackDone = false;
-            dataStore.GetClanData(1, c =>
+            dataStore.GetClanData("abba", c =>
             {
                 clanData = c;
                 Debug.Log($"clanData 1 {clanData}");
@@ -37,13 +37,7 @@ namespace Tests.EditMode.ClanTests
 
             Assert.IsNull(clanData, "should not exist");
 
-            clanData = new ClanData()
-            {
-                Id = 0,
-                Name = "TestClan",
-                Tag = "[=T=]",
-                GameCoins = 123
-            };
+            clanData = new ClanData("abba", "TestClan", "[=T=]", 123);
             isCallbackDone = false;
             ClanData newClanData = null;
             dataStore.SaveClanData(clanData, c =>
@@ -55,7 +49,7 @@ namespace Tests.EditMode.ClanTests
             yield return new WaitUntil(() => isCallbackDone);
 
             Assert.IsNotNull(newClanData, "must exist");
-            Assert.IsTrue(newClanData.Id != 0, "updatedClanData.Id != 0");
+            Assert.False(string.IsNullOrWhiteSpace(newClanData.Id));
             // First object must have id value 1.
             Assert.AreEqual(1, newClanData.Id);
 
