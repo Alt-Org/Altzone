@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using TMPro;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Util
@@ -69,7 +70,7 @@ namespace Prg.Scripts.Common.Util
 
         public static LogFileWriter CreateLogFileWriter() => new();
 
-        private readonly StreamWriter _writer;
+        private StreamWriter _writer;
 
         private LogFileWriter()
         {
@@ -118,9 +119,13 @@ namespace Prg.Scripts.Common.Util
 
         public void Close()
         {
-            Application.logMessageReceivedThreaded -= UnityLogCallback;
-            _instance = null;
+            if (_writer != null)
+            {
+                _writer.Close();
+                _writer = null;
+            }
             LogLineContentFilter = null;
+            Application.logMessageReceivedThreaded -= UnityLogCallback;
             UnityEngine.Debug.Log($"LogWriter Close file {Filename}");
         }
 
