@@ -52,13 +52,6 @@ namespace Altzone.Scripts
 
         public void SavePlayerData(PlayerData playerData, Action<PlayerData> callback) => _localModels.SavePlayerData(playerData, callback);
 
-        public void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback) =>
-            _localModels.GetBattleCharacter(customCharacterId, callback);
-
-        public void GetAllBattleCharacters(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
-
-        public void GetAllCustomCharacters(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
-
         // Clan
 
         public void GetClanData(int id, Action<ClanData> callback) => _localModels.GetClanData(id, callback);
@@ -70,6 +63,17 @@ namespace Altzone.Scripts
         public void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
         public void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
+
+        #endregion
+
+        #region Temporary Test API
+
+        public void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback) =>
+            _localModels.GetBattleCharacter(customCharacterId, callback);
+
+        public void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
+
+        public void GetAllCustomCharactersTest(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
 
         #endregion
 

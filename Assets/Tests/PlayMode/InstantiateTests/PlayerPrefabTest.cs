@@ -38,7 +38,7 @@ namespace Tests.PlayMode.InstantiateTests
                 var prefabId = 0;
                 try
                 {
-                    store.GetBattleCharacter(currentCharacterModelId, battleCharacter =>
+                    store.GetBattleCharacterTest(currentCharacterModelId, battleCharacter =>
                     {
                         Debug.Log($"{battleCharacter}");
                         Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));

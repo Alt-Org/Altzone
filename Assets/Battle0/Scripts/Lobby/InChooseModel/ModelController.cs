@@ -34,11 +34,9 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 _view.PlayerName = playerData.Name;
                 _view.ContinueButtonOnClick = ContinueButtonOnClick;
                 var currentCharacterId = playerData.CurrentCustomCharacterId;
-                Storefront.Get().GetAllBattleCharacters(characters =>
-                {
-                    characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-                    _view.SetCharacters(characters, currentCharacterId);
-                });
+                var characters = playerData.BattleCharacters;
+                characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+                _view.SetCharacters(characters, currentCharacterId);
             });
         }
 

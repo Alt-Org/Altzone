@@ -166,7 +166,14 @@ namespace Altzone.Scripts.Model
 
         internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
-            callback(_storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier));
+            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
+            if (playerData != null)
+            {
+                // This storage is by no means a complete object model we want to serve.
+                var battleCharacter = _GetBattleCharacter(playerData.CurrentCustomCharacterId);
+                playerData.Patch(battleCharacter,_GetAllBattleCharacters(), _storageData.CustomCharacters);
+            }
+            callback(playerData);
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -240,12 +247,17 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllBattleCharacters(Action<List<BattleCharacter>> callback)
         {
+            callback(_GetAllBattleCharacters());
+        }
+
+        private List<BattleCharacter> _GetAllBattleCharacters()
+        {
             var battleCharacters = new List<BattleCharacter>();
             foreach (var customCharacter in _storageData.CustomCharacters)
             {
                 battleCharacters.Add(_GetBattleCharacter(customCharacter.Id));
             }
-            callback(battleCharacters);
+            return battleCharacters;
         }
 
         private BattleCharacter _GetBattleCharacter(int customCharacterId)
