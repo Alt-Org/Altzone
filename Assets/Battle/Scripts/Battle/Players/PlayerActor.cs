@@ -92,9 +92,9 @@ namespace Battle.Scripts.Battle.Players
 
         public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName)
         {
-            PlayerNameVoid(gameObjectName);
-            //PlayerName = gameObjectName;
+            PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");
+
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
@@ -121,11 +121,6 @@ namespace Battle.Scripts.Battle.Players
             }
             var playerActor = (IPlayerActor)playerActorBase;
             return playerActor;
-        }
-
-        private static void PlayerNameVoid(string gameObjectName)
-        {
-            PlayerName = gameObjectName;
         }
     }
 }

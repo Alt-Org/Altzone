@@ -22,7 +22,8 @@ namespace Battle.Scripts.Battle.Game
         public List<GameObject> PlayerActors = new List<GameObject>();      //<IPlayerDriver>
         public PlayerDriverPhoton PlayerDriverPhoton;
         [SerializeField] PlayerActor PlayerActor;
-        private bool local = false;
+        //private bool local = false;
+        public PhotonView View;
 
         private void Start()
         {
@@ -31,23 +32,25 @@ namespace Battle.Scripts.Battle.Game
 
             foreach (GameObject t in PlayerActors)      //IPlayerDriver t in
             {
-                var x = t.GetComponent<PhotonView>();
+                View = t.GetComponent<PhotonView>();
                 PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
-                if (x.IsMine && PlayerActor.PlayerName == PlayerDriverPhoton.PlayerName)       //t.IsLocal && 
+                if (PlayerActor.PlayerName == PlayerDriverPhoton.PlayerName)       //View.IsMine &&
                 {
-                    local = true;
-                    Debug.Log("Is local");
+                    //local = true;
+                    //Debug.Log("Is local");
+                    break;
                 }
                 else
                 {
-                    Debug.Log("Is not local");
+                    //Debug.Log("Is not local");
                 }
                 Debug.Log($"players {Context.GetAllPlayerDriverObjects.Count}");      //GetAllPlayerDrivers.Count
             }
 
-            if (local == true)
-            {
-                var player = PhotonNetwork.LocalPlayer;
+            /*if (local == true)
+            {*/
+                //Player Get (int id);
+                var player = View.Owner;         //PhotonNetwork.LocalPlayer
                 var playerPos = PhotonBattle.GetPlayerPos(player);
                 var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
                 Debug.Log($"Pickupteam {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
@@ -61,20 +64,20 @@ namespace Battle.Scripts.Battle.Game
                 }
                 DiamondText = TeamDiamonds.GetComponent<TMP_Text>();     ///TeamDiamonds.TMP_Text;
                 TeamDiamondCount = TeamDiamonds.GetComponent<TeamDiamondCount>();
-            }
+            //}
         }
         
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.CompareTag("Diamond"))
             {
-                if (local == true)
-                {
+                /*if (local == true)
+                {*/
                     TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
                     //TeamDiamonds = DiamondCount;
                     DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
                     //collectionSoundEffect.PlayOneShot(collect);
-                }
+                //}
                 Destroy(collision.gameObject);
             }
         }
