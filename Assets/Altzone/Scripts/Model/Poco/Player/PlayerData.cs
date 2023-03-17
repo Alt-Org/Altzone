@@ -17,10 +17,11 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
         public string UniqueIdentifier;
         
-        public BattleCharacter BattleCharacter { get; private set; }
-        public List<BattleCharacter> BattleCharacters { get; private set; }
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
+        public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
+        public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
+        
         public PlayerData(int id, int clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Id = id;
@@ -31,10 +32,9 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = uniqueIdentifier;
         }
 
-        internal void Patch(BattleCharacter battleCharacter, List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
+        internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
         {
-            BattleCharacter = battleCharacter;
-            BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters).ToList();
+            BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(customCharacters).ToList();
         }
         

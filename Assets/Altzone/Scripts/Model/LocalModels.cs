@@ -170,8 +170,7 @@ namespace Altzone.Scripts.Model
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
-                var battleCharacter = _GetBattleCharacter(playerData.CurrentCustomCharacterId);
-                playerData.Patch(battleCharacter,_GetAllBattleCharacters(), _storageData.CustomCharacters);
+                playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
             callback(playerData);
         }
@@ -197,11 +196,6 @@ namespace Altzone.Scripts.Model
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
             callback?.Invoke(playerData);
-        }
-
-        internal void GetAllCustomCharacterModels(Action<List<CustomCharacter>> callback)
-        {
-            callback(_storageData.CustomCharacters);
         }
 
         #endregion
@@ -238,14 +232,19 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        #region BattleCharacter
+        #region Temporary Test API
 
-        internal void GetBattleCharacter(int customCharacterId, Action<BattleCharacter> callback)
+        internal void GetAllCustomCharacterModelsTest(Action<List<CustomCharacter>> callback)
+        {
+            callback(_storageData.CustomCharacters);
+        }
+
+        internal void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
 
-        internal void GetAllBattleCharacters(Action<List<BattleCharacter>> callback)
+        internal void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback)
         {
             callback(_GetAllBattleCharacters());
         }

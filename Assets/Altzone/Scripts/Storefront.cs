@@ -69,11 +69,11 @@ namespace Altzone.Scripts
         #region Temporary Test API
 
         public void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback) =>
-            _localModels.GetBattleCharacter(customCharacterId, callback);
+            _localModels.GetBattleCharacterTest(customCharacterId, callback);
 
-        public void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharacters(callback);
+        public void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharactersTest(callback);
 
-        public void GetAllCustomCharactersTest(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModels(callback);
+        public void GetAllCustomCharactersTest(Action<List<CustomCharacter>> callback) => _localModels.GetAllCustomCharacterModelsTest(callback);
 
         #endregion
 

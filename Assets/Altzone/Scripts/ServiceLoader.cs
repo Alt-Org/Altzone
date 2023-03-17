@@ -43,6 +43,7 @@ namespace Altzone.Scripts
                 if (playerData == null)
                 {
                     // Create new player for us with first custom character we have - if any.
+                    // This is temporary solution until we have something more robust way to create first player.
                     store.GetAllCustomCharactersTest(customCharacters =>
                     {
                         var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
