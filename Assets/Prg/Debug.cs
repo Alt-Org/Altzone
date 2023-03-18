@@ -94,9 +94,9 @@ public static class Debug
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void SetTagsForClassName(string prefixTag, string suffixTag)
     {
-        _isClassNamePrefix = true;
-        _prefixTag = prefixTag;
-        _suffixTag = suffixTag;
+        _isClassNamePrefix = !string.IsNullOrEmpty(prefixTag) || string.IsNullOrEmpty(suffixTag);
+        _prefixTag = prefixTag ?? string.Empty;
+        _suffixTag = suffixTag ?? string.Empty;
     }
 
     public static void SetContextTag(string contextTag)

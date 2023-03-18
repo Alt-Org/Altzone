@@ -23,6 +23,7 @@ namespace Tests.EditMode.DataStoreTests
         public void OneTimeSetUp()
         {
             _logFileWriter = LogFileWriter.CreateLogFileWriter();
+            Debug.SetTagsForClassName(null, null);
             Debug.Log("setup");
             _store = Storefront.Get();
         }
