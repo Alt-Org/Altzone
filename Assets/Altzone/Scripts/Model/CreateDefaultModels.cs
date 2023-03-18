@@ -35,15 +35,37 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 2;
+        internal const int ClanDataVersion = 3;
         
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
             var clanData = new ClanData(clanId, "DemoClan", "[D]", 0);
-            var idCounter = 0;
+            // Add every known furniture to clan inventory for testing.
+            var furnitureCounter = 0;
             foreach (var gameFurniture in furniture)
             {
-                clanData.Rooms.Add(new RaidRoom(++idCounter, 0, gameFurniture.Id, RaidRoomType.Public));
+                clanData.Inventory.Furniture.Add(new ClanFurniture(++furnitureCounter, gameFurniture.Id));
+            }
+            // Create too Raid game rooms for testing.
+            var raidRoom1 = new RaidRoom(1, 0, RaidRoomType.Public);
+            var raidRoom2 = new RaidRoom(2, 0, RaidRoomType.Public);
+            clanData.Rooms.Add(raidRoom1);
+            clanData.Rooms.Add(raidRoom2);
+            furnitureCounter = 0;
+            var row = 0;
+            var col = 0;
+            foreach (var gameFurniture in furniture)
+            {
+                if (++furnitureCounter % 2 == 0)
+                {
+                    row += 1;
+                    raidRoom1.Furniture.Add(new RaidRoomFurniture(raidRoom1.Furniture.Count+1, gameFurniture.Id, row, col));
+                }
+                else
+                {
+                    col += 1;
+                    raidRoom2.Furniture.Add(new RaidRoomFurniture(raidRoom2.Furniture.Count+1, gameFurniture.Id, row, col));
+                }
             }
             return clanData;
         }
@@ -152,7 +174,6 @@ namespace Altzone.Scripts.Model
                     furniture.Id = furniture.Name;
                 }
                 furniture.Id = furniture.Id.Trim().ToLower(cultureInfo).Replace(" ", ".");
-                Debug.Log(furniture.ToString());
                 gameFurniture.Add(furniture);
             }
             return gameFurniture;

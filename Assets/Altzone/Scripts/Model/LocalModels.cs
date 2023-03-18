@@ -111,6 +111,15 @@ namespace Altzone.Scripts.Model
 
         internal LocalModels(string storageFilename, int storageVersionNumber = 0)
         {
+            string VersionInfo(int version1, int version2)
+            {
+                if (version1 == version2)
+                {
+                    return version1.ToString();
+                }
+                return $"{version1} <- {version2} needs update";
+            }
+
             // Files can only be in Application.persistentDataPath for WebGL compatibility! 
             _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
             if (AppPlatform.IsWindows)
@@ -126,12 +135,17 @@ namespace Altzone.Scripts.Model
             _storageData = exists
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath, storageVersionNumber);
-            Debug.Log($"StorageVersionNumber {_storageData.VersionNumber}");
-            Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count} ver {CharacterClassesVersion}");
-            Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count} ver {CustomCharactersVersion}");
-            Debug.Log($"Furniture {_storageData.GameFurniture.Count} ver {GameFurnitureVersion}");
-            Debug.Log($"PlayerData {_storageData.PlayerData.Count} ver {PlayerDataVersion}");
-            Debug.Log($"ClanData {_storageData.ClanData.Count} ver {ClanDataVersion}");
+            Debug.Log($"StorageVersionNumber {VersionInfo(_storageData.VersionNumber, CreateDefaultModels.MasterStorageVersionNumber)}");
+            Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}" +
+                      $" ver {VersionInfo(CharacterClassesVersion, CreateDefaultModels.CharacterClassesVersion)}");
+            Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count}" +
+                      $" ver {VersionInfo(CustomCharactersVersion, CreateDefaultModels.CustomCharactersVersion)}");
+            Debug.Log($"Furniture {_storageData.GameFurniture.Count}" +
+                      $" ver {VersionInfo(GameFurnitureVersion, CreateDefaultModels.GameFurnitureVersion)}");
+            Debug.Log($"PlayerData {_storageData.PlayerData.Count}" +
+                      $" ver {VersionInfo(PlayerDataVersion, CreateDefaultModels.PlayerDataVersion)}");
+            Debug.Log($"ClanData {_storageData.ClanData.Count}" +
+                      $" ver {VersionInfo(ClanDataVersion, CreateDefaultModels.ClanDataVersion)}");
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
             Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
             // Player data validity can not be detected here!

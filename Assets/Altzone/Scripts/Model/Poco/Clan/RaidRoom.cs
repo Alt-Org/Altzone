@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -8,14 +9,13 @@ namespace Altzone.Scripts.Model.Poco.Clan
     {
         public int Id;
         public int ClanMemberId;
-        public string GameFurnitureId;
         public RaidRoomType Type;
+        public List<RaidRoomFurniture> Furniture = new();
 
-        public RaidRoom(int id, int clanMemberId, string gameFurnitureId, RaidRoomType type)
+        public RaidRoom(int id, int clanMemberId, RaidRoomType type)
         {
             Id = id;
             ClanMemberId = clanMemberId;
-            GameFurnitureId = gameFurnitureId;
             Type = type;
         }
     }
