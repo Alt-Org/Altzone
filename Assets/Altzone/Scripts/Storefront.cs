@@ -28,16 +28,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Gets or creates an <c>DataStore</c> static singleton instance. 
         /// </summary>
-        public static DataStore Get()
-#if UNITY_EDITOR
-        {
-            Debug.Log($"Get {_instance}");
-            _instance ??= new DataStore(StorageFilename); 
-            return _instance;
-        }
-#else
-            => _instance ??= new DataStore(StorageFilename);
-#endif
+        public static DataStore Get() => _instance ??= new DataStore(StorageFilename);
 
         public static DataStore ResetStorage(int storageVersionNumber)
         {
