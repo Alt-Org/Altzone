@@ -11,8 +11,20 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Initializes game model objects to a known state for a new player (installation).
     /// </summary>
+    /// <remarks>
+    /// Note that 'data ownership' is tagged with [Player] or [Game] to indicate its relation to for example future data updates.
+    /// </remarks>
     internal static class CreateDefaultModels
     {
+        /// <summary>
+        /// Master version number for storage data.<br />
+        /// Changing this will force full storage reset, what ever this means!
+        /// </summary>
+        internal const int MasterStorageVersionNumber = 2;
+        
+        /// <summary>
+        /// [Player] <c>PlayerData</c> version number for data update purposes.
+        /// </summary>
         internal const int PlayerDataVersion = 2;
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
@@ -20,6 +32,9 @@ namespace Altzone.Scripts.Model
             return new PlayerData(0, clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
 
+        /// <summary>
+        /// [Player] <c>ClanData</c> version number for data update purposes.
+        /// </summary>
         internal const int ClanDataVersion = 2;
         
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
@@ -33,6 +48,9 @@ namespace Altzone.Scripts.Model
             return clanData;
         }
 
+        /// <summary>
+        /// [Game] <c>CharacterClass</c> version number for data update purposes.
+        /// </summary>
         internal const int CharacterClassesVersion = 3;
 
         /// <summary>
@@ -53,10 +71,13 @@ namespace Altzone.Scripts.Model
             };
         }
 
+        /// <summary>
+        /// [Player] <c>CustomCharacter</c> version number for data update purposes.
+        /// </summary>
         internal const int CustomCharactersVersion = 5;
 
         /// <summary>
-        /// Player custom character classes are created by the player itself (or given to the player by the game).<br />
+        /// [Player] custom character classes are created by the player itself (or given to the player by the game).<br />
         /// This collection should be the initial set of custom character classes the player has when game is started first time.
         /// </summary>
         /// <returns></returns>
@@ -74,6 +95,9 @@ namespace Altzone.Scripts.Model
             };
         }
 
+        /// <summary>
+        /// [Game] <c>GameFurniture</c> version number for data update purposes.
+        /// </summary>
         internal const int GameFurnitureVersion = 3;
 
         /// <summary>

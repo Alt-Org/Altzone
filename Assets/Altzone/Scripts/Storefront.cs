@@ -28,7 +28,24 @@ namespace Altzone.Scripts
         /// <summary>
         /// Gets or creates an <c>DataStore</c> static singleton instance. 
         /// </summary>
-        public static DataStore Get() => _instance ??= new DataStore(StorageFilename);
+        public static DataStore Get()
+#if UNITY_EDITOR
+        {
+            Debug.Log($"Get {_instance}");
+            _instance ??= new DataStore(StorageFilename); 
+            return _instance;
+        }
+#else
+            => _instance ??= new DataStore(StorageFilename);
+#endif
+
+        public static DataStore ResetStorage(int storageVersionNumber)
+        {
+            // Reset storage and create it again with new version number.
+            _instance.ResetStorage();
+            _instance = new DataStore(StorageFilename, storageVersionNumber);
+            return _instance;
+        }
     }
 
     /// <summary>
@@ -39,9 +56,14 @@ namespace Altzone.Scripts
     {
         private readonly LocalModels _localModels;
 
-        public DataStore(string storageFilename)
+        public DataStore(string storageFilename, int storageVersionNumber = 0)
         {
-            _localModels = new LocalModels(storageFilename);
+            _localModels = new LocalModels(storageFilename, storageVersionNumber);
+        }
+
+        internal void ResetStorage()
+        {
+            _localModels.ResetDataForReload();
         }
 
         #region Public API
@@ -78,6 +100,8 @@ namespace Altzone.Scripts
         #endregion
 
         #region Internal API
+
+        internal int VersionNumber => _localModels.VersionNumber;
 
         internal int CharacterClassesVersion
         {

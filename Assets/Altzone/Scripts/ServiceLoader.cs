@@ -25,6 +25,12 @@ namespace Altzone.Scripts
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
             var store = Storefront.Get();
+            if (store.VersionNumber != CreateDefaultModels.MasterStorageVersionNumber)
+            {
+                // Just re-create storage as we do not have anything else to do for now.
+                store = Storefront.ResetStorage(CreateDefaultModels.MasterStorageVersionNumber);
+                Assert.AreEqual(store.VersionNumber, CreateDefaultModels.MasterStorageVersionNumber);
+            }
             var gameConfig = GameConfig.Get();
             yield return StartCoroutine(CheckDataStoreDataAndState(store));
             yield return StartCoroutine(CheckPlayerDataAndState(store, gameConfig));

@@ -27,14 +27,24 @@ namespace Altzone.Scripts.Model
     /// </remarks>
     internal class LocalModels
     {
-        private const int StorageVersionNumber = 1;
+        private const int DefaultStorageVersionNumber = 1;
         private const int WebGlFramesToWaitFlush = 30;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
 
-        #region Version numbers
+        #region Version numbers for data update or upgrade checking
+
+        internal int VersionNumber
+        {
+            get => _storageData.VersionNumber;
+            set
+            {
+                _storageData.VersionNumber = value;
+                SaveStorage(_storageData, _storagePath);
+            }
+        }
 
         internal int CharacterClassesVersion
         {
@@ -99,7 +109,7 @@ namespace Altzone.Scripts.Model
         private static Coroutine _fsSync;
         private static int _framesToWait;
 
-        internal LocalModels(string storageFilename)
+        internal LocalModels(string storageFilename, int storageVersionNumber = 0)
         {
             // Files can only be in Application.persistentDataPath for WebGL compatibility! 
             _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
@@ -107,11 +117,16 @@ namespace Altzone.Scripts.Model
             {
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
+            if (storageVersionNumber == 0)
+            {
+                storageVersionNumber = DefaultStorageVersionNumber;
+            }
             var exists = File.Exists(_storagePath);
             Debug.Log($"StoragePath {_storagePath} exists {exists}");
             _storageData = exists
                 ? LoadStorage(_storagePath)
-                : CreateDefaultStorage(_storagePath);
+                : CreateDefaultStorage(_storagePath, storageVersionNumber);
+            Debug.Log($"StorageVersionNumber {_storageData.VersionNumber}");
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count} ver {CharacterClassesVersion}");
             Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count} ver {CustomCharactersVersion}");
             Debug.Log($"Furniture {_storageData.GameFurniture.Count} ver {GameFurnitureVersion}");
@@ -130,6 +145,32 @@ namespace Altzone.Scripts.Model
             _fsSync = null;
 #endif
         }
+
+        internal void ResetDataForReload()
+        {
+#if UNITY_WEBGL
+            Debug.Log($"Storage delete {_storagePath}");
+            File.Delete(_storagePath);
+#else
+            var backupPath = $"{_storagePath}.ver-{_storageData.VersionNumber}";
+            if (File.Exists(backupPath))
+            {
+                Debug.Log($"Delete backup {backupPath}");
+                File.Delete(backupPath);
+            }
+            Debug.Log($"Storage backup {backupPath}");
+            try
+            {
+                File.Move(_storagePath, backupPath);
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Storage backup (move) failed {e}");
+            }
+#endif
+        }
+
+        #region WebGL support for file system level sync aka flush data.
 
         [Conditional("UNITY_WEBGL")]
         private static void WebGlFsSyncFs()
@@ -161,6 +202,8 @@ namespace Altzone.Scripts.Model
 #endif
             }
         }
+
+        #endregion
 
         #region PlayerData
 
@@ -314,11 +357,11 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        private static StorageData CreateDefaultStorage(string storagePath)
+        private static StorageData CreateDefaultStorage(string storagePath, int storageVersionNumber)
         {
             var storageData = new StorageData
             {
-                VersionNumber = StorageVersionNumber
+                VersionNumber = storageVersionNumber
             };
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
@@ -333,7 +376,6 @@ namespace Altzone.Scripts.Model
         {
             var jsonData = File.ReadAllText(storagePath, Encoding);
             var storageData = JsonUtility.FromJson<StorageData>(jsonData);
-            Assert.AreEqual(StorageVersionNumber, storageData.VersionNumber);
             return storageData;
         }
 
