@@ -1,7 +1,8 @@
-namespace Altzone.Scripts.Model
+namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
-    /// Enum values for Defence "attribute".
+    /// Enum values for Defence "attribute".<br />
+    /// This is somehow related to Gestalt theory 'defense mechanisms' or 'contact styles.
     /// </summary>
     /// <remarks>
     /// This can be serialized so do not change or remove enum values - only add new ones.

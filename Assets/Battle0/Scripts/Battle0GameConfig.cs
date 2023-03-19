@@ -2,6 +2,7 @@ using System;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.InputSystem;

@@ -1,4 +1,5 @@
 using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Temp
 {
