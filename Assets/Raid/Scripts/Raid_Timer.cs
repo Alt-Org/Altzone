@@ -39,6 +39,13 @@ public class Raid_Timer : MonoBehaviour
             TimerText.color = Color.red;
             enabled = false;
         }
+
+        if (Raid_Grid.MineWasHit)
+        {
+            // CurrentTime = CurrentTime;
+            SetTimerText();
+            enabled = false;
+        }
         SetTimerText();
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections;
 using TMPro;
+using UnityEngine.Assertions;
 
 public class Raid_Grid : MonoBehaviour
 {
@@ -31,10 +32,20 @@ public class Raid_Grid : MonoBehaviour
     public Sprite TFurnitureSprite1b;
     public Sprite TFurnitureSprite1c;
 
+    [SerializeField, Header ("Reference GameObjects")]
+    private GameObject RedScreen;
+    public GameObject EndMenu;
+
+    public static bool MineWasHit = false;
+
+    [Header ("Raid Content")]
     public int AmountOfMines;
     public int AmountofSingles;
     public int AmountofDoubles;
     public int AmountofTriples;
+
+    [SerializeField, Header("Loot manager")]
+    private Raid_LootManagement raid_LootManagement;
 
     private int AmountOfSurroundingMines;
 
@@ -42,7 +53,8 @@ public class Raid_Grid : MonoBehaviour
 
     public List<Raid_Tile> TilesToCheck = new List<Raid_Tile>();
 
-    [SerializeField, Header("Debug")] private int _randomSeed;
+    [SerializeField, Header("Debug")]
+    private int _randomSeed;
     
     private Transform _transform;
 
@@ -69,7 +81,10 @@ public class Raid_Grid : MonoBehaviour
 
     private void Start()
     {
+        MineWasHit = false;
         Debug.Log($"");
+        RedScreen.SetActive(false);
+        EndMenu.SetActive(false);
         for (int i = 0; i < AmountOfMines; i++)
         {
             PlaceMines();
@@ -107,35 +122,51 @@ public class Raid_Grid : MonoBehaviour
         int x = Mathf.RoundToInt(mousePosition.x);
         int y = Mathf.RoundToInt(mousePosition.y);
 
-        Raid_Tile raid_Tile = grid[x,y];
-
-        if(raid_Tile.tileState == Raid_Tile.TileState.Normal)
-        {
-            if(raid_Tile.IsCovered)
-            {
-                raid_Tile.SetIsCovered(false);
-
-                if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
-                {
-                    RevealAdjacentTilesForTileAt(x, y);
-                }
-                if (raid_Tile.tileType == Raid_Tile.TileType.Number)
-                {
-                    CalculateAmountOfSurroundingMines(x, y);
-                    Raid_Tile NumberTile = grid[x, y];
-                    NumberTile.GetComponentInChildren<TextMeshPro>().text = AmountOfSurroundingMines.ToString();
-                }
-            }
-            else if(!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Number)
-            {
-                StartCoroutine(RedMarkTiles(x, y));
-            }
-            /*else if(!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Furniture)
-            {
-                raid_Tile.GetComponent<SpriteRenderer>().sprite = EmptyTile;
-            }*/
-        }
+        Raid_Tile raid_Tile = grid[x, y];
         Debug.Log("QuickTap recognized at (" + x + ", " + y + ")");
+        if (MineWasHit)
+        {
+            return;
+        }
+        else
+        {
+            if (raid_Tile.tileState == Raid_Tile.TileState.Normal)
+            {
+                if (raid_Tile.IsCovered)
+                {
+                    raid_Tile.SetIsCovered(false);
+
+                    if (raid_Tile.tileType == Raid_Tile.TileType.Mine)
+                    {
+                        RevealAllTiles();
+                        RedScreen.SetActive(true);
+                        MineWasHit = true;
+                        EndMenu.SetActive(true);
+                    }
+                    if (raid_Tile.tileType == Raid_Tile.TileType.Empty)
+                    {
+                        RevealAdjacentTilesForTileAt(x, y);
+                    }
+                    if (raid_Tile.tileType == Raid_Tile.TileType.Number)
+                    {
+                        CalculateAmountOfSurroundingMines(x, y);
+                        Raid_Tile NumberTile = grid[x, y];
+                        NumberTile.GetComponentInChildren<TextMeshPro>().text = AmountOfSurroundingMines.ToString();
+                    }
+                }
+                else if (!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Number)
+                {
+                    StartCoroutine(RedMarkTiles(x, y));
+                }
+                else if (!raid_Tile.IsCovered && raid_Tile.tileType == Raid_Tile.TileType.Furniture)
+                {
+                    raid_LootManagement.CurrentLootWeight += 2f;
+                    raid_LootManagement.SetLootWeightText();
+                    raid_Tile.GetComponent<SpriteRenderer>().sprite = EmptyTile;
+                    raid_Tile.tileType = Raid_Tile.TileType.Empty;
+                }
+            }
+        }
     }
 
     public void SlowTapPerformed(Vector2 pointerPosition)
@@ -1061,6 +1092,18 @@ public class Raid_Grid : MonoBehaviour
             raid_Tile.SetIsCovered(false);
 
             RevealAdjacentTilesForTileAt(x, y);
+        }
+    }
+
+    private void RevealAllTiles()
+    {
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Raid_Tile raid_Tile = grid[x, y];
+                raid_Tile.SetIsCovered(false);
+            }
         }
     }
 

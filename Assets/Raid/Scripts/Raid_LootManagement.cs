@@ -17,6 +17,7 @@ public class Raid_LootManagement : MonoBehaviour
 
     private void Start()
     {
+        CurrentLootWeight = 0f;
         SetLootWeightText();
     }
 
