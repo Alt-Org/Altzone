@@ -17,8 +17,20 @@ namespace MenuUi.Scripts.MainMenu
             var store = Storefront.Get();
             store.GetPlayerData(playerGuid, playerData =>
             {
-                _view.PlayerName = playerData?.Name ?? "Player?";
-                _view.ClanName = "Clan?";
+                if (playerData == null)
+                {
+                    _view.PlayerName = "Player?";
+                    return;
+                }
+                _view.PlayerName = playerData.Name;
+                if (!playerData.HasClanId)
+                {
+                    return;
+                }
+                store.GetClanData(playerData.ClanId, clanData =>
+                {
+                    _view.ClanName = clanData?.Name ?? "Clan?";
+                });
             });
         }
     }

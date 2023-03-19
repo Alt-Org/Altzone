@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
         public string UniqueIdentifier;
         
-        public bool HasClanId => string.IsNullOrEmpty(ClanId);
+        public bool HasClanId => !string.IsNullOrEmpty(ClanId);
         
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
