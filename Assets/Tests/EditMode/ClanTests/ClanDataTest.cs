@@ -24,7 +24,7 @@ namespace Tests.EditMode.ClanTests
             {
                 File.Delete(Path.Combine(Application.persistentDataPath, CreateClanDataTestFilename));
             }
-            var dataStore = new DataStore(CreateClanDataTestFilename);
+            var dataStore = new DataStoreImpl(CreateClanDataTestFilename);
             ClanData clanData = null;
             var isCallbackDone = false;
             dataStore.GetClanData("abba", c =>
@@ -51,7 +51,7 @@ namespace Tests.EditMode.ClanTests
             Assert.IsNotNull(newClanData, "must exist");
             Assert.False(string.IsNullOrWhiteSpace(newClanData.Id));
             // First object must have id value 1.
-            Assert.AreEqual(1, newClanData.Id);
+            Assert.AreEqual("abba", newClanData.Id);
 
             isCallbackDone = false;
             newClanData.Name = "Updated";

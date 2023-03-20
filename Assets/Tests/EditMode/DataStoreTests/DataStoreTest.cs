@@ -77,7 +77,7 @@ namespace Tests.EditMode.DataStoreTests
             Debug.Log("test of BattleCharacter");
             List<BattleCharacter> battleCharacters = null;
             var isCallbackDone = false;
-            _store.GetAllBattleCharactersTest(result =>
+            _store.ForTest.GetAllBattleCharactersTest(result =>
             {
                 battleCharacters = result;
                 isCallbackDone = true;
@@ -115,7 +115,7 @@ namespace Tests.EditMode.DataStoreTests
             Debug.Log("test of CustomCharacter");
             List<CustomCharacter> customCharacters = null;
             var isCallbackDone = false;
-            _store.GetAllCustomCharactersTest(result =>
+            _store.ForTest.GetAllCustomCharactersTest(result =>
             {
                 customCharacters = result;
                 isCallbackDone = true;

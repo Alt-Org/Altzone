@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
@@ -10,7 +11,7 @@ using UnityEngine;
 namespace Altzone.Scripts
 {
     /// <summary>
-    /// Factory class for our <c>DataStore</c> implementation.
+    /// Factory class for our <c>DataStore</c> and support for internal game update/upgrade operations.
     /// </summary>
     public static class Storefront
     {
@@ -23,31 +24,114 @@ namespace Altzone.Scripts
 
         private const string StorageFilename = "LocalModels.json";
 
-        private static DataStore _instance;
+        private static DataStoreImpl _instance;
 
         /// <summary>
         /// Gets or creates an <c>DataStore</c> static singleton instance. 
         /// </summary>
-        public static DataStore Get() => _instance ??= new DataStore(StorageFilename);
+        public static DataStore Get() => _instance ??= new DataStoreImpl(StorageFilename);
 
-        public static DataStore ResetStorage(int storageVersionNumber)
+        #region Game update/upgrade operations - internal access only!
+
+        internal static DataStore ResetStorage(int storageVersionNumber)
         {
             // Reset storage and create it again with new version number.
             _instance.ResetStorage();
-            _instance = new DataStore(StorageFilename, storageVersionNumber);
+            _instance = new DataStoreImpl(StorageFilename, storageVersionNumber);
             return _instance;
         }
+
+        internal static void Set(List<CharacterClass> characterClasses, Action<bool> callback) => _instance.Set(characterClasses, callback);
+
+        internal static void Set(List<CustomCharacter> customCharacters, Action<bool> callback) => _instance.Set(customCharacters, callback);
+
+        internal static void Set(List<GameFurniture> gameFurniture, Action<bool> callback) => _instance.Set(gameFurniture, callback);
+
+        #endregion
     }
 
     /// <summary>
-    /// General Data Store for game data.<br />
+    /// Public <c>DataStore</c> interface.
+    /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public interface DataStore
+    {
+        /// <summary>
+        /// Gets <c>PlayerData</c> entity using its <c>uniqueIdentifier</c> property.
+        /// </summary>
+        /// <remarks>
+        /// Note that <c>uniqueIdentifier</c> is not the same as ID but should be generated once for given device so that
+        /// new player can be identified unambiguously when it is created for first time.
+        /// </remarks>
+        void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback);
+
+        /// <summary>
+        /// Saves <c>PlayerData</c> entity.
+        /// </summary>
+        /// <remarks>
+        /// If <c>PlayerData</c> was created its ID will be updated in returned entity.
+        /// </remarks>
+        void SavePlayerData(PlayerData playerData, Action<PlayerData> callback);
+
+        // Clan
+
+        void GetClanData(string id, Action<ClanData> callback);
+
+        void SaveClanData(ClanData clanData, Action<ClanData> callback);
+
+        // Game static data
+
+        void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback);
+
+        void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback);
+
+        // Version info
+        IDataStoreVersion Version { get; }
+
+        // Testing
+        ITestDataStore ForTest { get; }
+    }
+
+    /// <summary>
+    /// <c>DataStore</c> version info for detecting game updates/upgrades
+    /// when data has been changed externally by game designers in the fame itself or in external database.
+    /// </summary>
+    public interface IDataStoreVersion
+    {
+        int VersionNumber { get; }
+
+        int CharacterClassesVersion { get; set; }
+
+        int CustomCharactersVersion { get; set; }
+
+        int GameFurnitureVersion { get; set; }
+
+        int PlayerDataVersion { get; set; }
+
+        int ClanDataVersion { get; set; }
+    }
+
+    /// <summary>
+    /// <c>DataStore</c> test interface, should be deleted when not needed.
+    /// </summary>
+    public interface ITestDataStore
+    {
+        void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback);
+
+        void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback);
+
+        void GetAllCustomCharactersTest(Action<List<CustomCharacter>> callback);
+    }
+
+    /// <summary>
+    /// <c>DataStore</c> implementation for the game data.<br />
     /// Data can be local, in our own hosted server or in some cloud based service.
     /// </summary>
-    public class DataStore
+    public class DataStoreImpl : DataStore, IDataStoreVersion, ITestDataStore
     {
         private readonly LocalModels _localModels;
 
-        public DataStore(string storageFilename, int storageVersionNumber = 0)
+        public DataStoreImpl(string storageFilename, int storageVersionNumber = 0)
         {
             _localModels = new LocalModels(storageFilename, storageVersionNumber);
         }
@@ -79,7 +163,9 @@ namespace Altzone.Scripts
 
         #endregion
 
-        #region Temporary Test API
+        #region Test API
+
+        public ITestDataStore ForTest => this;
 
         public void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback) =>
             _localModels.GetBattleCharacterTest(customCharacterId, callback);
@@ -90,39 +176,45 @@ namespace Altzone.Scripts
 
         #endregion
 
-        #region Internal API
+        #region Version info API
 
-        internal int VersionNumber => _localModels.VersionNumber;
+        public IDataStoreVersion Version => this;
 
-        internal int CharacterClassesVersion
+        public int VersionNumber => _localModels.VersionNumber;
+
+        public int CharacterClassesVersion
         {
             get => _localModels.CharacterClassesVersion;
             set => _localModels.CharacterClassesVersion = value;
         }
 
-        internal int CustomCharactersVersion
+        public int CustomCharactersVersion
         {
             get => _localModels.CustomCharactersVersion;
             set => _localModels.CustomCharactersVersion = value;
         }
 
-        internal int GameFurnitureVersion
+        public int GameFurnitureVersion
         {
             get => _localModels.GameFurnitureVersion;
             set => _localModels.GameFurnitureVersion = value;
         }
 
-        internal int PlayerDataVersion
+        public int PlayerDataVersion
         {
             get => _localModels.PlayerDataVersion;
             set => _localModels.PlayerDataVersion = value;
         }
 
-        internal int ClanDataVersion
+        public int ClanDataVersion
         {
             get => _localModels.ClanDataVersion;
             set => _localModels.ClanDataVersion = value;
         }
+
+        #endregion
+
+        #region Internal API
 
         internal void Set(List<CharacterClass> characterClasses, Action<bool> callback) => _localModels.Set(characterClasses, callback);
 

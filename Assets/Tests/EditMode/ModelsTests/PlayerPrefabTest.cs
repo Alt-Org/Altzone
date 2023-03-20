@@ -35,7 +35,7 @@ namespace Tests.EditMode.ModelsTests
         {
             Debug.Log($"test");
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            Storefront.Get().GetAllBattleCharactersTest(battleCharacters =>
+            Storefront.Get().ForTest.GetAllBattleCharactersTest(battleCharacters =>
             {
                 foreach (var battleCharacter in battleCharacters)
                 {
