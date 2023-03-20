@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 namespace Altzone.Scripts.Model
 {
     /// <summary>
-    /// Entry point to local POCO models with 'built-in' WebGL support.
+    /// Entry point to local POCO models JSON storage implementation with 'built-in' WebGL support.
     /// </summary>
     /// <remarks>
     /// WebGl builds have to manually flush changes to browser local storage/database after changes to be on the safe side.
@@ -28,7 +28,7 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int DefaultStorageVersionNumber = 1;
-        private const int WebGlFramesToWaitFlush = 30;
+        private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
@@ -98,16 +98,57 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
+        #region WebGL support
+
 #if UNITY_WEBGL
         [DllImport("__Internal")]
         private static extern void HelloWebGl();
 
         [DllImport("__Internal")]
         private static extern void FsSyncFs();
+
+        private static void CallHelloWebGl()
+        {
+            Debug.Log("Call Javascript Library");
+            try
+            {
+                HelloWebGl();
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Exception {e.GetType().FullName} {e.Message}");
+            }
+        }
+
+        private static void CallFsSyncFs()
+        {
+            Debug.Log("Call Javascript Library");
+            try
+            {
+                FsSyncFs();
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Exception {e.GetType().FullName} {e.Message}");
+            }
+        }
+
+        private void InitFsSyncFs()
+        {
+            if (!AppPlatform.IsEditor)
+            {
+                // Javascript call.
+                CallHelloWebGl();
+            }
+            _monoHelper = UnityMonoHelper.Instance;
+            _fsSync = null;
+        }
 #endif
         private static UnityMonoHelper _monoHelper;
         private static Coroutine _fsSync;
         private static int _framesToWait;
+
+        #endregion
 
         internal LocalModels(string storageFilename, int storageVersionNumber = 0)
         {
@@ -120,6 +161,9 @@ namespace Altzone.Scripts.Model
                 return $"{version1} <- {version2} needs update";
             }
 
+#if UNITY_WEBGL
+            InitFsSyncFs();
+#endif
             // Files can only be in Application.persistentDataPath for WebGL compatibility! 
             _storagePath = Path.Combine(Application.persistentDataPath, storageFilename);
             if (AppPlatform.IsWindows)
@@ -135,6 +179,7 @@ namespace Altzone.Scripts.Model
             _storageData = exists
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath, storageVersionNumber);
+            Debug.Log($"Create storageData {_storageData}");
             Debug.Log($"StorageVersionNumber {VersionInfo(_storageData.VersionNumber, CreateDefaultModels.MasterStorageVersionNumber)}");
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}" +
                       $" ver {VersionInfo(CharacterClassesVersion, CreateDefaultModels.CharacterClassesVersion)}");
@@ -149,15 +194,6 @@ namespace Altzone.Scripts.Model
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
             Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
             // Player data validity can not be detected here!
-#if UNITY_WEBGL
-            if (!AppPlatform.IsEditor)
-            {
-                // Javascript call.
-                HelloWebGl();
-            }
-            _monoHelper = UnityMonoHelper.Instance;
-            _fsSync = null;
-#endif
         }
 
         internal void ResetDataForReload()
@@ -199,7 +235,6 @@ namespace Altzone.Scripts.Model
                 Debug.Log("FsSyncFs - SKIP");
                 return;
             }
-            Debug.Log("FsSyncFs - START");
             _fsSync = _monoHelper.StartCoroutine(FsSync());
 
             IEnumerator FsSync()
@@ -212,7 +247,7 @@ namespace Altzone.Scripts.Model
                 Debug.Log("FsSyncFs - SYNC");
 #if UNITY_WEBGL
                 // Javascript call.
-                FsSyncFs();
+                CallFsSyncFs();
 #endif
             }
         }
@@ -388,15 +423,15 @@ namespace Altzone.Scripts.Model
 
         private static StorageData LoadStorage(string storagePath)
         {
-            var jsonData = File.ReadAllText(storagePath, Encoding);
-            var storageData = JsonUtility.FromJson<StorageData>(jsonData);
+            var jsonText = File.ReadAllText(storagePath, Encoding);
+            var storageData = JsonUtility.FromJson<StorageData>(jsonText);
             return storageData;
         }
 
         private static void SaveStorage(StorageData storageData, string storagePath)
         {
-            var json = JsonUtility.ToJson(storageData);
-            File.WriteAllText(storagePath, json, Encoding);
+            var jsonText = JsonUtility.ToJson(storageData);
+            File.WriteAllText(storagePath, jsonText, Encoding);
             WebGlFsSyncFs();
         }
     }
