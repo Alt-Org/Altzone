@@ -418,8 +418,14 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
+      propertyPath: _prevNaviTarget
+      value: 
+      objectReference: {fileID: 11400000, guid: 1d6eb000ab3c5b24f93084b6d59b0dc2,
+        type: 2}
+    - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
+        type: 3}
       propertyPath: _YdistanceToNotSwitch
-      value: 20
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1440607170473138605, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
