@@ -27,7 +27,6 @@ namespace Altzone.Scripts.Model
     /// </remarks>
     internal class LocalModels
     {
-        private const int DefaultStorageVersionNumber = 1;
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
@@ -172,7 +171,7 @@ namespace Altzone.Scripts.Model
             }
             if (storageVersionNumber == 0)
             {
-                storageVersionNumber = DefaultStorageVersionNumber;
+                storageVersionNumber = CreateDefaultModels.MasterStorageVersionNumber;
             }
             var exists = File.Exists(_storagePath);
             Debug.Log($"StoragePath {_storagePath} exists {exists}");
@@ -410,7 +409,10 @@ namespace Altzone.Scripts.Model
         {
             var storageData = new StorageData
             {
-                VersionNumber = storageVersionNumber
+                VersionNumber = storageVersionNumber,
+                CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion,
+                CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion,
+                GameFurnitureVersion = CreateDefaultModels.GameFurnitureVersion,
             };
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
