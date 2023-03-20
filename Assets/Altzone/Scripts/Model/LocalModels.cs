@@ -178,7 +178,7 @@ namespace Altzone.Scripts.Model
             _storageData = exists
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath, storageVersionNumber);
-            Debug.Log($"Create storageData {_storageData}");
+            Debug.Log($"{(exists ? "Load" : "Create")} storageData {_storageData}");
             Debug.Log($"StorageVersionNumber {VersionInfo(_storageData.VersionNumber, CreateDefaultModels.MasterStorageVersionNumber)}");
             Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}" +
                       $" ver {VersionInfo(CharacterClassesVersion, CreateDefaultModels.CharacterClassesVersion)}");
