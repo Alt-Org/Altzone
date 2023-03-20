@@ -73,22 +73,37 @@ namespace Altzone.Scripts
         /// </remarks>
         void SavePlayerData(PlayerData playerData, Action<PlayerData> callback);
 
-        // Clan
-
+        /// <summary>
+        /// Gets <c>ClanData</c> entity using its ID property.
+        /// </summary>
         void GetClanData(string id, Action<ClanData> callback);
 
+        /// <summary>
+        /// Saves <c>ClanData</c> entity.
+        /// </summary>
+        /// <remarks>
+        /// If <c>ClanData</c> was created its ID will be updated in returned entity.
+        /// </remarks>
         void SaveClanData(ClanData clanData, Action<ClanData> callback);
 
-        // Game static data
-
+        /// <summary>
+        /// Get all read-only <c>CharacterClass</c> entities.
+        /// </summary>
         void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback);
 
+        /// <summary>
+        /// Get all read-only <c>GameFurniture</c> entities.
+        /// </summary>
         void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback);
 
-        // Version info
+        /// <summary>
+        /// Gets <c>IDataStoreVersion</c> interface for game update/upgrade purposes.
+        /// </summary>
         IDataStoreVersion Version { get; }
 
-        // Testing
+        /// <summary>
+        /// Gets <c>ITestDataStore</c> helper interface for <c>DataStore</c> testing purposes.
+        /// </summary>
         ITestDataStore ForTest { get; }
     }
 
