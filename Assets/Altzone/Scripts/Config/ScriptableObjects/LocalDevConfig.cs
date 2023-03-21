@@ -23,5 +23,10 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// Reference to <c>LoggerConfig</c> to use.
         /// </summary>
         [Header("Development Settings")] public LoggerConfig _loggerConfig;
+
+        /// <summary>
+        /// Override Application.targetFrameRate for Game View in UNITY Editor, default value is -1 to use.
+        /// </summary>
+        [Header("Editor Settings"), Range(-1, 999)] public int _targetFrameRateOverride = -1;
     }
 }

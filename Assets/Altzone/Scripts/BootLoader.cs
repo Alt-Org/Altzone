@@ -62,8 +62,9 @@ namespace Altzone.Scripts
 
         private static void PrepareLocalTesting()
         {
-            SetEditorStatus();
-            SetupLogging();
+            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
+            SetEditorStatus(localDevConfig._targetFrameRateOverride);
+            SetupLogging(localDevConfig);
         }
 
         private static void PrepareDevice()
@@ -71,9 +72,8 @@ namespace Altzone.Scripts
             // Nothing special to do here, ServiceLoader & co takes care of things for now.
         }
 
-        private static void SetupLogging()
+        private static void SetupLogging(LocalDevConfig localDevConfig)
         {
-            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
                 ? localDevConfig._loggerConfig
                 : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
@@ -92,13 +92,14 @@ namespace Altzone.Scripts
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
-        private static void SetEditorStatus()
+        private static void SetEditorStatus(int targetFrameRate)
         {
             // This is just for debugging to get strings (numbers) formatted consistently
             // - everything that goes to UI should go through Localizer using player's locale preferences
             var ci = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentCulture = ci;
             Thread.CurrentThread.CurrentUICulture = ci;
+            Application.targetFrameRate = targetFrameRate;
         }
     }
 
