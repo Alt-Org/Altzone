@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 namespace Prg.Scripts.Common.Photon
 {
     /// <summary>
-    /// Static helper class to handle basic <c>PhotonNetwork</c> operations in convenient and consistent way.
+    /// Static helper class to handle basic <c>PhotonNetwork</c> operations in convenient and consistent way.<br />
+    /// https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html
     /// </summary>
     /// <remarks>
     /// Note (1) that by default we use <code>PhotonNetwork.AutomaticallySyncScene = true</code>.<br />
@@ -208,9 +209,11 @@ namespace Prg.Scripts.Common.Photon
 
         private static void ConnectUsingSettings(AppSettings appSettings, string playerName)
         {
-            // See PhotonNetwork.SendRate (which is 30 times per sec)
-            // https://documentation.help/Photon-Unity-Networking-2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
-            // - original 10 times per second is way too slow to keep moving objects synchronized properly without glitches!
+            // See PhotonNetwork.SendRate and PhotonNetwork.SerializationRate
+            // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
+            // - Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
+            // Defaults are 30 times/second for SendRate and 10 times/second for SerializationRate, we set both explicitly here.
+            PhotonNetwork.SendRate = 30;
             PhotonNetwork.SerializationRate = 30;
             Debug.Log(
                 $"ConnectUsingSettings {PhotonNetwork.NetworkClientState} scene={SceneManager.GetActiveScene().name} player={playerName}" +
