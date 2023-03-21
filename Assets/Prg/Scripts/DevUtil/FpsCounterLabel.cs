@@ -41,7 +41,7 @@ namespace Prg.Scripts.DevUtil
                 var startTime = Time.time;
                 var startFrames = Time.frameCount;
                 yield return delay;
-                var fps = (int)((Time.frameCount - startFrames) / (Time.time - startTime));
+                var fps = (int)((Time.frameCount - startFrames) / (Time.time - startTime) + 0.5f);
                 if (!_labels.TryGetValue(fps, out var label))
                 {
                     label = $"{fps} fps";
