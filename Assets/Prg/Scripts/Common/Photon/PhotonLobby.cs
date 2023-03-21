@@ -211,7 +211,11 @@ namespace Prg.Scripts.Common.Photon
         {
             // See PhotonNetwork.SendRate and PhotonNetwork.SerializationRate
             // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
-            // - Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
+            // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_transform_view.html
+            // Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
+            // This means that if you serialize data always when OnPhotonSerializeView is called
+            // then SendRate will effectively be same as SerializationRate if it is set to be less here.
+            
             // Defaults are 30 times/second for SendRate and 10 times/second for SerializationRate, we set both explicitly here.
             PhotonNetwork.SendRate = 30;
             PhotonNetwork.SerializationRate = 30;
