@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Vector2 endPosition;
         private Vector2 _currentPosition;
         private bool _touching;
-        private bool _isSliding;
+        private bool _canCheck;
         private bool _canSlide;
 
         [SerializeField] private GameObject _slidingUI;
@@ -21,31 +21,11 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField] private WindowDef _nextNaviTarget;
 
         [SerializeField] private float _distanceToSwitch;
-        [SerializeField] private float _YdistanceToNotSwitch;
         
 
         private void Awake()
         {
             _playerInput = GetComponent<PlayerInput>();
-        }
-
-        private void slideAnimation()
-        {
-            if (_slidingUI == null)
-            {
-                return;
-            }
-            if(_touching == false)
-            {
-                _slidingUI.transform.position = Vector3.MoveTowards(_slidingUI.transform.position, new Vector3(0,0,0),2000 * Time.deltaTime);
-                return;
-            }
-            if(_canSlide && _currentPosition.x > startPosition.x + 50 ||
-            _canSlide && _currentPosition.x < startPosition.x - 50 )
-            {
-                _isSliding = true;
-                return;
-            }
         }
 
         public void IsTouching(InputAction.CallbackContext context)
@@ -54,6 +34,8 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 startPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
                 _touching = true;
+                _canCheck = true;
+                _canSlide = false;
             }
             if (context.canceled)
             {
@@ -70,7 +52,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     windowManager.ShowWindow(_prevNaviTarget);
                 }
                 _touching = false;
-                _isSliding = false;
+                _canSlide = false;
             }
         }
 
@@ -79,21 +61,36 @@ namespace MenuUi.Scripts.SwipeNavigation
             if (_touching == true)
             {
                 _currentPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
-                if(startPosition.y - _YdistanceToNotSwitch !< _currentPosition.y && startPosition.y + _YdistanceToNotSwitch !> _currentPosition.y)
-                {
-                    _canSlide = true;
-                }
-                else
-                {
-                    _canSlide = false;
-                }
-                
+                swipeCheck();
             }
-            if (_isSliding)
+            if (_canSlide == true && _slidingUI != null)
             {
                 _slidingUI.transform.position = Vector3.MoveTowards(_slidingUI.transform.position, new Vector3(_currentPosition.x - startPosition.x, 0, 0), 2000 * Time.deltaTime);
             }
-            slideAnimation();
+            else
+            {
+                _slidingUI.transform.position = Vector3.MoveTowards(_slidingUI.transform.position, new Vector3(0,0,0),2000 * Time.deltaTime);
+            }
+            
+        }
+
+        private void swipeCheck()
+        {
+            if(_canCheck == false)
+            {
+                return;
+            }
+            if(startPosition.y - 5 > _currentPosition.y || startPosition.y + 5 < _currentPosition.y)
+            {
+                _canCheck = false;
+                return;
+            }
+            if(_currentPosition.x > startPosition.x + 5 || _currentPosition.x < startPosition.x - 5)
+            {
+                _canSlide = true;
+                _canCheck = false;
+                return;
+            }
         }
     }
 }
