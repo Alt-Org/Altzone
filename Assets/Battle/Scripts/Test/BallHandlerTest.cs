@@ -9,6 +9,8 @@ public class BallHandlerTest : MonoBehaviour
 {
     [SerializeField] private int _startingSpeed;
     private IGridManager _gridManager;
+    private IBattlePlayArea _battlePlayArea;
+    private float _arenaScaleFactor;
     private float _angleLimit;
 
     private const float waitTime = 2f;
@@ -17,10 +19,13 @@ public class BallHandlerTest : MonoBehaviour
 
     private void Start()
     {
+        _battlePlayArea = Context.GetBattlePlayArea;
         var variables = GameConfig.Get().Variables;
         _angleLimit = variables._angleLimit;
         _gridManager = Context.GetGridManager;
         _rb = GetComponent<Rigidbody2D>();
+        _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
+        transform.localScale = Vector3.one * _arenaScaleFactor;
         StartCoroutine(LaunchBall());
     }
 

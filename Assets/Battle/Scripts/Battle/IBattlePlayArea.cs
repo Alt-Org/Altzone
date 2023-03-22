@@ -9,6 +9,7 @@ namespace Battle.Scripts.Battle
     {
         float ArenaWidth { get; }
         float ArenaHeight { get; }
+        float ArenaScaleFactor { get; }
         int GridWidth { get; }
         int GridHeight { get; }
         int MiddleAreaHeight { get; }

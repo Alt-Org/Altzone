@@ -35,11 +35,15 @@ namespace Battle.Scripts.Test
         private IPlayerActor _playerActor;
         private IGridManager _gridManager;
         private IPlayerDriverState _state;
+        private IBattlePlayArea _battlePlayArea;
+        private float _arenaScaleFactor;
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
         private void Awake()
         {
+            _battlePlayArea = Context.GetBattlePlayArea;
+            _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
         }
 
@@ -51,7 +55,7 @@ namespace Battle.Scripts.Test
             }
             _gridManager = Context.GetGridManager;
             var playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
-            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab, playerTag);
+            _playerActor = PlayerActor.InstantiatePrefabFor(_settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             _state = GetPlayerDriverState(this);
             _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)

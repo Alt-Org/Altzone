@@ -22,6 +22,7 @@ namespace Battle.Scripts.Battle.Players
         private int _playerPos;
         private int _teamNumber;
         private double _movementDelay;
+        private float _arenaScaleFactor;
 
         public string PlayerName;
 
@@ -37,6 +38,7 @@ namespace Battle.Scripts.Battle.Players
             _photonView = PhotonView.Get(this);
             _gridManager = Context.GetGridManager;
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
+            _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
@@ -51,7 +53,7 @@ namespace Battle.Scripts.Battle.Players
             name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
             {
-                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab, playerTag);
+                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             }
 
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
@@ -61,7 +63,7 @@ namespace Battle.Scripts.Battle.Players
                 playerPrefabId = _playerPrefabID;
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
-            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab, playerTag);
+            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }
 

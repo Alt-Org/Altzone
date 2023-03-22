@@ -90,7 +90,7 @@ namespace Battle.Scripts.Battle.Players
         }
         #endregion
 
-        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName)
+        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");
@@ -119,6 +119,7 @@ namespace Battle.Scripts.Battle.Players
                         throw new UnityException($"Invalid player position {playerPos}");
                 }
             }
+            playerActorBase.transform.localScale = Vector3.one * scale;
             var playerActor = (IPlayerActor)playerActorBase;
             return playerActor;
         }

@@ -93,6 +93,7 @@ namespace Battle.Scripts.Battle.Game
 
         float IBattlePlayArea.ArenaWidth => _arenaWidth;
         float IBattlePlayArea.ArenaHeight => _arenaHeight;
+        float IBattlePlayArea.ArenaScaleFactor => _arenaHeight / _gridHeight;
         int IBattlePlayArea.GridWidth => _gridWidth;
         int IBattlePlayArea.GridHeight => _gridHeight;
         int IBattlePlayArea.MiddleAreaHeight => _middleAreaHeight;
