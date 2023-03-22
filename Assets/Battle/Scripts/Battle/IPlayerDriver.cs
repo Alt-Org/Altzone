@@ -15,6 +15,8 @@ namespace Battle.Scripts.Battle
         int PlayerPos { get; }
 
         void Rotate(float angle);
+
+        void SetCharacterPose(int poseIndex);
     }
 
     internal interface IPlayerDriverState

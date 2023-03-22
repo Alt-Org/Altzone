@@ -15,6 +15,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
 
+        private IPlayerDriver _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -24,6 +25,8 @@ namespace Battle.Scripts.Battle.Players
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
         private float _angleLimit;
+        private int _maxPoseIndex;
+        private int _currentPoseIndex;
 
         public static string PlayerName;
 
@@ -37,6 +40,7 @@ namespace Battle.Scripts.Battle.Players
             _shieldDeformDelay = variables._shieldDeformDelay;
             _angleLimit = variables._angleLimit;
             _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
+            StartCoroutine(ResetPose());
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)
@@ -53,10 +57,18 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        private IEnumerator ShieldHitDelay()
+        private IEnumerator ResetPose()
+        {
+            yield return new WaitUntil(() => _shieldPoseManager != null);
+            _currentPoseIndex = 0;
+            _shieldPoseManager.SetPose(_currentPoseIndex);
+            _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
+        }
+
+        private IEnumerator ShieldHitDelay(int poseIndex)
         {
             yield return new WaitForSeconds(_shieldDeformDelay);
-            _shieldPoseManager.SetNextPose();
+            _shieldPoseManager.SetPose(poseIndex);
         }
 
         #region IPlayerActor
@@ -66,6 +78,11 @@ namespace Battle.Scripts.Battle.Players
         void IPlayerActor.MoveTo(Vector2 targetPosition)
         {
             StartCoroutine(MoveCoroutine(targetPosition));
+        }
+
+        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        {
+            _playerDriver = playerDriver;
         }
 
         void IPlayerActor.SetRotation(float angle)
@@ -81,20 +98,29 @@ namespace Battle.Scripts.Battle.Players
             {
                 return;
             }
-            _shieldHitPoints -= damage;
-            if (_shieldHitPoints <= 0)
+            if (_currentPoseIndex < _maxPoseIndex)
             {
-                StartCoroutine(ShieldHitDelay());
-                _shieldHitPoints = _shieldResistance;
+                _shieldHitPoints -= damage;
+                if (_shieldHitPoints <= 0)
+                {
+                    _currentPoseIndex++;
+                    _playerDriver.SetCharacterPose(_currentPoseIndex);
+                    _shieldHitPoints = _shieldResistance;
+                }
             }
         }
+
+        void IPlayerActor.SetCharacterPose(int poseIndex)
+        {
+            StartCoroutine(ShieldHitDelay(poseIndex));
+        }
+
         #endregion
 
-        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
+        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
-            Debug.Log($"heoooo{gameObjectName}");
-
+            Debug.Log($"heoooo{gameObjectName}");            
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
@@ -118,9 +144,10 @@ namespace Battle.Scripts.Battle.Players
                     default:
                         throw new UnityException($"Invalid player position {playerPos}");
                 }
-            }
+            }            
             playerActorBase.transform.localScale = Vector3.one * scale;
             var playerActor = (IPlayerActor)playerActorBase;
+            playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
         }
     }

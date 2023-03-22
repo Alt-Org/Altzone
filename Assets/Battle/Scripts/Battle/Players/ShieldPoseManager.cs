@@ -6,14 +6,14 @@ namespace Battle.Scripts.Battle.Players
 {
     internal interface IShieldPoseManager
     {
-        void SetNextPose();
+        int MaxPoseIndex { get; }
+        void SetPose(int poseIndex);
     }
     public class ShieldPoseManager : MonoBehaviour, IShieldPoseManager
     {
         private GameObject[] _shields;
         private GameObject _currentPose;
         private int _maxPoseIndex;
-        private int _currentPoseIndex;
 
         private void Awake()
         {
@@ -25,28 +25,20 @@ namespace Battle.Scripts.Battle.Players
                 _shields[i] = transform.GetChild(i).gameObject;
                 _shields[i].SetActive(false);
             }
-            _currentPoseIndex = 0;
-            SetPose(_currentPoseIndex);
+            _shields[0].SetActive(true);
         }
 
-        private void SetPose(int poseIndex)
+        int IShieldPoseManager.MaxPoseIndex => _maxPoseIndex;
+
+        void IShieldPoseManager.SetPose(int poseIndex)
         {
             if (_currentPose != null)
             {
                 _currentPose.SetActive(false);
             }            
             _currentPose = _shields[poseIndex];
-            _shields[poseIndex].transform.localPosition = Vector3.zero;
-            _shields[poseIndex].SetActive(true);
-        }
-
-        void IShieldPoseManager.SetNextPose()
-        {
-            if (_currentPoseIndex < _maxPoseIndex)
-            {
-                _currentPoseIndex++;
-                SetPose(_currentPoseIndex);
-            }
+            _currentPose.transform.localPosition = Vector3.zero;
+            _currentPose.SetActive(true);
         }
     }
 }

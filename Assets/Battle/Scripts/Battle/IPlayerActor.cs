@@ -11,5 +11,9 @@ namespace Battle.Scripts.Battle
         void SetRotation(float angle);
 
         void ShieldHit(int damage);
+
+        void SetPlayerDriver(IPlayerDriver playerDriver);
+
+        void SetCharacterPose(int poseIndex);
     }
 }
