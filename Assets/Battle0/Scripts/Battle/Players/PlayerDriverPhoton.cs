@@ -72,7 +72,7 @@ namespace Battle0.Scripts.Battle.Players
                 return;
             }
             _characterModel = PhotonBattle.GetCharacterModelForPlayer(player);
-            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.MainDefence, _debug._playerPrefab);
+            _playerActor = PlayerActorBase.InstantiatePrefabFor(this, _characterModel.GestaltCycle, _debug._playerPrefab);
             {
                 // This code block should be shared with all PlayerDriver implementations
                 _playerActor.Setup(_characterModel.Speed, _characterModel.Resistance);

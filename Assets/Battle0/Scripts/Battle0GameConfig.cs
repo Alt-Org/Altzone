@@ -1,7 +1,5 @@
 using System;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
@@ -228,49 +226,49 @@ namespace Battle0.Scripts
             PropertyCopier<GamePrefabs, GamePrefabs>.CopyFields(other, this);
         }
 
-        public GameObject GetPlayerPrefab(Defence defence)
+        public GameObject GetPlayerPrefab(GestaltCycle gestaltCycle)
         {
-            switch (defence)
+            switch (gestaltCycle)
             {
-                case Defence.Desensitisation:
+                case GestaltCycle.Desensitisation:
                     return _playerForDes;
-                case Defence.Deflection:
+                case GestaltCycle.Deflection:
                     return _playerForDef;
-                case Defence.Introjection:
+                case GestaltCycle.Introjection:
                     return _playerForInt;
-                case Defence.Projection:
+                case GestaltCycle.Projection:
                     return _playerForPro;
-                case Defence.Retroflection:
+                case GestaltCycle.Retroflection:
                     return _playerForRet;
-                case Defence.Egotism:
+                case GestaltCycle.Egotism:
                     return _playerForEgo;
-                case Defence.Confluence:
+                case GestaltCycle.Confluence:
                     return _playerForCon;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
+                    throw new ArgumentOutOfRangeException(nameof(gestaltCycle), gestaltCycle, null);
             }
         }
 
-        public GameObject GetShieldPrefab(Defence defence)
+        public GameObject GetShieldPrefab(GestaltCycle gestaltCycle)
         {
-            switch (defence)
+            switch (gestaltCycle)
             {
-                case Defence.Desensitisation:
+                case GestaltCycle.Desensitisation:
                     return _shieldForDes;
-                case Defence.Deflection:
+                case GestaltCycle.Deflection:
                     return _shieldForDef;
-                case Defence.Introjection:
+                case GestaltCycle.Introjection:
                     return _shieldForInt;
-                case Defence.Projection:
+                case GestaltCycle.Projection:
                     return _shieldForPro;
-                case Defence.Retroflection:
+                case GestaltCycle.Retroflection:
                     return _shieldForRet;
-                case Defence.Egotism:
+                case GestaltCycle.Egotism:
                     return _shieldForEgo;
-                case Defence.Confluence:
+                case GestaltCycle.Confluence:
                     return _shieldForCon;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(defence), defence, null);
+                    throw new ArgumentOutOfRangeException(nameof(gestaltCycle), gestaltCycle, null);
             }
         }
     }
@@ -292,7 +290,7 @@ namespace Battle0.Scripts
     public class Characters
     {
         [Header("Character Model Attributes")] public string _name;
-        public Defence _mainDefence;
+        public GestaltCycle _mainDefence;
         [Range(0, 10)] public int _speed;
         [Range(0, 10)] public int _resistance;
         [Range(0, 10)] public int _attack;

@@ -30,10 +30,10 @@ namespace Battle0.Scripts.Test
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
             [Tooltip(Tooltip4)] public bool _isAllocateByTeams;
             public bool _isRandomSKill;
-            public Defence _playerMainSkill1 = Defence.Introjection;
-            public Defence _playerMainSkill2 = Defence.Desensitisation;
-            public Defence _playerMainSkill3 = Defence.Projection;
-            public Defence _playerMainSkill4 = Defence.Retroflection;
+            public GestaltCycle _playerMainSkill1 = GestaltCycle.Introjection;
+            public GestaltCycle _playerMainSkill2 = GestaltCycle.Desensitisation;
+            public GestaltCycle _playerMainSkill3 = GestaltCycle.Projection;
+            public GestaltCycle _playerMainSkill4 = GestaltCycle.Retroflection;
         }
 
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
@@ -138,10 +138,10 @@ namespace Battle0.Scripts.Test
 
         private void SetDebugPlayer(Player player)
         {
-            Defence mainSKill;
+            GestaltCycle mainSKill;
             if (_debug._isRandomSKill)
             {
-                mainSKill = (Defence)Random.Range((int)Defence.Desensitisation, (int)Defence.Confluence + 1);
+                mainSKill = (GestaltCycle)Random.Range((int)GestaltCycle.Desensitisation, (int)GestaltCycle.Confluence + 1);
             }
             else
             {

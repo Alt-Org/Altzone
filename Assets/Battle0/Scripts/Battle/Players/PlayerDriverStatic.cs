@@ -26,7 +26,7 @@ namespace Battle0.Scripts.Battle.Players
             public string _nickName;
             public int _playerPos = PhotonBattle.PlayerPosition1;
             public int _teamNumber = PhotonBattle.TeamBlueValue;
-            public Defence _playerMainSkill = Defence.Deflection;
+            public GestaltCycle _playerMainSkill = GestaltCycle.Deflection;
             public bool _isLocal;
         }
 

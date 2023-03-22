@@ -131,7 +131,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 ? character.Name
                 : $"{character.Name} [{character.CharacterClassName}]";
             _labels[++i].text = $"{characterName}";
-            _labels[++i].text = $"MainDefence:\r\n{character.MainDefence}";
+            _labels[++i].text = $"GestaltCycle:\r\n{character.GestaltCycle}";
             _labels[++i].text = $"Speed:\r\n{character.Speed}";
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
             _labels[++i].text = $"Attack:\r\n{character.Attack}";

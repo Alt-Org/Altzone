@@ -358,8 +358,8 @@ namespace Altzone.Scripts.Model
             var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.CharacterClassId == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
-                // Create fake CharacterClass so we can return even character class has been deleted.
-                characterClass = new CharacterClass(customCharacter.CharacterClassId, (Defence)1, "deleted", 1, 1, 1, 1);
+                // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
+                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassId);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
