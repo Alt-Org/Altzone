@@ -15,6 +15,11 @@ public class Raid_Tile : MonoBehaviour
         Normal, Flagged
     }
 
+    public enum FurnitureTileSize
+    {
+        Zero, One, Two, Three
+    }
+
     public bool IsCovered = true;
     public bool DidCheck = false;
 
@@ -24,7 +29,9 @@ public class Raid_Tile : MonoBehaviour
 
     public TileState tileState = TileState.Normal;
 
-    private Sprite DefaultSprite;
+    public FurnitureTileSize furnitureTileSize = FurnitureTileSize.Zero;
+
+    public Sprite DefaultSprite;
 
     private void Start()
     {
