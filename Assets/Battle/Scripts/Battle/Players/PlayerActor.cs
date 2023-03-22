@@ -40,7 +40,10 @@ namespace Battle.Scripts.Battle.Players
             _shieldDeformDelay = variables._shieldDeformDelay;
             _angleLimit = variables._angleLimit;
             _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
-            StartCoroutine(ResetPose());
+            if (_shieldPoseManager != null)
+            {
+                StartCoroutine(ResetPose());
+            }
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)
@@ -59,7 +62,7 @@ namespace Battle.Scripts.Battle.Players
 
         private IEnumerator ResetPose()
         {
-            yield return new WaitUntil(() => _shieldPoseManager != null);
+            yield return new WaitUntil(() => _shieldPoseManager.MaxPoseIndex > 0);
             _currentPoseIndex = 0;
             _shieldPoseManager.SetPose(_currentPoseIndex);
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
