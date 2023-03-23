@@ -41,7 +41,10 @@ namespace Battle.Scripts.Test
                 Debug.Log($"rot: {rotation}");
                 rb.velocity = rotation * Vector2.up * _attackMultiplier;
                 Debug.Log($"vel: {rb.velocity}");
-                _playerActor.ShieldHit(1);
+                if (_playerActor != null)
+                {
+                    _playerActor.ShieldHit(1);
+                }
                 _collider.enabled = false;
                 yield return new WaitForSeconds(.1f);
                 _collider.enabled = true;
