@@ -74,6 +74,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         [Min(0), Tooltip("How far from shield collision should raycast take place to compensate for high speed")] public float _ballSpeedCompensation;
         [Min(0), Tooltip("How many hits does a shield take before deforming")] public int _shieldResistance;
         [Min(0), Tooltip("Small delay after shield has been hit, before the shield deforms")] public float _shieldDeformDelay;
+        [Min(0), Tooltip("Adds a small delay after shield has been hit, so hits from multiple colliders dont register")] public float _shieldHitDelay;
         [Min(0), Tooltip("Delay in seconds when movement starts after movement request has been made")] public float _playerMovementNetworkDelay;
     }
 

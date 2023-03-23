@@ -24,20 +24,24 @@ namespace Battle.Scripts.Battle.Players
         private int _shieldResistance;
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
+        private float _shieldHitDelay;
         private float _angleLimit;
         private int _maxPoseIndex;
         private int _currentPoseIndex;
+        private bool _allowShieldHit;
 
         public static string PlayerName;
 
         private void Awake()
         {
+            _allowShieldHit = true;
             _transform = GetComponent<Transform>();
             var variables = GameConfig.Get().Variables;
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             _shieldResistance = variables._shieldResistance;
             _shieldHitPoints = _shieldResistance;
             _shieldDeformDelay = variables._shieldDeformDelay;
+            _shieldHitDelay = variables._shieldHitDelay;
             _angleLimit = variables._angleLimit;
             _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
             if (_shieldPoseManager != null)
@@ -68,10 +72,23 @@ namespace Battle.Scripts.Battle.Players
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
         }
 
-        private IEnumerator ShieldHitDelay(int poseIndex)
+        private IEnumerator ShieldDeformDelay(int poseIndex)
         {
             yield return new WaitForSeconds(_shieldDeformDelay);
             _shieldPoseManager.SetPose(poseIndex);
+        }
+
+        private IEnumerator ShieldHitDelay(int damage)
+        {
+            yield return new WaitForSeconds(_shieldHitDelay);
+            _shieldHitPoints -= damage;
+            if (_shieldHitPoints <= 0)
+            {
+                _currentPoseIndex++;
+                _playerDriver.SetCharacterPose(_currentPoseIndex);
+                _shieldHitPoints = _shieldResistance;
+            }
+            _allowShieldHit = true;
         }
 
         #region IPlayerActor
@@ -97,25 +114,24 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActor.ShieldHit(int damage)
         {
+            if (!_allowShieldHit)
+            {
+                return;
+            }
+            _allowShieldHit = false;
             if (_shieldPoseManager == null)
             {
                 return;
             }
             if (_currentPoseIndex < _maxPoseIndex)
             {
-                _shieldHitPoints -= damage;
-                if (_shieldHitPoints <= 0)
-                {
-                    _currentPoseIndex++;
-                    _playerDriver.SetCharacterPose(_currentPoseIndex);
-                    _shieldHitPoints = _shieldResistance;
-                }
+                StartCoroutine(ShieldHitDelay(damage));
             }
         }
 
         void IPlayerActor.SetCharacterPose(int poseIndex)
         {
-            StartCoroutine(ShieldHitDelay(poseIndex));
+            StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
         #endregion
