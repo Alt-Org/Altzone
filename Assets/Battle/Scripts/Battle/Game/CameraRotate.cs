@@ -11,7 +11,6 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] Transform DiamondCounters;
         [SerializeField] Transform BetaDiamonds;
         [SerializeField] Transform AlphaDiamonds;
-        //private bool team2 = false;
 
         private void Start()
         {
@@ -29,7 +28,6 @@ namespace Battle.Scripts.Battle.Game
                     DiamondCounters.eulerAngles = new Vector3(0, 0, 180);
                     BetaDiamonds.eulerAngles = new Vector3(0, 0, 0);
                     AlphaDiamonds.eulerAngles = new Vector3(0, 0, 0);
-                    //team2 = true;
                 }
             }
         }

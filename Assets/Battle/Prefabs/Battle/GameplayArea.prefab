@@ -125,6 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 289940268}
   - component: {fileID: 289940269}
+  - component: {fileID: 8474965504714634145}
   - component: {fileID: 289940270}
   m_Layer: 0
   m_Name: Diamonds
@@ -168,6 +169,20 @@ MonoBehaviour:
   center: {x: 4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
+--- !u!114 &8474965504714634145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289940267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fb60334e2ae1af4b845e8a493f71e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  View: {fileID: 289940270}
+  DiamondsArray: []
 --- !u!114 &289940270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,6 +376,7 @@ GameObject:
   m_Component:
   - component: {fileID: 704006237}
   - component: {fileID: 704006238}
+  - component: {fileID: 6606595342933486695}
   - component: {fileID: 704006239}
   m_Layer: 0
   m_Name: Diamonds
@@ -404,6 +420,20 @@ MonoBehaviour:
   center: {x: -4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
+--- !u!114 &6606595342933486695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704006236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fb60334e2ae1af4b845e8a493f71e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  View: {fileID: 704006239}
+  DiamondsArray: []
 --- !u!114 &704006239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +592,7 @@ GameObject:
   m_Component:
   - component: {fileID: 876887491}
   - component: {fileID: 876887492}
+  - component: {fileID: 7890064207720725737}
   - component: {fileID: 876887493}
   m_Layer: 0
   m_Name: Diamonds
@@ -605,6 +636,20 @@ MonoBehaviour:
   center: {x: 4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
+--- !u!114 &7890064207720725737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876887490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fb60334e2ae1af4b845e8a493f71e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  View: {fileID: 876887493}
+  DiamondsArray: []
 --- !u!114 &876887493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 930049737}
   - component: {fileID: 930049738}
+  - component: {fileID: 4401999409878782866}
   - component: {fileID: 930049739}
   m_Layer: 0
   m_Name: Diamonds
@@ -680,6 +726,20 @@ MonoBehaviour:
   center: {x: -4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
+--- !u!114 &4401999409878782866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930049736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fb60334e2ae1af4b845e8a493f71e4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  View: {fileID: 930049739}
+  DiamondsArray: []
 --- !u!114 &930049739
 MonoBehaviour:
   m_ObjectHideFlags: 0
