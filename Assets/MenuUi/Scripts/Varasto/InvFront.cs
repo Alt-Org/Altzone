@@ -5,20 +5,23 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
-using UnityEditor;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class InvFront : MonoBehaviour
 {
-    [Header("Information")]
-    [SerializeField] private TMP_Text sortText;
+    [Header("UI")]
+    [SerializeField] private TMP_Text _sortText;
+    [SerializeField] private Transform _content;
+    [SerializeField] private GameObject _infoSlot;
 
-    [Header("GameObjects")]
-    [SerializeField] private Transform content;
-    [SerializeField] private GameObject invSlot;
+    [Header("Prefabs")]
+    [SerializeField] private GameObject _invSlot;
+
     private DataStore _store;
 
-    private List<GameFurniture> items;
-    private List<GameObject> slotsList = new List<GameObject>();
+    private List<GameFurniture> _items;
+    private List<GameObject> _slotsList = new List<GameObject>();
 
     private int maxSortingBy = 2;
     private int sortingBy; // used as a carrier for info on how to sort
@@ -35,7 +38,7 @@ public class InvFront : MonoBehaviour
         bool isCallbackDone = false;
         _store.GetAllGameFurniture(result =>
         {
-            items = result.ToList();
+            _items = result.ToList();
             isCallbackDone = true;
         });
         yield return new WaitUntil(() => isCallbackDone);
@@ -47,21 +50,26 @@ public class InvFront : MonoBehaviour
 
     private void MakeSlots()
     {
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < _items.Count; i++)
         {
-            slotsList.Add(Instantiate(invSlot, content));
+            GameObject newSlot = Instantiate(_invSlot, _content);
+
+            // Adds an event to the new slot that enables it to show information about the furniture it is showcasing
+            newSlot.GetComponent<Button>().onClick.AddListener(ShowInfo);
+
+            _slotsList.Add(newSlot);
         }
     }
 
     private void SetSlots()
     {
         int i = 0;
-        foreach (GameFurniture furn in items)
+        foreach (GameFurniture furn in _items)
         {
-            GameObject toSet = slotsList[i];
+            GameObject toSet = _slotsList[i];
 
             // Icon - Not done
-            //toSet.Image slotIcon = transform.GetChild(0).GetComponent<Image>();
+            //Image slotIcon = toSet.transform.GetChild(0).GetComponent<Image>();
 
             // Name
             toSet.transform.GetChild(1).GetComponent<TMP_Text>().text = furn.Name;
@@ -70,7 +78,7 @@ public class InvFront : MonoBehaviour
             toSet.transform.GetChild(2).GetComponent<TMP_Text>().text = furn.Weight + " KG";
 
             // Shape - Not done
-            //toSet.transform.GetChild(3).GetComponent<Image>().sprite = 
+            //toSet.transform.GetChild(3).GetComponent<Image>().sprite =
 
             i++;
         }
@@ -81,43 +89,51 @@ public class InvFront : MonoBehaviour
         if (sortingBy < maxSortingBy) { sortingBy++; }
         else { sortingBy = 0; }
 
-        List<GameObject> reSlots = slotsList;
+        List<GameObject> reSlots = _slotsList;
         int forVal = reSlots.Count;
 
         switch (sortingBy)
         {
             case 0:
-                sortText.text = "Sorted by: Alphabet";
-                items.OrderBy(v => v.Name);
-                items.Sort((GameFurniture a, GameFurniture b) => { return a.Name.CompareTo(b.Name); });
+                _sortText.text = "Sorted by: Alphabet";
+                _items.Sort((GameFurniture a, GameFurniture b) => { return a.Name.CompareTo(b.Name); });
                 break;
             case 1:
-                sortText.text = "Sorted by: Weight";
-                items.Sort((GameFurniture a, GameFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+                _sortText.text = "Sorted by: Weight";
+                _items.Sort((GameFurniture a, GameFurniture b) => { return a.Weight.CompareTo(b.Weight); });
                 break;
             case 2:
-                sortText.text = "Sorted by: Material";
-                items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
+                _sortText.text = "Sorted by: Material";
+                _items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
                 break;
-            default: sortText.text = "Something broke"; break; // Just as a safety measure
+            default: _sortText.text = "Something broke"; break; // Just as a safety measure
         }
-
         SetSlots();
     }
+    
+    void ShowInfo()
+    { //
+        Debug.Log("Showing some information =)");
 
-    public void SlotInformation()
-    {
+        // I know its a bit of a complex way of doing stuff but cant really find workarounds as events cant have arguments, and i know not of how to do it withut the use of events
+        int slotVal = _slotsList.IndexOf(EventSystem.current.currentSelectedGameObject);
 
+        // Icon - Still gotta figure out how to get images for these things
+
+        // Name
+        _infoSlot.transform.GetChild(1).GetComponent<TMP_Text>().text = _items[slotVal].Name;
+
+        // Weight
+        _infoSlot.transform.GetChild(2).GetComponent<TMP_Text>().text = _items[slotVal].Weight + " KG";
+
+        // Material text
+        _infoSlot.transform.GetChild(3).GetComponent<TMP_Text>().text = _items[slotVal].Material;
+
+        // Type
+
+        // Type Text
+        _infoSlot.transform.GetChild(5).GetComponent<TMP_Text>().text = _items[slotVal].Shape;
+
+        _infoSlot.SetActive(true);
     }
-
-    //public void UnInform() { infoScreen.SetActive(false); invScreen.SetActive(true); }
-
-    // Task List
-    // - Visible Inventory (Done)
-    // - Sorting (Done)
-    // - Infinite capacity possibility (Done)
-    // - Reactive Scaling (Done?)
-    // - Information Panel Instantiation
-    // - Information Panel information
-
 }
