@@ -5,9 +5,7 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
-using UnityEditor;
 using UnityEngine.UI;
-using static UnityEngine.UI.Button;
 using UnityEngine.EventSystems;
 
 public class InvFront : MonoBehaviour
@@ -67,7 +65,7 @@ public class InvFront : MonoBehaviour
     {
         int i = 0;
         foreach (GameFurniture furn in _items)
-        { // 1. Furniture (Image) / 2. Name / 3. Weight / 4. Shape Type (Image) 
+        {
             GameObject toSet = _slotsList[i];
 
             // Icon - Not done
@@ -114,7 +112,7 @@ public class InvFront : MonoBehaviour
     }
     
     void ShowInfo()
-    { // 1. Icon (Image) / 2. Name / 3. Weight / 4. MaterialText / 5. Type (Image) / 6. TypeText / 7. AddHome (Button) / 8. SuggestSale (Button)
+    { //
         Debug.Log("Showing some information =)");
 
         // I know its a bit of a complex way of doing stuff but cant really find workarounds as events cant have arguments, and i know not of how to do it withut the use of events
@@ -138,12 +136,4 @@ public class InvFront : MonoBehaviour
 
         _infoSlot.SetActive(true);
     }
-
-    // Task List
-    // - Visible Inventory (Done)
-    // - Sorting (Done)
-    // - Infinite capacity possibility (Done)
-    // - Reactive Scaling (Done?)
-    // - Information Panel Instantiation
-    // - Information Panel information
 }
