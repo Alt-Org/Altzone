@@ -17,7 +17,7 @@ namespace Battle0.Scripts.Battle.Players
         protected static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
         protected static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', 'R', 'o', '-' };
 
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, Defence defence, PlayerActorBase playerPrefabTest)
+        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, GestaltCycle gestaltCycle, PlayerActorBase playerPrefabTest)
         {
             var playerPos = playerDriver.PlayerPos;
             var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
@@ -26,8 +26,8 @@ namespace Battle0.Scripts.Battle.Players
             {
                 // This must be PlayerActor2 prefab which must be obtained via RuntimeGameConfig!
                 var runtimeGameConfig = Battle0GameConfig.Get();
-                var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(defence);
-                Debug.Log($"defence {defence} prefab {playerPrefab.name}");
+                var playerPrefab = runtimeGameConfig.Prefabs.GetPlayerPrefab(gestaltCycle);
+                Debug.Log($"defence {gestaltCycle} prefab {playerPrefab.name}");
                 var playerInstance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
                 playerActorBase = playerInstance.GetComponent<PlayerActor2>();
                 Assert.IsNotNull(playerActorBase, "playerActorBase != null");

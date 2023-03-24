@@ -22,6 +22,8 @@ namespace Battle.Scripts.Battle.Players
         private int _playerPos;
         private int _teamNumber;
         private double _movementDelay;
+        private float _arenaScaleFactor;
+        private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         public string PlayerName;
 
@@ -37,6 +39,7 @@ namespace Battle.Scripts.Battle.Players
             _photonView = PhotonView.Get(this);
             _gridManager = Context.GetGridManager;
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
+            _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
@@ -51,7 +54,7 @@ namespace Battle.Scripts.Battle.Players
             name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
             {
-                return PlayerActor.InstantiatePrefabFor(_playerPos, _playerPrefab, playerTag);
+                return PlayerActor.InstantiatePrefabFor(this, _playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             }
 
             var playerPrefabs = GameConfig.Get().PlayerPrefabs;
@@ -61,7 +64,7 @@ namespace Battle.Scripts.Battle.Players
                 playerPrefabId = _playerPrefabID;
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
-            var playerActor = PlayerActor.InstantiatePrefabFor(_playerPos, playerPrefab, playerTag);
+            var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }
 
@@ -117,6 +120,15 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
+        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        {
+            if (!IsNetworkSynchronize)
+            {
+                return;
+            }
+            _photonView.RPC(nameof(SetPlayerCharacterPoseRpc), RpcTarget.All, poseIndex);
+        }
+
         #endregion
 
         #region Photon RPC
@@ -127,6 +139,12 @@ namespace Battle.Scripts.Battle.Players
             var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
             var gridPos = new GridPos(row, col);
             _state.DelayedMove(gridPos, (float)moveExecuteDelay);
+        }
+
+        [PunRPC]
+        private void SetPlayerCharacterPoseRpc(int poseIndex)
+        {
+            _playerActor.SetCharacterPose(poseIndex);
         }
 
         #endregion

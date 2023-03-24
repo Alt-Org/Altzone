@@ -15,6 +15,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
 
+        private IPlayerDriver _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -23,20 +24,30 @@ namespace Battle.Scripts.Battle.Players
         private int _shieldResistance;
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
+        private float _shieldHitDelay;
         private float _angleLimit;
+        private int _maxPoseIndex;
+        private int _currentPoseIndex;
+        private bool _allowShieldHit;
 
         public static string PlayerName;
 
         private void Awake()
         {
+            _allowShieldHit = true;
             _transform = GetComponent<Transform>();
             var variables = GameConfig.Get().Variables;
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             _shieldResistance = variables._shieldResistance;
             _shieldHitPoints = _shieldResistance;
             _shieldDeformDelay = variables._shieldDeformDelay;
+            _shieldHitDelay = variables._shieldHitDelay;
             _angleLimit = variables._angleLimit;
             _shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
+            if (_shieldPoseManager != null)
+            {
+                StartCoroutine(ResetPose());
+            }
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)
@@ -53,10 +64,31 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        private IEnumerator ShieldHitDelay()
+        private IEnumerator ResetPose()
+        {
+            yield return new WaitUntil(() => _shieldPoseManager.MaxPoseIndex > 0);
+            _currentPoseIndex = 0;
+            _shieldPoseManager.SetPose(_currentPoseIndex);
+            _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
+        }
+
+        private IEnumerator ShieldDeformDelay(int poseIndex)
         {
             yield return new WaitForSeconds(_shieldDeformDelay);
-            _shieldPoseManager.SetNextPose();
+            _shieldPoseManager.SetPose(poseIndex);
+        }
+
+        private IEnumerator ShieldHitDelay(int damage)
+        {
+            yield return new WaitForSeconds(_shieldHitDelay);
+            _shieldHitPoints -= damage;
+            if (_shieldHitPoints <= 0)
+            {
+                _currentPoseIndex++;
+                _playerDriver.SetCharacterPose(_currentPoseIndex);
+                _shieldHitPoints = _shieldResistance;
+            }
+            _allowShieldHit = true;
         }
 
         #region IPlayerActor
@@ -68,6 +100,11 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
+        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        {
+            _playerDriver = playerDriver;
+        }
+
         void IPlayerActor.SetRotation(float angle)
         {
             var multiplier = Mathf.Round (angle / _angleLimit);
@@ -77,24 +114,32 @@ namespace Battle.Scripts.Battle.Players
 
         void IPlayerActor.ShieldHit(int damage)
         {
+            if (!_allowShieldHit)
+            {
+                return;
+            }
+            _allowShieldHit = false;
             if (_shieldPoseManager == null)
             {
                 return;
             }
-            _shieldHitPoints -= damage;
-            if (_shieldHitPoints <= 0)
+            if (_currentPoseIndex < _maxPoseIndex)
             {
-                StartCoroutine(ShieldHitDelay());
-                _shieldHitPoints = _shieldResistance;
+                StartCoroutine(ShieldHitDelay(damage));
             }
         }
+
+        void IPlayerActor.SetCharacterPose(int poseIndex)
+        {
+            StartCoroutine(ShieldDeformDelay(poseIndex));
+        }
+
         #endregion
 
-        public static IPlayerActor InstantiatePrefabFor(int playerPos, PlayerActorBase playerPrefab, string gameObjectName)
+        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
-            Debug.Log($"heoooo{gameObjectName}");
-
+            Debug.Log($"heoooo{gameObjectName}");            
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
@@ -118,8 +163,10 @@ namespace Battle.Scripts.Battle.Players
                     default:
                         throw new UnityException($"Invalid player position {playerPos}");
                 }
-            }
+            }            
+            playerActorBase.transform.localScale = Vector3.one * scale;
             var playerActor = (IPlayerActor)playerActorBase;
+            playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
         }
     }

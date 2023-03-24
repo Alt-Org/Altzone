@@ -15,21 +15,21 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly int CharacterClassId;
         public readonly string CharacterClassName;
         public readonly string UnityKey;
-        public readonly Defence MainDefence;
+        public readonly GestaltCycle GestaltCycle;
         public readonly int Speed;
         public readonly int Resistance;
         public readonly int Attack;
         public readonly int Defence;
 
         private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string unityKey,
-            Defence mainDefence, int speed, int resistance, int attack, int defence)
+            GestaltCycle gestaltCycle, int speed, int resistance, int attack, int defence)
         {
             CustomCharacterId = customCharacterId;
             Name = name;
             CharacterClassId = characterClassId;
             CharacterClassName = characterClassName;
             UnityKey = unityKey;
-            MainDefence = mainDefence;
+            GestaltCycle = gestaltCycle;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -43,7 +43,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 customCharacter.CharacterClassId, customCharacter.Name,
                 characterClass.CharacterClassId, characterClass.Name,
                 customCharacter.UnityKey,
-                (Defence)characterClass.Defence,
+                characterClass.GestaltCycle,
                 customCharacter.Speed + characterClass.Speed,
                 customCharacter.Resistance + characterClass.Resistance,
                 customCharacter.Attack + characterClass.Attack,
@@ -54,7 +54,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return $"CustomCharacter: {CustomCharacterId} : {Name}" +
                    $", CharacterClass: {CharacterClassId} : {CharacterClassName}" +
-                   $", UnityKey: {UnityKey}, MainDefence: {MainDefence}" +
+                   $", UnityKey: {UnityKey}, MainDefence: {GestaltCycle}" +
                    $", Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }

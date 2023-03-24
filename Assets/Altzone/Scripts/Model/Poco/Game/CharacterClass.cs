@@ -11,17 +11,17 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class CharacterClass
     {
         public int CharacterClassId;
-        public Defence DefenceClass;
+        public GestaltCycle GestaltCycle;
         public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CharacterClass(int characterClassId, Defence defenceClass, string name, int speed, int resistance, int attack, int defence)
+        public CharacterClass(int characterClassId, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
         {
             CharacterClassId = characterClassId;
-            DefenceClass = defenceClass;
+            GestaltCycle = gestaltCycle;
             Name = name;
             Speed = speed;
             Resistance = resistance;
@@ -29,9 +29,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             Defence = defence;
         }
 
+        public static CharacterClass CreateDummyFor(int characterClassId)
+        {
+            return new CharacterClass(characterClassId, (GestaltCycle)1, "deleted", 1, 1, 1, 1);
+        }
+
         public override string ToString()
         {
-            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(DefenceClass)}: {DefenceClass}, {nameof(Name)}: {Name}" +
+            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(GestaltCycle)}: {GestaltCycle}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }

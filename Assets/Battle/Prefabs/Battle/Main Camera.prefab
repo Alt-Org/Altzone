@@ -13,9 +13,6 @@ GameObject:
   - component: {fileID: 5756210811780550967}
   - component: {fileID: 1183916497}
   - component: {fileID: 564431172}
-  - component: {fileID: 310529683}
-  - component: {fileID: 803708654618171327}
-  - component: {fileID: 3680074202352173382}
   - component: {fileID: 637648641814191721}
   m_Layer: 0
   m_Name: Main Camera
@@ -117,51 +114,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameCamera: {fileID: 5756210811780550966}
---- !u!114 &310529683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5756210811780550964}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e060e160b50bf434aa67985bc58715e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Camera: {fileID: 5756210811780550961}
-  Background: {fileID: 0}
-  GridOverlay: {fileID: 0}
---- !u!114 &803708654618171327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5756210811780550964}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e060e160b50bf434aa67985bc58715e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Camera: {fileID: 5756210811780550961}
-  Background: {fileID: 0}
-  GridOverlay: {fileID: 0}
---- !u!114 &3680074202352173382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5756210811780550964}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e060e160b50bf434aa67985bc58715e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Camera: {fileID: 5756210811780550961}
-  Background: {fileID: 0}
-  GridOverlay: {fileID: 0}
 --- !u!114 &637648641814191721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,3 +129,6 @@ MonoBehaviour:
   Camera: {fileID: 5756210811780550961}
   Background: {fileID: 0}
   GridOverlay: {fileID: 0}
+  DiamondCounters: {fileID: 0}
+  BetaDiamonds: {fileID: 0}
+  AlphaDiamonds: {fileID: 0}

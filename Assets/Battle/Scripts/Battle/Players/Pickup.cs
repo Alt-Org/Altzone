@@ -22,7 +22,7 @@ namespace Battle.Scripts.Battle.Game
         public List<GameObject> PlayerActors = new List<GameObject>();      //<IPlayerDriver>
         public PlayerDriverPhoton PlayerDriverPhoton;
         [SerializeField] PlayerActor PlayerActor;
-        //private bool local = false;
+        private bool RightDriver = false;
         public PhotonView View;
 
         private void Start()
@@ -30,21 +30,20 @@ namespace Battle.Scripts.Battle.Game
             //PlayerActors.Add(GetAllPlayerDrivers);
             PlayerActors = Context.GetAllPlayerDriverObjects;     //GetAllPlayerDrivers
 
-            foreach (GameObject t in PlayerActors)      //IPlayerDriver t in
+            while (RightDriver == false)
             {
-                View = t.GetComponent<PhotonView>();
-                PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
-                if (PlayerActor.PlayerName == PlayerDriverPhoton.PlayerName)       //View.IsMine &&
+                foreach (GameObject t in PlayerActors)      //IPlayerDriver t in
                 {
-                    //local = true;
-                    //Debug.Log("Is local");
-                    break;
+                    View = t.GetComponent<PhotonView>();
+                    PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
+                    if (PlayerActor.PlayerName == PlayerDriverPhoton.PlayerName)       //View.IsMine &&
+                    {
+                        RightDriver = true;
+                        break;
+                    }
+                    Debug.Log($"players {Context.GetAllPlayerDriverObjects.Count}");      //GetAllPlayerDrivers.Count
                 }
-                else
-                {
-                    //Debug.Log("Is not local");
-                }
-                Debug.Log($"players {Context.GetAllPlayerDriverObjects.Count}");      //GetAllPlayerDrivers.Count
+
             }
 
             /*if (local == true)

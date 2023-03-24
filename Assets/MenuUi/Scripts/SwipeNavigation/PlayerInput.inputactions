@@ -1,5 +1,5 @@
 {
-    "name": "MenuInputs",
+    "name": "PlayerInput",
     "maps": [
         {
             "name": "Swipe",
@@ -38,8 +38,30 @@
                 },
                 {
                     "name": "",
+                    "id": "7a8c6748-6607-4560-9f67-a27e2e87dfe3",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6f9bc48a-ef9b-4e82-9d08-22389da0eaa9",
                     "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "IsTouching",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c1dfeb5-7852-4905-bdaf-84ed4f7935b9",
+                    "path": "<Pointer>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -406,10 +406,10 @@ namespace Battle0.Scripts
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
             Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
-            if (playerMainSkill < (int)Defence.Desensitisation || playerMainSkill > (int)Defence.Confluence)
+            if (playerMainSkill < (int)GestaltCycle.Desensitisation || playerMainSkill > (int)GestaltCycle.Confluence)
             {
                 // Should be fastest movement skill to have for testing.
-                playerMainSkill = (int)Defence.Deflection;
+                playerMainSkill = (int)GestaltCycle.Deflection;
             }
             var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
             var curPlayerMainSkill = player.GetCustomProperty(PlayerMainSkillKey, -1);

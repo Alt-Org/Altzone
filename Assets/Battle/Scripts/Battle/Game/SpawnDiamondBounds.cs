@@ -10,7 +10,6 @@ public class SpawnDiamondBounds : MonoBehaviour
     [SerializeField] Transform SpawnPoint;
     [SerializeField] float SpawnSpace;
 
-
     //private GameObject[] SpawnPointsArray;
     public List<float> SpawnPointsArray = new List<float>();
 
@@ -53,7 +52,7 @@ public class SpawnDiamondBounds : MonoBehaviour
         var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));   // transform.TransformPoint(pos)
         DiamondParent.transform.parent = transform;
         DiamondParent.SetActive(true);
-        if (PhotonNetwork.IsMasterClient) 
+        if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(SpawnDiamond());
         }

@@ -5,21 +5,27 @@ using Photon.Pun;
 
 public class DiamondDisappear : MonoBehaviour
 {
-    [SerializeField] float min;
-    [SerializeField] float max;
+    [SerializeField] PhotonView View;
+    public static bool Master = false;
+    public List<GameObject> DiamondsArray = new List<GameObject>();
 
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        StartCoroutine(Disappear());
+        if (PhotonNetwork.IsMasterClient)   
+        { 
+            Master = true;
+        }
     }
 
-    private IEnumerator Disappear()
+    public void DiamondDestroy()
     {
-        yield return new WaitForSeconds(Random.Range(min, max));
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-            Destroy(gameObject);    //PhotonNetwork
-        //}
+        View.RPC("DisappearRPC",  RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void DisappearRPC()
+    {
+        Destroy(DiamondsArray[0]);
+        DiamondsArray.Remove(DiamondsArray[0]);
     }
 }

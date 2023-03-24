@@ -19,9 +19,11 @@ namespace Altzone.Scripts.Model
     {
         /// <summary>
         /// Master version number for storage data.<br />
-        /// Changing this will force full storage reset, what ever this means!
+        /// Changing this will force full storage reset, what ever this means!<br />
+        /// For local data this means it could be deleted and re-created to get rid of all unwanted or obsoleted data.<br />
+        /// You can change this for example if some data models has been changed that are not backwards compatible. 
         /// </summary>
-        internal const int MasterStorageVersionNumber = 2;
+        internal const int MasterStorageVersionNumber = 3;
 
         /// <summary>
         /// [Player] <c>PlayerData</c> version number for data update purposes.
@@ -110,7 +112,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Game] <c>CharacterClass</c> version number for data update purposes.
         /// </summary>
-        internal const int CharacterClassesVersion = 3;
+        internal const int CharacterClassesVersion = 4;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
@@ -120,13 +122,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(1, Defence.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
-                new(2, Defence.Deflection, "Vitsiniekka", 9, 3, 3, 4),
-                new(3, Defence.Introjection, "Pappi", 5, 5, 4, 4),
-                new(4, Defence.Projection, "Taiteilija", 4, 2, 9, 5),
-                new(5, Defence.Retroflection, "Hodariläski", 3, 7, 2, 9),
-                new(6, Defence.Egotism, "Älykkö", 6, 2, 6, 5),
-                new(7, Defence.Confluence, "Tytöt", 5, 6, 2, 6)
+                new(1, GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
+                new(2, GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
+                new(3, GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
+                new(4, GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
+                new(5, GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new(6, GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
+                new(7, GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
 
