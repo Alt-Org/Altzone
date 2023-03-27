@@ -1,11 +1,8 @@
-﻿using System;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model;
+﻿using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace Editor.Prg.GameDebug
+namespace Editor.Altzone.GameDebug
 {
     internal static class DebugMenu
     {

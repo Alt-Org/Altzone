@@ -1,6 +1,6 @@
+using Editor.Altzone.GameDebug;
 using Editor.Prg.Build;
 using Editor.Prg.Dependencies;
-using Editor.Prg.GameDebug;
 using Editor.Prg.Localization;
 using Editor.Prg.Logging;
 using Editor.Prg.Util;
