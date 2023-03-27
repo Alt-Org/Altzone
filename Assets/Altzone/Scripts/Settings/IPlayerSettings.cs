@@ -21,8 +21,8 @@ namespace Altzone.Scripts.Settings
         void SetPlayerGuid(string newPlayerGuid);
 
 #if UNITY_EDITOR
-        void DebugSavePlayerSettings();
-        void DebugResetPlayerSettings();
+        void ResetPlayerSettings();
+        void SetLanguageToEnglish();
 #endif
     }
 }

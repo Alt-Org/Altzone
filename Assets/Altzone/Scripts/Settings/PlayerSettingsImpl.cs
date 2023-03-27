@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Unity;
+using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -143,14 +145,23 @@ namespace Altzone.Scripts.Settings
         }
 
 #if UNITY_EDITOR
-        public void DebugResetPlayerSettings()
+        public void ResetPlayerSettings()
         {
+            Localizer.LoadTranslations(DefaultLanguage);
+            Localizer.SetLanguage(DefaultLanguage);
             _playerData.ResetData(DefaultLanguage);
+            InternalSave();
+            Debug.Log(ToString());
         }
 
-        public void DebugSavePlayerSettings()
+        public void SetLanguageToEnglish()
         {
+            const SystemLanguage english = SystemLanguage.English;
+            Localizer.LoadTranslations(english);
+            Localizer.SetLanguage(english);
+            Language = english;
             InternalSave();
+            Debug.Log(ToString());
         }
 #endif
 
@@ -166,12 +177,12 @@ namespace Altzone.Scripts.Settings
             public bool IsAccountVerified;
             public bool IsDebugFlag;
 
-            public void ResetData(SystemLanguage defaultLanguage)
+            public void ResetData(SystemLanguage language)
             {
-                PlayerGuid = string.Empty;
-                Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)defaultLanguage);
+                PlayerGuid = Guid.NewGuid().ToString();
+                Language = language;
                 IsTosAccepted = false;
-                IsFirstTimePlaying = true;
+                IsFirstTimePlaying = false;
                 IsAccountVerified = false;
                 IsDebugFlag = false;
             }
