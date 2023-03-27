@@ -102,7 +102,12 @@ namespace Editor.Prg.Dependencies
                     {
                         continue;
                     }
-                    var contentExtension = Path.GetExtension(contentFilename);
+                    var contentExtension = Path.GetExtension(contentFilename).ToLower();
+                    if (contentExtension == ".asset" && _state.IsExcludedAsset(contentFilename.ToLower()))
+                    {
+                        // Skip binary format assets (e.g. lighting data or navmesh etc.)
+                        continue;
+                    }
                     if (_state.OtherExtensions.Contains(contentExtension))
                     {
                         continue;
@@ -121,6 +126,7 @@ namespace Editor.Prg.Dependencies
                             _state.OtherExtensions.Add(contentExtension);
                             _state.Save();
                             Debug.Log($"New other asset extension {RichText.White(contentExtension)} found");
+                            Debug.Log($"File {RichText.White(contentFilename)}");
                         }
                         continue;
                     }
@@ -129,6 +135,7 @@ namespace Editor.Prg.Dependencies
                         _state.YamlExtensions.Add(contentExtension);
                         _state.Save();
                         Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
+                        Debug.Log($"File {RichText.White(contentFilename)}");
                     }
                     CheckFileReferences(contentFilename, textLines);
                 }
@@ -237,7 +244,12 @@ namespace Editor.Prg.Dependencies
                     {
                         continue;
                     }
-                    var contentExtension = Path.GetExtension(contentFilename);
+                    var contentExtension = Path.GetExtension(contentFilename).ToLower();
+                    if (contentExtension == ".asset" && _state.IsExcludedAsset(contentFilename.ToLower()))
+                    {
+                        // Skip binary format assets (e.g. lighting data or navmesh etc.)
+                        continue;
+                    }
                     if (_state.OtherExtensions.Contains(contentExtension))
                     {
                         continue;
@@ -256,6 +268,7 @@ namespace Editor.Prg.Dependencies
                             _state.OtherExtensions.Add(contentExtension);
                             _state.Save();
                             Debug.Log($"New other asset extension {RichText.White(contentExtension)} found");
+                            Debug.Log($"File {RichText.White(contentFilename)}");
                         }
                         continue;
                     }
@@ -264,6 +277,7 @@ namespace Editor.Prg.Dependencies
                         _state.YamlExtensions.Add(contentExtension);
                         _state.Save();
                         Debug.Log($"New YAML asset extension {RichText.Yellow(contentExtension)} found");
+                        Debug.Log($"File {RichText.White(contentFilename)}");
                     }
                     CheckFileReferences(textLines, folderGuids);
                 }
@@ -304,7 +318,7 @@ namespace Editor.Prg.Dependencies
                     {
                         continue;
                     }
-                    var contentExtension = Path.GetExtension(contentFilename);
+                    var contentExtension = Path.GetExtension(contentFilename).ToLower();
                     if (excludedExtensions.Contains(contentExtension))
                     {
                         continue;

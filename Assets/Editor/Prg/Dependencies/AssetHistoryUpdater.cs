@@ -32,6 +32,9 @@ namespace Editor.Prg.Dependencies
     /// <summary>
     /// Local state for <c>AssetHistory</c>.
     /// </summary>
+    /// <remarks>
+    /// Note that all file extensions should be in lower case. 
+    /// </remarks>
     [Serializable]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class AssetHistoryState
@@ -39,6 +42,11 @@ namespace Editor.Prg.Dependencies
         public int DayNumber;
         public List<string> YamlExtensions = new();
         public List<string> OtherExtensions = new();
+
+        /// <summary>
+        /// Checks if assets is binary file format and should be skipped.
+        /// </summary>
+        public bool IsExcludedAsset(string filename) => filename.EndsWith("lightingdata.asset") || filename.EndsWith("navmesh.asset");
 
         public static AssetHistoryState Load()
         {
@@ -48,15 +56,14 @@ namespace Editor.Prg.Dependencies
                 {
                     YamlExtensions = new List<string>()
                     {
-                        ".anim", ".asset", ".controller", ".cubemap", ".flare", ".guiskin", ".lighting",
-                        ".mat", ".overrideController", ".physicmaterial", ".physicMaterial", ".physicsMaterial2D",
-                        ".prefab", ".unity",
+                        ".anim", ".asset", ".controller", ".cubemap", ".flare", ".guiskin", ".lighting", ".mat", ".overridecontroller",
+                        ".physicmaterial", ".physicmaterial", ".physicsmaterial2d", ".prefab", ".unity",
                     },
                     OtherExtensions = new List<string>()
                     {
-                        ".aar", ".asmdef", ".asset", ".blend", ".bmp", ".cginc", ".chm", ".cs", ".csv", ".dll", ".exr",
-                        ".fbx", ".FBX", ".gif", ".inputactions", ".jpg", ".jslib", ".json", ".lib", ".mp3", ".otf", ".pdb",
-                        ".pdf", ".png", ".psd", ".README", ".shader", ".tga", ".tif", ".ttf", ".txt", ".wav", ".xlsx", ".xml",
+                        ".aar", ".asmdef", ".blend", ".bmp", ".cginc", ".chm", ".cs", ".csv", ".dll", ".exr", ".fbx", ".gif",
+                        ".inputactions", ".jpg", ".jslib", ".json", ".lib", ".mp3", ".otf", ".pdb", ".pdf", ".png", ".psd",
+                        ".readme", ".shader", ".tga", ".tif", ".ttf", ".txt", ".wav", ".xcf", ".xlsx", ".xml",
                     },
                 };
             }
