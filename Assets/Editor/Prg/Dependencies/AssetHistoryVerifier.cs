@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
@@ -11,6 +11,8 @@ namespace Editor.Prg.Dependencies
 {
     public static class AssetHistoryVerifier
     {
+        public static Bounds ForceUnityEngineImportAlways() => new Bounds();
+
         public static void CheckMissingReferences(List<string> folderNames)
         {
             Debug.Log($"Checking {folderNames.Count} folders");
@@ -25,9 +27,9 @@ namespace Editor.Prg.Dependencies
             }
             finally
             {
-                verifier.Timer.Stop();
+                verifier.Timer.Pause();
             }
-            Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
+            Debug.Log($"Check took {verifier.Timer.Millisec / 1000f:0.000} s");
             if (verifier.MissingGuidCount == 0)
             {
                 Debug.Log("<b>No missing references found</b>");
@@ -50,7 +52,7 @@ namespace Editor.Prg.Dependencies
             }
             finally
             {
-                verifier.Timer.Stop();
+                verifier.Timer.Pause();
             }
             var unusedGuids = verifier.UnusedGuids;
             unusedGuids.Sort();
@@ -60,7 +62,7 @@ namespace Editor.Prg.Dependencies
                 var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
                 Debug.Log($"Unused {RichText.Yellow(assetPath)} {unusedGuid}", asset);
             }
-            Debug.Log($"Check took {verifier.Timer.ElapsedMilliseconds / 1000f:0.000} s");
+            Debug.Log($"Check took {verifier.Timer.Millisec / 1000f:0.000} s");
             if (verifier.UnusedGuidCount == 0)
             {
                 Debug.Log("<b>No unused assets found</b>");
@@ -76,13 +78,13 @@ namespace Editor.Prg.Dependencies
             private readonly HashSet<string> _invalidGuids = new();
             private readonly HashSet<string> _assetsWithMissingReferences = new();
 
-            public Stopwatch Timer { get; }
+            public SimpleTimer Timer { get; }
             public int MissingGuidCount { get; private set; }
             public int MissingFileCount => _assetsWithMissingReferences.Count;
 
             public MissingReferences()
             {
-                Timer = Stopwatch.StartNew();
+                Timer = new SimpleTimer();
                 _state = AssetHistoryState.Load();
                 _assetLines = AssetHistory.Load();
             }
@@ -193,7 +195,7 @@ namespace Editor.Prg.Dependencies
 
         private class UnusedReferences
         {
-            public Stopwatch Timer { get; }
+            public SimpleTimer Timer { get; }
             private readonly AssetHistoryState _state;
             private readonly List<string> _scenesForBuild = new();
             private readonly HashSet<string> _unusedGuids = new();
@@ -203,7 +205,7 @@ namespace Editor.Prg.Dependencies
 
             public UnusedReferences()
             {
-                Timer = Stopwatch.StartNew();
+                Timer = new SimpleTimer();
                 _state = AssetHistoryState.Load();
                 _scenesForBuild.AddRange(EditorBuildSettings.scenes
                     .Where(x => x.enabled)
@@ -360,6 +362,77 @@ namespace Editor.Prg.Dependencies
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// A fast, simple timer class with a more convenient interface than 
+    /// System.Diagnostics.Stopwatch. Its resolution is typically 10-16 ms.<br />
+    /// https://gist.github.com/qwertie/6706409
+    /// </summary>
+    /// <remarks>
+    /// With SimpleTimer, the timer starts when you construct the object and 
+    /// it is always counting. You can get the elapsed time and restart the 
+    /// timer from zero with a single call to Restart(). The Stopwatch class 
+    /// requires you to make three separate method calls to do the same thing:
+    /// you have to call ElapsedMilliseconds, then Reset(), then Start().
+    /// </remarks>
+    public class SimpleTimer
+    {
+        int _startTime = Environment.TickCount;
+        int _stopTime = 0;
+
+        public SimpleTimer(bool start = true)
+        {
+            if (!start) Pause();
+        }
+
+        /// <summary>
+        /// The getter returns the number of milliseconds since the timer was 
+        /// started; the resolution of this property depends on the system timer.
+        /// The setter changes the value of the timer.
+        /// </summary>
+        public int Millisec
+        {
+            get { return (_stopTime != 0 ? _stopTime : Environment.TickCount) - _startTime; }
+            set { _startTime = (_stopTime != 0 ? _stopTime : Environment.TickCount) - value; }
+        }
+
+        /// <summary>Restarts the timer from zero (unpausing it if it is paused), 
+        /// and returns the number of elapsed milliseconds prior to the reset.</summary>
+        public int Restart()
+        {
+            int millisec = Millisec;
+            if (Paused)
+                _startTime = Environment.TickCount;
+            else
+                _startTime += millisec;
+            _stopTime = 0;
+            return millisec;
+        }
+
+        public bool Paused
+        {
+            get { return _stopTime != 0; }
+        }
+
+        public bool Pause()
+        {
+            if (_stopTime != 0)
+                return false; // already paused
+            _stopTime = Environment.TickCount;
+            if (_stopTime == 0) // virtually impossible, but check anyway
+                ++_stopTime;
+            return true;
+        }
+
+        public bool Resume()
+        {
+            if (_stopTime == 0)
+                return false; // already running
+            _startTime = Environment.TickCount - (_stopTime - _startTime);
+            _stopTime = 0;
+            return true;
         }
     }
 }

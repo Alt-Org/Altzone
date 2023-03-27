@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -99,7 +100,7 @@ namespace Editor.Prg.Dependencies
                 // Missing components will be null, we can't find their type, etc.
                 if (!component)
                 {
-                    Debug.LogWarning($"{RichText.Red("NOT FOUND")}: [{context}]{gameObject.GetFullPath()}: Is component deleted?", gameObject);
+                    Debug.LogWarning($"{RichText.Red("NOT FOUND")}: [{context}]{GetFullPath(gameObject)}: Is component deleted?", gameObject);
                     missingCount += 1;
                     continue;
                 }
@@ -157,8 +158,22 @@ namespace Editor.Prg.Dependencies
 
         private static void ShowMissing(string context, GameObject gameObject, string componentName, string propertyName, string propMessage)
         {
-            Debug.LogWarning($"{RichText.Yellow("MISSING")}: [{context}]{gameObject.GetFullPath()}: " +
+            Debug.LogWarning($"{RichText.Yellow("MISSING")}: [{context}]{GetFullPath(gameObject)}: " +
                              $"component: {componentName}, property: {propertyName} : {propMessage}", gameObject);
+        }
+        private static string GetFullPath(GameObject gameObject)
+        {
+            if (gameObject == null)
+            {
+                return string.Empty;
+            }
+            var path = new StringBuilder(gameObject.name);
+            while (gameObject.transform.parent != null)
+            {
+                gameObject = gameObject.transform.parent.gameObject;
+                path.Insert(0, '/').Insert(0, gameObject.name);
+            }
+            return path.ToString();
         }
     }
 }

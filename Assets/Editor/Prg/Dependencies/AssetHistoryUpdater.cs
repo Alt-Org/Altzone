@@ -22,8 +22,8 @@ namespace Editor.Prg.Dependencies
 
         public static string[] Load()
         {
-            var lines = File.Exists(AssetHistory.AssetHistoryFilename)
-                ? File.ReadAllLines(AssetHistory.AssetHistoryFilename, AssetHistory.Encoding)
+            var lines = File.Exists(AssetHistoryFilename)
+                ? File.ReadAllLines(AssetHistoryFilename, Encoding)
                 : Array.Empty<string>();
             return lines;
         }
@@ -94,7 +94,8 @@ namespace Editor.Prg.Dependencies
             EditorApplication.delayCall -= OnDelayCall;
 
             var state = AssetHistoryState.Load();
-            var dayOfYear = DateTime.Now.DayOfYear;
+            var now = DateTime.Now;
+            var dayOfYear = now.Year * 1000 + now.DayOfYear;
             if (dayOfYear == state.DayNumber && File.Exists(AssetHistory.AssetHistoryFilename))
             {
                 return;
@@ -130,13 +131,13 @@ namespace Editor.Prg.Dependencies
                     newLines.Append(line).AppendLine();
                     if (isShowNewFiles)
                     {
-                        UnityEngine.Debug.Log(line);
+                        Debug.Log(line);
                     }
                 }
             }
             if (newFileCount == 0)
             {
-                UnityEngine.Debug.Log($"{currentStatus} {RichText.White("ok")}");
+                Debug.Log($"{currentStatus} {RichText.White("ok")}");
                 return;
             }
             // Remove last CR-LF
@@ -152,7 +153,7 @@ namespace Editor.Prg.Dependencies
             {
                 File.WriteAllText(AssetHistory.AssetHistoryFilename, newLines.ToString(), AssetHistory.Encoding);
             }
-            UnityEngine.Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} entries")}");
+            Debug.Log($"{currentStatus} {RichText.Yellow($"updated with {newFileCount} entries")}");
         }
     }
 }
