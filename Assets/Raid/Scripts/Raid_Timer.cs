@@ -8,7 +8,10 @@ public class Raid_Timer : MonoBehaviour
     [SerializeField, Header("Loot manager")]
     private Raid_LootManagement raid_LootManagement;
 
-    [Header("Component")]
+    [SerializeField, Header("Raid Inventory ref")]
+    private Raid_Inventory raid_Inventory;
+
+    [Header("Timer text")]
     public TextMeshProUGUI TimerText;
 
     [Header("Timer settings")]
@@ -37,6 +40,8 @@ public class Raid_Timer : MonoBehaviour
 
         if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
         {
+            raid_Inventory.RedScreen.SetActive(true);
+            raid_Inventory.EndMenu.SetActive(true);
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;

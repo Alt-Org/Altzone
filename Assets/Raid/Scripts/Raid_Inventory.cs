@@ -19,6 +19,10 @@ public class Raid_Inventory : MonoBehaviour
     [SerializeField, Header("Sprites")]
     public Sprite EmptySlot;
 
+    [SerializeField, Header("Reference GameObjects")]
+    public GameObject RedScreen;
+    public GameObject EndMenu;
+
     [Header("Inventory Content")]
     public int AmountOfFives;
     public int AmountOfTens;
@@ -28,6 +32,8 @@ public class Raid_Inventory : MonoBehaviour
 
     private void Start()
     {
+        RedScreen.SetActive(false);
+        EndMenu.SetActive(false);
         for (int i = 0; i < AmountOfFives; i++)
         {
             PlaceFives();
@@ -240,6 +246,8 @@ public class Raid_Inventory : MonoBehaviour
         if(raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
         {
             raid_LootManagement.LootWeightText.color = Color.red;
+            RedScreen.SetActive(true);
+            EndMenu.SetActive(true);
         }
     }
 }
