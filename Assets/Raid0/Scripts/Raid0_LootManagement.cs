@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Raid_LootManagement : MonoBehaviour
+public class Raid0_LootManagement : MonoBehaviour
 {
     [Header("Component")]
     public TextMeshProUGUI LootWeightText;

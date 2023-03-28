@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Raid_EndMenu : MonoBehaviour
+public class Raid0_EndMenu : MonoBehaviour
 {
     public void ReturnToLobby()
     {

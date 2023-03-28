@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Raid_Tile : MonoBehaviour
+public class Raid0_Tile : MonoBehaviour
 {
     public enum TileType
     {

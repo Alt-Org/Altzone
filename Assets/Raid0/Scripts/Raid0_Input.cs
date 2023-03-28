@@ -3,14 +3,14 @@ using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
-public class Raid_Input : MonoBehaviour
+public class Raid0_Input : MonoBehaviour
 {
-    [SerializeField, Header("Grid")] private Raid_Grid raid_Grid;
+    [SerializeField, Header("Grid")] private Raid0_Grid raid_Grid;
 
     [SerializeField, Header("Settings"), Range(0, 100)] private float _trackingSensitivityPercent = 1.0f;
     [SerializeField] private InputActionReference _tapActionRef;
     [SerializeField] private InputActionReference _positionActionRef;
-    
+
     private InputAction _tapAction;
     private InputAction _positionAction;
     private Vector2 _startPosition;
@@ -18,12 +18,12 @@ public class Raid_Input : MonoBehaviour
     private bool _isCheckSensitivity;
     private float _sensitivityScreenX;
     private float _sensitivityScreenY;
-    
+
     private void Awake()
     {
         Debug.Log($"");
         Assert.IsNotNull(raid_Grid);
-        
+
         Debug.Log($"{_tapActionRef} | {_positionActionRef}");
         Assert.IsTrue(_tapActionRef != null && _positionActionRef != null);
         _tapAction = _tapActionRef.action;
@@ -49,7 +49,7 @@ public class Raid_Input : MonoBehaviour
         _tapAction.Enable();
         _positionAction.Enable();
     }
-    
+
     private void OnDisable()
     {
         Debug.Log($"{_tapAction} | {_positionAction}");

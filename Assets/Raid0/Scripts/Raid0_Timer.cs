@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Raid_Timer : MonoBehaviour
+public class Raid0_Timer : MonoBehaviour
 {
     [Header("Component")]
     public TextMeshProUGUI TimerText;
@@ -37,6 +37,12 @@ public class Raid_Timer : MonoBehaviour
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;
+            enabled = false;
+        }
+
+        if (Raid0_Grid.MineWasHit)
+        {
+            SetTimerText();
             enabled = false;
         }
         SetTimerText();
