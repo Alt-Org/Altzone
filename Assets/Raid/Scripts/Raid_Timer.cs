@@ -40,8 +40,15 @@ public class Raid_Timer : MonoBehaviour
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;
-            raid_LootManagement.LootWeightText.color = Color.green;
             enabled = false;
+            if(raid_LootManagement.CurrentLootWeight <= raid_LootManagement.WeightLimit)
+            {
+                raid_LootManagement.LootWeightText.color = Color.green;
+            }
+            else if (raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
+            {
+                raid_LootManagement.LootWeightText.color = Color.red;
+            }
         }
         SetTimerText();
     }

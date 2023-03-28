@@ -61,7 +61,7 @@ public class Raid_Inventory : MonoBehaviour
 
         Raid_Slot raid_Slot = Inventory[x, y];
         Debug.Log("Multi tap recognized at (" + x + ", " + y + ")");
-        if(raid_Timer.CurrentTime <= 0)
+        if(raid_Timer.CurrentTime <= 0 || raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
         {
             return;
         }
@@ -237,7 +237,7 @@ public class Raid_Inventory : MonoBehaviour
             raid_LootManagement.SetLootWeightText();
         }
 
-        if(raid_LootManagement.CurrentLootWeight > 100)
+        if(raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
         {
             raid_LootManagement.LootWeightText.color = Color.red;
         }
