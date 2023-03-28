@@ -5,6 +5,9 @@ using TMPro;
 
 public class Raid_Timer : MonoBehaviour
 {
+    [SerializeField, Header("Loot manager")]
+    private Raid_LootManagement raid_LootManagement;
+
     [Header("Component")]
     public TextMeshProUGUI TimerText;
 
@@ -37,6 +40,7 @@ public class Raid_Timer : MonoBehaviour
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;
+            raid_LootManagement.LootWeightText.color = Color.green;
             enabled = false;
         }
         SetTimerText();

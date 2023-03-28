@@ -8,7 +8,16 @@ public class Raid_Inventory : MonoBehaviour
 {
     public Raid_Slot[,] Inventory = new Raid_Slot[4, 6];
 
+    [SerializeField, Header("Loot manager")]
+    private Raid_LootManagement raid_LootManagement;
+
+    [SerializeField, Header("Time manager")]
+    private Raid_Timer raid_Timer;
+
     private Transform _transform;
+
+    [SerializeField, Header("Sprites")]
+    public Sprite EmptySlot;
 
     [Header("Inventory Content")]
     public int AmountOfFives;
@@ -45,7 +54,28 @@ public class Raid_Inventory : MonoBehaviour
 
     public void DoupleTapPerformed(Vector2 pointerPosition)
     {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(pointerPosition);
 
+        int x = Mathf.RoundToInt(mousePosition.x);
+        int y = Mathf.RoundToInt(mousePosition.y);
+
+        Raid_Slot raid_Slot = Inventory[x, y];
+        Debug.Log("Multi tap recognized at (" + x + ", " + y + ")");
+        if(raid_Timer.CurrentTime <= 0)
+        {
+            return;
+        }
+        else if (raid_Timer.CurrentTime > 0)
+        {
+            if (raid_Slot.slotType == Raid_Slot.SlotType.Empty)
+            {
+                return;
+            }
+            else if (raid_Slot.slotType == Raid_Slot.SlotType.Occupied)
+            {
+                LootFurniture(x, y);
+            }
+        }
     }
     void PlaceEmptySlots()
     {
@@ -71,6 +101,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             Raid_Slot WeightFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightFive.GetComponentInChildren<TextMeshPro>().text = "5 kg";
+            WeightFive.slotWeight = Raid_Slot.SlotWeight.Five;
 
             Inventory[x, y] = WeightFive;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -90,6 +121,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             Raid_Slot WeightTen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTen.GetComponentInChildren<TextMeshPro>().text = "10 kg";
+            WeightTen.slotWeight = Raid_Slot.SlotWeight.Ten;
 
             Inventory[x, y] = WeightTen;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -109,6 +141,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             Raid_Slot WeightFifteen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightFifteen.GetComponentInChildren<TextMeshPro>().text = "15 kg";
+            WeightFifteen.slotWeight = Raid_Slot.SlotWeight.Fifteen;
 
             Inventory[x, y] = WeightFifteen;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -128,6 +161,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             Raid_Slot WeightTwenty = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTwenty.GetComponentInChildren<TextMeshPro>().text = "20 kg";
+            WeightTwenty.slotWeight = Raid_Slot.SlotWeight.Twenty;
 
             Inventory[x, y] = WeightTwenty;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -147,6 +181,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             Raid_Slot WeightTwentyFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTwentyFive.GetComponentInChildren<TextMeshPro>().text = "25 kg";
+            WeightTwentyFive.slotWeight = Raid_Slot.SlotWeight.TwentyFive;
 
             Inventory[x, y] = WeightTwentyFive;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -154,6 +189,57 @@ public class Raid_Inventory : MonoBehaviour
         else
         {
             PlaceTwentyFives();
+        }
+    }
+
+    void LootFurniture(int x, int y)
+    {
+        Raid_Slot raid_Slot = Inventory[x, y];
+
+        if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Five)
+        {
+            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+
+            raid_LootManagement.CurrentLootWeight += 5;
+            raid_LootManagement.SetLootWeightText();
+        }
+        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Ten)
+        {
+            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+
+            raid_LootManagement.CurrentLootWeight += 10;
+            raid_LootManagement.SetLootWeightText();
+        }
+        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Fifteen)
+        {
+            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+
+            raid_LootManagement.CurrentLootWeight += 15;
+            raid_LootManagement.SetLootWeightText();
+        }
+        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Twenty)
+        {
+            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+
+            raid_LootManagement.CurrentLootWeight += 20;
+            raid_LootManagement.SetLootWeightText();
+        }
+        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.TwentyFive)
+        {
+            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+
+            raid_LootManagement.CurrentLootWeight += 25;
+            raid_LootManagement.SetLootWeightText();
+        }
+
+        if(raid_LootManagement.CurrentLootWeight > 100)
+        {
+            raid_LootManagement.LootWeightText.color = Color.red;
         }
     }
 }
