@@ -7,6 +7,7 @@ using TMPro;
 
 public class Raid0_Grid : MonoBehaviour
 {
+    #region Sprites
     public Sprite EmptyTile;
     public Sprite CoveredTile;
     public Sprite FlagTile;
@@ -30,6 +31,7 @@ public class Raid0_Grid : MonoBehaviour
     public Sprite TFurnitureSprite1a;
     public Sprite TFurnitureSprite1b;
     public Sprite TFurnitureSprite1c;
+    #endregion
 
     [SerializeField, Header("Reference GameObjects")]
     private GameObject RedScreen;
