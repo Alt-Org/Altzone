@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Battle.Scripts.Test
         private IPlayerDriver _playerDriver;
         private PlayerDriverState _playerDriverState;
         private IPlayerInputTarget _inputTarget;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
 
         private void OnEnable()
         {

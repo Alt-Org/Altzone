@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Battle.Scripts.Test;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Battle.Scripts.Battle.Bot
 
         private IPlayerDriver _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         //private IPlayerDriverState _state;
 
         private float _movementSpeed = 6;

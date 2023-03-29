@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Photon.Pun;
 using Photon.Realtime;
@@ -16,7 +17,7 @@ namespace Battle.Scripts.Battle.Bot
         [SerializeField] private PlayerActorBase _playerPrefab;
 
         private IPlayerActor _playerActor;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         private IBattlePlayArea _battlePlayArea;
         private IPlayerDriverState _state;
         private PhotonView _photonView;

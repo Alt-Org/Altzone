@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using UnityConstants;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Battle.Scripts.Test
     {
         [SerializeField] private float _bounceAngle;
 
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         private IPlayerActor _playerActor;
         private Transform _transform;
         private Collider2D _collider;

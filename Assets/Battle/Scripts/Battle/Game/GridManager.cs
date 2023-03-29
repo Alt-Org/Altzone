@@ -3,10 +3,30 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Game
 {
+    [Serializable]
+    public class GridPos : Tuple<int, int>
+    {
+        [SerializeField] private int _row;
+        [SerializeField] private int _col;
+        public int Row => _row;
+        public int Col => _col;
+
+        public GridPos(int row, int col) : base(row, col)
+        {
+            _row = row;
+            _col = col;
+        }
+
+        public override string ToString()
+        {
+            return $"GridPos {nameof(Row)},{nameof(Col)}: {Row},{Col}";
+        }
+    }
+
     /// <summary>
     /// <c>GridManager</c> translates between world and grid coordinates, also keeps track which coordinates player can move to.
     /// </summary>
-    internal class GridManager : MonoBehaviour, IGridManager
+    internal class GridManager : MonoBehaviour
     {
         private int _gridWidth;
         private int _gridHeight;
@@ -35,10 +55,10 @@ namespace Battle.Scripts.Battle.Game
             _startAreaBeta = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBetaValue);
 
             var smallOffset = 0.001f;
-            var alphaAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));
-            var betaAreaStart = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBeta.xMin, _startAreaBeta.yMin + smallOffset));
-            var alphaAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMax, _startAreaAlpha.yMax - smallOffset));
-            var betaAreaEnd = ((IGridManager)this).WorldPointToGridPosition(new Vector2(_startAreaBeta.xMax, _startAreaBeta.yMax - smallOffset));
+            var alphaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));
+            var betaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMin, _startAreaBeta.yMin + smallOffset));
+            var alphaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMax, _startAreaAlpha.yMax - smallOffset));
+            var betaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMax, _startAreaBeta.yMax - smallOffset));
 
             var alphaRowMin = alphaAreaStart.Row;
             var betaRowMin = betaAreaStart.Row;
@@ -81,7 +101,7 @@ namespace Battle.Scripts.Battle.Game
 
         #region IGridManager
 
-        Vector2 IGridManager.GridPositionToWorldPoint(GridPos gridPos)
+        internal Vector2 GridPositionToWorldPoint(GridPos gridPos)
         {
             var xPosition = gridPos.Col * _arenaWidth / _gridWidth + _arenaWidth / _gridWidth * 0.5f;
             var yPosition = gridPos.Row * _arenaHeight / _gridHeight + _arenaHeight / _gridHeight * 0.5f;
@@ -89,7 +109,7 @@ namespace Battle.Scripts.Battle.Game
             return worldPosition;
         }
 
-        GridPos IGridManager.WorldPointToGridPosition(Vector2 targetPosition)
+        internal GridPos WorldPointToGridPosition(Vector2 targetPosition)
         {
             var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
             var col = Math.Min(_gridWidth - 1, (int)(posNew.x / (_arenaWidth / _gridWidth)));
@@ -98,7 +118,7 @@ namespace Battle.Scripts.Battle.Game
             return gridPos;
         }
 
-        bool IGridManager.IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
+        internal bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
         {
             switch (teamNumber)
             {

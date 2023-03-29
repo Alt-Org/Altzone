@@ -2,6 +2,7 @@ using System;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace Battle.Scripts.Test
 
         private double _movementDelay;
         private IPlayerActor _playerActor;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         private IPlayerDriverState _state;
         private IBattlePlayArea _battlePlayArea;
         private float _arenaScaleFactor;

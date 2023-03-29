@@ -1,5 +1,6 @@
 using System.Collections;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,7 +21,7 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
     private IBattlePlayArea _battlePlayArea;
     private Rect _playArea;
 
-    private IGridManager _gridManager;
+    private GridManager _gridManager;
 
     private Vector2 _tempPosition;
 

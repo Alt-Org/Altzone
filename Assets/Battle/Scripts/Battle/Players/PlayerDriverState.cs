@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Battle.Scripts.Battle.Game;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -14,7 +15,7 @@ namespace Battle.Scripts.Battle.Players
         private float _shieldEffectSqr;
         private IBattlePlayArea _battlePlayArea;
         private IPlayerActor _playerActor;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         private Transform _myActorTransform;
         private bool _isWaitingToMove;
         private float _defaultRotation;

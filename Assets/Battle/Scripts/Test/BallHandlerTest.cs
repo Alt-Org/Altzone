@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using UnityConstants;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine;
 public class BallHandlerTest : MonoBehaviour
 {
     [SerializeField] private int _startingSpeed;
-    private IGridManager _gridManager;
+    private GridManager _gridManager;
     private IBattlePlayArea _battlePlayArea;
     private float _arenaScaleFactor;
     private float _angleLimit;

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using UnityEngine;
@@ -13,7 +11,7 @@ namespace Battle.Scripts.Battle
     {
         internal static IPlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
         internal static Camera GetBattleCamera => Object.FindObjectOfType<GameCamera>().Camera;
-        internal static IGridManager GetGridManager => Object.FindObjectOfType<GridManager>();
+        internal static GridManager GetGridManager => Object.FindObjectOfType<GridManager>();
         internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
     }
 }
