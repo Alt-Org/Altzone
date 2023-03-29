@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.EditorSupport.Attributes
 {
     /// <summary>
     /// Attribute to decorate a <c>string</c> value as a <c>Tag</c> in Editor.

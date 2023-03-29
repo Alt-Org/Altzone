@@ -1,9 +1,8 @@
 using System.Collections;
-using Altzone.Scripts.Config;
 using Battle0.Scripts.Battle;
 using Battle0.Scripts.Battle.Game;
 using Battle0.Scripts.Battle.Players;
-using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.EditorSupport.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 

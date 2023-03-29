@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.EditorSupport.Attributes;
 using UnityEditor;
 using UnityEngine;
 

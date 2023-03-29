@@ -4,7 +4,7 @@ using Altzone.Scripts.Temp;
 using Battle0.Scripts.Battle.Game;
 using Battle0.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
-using Prg.Scripts.Common.Unity.Attributes;
+using Prg.Scripts.EditorSupport.Attributes;
 using UnityEngine;
 using UnityEngine.Assertions;
 
