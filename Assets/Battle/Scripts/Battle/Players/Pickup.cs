@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
-using Battle.Scripts.Battle.Players;
+using Battle.Scripts.Battle.Game;
 
-namespace Battle.Scripts.Battle.Game
+namespace Battle.Scripts.Battle.Players
 {
     internal class Pickup : MonoBehaviour
     {
@@ -24,6 +24,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] PlayerActor PlayerActor;
         private bool RightDriver = false;
         public PhotonView View;
+
+        public int TeamNumber;
 
         private void Start()
         {
@@ -51,9 +53,9 @@ namespace Battle.Scripts.Battle.Game
                 //Player Get (int id);
                 var player = View.Owner;         //PhotonNetwork.LocalPlayer
                 var playerPos = PhotonBattle.GetPlayerPos(player);
-                var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"Pickupteam {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                if (teamNumber == 1)
+                TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                Debug.Log($"Pickupteam {TeamNumber} pos {playerPos} {player.GetDebugLabel()}");
+                if (TeamNumber == 1)
                 {
                     TeamDiamonds = GameObject.FindGameObjectWithTag("AlphaDiamonds");
                 }

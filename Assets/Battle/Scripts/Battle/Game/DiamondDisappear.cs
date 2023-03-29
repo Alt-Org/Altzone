@@ -25,6 +25,8 @@ public class DiamondDisappear : MonoBehaviour
     [PunRPC]
     private void DisappearRPC()
     {
+        //Removes all null objects from the list
+        DiamondsArray.RemoveAll(GameObject => GameObject == null);
         Destroy(DiamondsArray[0]);
         DiamondsArray.Remove(DiamondsArray[0]);
     }
