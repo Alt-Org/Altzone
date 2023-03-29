@@ -11,13 +11,14 @@ namespace Battle.Scripts.Battle.Test
         [SerializeField] private bool _startRotate;
         [SerializeField] private float _rotate;
         [SerializeField] private Vector2 _targetPosition;
-        private IPlayerInputTarget _IPlayerInputTarget;
-        private IPlayerDriver _IPlayerDriver;
+        //private IPlayerInputTarget _IPlayerInputTarget;
+        //private IPlayerDriver _IPlayerDriver;
 
 
         void Update()
         {
-            if (GameObject.Find("PlayerDriverPhoton(Clone)") != null && _moveTo)
+            // This is utterly rubbish
+            /*if (GameObject.Find("PlayerDriverPhoton(Clone)") != null && _moveTo)
             {
                 _moveTo = false;
                 _IPlayerInputTarget = GameObject.Find("PlayerDriverPhoton(Clone)").GetComponent<PlayerDriverPhoton>();
@@ -29,7 +30,7 @@ namespace Battle.Scripts.Battle.Test
                 _startRotate = false;
                 _IPlayerDriver = GameObject.Find("PlayerDriverPhoton(Clone)").GetComponent<PlayerDriverPhoton>();
                 _IPlayerDriver.Rotate(_rotate);
-            }
+            }*/
             
         }
     }

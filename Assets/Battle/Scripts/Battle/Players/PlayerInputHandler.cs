@@ -1,22 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players
 {
-    /// <summary>
-    /// Receiver for player's input actions.
-    /// </summary>
-    internal interface IPlayerInputTarget
-    {
-        void MoveTo(Vector2 targetPosition);
-    }
-
     public class PlayerInputHandler : MonoBehaviour
     {
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
 
-        private IPlayerInputTarget _inputTarget;
+        private Action<Vector2> _onMoveTo;
+        public Action<Vector2> OnMoveTo
+        {
+            set
+            {
+                _onMoveTo = value;
+                SetupInput();
+            }
+        }
+
         private Camera _camera;
         private Vector2 _inputClick;
 
@@ -37,7 +39,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _inputTarget.MoveTo(targetPosition);
+            _onMoveTo(targetPosition);
         }
 
         private void SetupInput()
@@ -50,6 +52,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var clickAction = _clickInputAction.action;
             clickAction.performed -= DoPointerClick;
+            _onMoveTo = null;
         }
 
         private void DoPointerClick(InputAction.CallbackContext ctx)
@@ -67,13 +70,6 @@ namespace Battle.Scripts.Battle.Players
 #endif
             _inputClick = _camera.ScreenToWorldPoint(_inputClick);
             SendMoveTo(_inputClick);
-        }
-
-        internal void SetPlayerDriver(IPlayerInputTarget playerDriver)
-        {
-            Debug.Log($"{name}");
-            _inputTarget = playerDriver;
-            SetupInput();
         }
     }
 }

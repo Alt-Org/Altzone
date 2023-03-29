@@ -12,7 +12,7 @@ namespace Battle.Scripts.Battle.Bot
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class BotDriver : PlayerDriver, IPlayerDriver
+    internal class BotDriver : MonoBehaviour, IPlayerDriver
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
 
@@ -74,7 +74,7 @@ namespace Battle.Scripts.Battle.Bot
         {
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
-            _state = GetPlayerDriverState(this);
+            _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _teamNumber);
             if (_teamNumber == PhotonBattle.TeamBetaValue)
             {
@@ -85,7 +85,7 @@ namespace Battle.Scripts.Battle.Bot
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.SetPlayerDriver(this);
+            playerInputHandler.OnMoveTo = MoveTo;
         }
 
         #region IPlayerDriver
@@ -105,7 +105,7 @@ namespace Battle.Scripts.Battle.Bot
             _playerActor.SetRotation(angle);
         }
 
-        void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
+        private void MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {
