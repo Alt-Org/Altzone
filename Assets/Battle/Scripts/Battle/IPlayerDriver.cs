@@ -3,7 +3,7 @@ using Battle.Scripts.Battle.Players;
 
 namespace Battle.Scripts.Battle
 {
-    internal interface IPlayerDriver : IPlayerInputTarget
+    internal interface IPlayerDriver
     {
         string NickName { get; }
 

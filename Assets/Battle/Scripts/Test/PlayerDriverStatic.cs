@@ -68,7 +68,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.SetPlayerDriver(this);
+            playerInputHandler.OnMoveTo = MoveTo;
         }
 
         #region IPlayerDriver
@@ -88,7 +88,7 @@ namespace Battle.Scripts.Test
             _playerActor.SetRotation(angle);
         }
 
-        void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
+        private void MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {
