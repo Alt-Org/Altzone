@@ -27,7 +27,10 @@ public class DiamondDisappear : MonoBehaviour
     {
         //Removes all null objects from the list
         DiamondsArray.RemoveAll(GameObject => GameObject == null);
-        Destroy(DiamondsArray[0]);
-        DiamondsArray.Remove(DiamondsArray[0]);
+        if (DiamondsArray.Count > 0)
+        {
+            Destroy(DiamondsArray[0]);
+            DiamondsArray.Remove(DiamondsArray[0]);
+        }
     }
 }
