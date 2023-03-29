@@ -1,6 +1,3 @@
-using Battle.Scripts.Battle.Game;
-using Battle.Scripts.Battle.Players;
-
 namespace Battle.Scripts.Battle
 {
     internal interface IPlayerDriver
@@ -18,16 +15,5 @@ namespace Battle.Scripts.Battle
         void Rotate(float angle);
 
         void SetCharacterPose(int poseIndex);
-    }
-
-    internal interface IPlayerDriverState
-    {
-        bool CanRequestMove { get; }
-
-        void ResetState(IPlayerActor playerActor, int teamNumber);
-
-        void DelayedMove(GridPos gridPos, float moveExecuteDelay);
-
-        void IsWaitingToMove(bool isWaitingToMove);
     }
 }
