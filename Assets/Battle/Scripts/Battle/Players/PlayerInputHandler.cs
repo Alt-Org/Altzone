@@ -34,7 +34,7 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
         }
 
         private void OnDestroy()

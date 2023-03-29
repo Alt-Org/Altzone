@@ -44,7 +44,7 @@ namespace Battle0.Scripts.Battle.Players
         {
             Assert.IsNull(_camera);
             _gridManager = Context.GetGridManager;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = null;//Context.GetBattleCamera;
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
             // PlayerInput is required for input actions we use. They are setup in Editor.
             Assert.IsNotNull(_playerInput, "_playerInput != null");

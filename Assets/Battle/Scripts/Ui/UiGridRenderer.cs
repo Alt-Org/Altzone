@@ -39,7 +39,7 @@ namespace Battle.Scripts.Ui
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
             _middleAreaHeight = _battlePlayArea.MiddleAreaHeight;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
         }
 
         private void Start()

@@ -16,7 +16,7 @@ namespace Battle.Scripts.Test
         private void Awake()
         {
             _transform = GetComponent<Transform>();
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
         }
 
         void Update()
