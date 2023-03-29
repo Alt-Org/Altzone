@@ -82,8 +82,8 @@ public class Raid_Input : MonoBehaviour
         var interaction = ctx.interaction;
         switch (interaction)
         {
-            case MultiTapInteraction:
-                raid_Inventory.DoupleTapPerformed(_inputPosition);
+            case TapInteraction:
+                raid_Inventory.QuickTapPerformed(_inputPosition);
                 break;
         }
     }

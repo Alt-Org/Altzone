@@ -58,7 +58,7 @@ public class Raid_Inventory : MonoBehaviour
         PlaceEmptySlots();
     }
 
-    public void DoupleTapPerformed(Vector2 pointerPosition)
+    public void QuickTapPerformed(Vector2 pointerPosition)
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(pointerPosition);
 
@@ -242,6 +242,8 @@ public class Raid_Inventory : MonoBehaviour
             raid_LootManagement.CurrentLootWeight += 25;
             raid_LootManagement.SetLootWeightText();
         }
+
+        raid_Slot.slotType = Raid_Slot.SlotType.Empty;
 
         if(raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
         {
