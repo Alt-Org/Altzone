@@ -11,29 +11,41 @@ namespace Prg.Editor.Editors
     [CustomPropertyDrawer(typeof(UnitySceneName), true)]
     public class UnitySceneNameDrawer : PropertyDrawer
     {
-        private static List<Tuple<string, bool, int>> sceneList;
-        private static string[] sceneDisplayNames;
+        private class MyEditorScene
+        {
+            public readonly string SceneName;
+            public readonly string SceneGuid;
+            public readonly int SceneIndex;
+            
+            public MyEditorScene(EditorBuildSettingsScene scene, int sceneIndex)
+            {
+                var tokens = scene.path.Split('/');
+                SceneName = Path.GetFileNameWithoutExtension(tokens[^1]);
+                SceneGuid = scene.guid.ToString();
+                SceneIndex = sceneIndex;
+            }
+        }
+        
+        private static List<MyEditorScene> _sceneList;
+        private static string[] _sceneDisplayNames;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            sceneList = new List<Tuple<string, bool, int>>();
+            _sceneList = new List<MyEditorScene>();
             var scenes = EditorBuildSettings.scenes;
-            var usedIndex = -1;
-            for (var i = 0; i < scenes.Length; ++i)
+            var usedSceneCounter = -1;
+            for (var sceneIndex = 0; sceneIndex < scenes.Length; ++sceneIndex)
             {
-                var scene = scenes[i];
-                // We use just the level name without path and extension, duplicate level names should not be used
-                var tokens = scene.path.Split('/');
-                var sceneName = Path.GetFileNameWithoutExtension(tokens[tokens.Length - 1]);
-                var sceneIndex = scene.enabled ? ++usedIndex : -1;
-                sceneList.Add(new Tuple<string, bool, int>(sceneName, scene.enabled, sceneIndex));
+                var scene = scenes[sceneIndex];
+                var buildSettingsIndex = scene.enabled ? ++usedSceneCounter : -1;
+                _sceneList.Add(new MyEditorScene(scene, buildSettingsIndex));
             }
-            sceneList.Sort((a, b) => string.Compare(a.Item1, b.Item1, StringComparison.Ordinal));
-            sceneDisplayNames = new string[sceneList.Count];
-            for (var i = 0; i < sceneDisplayNames.Length; ++i)
+            _sceneList.Sort((a, b) => string.Compare(a.SceneName, b.SceneName, StringComparison.Ordinal));
+            _sceneDisplayNames = new string[_sceneList.Count];
+            for (var i = 0; i < _sceneDisplayNames.Length; ++i)
             {
-                var tuple = sceneList[i];
-                sceneDisplayNames[i] = $"{sceneList[i].Item1} [{tuple.Item3}]";
+                var scene = _sceneList[i];
+                _sceneDisplayNames[i] = $"{scene.SceneName} [{scene.SceneIndex}]";
             }
 
             // Using BeginProperty / EndProperty on the parent property means that
@@ -69,20 +81,22 @@ namespace Prg.Editor.Editors
             var line1 = new Rect(position.x, position.y, lineWidth, lineHeight);
 
             var sceneNameProp = property.FindPropertyRelative("sceneName");
-
             var sceneName = sceneNameProp.stringValue;
 
-            var itemIndex = sceneList.FindIndex(x => x.Item1 == sceneName);
+            var itemIndex = _sceneList.FindIndex(x => x.SceneName == sceneName);
             if (itemIndex == -1)
             {
                 var levelName = $"<< {sceneName} <<";
-                sceneDisplayNames = addItem(sceneDisplayNames, levelName);
-                itemIndex = sceneDisplayNames.Length - 1;
+                _sceneDisplayNames = addItem(_sceneDisplayNames, levelName);
+                itemIndex = _sceneDisplayNames.Length - 1;
             }
-            var newItemIndex = EditorGUI.Popup(line1, itemIndex, sceneDisplayNames, EditorStyles.popup);
+            var newItemIndex = EditorGUI.Popup(line1, itemIndex, _sceneDisplayNames, EditorStyles.popup);
             if (newItemIndex != itemIndex)
             {
-                sceneNameProp.stringValue = sceneList[newItemIndex].Item1;
+                sceneNameProp.stringValue = _sceneList[newItemIndex].SceneName;
+                // Scene GUID is just saved for later use.
+                var sceneGuidProp = property.FindPropertyRelative("sceneGuid");
+                sceneGuidProp.stringValue = _sceneList[newItemIndex].SceneGuid;
             }
         }
 

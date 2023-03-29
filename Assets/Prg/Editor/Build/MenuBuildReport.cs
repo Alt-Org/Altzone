@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
 
-namespace Editor.Build
+namespace Prg.Editor.Build
 {
     internal static class WindowMenuItems
     {

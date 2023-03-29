@@ -9,10 +9,16 @@ public class Raid_Slot : MonoBehaviour
         Empty, Occupied
     }
 
+    public enum SlotWeight
+    {
+        Zero, Five, Ten, Fifteen, Twenty, TwentyFive
+    }
+
     public bool IsOccupied = false;
     public Sprite EmptySlot;
 
     public SlotType slotType = SlotType.Empty;
+    public SlotWeight slotWeight = SlotWeight.Zero;
 
     private Sprite DefaultInventorySlot;
 

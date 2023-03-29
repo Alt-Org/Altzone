@@ -5,7 +5,13 @@ using TMPro;
 
 public class Raid_Timer : MonoBehaviour
 {
-    [Header("Component")]
+    [SerializeField, Header("Loot manager")]
+    private Raid_LootManagement raid_LootManagement;
+
+    [SerializeField, Header("Raid Inventory ref")]
+    private Raid_Inventory raid_Inventory;
+
+    [Header("Timer text")]
     public TextMeshProUGUI TimerText;
 
     [Header("Timer settings")]
@@ -34,10 +40,20 @@ public class Raid_Timer : MonoBehaviour
 
         if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
         {
+            raid_Inventory.RedScreen.SetActive(true);
+            raid_Inventory.EndMenu.SetActive(true);
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;
             enabled = false;
+            if(raid_LootManagement.CurrentLootWeight <= raid_LootManagement.WeightLimit)
+            {
+                raid_LootManagement.LootWeightText.color = Color.green;
+            }
+            else if (raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
+            {
+                raid_LootManagement.LootWeightText.color = Color.red;
+            }
         }
         SetTimerText();
     }

@@ -29,6 +29,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void Start()
         {
+            if (!PhotonNetwork.InRoom)
+            {
+                enabled = false;
+                return;
+            }
             //PlayerActors.Add(GetAllPlayerDrivers);
             PlayerActors = Context.GetAllPlayerDriverObjects;     //GetAllPlayerDrivers
 
