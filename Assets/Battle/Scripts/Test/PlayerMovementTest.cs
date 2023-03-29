@@ -18,7 +18,7 @@ public class PlayerMovementTest : MonoBehaviourPun, IPunObservable
     [SerializeField] private ShieldTriggerOnTest _shieldTriggerOn;
     [SerializeField] private float _shieldBackOnDelay = 1f;
 
-    private IBattlePlayArea _battlePlayArea;
+    private PlayerPlayArea _battlePlayArea;
     private Rect _playArea;
 
     private GridManager _gridManager;

@@ -10,7 +10,7 @@ public class BallHandlerTest : MonoBehaviour
 {
     [SerializeField] private int _startingSpeed;
     private GridManager _gridManager;
-    private IBattlePlayArea _battlePlayArea;
+    private PlayerPlayArea _battlePlayArea;
     private float _arenaScaleFactor;
     private float _angleLimit;
 

@@ -5,7 +5,7 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Sets the arena, player's starting positions and team play areas.
     /// </summary>
-    internal class PlayerPlayArea : MonoBehaviour, IBattlePlayArea
+    internal class PlayerPlayArea : MonoBehaviour
     {
         [Tooltip("Arena width in world coordinates"), SerializeField] private float _arenaWidth;
         [Tooltip("Arena height in world coordinates"), SerializeField] private float _arenaHeight;
@@ -91,14 +91,14 @@ namespace Battle.Scripts.Battle.Game
 
         #region IBattlePlayArea
 
-        float IBattlePlayArea.ArenaWidth => _arenaWidth;
-        float IBattlePlayArea.ArenaHeight => _arenaHeight;
-        float IBattlePlayArea.ArenaScaleFactor => _arenaHeight / _gridHeight;
-        int IBattlePlayArea.GridWidth => _gridWidth;
-        int IBattlePlayArea.GridHeight => _gridHeight;
-        int IBattlePlayArea.MiddleAreaHeight => _middleAreaHeight;
+        internal float ArenaWidth => _arenaWidth;
+        internal float ArenaHeight => _arenaHeight;
+        internal float ArenaScaleFactor => _arenaHeight / _gridHeight;
+        internal int GridWidth => _gridWidth;
+        internal int GridHeight => _gridHeight;
+        internal int MiddleAreaHeight => _middleAreaHeight;
 
-        Rect IBattlePlayArea.GetPlayerPlayArea(int teamNumber)
+        internal Rect GetPlayerPlayArea(int teamNumber)
         {
             Rect playArea;
             switch (teamNumber)
@@ -115,7 +115,7 @@ namespace Battle.Scripts.Battle.Game
             return playArea;
         }
 
-        GridPos IBattlePlayArea.GetPlayerStartPosition(int playerPos)
+        internal GridPos GetPlayerStartPosition(int playerPos)
         {
             GridPos startPosition;
             switch (playerPos)

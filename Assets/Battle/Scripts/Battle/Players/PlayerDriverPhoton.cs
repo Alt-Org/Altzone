@@ -17,7 +17,7 @@ namespace Battle.Scripts.Battle.Players
 
         private IPlayerActor _playerActor;
         private GridManager _gridManager;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private IPlayerDriverState _state;
         private PhotonView _photonView;
         private int _playerPos;

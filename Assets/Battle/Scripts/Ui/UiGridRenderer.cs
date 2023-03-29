@@ -22,7 +22,7 @@ namespace Battle.Scripts.Ui
         [SerializeField] private int _spriteSortingLayer;
 
         private Camera _camera;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private int _gridWidth;
         private int _gridHeight;
         private int _middleAreaHeight;

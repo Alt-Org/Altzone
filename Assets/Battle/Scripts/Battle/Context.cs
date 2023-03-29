@@ -12,6 +12,6 @@ namespace Battle.Scripts.Battle
         internal static IPlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
         internal static Camera GetBattleCamera => Object.FindObjectOfType<GameCamera>().Camera;
         internal static GridManager GetGridManager => Object.FindObjectOfType<GridManager>();
-        internal static IBattlePlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
+        internal static PlayerPlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
     }
 }

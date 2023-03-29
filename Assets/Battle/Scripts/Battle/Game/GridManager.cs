@@ -30,7 +30,7 @@ namespace Battle.Scripts.Battle.Game
     {
         private int _gridWidth;
         private int _gridHeight;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private float _arenaWidth;
         private float _arenaHeight;
         private bool[,] _gridEmptySpacesAlpha;

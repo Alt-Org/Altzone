@@ -36,7 +36,7 @@ namespace Battle.Scripts.Test
         private IPlayerActor _playerActor;
         private GridManager _gridManager;
         private IPlayerDriverState _state;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private float _arenaScaleFactor;
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;

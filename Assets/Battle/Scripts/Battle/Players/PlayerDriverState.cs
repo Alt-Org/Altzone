@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle.Players
         private const float waitTime = 2f;
 
         private float _shieldEffectSqr;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private IPlayerActor _playerActor;
         private GridManager _gridManager;
         private Transform _myActorTransform;
