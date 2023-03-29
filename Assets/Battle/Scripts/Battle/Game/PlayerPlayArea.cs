@@ -89,8 +89,6 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        #region IBattlePlayArea
-
         internal float ArenaWidth => _arenaWidth;
         internal float ArenaHeight => _arenaHeight;
         internal float ArenaScaleFactor => _arenaHeight / _gridHeight;
@@ -137,6 +135,5 @@ namespace Battle.Scripts.Battle.Game
             }
                 return startPosition;
         }
-        #endregion
     }
 }

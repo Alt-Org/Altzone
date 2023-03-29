@@ -99,8 +99,6 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        #region IGridManager
-
         internal Vector2 GridPositionToWorldPoint(GridPos gridPos)
         {
             var xPosition = gridPos.Col * _arenaWidth / _gridWidth + _arenaWidth / _gridWidth * 0.5f;
@@ -130,7 +128,5 @@ namespace Battle.Scripts.Battle.Game
                     throw new UnityException($"Invalid Team Number {teamNumber}");
             }
         }
-
-        #endregion
     }
 }
