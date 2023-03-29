@@ -13,7 +13,7 @@ namespace Battle.Scripts.Test
         [SerializeField] private GridPos _movePosition;
         [SerializeField] private float _moveExecuteDelay;
 
-        [Header("Player Driver"), SerializeField] private PlayerDriver _playerDriverInstance;
+        [Header("Player Driver"), SerializeField] private PlayerDriverStatic _playerDriverInstance;
         private PlayerDriverState _playerDriverState;
         private GridManager _gridManager;
 

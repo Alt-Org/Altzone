@@ -17,7 +17,7 @@ namespace Battle.Scripts.Test
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : PlayerDriver, IPlayerDriver
+    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
         [Serializable]
         internal class Settings
@@ -57,7 +57,7 @@ namespace Battle.Scripts.Test
             _gridManager = Context.GetGridManager;
             var playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
             _playerActor = PlayerActor.InstantiatePrefabFor(this, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
-            _state = GetPlayerDriverState(this);
+            _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
             {
