@@ -4,14 +4,6 @@ using UnityEngine.InputSystem;
 namespace Battle.Scripts.Battle.Players
 {
     /// <summary>
-    /// Handles player's input.
-    /// </summary>
-    internal interface IPlayerInputHandler
-    {
-        void SetPlayerDriver(IPlayerInputTarget playerDriver);
-    }
-
-    /// <summary>
     /// Receiver for player's input actions.
     /// </summary>
     internal interface IPlayerInputTarget
@@ -19,7 +11,7 @@ namespace Battle.Scripts.Battle.Players
         void MoveTo(Vector2 targetPosition);
     }
 
-    public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
+    public class PlayerInputHandler : MonoBehaviour
     {
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
@@ -77,15 +69,11 @@ namespace Battle.Scripts.Battle.Players
             SendMoveTo(_inputClick);
         }
 
-        #region IPlayerInputHandler
-
-        void IPlayerInputHandler.SetPlayerDriver(IPlayerInputTarget playerDriver)
+        internal void SetPlayerDriver(IPlayerInputTarget playerDriver)
         {
             Debug.Log($"{name}");
             _inputTarget = playerDriver;
             SetupInput();
         }
-
-        #endregion
     }
 }

@@ -9,7 +9,7 @@ namespace Battle.Scripts.Battle
     /// </summary>
     internal static class Context
     {
-        internal static IPlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
+        internal static PlayerInputHandler GetPlayerInputHandler => Object.FindObjectOfType<PlayerInputHandler>();
         internal static Camera GetBattleCamera => Object.FindObjectOfType<GameCamera>().Camera;
         internal static GridManager GetGridManager => Object.FindObjectOfType<GridManager>();
         internal static PlayerPlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
