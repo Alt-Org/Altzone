@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
@@ -14,7 +13,7 @@ namespace Battle.Scripts.Test
         [SerializeField] private float _bounceAngle;
 
         private GridManager _gridManager;
-        private IPlayerActor _playerActor;
+        private PlayerActor _playerActor;
         private Transform _transform;
         private Collider2D _collider;
         private float _attackMultiplier;
