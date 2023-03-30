@@ -18,14 +18,16 @@ namespace Altzone.Scripts
     public class ServiceLoader : MonoBehaviour
     {
         [SerializeField, Tooltip("Shows how long it took to load services")] private string _startupTime;
-        
+
         public bool IsReady { get; private set; }
 
         private IEnumerator Start()
         {
             Debug.Log($"start");
             var startTime = Time.unscaledTime;
+#if USE_LOCALIZER
             Localizer.LoadTranslations(Application.systemLanguage);
+#endif
             AudioManager.Get();
             var store = Storefront.Get();
             if (store.Version.VersionNumber != CreateDefaultModels.MasterStorageVersionNumber)
