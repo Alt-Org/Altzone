@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Battle.Scripts.Battle.Game;
 using UnityEngine;
@@ -14,7 +13,7 @@ namespace Battle.Scripts.Battle.Players
 
         private float _shieldEffectSqr;
         private PlayerPlayArea _battlePlayArea;
-        private IPlayerActor _playerActor;
+        private PlayerActor _playerActor;
         private GridManager _gridManager;
         private Transform _myActorTransform;
         private bool _isWaitingToMove;
@@ -76,7 +75,7 @@ namespace Battle.Scripts.Battle.Players
 
         internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
-        internal void ResetState(IPlayerActor playerActor, int teamNumber)
+        internal void ResetState(PlayerActor playerActor, int teamNumber)
         {
             _playerActor = playerActor;
             _teamNumber = teamNumber;

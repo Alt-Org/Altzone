@@ -33,7 +33,7 @@ namespace Battle.Scripts.Test
         [SerializeField] private PlayerActorBase _playerPrefab;
 
         private double _movementDelay;
-        private IPlayerActor _playerActor;
+        private PlayerActor _playerActor;
         private GridManager _gridManager;
         private PlayerDriverState _state;
         private PlayerPlayArea _battlePlayArea;

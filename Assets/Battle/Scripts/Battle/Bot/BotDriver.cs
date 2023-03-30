@@ -16,7 +16,7 @@ namespace Battle.Scripts.Battle.Bot
     {
         [SerializeField] private PlayerActorBase _playerPrefab;
 
-        private IPlayerActor _playerActor;
+        private PlayerActor _playerActor;
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private PlayerDriverState _state;
@@ -48,7 +48,7 @@ namespace Battle.Scripts.Battle.Bot
             //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
         }
 
-        private IPlayerActor InstantiatePlayerPrefab(Player player)
+        private PlayerActor InstantiatePlayerPrefab(Player player)
         {
             var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;

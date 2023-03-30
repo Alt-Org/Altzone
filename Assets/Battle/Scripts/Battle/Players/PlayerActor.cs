@@ -1,7 +1,6 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Test;
 using UnityConstants;
 using UnityEngine;
 
@@ -93,26 +92,26 @@ namespace Battle.Scripts.Battle.Players
 
         #region IPlayerActor
 
-        bool IPlayerActor.IsBusy => _hasTarget;
+        public bool IsBusy => _hasTarget;
 
-        void IPlayerActor.MoveTo(Vector2 targetPosition)
+        public void MoveTo(Vector2 targetPosition)
         {
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             _playerDriver = playerDriver;
         }
 
-        void IPlayerActor.SetRotation(float angle)
+        public void SetRotation(float angle)
         {
             var multiplier = Mathf.Round (angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
             _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
-        void IPlayerActor.ShieldHit(int damage)
+        public void ShieldHit(int damage)
         {
             if (!_allowShieldHit)
             {
@@ -129,14 +128,14 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        void IPlayerActor.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
         #endregion
 
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");            
@@ -165,7 +164,7 @@ namespace Battle.Scripts.Battle.Players
                 }
             }            
             playerActorBase.transform.localScale = Vector3.one * scale;
-            var playerActor = (IPlayerActor)playerActorBase;
+            var playerActor = (PlayerActor)playerActorBase;
             playerActor.SetPlayerDriver(playerDriver);
             return playerActor;
         }
