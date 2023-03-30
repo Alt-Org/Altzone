@@ -9,7 +9,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private bool _autoRotate = true;
 
         private const int shieldEffectDistSquares = 6;
-        private const float waitTime = 2f;
+        private const float PhotonWaitTime = 2f;
 
         private float _shieldEffectSqr;
         private PlayerPlayArea _battlePlayArea;
@@ -24,18 +24,17 @@ namespace Battle.Scripts.Battle.Players
 
         private IEnumerator Start()
         {
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(PhotonWaitTime);
             _battlePlayArea = Context.GetBattlePlayArea;
             var shieldEffectDist = shieldEffectDistSquares * _battlePlayArea.ArenaWidth / _battlePlayArea.GridWidth;
             _shieldEffectSqr = shieldEffectDist * shieldEffectDist + 0.001f;
             var allActors = FindObjectsOfType<PlayerActor>();
-            var myActor = (PlayerActor)_playerActor;
-            _myActorTransform = myActor.transform;
+            _myActorTransform = _playerActor.transform;
             _otherActorTransforms = new Transform[allActors.Length - 1];
             var i = 0;
             foreach (var actor in allActors)
             {
-                if (actor == myActor)
+                if (actor == _playerActor)
                 {
                     continue;
                 }

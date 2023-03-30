@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle.Players
     /// <remarks>
     /// Needs to derive from <c>PlayerActorBase</c> for type safe UNITY prefab instantiation.
     /// </remarks>
-    internal class PlayerActor : PlayerActorBase, IPlayerActor
+    internal class PlayerActor : PlayerActorBase
     {
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
@@ -94,8 +94,6 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        #region IPlayerActor
-
         public bool IsBusy => _hasTarget;
 
         public void MoveTo(Vector2 targetPosition)
@@ -136,8 +134,6 @@ namespace Battle.Scripts.Battle.Players
         {
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
-
-        #endregion
 
         public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {

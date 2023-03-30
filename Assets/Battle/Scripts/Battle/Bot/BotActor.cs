@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Bot
 {
-    internal class BotActor : MonoBehaviour, IPlayerActor
+    internal class BotActor : MonoBehaviour
     {
         [SerializeField] Transform ballTransform;
 
@@ -130,28 +130,26 @@ namespace Battle.Scripts.Battle.Bot
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
         }
 
-        #region IPlayerActor
+        public bool IsBusy => _hasTarget;
 
-        bool IPlayerActor.IsBusy => _hasTarget;
-
-        void IPlayerActor.MoveTo(Vector2 targetPosition)
+        public void MoveTo(Vector2 targetPosition)
         {
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriver playerDriver)
         {
             _playerDriver = playerDriver;
         }
 
-        void IPlayerActor.SetRotation(float angle)
+        public void SetRotation(float angle)
         {
             var multiplier = Mathf.Round (angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
             _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
-        void IPlayerActor.ShieldHit(int damage)
+        public void ShieldHit(int damage)
         {
             if (!_allowShieldHit)
             {
@@ -168,11 +166,9 @@ namespace Battle.Scripts.Battle.Bot
             }
         }
 
-        void IPlayerActor.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
-
-        #endregion
     }
 }
