@@ -1,15 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using Altzone.Scripts.Battle;
-using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
-using Battle.Scripts.Test;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Bot
 {
-    internal class BotActor : PlayerActorBase, IPlayerActor
+    internal class BotActor : MonoBehaviour, IPlayerActor
     {
         [SerializeField] Transform ballTransform;
 
@@ -178,40 +174,5 @@ namespace Battle.Scripts.Battle.Bot
         }
 
         #endregion
-
-
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
-        {
-            PlayerName = gameObjectName;
-            Debug.Log($"heoooo{gameObjectName}");            
-            var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-            var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            if (playerActorBase != null)
-            {
-                playerActorBase.name = playerActorBase.name.Replace("Clone", gameObjectName);
-                switch (playerPos)
-                {
-                    case PhotonBattle.PlayerPosition1:
-                        playerActorBase.gameObject.layer = 18;
-                        break;
-                    case PhotonBattle.PlayerPosition2:
-                        playerActorBase.gameObject.layer = 19;
-                        break;
-                    case PhotonBattle.PlayerPosition3:
-                        playerActorBase.gameObject.layer = 20;
-                        break;
-                    case PhotonBattle.PlayerPosition4:
-                        playerActorBase.gameObject.layer = 21;
-                        break;
-                    default:
-                        throw new UnityException($"Invalid player position {playerPos}");
-                }
-            }            
-            playerActorBase.transform.localScale = Vector3.one * scale;
-            var playerActor = (IPlayerActor)playerActorBase;
-            playerActor.SetPlayerDriver(playerDriver);
-            return playerActor;
-        }
     }
 }

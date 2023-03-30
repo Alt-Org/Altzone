@@ -10,6 +10,9 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// <c>PlayerActor</c> for local and remote instances.
     /// </summary>
+    /// <remarks>
+    /// Needs to derive from <c>PlayerActorBase</c> for type safe UNITY prefab instantiation.
+    /// </remarks>
     internal class PlayerActor : PlayerActorBase, IPlayerActor
     {
         [SerializeField] private Transform _geometryRoot;

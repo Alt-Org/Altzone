@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Altzone.Scripts.Battle
 {
     /// <summary>
-    /// Marker class for <c>IPlayerActor</c> implementations for UNITY type safety with prefab instantiation.
+    /// Marker class for <c>PlayerActor</c> prefab implementations for type safety way of UNITY prefab instantiation.
     /// </summary>
     public class PlayerActorBase : MonoBehaviour
     {
