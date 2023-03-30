@@ -62,7 +62,7 @@ namespace Battle.Scripts.Battle.Bot
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             if (_isTesting)
             {
-                playerPrefabId = _playerPrefabID;
+                playerPrefabId = _playerPrefabID.ToString();
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
             var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);

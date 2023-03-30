@@ -82,15 +82,16 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// Player prefabs in simple array.
     /// </summary>
     /// <remarks>
-    /// Note that prefabId is the same as array index.
+    /// Note that prefabKey (string) must be the same as corresponding array index (int).
     /// </remarks>
     [Serializable]
     public class PlayerPrefabs
     {
         public PlayerActorBase[] _playerPrefabs;
 
-        public PlayerActorBase GetPlayerPrefab(int prefabId)
+        public PlayerActorBase GetPlayerPrefab(string prefabKey)
         {
+            var prefabId = int.Parse(prefabKey);
             if (prefabId < 0 || prefabId >= _playerPrefabs.Length)
             {
                 return null;

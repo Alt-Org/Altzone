@@ -189,8 +189,7 @@ namespace Altzone.Scripts
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");
                             isCustomCharactersValid = false;
                         }
-                        var prefabIndex = int.Parse(customCharacter.UnityKey);
-                        if (playerPrefabs.GetPlayerPrefab(prefabIndex) == null)
+                        if (playerPrefabs.GetPlayerPrefab(customCharacter.UnityKey) == null)
                         {
                             if (isCustomCharactersValid)
                             {

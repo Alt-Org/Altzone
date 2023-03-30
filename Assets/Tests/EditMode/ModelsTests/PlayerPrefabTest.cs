@@ -1,4 +1,3 @@
-using System;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using NUnit.Framework;
@@ -22,10 +21,8 @@ namespace Tests.EditMode.ModelsTests
                 Assert.IsNotNull(battleCharacter);
                 Debug.Log($"{battleCharacter}");
                 Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
-                var prefabId = int.Parse(battleCharacter.UnityKey);
-                Assert.IsTrue(prefabId >= 0);
                 var playerPrefabs = gameConfig.PlayerPrefabs;
-                var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                var playerPrefab = playerPrefabs.GetPlayerPrefab(battleCharacter.UnityKey);
                 Assert.IsNotNull(playerPrefab);
             });
         }
@@ -41,9 +38,7 @@ namespace Tests.EditMode.ModelsTests
                 {
                     var prefabId = 0;
                     Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
-                    prefabId = int.Parse(battleCharacter.UnityKey);
-                    Assert.IsTrue(prefabId >= 0);
-                    var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                    var playerPrefab = playerPrefabs.GetPlayerPrefab(battleCharacter.UnityKey);
                     Assert.IsNotNull(playerPrefab);
                 }
             });

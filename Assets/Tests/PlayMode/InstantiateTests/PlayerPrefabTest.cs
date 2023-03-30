@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Object = UnityEngine.Object;
 
 namespace Tests.PlayMode.InstantiateTests
 {
@@ -38,10 +36,8 @@ namespace Tests.PlayMode.InstantiateTests
                 Assert.IsNotNull(battleCharacter);
                 Debug.Log($"{battleCharacter}");
                 Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
-                var prefabId = int.Parse(battleCharacter.UnityKey);
-                Assert.IsTrue(prefabId >= 0);
                 var playerPrefabs = gameConfig.PlayerPrefabs;
-                var playerPrefab = playerPrefabs.GetPlayerPrefab(prefabId);
+                var playerPrefab = playerPrefabs.GetPlayerPrefab(battleCharacter.UnityKey);
                 Assert.IsNotNull(playerPrefab);
                 var instance = InstantiatePrefab(playerPrefab.gameObject, Vector3.one, Quaternion.identity, null);
                 instance.name = battleCharacter.Name;

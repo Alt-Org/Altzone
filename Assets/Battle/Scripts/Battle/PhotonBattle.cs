@@ -50,9 +50,9 @@ namespace Battle.Scripts.Battle
             return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
         }
 
-        public static int GetPlayerPrefabId(Player player)
+        public static string GetPlayerPrefabId(Player player)
         {
-            return player.GetCustomProperty(PlayerPrefabIdKey, -1);
+            return player.GetCustomProperty(PlayerPrefabIdKey, -1).ToString();
         }
 
         public static int GetTeamNumber(int playerPos)
