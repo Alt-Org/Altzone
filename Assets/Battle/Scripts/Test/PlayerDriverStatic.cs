@@ -70,25 +70,24 @@ namespace Battle.Scripts.Test
             playerInputHandler.OnMoveTo = MoveTo;
         }
 
-        #region IPlayerDriver
+        public string NickName => _settings._nickName;
 
-        string IPlayerDriver.NickName => _settings._nickName;
+        public int TeamNumber => _settings._teamNumber;
 
-        int IPlayerDriver.TeamNumber => _settings._teamNumber;
+        public int ActorNumber => _actorNumber;
 
-        int IPlayerDriver.ActorNumber => _actorNumber;
+        public bool IsLocal => _settings._isLocal;
 
-        bool IPlayerDriver.IsLocal => _settings._isLocal;
+        public int PlayerPos => _settings._playerPos;
 
-        int IPlayerDriver.PlayerPos => _settings._playerPos;
-
-        void IPlayerDriver.Rotate(float angle)
+        public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
 
         private void MoveTo(Vector2 targetPosition)
         {
+            // Make this public if you want to test it.
             if (!_state.CanRequestMove)
             {
                 return;
@@ -107,7 +106,5 @@ namespace Battle.Scripts.Test
         {
             _playerActor.SetCharacterPose(poseIndex);
         }
-
-        #endregion
     }
 }

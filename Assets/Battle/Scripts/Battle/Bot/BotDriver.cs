@@ -89,17 +89,17 @@ namespace Battle.Scripts.Battle.Bot
 
         #region IPlayerDriver
 
-        string IPlayerDriver.NickName => _photonView.Owner.NickName;
+        public string NickName => _photonView.Owner.NickName;
 
-        int IPlayerDriver.TeamNumber => _teamNumber;
+        public int TeamNumber => _teamNumber;
 
-        int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
+        public int ActorNumber => _photonView.Owner.ActorNumber;
 
-        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
+        public bool IsLocal => _photonView.Owner.IsLocal;
 
-        int IPlayerDriver.PlayerPos => _playerPos;
+        public int PlayerPos => _playerPos;
 
-        void IPlayerDriver.Rotate(float angle)
+        public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
@@ -121,7 +121,7 @@ namespace Battle.Scripts.Battle.Bot
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
-        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             if (!IsNetworkSynchronize)
             {

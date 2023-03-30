@@ -1,5 +1,4 @@
 using System;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Photon.Pun;
@@ -84,27 +83,25 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.OnMoveTo = MoveTo;
+            playerInputHandler.OnMoveTo = OnMoveTo;
         }
 
-        #region IPlayerDriver
+        public string NickName => _photonView.Owner.NickName;
 
-        string IPlayerDriver.NickName => _photonView.Owner.NickName;
+        public int TeamNumber => _teamNumber;
 
-        int IPlayerDriver.TeamNumber => _teamNumber;
+        public int ActorNumber => _photonView.Owner.ActorNumber;
 
-        int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
+        public bool IsLocal => _photonView.Owner.IsLocal;
 
-        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
+        public int PlayerPos => _playerPos;
 
-        int IPlayerDriver.PlayerPos => _playerPos;
-
-        void IPlayerDriver.Rotate(float angle)
+        public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
 
-        private void MoveTo(Vector2 targetPosition)
+        private void OnMoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {
@@ -121,7 +118,7 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
-        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             if (!IsNetworkSynchronize)
             {
@@ -129,8 +126,6 @@ namespace Battle.Scripts.Battle.Players
             }
             _photonView.RPC(nameof(SetPlayerCharacterPoseRpc), RpcTarget.All, poseIndex);
         }
-
-        #endregion
 
         #region Photon RPC
 
