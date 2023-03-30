@@ -1,5 +1,4 @@
 using System;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
@@ -14,7 +13,7 @@ namespace Battle.Scripts.Battle.Bot
     /// </summary>
     internal class BotDriver : MonoBehaviour, IPlayerDriver
     {
-        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private PlayerActor _playerPrefab;
 
         private PlayerActor _playerActor;
         private GridManager _gridManager;
@@ -65,7 +64,7 @@ namespace Battle.Scripts.Battle.Bot
             {
                 playerPrefabId = _playerPrefabID;
             }
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
+            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
             var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }

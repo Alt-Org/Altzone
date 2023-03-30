@@ -1,5 +1,4 @@
 using System;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
@@ -30,7 +29,7 @@ namespace Battle.Scripts.Test
 
         [Header("Settings"), SerializeField] private Settings _settings;
 
-        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private PlayerActor _playerPrefab;
 
         private double _movementDelay;
         private PlayerActor _playerActor;

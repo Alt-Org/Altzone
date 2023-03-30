@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle.Players
     /// </summary>
     internal class PlayerDriverPhoton : MonoBehaviour, IPlayerDriver
     {
-        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private PlayerActor _playerPrefab;
 
         private PlayerActor _playerActor;
         private GridManager _gridManager;
@@ -64,7 +64,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 playerPrefabId = _playerPrefabID;
             }
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
+            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
             var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }

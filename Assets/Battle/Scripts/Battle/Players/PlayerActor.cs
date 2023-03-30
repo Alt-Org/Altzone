@@ -3,6 +3,7 @@ using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using UnityConstants;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -135,38 +136,35 @@ namespace Battle.Scripts.Battle.Players
 
         #endregion
 
-        public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");            
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            if (playerActorBase != null)
+            var instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
+            instance.name = instance.name.Replace("Clone", gameObjectName);
+            switch (playerPos)
             {
-                playerActorBase.name = playerActorBase.name.Replace("Clone", gameObjectName);
-                switch (playerPos)
-                {
-                    case PhotonBattle.PlayerPosition1:
-                        playerActorBase.gameObject.layer = Layers.Player1;
-                        break;
-                    case PhotonBattle.PlayerPosition2:
-                        playerActorBase.gameObject.layer = Layers.Player2;
-                        break;
-                    case PhotonBattle.PlayerPosition3:
-                        playerActorBase.gameObject.layer = Layers.Player3;
-                        break;
-                    case PhotonBattle.PlayerPosition4:
-                        playerActorBase.gameObject.layer = Layers.Player4;
-                        break;
-                    default:
-                        throw new UnityException($"Invalid player position {playerPos}");
-                }
-            }            
-            playerActorBase.transform.localScale = Vector3.one * scale;
-            var playerActor = (PlayerActor)playerActorBase;
-            playerActor.SetPlayerDriver(playerDriver);
-            return playerActor;
+                case PhotonBattle.PlayerPosition1:
+                    instance.gameObject.layer = Layers.Player1;
+                    break;
+                case PhotonBattle.PlayerPosition2:
+                    instance.gameObject.layer = Layers.Player2;
+                    break;
+                case PhotonBattle.PlayerPosition3:
+                    instance.gameObject.layer = Layers.Player3;
+                    break;
+                case PhotonBattle.PlayerPosition4:
+                    instance.gameObject.layer = Layers.Player4;
+                    break;
+                default:
+                    throw new UnityException($"Invalid player position {playerPos}");
+            }
+            instance.transform.localScale = Vector3.one * scale;
+            instance.SetPlayerDriver(playerDriver);
+            return instance;
         }
     }
 }
