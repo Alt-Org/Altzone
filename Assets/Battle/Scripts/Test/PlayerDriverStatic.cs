@@ -60,7 +60,7 @@ namespace Battle.Scripts.Test
             _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
             {
-                ((IPlayerDriver)this).Rotate(180f);
+                Rotate(180f);
             }
             if (!_settings._isLocal)
             {
