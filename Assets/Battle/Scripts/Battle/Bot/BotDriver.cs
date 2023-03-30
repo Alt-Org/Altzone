@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle.Bot
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class BotDriver : MonoBehaviour, IPlayerDriver
+    internal class BotDriver : MonoBehaviour, IPlayerDriverCallback
     {
         [SerializeField] private PlayerActor _playerPrefab;
 

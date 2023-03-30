@@ -16,7 +16,7 @@ namespace Battle.Scripts.Test
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
+    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriverCallback
     {
         [Serializable]
         internal class Settings
@@ -102,7 +102,7 @@ namespace Battle.Scripts.Test
             _state.DelayedMove(gridPos, (float)_movementDelay);
         }
 
-        public void SetCharacterPose(int poseIndex)
+        void IPlayerDriverCallback.SetCharacterPose(int poseIndex)
         {
             _playerActor.SetCharacterPose(poseIndex);
         }

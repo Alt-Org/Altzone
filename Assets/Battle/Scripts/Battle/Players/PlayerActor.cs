@@ -18,7 +18,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
 
-        private IPlayerDriver _playerDriver;
+        private IPlayerDriverCallback _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -101,7 +101,7 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        public void SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriverCallback playerDriver)
         {
             _playerDriver = playerDriver;
         }
@@ -135,7 +135,7 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
-        public static PlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(IPlayerDriverCallback playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");            

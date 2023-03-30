@@ -14,7 +14,7 @@ namespace Battle.Scripts.Battle.Bot
         private Vector2 targetPosition;
         private Vector2 taretPosition;
 
-        private IPlayerDriver _playerDriver;
+        private IPlayerDriverCallback _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
         private GridManager _gridManager;
         //private IPlayerDriverState _state;
@@ -137,7 +137,7 @@ namespace Battle.Scripts.Battle.Bot
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        public void SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriverCallback playerDriver)
         {
             _playerDriver = playerDriver;
         }
