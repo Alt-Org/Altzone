@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -10,9 +11,10 @@ using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// Conditional (thread-safe) UnityEngine.Debug wrapper for development.
+/// Conditional (thread-safe) UnityEngine.Debug wrapper for development (and optionally for production).
 /// </summary>
 [DefaultExecutionOrder(-100)]
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class Debug
 {
     // See: https://answers.unity.com/questions/126315/debuglog-in-build.html
@@ -49,11 +51,12 @@ public static class Debug
             }
         }
 
-        if (!_isEditorHook)
+        if (_isEditorHook)
         {
-            _isEditorHook = true;
-            EditorApplication.playModeStateChanged += LogPlayModeState;
+            return;
         }
+        _isEditorHook = true;
+        EditorApplication.playModeStateChanged += LogPlayModeState;
 #endif
     }
 
@@ -142,6 +145,13 @@ public static class Debug
 
     #endregion
 
+    /// <summary>
+    /// Logs a string message.
+    /// </summary>
+    /// <remarks>
+    /// Note that string interpolation using $ can be expensive and should be avoided if logging is intended for production builds.<br />
+    /// It is bettor to use <c>LogFormat</c> 'composite formatting' to delay actual string formatting when (if) message is logged.
+    /// </remarks>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void Log(string message, Object context = null, [CallerMemberName] string memberName = null)
     {
@@ -166,6 +176,9 @@ public static class Debug
         }
     }
 
+    /// <summary>
+    /// Logs a string message using 'composite formatting'.
+    /// </summary>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogFormat(string format, params object[] args)
     {
