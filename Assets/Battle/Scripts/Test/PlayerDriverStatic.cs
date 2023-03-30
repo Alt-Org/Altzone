@@ -35,7 +35,7 @@ namespace Battle.Scripts.Test
         private double _movementDelay;
         private IPlayerActor _playerActor;
         private GridManager _gridManager;
-        private IPlayerDriverState _state;
+        private PlayerDriverState _state;
         private PlayerPlayArea _battlePlayArea;
         private float _arenaScaleFactor;
 

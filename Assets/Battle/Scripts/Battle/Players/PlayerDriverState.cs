@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerDriverState : MonoBehaviour, IPlayerDriverState
+    public class PlayerDriverState : MonoBehaviour
     {
         [SerializeField] private bool _autoRotate = true;
 
@@ -71,14 +71,12 @@ namespace Battle.Scripts.Battle.Players
             yield return new WaitForSeconds(waitTime);
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition);
-            ((IPlayerDriverState)this).IsWaitingToMove(false);
+            IsWaitingToMove(false);
         }
 
-        #region IPlayerDriverState
+        internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
-        bool IPlayerDriverState.CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
-
-        void IPlayerDriverState.ResetState(IPlayerActor playerActor, int teamNumber)
+        internal void ResetState(IPlayerActor playerActor, int teamNumber)
         {
             _playerActor = playerActor;
             _teamNumber = teamNumber;
@@ -93,16 +91,14 @@ namespace Battle.Scripts.Battle.Players
             _gridManager = Context.GetGridManager;
         }
 
-        void IPlayerDriverState.DelayedMove(GridPos gridPos, float moveExecuteDelay)
+        internal void DelayedMove(GridPos gridPos, float moveExecuteDelay)
         {
             StartCoroutine(DelayTime(gridPos, moveExecuteDelay));
         }
 
-        void IPlayerDriverState.IsWaitingToMove(bool isWaitingToMove)
+        internal void IsWaitingToMove(bool isWaitingToMove)
         {
             _isWaitingToMove = isWaitingToMove;
         }
-
-        #endregion
     }
 }
