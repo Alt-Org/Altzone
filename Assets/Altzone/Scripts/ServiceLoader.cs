@@ -17,11 +17,14 @@ namespace Altzone.Scripts
     [DefaultExecutionOrder(-100)]
     public class ServiceLoader : MonoBehaviour
     {
-        public bool isReady;
+        [SerializeField, Tooltip("Shows how long it took to load services")] private string _startupTime;
+        
+        public bool IsReady { get; private set; }
 
         private IEnumerator Start()
         {
             Debug.Log($"start");
+            var startTime = Time.unscaledTime;
             Localizer.LoadTranslations(Application.systemLanguage);
             AudioManager.Get();
             var store = Storefront.Get();
@@ -35,8 +38,9 @@ namespace Altzone.Scripts
             yield return StartCoroutine(CheckDataStoreDataAndState(store));
             yield return StartCoroutine(CheckPlayerDataAndState(store, gameConfig));
             CheckGameInfoDebugOnly(store);
-            Debug.Log($"exit");
-            isReady = true;
+            _startupTime = $"{Time.unscaledTime - startTime:0.000}";
+            Debug.Log($"exit in {_startupTime}");
+            IsReady = true;
         }
 
         private static IEnumerator CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
@@ -102,7 +106,8 @@ namespace Altzone.Scripts
             {
                 isCallbackDone = false;
                 // Replace default CharacterClass models.
-                Debug.LogWarning($"Update CharacterClassesVersion {store.Version.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
+                Debug.LogWarning(
+                    $"Update CharacterClassesVersion {store.Version.CharacterClassesVersion} <- {CreateDefaultModels.CharacterClassesVersion}");
                 Storefront.Set(CreateDefaultModels.CreateCharacterClasses(), success =>
                 {
                     if (success)
@@ -154,7 +159,8 @@ namespace Altzone.Scripts
             {
                 isCallbackDone = false;
                 // Replace default CustomCharacter models.
-                Debug.LogWarning($"Update CustomCharactersVersion {store.Version.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
+                Debug.LogWarning(
+                    $"Update CustomCharactersVersion {store.Version.CustomCharactersVersion} <- {CreateDefaultModels.CustomCharactersVersion}");
                 Storefront.Set(CreateDefaultModels.CreateCustomCharacters(), success =>
                 {
                     if (success)

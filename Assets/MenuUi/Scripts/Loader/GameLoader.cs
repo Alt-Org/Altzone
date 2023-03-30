@@ -24,7 +24,7 @@ namespace MenuUi.Scripts.Loader
             
             ServiceLoader serviceLoader = null;
             yield return new WaitUntil(() => (serviceLoader = FindObjectOfType<ServiceLoader>()) != null);
-            yield return new WaitUntil(() => serviceLoader.isReady);
+            yield return new WaitUntil(() => serviceLoader.IsReady);
 
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
