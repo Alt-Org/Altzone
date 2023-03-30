@@ -34,7 +34,7 @@ namespace Battle.Scripts.Test
             {
                 var rb = otherGameObject.GetComponentInParent<Rigidbody2D>();
                 var gridPos = _gridManager.WorldPointToGridPosition(rb.position);
-                rb.transform.position = _gridManager.GridPositionToWorldPoint(gridPos);
+                rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
                 var angle = _transform.rotation.eulerAngles.z + _bounceAngle;
                 Debug.Log($"shield angle {angle}");
                 var rotation = Quaternion.Euler(0, 0, angle);
