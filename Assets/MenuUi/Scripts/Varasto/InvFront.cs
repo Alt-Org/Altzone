@@ -7,6 +7,7 @@ using Altzone.Scripts;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class InvFront : MonoBehaviour
 {
@@ -112,7 +113,7 @@ public class InvFront : MonoBehaviour
     }
     
     void ShowInfo()
-    { //
+    {
         Debug.Log("Showing some information =)");
 
         // I know its a bit of a complex way of doing stuff but cant really find workarounds as events cant have arguments, and i know not of how to do it withut the use of events
