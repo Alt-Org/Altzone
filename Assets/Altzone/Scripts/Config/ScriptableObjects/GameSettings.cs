@@ -55,7 +55,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameConstants
     {
-        [Header("Furniture")] public string _furniturePrefabFolder;
+        private const string FurniturePrefabFolder = "Folder name inside a Resources folder for Furniture prefabs";
+        
+        [Header("Furniture"), Tooltip(FurniturePrefabFolder)] public string _furniturePrefabFolder;
     }
 
     /// <summary>
@@ -69,7 +71,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         [Header("Battle"), Min(1), Tooltip("Ball movement and character turning is limited to certain angles")] public float _angleLimit;
 
-        [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Header("Battle Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0), Tooltip("How far from shield collision should raycast take place to compensate for high speed")] public float _ballSpeedCompensation;
         [Min(0), Tooltip("How many hits does a shield take before deforming")] public int _shieldResistance;
@@ -87,7 +89,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class PlayerPrefabs
     {
-        public PlayerActorBase[] _playerPrefabs;
+        [Header("Battle Player Prefabs")] public PlayerActorBase[] _playerPrefabs;
 
         public PlayerActorBase GetPlayerPrefab(string prefabKey)
         {
