@@ -36,7 +36,6 @@ namespace Tests.EditMode.ModelsTests
             {
                 foreach (var battleCharacter in battleCharacters)
                 {
-                    var prefabId = 0;
                     Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
                     var playerPrefab = playerPrefabs.GetPlayerPrefab(battleCharacter.UnityKey);
                     Assert.IsNotNull(playerPrefab);
