@@ -5,7 +5,6 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class InvFront : MonoBehaviour
@@ -39,7 +38,8 @@ public class InvFront : MonoBehaviour
             GameObject newSlot = Instantiate(_invSlot, _content);
 
             // Adds an event to the new slot that enables it to show information about the furniture it is showcasing
-            newSlot.GetComponent<Button>().onClick.AddListener(ShowInfo);
+            var slotVal = i;
+            newSlot.GetComponent<Button>().onClick.AddListener(() => OnShowInfo(slotVal));
 
             _slotsList.Add(newSlot);
         }
@@ -95,12 +95,9 @@ public class InvFront : MonoBehaviour
         SetSlots();
     }
     
-    void ShowInfo()
+    void OnShowInfo(int slotVal)
     {
-        Debug.Log("Showing some information =)");
-
-        // I know its a bit of a complex way of doing stuff but cant really find workarounds as events cant have arguments, and i know not of how to do it withut the use of events
-        int slotVal = _slotsList.IndexOf(EventSystem.current.currentSelectedGameObject);
+        Debug.Log($"Showing slot {slotVal} information =)");
 
         // Icon - Still gotta figure out how to get images for these things
 
