@@ -5,9 +5,8 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InvFront : MonoBehaviour
 {
@@ -19,33 +18,17 @@ public class InvFront : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject _invSlot;
 
-    private DataStore _store;
-
     private List<GameFurniture> _items;
     private List<GameObject> _slotsList = new List<GameObject>();
 
     private int maxSortingBy = 2;
     private int sortingBy; // used as a carrier for info on how to sort
-    private void Start()
-    {
-        _store = Storefront.Get();
 
+    private IEnumerator Start()
+    {
         sortingBy = -1; // So that the first sort style is Alphabet
-        StartCoroutine(SetInventory());
-    }
-
-    private IEnumerator SetInventory()
-    {
-        bool isCallbackDone = false;
-        _store.GetAllGameFurniture(result =>
-        {
-            _items = result.ToList();
-            isCallbackDone = true;
-        });
-        yield return new WaitUntil(() => isCallbackDone);
-
+        yield return Storefront.Get().GetAllGameFurnitureYield(result => _items = result.ToList());
         MakeSlots();
-
         SetSlots();
     }
 
