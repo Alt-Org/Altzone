@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
@@ -134,9 +135,11 @@ namespace Tests.EditMode.DataStoreTests
             Debug.Log("test of GameFurniture");
             List<GameFurniture> gameFurniture = null;
             var isCallbackDone = false;
+            var stopwatch = Stopwatch.StartNew();
             _store.GetAllGameFurniture(result =>
             {
                 gameFurniture = result.ToList();
+                Debug.Log($"test took {stopwatch.ElapsedMilliseconds} ms");
                 isCallbackDone = true;
             });
             yield return new WaitUntil(() => isCallbackDone);
