@@ -69,11 +69,14 @@ public static class Debug
     private static int _currentFrameCount;
 
     /// <summary>
-    /// Filters log lines based on method name or other method properties.
+    /// Filters log lines based on method class, name or other method properties.
     /// </summary>
     private static Func<MethodBase, bool> _logLineAllowedFilter;
 
-    private static readonly Dictionary<MethodBase, bool> CachedMethods = new Dictionary<MethodBase, bool>();
+    /// <summary>
+    /// Cache for tracking whether method should be logged or not.
+    /// </summary>
+    private static readonly Dictionary<MethodBase, bool> CachedMethods = new();
 
     /// <summary>
     /// Adds log line filter.
@@ -259,40 +262,37 @@ public static class Debug
 
     private static bool IsMethodAllowedForLog(MethodBase method)
     {
-        if (_logLineAllowedFilter != null)
+        if (_logLineAllowedFilter == null)
         {
-            if (CachedMethods.TryGetValue(method, out var isMethodAllowed))
-            {
-                return isMethodAllowed;
-            }
-            var isAllowed = _logLineAllowedFilter(method);
-            if (isAllowed)
-            {
-                AddMethod(true);
-                // UnityEngine.Debug.Log($"[{RichText.Brown("ACCEPT")}] {method.Name} in {method.ReflectedType?.FullName}");
-                return true;
-            }
-            // Nobody accepted so it is rejected.
-            AddMethod(false);
-            // UnityEngine.Debug.Log($"[{RichText.Brown("REJECT")}] {method.Name} in {method.ReflectedType?.FullName}");
-            return false;
+            return true;
         }
-        return true;
-
-        void AddMethod(bool isAllowed)
+        if (CachedMethods.TryGetValue(method, out var isAllowed))
         {
+            return isAllowed;
+        }
+        isAllowed = _logLineAllowedFilter(method);
+        TryAddCachedMethod();
+        return isAllowed;
+
+        // Local function to make code more readable.
+        void TryAddCachedMethod()
+        {
+            // UnityEngine.Debug.Log(isAllowed
+            //     ? $"[{RichText.Brown("ACCEPT")}] {method.Name} in {method.ReflectedType?.FullName}"
+            //     : $"[{RichText.Brown("REJECT")}] {method.Name} in {method.ReflectedType?.FullName}");
             // Dictionary is not thread safe - so we guard it without locking!
             if (CachedMethods.ContainsKey(method))
             {
                 return;
             }
+            // On rare cases some other thread might add the same method before us - and it is ok.
             try
             {
                 CachedMethods.Add(method, isAllowed);
             }
             catch (ArgumentException)
             {
-                // Swallow - An element with the same key already exists!
+                // Swallow and ignore - An element with the same key already exists (has been added just before us).
             }
         }
     }
