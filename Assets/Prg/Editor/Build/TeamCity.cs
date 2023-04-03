@@ -129,11 +129,20 @@ namespace Prg.Editor.Build
             File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
 
+            const string copyScriptName = "m_BuildScript_CopyOutput.bat";
             if (buildTarget != BuildTarget.WebGL)
             {
+                if (!File.Exists(copyScriptName))
+                {
+                    Debug.Log($"Create build copy output script '{copyScriptName}' is SKIPPED for {buildTarget}");
+                    Debug.Log($"- you can manually copy them from '{BuildTarget.WebGL} build' if required");
+                }
+                else
+                {
+                    Debug.Log($"Existing copy build output script or .env file were not touched");
+                }
                 return;
             }
-            const string copyScriptName = "m_BuildScript_CopyOutput.bat";
             if (!File.Exists(copyScriptName))
             {
                 File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
@@ -141,7 +150,7 @@ namespace Prg.Editor.Build
             }
             else
             {
-                Debug.Log($"Copy build output script '{copyScriptName}' was not modified");
+                Debug.Log($"Existing copy build output script '{copyScriptName}' was not modified");
             }
             const string copyScriptEnvName = "m_BuildScript_CopyOutput.env";
             if (!File.Exists(copyScriptEnvName))
@@ -153,7 +162,7 @@ namespace Prg.Editor.Build
             }
             else
             {
-                Debug.Log($"Copy build output script '{copyScriptEnvName}' was not modified");
+                Debug.Log($"Existing build output .env file '{copyScriptEnvName}' was not modified");
             }
         }
 
