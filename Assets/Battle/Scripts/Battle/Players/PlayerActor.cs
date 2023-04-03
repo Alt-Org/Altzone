@@ -14,6 +14,9 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
+        public string SeePlayerName;
+        public static string PlayerName;
+        private bool StartBool = true;
 
         private IPlayerDriver _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
@@ -30,7 +33,6 @@ namespace Battle.Scripts.Battle.Players
         private int _currentPoseIndex;
         private bool _allowShieldHit;
 
-        public static string PlayerName;
 
         private void Awake()
         {
@@ -48,6 +50,13 @@ namespace Battle.Scripts.Battle.Players
             {
                 StartCoroutine(ResetPose());
             }
+
+            if (StartBool == true)
+            {
+                SeePlayerName = PlayerName;
+                StartBool = false;
+            }
+            Debug.Log($"{gameObject.name} {SeePlayerName}");
         }
 
         private IEnumerator MoveCoroutine(Vector2 position)

@@ -37,21 +37,24 @@ namespace Battle.Scripts.Battle.Players
             //PlayerActors.Add(GetAllPlayerDrivers);
             PlayerActors = Context.GetAllPlayerDriverObjects;     //GetAllPlayerDrivers
 
-            while (RightDriver == false)
-            {
+            //while (RightDriver == false)
+            //{
                 foreach (GameObject t in PlayerActors)      //IPlayerDriver t in
                 {
                     View = t.GetComponent<PhotonView>();
                     PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
-                    if (PlayerActor.PlayerName == PlayerDriverPhoton.PlayerName)       //View.IsMine &&
+                    if (PlayerActor.SeePlayerName == PlayerDriverPhoton.PlayerName)       //PlayerActor.SeePlayerName
                     {
                         RightDriver = true;
+                        Debug.Log($"{PlayerActor.SeePlayerName}ggrgtgrfefhbtrfsfvrfhbrgefe");       //PlayerActor.SeePlayerName
                         break;
                     }
                     Debug.Log($"players {Context.GetAllPlayerDriverObjects.Count}");      //GetAllPlayerDrivers.Count
+                    Debug.Log($"{RightDriver}");
                 }
 
-            }
+            //}
+            Debug.Log($"{RightDriver}");
 
             /*if (local == true)
             {*/

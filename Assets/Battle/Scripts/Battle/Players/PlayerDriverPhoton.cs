@@ -50,7 +50,6 @@ namespace Battle.Scripts.Battle.Players
         {
             var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
-            Debug.Log($"heoooo22{playerTag}");
             name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
             {
