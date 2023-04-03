@@ -122,13 +122,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(1, GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
-                new(2, GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
-                new(3, GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
-                new(4, GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
-                new(5, GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
-                new(6, GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new(7, GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
+                new((int)GestaltCycle.Desensitisation, GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
+                new((int)GestaltCycle.Deflection, GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
+                new((int)GestaltCycle.Introjection, GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
+                new((int)GestaltCycle.Projection, GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
+                new((int)GestaltCycle.Retroflection, GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new((int)GestaltCycle.Egotism, GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
+                new((int)GestaltCycle.Confluence, GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
 

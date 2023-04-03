@@ -1,4 +1,4 @@
-using Prg.Scripts.Common.Unity;
+using Prg.Scripts.EditorSupport.Attributes;
 using UnityEditor;
 using UnityEngine;
 

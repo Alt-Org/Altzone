@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -10,9 +11,10 @@ using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// Conditional (thread-safe) UnityEngine.Debug wrapper for development.
+/// Conditional (thread-safe) UnityEngine.Debug wrapper for development (and optionally for production).
 /// </summary>
 [DefaultExecutionOrder(-100)]
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class Debug
 {
     // See: https://answers.unity.com/questions/126315/debuglog-in-build.html
@@ -49,11 +51,12 @@ public static class Debug
             }
         }
 
-        if (!_isEditorHook)
+        if (_isEditorHook)
         {
-            _isEditorHook = true;
-            EditorApplication.playModeStateChanged += LogPlayModeState;
+            return;
         }
+        _isEditorHook = true;
+        EditorApplication.playModeStateChanged += LogPlayModeState;
 #endif
     }
 
@@ -121,16 +124,34 @@ public static class Debug
         return _currentFrameCount;
     }
 
-    #region Just for compability or notice to use fully qualified version in UnityEngine namespace
+    #region Just for compability in UnityEngine namespace
 
     public static void Break() => UnityEngine.Debug.Break();
     public static void DebugBreak() => UnityEngine.Debug.DebugBreak();
-    private const string NotHere = "Use fully qualified version in UnityEngine.Debug namespace";
-    public static void DrawLine() => throw new NotImplementedException(NotHere);
-    public static void DrawRay() => throw new NotImplementedException(NotHere);
+
+    public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration, bool depthTest) =>
+        UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
+
+    public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration) => UnityEngine.Debug.DrawLine(start, end, color, duration);
+    public static void DrawLine(Vector3 start, Vector3 end, Color color) => UnityEngine.Debug.DrawLine(start, end, color);
+    public static void DrawLine(Vector3 start, Vector3 end) => UnityEngine.Debug.DrawLine(start, end);
+
+    public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration, bool depthTest) =>
+        UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
+
+    public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration) => UnityEngine.Debug.DrawRay(start, dir, color, duration);
+    public static void DrawRay(Vector3 start, Vector3 dir, Color color) => UnityEngine.Debug.DrawRay(start, dir, color);
+    public static void DrawRay(Vector3 start, Vector3 dir) => UnityEngine.Debug.DrawRay(start, dir);
 
     #endregion
 
+    /// <summary>
+    /// Logs a string message.
+    /// </summary>
+    /// <remarks>
+    /// Note that string interpolation using $ can be expensive and should be avoided if logging is intended for production builds.<br />
+    /// It is bettor to use <c>LogFormat</c> 'composite formatting' to delay actual string formatting when (if) message is logged.
+    /// </remarks>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void Log(string message, Object context = null, [CallerMemberName] string memberName = null)
     {
@@ -138,7 +159,7 @@ public static class Debug
         var method = frame.GetMethod();
         if (method == null || method.ReflectedType == null)
         {
-            UnityEngine.Debug.Log(message, context);
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)message, context);
         }
         else if (IsMethodAllowedForLog(method))
         {
@@ -146,15 +167,18 @@ public static class Debug
             if (AppPlatform.IsEditor)
             {
                 var contextTag = context != null ? _contextTag : string.Empty;
-                UnityEngine.Debug.Log($"{prefix}{message}{contextTag}", context);
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}{contextTag}", context);
             }
             else
             {
-                UnityEngine.Debug.Log($"{prefix}{message}");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}", context);
             }
         }
     }
 
+    /// <summary>
+    /// Logs a string message using 'composite formatting'.
+    /// </summary>
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogFormat(string format, params object[] args)
     {
@@ -162,28 +186,28 @@ public static class Debug
         var method = frame.GetMethod();
         if (method == null || method.ReflectedType == null)
         {
-            UnityEngine.Debug.LogFormat(format, args);
+            UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, format, args);
         }
         else if (IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.LogFormat($"{GetPrefix(method)}{format}", args);
+            UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, $"{GetPrefix(method)}{format}", args);
         }
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogWarning(string message, Object context = null)
     {
-        UnityEngine.Debug.LogWarning(message, context);
+        UnityEngine.Debug.unityLogger.Log(LogType.Warning, (object)message, context);
     }
 
     public static void LogError(string message, Object context = null)
     {
-        UnityEngine.Debug.LogError(message, context);
+        UnityEngine.Debug.unityLogger.Log(LogType.Error, (object)message, context);
     }
 
     public static void LogException(Exception exception)
     {
-        UnityEngine.Debug.LogException(exception);
+        UnityEngine.Debug.unityLogger.LogException(exception);
     }
 
     private static string GetPrefix(MemberInfo method, string memberName = null)

@@ -1,7 +1,7 @@
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.EditorSupport
 {
     /// <summary>
     /// <c>StringProperty</c> is used to store Base16k 'obfuscated' string data in similar manner as Base64.

@@ -1,16 +1,19 @@
 using System.Collections;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
-using Battle.Scripts.Test;
 using UnityConstants;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle.Players
 {
     /// <summary>
     /// <c>PlayerActor</c> for local and remote instances.
     /// </summary>
-    internal class PlayerActor : PlayerActorBase, IPlayerActor
+    /// <remarks>
+    /// Needs to derive from <c>PlayerActorBase</c> for type safe UNITY prefab instantiation.
+    /// </remarks>
+    internal class PlayerActor : PlayerActorBase
     {
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
@@ -18,7 +21,7 @@ namespace Battle.Scripts.Battle.Players
         public static string PlayerName;
         private bool StartBool = true;
 
-        private IPlayerDriver _playerDriver;
+        private IPlayerDriverCallback _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -100,28 +103,26 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        #region IPlayerActor
+        public bool IsBusy => _hasTarget;
 
-        bool IPlayerActor.IsBusy => _hasTarget;
-
-        void IPlayerActor.MoveTo(Vector2 targetPosition)
+        public void MoveTo(Vector2 targetPosition)
         {
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriverCallback playerDriver)
         {
             _playerDriver = playerDriver;
         }
 
-        void IPlayerActor.SetRotation(float angle)
+        public void SetRotation(float angle)
         {
             var multiplier = Mathf.Round (angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
             _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
-        void IPlayerActor.ShieldHit(int damage)
+        public void ShieldHit(int damage)
         {
             if (!_allowShieldHit)
             {
@@ -138,45 +139,40 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        void IPlayerActor.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
-        #endregion
-
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(IPlayerDriverCallback playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");            
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            if (playerActorBase != null)
+            var instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+            Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
+            instance.name = instance.name.Replace("Clone", gameObjectName);
+            switch (playerPos)
             {
-                playerActorBase.name = playerActorBase.name.Replace("Clone", gameObjectName);
-                switch (playerPos)
-                {
-                    case PhotonBattle.PlayerPosition1:
-                        playerActorBase.gameObject.layer = Layers.Player1;
-                        break;
-                    case PhotonBattle.PlayerPosition2:
-                        playerActorBase.gameObject.layer = Layers.Player2;
-                        break;
-                    case PhotonBattle.PlayerPosition3:
-                        playerActorBase.gameObject.layer = Layers.Player3;
-                        break;
-                    case PhotonBattle.PlayerPosition4:
-                        playerActorBase.gameObject.layer = Layers.Player4;
-                        break;
-                    default:
-                        throw new UnityException($"Invalid player position {playerPos}");
-                }
-            }            
-            playerActorBase.transform.localScale = Vector3.one * scale;
-            var playerActor = (IPlayerActor)playerActorBase;
-            playerActor.SetPlayerDriver(playerDriver);
-            return playerActor;
+                case PhotonBattle.PlayerPosition1:
+                    instance.gameObject.layer = Layers.Player1;
+                    break;
+                case PhotonBattle.PlayerPosition2:
+                    instance.gameObject.layer = Layers.Player2;
+                    break;
+                case PhotonBattle.PlayerPosition3:
+                    instance.gameObject.layer = Layers.Player3;
+                    break;
+                case PhotonBattle.PlayerPosition4:
+                    instance.gameObject.layer = Layers.Player4;
+                    break;
+                default:
+                    throw new UnityException($"Invalid player position {playerPos}");
+            }
+            instance.transform.localScale = Vector3.one * scale;
+            instance.SetPlayerDriver(playerDriver);
+            return instance;
         }
     }
 }

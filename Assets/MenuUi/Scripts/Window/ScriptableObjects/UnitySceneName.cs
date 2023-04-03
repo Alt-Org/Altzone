@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity
+namespace MenuUi.Scripts.Window.ScriptableObjects
 {
     /// <summary>
     /// Convenience class to set UNITY scene name in Editor without typos using custom <c>PropertyDrawer</c>.

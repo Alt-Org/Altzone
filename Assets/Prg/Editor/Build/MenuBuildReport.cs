@@ -13,13 +13,24 @@ namespace Prg.Editor.Build
     {
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string Build = MenuRoot + "Build/";
+#if UNITY_STANDALONE
+        private const string Target = "Windows";
+#elif UNITY_ANDROID
+        private const string Target = "Anrdoid";
+#elif UNITY_IOS
+        private const string Target = "iPhone";
+#elif UNITY_WEBGL
+        private const string Target = "WebGL";
+#else
+        private const string Target = "Unsupported";
+#endif
 
         #region Build
 
         [MenuItem(Build + "Create Build Report", false, 10)]
         private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
 
-        [MenuItem(Build + "Create Build Script", false, 11)]
+        [MenuItem(Build + "Create Build Script for " + Target, false, 11)]
         private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
 
         [MenuItem(Build + "Test Android Build Config", false, 12)]

@@ -1,7 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using UnityConstants;
 using UnityEngine;
@@ -12,8 +12,8 @@ namespace Battle.Scripts.Test
     {
         [SerializeField] private float _bounceAngle;
 
-        private IGridManager _gridManager;
-        private IPlayerActor _playerActor;
+        private GridManager _gridManager;
+        private PlayerActor _playerActor;
         private Transform _transform;
         private Collider2D _collider;
         private float _attackMultiplier;
@@ -34,7 +34,7 @@ namespace Battle.Scripts.Test
             {
                 var rb = otherGameObject.GetComponentInParent<Rigidbody2D>();
                 var gridPos = _gridManager.WorldPointToGridPosition(rb.position);
-                rb.transform.position = _gridManager.GridPositionToWorldPoint(gridPos);
+                rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
                 var angle = _transform.rotation.eulerAngles.z + _bounceAngle;
                 Debug.Log($"shield angle {angle}");
                 var rotation = Quaternion.Euler(0, 0, angle);

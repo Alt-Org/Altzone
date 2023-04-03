@@ -22,7 +22,7 @@ namespace Battle.Scripts.Ui
         [SerializeField] private int _spriteSortingLayer;
 
         private Camera _camera;
-        private IBattlePlayArea _battlePlayArea;
+        private PlayerPlayArea _battlePlayArea;
         private int _gridWidth;
         private int _gridHeight;
         private int _middleAreaHeight;
@@ -39,7 +39,7 @@ namespace Battle.Scripts.Ui
             _arenaWidth = _battlePlayArea.ArenaWidth;
             _arenaHeight = _battlePlayArea.ArenaHeight;
             _middleAreaHeight = _battlePlayArea.MiddleAreaHeight;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
         }
 
         private void Start()

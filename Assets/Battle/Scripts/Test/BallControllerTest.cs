@@ -17,7 +17,7 @@ namespace Battle.Scripts.Test
         private void Awake()
         {
             _ball = FindObjectOfType<BallHandlerTest>().gameObject;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
             _rb = _ball.GetComponent<Rigidbody2D>();
         }
 

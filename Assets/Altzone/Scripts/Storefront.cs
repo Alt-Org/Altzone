@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {
@@ -20,6 +22,7 @@ namespace Altzone.Scripts
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;
+            DataStoreImpl.CachedMethods = new Dictionary<string, MethodInfo>();
         }
 
         private const string StorageFilename = "LocalModels.json";
@@ -97,6 +100,12 @@ namespace Altzone.Scripts
         void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback);
 
         /// <summary>
+        /// Get all read-only <c>GameFurniture</c> entities.
+        /// </summary>
+        /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY CoRoutine using <code>yield return</code></returns>
+        CustomYieldInstruction GetAllGameFurnitureYield(Action<ReadOnlyCollection<GameFurniture>> callback);
+
+        /// <summary>
         /// Gets <c>IDataStoreVersion</c> interface for game update/upgrade purposes.
         /// </summary>
         IDataStoreVersion Version { get; }
@@ -144,6 +153,8 @@ namespace Altzone.Scripts
     /// </summary>
     public class DataStoreImpl : DataStore, IDataStoreVersion, ITestDataStore
     {
+        public static Dictionary<string, MethodInfo> CachedMethods = new();
+
         private readonly LocalModels _localModels;
 
         public DataStoreImpl(string storageFilename, int storageVersionNumber = 0)
@@ -175,6 +186,9 @@ namespace Altzone.Scripts
         public void GetAllCharacterClasses(Action<ReadOnlyCollection<CharacterClass>> callback) => _localModels.GetAllCharacterClassModels(callback);
 
         public void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback) => _localModels.GetAllGameFurniture(callback);
+
+        public CustomYieldInstruction GetAllGameFurnitureYield(Action<ReadOnlyCollection<GameFurniture>> callback) =>
+            new CallbackYieldInstruction<ReadOnlyCollection<GameFurniture>>(this, nameof(GetAllGameFurniture), callback);
 
         #endregion
 
@@ -236,6 +250,37 @@ namespace Altzone.Scripts
         internal void Set(List<CustomCharacter> customCharacters, Action<bool> callback) => _localModels.Set(customCharacters, callback);
 
         internal void Set(List<GameFurniture> gameFurniture, Action<bool> callback) => _localModels.Set(gameFurniture, callback);
+
+        #endregion
+
+        #region CustomYieldInstruction support
+
+        /// <summary>
+        /// <c>CustomYieldInstruction</c> to invoke a method with callback in a UNITY <c>CoRoutine</c> using <code>yield return</code>.
+        /// </summary>
+        private class CallbackYieldInstruction<T> : CustomYieldInstruction
+        {
+            public override bool keepWaiting => _keepWaiting;
+
+            private bool _keepWaiting = true;
+
+            public CallbackYieldInstruction(object instance, string methodName, Action<T> callback)
+            {
+                void Wrapper(T result)
+                {
+                    callback(result);
+                    _keepWaiting = false;
+                }
+
+                if (!CachedMethods.TryGetValue(methodName, out var method))
+                {
+                    method = instance.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance);
+                    CachedMethods.Add(methodName, method);
+                }
+                Assert.IsNotNull(method, $"public instance method {methodName} not found");
+                method.Invoke(instance, new object[] { (Action<T>)Wrapper });
+            }
+        }
 
         #endregion
     }

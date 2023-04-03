@@ -129,11 +129,20 @@ namespace Prg.Editor.Build
             File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
 
+            const string copyScriptName = "m_BuildScript_CopyOutput.bat";
             if (buildTarget != BuildTarget.WebGL)
             {
+                if (!File.Exists(copyScriptName))
+                {
+                    Debug.Log($"Create build copy output script '{copyScriptName}' is SKIPPED for {buildTarget}");
+                    Debug.Log($"- you can manually copy them from '{BuildTarget.WebGL} build' if required");
+                }
+                else
+                {
+                    Debug.Log($"Existing copy build output script or .env file were not touched");
+                }
                 return;
             }
-            const string copyScriptName = "m_BuildScript_CopyOutput.bat";
             if (!File.Exists(copyScriptName))
             {
                 File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
@@ -141,7 +150,7 @@ namespace Prg.Editor.Build
             }
             else
             {
-                Debug.Log($"Copy build output script '{copyScriptName}' was not modified");
+                Debug.Log($"Existing copy build output script '{copyScriptName}' was not modified");
             }
             const string copyScriptEnvName = "m_BuildScript_CopyOutput.env";
             if (!File.Exists(copyScriptEnvName))
@@ -153,7 +162,7 @@ namespace Prg.Editor.Build
             }
             else
             {
-                Debug.Log($"Copy build output script '{copyScriptEnvName}' was not modified");
+                Debug.Log($"Existing build output .env file '{copyScriptEnvName}' was not modified");
             }
         }
 
@@ -170,6 +179,10 @@ namespace Prg.Editor.Build
                 if (args.IsDevelopmentBuild)
                 {
                     buildOptions |= BuildOptions.Development;
+                }
+                if (args.IsDetailedBuildReport)
+                {
+                    buildOptions |= BuildOptions.DetailedBuildReport;
                 }
                 string outputDir;
                 BuildTargetGroup targetGroup;
@@ -450,14 +463,17 @@ namespace Prg.Editor.Build
             public readonly string KeystoreName;
             public readonly bool IsDevelopmentBuild;
             public readonly bool IsAndroidFull;
+            public readonly bool IsDetailedBuildReport;
 
-            private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName, bool isDevelopmentBuild, bool isAndroidFull)
+            private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName, 
+                bool isDevelopmentBuild, bool isAndroidFull, bool isDetailedBuildReport)
             {
-                this.ProjectPath = projectPath;
-                this.BuildTarget = buildTarget;
-                this.KeystoreName = keystoreName;
-                this.IsDevelopmentBuild = isDevelopmentBuild;
-                this.IsAndroidFull = isAndroidFull;
+                ProjectPath = projectPath;
+                BuildTarget = buildTarget;
+                KeystoreName = keystoreName;
+                IsDevelopmentBuild = isDevelopmentBuild;
+                IsAndroidFull = isAndroidFull;
+                IsDetailedBuildReport = isDetailedBuildReport;
             }
 
             public override string ToString()
@@ -490,6 +506,7 @@ namespace Prg.Editor.Build
                 var keystore = string.Empty;
                 var isDevelopmentBuild = false;
                 var isAndroidFull = false;
+                var isDetailedBuildReport = false;
                 for (var i = 0; i < args.Length; ++i)
                 {
                     var arg = args[i];
@@ -516,9 +533,12 @@ namespace Prg.Editor.Build
                         case "-AndroidFull":
                             isAndroidFull = true;
                             break;
+                        case "-DetailedBuildReport":
+                            isDetailedBuildReport = true;
+                            break;
                     }
                 }
-                return new CommandLine(projectPath, buildTarget, keystore, isDevelopmentBuild, isAndroidFull);
+                return new CommandLine(projectPath, buildTarget, keystore, isDevelopmentBuild, isAndroidFull, isDetailedBuildReport);
             }
         }
 
@@ -581,7 +601,7 @@ if exist %build_output% (
     rmdir /S /Q %build_output%
 )
 echo.
-echo Start build with UNITY %VERSION% log file %LOGFILE%
+echo Start build with UNITY %VERSION% log file %LOGFILE% build target '%BUILDTARGET%'
 echo.
 echo ""%UNITY%"" %UNITY_OPTIONS%
 ""%UNITY%"" %UNITY_OPTIONS%

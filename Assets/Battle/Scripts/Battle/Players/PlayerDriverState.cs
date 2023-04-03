@@ -1,20 +1,20 @@
-using System;
 using System.Collections;
+using Battle.Scripts.Battle.Game;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerDriverState : MonoBehaviour, IPlayerDriverState
+    public class PlayerDriverState : MonoBehaviour
     {
         [SerializeField] private bool _autoRotate = true;
 
         private const int shieldEffectDistSquares = 6;
-        private const float waitTime = 2f;
+        private const float PhotonWaitTime = 2f;
 
         private float _shieldEffectSqr;
-        private IBattlePlayArea _battlePlayArea;
-        private IPlayerActor _playerActor;
-        private IGridManager _gridManager;
+        private PlayerPlayArea _battlePlayArea;
+        private PlayerActor _playerActor;
+        private GridManager _gridManager;
         private Transform _myActorTransform;
         private bool _isWaitingToMove;
         private float _defaultRotation;
@@ -24,18 +24,17 @@ namespace Battle.Scripts.Battle.Players
 
         private IEnumerator Start()
         {
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(PhotonWaitTime);
             _battlePlayArea = Context.GetBattlePlayArea;
             var shieldEffectDist = shieldEffectDistSquares * _battlePlayArea.ArenaWidth / _battlePlayArea.GridWidth;
             _shieldEffectSqr = shieldEffectDist * shieldEffectDist + 0.001f;
             var allActors = FindObjectsOfType<PlayerActor>();
-            var myActor = (PlayerActor)_playerActor;
-            _myActorTransform = myActor.transform;
+            _myActorTransform = _playerActor.transform;
             _otherActorTransforms = new Transform[allActors.Length - 1];
             var i = 0;
             foreach (var actor in allActors)
             {
-                if (actor == myActor)
+                if (actor == _playerActor)
                 {
                     continue;
                 }
@@ -70,14 +69,12 @@ namespace Battle.Scripts.Battle.Players
             yield return new WaitForSeconds(waitTime);
             var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition);
-            ((IPlayerDriverState)this).IsWaitingToMove(false);
+            IsWaitingToMove(false);
         }
 
-        #region IPlayerDriverState
+        internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
-        bool IPlayerDriverState.CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
-
-        void IPlayerDriverState.ResetState(IPlayerActor playerActor, int teamNumber)
+        internal void ResetState(PlayerActor playerActor, int teamNumber)
         {
             _playerActor = playerActor;
             _teamNumber = teamNumber;
@@ -92,16 +89,14 @@ namespace Battle.Scripts.Battle.Players
             _gridManager = Context.GetGridManager;
         }
 
-        void IPlayerDriverState.DelayedMove(GridPos gridPos, float moveExecuteDelay)
+        internal void DelayedMove(GridPos gridPos, float moveExecuteDelay)
         {
             StartCoroutine(DelayTime(gridPos, moveExecuteDelay));
         }
 
-        void IPlayerDriverState.IsWaitingToMove(bool isWaitingToMove)
+        internal void IsWaitingToMove(bool isWaitingToMove)
         {
             _isWaitingToMove = isWaitingToMove;
         }
-
-        #endregion
     }
 }

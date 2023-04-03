@@ -1,6 +1,6 @@
 using System;
-using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,14 +11,14 @@ namespace Battle.Scripts.Battle.Bot
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class BotDriver : PlayerDriver, IPlayerDriver
+    internal class BotDriver : MonoBehaviour, IPlayerDriverCallback
     {
-        [SerializeField] private PlayerActorBase _playerPrefab;
+        [SerializeField] private PlayerActor _playerPrefab;
 
-        private IPlayerActor _playerActor;
-        private IGridManager _gridManager;
-        private IBattlePlayArea _battlePlayArea;
-        private IPlayerDriverState _state;
+        private PlayerActor _playerActor;
+        private GridManager _gridManager;
+        private PlayerPlayArea _battlePlayArea;
+        private PlayerDriverState _state;
         private PhotonView _photonView;
         private int _playerPos;
         private int _teamNumber;
@@ -47,7 +47,7 @@ namespace Battle.Scripts.Battle.Bot
             //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
         }
 
-        private IPlayerActor InstantiatePlayerPrefab(Player player)
+        private PlayerActor InstantiatePlayerPrefab(Player player)
         {
             var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
@@ -62,9 +62,9 @@ namespace Battle.Scripts.Battle.Bot
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             if (_isTesting)
             {
-                playerPrefabId = _playerPrefabID;
+                playerPrefabId = _playerPrefabID.ToString();
             }
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId);
+            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
             var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }
@@ -73,38 +73,38 @@ namespace Battle.Scripts.Battle.Bot
         {
             var player = _photonView.Owner;
             _isLocal = player.IsLocal;
-            _state = GetPlayerDriverState(this);
+            _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _teamNumber);
             if (_teamNumber == PhotonBattle.TeamBetaValue)
             {
-                ((IPlayerDriver)this).Rotate(180f);
+                Rotate(180f);
             }
             if (!_isLocal)
             {
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.SetPlayerDriver(this);
+            playerInputHandler.OnMoveTo = MoveTo;
         }
 
         #region IPlayerDriver
 
-        string IPlayerDriver.NickName => _photonView.Owner.NickName;
+        public string NickName => _photonView.Owner.NickName;
 
-        int IPlayerDriver.TeamNumber => _teamNumber;
+        public int TeamNumber => _teamNumber;
 
-        int IPlayerDriver.ActorNumber => _photonView.Owner.ActorNumber;
+        public int ActorNumber => _photonView.Owner.ActorNumber;
 
-        bool IPlayerDriver.IsLocal => _photonView.Owner.IsLocal;
+        public bool IsLocal => _photonView.Owner.IsLocal;
 
-        int IPlayerDriver.PlayerPos => _playerPos;
+        public int PlayerPos => _playerPos;
 
-        void IPlayerDriver.Rotate(float angle)
+        public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
 
-        void IPlayerInputTarget.MoveTo(Vector2 targetPosition)
+        private void MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {
@@ -121,7 +121,7 @@ namespace Battle.Scripts.Battle.Bot
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
-        void IPlayerDriver.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             if (!IsNetworkSynchronize)
             {

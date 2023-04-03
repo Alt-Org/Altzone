@@ -55,7 +55,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameConstants
     {
-        [Header("Furniture")] public string _furniturePrefabFolder;
+        private const string FurniturePrefabFolder = "Folder name inside a Resources folder for Furniture prefabs";
+        
+        [Header("Furniture"), Tooltip(FurniturePrefabFolder)] public string _furniturePrefabFolder;
     }
 
     /// <summary>
@@ -69,7 +71,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         [Header("Battle"), Min(1), Tooltip("Ball movement and character turning is limited to certain angles")] public float _angleLimit;
 
-        [Header("Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Header("Battle Player"), Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0), Tooltip("How far from shield collision should raycast take place to compensate for high speed")] public float _ballSpeedCompensation;
         [Min(0), Tooltip("How many hits does a shield take before deforming")] public int _shieldResistance;
@@ -82,15 +84,16 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     /// Player prefabs in simple array.
     /// </summary>
     /// <remarks>
-    /// Note that prefabId is the same as array index.
+    /// Note that prefabKey (string) must be the same as corresponding array index (int).
     /// </remarks>
     [Serializable]
     public class PlayerPrefabs
     {
-        public PlayerActorBase[] _playerPrefabs;
+        [Header("Battle Player Prefabs")] public PlayerActorBase[] _playerPrefabs;
 
-        public PlayerActorBase GetPlayerPrefab(int prefabId)
+        public PlayerActorBase GetPlayerPrefab(string prefabKey)
         {
+            var prefabId = int.Parse(prefabKey);
             if (prefabId < 0 || prefabId >= _playerPrefabs.Length)
             {
                 return null;

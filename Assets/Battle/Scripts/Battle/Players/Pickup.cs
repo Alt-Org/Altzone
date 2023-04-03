@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using System.Linq;
 using Photon.Pun;
-using Battle.Scripts.Battle.Game;
+using TMPro;
+using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -35,7 +33,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             //PlayerActors.Add(GetAllPlayerDrivers);
-            PlayerActors = Context.GetAllPlayerDriverObjects;     //GetAllPlayerDrivers
+            PlayerActors = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").ToList();     //GetAllPlayerDrivers
 
             //while (RightDriver == false)
             //{
@@ -49,8 +47,7 @@ namespace Battle.Scripts.Battle.Players
                         Debug.Log($"{PlayerActor.SeePlayerName}ggrgtgrfefhbtrfsfvrfhbrgefe");       //PlayerActor.SeePlayerName
                         break;
                     }
-                    Debug.Log($"players {Context.GetAllPlayerDriverObjects.Count}");      //GetAllPlayerDrivers.Count
-                    Debug.Log($"{RightDriver}");
+                    Debug.Log($"players {GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length}");      //GetAllPlayerDrivers.Count
                 }
 
             //}

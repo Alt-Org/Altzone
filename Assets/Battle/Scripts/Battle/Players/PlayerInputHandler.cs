@@ -1,30 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Battle.Scripts.Battle.Players
 {
-    /// <summary>
-    /// Handles player's input.
-    /// </summary>
-    internal interface IPlayerInputHandler
-    {
-        void SetPlayerDriver(IPlayerInputTarget playerDriver);
-    }
-
-    /// <summary>
-    /// Receiver for player's input actions.
-    /// </summary>
-    internal interface IPlayerInputTarget
-    {
-        void MoveTo(Vector2 targetPosition);
-    }
-
-    public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
+    public class PlayerInputHandler : MonoBehaviour
     {
         [SerializeField] private InputActionReference _clickInputAction;
         [SerializeField] private InputActionReference _moveInputAction;
 
-        private IPlayerInputTarget _inputTarget;
+        private Action<Vector2> _onMoveTo;
+        public Action<Vector2> OnMoveTo
+        {
+            set
+            {
+                _onMoveTo = value;
+                SetupInput();
+            }
+        }
+
         private Camera _camera;
         private Vector2 _inputClick;
 
@@ -34,7 +28,7 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
-            _camera = Context.GetBattleCamera.Camera;
+            _camera = Context.GetBattleCamera;
         }
 
         private void OnDestroy()
@@ -45,7 +39,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SendMoveTo(Vector2 targetPosition)
         {
-            _inputTarget.MoveTo(targetPosition);
+            _onMoveTo(targetPosition);
         }
 
         private void SetupInput()
@@ -58,6 +52,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var clickAction = _clickInputAction.action;
             clickAction.performed -= DoPointerClick;
+            _onMoveTo = null;
         }
 
         private void DoPointerClick(InputAction.CallbackContext ctx)
@@ -76,16 +71,5 @@ namespace Battle.Scripts.Battle.Players
             _inputClick = _camera.ScreenToWorldPoint(_inputClick);
             SendMoveTo(_inputClick);
         }
-
-        #region IPlayerInputHandler
-
-        void IPlayerInputHandler.SetPlayerDriver(IPlayerInputTarget playerDriver)
-        {
-            Debug.Log($"{name}");
-            _inputTarget = playerDriver;
-            SetupInput();
-        }
-
-        #endregion
     }
 }

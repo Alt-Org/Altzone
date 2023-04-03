@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Prg.Scripts.Common.Unity
+namespace Prg.Scripts.EditorSupport.Attributes
 {
     /// <summary>
     /// Attribute to decorate an <c>int</c> value as a <c>Layer</c> in Editor.

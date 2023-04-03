@@ -46,7 +46,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _prefabs = new MonoBehaviour[prefabs.Length];
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex.ToString());
                 var instance = Instantiate(playerPrefab, _prefabsRoot);
                 if (instance == null)
                 {

@@ -1,14 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using Altzone.Scripts.Battle;
-using Altzone.Scripts.Config;
+using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
-using Battle.Scripts.Test;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Bot
 {
-    internal class BotActor : PlayerActorBase, IPlayerActor
+    internal class BotActor : MonoBehaviour
     {
         [SerializeField] Transform ballTransform;
 
@@ -17,9 +14,9 @@ namespace Battle.Scripts.Battle.Bot
         private Vector2 targetPosition;
         private Vector2 taretPosition;
 
-        private IPlayerDriver _playerDriver;
+        private IPlayerDriverCallback _playerDriver;
         private IShieldPoseManager _shieldPoseManager;
-        private IGridManager _gridManager;
+        private GridManager _gridManager;
         //private IPlayerDriverState _state;
 
         private float _movementSpeed = 6;
@@ -133,28 +130,26 @@ namespace Battle.Scripts.Battle.Bot
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
         }
 
-        #region IPlayerActor
+        public bool IsBusy => _hasTarget;
 
-        bool IPlayerActor.IsBusy => _hasTarget;
-
-        void IPlayerActor.MoveTo(Vector2 targetPosition)
+        public void MoveTo(Vector2 targetPosition)
         {
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        void IPlayerActor.SetPlayerDriver(IPlayerDriver playerDriver)
+        public void SetPlayerDriver(IPlayerDriverCallback playerDriver)
         {
             _playerDriver = playerDriver;
         }
 
-        void IPlayerActor.SetRotation(float angle)
+        public void SetRotation(float angle)
         {
             var multiplier = Mathf.Round (angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
             _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
-        void IPlayerActor.ShieldHit(int damage)
+        public void ShieldHit(int damage)
         {
             if (!_allowShieldHit)
             {
@@ -171,46 +166,9 @@ namespace Battle.Scripts.Battle.Bot
             }
         }
 
-        void IPlayerActor.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             StartCoroutine(ShieldDeformDelay(poseIndex));
-        }
-
-        #endregion
-
-
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, int playerPos, PlayerActorBase playerPrefab, string gameObjectName, float scale)
-        {
-            PlayerName = gameObjectName;
-            Debug.Log($"heoooo{gameObjectName}");            
-            var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-            var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var playerActorBase = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            if (playerActorBase != null)
-            {
-                playerActorBase.name = playerActorBase.name.Replace("Clone", gameObjectName);
-                switch (playerPos)
-                {
-                    case PhotonBattle.PlayerPosition1:
-                        playerActorBase.gameObject.layer = 18;
-                        break;
-                    case PhotonBattle.PlayerPosition2:
-                        playerActorBase.gameObject.layer = 19;
-                        break;
-                    case PhotonBattle.PlayerPosition3:
-                        playerActorBase.gameObject.layer = 20;
-                        break;
-                    case PhotonBattle.PlayerPosition4:
-                        playerActorBase.gameObject.layer = 21;
-                        break;
-                    default:
-                        throw new UnityException($"Invalid player position {playerPos}");
-                }
-            }            
-            playerActorBase.transform.localScale = Vector3.one * scale;
-            var playerActor = (IPlayerActor)playerActorBase;
-            playerActor.SetPlayerDriver(playerDriver);
-            return playerActor;
         }
     }
 }

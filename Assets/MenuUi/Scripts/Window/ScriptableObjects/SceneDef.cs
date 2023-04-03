@@ -1,5 +1,4 @@
-﻿using Prg.Scripts.Common.Unity;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MenuUi.Scripts.Window.ScriptableObjects
