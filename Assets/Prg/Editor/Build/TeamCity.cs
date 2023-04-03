@@ -581,7 +581,7 @@ if exist %build_output% (
     rmdir /S /Q %build_output%
 )
 echo.
-echo Start build with UNITY %VERSION% log file %LOGFILE%
+echo Start build with UNITY %VERSION% log file %LOGFILE% build target '%BUILDTARGET%'
 echo.
 echo ""%UNITY%"" %UNITY_OPTIONS%
 ""%UNITY%"" %UNITY_OPTIONS%
