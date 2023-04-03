@@ -139,7 +139,8 @@ namespace Tests.EditMode.DataStoreTests
             _store.GetAllGameFurniture(result =>
             {
                 gameFurniture = result.ToList();
-                Debug.Log($"test took {stopwatch.ElapsedMilliseconds} ms");
+                stopwatch.Stop();
+            Debug.Log($"test took {stopwatch.Elapsed.TotalMilliseconds} ms (timings might need warmup to be more accurate)");
                 isCallbackDone = true;
             });
             yield return new WaitUntil(() => isCallbackDone);

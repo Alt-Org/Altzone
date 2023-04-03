@@ -40,7 +40,8 @@ namespace Tests.EditMode.DataStoreTests
             List<GameFurniture> items = null;
             var stopwatch = Stopwatch.StartNew();
             yield return _store.GetAllGameFurnitureYield(result => items = result.ToList());
-            Debug.Log($"test took {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Stop();
+            Debug.Log($"test took {stopwatch.Elapsed.TotalMilliseconds} ms (timings might need warmup to be more accurate)");
             Assert.IsTrue(items.Count > 0);
         }
 
@@ -52,7 +53,8 @@ namespace Tests.EditMode.DataStoreTests
             List<GameFurniture> items = null;
             var stopwatch = Stopwatch.StartNew();
             yield return _store.GetAllGameFurnitureYield(result => items = result.ToList());
-            Debug.Log($"test took {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Stop();
+            Debug.Log($"test took {stopwatch.Elapsed.TotalMilliseconds} ms (timings might need warmup to be more accurate)");
             Assert.IsTrue(items.Count > 0);
         }
     }
