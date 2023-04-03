@@ -373,9 +373,11 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<CharacterClass>(_storageData.CharacterClasses));
         }
 
+        private static int lol = 1;
+
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
+            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture.GetRange(0, Mathf.Min(++lol, _storageData.GameFurniture.Count))));
         }
 
         #endregion
