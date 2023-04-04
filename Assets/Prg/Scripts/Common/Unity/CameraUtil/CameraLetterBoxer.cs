@@ -68,7 +68,7 @@ namespace Prg.Scripts.Common.Unity.CameraUtil
         private void AddLetterBoxingCamera()
         {
             // check that we don't have a camera already at -100 (lowest depth) which will cause issues
-            Camera[] allCameras = FindObjectsOfType<Camera>();
+            Camera[] allCameras = FindObjectsByType<Camera>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             foreach (Camera camera in allCameras)
             {
                 if (camera.depth == -100)
