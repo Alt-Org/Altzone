@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -72,7 +73,6 @@ namespace MenuUi.Scripts.Window
 
         private List<Func<GoBackAction>> _goBackOnceHandler;
         private int _executionLevel;
-        
 
         private void Awake()
         {
@@ -344,7 +344,22 @@ namespace MenuUi.Scripts.Window
             var prefab = CreateWindowPrefab(windowDef);
             var currentWindow = new MyWindow(windowDef, prefab);
             _knownWindows.Add(currentWindow);
+#if UNITY_EDITOR
+            StartCoroutine(CheckWindowPolicy(currentWindow));
+#endif
             return currentWindow;
+        }
+
+        private static IEnumerator CheckWindowPolicy(MyWindow window)
+        {
+            // Wait two frames (to let things get going) before checking "window policy".
+            yield return null;
+            yield return null;
+            if (!window.IsValid)
+            {
+                yield break;
+            }
+            window._windowInst.AddComponent<WindowPolicyChecker>();
         }
 
         private GameObject CreateWindowPrefab(WindowDef windowDef)
@@ -439,7 +454,7 @@ namespace MenuUi.Scripts.Window
             }
 
             public WindowDef CurrentWindow => null;
-            
+
             public int WindowCount => 0;
 
             public List<MyWindow> WindowStack => new();
