@@ -6,6 +6,7 @@ using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace MenuUi.Scripts.Window
 {
@@ -24,24 +25,24 @@ namespace MenuUi.Scripts.Window
         public class MyWindow
         {
             public WindowDef _windowDef;
-            public GameObject _window;
+            public GameObject _windowInst;
 
-            public bool IsValid => _window != null;
+            public bool IsValid => _windowInst != null;
 
             public void Invalidate()
             {
-                _window = null;
+                _windowInst = null;
             }
 
             public MyWindow(WindowDef windowDef, GameObject window)
             {
                 _windowDef = windowDef;
-                _window = window;
+                _windowInst = window;
             }
 
             public override string ToString()
             {
-                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_window != null ? _window.name : "noname")}";
+                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_windowInst != null ? _windowInst.name : "noname")}";
             }
         }
 
@@ -299,7 +300,7 @@ namespace MenuUi.Scripts.Window
                 {
                     var windowName = windowDef.name;
                     Debug.Log($"CreateWindowPrefab [{windowName}] {windowDef}");
-                    currentWindow._window = CreateWindowPrefab(currentWindow._windowDef);
+                    currentWindow._windowInst = CreateWindowPrefab(currentWindow._windowDef);
                 }
                 _currentWindows.Insert(0, currentWindow);
                 Show(currentWindow);
@@ -370,16 +371,16 @@ namespace MenuUi.Scripts.Window
 
         private static void Show(MyWindow window)
         {
-            Debug.Log($"Show {window._windowDef}", window._window);
-            window._window.SetActive(true);
+            Debug.Log($"Show {window._windowDef}", window._windowInst);
+            window._windowInst.SetActive(true);
         }
 
         private static void Hide(MyWindow window)
         {
-            Debug.Log($"Hide {window._windowDef}", window._window);
+            Debug.Log($"Hide {window._windowDef}", window._windowInst);
             if (window.IsValid)
             {
-                window._window.SetActive(false);
+                window._windowInst.SetActive(false);
             }
         }
 
