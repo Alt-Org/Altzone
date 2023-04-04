@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle.Game
         //public PhotonView View;
         public int TeamNumber;
 
-        /*public void TeamNumberChange()
+        public void TeamNumberChange()
         {
             if (TeamNumber == 1)
             {
@@ -35,12 +35,12 @@ namespace Battle.Scripts.Battle.Game
         
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.CompareTag("Diamond"))
+            if (collision.gameObject.CompareTag("Diamond") && TeamNumber > 0)
             {
                 TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
                 DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
                 Destroy(collision.gameObject);
             }
-        }*/
+        }
     }
 }

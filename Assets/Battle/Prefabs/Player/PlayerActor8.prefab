@@ -181,6 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _geometryRoot: {fileID: 4593924629702427175}
   _movementSpeed: 2
+  SeePlayerName: 
 --- !u!1 &8975400094745045858
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,9 +380,389 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e009379aec7cedb498422d9a9469cd8d, type: 3}
+--- !u!1 &150823298231482272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6605808331677378400, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &293387025363452031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150823298231482272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &312512773632951853 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6768096489952024301, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4475546669281027988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312512773632951853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &584586260591175719 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5883813599421331687, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1146854556697467920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584586260591175719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
 --- !u!4 &682186525589576969 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5822242101316914633, guid: e009379aec7cedb498422d9a9469cd8d,
     type: 3}
   m_PrefabInstance: {fileID: 6465866487977644224}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1543461075529040570 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5534966803774542458, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4260178073588618217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1543461075529040570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &2012877284124884230 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4779570902087364038, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &979869736031696245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012877284124884230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &2824166939279994629 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9118148286315577285, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7808478569263893218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2824166939279994629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &3291621459160617393 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8364714028245762417, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &811116258222034144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3291621459160617393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &3396228612155104891 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8546297990267489979, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7893899408137155441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396228612155104891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &3642860330744583525 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7725174725301110181, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5354876174175962653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3642860330744583525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &4019479978488490552 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7958793952421444344, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8668595535714609236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4019479978488490552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &4061938318397392572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7054246912116741756, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1926634319612503344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4061938318397392572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &4076648131654087958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7000976120585840086, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2195386597209321287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4076648131654087958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &4785813791301831785 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2004663793114979497, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &458732932346382328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4785813791301831785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &5808667642336179812 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 659732410434479780, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &931460624946652033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5808667642336179812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &5912479522840080804 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 843870350157930852, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6259683877087771225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5912479522840080804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &6264638911665851019 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1102019296557292107, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7951327910673611682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264638911665851019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &7005321642982653739 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4074835975913910251, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6230394222551624696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7005321642982653739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &7703377700919383716 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3701037933608142436, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1279920897475047828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7703377700919383716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}
+--- !u!1 &8296220695350816359 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3069563323245903527, guid: e009379aec7cedb498422d9a9469cd8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6465866487977644224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6354472493686004699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296220695350816359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Pickup: {fileID: 8937611941576476504}
+  PickupDiamondsBall: {fileID: 0}

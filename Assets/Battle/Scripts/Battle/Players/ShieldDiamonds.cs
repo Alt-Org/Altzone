@@ -9,13 +9,12 @@ namespace Battle.Scripts.Battle.Players
     {
         public Pickup Pickup;
         private int TeamNumber;
-        /*public PickupDiamondsBall PickupDiamondsBall;
-        public bool StartBool = true;
+        public PickupDiamondsBall PickupDiamondsBall;
 
         void Start()
         {
             TeamNumber = Pickup.TeamNumber;
-            PickupDiamondsBall = GameObject.FindGameObjectWithTag("Ball").GetComponent<PickupDiamondsBall>();
+            PickupDiamondsBall = GameObject.FindGameObjectWithTag("BallRigidBody").GetComponent<PickupDiamondsBall>();
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
@@ -23,17 +22,12 @@ namespace Battle.Scripts.Battle.Players
             var otherGameObject = collider.gameObject;
             if (otherGameObject.CompareTag("Ball"))
             {
-                //if (StartBool == true)
-                //{
-                //    PickupDiamondsBall = collider.gameObject.GetComponent<PickupDiamondsBall>();        //otherGameObject.
-                //    StartBool = false;
-                //}
                 if (PickupDiamondsBall.TeamNumber != TeamNumber)
                 {
                     PickupDiamondsBall.TeamNumber = TeamNumber;
                     PickupDiamondsBall.TeamNumberChange();
                 }
             }
-        }*/
+        }
     }
 }

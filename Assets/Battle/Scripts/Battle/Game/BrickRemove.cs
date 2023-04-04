@@ -26,7 +26,7 @@ namespace Battle.Scripts.Battle.Game
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.IsMasterClient)
+            if (otherGameObject.CompareTag("BallRigidBody") && PhotonNetwork.IsMasterClient)    //Tags.Ball
             {
                 _photonView.RPC(nameof(BrickHitRPC), RpcTarget.All);
             }

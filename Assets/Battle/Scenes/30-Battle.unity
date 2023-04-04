@@ -1960,6 +1960,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6721232698647478095, guid: 293f585c885e8be45989244f742c1777,
+        type: 3}
+      propertyPath: m_TagString
+      value: Ball
+      objectReference: {fileID: 0}
     - target: {fileID: 8473052537036719184, guid: 293f585c885e8be45989244f742c1777,
         type: 3}
       propertyPath: sceneViewId
@@ -2327,6 +2332,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 31162645}
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
       objectReference: {fileID: 671105154}
@@ -2370,6 +2379,10 @@ PrefabInstance:
       propertyPath: LoseText
       value: 
       objectReference: {fileID: 31162645}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
