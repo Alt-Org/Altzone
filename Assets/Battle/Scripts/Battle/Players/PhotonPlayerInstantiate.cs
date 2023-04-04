@@ -65,10 +65,6 @@ namespace Battle.Scripts.Battle.Players
             SetDebugPlayer(player);
         }
 
-        private void AddBotPlayer()
-        {
-            
-        }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {

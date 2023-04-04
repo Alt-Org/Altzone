@@ -1,6 +1,7 @@
 #if PHOTON_UNITY_NETWORKING
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using ExitGames.Client.Photon;
@@ -16,6 +17,7 @@ using UnityEngine.Assertions;
 /// Delete property and <c>null</c> values has a bit fuzzy semantics and this need more work to enforce strict rules.<br />
 /// For now it might be better not to use <c>null </c> values.
 /// </remarks>
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class PhotonExtensions
 {
     #region Room

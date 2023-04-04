@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -6,6 +7,7 @@ using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace MenuUi.Scripts.Window
 {
@@ -24,24 +26,24 @@ namespace MenuUi.Scripts.Window
         public class MyWindow
         {
             public WindowDef _windowDef;
-            public GameObject _window;
+            public GameObject _windowInst;
 
-            public bool IsValid => _window != null;
+            public bool IsValid => _windowInst != null;
 
             public void Invalidate()
             {
-                _window = null;
+                _windowInst = null;
             }
 
             public MyWindow(WindowDef windowDef, GameObject window)
             {
                 _windowDef = windowDef;
-                _window = window;
+                _windowInst = window;
             }
 
             public override string ToString()
             {
-                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_window != null ? _window.name : "noname")}";
+                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_windowInst != null ? _windowInst.name : "noname")}";
             }
         }
 
@@ -71,7 +73,6 @@ namespace MenuUi.Scripts.Window
 
         private List<Func<GoBackAction>> _goBackOnceHandler;
         private int _executionLevel;
-        
 
         private void Awake()
         {
@@ -299,7 +300,7 @@ namespace MenuUi.Scripts.Window
                 {
                     var windowName = windowDef.name;
                     Debug.Log($"CreateWindowPrefab [{windowName}] {windowDef}");
-                    currentWindow._window = CreateWindowPrefab(currentWindow._windowDef);
+                    currentWindow._windowInst = CreateWindowPrefab(currentWindow._windowDef);
                 }
                 _currentWindows.Insert(0, currentWindow);
                 Show(currentWindow);
@@ -343,7 +344,22 @@ namespace MenuUi.Scripts.Window
             var prefab = CreateWindowPrefab(windowDef);
             var currentWindow = new MyWindow(windowDef, prefab);
             _knownWindows.Add(currentWindow);
+#if UNITY_EDITOR
+            StartCoroutine(CheckWindowPolicy(currentWindow));
+#endif
             return currentWindow;
+        }
+
+        private static IEnumerator CheckWindowPolicy(MyWindow window)
+        {
+            // Wait two frames (to let things get going) before checking "window policy".
+            yield return null;
+            yield return null;
+            if (!window.IsValid)
+            {
+                yield break;
+            }
+            window._windowInst.AddComponent<WindowPolicyChecker>();
         }
 
         private GameObject CreateWindowPrefab(WindowDef windowDef)
@@ -370,16 +386,16 @@ namespace MenuUi.Scripts.Window
 
         private static void Show(MyWindow window)
         {
-            Debug.Log($"Show {window._windowDef}", window._window);
-            window._window.SetActive(true);
+            Debug.Log($"Show {window._windowDef}", window._windowInst);
+            window._windowInst.SetActive(true);
         }
 
         private static void Hide(MyWindow window)
         {
-            Debug.Log($"Hide {window._windowDef}", window._window);
+            Debug.Log($"Hide {window._windowDef}", window._windowInst);
             if (window.IsValid)
             {
-                window._window.SetActive(false);
+                window._windowInst.SetActive(false);
             }
         }
 
@@ -438,7 +454,7 @@ namespace MenuUi.Scripts.Window
             }
 
             public WindowDef CurrentWindow => null;
-            
+
             public int WindowCount => 0;
 
             public List<MyWindow> WindowStack => new();
