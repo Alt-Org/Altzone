@@ -43,6 +43,11 @@ namespace Battle0.Scripts.Lobby.InRoom
         [SerializeField] private bool _isLocalPlayerPositionUnique;
         [SerializeField] private int _masterClientPosition;
 
+        private int  _buttonStatePlayerP1 = 0;
+        private int  _buttonStatePlayerP2 = 0;
+        private int  _buttonStatePlayerP3 = 0;
+        private int  _buttonStatePlayerP4 = 0;
+
         private bool _interactablePlayerP1;
         private bool _interactablePlayerP2;
         private bool _interactablePlayerP3;
@@ -235,19 +240,15 @@ namespace Battle0.Scripts.Lobby.InRoom
             switch (curValue)
             {
                 case PlayerPosition1:
-                    _interactablePlayerP1 = false;
                     _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
                     break;
                 case PlayerPosition2:
-                    _interactablePlayerP2 = false;
                     _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
                     break;
                 case PlayerPosition3:
-                    _interactablePlayerP3 = false;
                     _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
                     break;
                 case PlayerPosition4:
-                    _interactablePlayerP4 = false;
                     _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
                     break;
                 case PlayerPositionGuest:
@@ -257,6 +258,36 @@ namespace Battle0.Scripts.Lobby.InRoom
                 case PlayerPositionSpectator:
                     _interactableSpectator = false;
                     _captionSpectator = $"<color=blue>{player.NickName}</color>";
+                    break;
+            }
+        }
+
+        private void ButtonState(int _buttonStateNumber, string _buttonCaption)
+        {
+            _buttonStateNumber++;
+            switch (_buttonStateNumber)
+            {
+                case 0:
+                    _buttonCaption = $"Free";
+                    Debug.Log(_buttonCaption);
+                    break;
+
+                case 1:
+                    _buttonCaption = $"Player Name";
+                    Debug.Log(_buttonCaption);
+                    break;
+
+                case 2:
+                    _buttonCaption = $"Bot";
+                    Debug.Log(_buttonCaption);
+                    break;
+
+                case 3:
+                    _buttonCaption = $"Closed";
+                    Debug.Log(_buttonCaption);
+                    break;
+                case 4: 
+                    _buttonStateNumber = 0;
                     break;
             }
         }

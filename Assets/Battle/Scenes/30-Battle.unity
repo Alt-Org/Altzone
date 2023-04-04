@@ -642,6 +642,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907511086931f3f45b201a61b68fdc37, type: 3}
+--- !u!4 &481848224 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5395052073425159758, guid: 293f585c885e8be45989244f742c1777,
+    type: 3}
+  m_PrefabInstance: {fileID: 1937948498}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &577966834
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,7 +1997,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1746403346, guid: 925a7e79e186b3b449a0b02f69ed6007, type: 3}
       propertyPath: _debug._playerPos
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1746403346, guid: 925a7e79e186b3b449a0b02f69ed6007, type: 3}
       propertyPath: _debug._timeoutFastWait
@@ -2130,6 +2136,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3479393738422309190, guid: 7324b31e8d8ab47478f476be76cac71a,
+        type: 3}
+      propertyPath: _isBot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3479393738422309190, guid: 7324b31e8d8ab47478f476be76cac71a,
+        type: 3}
+      propertyPath: ballTransform
+      value: 
+      objectReference: {fileID: 481848224}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7324b31e8d8ab47478f476be76cac71a, type: 3}
 --- !u!1001 &3935264899691026986
