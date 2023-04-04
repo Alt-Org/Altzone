@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,11 +8,6 @@ namespace MenuUi.Scripts.Window
 {
     public class WindowPolicyChecker : MonoBehaviour
     {
-        private static readonly string[] KnownFontNames =
-        {
-            "WorkSans",
-        };
-
         private void Awake()
         {
             CheckCanvas(FindObjectOfType<Canvas>());
@@ -24,22 +20,42 @@ namespace MenuUi.Scripts.Window
             {
                 return;
             }
+            var allowedFonts = Resources.Load<AllowedFonts>(nameof(AllowedFonts));
+            if (allowedFonts == null)
+            {
+                return;
+            }
+            var knownFontNames = new List<string>();
+            if (allowedFonts._tmpFonts != null)
+            {
+                foreach (var font in allowedFonts._tmpFonts)
+                {
+                    knownFontNames.Add(font.name);
+                }
+            }
+            if (allowedFonts._fonts != null)
+            {
+                foreach (var font in allowedFonts._fonts)
+                {
+                    knownFontNames.Add(font.name);
+                }
+            }
             var components = new HashSet<Component>();
             foreach (var text in canvas.GetComponentsInChildren<TextMeshProUGUI>(includeInactive: true))
             {
-                CheckFontName(components, text, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font.name);
             }
             foreach (var text in canvas.GetComponentsInChildren<Text>(includeInactive: true))
             {
-                CheckFontName(components, text, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font.name);
             }
             foreach (var text in canvas.GetComponentsInChildren<TMP_Text>(includeInactive: true))
             {
-                CheckFontName(components, text, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font.name);
             }
         }
 
-        private static void CheckFontName(HashSet<Component> components, Component component, string fontName)
+        private static void CheckFontName(HashSet<Component> components, Component component, List<string> knownFontNames, string fontName)
         {
             if (components.Contains(component))
             {
@@ -48,16 +64,18 @@ namespace MenuUi.Scripts.Window
             components.Add(component);
             var isValidTextType = component is TextMeshProUGUI;
             var isKnownFont = false;
-            foreach (var knownFontName in KnownFontNames)
+            foreach (var knownFontName in knownFontNames)
             {
-                if (fontName.Contains(knownFontName))
+                if (fontName != knownFontName)
                 {
-                    isKnownFont = true;
-                    break;
+                    continue;
                 }
+                isKnownFont = true;
+                break;
             }
             if (isValidTextType && isKnownFont)
             {
+                // Nothing to complain.
                 return;
             }
             var componentText = isValidTextType ? component.name
@@ -65,12 +83,13 @@ namespace MenuUi.Scripts.Window
                 : $"{RichText.Yellow(component.name)} <i>text type is old/legacy</i>";
             var fontText = isKnownFont ? fontName : $"{RichText.Yellow(fontName)} <i>should not use this font</i>";
             var marker = "<color=orange>*</color>";
-            if (!isKnownFont)
+            if (isKnownFont)
             {
-                UnityEngine.Debug.LogError($"{fontText} in {componentText} {marker}", component);
+                // Just warning when Text component is not TextMeshProUGUI
+                UnityEngine.Debug.LogWarning($"{fontText} in {componentText} {marker}", component);
                 return;
             }
-            UnityEngine.Debug.LogWarning($"{fontText} in {componentText} {marker}", component);
+            UnityEngine.Debug.LogError($"{fontText} in {componentText} {marker}", component);
         }
     }
 }
