@@ -13,6 +13,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
 #endif
@@ -373,11 +374,9 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<CharacterClass>(_storageData.CharacterClasses));
         }
 
-        private static int lol = 1;
-
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture.GetRange(0, Mathf.Min(++lol, _storageData.GameFurniture.Count))));
+            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture.GetRange(0, Mathf.Min(Random.Range(_storageData.GameFurniture.Count / 10, _storageData.GameFurniture.Count + 1), _storageData.GameFurniture.Count))));
         }
 
         #endregion
