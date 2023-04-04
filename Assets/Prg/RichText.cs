@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 /// <summary>
 /// UNITY Rich Text formatting wrapper.
 /// </summary>
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class RichText
 {
     public static string Bold(object text)

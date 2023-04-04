@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ using UnityEngine;
 /// Most of these are getters because
 /// static code analysis will otherwise complain about using compile time constants that are always <c>true</c> or <c>false</c>.
 /// </remarks>
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class AppPlatform
 {
     /// <summary>

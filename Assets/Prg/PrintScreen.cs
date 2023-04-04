@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public class PrintScreen : MonoBehaviour
 {
     private const int SuperSize = 1;

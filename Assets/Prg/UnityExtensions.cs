@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using TMPro;
 using UnityEditor;
@@ -14,6 +15,7 @@ using Object = UnityEngine.Object;
 /// <remarks>
 /// <c>Component</c> lifetime is either forever (<c>Object.DontDestroyOnLoad()</c>) or current scene.
 /// </remarks>
+[SuppressMessage("ReSharper", "CheckNamespace")]
 public static class UnitySingleton
 {
     public static T CreateStaticSingleton<T>() where T : Component
@@ -94,14 +96,14 @@ public static class UnityExtensions
         var text = button.GetComponentInChildren<Text>();
         if (text != null)
         {
-            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {button.GetFullPath()}");
+            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {text.GetFullPath()}");
             text.text = caption;
             return;
         }
         var tmpText = button.GetComponentInChildren<TMP_Text>();
         if (tmpText != null)
         {
-            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {button.GetFullPath()}");
+            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {tmpText.GetFullPath()}");
             tmpText.text = caption;
             return;
         }
@@ -118,13 +120,13 @@ public static class UnityExtensions
         var text = button.GetComponentInChildren<Text>();
         if (text != null)
         {
-            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {button.GetFullPath()}");
+            Debug.LogWarning($"Using deprecating 'UI/Legacy/Text' instead of 'TextMeshProUGUI' in {text.GetFullPath()}");
             return text.text;
         }
         var tmpText = button.GetComponentInChildren<TMP_Text>();
         if (tmpText != null)
         {
-            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {button.GetFullPath()}");
+            Debug.LogWarning($"Using old 'TMP_Text' instead of new 'TextMeshProUGUI' in {tmpText.GetFullPath()}");
             return tmpText.text;
         }
         Assert.IsTrue(false, "button does not have a text component");
