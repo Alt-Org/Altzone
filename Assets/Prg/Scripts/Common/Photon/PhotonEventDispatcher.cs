@@ -65,7 +65,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnEnable()
         {
-            Assert.IsTrue(FindObjectsByType<PhotonEventDispatcher>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length == 1,
+            Assert.IsTrue(FindObjectsOfType<PhotonEventDispatcher>().Length == 1,
                 "FindObjectsOfType<PhotonEventDispatcher>().Length == 1");
         }
 
