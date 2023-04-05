@@ -8,7 +8,7 @@ namespace Battle.Scripts.Battle
     /// Service locator pattern for important objects in <c>Battle</c> assembly.
     /// </summary>
     /// <remarks>
-    /// After UNITY 2021.33.18 you can use faster FindObjectsByType API calls:
+    /// After UNITY 2021.3.18 you can use faster FindObjectsByType API calls:
     /// See:  FindFirstObjectByType vs FindAnyObjectByType and FindObjectsByType vs FindObjectsOfType<br />
     /// https://gamedev.stackexchange.com/questions/204610/findobjectoftype-vs-findfirstobjectbytype<br />
     /// https://gamedev.stackexchange.com/questions/204741/whats-the-difference-between-findobjectsbytype-and-findobjectsoftype
