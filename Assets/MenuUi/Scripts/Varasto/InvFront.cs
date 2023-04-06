@@ -13,6 +13,10 @@ public class InvFront : MonoBehaviour
     [SerializeField] private TMP_Text _sortText;
     [SerializeField] private Transform _content;
     [SerializeField] private GameObject _infoSlot;
+    [SerializeField] private GameObject loadingText;
+
+    [Header("Placeholders")] // These should not remain in the finalized game
+    [SerializeField] private Sprite _furnImagePlaceholder;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _invSlot;
@@ -27,8 +31,9 @@ public class InvFront : MonoBehaviour
     {
         sortingBy = -1; // So that the first sort style is Alphabet
         yield return Storefront.Get().GetAllGameFurnitureYield(result => _items = result.ToList());
+        loadingText.SetActive(false);
         MakeSlots();
-        SetSlots();
+        SortStored(); // Sorting before setting the slots / SetSlots is already in SortStored so no need to do it here
     }
 
     private void MakeSlots()
@@ -50,19 +55,19 @@ public class InvFront : MonoBehaviour
         int i = 0;
         foreach (GameFurniture furn in _items)
         {
-            GameObject toSet = _slotsList[i];
+            Transform toSet = _slotsList[i].transform;
 
-            // Icon - Not done
-            //Image slotIcon = toSet.transform.GetChild(0).GetComponent<Image>();
+            // Icon - Placeholder
+            toSet.GetChild(0).GetComponent<Image>().sprite = _furnImagePlaceholder;
 
             // Name
-            toSet.transform.GetChild(1).GetComponent<TMP_Text>().text = furn.Name;
+            toSet.GetChild(1).GetComponent<TMP_Text>().text = furn.Name;
 
             // Weight
-            toSet.transform.GetChild(2).GetComponent<TMP_Text>().text = furn.Weight + " KG";
+            toSet.GetChild(2).GetComponent<TMP_Text>().text = furn.Weight + " KG";
 
-            // Shape - Not done
-            //toSet.transform.GetChild(3).GetComponent<Image>().sprite =
+            // Shape - Placeholder
+            toSet.GetChild(3).GetComponent<Image>().sprite = _furnImagePlaceholder;
 
             i++;
         }
@@ -72,9 +77,6 @@ public class InvFront : MonoBehaviour
     {
         if (sortingBy < maxSortingBy) { sortingBy++; }
         else { sortingBy = 0; }
-
-        List<GameObject> reSlots = _slotsList;
-        int forVal = reSlots.Count;
 
         switch (sortingBy)
         {
@@ -99,21 +101,25 @@ public class InvFront : MonoBehaviour
     {
         Debug.Log($"Showing slot {slotVal} information =)");
 
-        // Icon - Still gotta figure out how to get images for these things
+        Transform parentSlot = _infoSlot.transform;
+
+        // Icon - Placeholder
+        parentSlot.GetChild(0).GetComponent<Image>().sprite = _furnImagePlaceholder;
 
         // Name
-        _infoSlot.transform.GetChild(1).GetComponent<TMP_Text>().text = _items[slotVal].Name;
+        parentSlot.GetChild(1).GetComponent<TMP_Text>().text = _items[slotVal].Name;
 
         // Weight
-        _infoSlot.transform.GetChild(2).GetComponent<TMP_Text>().text = _items[slotVal].Weight + " KG";
+        parentSlot.GetChild(2).GetComponent<TMP_Text>().text = _items[slotVal].Weight + " KG";
 
         // Material text
-        _infoSlot.transform.GetChild(3).GetComponent<TMP_Text>().text = _items[slotVal].Material;
+        parentSlot.GetChild(3).GetComponent<TMP_Text>().text = _items[slotVal].Material;
 
-        // Type
+        // Type - Placeholder
+        parentSlot.GetChild(4).GetComponent<Image>().sprite = _furnImagePlaceholder;
 
         // Type Text
-        _infoSlot.transform.GetChild(5).GetComponent<TMP_Text>().text = _items[slotVal].Shape;
+        parentSlot.GetChild(5).GetComponent<TMP_Text>().text = _items[slotVal].Shape;
 
         _infoSlot.SetActive(true);
     }
