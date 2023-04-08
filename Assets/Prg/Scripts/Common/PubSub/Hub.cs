@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Prg.Scripts.Common.PubSub
 {
+    /// <summary>
+    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation.
+    /// </summary>
     public class Hub
     {
         internal class Handler
@@ -36,7 +39,7 @@ namespace Prg.Scripts.Common.PubSub
 
             public override string ToString()
             {
-                return $"A={Action.Method.Name}, S={(Subscriber.IsAlive ? Subscriber.Target : "dead")}, T={MessageType.Name}";
+                return $"Action={Action.Method.Name} Subscriber={(Subscriber.IsAlive ? Subscriber.Target : "_GC_")} Type={MessageType.Name}";
             }
 
             public class SelectorWrapper<T>
@@ -50,18 +53,27 @@ namespace Prg.Scripts.Common.PubSub
             }
         }
 
-        private readonly object _locker = new object();
-        internal readonly List<Handler> Handlers = new List<Handler>();
+        private readonly object _locker = new();
+        internal readonly List<Handler> Handlers = new();
 
+        /// <summary>
+        /// Checks if subscriber has subscribed to given message (type).
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <typeparam name="T"></typeparam>
         public bool Exists<T>(object subscriber)
         {
             lock (_locker)
             {
-                foreach (var h in Handlers)
+                foreach (var handler in Handlers)
                 {
-                    if (h.Subscriber.IsAlive &&
-                        Equals(h.Subscriber.Target, subscriber) &&
-                        typeof(T) == h.MessageType)
+                    if (!handler.Subscriber.IsAlive)
+                    {
+                        // This is actually not needed but used to emphasize the fact that we are using a WeakReference here:
+                        // - h.Subscriber.Target will be null if it has been Garbage Collected and Equals() test below fails.
+                        continue;
+                    }
+                    if (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber))
                     {
                         return true;
                     }
@@ -87,8 +99,9 @@ namespace Prg.Scripts.Common.PubSub
                     if (!handler.Subscriber.IsAlive)
                     {
                         handlersToRemoveList.Add(handler);
+                        continue;
                     }
-                    else if (handler.MessageType.IsAssignableFrom(typeof(T)))
+                    if (handler.MessageType.IsAssignableFrom(typeof(T)))
                     {
                         handlerList.Add(handler);
                     }
@@ -101,12 +114,24 @@ namespace Prg.Scripts.Common.PubSub
                 }
             }
 
-            foreach (var l in handlerList)
+            foreach (var handler in handlerList)
             {
-                if (l.Select(data))
+                if (!handler.Select(data))
                 {
-                    ((Action<T>)l.Action)(data);
+                    continue;
                 }
+                // Get reference to subscriber 1) to find that is is alive now and 2) to keep it alive during the callback.
+                // Note that this does not apply UnityEngine.Object's because they are managed in C++ side,
+                // but null check works fine for them as well.
+                var target = handler.Subscriber.Target;
+                if (target == null)
+                {
+                    continue;
+                }
+                ((Action<T>)handler.Action)(data);
+                // References the specified object, which makes it ineligible for garbage collection
+                // from the start of the current routine to the point where this method is called.
+                GC.KeepAlive(target);
             }
         }
 
@@ -144,8 +169,8 @@ namespace Prg.Scripts.Common.PubSub
         {
             lock (_locker)
             {
-                var query = Handlers.Where(a => !a.Subscriber.IsAlive ||
-                                                a.Subscriber.Target.Equals(subscriber));
+                var query = Handlers.Where(handler => !handler.Subscriber.IsAlive ||
+                                                      Equals(handler.Subscriber.Target, subscriber));
 
                 foreach (var h in query.ToList())
                 {
@@ -174,17 +199,18 @@ namespace Prg.Scripts.Common.PubSub
             Unsubscribe(this, handler);
         }
 
-        public void Unsubscribe<T>(object subscriber, Action<T> handler = null)
+        public void Unsubscribe<T>(object subscriber, Action<T> handlerToRemove = null)
         {
             lock (_locker)
             {
                 var query = Handlers
-                    .Where(a => !a.Subscriber.IsAlive ||
-                                (a.Subscriber.Target.Equals(subscriber) && a.MessageType == typeof(T)));
+                    .Where(handler => !handler.Subscriber.IsAlive ||
+                                (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
 
-                if (handler != null)
+                if (handlerToRemove != null)
                 {
-                    query = query.Where(a => a.Action.Equals(handler));
+                    query = query.Where(handler => !handler.Subscriber.IsAlive ||
+                                                   handler.Action.Equals(handlerToRemove));
                 }
 
                 foreach (var h in query.ToList())

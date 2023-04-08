@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 namespace Prg.Scripts.Common.PubSub
 {
+    /// <summary>
+    /// Simple Publish Subscribe Pattern using Extension Methods.<br />
+    /// https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
+    /// </summary>
     public static class PubSubExtensions
     {
         private static readonly Hub Hub = new Hub();
