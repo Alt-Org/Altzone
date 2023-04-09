@@ -2,15 +2,20 @@
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace Prg.Scripts.Common.PubSub
 {
     /// <summary>
     /// Simple Publish Subscribe Pattern using Extension Methods to delegate work to actual implementation.
     /// </summary>
+    /// <remarks>
+    /// This implementation supports UNITY <c>Object</c> in addition to normal C# <c>object</c>.
+    /// </remarks>
     public static class PubSubExtensions
     {
-        private static readonly Hub Hub = new ();
+        private static readonly Hub Hub = new();
+        private static readonly UnityHub UnityHub = new();
         private static bool _isApplicationQuitting;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -28,16 +33,8 @@ namespace Prg.Scripts.Common.PubSub
                 {
                     return;
                 }
-                var handlerCount = Hub.Handlers.Count;
-                if (handlerCount <= 0)
-                {
-                    return;
-                }
-                foreach (var h in Hub.Handlers)
-                {
-                    Debug.Log($"handler {h}");
-                }
-                Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
+                Hub.CheckHandlerCount();
+                UnityHub.CheckHandlerCount();
             }
 
             _isApplicationQuitting = false;
@@ -56,6 +53,11 @@ namespace Prg.Scripts.Common.PubSub
             Hub.Publish(data);
         }
 
+        public static void Publish<T>(this Object _, T data)
+        {
+            UnityHub.Publish(data);
+        }
+
         /// <summary>
         /// Subscribes to a message.
         /// </summary>
@@ -67,6 +69,10 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Subscribe(subscriber, messageHandler, messageSelector);
         }
+        public static void Subscribe<T>(this Object subscriber, Action<T> messageHandler, Predicate<T> messageSelector = null)
+        {
+            UnityHub.Subscribe(subscriber, messageHandler, messageSelector);
+        }
 
         /// <summary>
         /// Unsubscribes to all messages. 
@@ -75,6 +81,10 @@ namespace Prg.Scripts.Common.PubSub
         public static void Unsubscribe(this object subscriber)
         {
             Hub.Unsubscribe(subscriber);
+        }
+        public static void Unsubscribe(this Object subscriber)
+        {
+            UnityHub.Unsubscribe(subscriber);
         }
 
         /// <summary>
@@ -86,16 +96,24 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Unsubscribe(subscriber, (Action<T>)null);
         }
+        public static void Unsubscribe<T>(this Object subscriber)
+        {
+            UnityHub.Unsubscribe(subscriber, (Action<T>)null);
+        }
 
         /// <summary>
-        /// Unsubscribes to messages for given callback. 
+        /// Unsubscribes to messages for given message handler callback.
         /// </summary>
         /// <param name="subscriber">The subscriber</param>
-        /// <param name="messageHandler">Callback subscribed to</param>
+        /// <param name="messageHandler">Message handler callback subscribed to</param>
         /// <typeparam name="T">Type of the message</typeparam>
         public static void Unsubscribe<T>(this object subscriber, Action<T> messageHandler)
         {
             Hub.Unsubscribe(subscriber, messageHandler);
+        }
+        public static void Unsubscribe<T>(this Object subscriber, Action<T> messageHandler)
+        {
+            UnityHub.Unsubscribe(subscriber, messageHandler);
         }
     }
 }

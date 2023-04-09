@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
 
 namespace Prg.Scripts.Common.PubSub
 {
     /// <summary>
-    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation using <c>WeakReference</c>.
+    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation using <c>UnityEngine.Object</c>.
     /// </summary>
     /// <remarks>
-    /// This implementation is multi-threaded safe!
+    /// This implementation is for single threaded use only!
     /// </remarks>
-    public class Hub
+    public class UnityHub
     {
         private class Handler
         {
             public readonly Delegate Action;
-            public readonly WeakReference Subscriber;
+            public readonly Object Subscriber;
             public readonly Type MessageType;
             private readonly object _selectorWrapper;
 
@@ -32,7 +35,7 @@ namespace Prg.Scripts.Common.PubSub
                 return false;
             }
 
-            public Handler(Delegate action, WeakReference subscriber, Type messageType, object selectorWrapper)
+            public Handler(Delegate action, Object subscriber, Type messageType, object selectorWrapper)
             {
                 Action = action;
                 Subscriber = subscriber;
@@ -42,7 +45,7 @@ namespace Prg.Scripts.Common.PubSub
 
             public override string ToString()
             {
-                return $"Action={Action.Method.Name} Subscriber={(Subscriber.IsAlive ? Subscriber.Target : "_GC_")} Type={MessageType.Name}";
+                return $"Action={Action.Method.Name} Subscriber={Subscriber} Type={MessageType.Name}";
             }
 
             public class SelectorWrapper<T>
@@ -56,23 +59,18 @@ namespace Prg.Scripts.Common.PubSub
             }
         }
 
-        private readonly object _locker = new();
         private readonly List<Handler> _handlers = new();
 
         internal void CheckHandlerCount()
         {
-            int handlerCount;
-            lock (_locker)
+            var handlerCount = _handlers.Count;
+            if (handlerCount == 0)
             {
-                handlerCount = _handlers.Count;
-                if (handlerCount == 0)
-                {
-                    return;
-                }
-                foreach (var handler in _handlers)
-                {
-                    Debug.Log($"handler {handler}");
-                }
+                return;
+            }
+            foreach (var handler in _handlers)
+            {
+                Debug.Log($"handler {handler}");
             }
             Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
         }
@@ -82,11 +80,12 @@ namespace Prg.Scripts.Common.PubSub
             var handlerList = new List<Handler>();
             var handlersToRemoveList = new List<Handler>();
 
-            lock (_locker)
+            // Ensure that we are in UNITY main thread.
+            Assert.IsTrue(Time.frameCount >= 0);
             {
                 foreach (var handler in _handlers)
                 {
-                    if (!handler.Subscriber.IsAlive)
+                    if (handler.Subscriber==null)
                     {
                         handlersToRemoveList.Add(handler);
                         continue;
@@ -106,9 +105,7 @@ namespace Prg.Scripts.Common.PubSub
 
             foreach (var handler in handlerList)
             {
-                // Get reference to subscriber 1) to find that is is alive now and 2) to keep it alive during the callback.
-                var target = handler.Subscriber.Target;
-                if (target == null)
+                if (handler.Subscriber == null)
                 {
                     continue;
                 }
@@ -117,30 +114,27 @@ namespace Prg.Scripts.Common.PubSub
                     continue;
                 }
                 ((Action<T>)handler.Action)(data);
-
-                // References the specified object, which makes it ineligible for garbage collection
-                // from the start of the current routine to the point where this method is called.
-                GC.KeepAlive(target);
             }
         }
 
-        public void Subscribe<T>(object subscriber, Action<T> messageHandler, Predicate<T> messageSelector)
+        public void Subscribe<T>(Object subscriber, Action<T> messageHandler, Predicate<T> messageSelector)
         {
             var selectorWrapper = messageSelector != null ? new Handler.SelectorWrapper<T>(messageSelector) : null;
-            var item = new Handler(messageHandler, new WeakReference(subscriber), typeof(T), selectorWrapper);
-            lock (_locker)
+            var item = new Handler(messageHandler, subscriber, typeof(T), selectorWrapper);
+            // Ensure that we are in UNITY main thread.
+            Assert.IsTrue(Time.frameCount >= 0);
             {
                 //-Debug.Log($"subscribe {item}");
                 _handlers.Add(item);
             }
         }
 
-        public void Unsubscribe(object subscriber)
+        public void Unsubscribe(Object subscriber)
         {
-            lock (_locker)
+            // Ensure that we are in UNITY main thread.
+            Assert.IsTrue(Time.frameCount >= 0);
             {
-                var query = _handlers.Where(handler => !handler.Subscriber.IsAlive ||
-                                                      Equals(handler.Subscriber.Target, subscriber));
+                var query = _handlers.Where(handler => Equals(handler.Subscriber, subscriber));
 
                 foreach (var h in query.ToList())
                 {
@@ -150,17 +144,17 @@ namespace Prg.Scripts.Common.PubSub
             }
         }
 
-        public void Unsubscribe<T>(object subscriber, Action<T> handlerToRemove = null)
+        public void Unsubscribe<T>(Object subscriber, Action<T> handlerToRemove = null)
         {
-            lock (_locker)
+            // Ensure that we are in UNITY main thread.
+            Assert.IsTrue(Time.frameCount >= 0);
             {
                 var query = _handlers
-                    .Where(handler => !handler.Subscriber.IsAlive ||
-                                (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
+                    .Where(handler => handler.MessageType == typeof(T) && Equals(handler.Subscriber, subscriber));
 
                 if (handlerToRemove != null)
                 {
-                    query = query.Where(handler => !handler.Subscriber.IsAlive ||
+                    query = query.Where(handler => handler.Subscriber!=null ||
                                                    handler.Action.Equals(handlerToRemove));
                 }
 
