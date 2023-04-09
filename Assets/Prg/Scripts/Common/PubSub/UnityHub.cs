@@ -61,18 +61,19 @@ namespace Prg.Scripts.Common.PubSub
 
         private readonly List<Handler> _handlers = new();
 
-        internal void CheckHandlerCount()
+        public int CheckHandlerCount(bool isLogging = false)
         {
             var handlerCount = _handlers.Count;
-            if (handlerCount == 0)
+            if (handlerCount == 0 || !isLogging)
             {
-                return;
+                return handlerCount;
             }
             foreach (var handler in _handlers)
             {
                 Debug.Log($"handler {handler}");
             }
-            Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
+            Debug.LogWarning($"handlerCount is {handlerCount}");
+            return handlerCount;
         }
 
         public void Publish<T>(T data = default)
