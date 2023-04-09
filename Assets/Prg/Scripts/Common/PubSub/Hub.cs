@@ -5,7 +5,7 @@ using System.Linq;
 namespace Prg.Scripts.Common.PubSub
 {
     /// <summary>
-    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation.
+    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation using <c>WeakReference</c>.
     /// </summary>
     public class Hub
     {
@@ -56,37 +56,6 @@ namespace Prg.Scripts.Common.PubSub
         private readonly object _locker = new();
         internal readonly List<Handler> Handlers = new();
 
-        /// <summary>
-        /// Checks if subscriber has subscribed to given message (type).
-        /// </summary>
-        /// <param name="subscriber"></param>
-        /// <typeparam name="T"></typeparam>
-        public bool Exists<T>(object subscriber)
-        {
-            lock (_locker)
-            {
-                foreach (var handler in Handlers)
-                {
-                    if (!handler.Subscriber.IsAlive)
-                    {
-                        // This is actually not needed but used to emphasize the fact that we are using a WeakReference here:
-                        // - h.Subscriber.Target will be null if it has been Garbage Collected and Equals() test below fails.
-                        continue;
-                    }
-                    if (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Allow publishing directly onto this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
         public void Publish<T>(T data = default)
         {
             var handlerList = new List<Handler>();
@@ -135,17 +104,6 @@ namespace Prg.Scripts.Common.PubSub
             }
         }
 
-        /// <summary>
-        /// Allow subscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="messageHandler"></param>
-        /// <param name="messageSelector"></param>
-        public void Subscribe<T>(Action<T> messageHandler, Predicate<T> messageSelector)
-        {
-            Subscribe(this, messageHandler, messageSelector);
-        }
-
         public void Subscribe<T>(object subscriber, Action<T> messageHandler, Predicate<T> messageSelector)
         {
             var selectorWrapper = messageSelector != null ? new Handler.SelectorWrapper<T>(messageSelector) : null;
@@ -155,14 +113,6 @@ namespace Prg.Scripts.Common.PubSub
                 //-Debug.Log($"subscribe {item}");
                 Handlers.Add(item);
             }
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        public void Unsubscribe()
-        {
-            Unsubscribe(this);
         }
 
         public void Unsubscribe(object subscriber)
@@ -178,25 +128,6 @@ namespace Prg.Scripts.Common.PubSub
                     Handlers.Remove(h);
                 }
             }
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public void Unsubscribe<T>()
-        {
-            Unsubscribe<T>(this);
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="handler"></param>
-        public void Unsubscribe<T>(Action<T> handler)
-        {
-            Unsubscribe(this, handler);
         }
 
         public void Unsubscribe<T>(object subscriber, Action<T> handlerToRemove = null)
