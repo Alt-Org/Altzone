@@ -76,7 +76,7 @@ namespace Prg.Scripts.Common.PubSub
             }
             Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
         }
-        
+
         public void Publish<T>(T data = default)
         {
             var handlerList = new List<Handler>();
@@ -139,8 +139,9 @@ namespace Prg.Scripts.Common.PubSub
         {
             lock (_locker)
             {
-                var query = _handlers.Where(handler => !handler.Subscriber.IsAlive ||
-                                                      Equals(handler.Subscriber.Target, subscriber));
+                var query = _handlers
+                    .Where(handler => !handler.Subscriber.IsAlive ||
+                                      Equals(handler.Subscriber.Target, subscriber));
 
                 foreach (var h in query.ToList())
                 {
@@ -156,7 +157,7 @@ namespace Prg.Scripts.Common.PubSub
             {
                 var query = _handlers
                     .Where(handler => !handler.Subscriber.IsAlive ||
-                                (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
+                                      (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
 
                 if (handlerToRemove != null)
                 {
