@@ -33,13 +33,33 @@ namespace Prg.Scripts.Common.PubSub
                 {
                     return;
                 }
-                Hub.CheckHandlerCount();
-                UnityHub.CheckHandlerCount();
+                Hub.CheckHandlerCount(isLogging: true);
+                UnityHub.CheckHandlerCount(isLogging: true);
             }
 
             _isApplicationQuitting = false;
             Application.quitting += () => _isApplicationQuitting = true;
             SceneManager.sceneUnloaded += _ => CheckHandlerCount();
+        }
+
+        /// <summary>
+        /// Gets default hub for this subscriber.
+        /// </summary>
+        /// <param name="subscriber">The subscriber for this hub</param>
+        /// <returns>The default hub instance appropriate for this object type.</returns>
+        public static Hub GetHub(this object subscriber)
+        {
+            return Hub;
+        }
+
+        /// <summary>
+        /// Gets default hub for this subscriber.
+        /// </summary>
+        /// <param name="subscriber">The subscriber for this hub</param>
+        /// <returns>The default hub instance appropriate for this object type.</returns>
+        public static UnityHub GetHub(this Object subscriber)
+        {
+            return UnityHub;
         }
 
         /// <summary>
@@ -69,6 +89,7 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Subscribe(subscriber, messageHandler, messageSelector);
         }
+
         public static void Subscribe<T>(this Object subscriber, Action<T> messageHandler, Predicate<T> messageSelector = null)
         {
             UnityHub.Subscribe(subscriber, messageHandler, messageSelector);
@@ -82,6 +103,7 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Unsubscribe(subscriber);
         }
+
         public static void Unsubscribe(this Object subscriber)
         {
             UnityHub.Unsubscribe(subscriber);
@@ -96,6 +118,7 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Unsubscribe(subscriber, (Action<T>)null);
         }
+
         public static void Unsubscribe<T>(this Object subscriber)
         {
             UnityHub.Unsubscribe(subscriber, (Action<T>)null);
@@ -111,6 +134,7 @@ namespace Prg.Scripts.Common.PubSub
         {
             Hub.Unsubscribe(subscriber, messageHandler);
         }
+
         public static void Unsubscribe<T>(this Object subscriber, Action<T> messageHandler)
         {
             UnityHub.Unsubscribe(subscriber, messageHandler);
