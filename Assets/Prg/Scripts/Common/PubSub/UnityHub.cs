@@ -74,7 +74,7 @@ namespace Prg.Scripts.Common.PubSub
             }
             Debug.LogWarning($"sceneUnloaded PubSubExtensions.HandlerCount is {handlerCount}");
         }
-        
+
         public void Publish<T>(T data = default)
         {
             var handlerList = new List<Handler>();
@@ -85,7 +85,7 @@ namespace Prg.Scripts.Common.PubSub
             {
                 foreach (var handler in _handlers)
                 {
-                    if (handler.Subscriber==null)
+                    if (handler.Subscriber == null)
                     {
                         handlersToRemoveList.Add(handler);
                         continue;
@@ -134,7 +134,9 @@ namespace Prg.Scripts.Common.PubSub
             // Ensure that we are in UNITY main thread.
             Assert.IsTrue(Time.frameCount >= 0);
             {
-                var query = _handlers.Where(handler => Equals(handler.Subscriber, subscriber));
+                var query = _handlers
+                    .Where(handler => handler.Subscriber == null ||
+                                      Equals(handler.Subscriber, subscriber));
 
                 foreach (var h in query.ToList())
                 {
@@ -150,11 +152,12 @@ namespace Prg.Scripts.Common.PubSub
             Assert.IsTrue(Time.frameCount >= 0);
             {
                 var query = _handlers
-                    .Where(handler => handler.MessageType == typeof(T) && Equals(handler.Subscriber, subscriber));
+                    .Where(handler => handler.Subscriber == null ||
+                                      (handler.MessageType == typeof(T) && Equals(handler.Subscriber, subscriber)));
 
                 if (handlerToRemove != null)
                 {
-                    query = query.Where(handler => handler.Subscriber!=null ||
+                    query = query.Where(handler => handler.Subscriber == null ||
                                                    handler.Action.Equals(handlerToRemove));
                 }
 
