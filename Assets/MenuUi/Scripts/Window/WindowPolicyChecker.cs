@@ -49,6 +49,7 @@ namespace MenuUi.Scripts.Window
             {
                 CheckFontName(components, text, knownFontNames, text.font.name);
             }
+            // This selects TextMeshProUGUI instances as well because they inherit from TMP_Text.
             foreach (var text in canvas.GetComponentsInChildren<TMP_Text>(includeInactive: true))
             {
                 CheckFontName(components, text, knownFontNames, text.font.name);
@@ -62,7 +63,10 @@ namespace MenuUi.Scripts.Window
                 return;
             }
             components.Add(component);
-            var isValidTextType = component is TextMeshProUGUI;
+            // TMP_Text is the base class for TextMeshProUGUI so we have to check both of them to be sure.
+            var isTmpText = component.GetType() == typeof(TMP_Text);
+            var iTextMeshProUGUI = component.GetType() == typeof(TextMeshProUGUI);
+            var isValidTextType = iTextMeshProUGUI && !isTmpText;
             var isKnownFont = false;
             foreach (var knownFontName in knownFontNames)
             {
@@ -79,8 +83,8 @@ namespace MenuUi.Scripts.Window
                 return;
             }
             var componentText = isValidTextType ? component.name
-                : component is TMP_Text ? $"{RichText.Yellow(component.name)} <i>text type is deprecated</i>"
-                : $"{RichText.Yellow(component.name)} <i>text type is old/legacy</i>";
+                : component is TMP_Text ? $"{RichText.Yellow(component.name)} <i>text type '{component.GetType().Name}' is deprecated</i>"
+                : $"{RichText.Yellow(component.name)} <i>text type '{component.GetType().Name}' is old/legacy</i>";
             var fontText = isKnownFont ? fontName : $"{RichText.Yellow(fontName)} <i>should not use this font</i>";
             var marker = "<color=orange>*</color>";
             if (isKnownFont)
