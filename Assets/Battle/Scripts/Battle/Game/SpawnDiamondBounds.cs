@@ -16,6 +16,8 @@ public class SpawnDiamondBounds : MonoBehaviour
     public Vector3 center;
     public Vector3 size;
     public int SpawnY;
+    public int PlayerLimit = 4;
+    public bool StartBool;  //true
 
     void Start()
     {
@@ -32,10 +34,8 @@ public class SpawnDiamondBounds : MonoBehaviour
         }
         if (PhotonNetwork.IsMasterClient)   
         {
-            Debug.Log("eefef");
             StartCoroutine(SpawnDiamond());
         }
-        //StartCoroutine(SpawnDiamond());
     }
 
     public IEnumerator SpawnDiamond()
@@ -48,10 +48,21 @@ public class SpawnDiamondBounds : MonoBehaviour
     [PunRPC]
     private void DiamondRPC(int SpawnY)
     {
-        Vector3 pos = new Vector3(SpawnPoint.position.x, SpawnPointsArray[SpawnY], Random.Range(-size.z/2, size.z/2));  //pos = center + new vector3(center.x, )...
-        var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));   // transform.TransformPoint(pos)
-        DiamondParent.transform.parent = transform;
-        DiamondParent.SetActive(true);
+        if (StartBool == true)
+        {
+            if (GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length >= PlayerLimit)
+            {
+                StartBool = false;
+            }
+        }
+        if (StartBool == false)
+        {
+            Vector3 pos = new Vector3(SpawnPoint.position.x, SpawnPointsArray[SpawnY], Random.Range(-size.z/2, size.z/2));  //pos = center + new vector3(center.x, )...
+            var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));   // transform.TransformPoint(pos)
+            DiamondParent.transform.parent = transform;
+            DiamondParent.SetActive(true);
+        }
+        
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(SpawnDiamond());
