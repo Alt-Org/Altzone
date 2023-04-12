@@ -18,6 +18,7 @@ public class InvFront : MonoBehaviour
 
     [Header("Placeholders")] // These should not remain to the finalized game
     [SerializeField] private Sprite _furnImagePlaceholder;
+    [SerializeField] private string _imagePathPlaceholder;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _invSlot;
@@ -25,10 +26,17 @@ public class InvFront : MonoBehaviour
     private List<GameFurniture> _items;
     private List<GameObject> _slotsList = new List<GameObject>();
 
+    bool startCompleted = false;
+
     private int _maxSortingBy = 2;
     private int _sortingBy; // used as a carrier for info on how to sort
 
-    private IEnumerator Start()
+    private void OnEnable()
+    {
+        if (!startCompleted) { StartCoroutine(Begin()); }
+    }
+
+    private IEnumerator Begin()
     {
         _sortingBy = -1; // So that the first sort style is Alphabet
         yield return Storefront.Get().GetAllGameFurnitureYield(result => _items = result.ToList());
@@ -38,6 +46,8 @@ public class InvFront : MonoBehaviour
 
         _loadingText.SetActive(false);
         _topButtons.SetActive(true); // The sorting button should not be available if items are yet to be loaded
+
+        startCompleted = true;
     }
 
     private void MakeSlots()
@@ -96,7 +106,6 @@ public class InvFront : MonoBehaviour
                 _sortText.text = "Jarjestetty : Materiaali";
                 _items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
                 break;
-            default: _sortText.text = "Jokin meni pieleen"; break;
         }
         SetSlots();
     }
@@ -130,4 +139,12 @@ public class InvFront : MonoBehaviour
     { // Here will come the strange thingy that gets the images using https://docs.unity3d.com/ScriptReference/Resources.Load.html once i figure out how to handle the folder itself
         return _furnImagePlaceholder;
     }
+
+    private struct FurnSet
+    { // Contains the GameFurniture and some extra for the inventory front to look good
+        GameFurniture _furniture;
+        Sprite _sprite; // Furniture icon
+        Sprite _typeSprite; // Type icon
+    }
+
 }
