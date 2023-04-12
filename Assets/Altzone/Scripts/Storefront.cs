@@ -266,10 +266,16 @@ namespace Altzone.Scripts
 
             public CallbackYieldInstruction(object instance, string methodName, Action<T> callback)
             {
-                void Wrapper(T result)
+                void SafeCallbackWrapper(T result)
                 {
-                    callback(result);
-                    _keepWaiting = false;
+                    try
+                    {
+                        callback(result);
+                    }
+                    finally
+                    {
+                        _keepWaiting = false;
+                    }
                 }
 
                 if (!CachedMethods.TryGetValue(methodName, out var method))
@@ -277,8 +283,12 @@ namespace Altzone.Scripts
                     method = instance.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance);
                     CachedMethods.Add(methodName, method);
                 }
-                Assert.IsNotNull(method, $"public instance method {methodName} not found");
-                method.Invoke(instance, new object[] { (Action<T>)Wrapper });
+                if (method == null)
+                {
+                    _keepWaiting = false;
+                    throw new UnityException($"public instance method {methodName} not found");
+                }
+                method.Invoke(instance, new object[] { (Action<T>)SafeCallbackWrapper });
             }
         }
 
