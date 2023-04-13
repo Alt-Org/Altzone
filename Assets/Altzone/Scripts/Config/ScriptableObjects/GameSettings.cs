@@ -1,6 +1,5 @@
 using System;
 using Altzone.Scripts.Battle;
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Assertions;

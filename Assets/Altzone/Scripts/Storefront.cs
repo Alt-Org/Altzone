@@ -8,7 +8,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Altzone.Scripts
 {

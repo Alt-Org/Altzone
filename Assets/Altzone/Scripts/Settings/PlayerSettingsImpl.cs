@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Altzone.Scripts.Config;
 using Prg.Scripts.Common.Unity;
 using Prg.Scripts.Common.Unity.Localization;
 using UnityEngine;

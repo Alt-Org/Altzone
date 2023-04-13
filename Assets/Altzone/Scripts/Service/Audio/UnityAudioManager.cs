@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Altzone.Scripts.Config;
 using UnityEngine;
 using UnityEngine.Assertions;
 
