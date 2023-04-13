@@ -67,7 +67,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.OnMoveTo = MoveTo;
+            playerInputHandler.OnMoveTo = OnMoveTo;
         }
 
         public string NickName => _settings._nickName;
@@ -85,7 +85,7 @@ namespace Battle.Scripts.Test
             _playerActor.SetRotation(angle);
         }
 
-        private void MoveTo(Vector2 targetPosition)
+        private void OnMoveTo(Vector2 targetPosition)
         {
             // Make this public if you want to test it.
             if (!_state.CanRequestMove)
