@@ -138,7 +138,7 @@ public class InvFront : MonoBehaviour
 
         if (returned == null)
         {
-            Debug.LogWarning($"No icon of name '{name}' was found");
+            //Debug.LogWarning($"No icon of name '{name}' was found");
             return _furnImagePlaceholder;
         }
 
