@@ -22,7 +22,7 @@ namespace Battle.Scripts.Battle.Players
         private bool StartBool = true;
 
         private IPlayerDriverCallback _playerDriver;
-        private IShieldPoseManager _shieldPoseManager;
+        private ShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
         private Vector3 _tempPosition;
