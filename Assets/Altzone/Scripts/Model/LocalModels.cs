@@ -13,7 +13,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Random = UnityEngine.Random;
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
 #endif
@@ -264,7 +263,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(2f), () => callback(playerData));
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(0.5f), () => callback(playerData));
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -376,11 +375,9 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(2f), () =>
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(0.5f), () =>
             {
-                callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture.GetRange(0,
-                    Mathf.Min(Random.Range(_storageData.GameFurniture.Count / 10, _storageData.GameFurniture.Count + 1),
-                        _storageData.GameFurniture.Count))));
+                callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
             });
         }
 
