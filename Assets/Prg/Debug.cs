@@ -132,18 +132,26 @@ public static class Debug
     public static void Break() => UnityEngine.Debug.Break();
     public static void DebugBreak() => UnityEngine.Debug.DebugBreak();
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration, bool depthTest) =>
         UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration) => UnityEngine.Debug.DrawLine(start, end, color, duration);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color) => UnityEngine.Debug.DrawLine(start, end, color);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end) => UnityEngine.Debug.DrawLine(start, end);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration, bool depthTest) =>
         UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration) => UnityEngine.Debug.DrawRay(start, dir, color, duration);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color) => UnityEngine.Debug.DrawRay(start, dir, color);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir) => UnityEngine.Debug.DrawRay(start, dir);
 
     #endregion

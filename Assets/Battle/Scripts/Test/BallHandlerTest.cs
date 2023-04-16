@@ -63,10 +63,10 @@ public class BallHandlerTest : MonoBehaviour
         if (!collision.gameObject.CompareTag(Tags.Player))
         {
             var normal = collision.contacts[0].normal;
-            UnityEngine.Debug.DrawRay(collision.GetContact(0).point, normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
+            Debug.DrawRay(collision.GetContact(0).point, normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
             var currentVelocity = _rb.velocity;
             var direction = Vector2.Reflect(currentVelocity, normal);
-            UnityEngine.Debug.DrawRay(collision.GetContact(0).point, direction * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
+            Debug.DrawRay(collision.GetContact(0).point, direction * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
             var gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
             _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
             _rb.velocity = NewRotation(direction) * Vector2.up * currentVelocity.magnitude;
