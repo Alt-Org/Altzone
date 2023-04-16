@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -9,7 +8,6 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
-using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class InvFront : MonoBehaviour
