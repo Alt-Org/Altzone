@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -5,6 +6,10 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
 using System.Collections;
+using System.Collections.ObjectModel;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class InvFront : MonoBehaviour
@@ -38,7 +43,10 @@ public class InvFront : MonoBehaviour
 
     private IEnumerator Begin()
     {
-        yield return Storefront.Get().GetAllGameFurnitureYield(result => _items = result.ToList());
+        var gameConfig = GameConfig.Get();
+        var playerSettings = gameConfig.PlayerSettings;
+        var playerGuid = playerSettings.PlayerGuid;
+        yield return StartCoroutine(GetFurnitureFromClanInventory(playerGuid));
 
         MakeSlots();
         SortStored(); // Sorting before setting the slots / SetSlots is already in SortStored so no need to do it here
@@ -49,6 +57,52 @@ public class InvFront : MonoBehaviour
         startCompleted = true;
     }
 
+    private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
+    {
+        var store = Storefront.Get();
+
+        // Get clan furniture from inventory.
+        List<ClanFurniture> clanFurnitureList = null;
+        store.GetPlayerData(playerGuid, playerData =>
+        {
+            if (playerData == null || !playerData.HasClanId)
+            {
+                clanFurnitureList = new List<ClanFurniture>();
+                return;
+            }
+            store.GetClanData(playerData.ClanId, clanData =>
+            {
+                clanFurnitureList = clanData?.Inventory.Furniture ?? new List<ClanFurniture>();
+            });
+        });
+        // Wait for list to arrive.
+        yield return new WaitUntil(() => clanFurnitureList != null);
+
+        // Create furniture list for UI.
+        _items = new List<GameFurniture>();
+        if (clanFurnitureList.Count == 0)
+        {
+            Debug.Log($"found clan items {_items.Count}");
+            yield break;
+        }
+
+        // Find actual furniture pieces for the UI.
+        ReadOnlyCollection<GameFurniture> allItems = null;
+        yield return store.GetAllGameFurnitureYield(result => allItems = result);
+        Debug.Log($"all items {allItems.Count}");
+        foreach (var clanFurniture in clanFurnitureList)
+        {
+            var gameFurnitureId = clanFurniture.GameFurnitureId;
+            var furniture = allItems.FirstOrDefault(x => x.Id == gameFurnitureId);
+            if (furniture == null)
+            {
+                continue;
+            }
+            _items.Add(furniture);
+        }
+        Debug.Log($"found clan items {_items.Count}");
+    }
+    
     private void MakeSlots()
     {
         for (int i = 0; i < _items.Count; i++)
