@@ -171,19 +171,21 @@ public static class Debug
         if (method == null || method.ReflectedType == null)
         {
             UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)message, context);
+            return;
         }
-        else if (IsMethodAllowedForLog(method))
+        if (!IsMethodAllowedForLog(method))
         {
-            var prefix = GetPrefix(method, memberName);
-            if (AppPlatform.IsEditor)
-            {
-                var contextTag = context != null ? _contextTag : string.Empty;
-                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}{contextTag}", context);
-            }
-            else
-            {
-                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}", context);
-            }
+            return;
+        }
+        var prefix = GetPrefix(method, memberName);
+        if (AppPlatform.IsEditor)
+        {
+            var contextTag = context != null ? _contextTag : string.Empty;
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}{contextTag}", context);
+        }
+        else
+        {
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}", context);
         }
     }
 
@@ -198,11 +200,13 @@ public static class Debug
         if (method == null || method.ReflectedType == null)
         {
             UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, format, args);
+            return;
         }
-        else if (IsMethodAllowedForLog(method))
+        if (!IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, $"{GetPrefix(method)}{format}", args);
+            return;
         }
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, $"{GetPrefix(method)}{format}", args);
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
