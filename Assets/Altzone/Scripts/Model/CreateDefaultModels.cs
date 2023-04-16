@@ -38,7 +38,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 3;
+        internal const int ClanDataVersion = 4;
 
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
@@ -47,15 +47,20 @@ namespace Altzone.Scripts.Model
             var furnitureCounter = 0;
             foreach (var gameFurniture in furniture)
             {
+                if (gameFurniture.Id.Contains("pommi"))
+                {
+                    continue;
+                }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(++furnitureCounter, gameFurniture.Id));
             }
-            var bombs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pommi")).ToList();
             var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("tuoli")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pöytä")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.EndsWith("y")).ToList();
 
-            var bomb1 = bombs[0];
-            var bomb2 = bombs[bombs.Count - 1];
+            // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
+            var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
+            var bomb1 = new ClanFurniture(++furnitureCounter, bombs[0].Id);
+            var bomb2 = new ClanFurniture(++furnitureCounter, bombs[bombs.Count - 1].Id);
 
             // Create some Raid game rooms for testing.
             const int rowCount = 9;
