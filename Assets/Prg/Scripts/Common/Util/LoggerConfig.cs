@@ -9,38 +9,46 @@ using UnityEngine;
 namespace Prg.Scripts.Common.Util
 {
     /// <summary>
-    /// Debug logger config.
+    /// Debug logger config for test and production.
     /// </summary>
     /// <remarks>
     /// Uncomment CreateAssetMenu line below to create <c>LoggerConfig</c> asset for new project using Assets->Create menu<br />
-    /// and save it in version control and then comment CreateAssetMenu line again.
+    /// and save it in version control and then comment CreateAssetMenu line again.<br />
+    /// Comment or delete CreateAssetMenu line for LocalLoggerConfig!
     /// </remarks>
     // [CreateAssetMenu(menuName = "ALT-Zone/" + nameof(LoggerConfig))]
+    [CreateAssetMenu(menuName = "ALT-Zone/LocalLoggerConfig", fileName = "LocalLoggerConfig")]
     public class LoggerConfig : ScriptableObject
     {
         /// <summary>
-        /// Class <c>RegExpFilter</c> contains regexp pattern and flag to include or exclude class name filter patterns from logging.
+        /// Immutable <c>RegExFilter</c> contains regex pattern and flag to include (log) or exclude (skip) given class from logging.<br />
+        /// See https://regexr.com/
         /// </summary>
-        private class RegExpFilter
+        private class RegExFilter
         {
-            public bool IsLogged;
-            public Regex Regex;
+            public readonly Regex Regex;
+            public readonly bool IsLogged;
+
+            public RegExFilter(string regex, bool isLogged)
+            {
+                const RegexOptions regexOptions = RegexOptions.Singleline | RegexOptions.CultureInvariant;
+                Regex = new Regex(regex, regexOptions);
+                IsLogged = isLogged;
+            }
         }
 
-        private const string Tooltip1 = "Default value for non matching debug lines";
-        private const string Tooltip2 = "Is logging files without a namespace forced to be logged always";
-        private const string Tooltip3 = "Is logging to file enabled";
-        private const string Tooltip4 = "Color for logged classname";
-        private const string Tooltip5 = "Color to 'mark' logged context objects";
-        private const string Tooltip6 = "Regular expressions with 1/0 to match logged lines and enable/disable their logging";
+        private const string TooltipLog = "Is logging to file enabled";
+        private const string TooltipColor = "Color for logged classname";
+        private const string TooltipContext = "Color to 'mark' logged context objects";
+        private const string TooltipRegExp = "Regular expressions with 1/0 to match logged lines and enable/disable their logging";
 
-        [Header("Settings"), Tooltip(Tooltip3)] public bool _isLogToFile;
-        [Tooltip(Tooltip4)] public string _colorForClassName = "white";
-        [Tooltip(Tooltip5)] public string _colorForContextTagName = "orange";
+        [Header("Settings"), Tooltip(TooltipLog)] public bool _isLogToFile;
+        [Tooltip(TooltipColor)] public string _colorForClassName = "white";
+        [Tooltip(TooltipContext)] public string _colorForContextTagName = "orange";
 
-        [Header("Class Filter"), TextArea(5, 20), Tooltip(Tooltip6)] public string _loggerRules;
+        [Header("Class Filter"), TextArea(5, 20), Tooltip(TooltipRegExp)] public string _loggerRules;
 
-        [Header("Classes Seen"), TextArea(5, 20), Tooltip(Tooltip6)] public string _loggedTypes;
+        [Header("Classes Seen"), TextArea(5, 20), Tooltip(TooltipRegExp)] public string _loggedTypes;
 
         private static string _prefixTag;
         private static string _suffixTag;
@@ -52,7 +60,7 @@ namespace Prg.Scripts.Common.Util
         /// <param name="config"></param>
         public static void CreateLoggerFilterConfig(LoggerConfig config)
         {
-            string FilterClassNameLogMessage(string message)
+            string FilterClassNameForLogMessageCallback(string message)
             {
                 return message.Replace(_prefixTag, "[").Replace(_suffixTag, "]");
             }
@@ -74,7 +82,7 @@ namespace Prg.Scripts.Common.Util
                     _prefixTag = $"[<color={config._colorForClassName}>";
                     _suffixTag = "</color>]";
                     Debug.SetTagsForClassName(_prefixTag, _suffixTag);
-                    LogWriter.AddLogLineContentFilter(FilterClassNameLogMessage);
+                    LogWriter.AddLogLineContentFilter(FilterClassNameForLogMessageCallback);
                 }
                 if (!string.IsNullOrWhiteSpace(config._colorForContextTagName))
                 {
@@ -84,19 +92,26 @@ namespace Prg.Scripts.Common.Util
                 LoggedTypesForEditor.Clear();
                 config._loggedTypes = string.Empty;
             }
-            var filterList = config.BuildFilter();
-            if (filterList.Count == 0)
+            var capturedRegExFilters = BuildFilter(config._loggerRules ?? string.Empty);
+            if (capturedRegExFilters.Count == 0)
             {
+#if UNITY_EDITOR
+                // Add greedy filter to catch everything in Editor.
+                capturedRegExFilters.Add(new RegExFilter("^.*=1", true));
+#else
+                // No filtering configured, everything will be logged by default.
                 return;
+#endif
             }
 
-            // Install log filter as last thing here.
-            Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
+            // Install log filter callback as last thing here.
+            Debug.AddLogLineAllowedFilter(LogLineAllowedFilterCallback);
 #if FORCE_LOG || UNITY_EDITOR
 #else
             UnityEngine.Debug.LogWarning($"NOTE! Application logging is totally disabled on platform: {Application.platform}");
 #endif
-            bool LogLineAllowedFilter(MethodBase method)
+
+            bool LogLineAllowedFilterCallback(MethodBase method)
             {
                 // For anonymous types we try its parent type.
                 var isAnonymous = method.ReflectedType?.Name.StartsWith("<");
@@ -119,7 +134,7 @@ namespace Prg.Scripts.Common.Util
 #endif
                 // If filter does not match we log them always.
                 // - add filter rule "^.*=0" to disable everything after this point
-                var match = filterList.FirstOrDefault(x => x.Regex.IsMatch(type.FullName));
+                var match = capturedRegExFilters.FirstOrDefault(x => x.Regex.IsMatch(type.FullName));
                 return match?.IsLogged ?? true;
             }
         }
@@ -144,13 +159,12 @@ namespace Prg.Scripts.Common.Util
             LogWriter.AddLogLineContentFilter(FilterPhotonLogMessage);
         }
 
-        private List<RegExpFilter> BuildFilter()
+        private static List<RegExFilter> BuildFilter(string lines)
         {
             // Note that line parsing relies on TextArea JSON serialization which I have not tested very well!
             // - lines can start and end with "'" if content has something that needs to be "protected" during JSON parsing
             // - JSON multiline separator is LF "\n"
-            var list = new List<RegExpFilter>();
-            var lines = _loggerRules ?? string.Empty;
+            var list = new List<RegExFilter>();
             if (lines.StartsWith("'") && lines.EndsWith("'"))
             {
                 lines = lines.Substring(1, lines.Length - 2);
@@ -158,7 +172,7 @@ namespace Prg.Scripts.Common.Util
             foreach (var token in lines.Split('\n'))
             {
                 var line = token.Trim();
-                if (line.StartsWith("#"))
+                if (line.StartsWith("#") || string.IsNullOrEmpty(line))
                 {
                     continue;
                 }
@@ -176,12 +190,7 @@ namespace Prg.Scripts.Common.Util
                         continue;
                     }
                     var isLogged = loggedValue != 0;
-                    const RegexOptions regexOptions = RegexOptions.Singleline | RegexOptions.CultureInvariant;
-                    var filter = new RegExpFilter
-                    {
-                        Regex = new Regex(parts[0].Trim(), regexOptions),
-                        IsLogged = isLogged
-                    };
+                    var filter = new RegExFilter(parts[0].Trim(), isLogged);
                     list.Add(filter);
                 }
                 catch (Exception e)
