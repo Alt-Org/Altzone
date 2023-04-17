@@ -22,9 +22,9 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             
-            ServiceLoader serviceLoader = null;
-            yield return new WaitUntil(() => (serviceLoader = FindObjectOfType<ServiceLoader>()) != null);
-            yield return new WaitUntil(() => serviceLoader.IsReady);
+            ServiceBootLoader serviceBootLoader = null;
+            yield return new WaitUntil(() => (serviceBootLoader = FindObjectOfType<ServiceBootLoader>()) != null);
+            yield return new WaitUntil(() => serviceBootLoader.IsReady);
 
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");

@@ -11,6 +11,11 @@ namespace Prg.Scripts.Common.Util
     /// <summary>
     /// Debug logger config.
     /// </summary>
+    /// <remarks>
+    /// Uncomment CreateAssetMenu line below to create <c>LoggerConfig</c> asset for new project using Assets->Create menu<br />
+    /// and save it in version control and then comment CreateAssetMenu line again.
+    /// </remarks>
+    // [CreateAssetMenu(menuName = "ALT-Zone/" + nameof(LoggerConfig))]
     public class LoggerConfig : ScriptableObject
     {
         /// <summary>
@@ -29,9 +34,7 @@ namespace Prg.Scripts.Common.Util
         private const string Tooltip5 = "Color to 'mark' logged context objects";
         private const string Tooltip6 = "Regular expressions with 1/0 to match logged lines and enable/disable their logging";
 
-        [Header("Settings"), Tooltip(Tooltip1)] public bool _isDefaultMatchTrue;
-        [Tooltip(Tooltip2)] public bool _isLogNoNamespaceForced;
-        [Tooltip(Tooltip3)] public bool _isLogToFile;
+        [Header("Settings"), Tooltip(Tooltip3)] public bool _isLogToFile;
         [Tooltip(Tooltip4)] public string _colorForClassName = "white";
         [Tooltip(Tooltip5)] public string _colorForContextTagName = "orange";
 
@@ -43,7 +46,11 @@ namespace Prg.Scripts.Common.Util
         private static string _suffixTag;
         private static readonly HashSet<string> LoggedTypesForEditor = new();
 
-        public static void CreateLoggerConfig(LoggerConfig config)
+        /// <summary>
+        /// Creates a config for filtering (out) some Debug logging messages.
+        /// </summary>
+        /// <param name="config"></param>
+        public static void CreateLoggerFilterConfig(LoggerConfig config)
         {
             string FilterClassNameLogMessage(string message)
             {
@@ -84,6 +91,11 @@ namespace Prg.Scripts.Common.Util
             }
 
             // Install log filter as last thing here.
+            Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
+#if FORCE_LOG || UNITY_EDITOR
+#else
+            UnityEngine.Debug.LogWarning($"NOTE! Application logging is totally disabled on platform: {Application.platform}");
+#endif
             bool LogLineAllowedFilter(MethodBase method)
             {
                 // For anonymous types we try its parent type.
@@ -97,6 +109,7 @@ namespace Prg.Scripts.Common.Util
                     return true;
                 }
 #if UNITY_EDITOR
+                // Collect all logged types in Editor just for fun.
                 if (LoggedTypesForEditor.Add(type.FullName))
                 {
                     var list = LoggedTypesForEditor.ToList();
@@ -104,20 +117,11 @@ namespace Prg.Scripts.Common.Util
                     config._loggedTypes = string.Join('\n', list);
                 }
 #endif
-                if (config._isLogNoNamespaceForced && string.IsNullOrEmpty(type.Namespace))
-                {
-                    // Should not have classes without a namespace but allow logging for them anyways.
-                    return true;
-                }
+                // If filter does not match we log them always.
+                // - add filter rule "^.*=0" to disable everything after this point
                 var match = filterList.FirstOrDefault(x => x.Regex.IsMatch(type.FullName));
-                return match?.IsLogged ?? config._isDefaultMatchTrue;
+                return match?.IsLogged ?? true;
             }
-
-            Debug.AddLogLineAllowedFilter(LogLineAllowedFilter);
-#if FORCE_LOG || UNITY_EDITOR
-#else
-            UnityEngine.Debug.LogWarning($"NOTE! Application logging is totally disabled on platform: {Application.platform}");
-#endif
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]

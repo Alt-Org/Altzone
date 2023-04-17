@@ -6,9 +6,6 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
-#if USE_UNITY_ADS
-using UnityEngine.Advertisements;
-#endif
 
 namespace Altzone.Scripts
 {
@@ -17,25 +14,35 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
+            // Setup testing first before proceeding to load the game.
             PrepareLocalTesting();
+            
             var startupMessage = new StringBuilder()
                 .Append(" Game ").Append(Application.productName)
                 .Append(" Version ").Append(Application.version)
                 .Append(" Photon ").Append(PhotonLobby.GameVersion)
                 .Append(" IsSimulator ").Append(AppPlatform.IsSimulator)
-                .Append(" Photon ").Append(PhotonLobby.GameVersion)
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
-            UnityEngine.Debug.Log(startupMessage);
-            PrepareDevice();
-            UnitySingleton.CreateStaticSingleton<ServiceLoader>();
+            Debug.Log(startupMessage);
+            PrepareLocalDevice();
+            UnitySingleton.CreateStaticSingleton<ServiceBootLoader>();
             PlatformInfo();
         }
 
         /// <summary>
-        /// Throw error is platform is not known, supported or tested. 
+        /// Device specific local setup before game is started.
+        /// </summary>
+        private static void PrepareLocalDevice()
+        {
+            // Nothing special to do here, ServiceLoader & co takes care of things for now.
+        }
+
+        /// <summary>
+        /// Throws informative exception if is platform is not officially supported. 
         /// </summary>
         /// <remarks>
+        /// This list should contain all possible defines for platform specific compilation.
         /// https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
         /// </remarks>
         private static void PlatformInfo()
@@ -56,7 +63,7 @@ namespace Altzone.Scripts
             return;
 #else
             // This is 'harmless' but gets logged into analytics system for resolving.
-            throw new UnityException($"Platform {Application.platform} is not supported or tested");
+            throw new UnityException($"INFO: this {Application.platform} platform is not officially supported");
 #endif
         }
 
@@ -65,32 +72,41 @@ namespace Altzone.Scripts
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             SetEditorStatus(localDevConfig);
             SetupLogging(localDevConfig);
-        }
-
-        private static void PrepareDevice()
-        {
-            // Nothing special to do here, ServiceLoader & co takes care of things for now.
+            SetupLocalTesting(localDevConfig);
         }
 
         private static void SetupLogging(LocalDevConfig localDevConfig)
         {
-            var loggerConfig = localDevConfig != null && localDevConfig._loggerConfig
-                ? localDevConfig._loggerConfig
-                : Resources.Load<LoggerConfig>(nameof(LoggerConfig));
+            LoggerConfig loggerConfig = null;
+            if (localDevConfig != null && localDevConfig._loggerConfig != null)
+            {
+                // Local override.
+                loggerConfig = localDevConfig._loggerConfig;
+            }
+            if (loggerConfig == null)
+            {
+                // Default settings.
+                loggerConfig = Resources.Load<LoggerConfig>(nameof(LoggerConfig));
+            }
             if (loggerConfig != null)
             {
-                LoggerConfig.CreateLoggerConfig(loggerConfig);
-            }
-            if (localDevConfig != null)
-            {
-                if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
-                {
-                    var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
-                    PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
-                }
+                LoggerConfig.CreateLoggerFilterConfig(loggerConfig);
             }
         }
 
+        private static void SetupLocalTesting(LocalDevConfig localDevConfig)
+        {
+            if (localDevConfig == null)
+            {
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
+            {
+                var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
+                PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
+            }
+        }
+        
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
         private static void SetEditorStatus(LocalDevConfig localDevConfig)
         {
@@ -109,26 +125,4 @@ namespace Altzone.Scripts
             }
         }
     }
-
-#if USE_UNITY_ADS
-#else
-    // Keep compiler happy with these dummy classes for UnityEngine.Advertisements package when UNITY ADS are not in use.
-    public class MetaData
-    {
-        public MetaData(string category)
-        {
-        }
-
-        public void Set(string key, object value)
-        {
-        }
-    }
-
-    public static class Advertisement
-    {
-        public static void SetMetaData(MetaData _)
-        {
-        }
-    }
-#endif
 }
