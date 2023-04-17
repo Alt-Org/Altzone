@@ -135,6 +135,7 @@ namespace Battle.Scripts.Battle.Players
             var playerDriver = instance.GetComponent<PlayerDriverPhoton>();
             Assert.IsNotNull(playerDriver, $"top level 'PlayerDriverPhoton' is missing from prefab {networkPrefabName}");
             var playerInputHandler = Context.GetPlayerInputHandler;
+            playerInputHandler._hostForInput = instance;
             playerInputHandler.OnMoveTo = playerDriver.MoveTo;
             
         }
