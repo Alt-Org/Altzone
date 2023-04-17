@@ -48,8 +48,6 @@ namespace Prg.Scripts.Common.Util
 
         [Header("Class Filter"), TextArea(5, 20), Tooltip(TooltipRegExp)] public string _loggerRules;
 
-        [Header("Classes Seen"), TextArea(5, 20), Tooltip(TooltipRegExp)] public string _loggedTypes;
-
         private static string _prefixTag;
         private static string _suffixTag;
         private static readonly HashSet<string> LoggedTypesForEditor = new();
@@ -57,8 +55,9 @@ namespace Prg.Scripts.Common.Util
         /// <summary>
         /// Creates a config for filtering (out) some Debug logging messages.
         /// </summary>
-        /// <param name="config"></param>
-        public static void CreateLoggerFilterConfig(LoggerConfig config)
+        /// <param name="config">the config</param>
+        /// <param name="setLoggedDebugTypes">callback to record all types that are suing Debug.log calls in Editor</param>
+        public static void CreateLoggerFilterConfig(LoggerConfig config, Action<string> setLoggedDebugTypes)
         {
             string FilterClassNameForLogMessageCallback(string message)
             {
@@ -90,7 +89,7 @@ namespace Prg.Scripts.Common.Util
                 }
                 // Clear previous run.
                 LoggedTypesForEditor.Clear();
-                config._loggedTypes = string.Empty;
+                setLoggedDebugTypes?.Invoke(string.Empty);
             }
             var capturedRegExFilters = BuildFilter(config._loggerRules ?? string.Empty);
             if (capturedRegExFilters.Count == 0)
@@ -129,7 +128,8 @@ namespace Prg.Scripts.Common.Util
                 {
                     var list = LoggedTypesForEditor.ToList();
                     list.Sort();
-                    config._loggedTypes = string.Join('\n', list);
+                    // Lines should end into something that is not kept in version control.
+                    setLoggedDebugTypes?.Invoke(string.Join('\n', list));
                 }
 #endif
                 // If filter does not match we log them always.

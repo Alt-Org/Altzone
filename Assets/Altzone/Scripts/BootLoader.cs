@@ -11,12 +11,18 @@ namespace Altzone.Scripts
 {
     internal static class BootLoader
     {
+        /// <summary>
+        /// Starts the game when (before) first scene is loaded.
+        /// </summary>
+        /// <remarks>
+        /// Test and production functionality is not quite there yet, this needs more works to separate test things from production.
+        /// </remarks>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
             // Setup testing first before proceeding to load the game.
             PrepareLocalTesting();
-            
+
             var startupMessage = new StringBuilder()
                 .Append(" Game ").Append(Application.productName)
                 .Append(" Version ").Append(Application.version)
@@ -69,8 +75,8 @@ namespace Altzone.Scripts
 
         private static void PrepareLocalTesting()
         {
+            SetEditorStatus();
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
-            SetEditorStatus(localDevConfig);
             SetupLogging(localDevConfig);
             SetupLocalTesting(localDevConfig);
         }
@@ -90,7 +96,7 @@ namespace Altzone.Scripts
             }
             if (loggerConfig != null)
             {
-                LoggerConfig.CreateLoggerFilterConfig(loggerConfig);
+                LoggerConfig.CreateLoggerFilterConfig(loggerConfig, localDevConfig != null ? localDevConfig.SetLoggedDebugTypes : null);
             }
         }
 
@@ -105,16 +111,7 @@ namespace Altzone.Scripts
                 var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
                 PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
             }
-        }
-        
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("FORCE_LOG")]
-        private static void SetEditorStatus(LocalDevConfig localDevConfig)
-        {
-            // This is just for debugging to get strings (numbers) formatted consistently
-            // - everything that goes to UI should go through Localizer using player's locale preferences
-            var ci = CultureInfo.InvariantCulture;
-            Thread.CurrentThread.CurrentCulture = ci;
-            Thread.CurrentThread.CurrentUICulture = ci;
+#if UNITY_EDITOR
             if (localDevConfig != null && localDevConfig._targetFrameRateOverride != -1)
             {
                 Application.targetFrameRate = localDevConfig._targetFrameRateOverride;
@@ -123,6 +120,17 @@ namespace Altzone.Scripts
             {
                 Application.targetFrameRate = -1;
             }
+#endif
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        private static void SetEditorStatus()
+        {
+            // This is just for debugging to get strings (numbers) formatted consistently
+            // - everything that goes to UI should go through Localizer using player's locale preferences
+            var ci = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentCulture = ci;
+            Thread.CurrentThread.CurrentUICulture = ci;
         }
     }
 }

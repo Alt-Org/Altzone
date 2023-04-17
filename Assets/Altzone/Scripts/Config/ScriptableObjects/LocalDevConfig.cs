@@ -1,3 +1,4 @@
+using System;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 
@@ -28,5 +29,15 @@ namespace Altzone.Scripts.Config.ScriptableObjects
         /// Override Application.targetFrameRate for Game View in UNITY Editor, default value is -1 to use.
         /// </summary>
         [Header("Editor Settings"), Range(-1, 999)] public int _targetFrameRateOverride = -1;
+
+        /// <summary>
+        /// List of classes that use Debug.Log calls, just for your information :-)
+        /// </summary>
+        [Header("Classes Seen"), TextArea(5, 20), Tooltip("List of classes using Debug.Log in last run")] public string _loggedTypes;
+
+        public void SetLoggedDebugTypes(string lines)
+        {
+            _loggedTypes = lines;
+        }
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf76c67bdba3d79488064bc73ab3316c, type: 3}
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
-  _isLogToFile: 0
+  _isLogToFile: 1
   _colorForClassName: white
   _colorForContextTagName: orange
   _loggerRules: '.*PhotonListener.*=1
@@ -44,58 +44,3 @@ MonoBehaviour:
     ^Sprites.*=1
 
     ^Tests.*=1'
-  _loggedTypes: 'Altzone.Scripts.BootLoader
-
-    Altzone.Scripts.Model.LocalModels
-
-    Altzone.Scripts.ServiceBootLoader
-
-    Battle.Scripts.Battle.Game.CameraRotate
-
-    Battle.Scripts.Battle.Players.PhotonPlayerInstantiate
-
-    Battle.Scripts.Battle.Players.Pickup
-
-    Battle.Scripts.Battle.Players.PlayerActor
-
-    Battle.Scripts.Battle.Players.PlayerInputHandler
-
-    Battle.Scripts.Test.RoomLoaderTest
-
-    Battle.Scripts.Test.ShieldBoxColliderTest
-
-    Battle0.Scripts.Lobby.InChooseModel.ModelController
-
-    Battle0.Scripts.Lobby.InChooseModel.ModelView
-
-    Battle0.Scripts.Lobby.InLobby.InLobbyController
-
-    Battle0.Scripts.Lobby.InLobby.LobbyRoomListingController
-
-    Battle0.Scripts.Lobby.InRoom.PaneInRoom
-
-    Battle0.Scripts.Lobby.InRoom.PanePlayerListing
-
-    Battle0.Scripts.Lobby.InRoom.RoomSetupManager
-
-    Battle0.Scripts.Lobby.LobbyManager
-
-    InvFront
-
-    MenuUi.Scripts.Loader.GameLoader
-
-    MenuUi.Scripts.Window.DefaultWindow
-
-    MenuUi.Scripts.Window.EscapeKeyHandler
-
-    MenuUi.Scripts.Window.NaviButton
-
-    MenuUi.Scripts.Window.SceneLoader
-
-    MenuUi.Scripts.Window.WindowManager
-
-    Prg.Scripts.Common.Photon.PhotonListener
-
-    Prg.Scripts.Common.Photon.PhotonLobby
-
-    Prg.Scripts.Common.Photon.PhotonRoomList'
