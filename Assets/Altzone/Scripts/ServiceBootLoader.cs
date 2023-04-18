@@ -14,7 +14,7 @@ namespace Altzone.Scripts
     /// Loads all services used by this game.
     /// </summary>
     [DefaultExecutionOrder(-100)]
-    public class ServiceLoader : MonoBehaviour
+    public class ServiceBootLoader : MonoBehaviour
     {
         [SerializeField, Tooltip("Shows how long it took to load services")] private string _startupTime;
 

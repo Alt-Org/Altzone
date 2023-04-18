@@ -66,11 +66,6 @@ namespace Prg.Editor.Editors
                 var line = folder.Replace("Assets/", "^");
                 line += $".*={DefaultLoggingState}";
                 builder.Append(line).AppendLine();
-                if (line.StartsWith("^Tests.*"))
-                {
-                    // PlayMode tests namespace can be absolute for some reason!?
-                    builder.Append($"^Assets\\.Tests\\..*={DefaultLoggingState}").AppendLine();
-                }
             }
             while (builder[^1] == '\r' || builder[^1] == '\n')
             {

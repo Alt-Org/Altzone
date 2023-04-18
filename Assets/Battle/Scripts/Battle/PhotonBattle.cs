@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Altzone.Scripts.Config;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Battle
@@ -17,6 +15,7 @@ namespace Battle.Scripts.Battle
     {
         public const string PlayerPositionKey = "pp";
         public const string PlayerPrefabIdKey = "mk";
+        public const string BattleWinningTeamKey = "wt";
 
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2
