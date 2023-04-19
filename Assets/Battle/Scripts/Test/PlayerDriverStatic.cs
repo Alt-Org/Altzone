@@ -67,6 +67,7 @@ namespace Battle.Scripts.Test
                 return;
             }
             var playerInputHandler = Context.GetPlayerInputHandler;
+            playerInputHandler._hostForInput = gameObject;
             playerInputHandler.OnMoveTo = OnMoveTo;
         }
 

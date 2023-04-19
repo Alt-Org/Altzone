@@ -27,8 +27,6 @@ namespace Battle.Scripts.Battle.Players
 
         public string PlayerName;
 
-        private bool _isLocal;
-
         [Header ("Testing")]
         [SerializeField] private bool _isTesting = false;
         [SerializeField] private int _playerPrefabID;
@@ -70,19 +68,12 @@ namespace Battle.Scripts.Battle.Players
         private void OnEnable()
         {
             var player = _photonView.Owner;
-            _isLocal = player.IsLocal;
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _teamNumber);
             if (_teamNumber == PhotonBattle.TeamBetaValue)
             {
                 Rotate(180f);
             }
-            if (!_isLocal)
-            {
-                return;
-            }
-            var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler.OnMoveTo = OnMoveTo;
         }
 
         public string NickName => _photonView.Owner.NickName;
@@ -100,7 +91,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor.SetRotation(angle);
         }
 
-        private void OnMoveTo(Vector2 targetPosition)
+        public void MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove)
             {

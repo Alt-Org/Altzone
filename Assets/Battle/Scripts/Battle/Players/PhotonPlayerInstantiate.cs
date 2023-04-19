@@ -130,7 +130,14 @@ namespace Battle.Scripts.Battle.Players
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
             Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
-            PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            // Connect local player input handler to photon player driver driver. 
+            var playerDriver = instance.GetComponent<PlayerDriverPhoton>();
+            Assert.IsNotNull(playerDriver, $"top level 'PlayerDriverPhoton' is missing from prefab {networkPrefabName}");
+            var playerInputHandler = Context.GetPlayerInputHandler;
+            playerInputHandler._hostForInput = instance;
+            playerInputHandler.OnMoveTo = playerDriver.MoveTo;
+            
         }
     }
 }
