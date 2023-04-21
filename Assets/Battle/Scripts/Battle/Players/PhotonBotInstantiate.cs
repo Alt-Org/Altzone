@@ -125,7 +125,7 @@ namespace Battle.Scripts.Battle.Players
 
         private void SetDebugPlayer(Player player)
         {
-            PhotonBattle.SetDebugPlayer(player, _debug._playerPos);
+            throw new NotImplementedException();
         }
 
         private static void InstantiateLocalPlayer(Player player, string networkPrefabName, GameObject InputHandler)
