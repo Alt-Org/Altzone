@@ -11,7 +11,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
     /// </summary>
-    public class PhotonPlayerInstantiate : MonoBehaviourPunCallbacks
+    public class PhotonBotInstantiate : MonoBehaviourPunCallbacks
     {
         [Serializable]
         internal class DebugSettings
@@ -25,6 +25,8 @@ namespace Battle.Scripts.Battle.Players
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
         }
 
+        [SerializeField] private GameObject BotInputManager;
+
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -35,7 +37,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Assert.IsNotNull(_photonPrefab, "_photonPrefab != null");
             base.OnEnable();
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"work start {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
             if (PhotonNetwork.InRoom)
             {
@@ -46,14 +48,14 @@ namespace Battle.Scripts.Battle.Players
         public override void OnDisable()
         {
             base.OnDisable();
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"work done {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
         }
 
         public override void OnJoinedRoom()
         {
             var room = PhotonNetwork.CurrentRoom;
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
             if (PhotonBattle.IsRealPlayer(player))
@@ -95,7 +97,7 @@ namespace Battle.Scripts.Battle.Players
             yield return null;
             var delay = new WaitForSeconds(_debug._waitForPlayerPropertiesToUpdate);
             yield return delay;
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             if (!PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
             {
                 SetDebugPlayer(player);
@@ -117,7 +119,7 @@ namespace Battle.Scripts.Battle.Players
                 SetDebugPlayer(player);
                 yield return delay;
             }
-            InstantiateLocalPlayer(player, _photonPrefab.name);
+            InstantiateLocalPlayer(player, _photonPrefab.name, BotInputManager);
             enabled = false;
         }
 
@@ -126,7 +128,7 @@ namespace Battle.Scripts.Battle.Players
             PhotonBattle.SetDebugPlayer(player, _debug._playerPos);
         }
 
-        private static void InstantiateLocalPlayer(Player player, string networkPrefabName)
+        private static void InstantiateLocalPlayer(Player player, string networkPrefabName, GameObject InputHandler)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
             Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
@@ -134,9 +136,8 @@ namespace Battle.Scripts.Battle.Players
             // Connect local player input handler to photon player driver driver. 
             var playerDriver = instance.GetComponent<PlayerDriverPhoton>();
             Assert.IsNotNull(playerDriver, $"top level 'PlayerDriverPhoton' is missing from prefab {networkPrefabName}");
-            var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler._hostForInput = instance;
-            playerInputHandler.OnMoveTo = playerDriver.MoveTo;
+            InputHandler.GetComponent<BotInputHandler>()._hostForInput = instance;
+            InputHandler.GetComponent<BotInputHandler>().OnMoveTo = playerDriver.MoveTo;
         }
     }
 }
