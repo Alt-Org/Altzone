@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf76c67bdba3d79488064bc73ab3316c, type: 3}
   m_Name: LoggerConfig
   m_EditorClassIdentifier: 
-  _isDefaultMatchTrue: 0
-  _isLogNoNamespaceForced: 1
-  _isLogToFile: 0
+  _isLogToFile: 1
   _colorForClassName: white
   _colorForContextTagName: orange
   _loggerRules: '.*PhotonListener.*=1
@@ -29,20 +27,20 @@ MonoBehaviour:
 
     ^Battle0.*=1
 
-    ^Editor.*=1
-
     ^MenuUi.*=1
 
     ^Models.*=1
+
+    ^Plugins.*=1
 
     ^Prg.*=1
 
     ^Raid.*=1
 
+    ^Raid0.*=1
+
     ^Sounds.*=1
 
     ^Sprites.*=1
 
-    ^Tests.*=1
-
-    ^Assets\.Tests\..*=1'
+    ^Tests.*=1'

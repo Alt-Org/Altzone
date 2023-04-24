@@ -2002,7 +2002,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1746403346, guid: 925a7e79e186b3b449a0b02f69ed6007, type: 3}
       propertyPath: _debug._playerPos
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1746403346, guid: 925a7e79e186b3b449a0b02f69ed6007, type: 3}
       propertyPath: _debug._timeoutFastWait
@@ -2071,6 +2071,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PhotonPlayerDriverInstantiate
+      objectReference: {fileID: 0}
+    - target: {fileID: 2073224928064320321, guid: 925a7e79e186b3b449a0b02f69ed6007,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 925a7e79e186b3b449a0b02f69ed6007, type: 3}
@@ -2213,6 +2218,11 @@ PrefabInstance:
     - target: {fileID: 3935264899594760232, guid: c485b8144134c2645b59e6c0a1074a62,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3935264899594760233, guid: c485b8144134c2645b59e6c0a1074a62,
+        type: 3}
+      propertyPath: _isOfflineMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3935264899594760235, guid: c485b8144134c2645b59e6c0a1074a62,

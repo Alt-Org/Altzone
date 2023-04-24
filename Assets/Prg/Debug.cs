@@ -132,18 +132,26 @@ public static class Debug
     public static void Break() => UnityEngine.Debug.Break();
     public static void DebugBreak() => UnityEngine.Debug.DebugBreak();
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration, bool depthTest) =>
         UnityEngine.Debug.DrawLine(start, end, color, duration, depthTest);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration) => UnityEngine.Debug.DrawLine(start, end, color, duration);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color) => UnityEngine.Debug.DrawLine(start, end, color);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end) => UnityEngine.Debug.DrawLine(start, end);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration, bool depthTest) =>
         UnityEngine.Debug.DrawRay(start, dir, color, duration, depthTest);
 
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration) => UnityEngine.Debug.DrawRay(start, dir, color, duration);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color) => UnityEngine.Debug.DrawRay(start, dir, color);
+    [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir) => UnityEngine.Debug.DrawRay(start, dir);
 
     #endregion
@@ -163,19 +171,21 @@ public static class Debug
         if (method == null || method.ReflectedType == null)
         {
             UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)message, context);
+            return;
         }
-        else if (IsMethodAllowedForLog(method))
+        if (!IsMethodAllowedForLog(method))
         {
-            var prefix = GetPrefix(method, memberName);
-            if (AppPlatform.IsEditor)
-            {
-                var contextTag = context != null ? _contextTag : string.Empty;
-                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}{contextTag}", context);
-            }
-            else
-            {
-                UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}", context);
-            }
+            return;
+        }
+        var prefix = GetPrefix(method, memberName);
+        if (AppPlatform.IsEditor)
+        {
+            var contextTag = context != null ? _contextTag : string.Empty;
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}{contextTag}", context);
+        }
+        else
+        {
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, (object)$"{prefix}{message}", context);
         }
     }
 
@@ -190,11 +200,13 @@ public static class Debug
         if (method == null || method.ReflectedType == null)
         {
             UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, format, args);
+            return;
         }
-        else if (IsMethodAllowedForLog(method))
+        if (!IsMethodAllowedForLog(method))
         {
-            UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, $"{GetPrefix(method)}{format}", args);
+            return;
         }
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, $"{GetPrefix(method)}{format}", args);
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]

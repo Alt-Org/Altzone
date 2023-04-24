@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +13,8 @@ namespace Prg.Scripts.DevUtil
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
         private readonly GUIStyle _guiLabelStyle = new();
-        private readonly Rect _guiLabelPosition = new(5, 5, 100, 50);
+        private readonly Rect _guiLabelPosition = new(5, 5, 40, 15);
+        private readonly Rect _guiBoxPosition = new(3, 3, 43, 18);
 
         private string _fpsLabel = string.Empty;
         private readonly Dictionary<int, string> _labels = new();
@@ -54,6 +54,7 @@ namespace Prg.Scripts.DevUtil
 
         private void OnGUI()
         {
+            GUI.Box(_guiBoxPosition, string.Empty);
             GUI.Label(_guiLabelPosition, _fpsLabel, _guiLabelStyle);
         }
 #endif
