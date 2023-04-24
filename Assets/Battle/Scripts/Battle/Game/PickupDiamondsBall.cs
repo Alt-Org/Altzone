@@ -10,16 +10,33 @@ namespace Battle.Scripts.Battle.Game
 {
     internal class PickupDiamondsBall : MonoBehaviour
     {
-        public GameObject TeamDiamonds;
         [SerializeField] GameObject AlphaDiamondsText;
         [SerializeField] GameObject BetaDiamondsText;
+        public PhotonView View;
 
         private TMP_Text DiamondText;
+        public GameObject TeamDiamonds;
         public TeamDiamondCount TeamDiamondCount;
-        //public PhotonView View;
         public int TeamNumber;
 
-        public void TeamNumberChange()
+        private void Start()
+        {
+            View = transform.GetComponent<PhotonView>();
+        }
+
+        public void TeamNumberChange(int TeamNumberParam)
+        {
+            View.RPC("TeamNumberChangeRPC",  RpcTarget.All, TeamNumberParam);
+        }
+
+        [PunRPC]
+        private void TeamNumberChangeRPC(int TeamNumberParam)
+        {
+            TeamNumber = TeamNumberParam;
+            DiamondCounterChange();
+        }
+
+        public void DiamondCounterChange()
         {
             if (TeamNumber == 1)
             {
@@ -34,13 +51,23 @@ namespace Battle.Scripts.Battle.Game
         }
         
         private void OnTriggerEnter2D(Collider2D collision)
-        {
+        { 
             if (collision.gameObject.CompareTag("Diamond") && TeamNumber > 0)
             {
-                TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
-                DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    View.RPC("DiamondForBallRPC",  RpcTarget.All);
+                    //PhotonNetwork.Destroy(collision.gameObject);
+                }
                 Destroy(collision.gameObject);
             }
+        }
+
+        [PunRPC]
+        private void DiamondForBallRPC()
+        {
+            TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
+            DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
         }
     }
 }

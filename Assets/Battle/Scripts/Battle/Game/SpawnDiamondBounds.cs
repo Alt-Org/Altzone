@@ -18,9 +18,11 @@ public class SpawnDiamondBounds : MonoBehaviour
     public int SpawnY;
     public int PlayerLimit = 4;
     public bool StartBool;  //true
+    public PhotonView View;
 
     void Start()
     {
+        View = transform.GetComponent<PhotonView>();
         int i = 1;
         foreach (Transform t in SpawnPoints)
         { 
@@ -42,7 +44,7 @@ public class SpawnDiamondBounds : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(5f, 10f));
         SpawnY = Random.Range(0, SpawnPointsArray.Count);
-        transform.GetComponent<PhotonView>().RPC("DiamondRPC",  RpcTarget.All, SpawnY);
+        View.RPC("DiamondRPC",  RpcTarget.All, SpawnY);
     }
 
     [PunRPC]
