@@ -24,7 +24,7 @@ namespace Prg.Scripts.Common.Photon
         /// </summary>
         private readonly Action<EventData>[] _listeners = new Action<EventData>[EventCodeCount];
 
-        private readonly RaiseEventOptions _raiseEventOptions = new RaiseEventOptions
+        private readonly RaiseEventOptions _raiseEventOptions = new()
         {
             Receivers = ReceiverGroup.All
         };
