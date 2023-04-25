@@ -161,10 +161,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 1811067620}
   SpawnPoint: {fileID: 595202044}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChange: 4
   SpawnPointsArray: []
   center: {x: 4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
@@ -415,10 +420,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 513267982}
   SpawnPoint: {fileID: 974187756}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChange: 4
   SpawnPointsArray: []
   center: {x: -4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
@@ -634,10 +644,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 1687272358}
   SpawnPoint: {fileID: 565639873}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChange: 4
   SpawnPointsArray: []
   center: {x: 4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
@@ -727,10 +742,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 2139112062}
   SpawnPoint: {fileID: 1315077237}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChange: 4
   SpawnPointsArray: []
   center: {x: -4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}

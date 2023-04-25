@@ -9,8 +9,10 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] Transform Background;
         [SerializeField] Transform GridOverlay;
         [SerializeField] Transform DiamondCounters;
-        [SerializeField] Transform BetaDiamonds;
-        [SerializeField] Transform AlphaDiamonds;
+        [SerializeField] RectTransform BetaDiamonds;
+        [SerializeField] RectTransform AlphaDiamonds;
+
+        private int TeamNumber;
 
         private void Start()
         {
@@ -18,9 +20,9 @@ namespace Battle.Scripts.Battle.Game
             {
                 var player = PhotonNetwork.LocalPlayer;
                 var playerPos = PhotonBattle.GetPlayerPos(player);
-                var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"teamNumber {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                if (teamNumber == 2)   //2
+                TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                Debug.Log($"TeamNumber {TeamNumber} pos {playerPos} {player.GetDebugLabel()}");
+                if (TeamNumber == 2)   //2
                 {
                     Camera.eulerAngles = new Vector3(0, 0, 180);
                     Background.eulerAngles = new Vector3(0, 0, 180);
