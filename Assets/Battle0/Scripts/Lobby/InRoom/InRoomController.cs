@@ -2,6 +2,12 @@
 
 namespace Battle0.Scripts.Lobby.InRoom
 {
+    /// <summary>
+    /// Controller for "InRoom" that is not used in any way!
+    /// </summary>
+    /// <remarks>
+    /// It seems that <c>PaneInRoom</c> does the work (which should be here).
+    /// </remarks>
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private InRoomView _view;
@@ -14,6 +20,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             _view.Player3Button.onClick.AddListener(Player3Button);
             _view.Player4Button.onClick.AddListener(Player4Button);
             _view.StartButton.onClick.AddListener(StartButton);
+            _view.RaidButton.onClick.AddListener(RaidButton);
             _view.SpectatorButton.onClick.AddListener(SpectatorButton);
             _view.QuestButton.onClick.AddListener(QuestButton);
         }
@@ -36,6 +43,11 @@ namespace Battle0.Scripts.Lobby.InRoom
         }
 
         private void StartButton()
+        {
+            Debug.Log("StartButton");
+        }
+
+        private void RaidButton()
         {
             Debug.Log("StartButton");
         }
