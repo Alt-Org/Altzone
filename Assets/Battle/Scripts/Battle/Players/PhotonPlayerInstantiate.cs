@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -31,7 +32,6 @@ namespace Battle.Scripts.Battle.Players
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
             [Range(1, 4), Tooltip(Tooltip4)] public int _playerPrefabId = 1;
         }
-
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -93,6 +93,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnLocalPlayerReady()
         {
             // Not important but give one frame slack for local player instantiation
+            
             StartCoroutine(OnLocalPlayerReadyForPlay());
         }
 
@@ -141,5 +142,6 @@ namespace Battle.Scripts.Battle.Players
             playerInputHandler._hostForInput = instance;
             playerInputHandler.OnMoveTo = playerDriver.MoveTo;
         }
+ 
     }
 }

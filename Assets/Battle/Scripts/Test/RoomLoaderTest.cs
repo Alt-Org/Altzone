@@ -33,7 +33,6 @@ namespace Battle.Scripts.Test
             yield return new WaitUntil(() => playerData != null);
             PhotonNetwork.NickName = string.IsNullOrWhiteSpace(playerData.Name) ? playerData.Name : "Player";
             Debug.Log($"{PhotonNetwork.NetworkClientState} {PhotonNetwork.LocalPlayer.GetDebugLabel()}");
-
             PhotonNetwork.OfflineMode = _isOfflineMode;
             for (; enabled;)
             {
