@@ -18,6 +18,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             buttons[0].onClick.AddListener(SetPlayerAsGuest);
             buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             buttons[2].onClick.AddListener(StartPlaying);
+            buttons[3].onClick.AddListener(StartRaidTest);
         }
 
         private void SetPlayerAsGuest()
@@ -36,6 +37,12 @@ namespace Battle0.Scripts.Lobby.InRoom
         {
             Debug.Log($"startPlaying");
             this.Publish(new LobbyManager.StartPlayingEvent());
+        }
+
+        private void StartRaidTest()
+        {
+            Debug.Log($"startPlaying");
+            this.Publish(new LobbyManager.StartRaidTestEvent());
         }
 
         /// <summary>
