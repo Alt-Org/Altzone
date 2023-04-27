@@ -102,6 +102,7 @@ namespace Prg.Scripts.Common.Photon
 
         void IOnEventCallback.OnEvent(EventData photonEvent)
         {
+            Assert.IsTrue(PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance, "Photon Reuse EventData has been disabled");
             // https://doc.photonengine.com/en-us/pun/current/gameplay/rpcsandraiseevent#raiseevent
             var eventCode = photonEvent.Code;
             if (eventCode < EventCodeBase || eventCode > EventCodeMax)
