@@ -11,6 +11,9 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] Transform DiamondCounters;
         [SerializeField] RectTransform BetaDiamonds;
         [SerializeField] RectTransform AlphaDiamonds;
+        [SerializeField] Transform DiamondCounters2;
+        [SerializeField] RectTransform BetaDiamonds2;
+        [SerializeField] RectTransform AlphaDiamonds2;
 
         private int TeamNumber;
 
@@ -27,9 +30,10 @@ namespace Battle.Scripts.Battle.Game
                     Camera.eulerAngles = new Vector3(0, 0, 180);
                     Background.eulerAngles = new Vector3(0, 0, 180);
                     GridOverlay.eulerAngles = new Vector3(0, 0, 180);
-                    DiamondCounters.eulerAngles = new Vector3(0, 0, 180);
-                    BetaDiamonds.eulerAngles = new Vector3(0, 0, 0);
-                    AlphaDiamonds.eulerAngles = new Vector3(0, 0, 0);
+                    AlphaDiamonds.anchoredPosition = new Vector2(BetaDiamonds.anchoredPosition.x, BetaDiamonds.anchoredPosition.y);
+                    AlphaDiamonds2.anchoredPosition = new Vector2(BetaDiamonds2.anchoredPosition.x, BetaDiamonds2.anchoredPosition.y);
+                    BetaDiamonds.anchoredPosition = new Vector2(-BetaDiamonds2.anchoredPosition.x, -BetaDiamonds2.anchoredPosition.y);
+                    BetaDiamonds2.anchoredPosition = new Vector2(-AlphaDiamonds.anchoredPosition.x, -AlphaDiamonds.anchoredPosition.y);
                 }
             }
         }
