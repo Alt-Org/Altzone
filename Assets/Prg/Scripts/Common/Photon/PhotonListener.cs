@@ -174,7 +174,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnRegionListReceived(RegionHandler regionHandler)
         {
-            LogPhotonStatus($"BestRegion={regionHandler.BestRegion}");
+            LogPhotonStatus($"BestRegion={regionHandler.BestRegion} {string.Join(',', regionHandler.EnabledRegions)}");
         }
 
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
