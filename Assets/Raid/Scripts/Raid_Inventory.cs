@@ -6,7 +6,7 @@ using TMPro;
 
 public class Raid_Inventory : MonoBehaviour
 {
-    public Raid_Slot[,] Inventory = new Raid_Slot[4, 6];
+    public Raid_Slot[,] Inventory = new Raid_Slot[4, 12];
 
     [SerializeField, Header("Loot manager")]
     private Raid_LootManagement raid_LootManagement;
@@ -22,6 +22,7 @@ public class Raid_Inventory : MonoBehaviour
     [SerializeField, Header("Reference GameObjects")]
     public GameObject RedScreen;
     public GameObject EndMenu;
+    public Transform PanelParent;
 
     [Header("Inventory Content")]
     public int AmountOfFives;
@@ -85,7 +86,7 @@ public class Raid_Inventory : MonoBehaviour
     }
     void PlaceEmptySlots()
     {
-        for (int y = 0; y < 6; y++)
+        for (int y = 0; y < 12; y++)
         {
             for (int x = 0; x < 4; x++)
             {
@@ -93,6 +94,7 @@ public class Raid_Inventory : MonoBehaviour
                 {
                     Raid_Slot EmptySlot = Instantiate(Resources.Load("Prefabs/EmptySlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
                     Inventory[x, y] = EmptySlot;
+                    EmptySlot.transform.SetParent(PanelParent);
                 }
             }
         }
@@ -101,13 +103,14 @@ public class Raid_Inventory : MonoBehaviour
     void PlaceFives()
     {
         int x = Random.Range(0, 4);
-        int y = Random.Range(0, 6);
+        int y = Random.Range(0, 12);
 
         if (Inventory[x, y] == null)
         {
             Raid_Slot WeightFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightFive.GetComponentInChildren<TextMeshPro>().text = "5 kg";
             WeightFive.slotWeight = Raid_Slot.SlotWeight.Five;
+            WeightFive.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightFive;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -121,13 +124,14 @@ public class Raid_Inventory : MonoBehaviour
     void PlaceTens()
     {
         int x = Random.Range(0, 4);
-        int y = Random.Range(0, 6);
+        int y = Random.Range(0, 12);
 
         if (Inventory[x, y] == null)
         {
             Raid_Slot WeightTen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTen.GetComponentInChildren<TextMeshPro>().text = "10 kg";
             WeightTen.slotWeight = Raid_Slot.SlotWeight.Ten;
+            WeightTen.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTen;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -141,13 +145,14 @@ public class Raid_Inventory : MonoBehaviour
     void PlaceFifteens()
     {
         int x = Random.Range(0, 4);
-        int y = Random.Range(0, 6);
+        int y = Random.Range(0, 12);
 
         if (Inventory[x, y] == null)
         {
             Raid_Slot WeightFifteen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightFifteen.GetComponentInChildren<TextMeshPro>().text = "15 kg";
             WeightFifteen.slotWeight = Raid_Slot.SlotWeight.Fifteen;
+            WeightFifteen.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightFifteen;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -161,13 +166,14 @@ public class Raid_Inventory : MonoBehaviour
     void PlaceTwenties()
     {
         int x = Random.Range(0, 4);
-        int y = Random.Range(0, 6);
+        int y = Random.Range(0, 12);
 
         if (Inventory[x, y] == null)
         {
             Raid_Slot WeightTwenty = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTwenty.GetComponentInChildren<TextMeshPro>().text = "20 kg";
             WeightTwenty.slotWeight = Raid_Slot.SlotWeight.Twenty;
+            WeightTwenty.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTwenty;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
@@ -181,13 +187,14 @@ public class Raid_Inventory : MonoBehaviour
     void PlaceTwentyFives()
     {
         int x = Random.Range(0, 4);
-        int y = Random.Range(0, 6);
+        int y = Random.Range(0, 12);
 
         if (Inventory[x, y] == null)
         {
             Raid_Slot WeightTwentyFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
             WeightTwentyFive.GetComponentInChildren<TextMeshPro>().text = "25 kg";
             WeightTwentyFive.slotWeight = Raid_Slot.SlotWeight.TwentyFive;
+            WeightTwentyFive.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTwentyFive;
             Debug.Log("Inventory slot (" + x + ", " + y + ") is empty.");
