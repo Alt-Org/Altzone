@@ -1,0 +1,183 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.Assertions;
+
+namespace Prg.Scripts.Common.Photon
+{
+    /// <summary>
+    /// Wrapper for Photon <c>RegionHandler</c> to 'ping' those regions that have been enabled in Photon Dashboard.
+    /// </summary>
+    public class PhotonRegionList : MonoBehaviour
+    {
+        public static PhotonRegionList GetOrCreate()
+        {
+            var regionList = FindObjectOfType<PhotonRegionList>();
+            if (regionList == null)
+            {
+                regionList = UnitySingleton.CreateGameObjectAndComponent<PhotonRegionList>();
+            }
+            if (!regionList.enabled)
+            {
+                regionList.enabled = true;
+            }
+            return regionList;
+        }
+
+        [SerializeField] private List<string> _debugRegions = new();
+        
+        private List<PhotonRegion> _enabledRegions = new();
+
+        public ReadOnlyCollection<PhotonRegion> EnabledRegions => _enabledRegions.AsReadOnly();
+
+        private MyConnectionCallbacks _connectionCallbacks;
+        private RegionHandler _curRegionHandler;
+
+        private void Awake()
+        {
+            Debug.Log($"{name}", gameObject);
+            _connectionCallbacks = new MyConnectionCallbacks(this);
+            if (PhotonNetwork.NetworkingClient != null)
+            {
+                PhotonNetwork.AddCallbackTarget(_connectionCallbacks);
+            }
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log($"{name}");
+            if (_connectionCallbacks == null)
+            {
+                _connectionCallbacks = new MyConnectionCallbacks(this);
+                PhotonNetwork.AddCallbackTarget(_connectionCallbacks);
+            }
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log($"{name}");
+            if (_connectionCallbacks != null)
+            {
+                PhotonNetwork.RemoveCallbackTarget(_connectionCallbacks);
+                _connectionCallbacks = null;
+            }
+            StopAllCoroutines();
+        }
+
+        public void PingRegions(Action<ReadOnlyCollection<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval = 0f)
+        {
+            Debug.Log($"{name}");
+            Assert.IsNotNull(_curRegionHandler);
+            StartCoroutine(PingMinimumOfRegions(onPingRegionsReady, pingRegionsInterval));
+        }
+
+        private IEnumerator PingMinimumOfRegions(Action<ReadOnlyCollection<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval)
+        {
+            Assert.IsNotNull(onPingRegionsReady);
+            yield return null;
+            var pingRegionsDelay = new WaitForSeconds(pingRegionsInterval);
+            while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
+            {
+                var isPingDone = false;
+                var isStarted = _curRegionHandler.PingMinimumOfRegions((handler) =>
+                {
+                    UpdateRegionHandler(handler);
+                    isPingDone = true;
+                }, null);
+                Assert.IsTrue(isStarted, "PingMinimumOfRegions failed to start");
+
+                yield return new WaitUntil(() => isPingDone || !enabled || PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer);
+                if (isPingDone && enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
+                {
+                    onPingRegionsReady(EnabledRegions);
+                }
+                if (pingRegionsInterval == 0f)
+                {
+                    yield break;
+                }
+                yield return pingRegionsDelay;
+            }
+        }
+
+        private void UpdateRegionHandler(RegionHandler regionHandler)
+        {
+            _curRegionHandler = regionHandler;
+            _enabledRegions = new List<PhotonRegion>();
+            _debugRegions = new List<string>();
+            foreach (var enabledRegion in regionHandler.EnabledRegions)
+            {
+                var region = new PhotonRegion(enabledRegion);
+                _enabledRegions.Add(region);
+#if UNITY_EDITOR
+                _debugRegions.Add(region.ToString());
+#endif
+            }
+        }
+
+        public void OnRegionListReceived(RegionHandler regionHandler)
+        {
+            Debug.Log($"{name}");
+            UpdateRegionHandler(regionHandler);
+            Debug.Log($"BestRegion={new PhotonRegion(regionHandler.BestRegion)} EnabledRegions={string.Join(',', _enabledRegions)}");
+        }
+
+        public class PhotonRegion
+        {
+            public readonly string Region;
+            public readonly int Ping;
+
+            public PhotonRegion(Region region)
+            {
+                Region = region.Code;
+                Ping = region.Ping == int.MaxValue ? -1 : region.Ping;
+            }
+
+            public override string ToString()
+            {
+                return $"'{Region}' {Ping} ms";
+            }
+        }
+
+        /// <summary>
+        /// Private inner class to hide Photon IConnectionCallbacks implementation.
+        /// </summary>
+        private class MyConnectionCallbacks : IConnectionCallbacks
+        {
+            private readonly PhotonRegionList _photonRegionList;
+
+            public MyConnectionCallbacks(PhotonRegionList photonRegionList)
+            {
+                _photonRegionList = photonRegionList;
+            }
+
+            public void OnRegionListReceived(RegionHandler regionHandler)
+            {
+                _photonRegionList.OnRegionListReceived(regionHandler);
+            }
+
+            public void OnConnected()
+            {
+            }
+
+            public void OnConnectedToMaster()
+            {
+            }
+
+            public void OnDisconnected(DisconnectCause cause)
+            {
+            }
+
+            public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
+            {
+            }
+
+            public void OnCustomAuthenticationFailed(string debugMessage)
+            {
+            }
+        }
+    }
+}
