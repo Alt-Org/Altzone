@@ -58,6 +58,17 @@ namespace Battle0.Scripts.Lobby.InLobby
             PhotonLobby.CreateRoom(roomName, roomOptions);
         }
 
+        public override void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"CreateRoomFailed {returnCode} {message}");
+        }
+
+        public override void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
+        }
+
+
         private void JoinRoom(string roomName)
         {
             Debug.Log($"{roomName}");
