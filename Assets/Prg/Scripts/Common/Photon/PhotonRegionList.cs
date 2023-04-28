@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -12,6 +11,10 @@ namespace Prg.Scripts.Common.Photon
     /// <summary>
     /// Wrapper for Photon <c>RegionHandler</c> to 'ping' those regions that have been enabled in Photon Dashboard.
     /// </summary>
+    /// <remarks>
+    /// How To Show A Region List:<br />
+    /// https://doc.photonengine.com/realtime/current/connection-and-authentication/regions#how_to_show_a_region_list
+    /// </remarks>
     public class PhotonRegionList : MonoBehaviour
     {
         public static PhotonRegionList GetOrCreate()
@@ -29,10 +32,10 @@ namespace Prg.Scripts.Common.Photon
         }
 
         [SerializeField] private List<string> _debugRegions = new();
-        
+
         private List<PhotonRegion> _enabledRegions = new();
 
-        public ReadOnlyCollection<PhotonRegion> EnabledRegions => _enabledRegions.AsReadOnly();
+        public IReadOnlyList<PhotonRegion> EnabledRegions => _enabledRegions.AsReadOnly();
 
         private MyConnectionCallbacks _connectionCallbacks;
         private RegionHandler _curRegionHandler;
@@ -68,17 +71,23 @@ namespace Prg.Scripts.Common.Photon
             StopAllCoroutines();
         }
 
-        public void PingRegions(Action<ReadOnlyCollection<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval = 0f)
+        public void PingRegions(Action<IReadOnlyList<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval = 0f)
         {
-            Debug.Log($"{name}");
-            Assert.IsNotNull(_curRegionHandler);
+            Debug.Log($"{name} {_curRegionHandler}");
             StartCoroutine(PingMinimumOfRegions(onPingRegionsReady, pingRegionsInterval));
         }
 
-        private IEnumerator PingMinimumOfRegions(Action<ReadOnlyCollection<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval)
+        private IEnumerator PingMinimumOfRegions(Action<IReadOnlyList<PhotonRegion>> onPingRegionsReady, float pingRegionsInterval)
         {
             Assert.IsNotNull(onPingRegionsReady);
             yield return null;
+            if (_curRegionHandler == null)
+            {
+                // Either we have missed OnRegionListReceived callback due to timings how we start Photon connection to master server
+                // or Photon Available Regions are not available due to ServerSettings config that prevents their usage.
+                onPingRegionsReady(new List<PhotonRegion>().AsReadOnly());
+                yield break;
+            }
             var pingRegionsDelay = new WaitForSeconds(pingRegionsInterval);
             while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
             {

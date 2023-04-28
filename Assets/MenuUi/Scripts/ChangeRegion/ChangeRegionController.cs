@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
@@ -25,6 +25,7 @@ namespace MenuUi.Scripts.ChangeRegion
         {
             Debug.Log($"{name}", gameObject);
             _view.ResetView();
+            _view.TitleText = "Loading Regions";
             _photonRegionList = PhotonRegionList.GetOrCreate();
             StartCoroutine(RegionListUpdater());
         }
@@ -81,17 +82,25 @@ namespace MenuUi.Scripts.ChangeRegion
             }
             // At this point we should have a region list (without Ping)
             Debug.Log($"{name} done");
-            var regionList = _photonRegionList.EnabledRegions.ToList().OrderBy(x => x.Region);
+            var regionList = _photonRegionList.EnabledRegions.ToList().OrderBy(x => x.Region).ToList();
             Debug.Log($"regionList {string.Join(',', regionList)}");
 
+            if (regionList.Count == 0)
+            {
+                _view.TitleText = "No Available <b>Photon Regions</b> Found";
+                yield break; 
+            }
+            _view.TitleText = $"Photon Regions: {regionList.Count}";
+            _view.UpdateRegionList(regionList);
+            
             // Start pinging regions and updating UI.
             _photonRegionList.PingRegions(OnPhotonRegionListUpdate, PingRegionsInterval);
         }
 
-        private void OnPhotonRegionListUpdate(ReadOnlyCollection<PhotonRegionList.PhotonRegion> regions)
+        private void OnPhotonRegionListUpdate(IReadOnlyList<PhotonRegionList.PhotonRegion> regions)
         {
-            var regionList = regions.ToList().OrderBy(x => x.Ping);
-            Debug.Log($"regionList {string.Join(',', regionList)}");
+            var regionList = regions.ToList().OrderBy(x => x.Ping).ToList();
+            _view.UpdateRegionList(regionList);
         }
     }
 }
