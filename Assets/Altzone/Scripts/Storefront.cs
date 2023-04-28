@@ -101,7 +101,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Get all read-only <c>GameFurniture</c> entities.
         /// </summary>
-        /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY CoRoutine using <code>yield return</code></returns>
+        /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY <c>Coroutine</c> using <code>yield return</code></returns>
         CustomYieldInstruction GetAllGameFurnitureYield(Action<ReadOnlyCollection<GameFurniture>> callback);
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Altzone.Scripts
         #region CustomYieldInstruction support
 
         /// <summary>
-        /// <c>CustomYieldInstruction</c> to invoke a method with callback in a UNITY <c>CoRoutine</c> using <code>yield return</code>.
+        /// <c>CustomYieldInstruction</c> to invoke a method with callback in a UNITY <c>Coroutine</c> using <code>yield return</code>.
         /// </summary>
         private class CallbackYieldInstruction<T> : CustomYieldInstruction
         {

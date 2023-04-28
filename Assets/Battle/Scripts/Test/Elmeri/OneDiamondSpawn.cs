@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
  
-public class SpawnDiamondBounds : MonoBehaviour 
+public class OneDiamondSpawn : MonoBehaviour 
 {
-    [SerializeField] GameObject DiamondObject;
-    [SerializeField] GameObject DiamondObject2;
     [SerializeField] GameObject Diamond;
     [SerializeField] Transform SpawnPoints;
     [SerializeField] Transform SpawnPoint;
@@ -14,8 +12,6 @@ public class SpawnDiamondBounds : MonoBehaviour
 
     [SerializeField] float MinSpawnTime;
     [SerializeField] float MaxSpawnTime;
-    private int Change;
-    [SerializeField] int MaxChange;
 
     //private GameObject[] SpawnPointsArray;
     public List<float> SpawnPointsArray = new List<float>();
@@ -51,12 +47,11 @@ public class SpawnDiamondBounds : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(MinSpawnTime, MaxSpawnTime));
         SpawnY = Random.Range(0, SpawnPointsArray.Count);
-        Change = Random.Range(0, MaxChange);
-        View.RPC("DiamondRPC",  RpcTarget.All, SpawnY, Change);
+        View.RPC("DiamondRPC",  RpcTarget.All, SpawnY);
     }
 
     [PunRPC]
-    private void DiamondRPC(int SpawnY, int Change)
+    private void DiamondRPC(int SpawnY)
     {
         if (StartBool == true)
         {
@@ -67,14 +62,6 @@ public class SpawnDiamondBounds : MonoBehaviour
         }
         if (StartBool == false)
         {
-            if (Change < MaxChange - 1)
-            {
-                Diamond = DiamondObject;
-            }
-            if (Change == MaxChange - 1)
-            {
-                Diamond = DiamondObject2;
-            }
             Vector3 pos = new Vector3(SpawnPoint.position.x, SpawnPointsArray[SpawnY], Random.Range(-size.z/2, size.z/2));  //pos = center + new vector3(center.x, )...
             var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));   // transform.TransformPoint(pos)
             DiamondParent.transform.parent = transform;

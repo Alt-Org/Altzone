@@ -38,6 +38,7 @@ namespace Battle0.Scripts.Lobby.InRoom
         [SerializeField] private Button _buttonGuest;
         [SerializeField] private Button _buttonSpectator;
         [SerializeField] private Button _buttonStartPlay;
+        [SerializeField] private Button _buttonRaidTest;
 
         [Header("Live Data"), SerializeField] private int _localPlayerPosition;
         [SerializeField] private bool _isLocalPlayerPositionUnique;
@@ -73,6 +74,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             _buttonGuest.interactable = false;
             _buttonSpectator.interactable = false;
             _buttonStartPlay.interactable = false;
+            _buttonRaidTest.interactable = false;
 
             PhotonNetwork.AddCallbackTarget(this);
             StartCoroutine(OnEnableInRoom());
@@ -144,6 +146,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             SetButton(_buttonGuest, _interactableGuest, _captionGuest);
             SetButton(_buttonSpectator, _interactableSpectator, _captionSpectator);
             SetButton(_buttonStartPlay, _interactableStartPlay, null);
+            SetButton(_buttonRaidTest, _interactableStartPlay, null);
 
             if (_localPlayerPosition >= 0 && _localPlayerPosition <= 3 &&
                 _masterClientPosition >= 0 && _masterClientPosition <= 3)

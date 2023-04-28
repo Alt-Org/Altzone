@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -10,14 +9,9 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 namespace Battle.Scripts.Battle.Players
 {
     /// <summary>
-    /// Instantiates a Photon player using <code>PhotonNetwork.Instantiate</code>.<br />
-    /// Note that Photon player will be instantiated in all game clients that are in the room when this script is enabled in a scene.
+    /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
     /// </summary>
-    /// <remarks>
-    /// In production we are already in the room but for testing we wait that a room is created
-    /// and then we try to find a free player position to instantiate a Photon player there for this room.
-    /// </remarks>
-    public class PhotonPlayerInstantiate : MonoBehaviourPunCallbacks
+    public class PhotonBotInstantiate : MonoBehaviourPunCallbacks
     {
         [Serializable]
         internal class DebugSettings
@@ -25,13 +19,14 @@ namespace Battle.Scripts.Battle.Players
             private const string Tooltip1 = "Polling delay for Photon Custom Player propeties update";
             private const string Tooltip2 = "Timeout to find free player position quickly";
             private const string Tooltip3 = "Preferred player start position for first player to come";
-            private const string Tooltip4 = "Preferred player start position for first player to come";
 
             [Min(0.1f), Tooltip(Tooltip1)] public float _waitForPlayerPropertiesToUpdate = 1f;
             [Min(1), Tooltip(Tooltip2)] public float _timeoutFastWait = 3f;
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
-            [Range(1, 4), Tooltip(Tooltip4)] public int _playerPrefabId = 1;
         }
+
+        [SerializeField] private GameObject BotInputManager;
+
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -42,7 +37,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Assert.IsNotNull(_photonPrefab, "_photonPrefab != null");
             base.OnEnable();
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"work start {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
             if (PhotonNetwork.InRoom)
             {
@@ -53,14 +48,14 @@ namespace Battle.Scripts.Battle.Players
         public override void OnDisable()
         {
             base.OnDisable();
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"work done {PhotonNetwork.NetworkClientState} {player.GetDebugLabel()}");
         }
 
         public override void OnJoinedRoom()
         {
             var room = PhotonNetwork.CurrentRoom;
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             Debug.Log($"{PhotonNetwork.NetworkClientState} {room.GetDebugLabel()}");
             Debug.Log($"{player.GetDebugLabel()}");
             if (PhotonBattle.IsRealPlayer(player))
@@ -69,7 +64,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             // Trigger OnPlayerPropertiesUpdate in order to continue to OnLocalPlayerReady
-            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
+            SetDebugPlayer(player);
         }
 
 
@@ -93,7 +88,6 @@ namespace Battle.Scripts.Battle.Players
         private void OnLocalPlayerReady()
         {
             // Not important but give one frame slack for local player instantiation
-            
             StartCoroutine(OnLocalPlayerReadyForPlay());
         }
 
@@ -103,10 +97,10 @@ namespace Battle.Scripts.Battle.Players
             yield return null;
             var delay = new WaitForSeconds(_debug._waitForPlayerPropertiesToUpdate);
             yield return delay;
-            var player = PhotonNetwork.LocalPlayer;
+            var player = PhotonNetwork.PlayerList[0];
             if (!PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
             {
-                PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
+                SetDebugPlayer(player);
                 yield return delay;
             }
             var timeoutTime = Time.time + _debug._timeoutFastWait;
@@ -122,26 +116,28 @@ namespace Battle.Scripts.Battle.Players
                     yield break;
                 }
                 Debug.Log($"My player position was taken {player.GetDebugLabel()}");
-                PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
+                SetDebugPlayer(player);
                 yield return delay;
             }
-            InstantiateLocalPlayer(player, _photonPrefab.name);
+            InstantiateLocalPlayer(player, _photonPrefab.name, BotInputManager);
             enabled = false;
         }
 
-        private static void InstantiateLocalPlayer(Player player, string networkPrefabName)
+        private void SetDebugPlayer(Player player)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void InstantiateLocalPlayer(Player player, string networkPrefabName, GameObject InputHandler)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
             Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
-            // This prefab will be instantiated in all game clients - but only this one below will handle input!
             var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
-            // Connect local player input handler to photon player driver. 
+            // Connect local player input handler to photon player driver driver. 
             var playerDriver = instance.GetComponent<PlayerDriverPhoton>();
             Assert.IsNotNull(playerDriver, $"top level 'PlayerDriverPhoton' is missing from prefab {networkPrefabName}");
-            var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler._hostForInput = instance;
-            playerInputHandler.OnMoveTo = playerDriver.MoveTo;
+            InputHandler.GetComponent<BotInputHandler>()._hostForInput = instance;
+            InputHandler.GetComponent<BotInputHandler>().OnMoveTo = playerDriver.MoveTo;
         }
- 
     }
 }

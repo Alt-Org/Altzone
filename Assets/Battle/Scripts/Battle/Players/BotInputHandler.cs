@@ -6,9 +6,6 @@ namespace Battle.Scripts.Battle.Players
 {
     public class BotInputHandler : MonoBehaviour
     {
-        [Header("Prefab Settings"), SerializeField] private InputActionReference _clickInputAction;
-        [SerializeField] private InputActionReference _moveInputAction;
-
         [Header("Debug Settings")] public GameObject _hostForInput;
 
         private Transform _ballTransform;
@@ -23,7 +20,6 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        private Camera _camera;
         private Vector2 _targetPosition;
 
         // We might want to simulate mobile device screen by ignoring click outside out window.
@@ -32,13 +28,8 @@ namespace Battle.Scripts.Battle.Players
         private void Awake()
         {
             _isLimitMouseXYOnDesktop = AppPlatform.IsDesktop;
-            _camera = Context.GetBattleCamera;
         }
 
-        private void SendMoveTo(Vector2 targetPosition)
-        {
-            _onMoveTo(targetPosition);
-        }
 
         private void FixedUpdate()
         {
@@ -63,7 +54,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _targetPosition = new Vector2(_ballTransform.position.x + UnityEngine.Random.Range(-0.5f, 0.5f)
             , _botTransform.position.y + UnityEngine.Random.Range(-1f, 1f));
-            SendMoveTo(_targetPosition);
+            _hostForInput.GetComponent<PlayerDriverPhoton>().MoveTo(_targetPosition);
             return;
         }
     }

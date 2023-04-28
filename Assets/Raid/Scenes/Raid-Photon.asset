@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42fefe92083c46f7a851d19372ab85cd, type: 3}
-  m_Name: AllowedFonts
+  m_Script: {fileID: 11500000, guid: aaa8e5d44482dbd4482820907ef78648, type: 3}
+  m_Name: Raid-Photon
   m_EditorClassIdentifier: 
-  _tmpFonts:
-  - {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  - {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
-  _fonts: []
+  _sceneName:
+    sceneName: te-test-raid-demo
+    sceneGuid: 
+  _isNetworkScene: 1
