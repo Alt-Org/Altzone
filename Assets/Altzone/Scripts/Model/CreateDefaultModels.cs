@@ -38,20 +38,26 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 4;
+        internal const int ClanDataVersion = 5;
 
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
+            var fakeFurnitureCounter = 0;
+
+            string FakeFurnitureId(string furnitureText)
+            {
+                return $"{furnitureText[0]}-{++fakeFurnitureCounter}";
+            }
+
             var clanData = new ClanData(clanId, "DemoClan", "[D]", 0);
             // Add every known furniture to clan inventory for testing.
-            var furnitureCounter = 0;
             foreach (var gameFurniture in furniture)
             {
                 if (gameFurniture.Id.Contains("pommi"))
                 {
                     continue;
                 }
-                clanData.Inventory.Furniture.Add(new ClanFurniture(++furnitureCounter, gameFurniture.Id));
+                clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }
             var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("tuoli")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pöytä")).ToList();
@@ -59,8 +65,8 @@ namespace Altzone.Scripts.Model
 
             // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
             var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
-            var bomb1 = new ClanFurniture(++furnitureCounter, bombs[0].Id);
-            var bomb2 = new ClanFurniture(++furnitureCounter, bombs[bombs.Count - 1].Id);
+            var bomb1 = new ClanFurniture(FakeFurnitureId(bombs[0].Id), bombs[0].Id);
+            var bomb2 = new ClanFurniture(FakeFurnitureId(bombs[bombs.Count - 1].Id), bombs[bombs.Count - 1].Id);
 
             // Create some Raid game rooms for testing.
             const int rowCount = 9;
@@ -75,7 +81,7 @@ namespace Altzone.Scripts.Model
 
                 roomFurniture.Add(new RaidRoomFurniture(1, bomb1.GameFurnitureId, 0, 0));
                 roomFurniture.Add(new RaidRoomFurniture(1, bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
-                
+
                 roomFurniture.Add(new RaidRoomFurniture(1, chairs[0].GameFurnitureId, 1, 1));
                 roomFurniture.Add(new RaidRoomFurniture(1, tables[0].GameFurnitureId, 2, 2));
                 roomFurniture.Add(new RaidRoomFurniture(1, misc[0].GameFurnitureId, 3, 3));

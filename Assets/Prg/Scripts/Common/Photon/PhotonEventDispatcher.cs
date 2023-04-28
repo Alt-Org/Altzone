@@ -11,7 +11,9 @@ namespace Prg.Scripts.Common.Photon
     /// Wrapper and helper for PhotonNetwork.RaiseEvent for sending and receiving events on one place.
     /// </summary>
     /// <remarks>
-    /// We use lazy initialization and can not survive level load.
+    /// Note 1. We use lazy initialization and can not survive level load.<br />
+    /// Note 2. By default we use PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance set to <b>true</b>.
+    /// Call DisableReuseEventInstance() if you do not want this behaviour.
     /// </remarks>
     public class PhotonEventDispatcher : MonoBehaviour, IOnEventCallback
     {
@@ -24,7 +26,7 @@ namespace Prg.Scripts.Common.Photon
         /// </summary>
         private readonly Action<EventData>[] _listeners = new Action<EventData>[EventCodeCount];
 
-        private readonly RaiseEventOptions _raiseEventOptions = new RaiseEventOptions
+        private readonly RaiseEventOptions _raiseEventOptions = new()
         {
             Receivers = ReceiverGroup.All
         };
@@ -42,6 +44,15 @@ namespace Prg.Scripts.Common.Photon
             return _instance;
         }
 
+        /// <summary>
+        /// Sets PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance to <b>false</b>.
+        /// </summary>
+        public static void DisableReuseEventInstance()
+        {
+            _instance._isReuseEventInstance = false;
+            PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance = false;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
@@ -51,6 +62,8 @@ namespace Prg.Scripts.Common.Photon
 
         private static PhotonEventDispatcher _instance;
 
+        private bool _isReuseEventInstance;
+        
         private void Awake()
         {
             if (_instance == null)
@@ -59,6 +72,7 @@ namespace Prg.Scripts.Common.Photon
             }
             // https://doc.photonengine.com/en-us/pun/v2/gameplay/optimization
             // Reuse EventData to decrease garbage collection but EventData will be overwritten for every event!
+            _isReuseEventInstance = true;
             PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance = true;
             PhotonNetwork.AddCallbackTarget(this);
         }
@@ -102,6 +116,8 @@ namespace Prg.Scripts.Common.Photon
 
         void IOnEventCallback.OnEvent(EventData photonEvent)
         {
+            Assert.AreEqual(_isReuseEventInstance, PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance, 
+                "Internal and external Photon Reuse EventData state mismatch");
             // https://doc.photonengine.com/en-us/pun/current/gameplay/rpcsandraiseevent#raiseevent
             var eventCode = photonEvent.Code;
             if (eventCode < EventCodeBase || eventCode > EventCodeMax)

@@ -3,27 +3,31 @@ using System.Linq;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
 
 namespace Battle.Scripts.Battle.Players
 {
-    internal class Pickup : MonoBehaviour
+    internal class Pickup : MonoBehaviour, IOnEventCallback
     {
         //[SerializeField] AudioClip collect;
         //[SerializeField] private AudioSource collectionSoundEffect;
-        //public int LocalDiamondCount = 0;
         public GameObject TeamDiamonds;
-        //public TMP_Text TeamDiamonds;
-
         private TMP_Text DiamondText;
         public TeamDiamondCount TeamDiamondCount;
-        //public List<IPlayerDriver>PlayerActors;     //<IPlayerDriver>();
-        public List<GameObject> PlayerActors = new List<GameObject>();      //<IPlayerDriver>
+        public GameObject TeamDiamonds2;
+        private TMP_Text DiamondText2;
+        public TeamDiamondCount TeamDiamondCount2;
+
+        public List<GameObject> PlayerActors = new List<GameObject>();
         public PlayerDriverPhoton PlayerDriverPhoton;
         [SerializeField] PlayerActor PlayerActor;
-        private bool RightDriver = false;
         public PhotonView View;
 
         public int TeamNumber;
+
+        private const byte PickupEvent = 0;
+        public string EventSender; 
 
         private void Start()
         {
@@ -32,59 +36,96 @@ namespace Battle.Scripts.Battle.Players
                 enabled = false;
                 return;
             }
-            //PlayerActors.Add(GetAllPlayerDrivers);
-            PlayerActors = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").ToList();     //GetAllPlayerDrivers
 
-            //while (RightDriver == false)
-            //{
-                foreach (GameObject t in PlayerActors)      //IPlayerDriver t in
+            PlayerActors = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").ToList();
+            foreach (GameObject t in PlayerActors)
+            {
+                View = t.GetComponent<PhotonView>();
+                PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
+                if (PlayerActor.SeePlayerName == PlayerDriverPhoton.PlayerName)
                 {
-                    View = t.GetComponent<PhotonView>();
-                    PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
-                    if (PlayerActor.SeePlayerName == PlayerDriverPhoton.PlayerName)       //PlayerActor.SeePlayerName
-                    {
-                        RightDriver = true;
-                        Debug.Log($"{PlayerActor.SeePlayerName}ggrgtgrfefhbtrfsfvrfhbrgefe");       //PlayerActor.SeePlayerName
-                        break;
-                    }
-                    Debug.Log($"players {GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length}");      //GetAllPlayerDrivers.Count
+                    break;
                 }
+            }
 
-            //}
-            Debug.Log($"{RightDriver}");
+            var player = View.Owner;
+            var playerPos = PhotonBattle.GetPlayerPos(player);
+            TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
+            if (TeamNumber == 1)
+            {
+                TeamDiamonds = GameObject.FindGameObjectWithTag("AlphaDiamonds");
+                TeamDiamonds2 = GameObject.FindGameObjectWithTag("AlphaDiamonds2");
+            }
+            else
+            {
+                TeamDiamonds = GameObject.FindGameObjectWithTag("BetaDiamonds");
+                TeamDiamonds2 = GameObject.FindGameObjectWithTag("BetaDiamonds2");
+            }
+            DiamondText = TeamDiamonds.GetComponent<TMP_Text>();
+            TeamDiamondCount = TeamDiamonds.GetComponent<TeamDiamondCount>();
+            DiamondText2 = TeamDiamonds2.GetComponent<TMP_Text>();
+            TeamDiamondCount2 = TeamDiamonds2.GetComponent<TeamDiamondCount>();
+        }
 
-            /*if (local == true)
-            {*/
-                //Player Get (int id);
-                var player = View.Owner;         //PhotonNetwork.LocalPlayer
-                var playerPos = PhotonBattle.GetPlayerPos(player);
-                TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"Pickupteam {TeamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                if (TeamNumber == 1)
-                {
-                    TeamDiamonds = GameObject.FindGameObjectWithTag("AlphaDiamonds");
-                }
-                else
-                {
-                    TeamDiamonds = GameObject.FindGameObjectWithTag("BetaDiamonds");
-                }
-                DiamondText = TeamDiamonds.GetComponent<TMP_Text>();     ///TeamDiamonds.TMP_Text;
-                TeamDiamondCount = TeamDiamonds.GetComponent<TeamDiamondCount>();
-            //}
+        private void OnEnable()
+        {
+            PhotonNetwork.AddCallbackTarget(this);
+        }
+
+        private void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
         
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.CompareTag("Diamond"))
             {
-                /*if (local == true)
-                {*/
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    EventSender = PlayerActor.SeePlayerName;
+                    var DiamondType = 1;
+                    object[] content = new object[] { EventSender, DiamondType };
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                    PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
+                }
+                Destroy(collision.gameObject);
+            }
+            if (collision.gameObject.CompareTag("Diamond2"))
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    EventSender = PlayerActor.SeePlayerName;
+                    var DiamondType = 2;
+                    object[] content = new object[] { EventSender, DiamondType };
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                    PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
+                }
+                Destroy(collision.gameObject);
+            }
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+
+            if (eventCode == PickupEvent)
+            {
+                object[] content = (object[])photonEvent.CustomData;
+                string EventSender = (string)content[0];
+                int DiamondType = (int)content[1];
+                if (EventSender == PlayerActor.SeePlayerName && DiamondType == 1)
+                {
                     TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
-                    //TeamDiamonds = DiamondCount;
                     DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
                     //collectionSoundEffect.PlayOneShot(collect);
-                //}
-                Destroy(collision.gameObject);
+                }
+                if (EventSender == PlayerActor.SeePlayerName && DiamondType == 2)
+                {
+                    TeamDiamondCount2.TeamDiamondCounter = TeamDiamondCount2.TeamDiamondCounter + 1;
+                    DiamondText2.SetText(TeamDiamondCount2.TeamDiamondCounter.ToString());
+                    //collectionSoundEffect.PlayOneShot(collect);
+                }
             }
         }
     }

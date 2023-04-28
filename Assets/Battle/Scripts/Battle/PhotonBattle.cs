@@ -142,20 +142,19 @@ namespace Battle.Scripts.Battle
         #region Debug and test utilities
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        public static void SetDebugPlayer(Player player, int wantedPlayerPos)
+        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId)
         {
             wantedPlayerPos = GetFirstFreePlayerPos(player, wantedPlayerPos);
-            SetDebugPlayerProps(player, wantedPlayerPos);
+            SetDebugPlayerProps(player, wantedPlayerPos, playerPrefabId);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        public static void SetDebugPlayerProps(Player player, int playerPos)
+        private static void SetDebugPlayerProps(Player player, int playerPos, int playerPrefabId)
         {
             Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
-            var playerId = 1;
             var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
-            var curPlayerId = player.GetCustomProperty(PlayerPrefabIdKey, -1);
-            if (curPlayerPos == playerPos && curPlayerId == playerId)
+            var curPlayerPrefabId = player.GetCustomProperty(PlayerPrefabIdKey, -1);
+            if (curPlayerPos == playerPos && curPlayerPrefabId == playerPrefabId)
             {
                 // Prevent setting same values because it is hard for client to keep track of asynchronous changes over network.
                 return;
@@ -163,9 +162,9 @@ namespace Battle.Scripts.Battle
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, playerPos },
-                { PlayerPrefabIdKey, playerId }
+                { PlayerPrefabIdKey, playerPrefabId }
             });
-            Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} skill {playerId}");
+            Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} prefabId {playerPrefabId}");
         }
 
         #endregion

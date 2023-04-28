@@ -62,7 +62,7 @@ namespace Prg.Scripts.Common.Photon
                 throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
             }
             var photonAppSettings = Resources.Load<PhotonAppSettings>(nameof(PhotonAppSettings));
-            var appSettings = photonAppSettings != null ? photonAppSettings.appSettings : null;
+            var appSettings = photonAppSettings != null ? photonAppSettings._appSettings : null;
             ConnectUsingSettings(appSettings, playerName);
         }
 
