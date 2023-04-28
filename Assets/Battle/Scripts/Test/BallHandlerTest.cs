@@ -9,10 +9,12 @@ using UnityEngine;
 public class BallHandlerTest : MonoBehaviour
 {
     [SerializeField] private int _startingSpeed;
+    [SerializeField] private int _damage;
     private GridManager _gridManager;
     private PlayerPlayArea _battlePlayArea;
     private float _arenaScaleFactor;
     private float _angleLimit;
+
 
     private const float waitTime = 2f;
 
@@ -70,6 +72,10 @@ public class BallHandlerTest : MonoBehaviour
             var gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
             _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
             _rb.velocity = NewRotation(direction) * Vector2.up * currentVelocity.magnitude;
+        }
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            collision.gameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
         }
     }
 

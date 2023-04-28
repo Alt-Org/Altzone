@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 8473052537036719184}
   - component: {fileID: 8473052537036719190}
   m_Layer: 9
-  m_Name: SyncedBall
+  m_Name: SyncedBallTest
   m_TagString: BallRigidBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204,6 +204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startingSpeed: 7
+  _damage: 1
 --- !u!114 &794425541132071188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,9 +219,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AlphaDiamondsText: {fileID: 0}
   BetaDiamondsText: {fileID: 0}
+  AlphaDiamondsText2: {fileID: 0}
+  BetaDiamondsText2: {fileID: 0}
   View: {fileID: 0}
   TeamDiamonds: {fileID: 0}
   TeamDiamondCount: {fileID: 0}
+  TeamDiamonds2: {fileID: 0}
+  TeamDiamondCount2: {fileID: 0}
   TeamNumber: 0
 --- !u!114 &8473052537036719184
 MonoBehaviour:
