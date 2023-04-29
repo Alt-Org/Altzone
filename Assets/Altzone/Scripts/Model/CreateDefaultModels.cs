@@ -152,24 +152,24 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>CustomCharacter</c> version number for data update purposes.
         /// </summary>
-        internal const int CustomCharactersVersion = 6;
+        internal const int CustomCharactersVersion = 7;
 
         /// <summary>
         /// [Player] custom character classes are created by the player itself (or given to the player by the game).<br />
-        /// This collection should be the initial set of custom character classes the player has when game is started first time.
+        /// This collection could be the initial set of custom character classes the player has when game is started first time.
         /// </summary>
         /// <returns></returns>
         internal static List<CustomCharacter> CreateCustomCharacters()
         {
             return new List<CustomCharacter>
             {
-                new("1", "1", "1", "Keijo Kelmi", 0, 0, 0, 0),
-                new("2", "2", "2", "Huugo Hupaisa", 0, 0, 0, 0),
-                new("3", "3", "3", "Paavali Pappila", 0, 0, 0, 0),
-                new("4", "4", "4", "Tarmo Taide", 0, 0, 0, 0),
-                new("5", "5", "5", "Poju Pullukka", 0, 0, 0, 0),
-                new("6", "6", "6", "Albert Älypää", 0, 0, 0, 0),
-                new("7", "7", "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
+                new("1", GestaltCycle.Desensitisation.ToString(), "1", "Keijo Kelmi", 0, 0, 0, 0),
+                new("2", GestaltCycle.Deflection.ToString(), "2", "Huugo Hupaisa", 0, 0, 0, 0),
+                new("3", GestaltCycle.Introjection.ToString(), "3", "Paavali Pappila", 0, 0, 0, 0),
+                new("4", GestaltCycle.Projection.ToString(), "4", "Tarmo Taide", 0, 0, 0, 0),
+                new("5", GestaltCycle.Retroflection.ToString(), "5", "Poju Pullukka", 0, 0, 0, 0),
+                new("6", GestaltCycle.Egotism.ToString(), "6", "Albert Älypää", 0, 0, 0, 0),
+                new("7", GestaltCycle.Confluence.ToString(), "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
             };
         }
 

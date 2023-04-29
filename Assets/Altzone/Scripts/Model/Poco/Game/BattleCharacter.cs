@@ -44,7 +44,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             Assert.AreEqual(customCharacter.CharacterClassId, characterClass.CharacterClassId, "CharacterClassId mismatch");
             return new BattleCharacter(
-                customCharacter.CharacterClassId, customCharacter.Name,
+                customCharacter.Id, customCharacter.Name,
                 characterClass.CharacterClassId, characterClass.Name,
                 customCharacter.UnityKey,
                 characterClass.GestaltCycle,
