@@ -73,7 +73,8 @@ namespace Altzone.Scripts
                 isCallbackDone = false;
                 store.ForTest.GetAllCustomCharactersTest(customCharacters =>
                 {
-                    var currentCustomCharacterId = customCharacters.Count == 0 ? new Guid().ToString() : customCharacters[0].Id;
+                    const string unknownCustomCharacterId = "0";
+                    var currentCustomCharacterId = customCharacters.Count == 0 ? unknownCustomCharacterId : customCharacters[0].Id;
                     if (playerData == null)
                     {
                         playerData = CreateDefaultModels.CreatePlayerData(playerGuid, "abba", currentCustomCharacterId);

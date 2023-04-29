@@ -277,7 +277,7 @@ namespace Altzone.Scripts.Model
             {
                 if (string.IsNullOrEmpty(playerData.Id))
                 {
-                    playerData.Id = new Guid().ToString();
+                    playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
                 _storageData.PlayerData.Add(playerData);
             }
