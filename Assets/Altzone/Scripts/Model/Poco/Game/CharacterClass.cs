@@ -9,7 +9,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        public int CharacterClassId;
+        public string CharacterClassId;
         public GestaltCycle GestaltCycle;
         public string Name;
         public int Speed;
@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Attack;
         public int Defence;
 
-        public CharacterClass(int characterClassId, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
+        public CharacterClass(string characterClassId, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
         {
             CharacterClassId = characterClassId;
             GestaltCycle = gestaltCycle;
@@ -28,7 +28,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Defence = defence;
         }
 
-        public static CharacterClass CreateDummyFor(int characterClassId)
+        public static CharacterClass CreateDummyFor(string characterClassId)
         {
             return new CharacterClass(characterClassId, (GestaltCycle)1, "deleted", 1, 1, 1, 1);
         }

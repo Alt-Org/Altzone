@@ -9,8 +9,8 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        public int Id;
-        public int CharacterClassId;
+        public string Id;
+        public string CharacterClassId;
         public string UnityKey;
         public string Name;
         public int Speed;
@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Attack;
         public int Defence;
 
-        public CustomCharacter(int id, int characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
+        public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
         {
             Id = id;
             CharacterClassId = characterClassId;

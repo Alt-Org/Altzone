@@ -31,7 +31,7 @@ namespace Altzone.Scripts.Model
         /// </summary>
         internal const int PlayerDataVersion = 3;
 
-        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
+        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, string currentCustomCharacterId)
         {
             return new PlayerData(new Guid().ToString(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
@@ -124,7 +124,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Game] <c>CharacterClass</c> version number for data update purposes.
         /// </summary>
-        internal const int CharacterClassesVersion = 4;
+        internal const int CharacterClassesVersion = 7;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
@@ -134,20 +134,20 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new((int)GestaltCycle.Desensitisation, GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
-                new((int)GestaltCycle.Deflection, GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
-                new((int)GestaltCycle.Introjection, GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
-                new((int)GestaltCycle.Projection, GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
-                new((int)GestaltCycle.Retroflection, GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
-                new((int)GestaltCycle.Egotism, GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new((int)GestaltCycle.Confluence, GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
+                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
+                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
+                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
+                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
+                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new(GestaltCycle.Egotism.ToString(), GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
+                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
 
         /// <summary>
         /// [Player] <c>CustomCharacter</c> version number for data update purposes.
         /// </summary>
-        internal const int CustomCharactersVersion = 5;
+        internal const int CustomCharactersVersion = 6;
 
         /// <summary>
         /// [Player] custom character classes are created by the player itself (or given to the player by the game).<br />
@@ -158,13 +158,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new(1, 1, "1", "Keijo Kelmi", 0, 0, 0, 0),
-                new(2, 2, "2", "Huugo Hupaisa", 0, 0, 0, 0),
-                new(3, 3, "3", "Paavali Pappila", 0, 0, 0, 0),
-                new(4, 4, "4", "Tarmo Taide", 0, 0, 0, 0),
-                new(5, 5, "5", "Poju Pullukka", 0, 0, 0, 0),
-                new(6, 6, "6", "Albert Älypää", 0, 0, 0, 0),
-                new(7, 7, "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 06)
+                new("1", "1", "1", "Keijo Kelmi", 0, 0, 0, 0),
+                new("2", "2", "2", "Huugo Hupaisa", 0, 0, 0, 0),
+                new("3", "3", "3", "Paavali Pappila", 0, 0, 0, 0),
+                new("4", "4", "4", "Tarmo Taide", 0, 0, 0, 0),
+                new("5", "5", "5", "Poju Pullukka", 0, 0, 0, 0),
+                new("6", "6", "6", "Albert Älypää", 0, 0, 0, 0),
+                new("7", "7", "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
             };
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace Altzone.Scripts
                 isCallbackDone = false;
                 store.ForTest.GetAllCustomCharactersTest(customCharacters =>
                 {
-                    var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                    var currentCustomCharacterId = customCharacters.Count == 0 ? new Guid().ToString() : customCharacters[0].Id;
                     if (playerData == null)
                     {
                         playerData = CreateDefaultModels.CreatePlayerData(playerGuid, "abba", currentCustomCharacterId);

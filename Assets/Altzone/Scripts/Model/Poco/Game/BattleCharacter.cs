@@ -10,9 +10,9 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// </remarks>
     public class BattleCharacter
     {
-        public readonly int CustomCharacterId;
+        public readonly string CustomCharacterId;
         public readonly string Name;
-        public readonly int CharacterClassId;
+        public readonly string CharacterClassId;
         public readonly string CharacterClassName;
         public readonly string UnityKey;
         public readonly GestaltCycle GestaltCycle;
@@ -21,7 +21,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string unityKey,
+        private BattleCharacter(string customCharacterId, string name, string characterClassId, string characterClassName, string unityKey,
             GestaltCycle gestaltCycle, int speed, int resistance, int attack, int defence)
         {
             CustomCharacterId = customCharacterId;

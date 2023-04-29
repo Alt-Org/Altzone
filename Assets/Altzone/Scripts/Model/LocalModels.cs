@@ -325,7 +325,7 @@ namespace Altzone.Scripts.Model
             callback(_storageData.CustomCharacters);
         }
 
-        internal void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback)
+        internal void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
@@ -345,7 +345,7 @@ namespace Altzone.Scripts.Model
             return battleCharacters;
         }
 
-        private BattleCharacter _GetBattleCharacter(int customCharacterId)
+        private BattleCharacter _GetBattleCharacter(string customCharacterId)
         {
             var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
             if (customCharacter == null)
