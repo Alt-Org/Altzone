@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model.Poco.Player
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
-        public int Id;
+        public string Id;
         public string ClanId;
         public int CurrentCustomCharacterId;
         public string Name;
@@ -24,7 +24,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
         
-        public PlayerData(int id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Id = id;
             ClanId = clanId;

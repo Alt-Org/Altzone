@@ -275,12 +275,9 @@ namespace Altzone.Scripts.Model
             }
             else
             {
-                if (playerData.Id == 0)
+                if (string.IsNullOrEmpty(playerData.Id))
                 {
-                    var id = _storageData.PlayerData.Count == 0
-                        ? 1
-                        : _storageData.PlayerData.Max(x => x.Id) + 1;
-                    playerData.Id = id;
+                    playerData.Id = new Guid().ToString();
                 }
                 _storageData.PlayerData.Add(playerData);
             }

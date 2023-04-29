@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -28,11 +29,11 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>PlayerData</c> version number for data update purposes.
         /// </summary>
-        internal const int PlayerDataVersion = 2;
+        internal const int PlayerDataVersion = 3;
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            return new PlayerData(0, clanId, currentCustomCharacterId, "Player", 0, playerGuid);
+            return new PlayerData(new Guid().ToString(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
 
         /// <summary>
