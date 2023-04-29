@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Prg.Scripts.Common.Photon;
 using TMPro;
@@ -15,7 +16,9 @@ namespace MenuUi.Scripts.ChangeRegion
         [SerializeField] private GameObject _lineTemplate;
         [SerializeField] private Transform _contentRoot;
 
-        private List<LineData> _lineDataList = new();
+        private Action<string> _onRegionChanged;
+
+        private readonly List<LineData> _lineDataList = new();
 
         public string TitleText
         {
@@ -32,7 +35,12 @@ namespace MenuUi.Scripts.ChangeRegion
         public void ResetView()
         {
             TitleText = string.Empty;
-            DeleteExtraLines(_contentRoot, 0, ref _lineDataList);
+            DeleteExtraLines(0);
+        }
+
+        public void SetRegionChangedCallback(Action<string> callback)
+        {
+            _onRegionChanged = callback;
         }
 
         public void UpdateRegionList(IReadOnlyList<PhotonRegionList.PhotonRegion> regions)
@@ -40,11 +48,11 @@ namespace MenuUi.Scripts.ChangeRegion
             var regionsCount = regions.Count;
             if (_contentRoot.childCount > regionsCount)
             {
-                DeleteExtraLines(_contentRoot, regionsCount, ref _lineDataList);
+                DeleteExtraLines(regionsCount);
             }
             else if (_contentRoot.childCount < regionsCount)
             {
-                AddMoreTextLines(_contentRoot, regionsCount, _lineTemplate, ref _lineDataList);
+                AddMoreTextLines(regionsCount);
             }
             for (var i = 0; i < _contentRoot.childCount; ++i)
             {
@@ -52,28 +60,28 @@ namespace MenuUi.Scripts.ChangeRegion
             }
         }
 
-        private static void DeleteExtraLines(Transform parent, int minCount, ref List<LineData> lineDataList)
+        private void DeleteExtraLines(int minCount)
         {
-            var childCount = parent.childCount;
+            var childCount = _contentRoot.childCount;
             for (var i = childCount - 1; i >= minCount; --i)
             {
-                var child = parent.GetChild(i).gameObject;
-                var index = lineDataList.FindIndex(x => x._parent.Equals(child));
+                var child = _contentRoot.GetChild(i).gameObject;
+                var index = _lineDataList.FindIndex(x => x.Parent.Equals(child));
                 if (index >= 0)
                 {
-                    lineDataList.RemoveAt(index);
+                    _lineDataList.RemoveAt(index);
                 }
                 Destroy(child);
             }
         }
 
-        private static void AddMoreTextLines(Transform parent, int maxCount, GameObject template, ref List<LineData> lineDataList)
+        private void AddMoreTextLines(int maxCount)
         {
-            while (parent.childCount < maxCount)
+            while (_contentRoot.childCount < maxCount)
             {
-                var instance = Instantiate(template, parent);
+                var instance = Instantiate(_lineTemplate, _contentRoot);
                 instance.SetActive(true);
-                lineDataList.Add(new LineData(instance));
+                _lineDataList.Add(new LineData(instance, _onRegionChanged));
             }
         }
 
@@ -86,7 +94,7 @@ namespace MenuUi.Scripts.ChangeRegion
             return regionCode.ToUpper();
         }
 
-        private static Dictionary<string, string> RegionNames = new()
+        private static readonly Dictionary<string, string> RegionNames = new()
         {
             // https://doc.photonengine.com/realtime/current/connection-and-authentication/regions#available_regions
             { "asia", "Asia, Singapore" },
@@ -106,29 +114,34 @@ namespace MenuUi.Scripts.ChangeRegion
 
         private class LineData
         {
-            public readonly GameObject _parent;
+            public readonly GameObject Parent;
+
+            private readonly Button _button;
             private readonly TextMeshProUGUI _code;
             private readonly TextMeshProUGUI _name;
             private readonly TextMeshProUGUI _ping;
 
             private PhotonRegionList.PhotonRegion _region;
 
-            public LineData(GameObject parent)
+            public LineData(GameObject parent, Action<string> callback)
             {
-                _parent = parent;
+                Parent = parent;
                 var textComponents = parent.GetComponentsInChildren<TextMeshProUGUI>();
-                _code = textComponents[0];
-                _name = textComponents[1];
+                // This is under button so that we can click on it.
+                _name = textComponents[0];
+                // These are later in hierarchy.
+                _code = textComponents[1];
                 _ping = textComponents[2];
-                var button = parent.GetComponentsInChildren<Button>()[0];
-                button.onClick.AddListener(() =>
+                _button = parent.GetComponentsInChildren<Button>()[0];
+                _button.interactable = false;
+                _button.onClick.AddListener(() =>
                 {
-                    if (_parent == null)
+                    if (_region == null || Parent == null)
                     {
-                        // We have been destroyed!
+                        // No can do.
                         return;
                     }
-                    Debug.Log($"click {_region?.Region}");
+                    callback?.Invoke(_region.Region);
                 });
             }
 
@@ -138,6 +151,10 @@ namespace MenuUi.Scripts.ChangeRegion
                 _code.text = region.Region;
                 _name.text = GetRegionName(region.Region);
                 _ping.text = region.Ping > 0 ? $"{region.Ping} ms" : "---   ";
+                if (!_button.interactable)
+                {
+                    _button.interactable = true;
+                }
             }
         }
     }

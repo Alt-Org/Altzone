@@ -21,6 +21,12 @@ namespace MenuUi.Scripts.ChangeRegion
         [SerializeField] private ChangeRegionView _view;
         [SerializeField] private PhotonRegionList _photonRegionList;
 
+        private void Start()
+        {
+            // Set just once!
+            _view.SetRegionChangedCallback(OnRegionSelected);
+        }
+
         private void OnEnable()
         {
             Debug.Log($"{name}", gameObject);
@@ -37,6 +43,11 @@ namespace MenuUi.Scripts.ChangeRegion
                 _photonRegionList.enabled = false;
             }
             StopAllCoroutines();
+        }
+
+        private static void OnRegionSelected(string regionCode)
+        {
+            Debug.Log($"{regionCode}");
         }
 
         private IEnumerator RegionListUpdater()
@@ -88,11 +99,11 @@ namespace MenuUi.Scripts.ChangeRegion
             if (regionList.Count == 0)
             {
                 _view.TitleText = "No Available <b>Photon Regions</b> Found";
-                yield break; 
+                yield break;
             }
             _view.TitleText = $"Photon Regions: {regionList.Count}";
             _view.UpdateRegionList(regionList);
-            
+
             // Start pinging regions and updating UI.
             _photonRegionList.PingRegions(OnPhotonRegionListUpdate, PingRegionsInterval);
         }
