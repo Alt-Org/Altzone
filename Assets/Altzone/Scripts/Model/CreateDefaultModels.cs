@@ -39,7 +39,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 5;
+        internal const int ClanDataVersion = 6;
 
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
@@ -80,12 +80,12 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb1.GameFurnitureId, 0, 0));
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), bomb1.GameFurnitureId, 0, 0));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
 
-                roomFurniture.Add(new RaidRoomFurniture(1, chairs[0].GameFurnitureId, 1, 1));
-                roomFurniture.Add(new RaidRoomFurniture(1, tables[0].GameFurnitureId, 2, 2));
-                roomFurniture.Add(new RaidRoomFurniture(1, misc[0].GameFurnitureId, 3, 3));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), chairs[0].GameFurnitureId, 1, 1));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), tables[0].GameFurnitureId, 2, 2));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), misc[0].GameFurnitureId, 3, 3));
             }
             {
                 var raidRoom = new RaidRoom(2, 0, RaidRoomType.Public,
@@ -93,29 +93,29 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
 
                 var row = 0;
                 var col = 0;
                 foreach (var item in chairs)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, col));
+                    roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), item.GameFurnitureId, row, col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in tables)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), item.GameFurnitureId, row, ++col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in misc)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), item.GameFurnitureId, row, ++col));
                 }
             }
             return clanData;

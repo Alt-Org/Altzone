@@ -6,12 +6,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class RaidRoomFurniture
     {
-        public int Id;
+        public string Id;
         public string GameFurnitureId;
         public int Row;
         public int Col;
 
-        public RaidRoomFurniture(int id, string gameFurnitureId, int row, int col)
+        public RaidRoomFurniture(string id, string gameFurnitureId, int row, int col)
         {
             Id = id;
             GameFurnitureId = gameFurnitureId;
