@@ -48,6 +48,8 @@ namespace MenuUi.Scripts.ChangeRegion
         private static void OnRegionSelected(string regionCode)
         {
             Debug.Log($"{regionCode}");
+            // TODO: region code should be saved for later use!
+            PhotonLobby.ConnectToRegionMaster(regionCode);
         }
 
         private IEnumerator RegionListUpdater()

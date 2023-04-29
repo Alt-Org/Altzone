@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -46,6 +47,16 @@ namespace Prg.Scripts.Common.Photon
         public static Func<string> GetGameVersion = () => DefaultGameVersion;
 
         private static string DefaultGameVersion => Application.version;
+
+        public static void ConnectToRegionMaster(string regionCode)
+        {
+            if (PhotonNetwork.NetworkingClient.ConnectToRegionMaster(regionCode))
+            {
+                Debug.LogWarning($"ConnectToRegionMaster failed for region: {regionCode}");
+                var enabledRegions = PhotonNetwork.NetworkingClient.RegionHandler?.EnabledRegions ?? new List<Region>();
+                Debug.Log($"EnabledRegions {string.Join(',', enabledRegions)}");
+            }
+        }
 
         public static void Connect(string playerName)
         {
@@ -215,7 +226,7 @@ namespace Prg.Scripts.Common.Photon
             // Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
             // This means that if you serialize data always when OnPhotonSerializeView is called
             // then SendRate will effectively be same as SerializationRate if it is set to be less here.
-            
+
             // Defaults are 30 times/second for SendRate and 10 times/second for SerializationRate, we set both explicitly here.
             PhotonNetwork.SendRate = 30;
             PhotonNetwork.SerializationRate = 30;
