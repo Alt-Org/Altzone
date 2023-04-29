@@ -39,7 +39,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 6;
+        internal const int ClanDataVersion = 7;
 
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
@@ -75,7 +75,7 @@ namespace Altzone.Scripts.Model
             const int rowByMemberCount = 3;
             const int colByMemberCount = 3;
             {
-                var raidRoom = new RaidRoom(1, 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(new Guid().ToString(), 0, RaidRoomType.Public,
                     rowCount + 1 * rowByMemberCount, colCount + 1 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
@@ -88,7 +88,7 @@ namespace Altzone.Scripts.Model
                 roomFurniture.Add(new RaidRoomFurniture(new Guid().ToString(), misc[0].GameFurnitureId, 3, 3));
             }
             {
-                var raidRoom = new RaidRoom(2, 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(new Guid().ToString(), 0, RaidRoomType.Public,
                     rowCount + 3 * rowByMemberCount, colCount + 3 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
