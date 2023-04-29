@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -11,7 +12,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class CustomCharacter
     {
         public string Id;
+
+        [ForeignKeyReference(nameof(CharacterClass))]
         public string CharacterClassId;
+
         public string UnityKey;
         public string Name;
         public int Speed;

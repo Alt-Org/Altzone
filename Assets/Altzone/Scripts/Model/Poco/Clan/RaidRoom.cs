@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -9,7 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
     public class RaidRoom
     {
         public string Id;
+
+        [ForeignKeyReference(nameof(ClanMember))]
         public string ClanMemberId;
+
         public RaidRoomType Type;
         public int RowCount;
         public int ColCount;
