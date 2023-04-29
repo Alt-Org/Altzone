@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -20,6 +21,9 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
             Id = id;
             CharacterClassId = characterClassId;
             UnityKey = unityKey;

@@ -24,6 +24,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         private BattleCharacter(string customCharacterId, string name, string characterClassId, string characterClassName, string unityKey,
             GestaltCycle gestaltCycle, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(customCharacterId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassName));
             CustomCharacterId = customCharacterId;
             Name = name;
             CharacterClassId = characterClassId;

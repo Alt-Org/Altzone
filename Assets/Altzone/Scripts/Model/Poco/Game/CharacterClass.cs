@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -19,6 +20,13 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public CharacterClass(string characterClassId, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
+            Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(speed >= 0);
+            Assert.IsTrue(resistance >= 0);
+            Assert.IsTrue(attack >= 0);
+            Assert.IsTrue(defence >= 0);
             CharacterClassId = characterClassId;
             GestaltCycle = gestaltCycle;
             Name = name;

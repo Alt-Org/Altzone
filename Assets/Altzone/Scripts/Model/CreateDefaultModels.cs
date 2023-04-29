@@ -80,7 +80,7 @@ namespace Altzone.Scripts.Model
             const int rowByMemberCount = 3;
             const int colByMemberCount = 3;
             {
-                var raidRoom = new RaidRoom(FakeMongoDbId(), 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
                     rowCount + 1 * rowByMemberCount, colCount + 1 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
@@ -93,7 +93,7 @@ namespace Altzone.Scripts.Model
                 roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureId, 3, 3));
             }
             {
-                var raidRoom = new RaidRoom(FakeMongoDbId(), 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
                     rowCount + 3 * rowByMemberCount, colCount + 3 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
