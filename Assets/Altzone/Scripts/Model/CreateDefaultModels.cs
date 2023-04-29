@@ -129,7 +129,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Game] <c>CharacterClass</c> version number for data update purposes.
         /// </summary>
-        internal const int CharacterClassesVersion = 7;
+        internal const int CharacterClassesVersion = 8;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.

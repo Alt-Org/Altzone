@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -10,7 +11,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        public string CharacterClassId;
+        public string Id;
         public GestaltCycle GestaltCycle;
         public string Name;
         public int Speed;
@@ -18,16 +19,16 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Attack;
         public int Defence;
 
-        public CharacterClass(string characterClassId, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
+        public CharacterClass(string id, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
             Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
             Assert.IsTrue(speed >= 0);
             Assert.IsTrue(resistance >= 0);
             Assert.IsTrue(attack >= 0);
             Assert.IsTrue(defence >= 0);
-            CharacterClassId = characterClassId;
+            Id = id;
             GestaltCycle = gestaltCycle;
             Name = name;
             Speed = speed;
@@ -36,14 +37,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             Defence = defence;
         }
 
-        public static CharacterClass CreateDummyFor(string characterClassId)
+        public static CharacterClass CreateDummyFor(string id)
         {
-            return new CharacterClass(characterClassId, (GestaltCycle)1, "deleted", 1, 1, 1, 1);
+            return new CharacterClass(id, (GestaltCycle)1, "possibly_deleted", 1, 1, 1, 1);
         }
 
         public override string ToString()
         {
-            return $"{nameof(CharacterClassId)}: {CharacterClassId}, {nameof(GestaltCycle)}: {GestaltCycle}, {nameof(Name)}: {Name}" +
+            return $"{nameof(Id)}: {Id}, {nameof(GestaltCycle)}: {GestaltCycle}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
     }

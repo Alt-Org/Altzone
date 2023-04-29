@@ -192,7 +192,7 @@ namespace Altzone.Scripts
                     var isCustomCharactersValid = true;
                     foreach (var customCharacter in customCharacters)
                     {
-                        if (characterClasses.All(x => x.CharacterClassId != customCharacter.CharacterClassId))
+                        if (characterClasses.All(x => x.Id != customCharacter.CharacterClassId))
                         {
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");

@@ -42,10 +42,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
         {
-            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.CharacterClassId, "CharacterClassId mismatch");
+            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
             return new BattleCharacter(
                 customCharacter.Id, customCharacter.Name,
-                characterClass.CharacterClassId, characterClass.Name,
+                characterClass.Id, characterClass.Name,
                 customCharacter.UnityKey,
                 characterClass.GestaltCycle,
                 customCharacter.Speed + characterClass.Speed,
