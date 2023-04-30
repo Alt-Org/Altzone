@@ -35,6 +35,7 @@ namespace Battle0.Scripts.Lobby.InLobby
         {
             _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonLobby.GetRegion()}";
         }
+
         private IEnumerator StartLobby()
         {
             var delay = new WaitForSeconds(0.1f);
@@ -54,7 +55,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
-                    PhotonLobby.Connect(playerData.Name);
+                    PhotonLobby.Connect(playerData.Name, playerSettings.PhotonRegion);
                 }
                 else if (PhotonWrapper.CanJoinLobby)
                 {
