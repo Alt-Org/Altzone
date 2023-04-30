@@ -49,7 +49,7 @@ namespace Altzone.Scripts.Settings
         public string PhotonRegion
         {
             get => _playerData.PhotonRegion;
-            private set
+            set
             {
                 _playerData.PhotonRegion = value ?? string.Empty;
                 Save();

@@ -11,7 +11,7 @@ namespace Altzone.Scripts.Settings
     public interface IPlayerSettings
     {
         string PlayerGuid { get; }
-        string PhotonRegion { get; }
+        string PhotonRegion { get; set; }
         SystemLanguage Language { get; set; }
         bool IsDebugFlag { get; set; }
         bool IsTosAccepted { get; set; }
