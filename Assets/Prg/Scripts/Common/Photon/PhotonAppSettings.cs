@@ -15,8 +15,8 @@ namespace Prg.Scripts.Common.Photon
     public class PhotonAppSettings : ScriptableObject
     {
         private const string Tooltip = "Use menu 'Window->Photon Unity Networking->Highlight Server Settings' to see other Photon settings";
-        
-        [FormerlySerializedAs("appSettings"),Tooltip(Tooltip)]public AppSettings _appSettings;
+
+        [Tooltip(Tooltip)] public AppSettings _appSettings;
 
         public override string ToString()
         {
