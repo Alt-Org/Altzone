@@ -41,6 +41,22 @@ namespace Altzone.Scripts.Settings
         }
 
         /// <summary>
+        /// Photon Game Server Region Code for explicit region selection.
+        /// </summary>
+        /// <remarks>
+        /// Typically we use <c>PhotonServerSettings</c> or 'best region' for this.
+        /// </remarks>
+        public string PhotonRegion
+        {
+            get => _playerData.PhotonRegion;
+            private set
+            {
+                _playerData.PhotonRegion = value ?? string.Empty;
+                Save();
+            }
+        }
+
+        /// <summary>
         /// Player's UNITY language.
         /// </summary>
         /// <remarks>
@@ -170,6 +186,7 @@ namespace Altzone.Scripts.Settings
         private class PlayerData
         {
             public string PlayerGuid;
+            public string PhotonRegion;
             public SystemLanguage Language;
             public bool IsTosAccepted;
             public bool IsFirstTimePlaying;
@@ -179,6 +196,7 @@ namespace Altzone.Scripts.Settings
             public void ResetData(SystemLanguage language)
             {
                 PlayerGuid = Guid.NewGuid().ToString();
+                PhotonRegion = string.Empty;
                 Language = language;
                 IsTosAccepted = false;
                 IsFirstTimePlaying = false;
@@ -188,7 +206,7 @@ namespace Altzone.Scripts.Settings
 
             public override string ToString()
             {
-                return $"{nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
+                return $"{nameof(PhotonRegion)}: {PhotonRegion}, {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
                        $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
                        $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
             }
@@ -206,6 +224,7 @@ namespace Altzone.Scripts.Settings
             {
                 _host = UnityMonoHelper.Instance;
                 _playerData.PlayerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
+                _playerData.PhotonRegion = PlayerPrefs.GetString(PlayerPrefKeys.PhotonRegion, string.Empty);
                 _playerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
                 _playerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
                 _playerData.IsFirstTimePlaying = PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
@@ -228,6 +247,7 @@ namespace Altzone.Scripts.Settings
             protected override void InternalSave()
             {
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+                PlayerPrefs.SetString(PlayerPrefKeys.PhotonRegion, PhotonRegion);
                 PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)_playerData.Language);
                 PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
                 PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, IsFirstTimePlaying ? 1 : 0);
