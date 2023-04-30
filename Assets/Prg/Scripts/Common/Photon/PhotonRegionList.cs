@@ -12,6 +12,7 @@ namespace Prg.Scripts.Common.Photon
     /// Wrapper for Photon <c>RegionHandler</c> to 'ping' those regions that have been enabled in Photon Dashboard.
     /// </summary>
     /// <remarks>
+    /// Note that <b>ping</b>'ing happens in <b>background thread</b>!<br />
     /// How To Show A Region List:<br />
     /// https://doc.photonengine.com/realtime/current/connection-and-authentication/regions#how_to_show_a_region_list
     /// </remarks>
@@ -36,6 +37,8 @@ namespace Prg.Scripts.Common.Photon
         private List<PhotonRegion> _enabledRegions = new();
 
         public IReadOnlyList<PhotonRegion> EnabledRegions => _enabledRegions.AsReadOnly();
+
+        public int EnabledRegionsCount => _enabledRegions.Count;
 
         private MyConnectionCallbacks _connectionCallbacks;
         private RegionHandler _curRegionHandler;
@@ -91,14 +94,17 @@ namespace Prg.Scripts.Common.Photon
             var pingRegionsDelay = new WaitForSeconds(pingRegionsInterval);
             while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
             {
+                // Start ping operation (in background thread).
                 var isPingDone = false;
                 var isStarted = _curRegionHandler.PingMinimumOfRegions((handler) =>
                 {
+                    // Note that this not in UNITY MainThread context and we have to switch to it in order to update UI!
                     UpdateRegionHandler(handler);
                     isPingDone = true;
                 }, null);
                 Assert.IsTrue(isStarted, "PingMinimumOfRegions failed to start");
 
+                // Wait for new ping data to arrive and update in UNITY MainThread.
                 yield return new WaitUntil(() => isPingDone || !enabled || PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer);
                 if (isPingDone && enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
                 {
@@ -114,6 +120,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void UpdateRegionHandler(RegionHandler regionHandler)
         {
+            // This can be outside of UNITY MainThread context!
             _curRegionHandler = regionHandler;
             _enabledRegions = new List<PhotonRegion>();
             _debugRegions = new List<string>();
