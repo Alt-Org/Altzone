@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Config;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
@@ -19,7 +20,18 @@ namespace MenuUi.Scripts.ChangeRegion
         private const float PingRegionsInterval = 3.0f;
 
         [SerializeField] private ChangeRegionView _view;
-        [SerializeField] private PhotonRegionList _photonRegionList;
+        [SerializeField] private string _currentPhotonRegion;
+
+        [SerializeField, Header("Debug")] private PhotonRegionList _photonRegionList;
+
+        private static string ConvertRegionForUI(string photonRegion) => string.IsNullOrEmpty(photonRegion)
+            ? ChangeRegionView.DefaultRegionButtonCode
+            : photonRegion;
+
+        private static string ConvertRegionForSettings(string photonRegion) =>
+            photonRegion == ChangeRegionView.DefaultRegionButtonCode
+                ? string.Empty
+                : photonRegion;
 
         private void Start()
         {
@@ -32,6 +44,9 @@ namespace MenuUi.Scripts.ChangeRegion
             Debug.Log($"{name}", gameObject);
             _view.ResetView();
             _view.TitleText = "Loading Regions";
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            _currentPhotonRegion = ConvertRegionForUI(playerSettings.PhotonRegion);
             _photonRegionList = PhotonRegionList.GetOrCreate();
             StartCoroutine(RegionListUpdater());
         }
@@ -45,11 +60,21 @@ namespace MenuUi.Scripts.ChangeRegion
             StopAllCoroutines();
         }
 
-        private static void OnRegionSelected(string regionCode)
+        private void UpdateTitle()
         {
-            Debug.Log($"{regionCode}");
-            // TODO: region code should be saved for later use!
-            PhotonLobby.ConnectToRegionMaster(regionCode);
+            var selectedRegion = _currentPhotonRegion;
+            _view.TitleText = $"Photon Region '{selectedRegion}'";
+        }
+
+        private void OnRegionSelected(string regionCode)
+        {
+            Debug.Log($"update {_currentPhotonRegion} <- {regionCode}");
+            _currentPhotonRegion = regionCode;
+            UpdateTitle();
+
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            playerSettings.PhotonRegion = ConvertRegionForSettings(regionCode);
         }
 
         private IEnumerator RegionListUpdater()
@@ -93,18 +118,16 @@ namespace MenuUi.Scripts.ChangeRegion
                 }
                 yield return null;
             }
-            // At this point we should have a region list (without Ping)
-            Debug.Log($"{name} done");
-            var regionList = _photonRegionList.EnabledRegions.ToList().OrderBy(x => x.Region).ToList();
-            Debug.Log($"regionList {string.Join(',', regionList)}");
+            // At this point we should have a region list (without Ping values)
+            Debug.Log($"{name} done: {_photonRegionList.EnabledRegionsCount}");
 
-            if (regionList.Count == 0)
+            if (_photonRegionList.EnabledRegionsCount == 0)
             {
-                _view.TitleText = "No Available <b>Photon Regions</b> Found";
+                _view.TitleText = "<b>Photon Region</b> is not Selectable in this game";
                 yield break;
             }
-            _view.TitleText = $"Photon Regions: {regionList.Count}";
-            _view.UpdateRegionList(regionList);
+            UpdateTitle();
+            OnPhotonRegionListUpdate(_photonRegionList.EnabledRegions);
 
             // Start pinging regions and updating UI.
             _photonRegionList.PingRegions(OnPhotonRegionListUpdate, PingRegionsInterval);
@@ -113,7 +136,8 @@ namespace MenuUi.Scripts.ChangeRegion
         private void OnPhotonRegionListUpdate(IReadOnlyList<PhotonRegionList.PhotonRegion> regions)
         {
             var regionList = regions.ToList().OrderBy(x => x.Ping).ToList();
-            _view.UpdateRegionList(regionList);
+            regionList.Add(new PhotonRegionList.PhotonRegion(ChangeRegionView.DefaultRegionButtonCode, 0));
+            _view.UpdateRegionList(regionList, _currentPhotonRegion);
         }
     }
 }

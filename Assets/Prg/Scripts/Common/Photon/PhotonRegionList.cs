@@ -134,7 +134,7 @@ namespace Prg.Scripts.Common.Photon
             }
         }
 
-        public void OnRegionListReceived(RegionHandler regionHandler)
+        private void OnRegionListReceived(RegionHandler regionHandler)
         {
             Debug.Log($"{name}");
             UpdateRegionHandler(regionHandler);
@@ -146,10 +146,14 @@ namespace Prg.Scripts.Common.Photon
             public readonly string Region;
             public readonly int Ping;
 
-            public PhotonRegion(Region region)
+            public PhotonRegion(string region, int ping)
             {
-                Region = region.Code;
-                Ping = region.Ping == int.MaxValue ? -1 : region.Ping;
+                Region = region;
+                Ping = ping == int.MaxValue ? -1 : ping;
+            }
+
+            public PhotonRegion(Region region) : this(region.Code, region.Ping)
+            {
             }
 
             public override string ToString()

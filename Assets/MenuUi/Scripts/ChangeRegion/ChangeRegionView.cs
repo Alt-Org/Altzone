@@ -12,13 +12,16 @@ namespace MenuUi.Scripts.ChangeRegion
     /// </summary>
     public class ChangeRegionView : MonoBehaviour
     {
+        // Marker for the button that 'resets' selected region.
+        public const string DefaultRegionButtonCode = "*";
+
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private GameObject _lineTemplate;
         [SerializeField] private Transform _contentRoot;
 
-        private Action<string> _onRegionChanged;
-
         private readonly List<LineData> _lineDataList = new();
+
+        private Action<string> _onRegionChanged;
 
         public string TitleText
         {
@@ -43,7 +46,7 @@ namespace MenuUi.Scripts.ChangeRegion
             _onRegionChanged = callback;
         }
 
-        public void UpdateRegionList(IReadOnlyList<PhotonRegionList.PhotonRegion> regions)
+        public void UpdateRegionList(IReadOnlyList<PhotonRegionList.PhotonRegion> regions, string currentPhotonRegion)
         {
             var regionsCount = regions.Count;
             if (_contentRoot.childCount > regionsCount)
@@ -56,7 +59,7 @@ namespace MenuUi.Scripts.ChangeRegion
             }
             for (var i = 0; i < _contentRoot.childCount; ++i)
             {
-                _lineDataList[i].UpdateRegion(regions[i]);
+                _lineDataList[i].UpdateRegion(regions[i], currentPhotonRegion);
             }
         }
 
@@ -97,6 +100,7 @@ namespace MenuUi.Scripts.ChangeRegion
         private static readonly Dictionary<string, string> RegionNames = new()
         {
             // https://doc.photonengine.com/realtime/current/connection-and-authentication/regions#available_regions
+            { DefaultRegionButtonCode, "Default Region Selection" },
             { "asia", "Asia, Singapore" },
             { "au", "Australia, Melbourne" },
             { "cae", "Canada, East, Montreal" },
@@ -114,6 +118,8 @@ namespace MenuUi.Scripts.ChangeRegion
 
         private class LineData
         {
+            private static Button _currentRegion;
+
             public readonly GameObject Parent;
 
             private readonly Button _button;
@@ -141,19 +147,31 @@ namespace MenuUi.Scripts.ChangeRegion
                         // No can do.
                         return;
                     }
+                    // Selected region button is disabled.
+                    _button.interactable = false;
+                    if (_currentRegion != null)
+                    {
+                        // Enable previously selected region button.
+                        _currentRegion.interactable = true;
+                    }
+                    _currentRegion = _button;
                     callback?.Invoke(_region.Region);
                 });
             }
 
-            public void UpdateRegion(PhotonRegionList.PhotonRegion region)
+            public void UpdateRegion(PhotonRegionList.PhotonRegion region, string currentPhotonRegion)
             {
                 _region = region;
                 _code.text = region.Region;
                 _name.text = GetRegionName(region.Region);
-                _ping.text = region.Ping > 0 ? $"{region.Ping} ms" : "---   ";
-                if (!_button.interactable)
+                _ping.text = region.Ping == 0 ? "" : region.Ping > 0 ? $"{region.Ping} ms" : "---   ";
+                // Selected region button is disabled.
+                var isInteractable = region.Region != currentPhotonRegion;
+                _button.interactable = isInteractable;
+                if (!isInteractable)
                 {
-                    _button.interactable = true;
+                    // Save current region button because we might need to enable it later
+                    _currentRegion = _button;
                 }
             }
         }
