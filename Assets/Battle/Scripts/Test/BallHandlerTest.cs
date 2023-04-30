@@ -16,7 +16,7 @@ public class BallHandlerTest : MonoBehaviour
     private float _angleLimit;
 
 
-    private const float waitTime = 2f;
+    private const float PhotonWaitTime = 2f;
 
     private Rigidbody2D _rb;
 
@@ -34,7 +34,7 @@ public class BallHandlerTest : MonoBehaviour
 
     private IEnumerator LaunchBall()
     {
-        yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds(PhotonWaitTime);
         if (!PhotonNetwork.IsMasterClient)
         {
             yield break;
