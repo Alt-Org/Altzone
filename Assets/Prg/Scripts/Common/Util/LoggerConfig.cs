@@ -128,7 +128,7 @@ namespace Prg.Scripts.Common.Util
                 {
                     var list = LoggedTypesForEditor.ToList();
                     list.Sort();
-                    // Lines should end into something that is not kept in version control.
+                    // Lines should be put into something/somewhere that is not kept in the version control if it is saved on the disk.
                     setLoggedDebugTypes?.Invoke(string.Join('\n', list));
                 }
 #endif
