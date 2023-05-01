@@ -79,7 +79,7 @@ namespace Prg.Scripts.Common.Photon
         {
             _currentRoomList.Clear();
             _debugRoomListCount = 0;
-            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonNetwork.NetworkingClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
 

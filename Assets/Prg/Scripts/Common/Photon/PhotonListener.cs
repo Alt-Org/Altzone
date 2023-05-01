@@ -179,7 +179,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnRegionListReceived(RegionHandler regionHandler)
         {
-            LogPhotonStatus($"BestRegion={regionHandler.BestRegion} {string.Join(',', regionHandler.EnabledRegions)}");
+            LogPhotonStatus($"BestRegion={regionHandler.BestRegion} EnabledRegions={string.Join(',', regionHandler.EnabledRegions)}");
         }
 
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
@@ -202,7 +202,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnJoinedLobby()
         {
-            LogPhotonStatus();
+            LogPhotonStatus($"CloudRegion={PhotonNetwork.NetworkingClient.CloudRegion}");
         }
 
         public void OnLeftLobby()

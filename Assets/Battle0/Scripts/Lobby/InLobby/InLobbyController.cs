@@ -38,10 +38,17 @@ namespace Battle0.Scripts.Lobby.InLobby
 
         private IEnumerator StartLobby()
         {
+            var networkClientState = PhotonNetwork.NetworkClientState;
+            Debug.Log($"{networkClientState}");
             var delay = new WaitForSeconds(0.1f);
             while (!PhotonNetwork.InLobby)
             {
-                Debug.Log($"{PhotonNetwork.NetworkClientState}");
+                if (networkClientState != PhotonNetwork.NetworkClientState)
+                {
+                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
+                    networkClientState = PhotonNetwork.NetworkClientState;
+                    Debug.Log($"{networkClientState}");
+                }
                 if (PhotonNetwork.InRoom)
                 {
                     PhotonLobby.LeaveRoom();

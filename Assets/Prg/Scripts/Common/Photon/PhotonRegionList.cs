@@ -148,7 +148,6 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnRegionListReceived(RegionHandler regionHandler)
         {
-            Debug.Log($"{name}");
             UpdateRegionHandler(regionHandler);
             Debug.Log($"BestRegion={new PhotonRegion(regionHandler.BestRegion)} EnabledRegions={string.Join(',', _enabledRegions)}");
         }
