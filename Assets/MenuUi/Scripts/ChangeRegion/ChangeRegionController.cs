@@ -19,10 +19,10 @@ namespace MenuUi.Scripts.ChangeRegion
     {
         private const float PingRegionsInterval = 3.0f;
 
-        [SerializeField] private ChangeRegionView _view;
-        [SerializeField] private string _currentPhotonRegion;
+        [Header("Settings"), SerializeField] private ChangeRegionView _view;
 
-        [SerializeField, Header("Debug")] private PhotonRegionList _photonRegionList;
+        [Header("Live Data"), SerializeField] private PhotonRegionList _photonRegionList;
+        [SerializeField] private string _currentPhotonRegion;
 
         private static string ConvertRegionForUI(string photonRegion) => string.IsNullOrEmpty(photonRegion)
             ? ChangeRegionView.DefaultRegionButtonCode
@@ -63,7 +63,7 @@ namespace MenuUi.Scripts.ChangeRegion
         private void UpdateTitle()
         {
             var selectedRegion = _currentPhotonRegion;
-            _view.TitleText = $"Photon Region '{selectedRegion}'";
+            _view.TitleText = $"Server Region '{selectedRegion}'";
         }
 
         private void OnRegionSelected(string regionCode)
@@ -119,11 +119,11 @@ namespace MenuUi.Scripts.ChangeRegion
                 yield return null;
             }
             // At this point we should have a region list (without Ping values)
-            Debug.Log($"{name} done: {_photonRegionList.EnabledRegionsCount}");
+            Debug.Log($"{name} done regions: {_photonRegionList.EnabledRegionsCount}");
 
             if (_photonRegionList.EnabledRegionsCount == 0)
             {
-                _view.TitleText = "<b>Photon Region</b> is not Selectable in this game";
+                _view.TitleText = "<b>Server Region</b> is not <b>Selectable</b> in this game";
                 yield break;
             }
             UpdateTitle();

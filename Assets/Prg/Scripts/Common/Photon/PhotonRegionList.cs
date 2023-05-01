@@ -32,13 +32,21 @@ namespace Prg.Scripts.Common.Photon
             return regionList;
         }
 
-        [SerializeField] private List<string> _debugRegions = new();
+        [Header("Debug"), SerializeField] private string _currentPingResult;
 
         private List<PhotonRegion> _enabledRegions = new();
+
+        #region Public API
+
+        public PhotonRegion BestRegion { get; private set; }
+
+        public string SummaryToCache { get; private set; }
 
         public IReadOnlyList<PhotonRegion> EnabledRegions => _enabledRegions.AsReadOnly();
 
         public int EnabledRegionsCount => _enabledRegions.Count;
+
+        #endregion
 
         private MyConnectionCallbacks _connectionCallbacks;
         private RegionHandler _curRegionHandler;
@@ -94,20 +102,29 @@ namespace Prg.Scripts.Common.Photon
             var pingRegionsDelay = new WaitForSeconds(pingRegionsInterval);
             while (enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
             {
-                // Start ping operation (in background thread).
+                // Start full ping operation without 'previousSummary' because we want all regions to be updated continuously.
                 var isPingDone = false;
                 var isStarted = _curRegionHandler.PingMinimumOfRegions((handler) =>
-                {
-                    // Note that this not in UNITY MainThread context and we have to switch to it in order to update UI!
-                    UpdateRegionHandler(handler);
-                    isPingDone = true;
-                }, null);
+                    {
+                        // Note that this not in UNITY MainThread context and we have to switch back to it in order to update UI etc.
+                        UpdateRegionHandler(handler);
+                        isPingDone = true;
+                    },
+                    null);
                 Assert.IsTrue(isStarted, "PingMinimumOfRegions failed to start");
 
                 // Wait for new ping data to arrive and update in UNITY MainThread.
                 yield return new WaitUntil(() => isPingDone || !enabled || PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer);
                 if (isPingDone && enabled && PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
                 {
+                    // Update public API properties before calling the callback.
+                    _currentPingResult = _curRegionHandler.SummaryToCache;
+                    SummaryToCache = _currentPingResult;
+                    var bestRegion = _curRegionHandler.BestRegion;
+                    if (BestRegion == null || BestRegion.Region != bestRegion.Code)
+                    {
+                        BestRegion = new PhotonRegion(bestRegion);
+                    }
                     onPingRegionsReady(EnabledRegions);
                 }
                 if (pingRegionsInterval == 0f)
@@ -123,14 +140,9 @@ namespace Prg.Scripts.Common.Photon
             // This can be outside of UNITY MainThread context!
             _curRegionHandler = regionHandler;
             _enabledRegions = new List<PhotonRegion>();
-            _debugRegions = new List<string>();
             foreach (var enabledRegion in regionHandler.EnabledRegions)
             {
-                var region = new PhotonRegion(enabledRegion);
-                _enabledRegions.Add(region);
-#if UNITY_EDITOR
-                _debugRegions.Add(region.ToString());
-#endif
+                _enabledRegions.Add(new PhotonRegion(enabledRegion));
             }
         }
 
