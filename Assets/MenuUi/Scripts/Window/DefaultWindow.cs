@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.Window
             {
                 FindWindowForEditor();
             }
-            Debug.Log($"{_window}");
+            Debug.Log($"{_window}", _window);
             var windowManager = WindowManager.Get();
             windowManager.SetWindowsParent(gameObject);
             Assert.IsNotNull(_window.WindowPrefab, "_window.WindowPrefab != null");
