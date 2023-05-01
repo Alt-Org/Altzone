@@ -64,9 +64,13 @@ namespace Prg.Scripts.Common.Util
                 return message.Replace(_prefixTag, "[").Replace(_suffixTag, "]");
             }
 
+            // 'colorContextTag' will be added to Editor log and filtered out from log file.
+            var colorContextTag = string.IsNullOrWhiteSpace(config._colorForContextTagName)
+                ? null
+                : $" <color={config._colorForContextTagName}>*</color>";
             if (config._isLogToFile)
             {
-                CreateLogWriter();
+                CreateLogWriter(colorContextTag);
             }
             if (AppPlatform.IsEditor)
             {
@@ -83,9 +87,9 @@ namespace Prg.Scripts.Common.Util
                     Debug.SetTagsForClassName(_prefixTag, _suffixTag);
                     LogWriter.AddLogLineContentFilter(FilterClassNameForLogMessageCallback);
                 }
-                if (!string.IsNullOrWhiteSpace(config._colorForContextTagName))
+                if (colorContextTag != null)
                 {
-                    Debug.SetContextTag($"<color={config._colorForContextTagName}>*</color>");
+                    Debug.SetContextTag(colorContextTag);
                 }
                 // Clear previous run.
                 LoggedTypesForEditor.Clear();
@@ -140,23 +144,28 @@ namespace Prg.Scripts.Common.Util
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
-        private static void CreateLogWriter()
+        private static void CreateLogWriter(string colorContextTag)
         {
-            string FilterPhotonLogMessage(string message)
+            string LogLineContentFilter(string message)
             {
-                // This is mainly to remove "formatting" form Photon ToString and ToStringFull messages and make then one liners!
-                if (!string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(message))
                 {
-                    if (message.Contains("\n") || message.Contains("\r") || message.Contains("\t"))
-                    {
-                        message = message.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
-                    }
+                    return message;
+                }
+                if (message.Contains("\n") || message.Contains("\r") || message.Contains("\t"))
+                {
+                    // This is mainly to remove "formatting" form Photon ToString and ToStringFull messages and make then one liners!
+                    message = message.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+                }
+                if (message.EndsWith(colorContextTag))
+                {
+                    message = message.Substring(0, message.Length - colorContextTag.Length);
                 }
                 return message;
             }
 
             UnitySingleton.CreateStaticSingleton<LogWriter>();
-            LogWriter.AddLogLineContentFilter(FilterPhotonLogMessage);
+            LogWriter.AddLogLineContentFilter(LogLineContentFilter);
         }
 
         private static List<RegExFilter> BuildFilter(string lines)

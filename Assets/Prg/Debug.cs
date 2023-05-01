@@ -107,7 +107,7 @@ public static class Debug
 
     public static void SetContextTag(string contextTag)
     {
-        _contextTag = $" {contextTag}";
+        _contextTag = contextTag;
     }
 
     private static void RemoveTags()
