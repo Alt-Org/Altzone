@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ namespace MenuUi.Scripts.Window
         /// <summary>
         /// Get current window stack.
         /// </summary>
-        List<WindowManager.MyWindow> WindowStack { get; }
+        [MaybeNull] List<MyWindow> WindowStack { get; }
 
         /// <summary>
         /// Finds given windows index in window stack, top most window has index value 0 and not found window -1.
