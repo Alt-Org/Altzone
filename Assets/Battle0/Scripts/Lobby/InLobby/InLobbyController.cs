@@ -24,11 +24,20 @@ namespace Battle0.Scripts.Lobby.InLobby
 
         private void OnEnable()
         {
-            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
+            var cloudRegion = PhotonNetwork.NetworkingClient?.CloudRegion;
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState} CloudRegion={cloudRegion} PhotonRegion={photonRegion}");
+            if (PhotonWrapper.IsConnectedToMasterServer && photonRegion != cloudRegion)
+            {
+                // We need to disconnect from current region because it is not the same as in player settings.
+                PhotonLobby.Disconnect();
+            }
             _view.Reset();
             UpdateTitle();
             _view.LobbyText = string.Empty;
-            StartCoroutine(StartLobby());
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         private void UpdateTitle()
@@ -36,7 +45,7 @@ namespace Battle0.Scripts.Lobby.InLobby
             _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonLobby.GetRegion()}";
         }
 
-        private IEnumerator StartLobby()
+        private IEnumerator StartLobby(string playerGuid, string photonRegion)
         {
             var networkClientState = PhotonNetwork.NetworkClientState;
             Debug.Log($"{networkClientState}");
@@ -55,14 +64,11 @@ namespace Battle0.Scripts.Lobby.InLobby
                 }
                 else if (PhotonWrapper.CanConnect)
                 {
-                    var gameConfig = GameConfig.Get();
-                    var playerSettings = gameConfig.PlayerSettings;
-                    var playerGuid = playerSettings.PlayerGuid;
                     var store = Storefront.Get();
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
-                    PhotonLobby.Connect(playerData.Name, playerSettings.PhotonRegion);
+                    PhotonLobby.Connect(playerData.Name, photonRegion);
                 }
                 else if (PhotonWrapper.CanJoinLobby)
                 {
