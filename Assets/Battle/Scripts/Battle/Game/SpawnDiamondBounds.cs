@@ -14,8 +14,8 @@ public class SpawnDiamondBounds : MonoBehaviour
 
     [SerializeField] float MinSpawnTime;
     [SerializeField] float MaxSpawnTime;
-    private int Change;
-    [SerializeField] int MaxChange;
+    private int Chance;
+    [SerializeField] int MaxChance;
 
     //private GameObject[] SpawnPointsArray;
     public List<float> SpawnPointsArray = new List<float>();
@@ -23,6 +23,7 @@ public class SpawnDiamondBounds : MonoBehaviour
     public Vector3 center;
     public Vector3 size;
     public int SpawnY;
+    private int LastSpawnY;
     public int PlayerLimit = 4;
     public bool StartBool;  //true
     public PhotonView View;
@@ -50,13 +51,21 @@ public class SpawnDiamondBounds : MonoBehaviour
     public IEnumerator SpawnDiamond()
     {
         yield return new WaitForSeconds(Random.Range(MinSpawnTime, MaxSpawnTime));
-        SpawnY = Random.Range(0, SpawnPointsArray.Count);
-        Change = Random.Range(0, MaxChange);
-        View.RPC("DiamondRPC",  RpcTarget.All, SpawnY, Change);
+        while (true)
+        {
+            SpawnY = Random.Range(0, SpawnPointsArray.Count);
+            if (SpawnY != LastSpawnY)
+            {
+                break;
+            }
+        }
+        LastSpawnY = SpawnY;
+        Chance = Random.Range(0, MaxChance);
+        View.RPC("DiamondRPC",  RpcTarget.All, SpawnY, Chance);
     }
 
     [PunRPC]
-    private void DiamondRPC(int SpawnY, int Change)
+    private void DiamondRPC(int SpawnY, int Chance)
     {
         if (StartBool == true)
         {
@@ -67,11 +76,11 @@ public class SpawnDiamondBounds : MonoBehaviour
         }
         if (StartBool == false)
         {
-            if (Change < MaxChange - 1)
+            if (Chance < MaxChance - 1)
             {
                 Diamond = DiamondObject;
             }
-            if (Change == MaxChange - 1)
+            if (Chance == MaxChance - 1)
             {
                 Diamond = DiamondObject2;
             }
