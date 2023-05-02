@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,7 +68,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             set => playerName.text = value;
         }
 
-        public int CurrentCharacterId { get; private set; }
+        public string CurrentCharacterId { get; private set; }
 
         public Action ContinueButtonOnClick
         {
@@ -101,7 +98,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _curPrefab = null;
         }
 
-        public void SetCharacters(List<BattleCharacter> characters, int currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, string currentCharacterId)
         {
             Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;

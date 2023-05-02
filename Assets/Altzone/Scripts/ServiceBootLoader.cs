@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
@@ -72,7 +73,8 @@ namespace Altzone.Scripts
                 isCallbackDone = false;
                 store.ForTest.GetAllCustomCharactersTest(customCharacters =>
                 {
-                    var currentCustomCharacterId = customCharacters.Count == 0 ? 0 : customCharacters[0].Id;
+                    const string unknownCustomCharacterId = "0";
+                    var currentCustomCharacterId = customCharacters.Count == 0 ? unknownCustomCharacterId : customCharacters[0].Id;
                     if (playerData == null)
                     {
                         playerData = CreateDefaultModels.CreatePlayerData(playerGuid, "abba", currentCustomCharacterId);
@@ -190,7 +192,7 @@ namespace Altzone.Scripts
                     var isCustomCharactersValid = true;
                     foreach (var customCharacter in customCharacters)
                     {
-                        if (characterClasses.All(x => x.CharacterClassId != customCharacter.CharacterClassId))
+                        if (characterClasses.All(x => x.Id != customCharacter.CharacterClassId))
                         {
                             Debug.LogWarning($"customCharacter {customCharacter.Id} {customCharacter.Name} " +
                                              $"does not have CharacterModel {customCharacter.CharacterClassId}");

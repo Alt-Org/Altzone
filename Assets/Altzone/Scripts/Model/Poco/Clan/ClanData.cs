@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -17,8 +19,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
 
-        public ClanData(string id, string name, string tag, int gameCoins)
+        public ClanData(string id, string name, [MustBeNullOrNonEmpty] string tag, int gameCoins)
         {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(tag == null || !string.IsNullOrWhiteSpace(tag));
+            Assert.IsTrue(gameCoins >= 0);
             Id = id;
             Name = name;
             Tag = tag;

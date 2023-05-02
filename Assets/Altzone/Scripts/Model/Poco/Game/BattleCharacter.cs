@@ -10,9 +10,9 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// </remarks>
     public class BattleCharacter
     {
-        public readonly int CustomCharacterId;
+        public readonly string CustomCharacterId;
         public readonly string Name;
-        public readonly int CharacterClassId;
+        public readonly string CharacterClassId;
         public readonly string CharacterClassName;
         public readonly string UnityKey;
         public readonly GestaltCycle GestaltCycle;
@@ -21,9 +21,13 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(int customCharacterId, string name, int characterClassId, string characterClassName, string unityKey,
+        private BattleCharacter(string customCharacterId, string name, string characterClassId, string characterClassName, string unityKey,
             GestaltCycle gestaltCycle, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(customCharacterId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassName));
             CustomCharacterId = customCharacterId;
             Name = name;
             CharacterClassId = characterClassId;
@@ -38,10 +42,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
         {
-            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.CharacterClassId, "CharacterClassId mismatch");
+            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
             return new BattleCharacter(
-                customCharacter.CharacterClassId, customCharacter.Name,
-                characterClass.CharacterClassId, characterClass.Name,
+                customCharacter.Id, customCharacter.Name,
+                characterClass.Id, characterClass.Name,
                 customCharacter.UnityKey,
                 characterClass.GestaltCycle,
                 customCharacter.Speed + characterClass.Speed,

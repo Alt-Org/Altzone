@@ -275,12 +275,9 @@ namespace Altzone.Scripts.Model
             }
             else
             {
-                if (playerData.Id == 0)
+                if (string.IsNullOrEmpty(playerData.Id))
                 {
-                    var id = _storageData.PlayerData.Count == 0
-                        ? 1
-                        : _storageData.PlayerData.Max(x => x.Id) + 1;
-                    playerData.Id = id;
+                    playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
                 _storageData.PlayerData.Add(playerData);
             }
@@ -328,7 +325,7 @@ namespace Altzone.Scripts.Model
             callback(_storageData.CustomCharacters);
         }
 
-        internal void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback)
+        internal void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
@@ -348,14 +345,14 @@ namespace Altzone.Scripts.Model
             return battleCharacters;
         }
 
-        private BattleCharacter _GetBattleCharacter(int customCharacterId)
+        private BattleCharacter _GetBattleCharacter(string customCharacterId)
         {
             var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
             if (customCharacter == null)
             {
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
-            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.CharacterClassId == customCharacter.CharacterClassId);
+            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.

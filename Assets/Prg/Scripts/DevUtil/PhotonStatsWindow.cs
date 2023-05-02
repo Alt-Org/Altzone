@@ -141,8 +141,13 @@ namespace Prg.Scripts.DevUtil
                     label += $"AutoSyncScene ";
                 }
             }
-            label += $"\r\nnick={PhotonNetwork.NickName}";
+            label += $"\r\nnick={PhotonNetwork.NickName}\r\n{FormatServerTimestamp()}";
             GUILayout.Label(label, _guiLabelStyle);
+        }
+
+        private static string FormatServerTimestamp()
+        {
+            return $"server time {(uint)(PhotonNetwork.ServerTimestamp):# ### ### ##0}";
         }
 
         #region Type names

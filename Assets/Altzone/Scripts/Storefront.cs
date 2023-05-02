@@ -139,7 +139,7 @@ namespace Altzone.Scripts
     /// </summary>
     public interface ITestDataStore
     {
-        void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback);
+        void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback);
 
         void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback);
 
@@ -195,7 +195,7 @@ namespace Altzone.Scripts
 
         public ITestDataStore ForTest => this;
 
-        public void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback) =>
+        public void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback) =>
             _localModels.GetBattleCharacterTest(customCharacterId, callback);
 
         public void GetAllBattleCharactersTest(Action<List<BattleCharacter>> callback) => _localModels.GetAllBattleCharactersTest(callback);

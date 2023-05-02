@@ -13,6 +13,7 @@ namespace Altzone.Editor
 
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string GameDebug = MenuRoot + "Game Debug/";
+        private const string PhotonRegion = GameDebug + "Photon Region/";
 
         #region GameDebug
 
@@ -25,6 +26,18 @@ namespace Altzone.Editor
         [MenuItem(GameDebug + "Reset Player Settings", false, 12)]
         private static void ResetPlayerSettings() => DebugMenu.ResetPlayerSettings();
 
+        [MenuItem(PhotonRegion + "Default", false, 20)]
+        private static void SetPhotonRegionToDefault() => DebugMenu.SetPhotonRegionToDefault();
+
+        [MenuItem(PhotonRegion + "Europe", false, 21)]
+        private static void SetPhotonRegionToEu() => DebugMenu.SetPhotonRegionToEu();
+
+        [MenuItem(PhotonRegion + "USA West", false, 22)]
+        private static void SetPhotonRegionToUs() => DebugMenu.SetPhotonRegionToUs();
+
+        [MenuItem(PhotonRegion + "Asia", false, 23)]
+        private static void SetPhotonRegionToAsia() => DebugMenu.SetPhotonRegionToAsia();
+        
         #endregion
     }
 }

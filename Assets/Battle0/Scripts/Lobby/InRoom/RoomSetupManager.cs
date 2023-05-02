@@ -44,10 +44,6 @@ namespace Battle0.Scripts.Lobby.InRoom
         [SerializeField] private bool _isLocalPlayerPositionUnique;
         [SerializeField] private int _masterClientPosition;
 
-        private int  _buttonStatePlayerP1 = 0;
-        private int  _buttonStatePlayerP2 = 0;
-        private int  _buttonStatePlayerP3 = 0;
-        private int  _buttonStatePlayerP4 = 0;
 
         private bool _interactablePlayerP1;
         private bool _interactablePlayerP2;
