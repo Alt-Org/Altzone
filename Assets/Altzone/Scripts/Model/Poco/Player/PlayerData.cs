@@ -34,14 +34,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         public PlayerData(string id, string clanId, string currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(clanId.IsNullOrNotEmpty());
-            Assert.IsTrue(currentCustomCharacterId.IsNullOrNotEmpty());
+            Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(currentCustomCharacterId.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(name.IsMandatory());
             Assert.IsTrue(backpackCapacity >= 0);
             Assert.IsTrue(uniqueIdentifier.IsMandatory());
             Id = id;
-            ClanId = clanId;
-            CurrentCustomCharacterId = currentCustomCharacterId;
+            ClanId = clanId ?? string.Empty;
+            CurrentCustomCharacterId = currentCustomCharacterId ?? string.Empty;
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;

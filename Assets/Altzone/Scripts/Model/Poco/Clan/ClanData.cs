@@ -23,11 +23,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(name.IsMandatory());
-            Assert.IsTrue(tag.IsNullOrNotEmpty());
+            Assert.IsTrue(tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(gameCoins >= 0);
             Id = id;
             Name = name;
-            Tag = tag;
+            Tag = tag ?? string.Empty;
             GameCoins = gameCoins;
         }
 

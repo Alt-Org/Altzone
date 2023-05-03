@@ -30,7 +30,7 @@ namespace Altzone.Scripts.Model
         {
             return Guid.NewGuid().ToString();
         }
-        
+
         /// <summary>
         /// [Player] <c>PlayerData</c> version number for data update purposes.
         /// </summary>
@@ -210,26 +210,30 @@ namespace Altzone.Scripts.Model
                     Debug.Log($"Line is too short: {line.Replace(separator, '|')}");
                     continue;
                 }
+                var name = tokens[1];
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    // Create fake name.
+                    name = $"Furniture-{101 + gameFurniture.Count}";
+                }
+                var id = tokens[0];
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    // Create fake id from name.
+                    id = name;
+                    id = id.Trim().ToLower(cultureInfo).Replace(" ", ".");
+                }
                 var furniture = new GameFurniture
-                {
-                    Id = tokens[0],
-                    Name = tokens[1],
-                    Shape = tokens[2],
-                    Weight = ParseDouble(tokens[3]),
-                    Material = tokens[4],
-                    Recycling = tokens[5],
-                    UnityKey = tokens[6],
-                    Filename = tokens[7],
-                };
-                if (string.IsNullOrWhiteSpace(furniture.Name))
-                {
-                    furniture.Name = $"Furniture-{101 + gameFurniture.Count}";
-                }
-                if (string.IsNullOrWhiteSpace(furniture.Id))
-                {
-                    furniture.Id = furniture.Name;
-                }
-                furniture.Id = furniture.Id.Trim().ToLower(cultureInfo).Replace(" ", ".");
+                (
+                    id,
+                    name,
+                    tokens[2],
+                    ParseDouble(tokens[3]),
+                    tokens[4],
+                    tokens[5],
+                    tokens[6],
+                    tokens[7]
+                );
                 gameFurniture.Add(furniture);
             }
             return gameFurniture;

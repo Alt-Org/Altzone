@@ -13,9 +13,9 @@ namespace Altzone.Scripts.Model.Poco.Attributes
         public static bool IsMandatory(this string field) => !string.IsNullOrWhiteSpace(field);
 
         /// <summary>
-        /// Check that field is either null or non empty (white space only is not allowed)
+        /// Check that field is null or empty or non white space.
         /// </summary>
-        public static bool IsNullOrNotEmpty(this string field) => field == null || !string.IsNullOrEmpty(field) || !string.IsNullOrWhiteSpace(field);
+        public static bool IsNullOEmptyOrNonWhiteSpace(this string field) => string.IsNullOrEmpty(field) || !string.IsNullOrWhiteSpace(field);
     }
 
     /// <summary>

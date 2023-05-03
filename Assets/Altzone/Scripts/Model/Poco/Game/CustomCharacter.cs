@@ -29,11 +29,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(characterClassId.IsMandatory());
-            Assert.IsTrue(unityKey.IsNullOrNotEmpty());
+            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(name.IsMandatory());
             Id = id;
             CharacterClassId = characterClassId;
-            UnityKey = unityKey;
+            UnityKey = unityKey ?? string.Empty;
             Name = name;
             Speed = speed;
             Resistance = resistance;

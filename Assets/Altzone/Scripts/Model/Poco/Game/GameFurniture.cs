@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -16,10 +17,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         [PrimaryKey] public string Id;
         [Unique] public string Name;
-        public string Shape;
+        [Mandatory] public string Shape;
         public double Weight;
-        public string Material;
-        public string Recycling;
+        [Mandatory] public string Material;
+        [Mandatory] public string Recycling;
 
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime. 
@@ -27,6 +28,26 @@ namespace Altzone.Scripts.Model.Poco.Game
         [Optional] public string UnityKey;
 
         public string Filename;
+
+        public GameFurniture(string id, string name, string shape, double weight, string material, string recycling, string unityKey, string filename)
+        {
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(shape.IsMandatory());
+            Assert.IsTrue(weight >= 0);
+            Assert.IsTrue(material.IsMandatory());
+            Assert.IsTrue(recycling.IsMandatory());
+            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(filename.IsNullOEmptyOrNonWhiteSpace());
+            Id = id;
+            Name = name;
+            Shape = shape;
+            Weight = weight;
+            Material = material;
+            Recycling = recycling;
+            UnityKey = unityKey ?? string.Empty;
+            Filename = filename ?? string.Empty;
+        }
 
         public override string ToString()
         {
