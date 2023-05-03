@@ -1101,6 +1101,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 794425541132071188, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: BetaDiamondsText
+      value: 
+      objectReference: {fileID: 233460025}
+    - target: {fileID: 794425541132071188, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: AlphaDiamondsText
+      value: 
+      objectReference: {fileID: 1835597692}
+    - target: {fileID: 794425541132071188, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: BetaDiamondsText2
+      value: 
+      objectReference: {fileID: 1016078155}
+    - target: {fileID: 794425541132071188, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: AlphaDiamondsText2
+      value: 
+      objectReference: {fileID: 515804172}
     - target: {fileID: 1927593940927509934, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
         type: 3}
       propertyPath: _explotion
@@ -2123,7 +2143,7 @@ RectTransform:
   - {fileID: 577966835}
   - {fileID: 740033387}
   m_Father: {fileID: 1715143004}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2354,8 +2374,8 @@ RectTransform:
   - {fileID: 1070883256}
   - {fileID: 31162646}
   - {fileID: 671105155}
-  - {fileID: 1563842759}
   - {fileID: 2098773723}
+  - {fileID: 1563842759}
   - {fileID: 628678170}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2722,7 +2742,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1715143004}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

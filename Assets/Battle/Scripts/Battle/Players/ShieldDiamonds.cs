@@ -14,6 +14,12 @@ namespace Battle.Scripts.Battle.Players
 
         void Start()
         {
+            if (!PhotonNetwork.InRoom)
+            {
+                enabled = false;
+                return;
+            }
+            
             TeamNumber = Pickup.TeamNumber;
             PickupDiamondsBall = GameObject.FindGameObjectWithTag("BallRigidBody").GetComponent<PickupDiamondsBall>();
         }
