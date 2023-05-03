@@ -24,19 +24,20 @@ public class InvFront : MonoBehaviour
 
     [Header("Non-scene objects")]
     [SerializeField] private GameObject _invSlot;
+    [SerializeField] private GameObject _buySlot;
     [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
 
     private List<GameFurniture> _items;
-    private List<GameObject> _slotsList = new List<GameObject>();
+    private List<GameObject> _slotsList = new();
 
-    bool startCompleted = false;
+    bool _startCompleted = false;
 
     private int _maxSortingBy = 2;
     private int _sortingBy = -1; // used as a carrier for info on how to sort
 
     private void OnEnable()
     {
-        if (!startCompleted) { StartCoroutine(Begin()); }
+        if (!_startCompleted) { StartCoroutine(Begin()); }
     }
 
     private IEnumerator Begin()
@@ -52,7 +53,7 @@ public class InvFront : MonoBehaviour
         _loadingText.SetActive(false);
         _topButtons.SetActive(true); // The sorting button should not be available if items are yet to be loaded
 
-        startCompleted = true;
+        _startCompleted = true;
     }
 
     private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
@@ -106,10 +107,10 @@ public class InvFront : MonoBehaviour
         for (int i = 0; i < _items.Count; i++)
         {
             GameObject newSlot = Instantiate(_invSlot, _content);
-            var slotVal = i;
-            newSlot.GetComponent<Button>().onClick.AddListener(() => OnShowInfo(slotVal));
+            newSlot.GetComponent<Button>().onClick.AddListener(() => OnShowInfo(i));
             _slotsList.Add(newSlot);
         }
+        Instantiate(_buySlot, _content);
     }
 
     private void SetSlots()
@@ -119,7 +120,7 @@ public class InvFront : MonoBehaviour
         {
             Transform toSet = _slotsList[i].transform;
 
-            // Icon - Placeholder
+            // Icon
             toSet.GetChild(0).GetComponent<Image>().sprite = GetIcon(_furn.Filename);
 
             // Name
@@ -128,7 +129,7 @@ public class InvFront : MonoBehaviour
             // Weight
             toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
 
-            // Shape - Placeholder
+            // Shape
             toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon(_furn.Shape);
 
             i++;
@@ -163,7 +164,7 @@ public class InvFront : MonoBehaviour
         Transform parentSlot = _infoSlot.transform;
         GameFurniture _furn = _items[slotVal];
 
-        // Icon - Placeholder
+        // Icon
         parentSlot.GetChild(0).GetComponent<Image>().sprite = GetIcon(_furn.Filename);
 
         // Name
@@ -175,7 +176,7 @@ public class InvFront : MonoBehaviour
         // Material text
         parentSlot.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
 
-        // Type - Placeholder
+        // Type
         parentSlot.GetChild(4).GetComponent<Image>().sprite = GetIcon(_furn.Shape);
 
         // Type Text
@@ -187,13 +188,10 @@ public class InvFront : MonoBehaviour
     private Sprite GetIcon(string name)
     {
         Sprite returned = _icons.Find(x => x.name == name);
-
         if (returned == null)
         {
-            //Debug.LogWarning($"No icon of name '{name}' was found");
             return _furnImagePlaceholder;
         }
-
         return returned;
     }
 }
