@@ -28,6 +28,8 @@ namespace Altzone.Scripts.Model.Poco.Game
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
             Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
             Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassName));
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(unityKey));
+            Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
             CustomCharacterId = customCharacterId;
             Name = name;
             CharacterClassId = characterClassId;

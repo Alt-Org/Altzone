@@ -14,8 +14,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanFurniture(string id, string gameFurnitureId)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(gameFurnitureId));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(gameFurnitureId.IsMandatory());
             Id = id;
             GameFurnitureId = gameFurnitureId;
         }

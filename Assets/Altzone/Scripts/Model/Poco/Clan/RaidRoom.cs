@@ -18,8 +18,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public RaidRoom(string id, string clanMemberId, RaidRoomType type, int rowCount, int colCount)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(clanMemberId));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(clanMemberId.IsMandatory());
+            Assert.AreNotEqual(RaidRoomType.None, type);
+            Assert.IsTrue(rowCount >= 0);
+            Assert.IsTrue(colCount >= 0);
             Id = id;
             ClanMemberId = clanMemberId;
             Type = type;

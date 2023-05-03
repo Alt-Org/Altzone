@@ -21,9 +21,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
-            Assert.IsTrue(tag == null || !string.IsNullOrWhiteSpace(tag));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(tag.IsNullOrNotEmpty());
             Assert.IsTrue(gameCoins >= 0);
             Id = id;
             Name = name;

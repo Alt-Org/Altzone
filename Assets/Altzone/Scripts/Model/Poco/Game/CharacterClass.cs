@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -22,9 +21,9 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public CharacterClass(string id, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
+            Assert.IsTrue(id.IsPrimaryKey());
             Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(name.IsMandatory());
             Assert.IsTrue(speed >= 0);
             Assert.IsTrue(resistance >= 0);
             Assert.IsTrue(attack >= 0);

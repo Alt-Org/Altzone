@@ -22,7 +22,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>
-        [Mandatory] public string UniqueIdentifier;
+        [Unique] public string UniqueIdentifier;
 
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
 
@@ -33,12 +33,12 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayerData(string id, string clanId, string currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(clanId == null || !string.IsNullOrWhiteSpace(clanId));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(currentCustomCharacterId));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(clanId.IsNullOrNotEmpty());
+            Assert.IsTrue(currentCustomCharacterId.IsNullOrNotEmpty());
+            Assert.IsTrue(name.IsMandatory());
             Assert.IsTrue(backpackCapacity >= 0);
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(uniqueIdentifier));
+            Assert.IsTrue(uniqueIdentifier.IsMandatory());
             Id = id;
             ClanId = clanId;
             CurrentCustomCharacterId = currentCustomCharacterId;

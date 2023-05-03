@@ -27,9 +27,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(characterClassId.IsMandatory());
+            Assert.IsTrue(unityKey.IsNullOrNotEmpty());
+            Assert.IsTrue(name.IsMandatory());
             Id = id;
             CharacterClassId = characterClassId;
             UnityKey = unityKey;

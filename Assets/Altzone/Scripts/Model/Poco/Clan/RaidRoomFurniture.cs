@@ -16,8 +16,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public RaidRoomFurniture(string id, string gameFurnitureId, int row, int col)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(gameFurnitureId));
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(gameFurnitureId.IsMandatory());
             Assert.IsTrue(row >= 0);
             Assert.IsTrue(col >= 0);
             Id = id;
