@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 4494353262941421778}
   m_Layer: 0
   m_Name: Pickup
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,6 +134,7 @@ MonoBehaviour:
   PlayerActor: {fileID: 8975400094333793158}
   View: {fileID: 0}
   TeamNumber: 0
+  EventSender: 
 --- !u!1 &8975400094333793159
 GameObject:
   m_ObjectHideFlags: 0

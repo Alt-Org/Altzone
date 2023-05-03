@@ -14,7 +14,7 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private PlayerActor _playerPrefab;
 
-        private PlayerActor _playerActor;
+        public PlayerActor _playerActor { get; private set; }
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private PlayerDriverState _state;
