@@ -8,16 +8,18 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <summary>
     /// Player created custom 'game' character based on given <c>CharacterClass</c>.
     /// </summary>
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        public string Id;
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(CharacterClass)), Mandatory] public string CharacterClassId;
 
-        [ForeignKeyReference(nameof(CharacterClass))]
-        public string CharacterClassId;
+        /// <summary>
+        /// This can be used for example to load UNITY assets by name for UI at runtime. 
+        /// </summary>
+        [Optional] public string UnityKey;
 
-        public string UnityKey;
-        public string Name;
+        [Mandatory] public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;

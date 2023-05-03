@@ -6,14 +6,11 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class RaidRoom
     {
-        public string Id;
-
-        [ForeignKeyReference(nameof(ClanMember))]
-        public string ClanMemberId;
-
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(ClanMember)), Mandatory] public string ClanMemberId;
         public RaidRoomType Type;
         public int RowCount;
         public int ColCount;

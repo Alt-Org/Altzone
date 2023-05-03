@@ -6,13 +6,11 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanFurniture
     {
-        public string Id;
-
-        [ForeignKeyReference(nameof(GameFurniture))]
-        public string GameFurnitureId;
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(GameFurniture)), Mandatory] public string GameFurnitureId;
 
         public ClanFurniture(string id, string gameFurnitureId)
         {

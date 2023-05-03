@@ -10,20 +10,19 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
-        public string Id;
-
-        [ForeignKeyReference(nameof(ClanData))]
-        public string ClanId;
-
-        [ForeignKeyReference(nameof(CustomCharacter))]
-        public string CurrentCustomCharacterId;
-
-        public string Name;
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
+        [ForeignKey(nameof(CustomCharacter)), Optional] public string CurrentCustomCharacterId;
+        [Unique] public string Name;
         public int BackpackCapacity;
-        public string UniqueIdentifier;
+
+        /// <summary>
+        /// Unique string to identify this player across devices and systems.
+        /// </summary>
+        [Mandatory] public string UniqueIdentifier;
 
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
 
@@ -32,8 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
 
-        public PlayerData(string id, [MustBeNullOrNonEmpty] string clanId, string currentCustomCharacterId,
-            string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, string currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(!string.IsNullOrWhiteSpace(id));
             Assert.IsTrue(clanId == null || !string.IsNullOrWhiteSpace(clanId));

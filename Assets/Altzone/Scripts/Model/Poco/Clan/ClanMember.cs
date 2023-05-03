@@ -5,17 +5,12 @@ using Altzone.Scripts.Model.Poco.Player;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanMember
     {
-        public string Id;
-
-        [ForeignKeyReference(nameof(PlayerData))]
-        public string PlayerDataId;
-
-        [ForeignKeyReference(nameof(RaidRoom))]
-        public string RaidRoomId;
-
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(PlayerData)), Mandatory] public string PlayerDataId;
+        [ForeignKey(nameof(RaidRoom)), Optional] public string RaidRoomId;
         public ClanMemberRole Role;
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -10,16 +11,21 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// Fields in original source are:<br />
     /// ID	huonekalun nimi	muoto	paino / kg	materiaali	kierrätys	prefabin nimi	tiedoston nimi	kuva
     /// </remarks>
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class GameFurniture
     {
-        public string Id;
-        public string Name;
+        [PrimaryKey] public string Id;
+        [Unique] public string Name;
         public string Shape;
         public double Weight;
         public string Material;
         public string Recycling;
-        public string UnityKey;
+
+        /// <summary>
+        /// This can be used for example to load UNITY assets by name for UI at runtime. 
+        /// </summary>
+        [Optional] public string UnityKey;
+
         public string Filename;
 
         public override string ToString()

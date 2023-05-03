@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 
@@ -8,12 +9,12 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <summary>
     /// Non-mutable <c>CharacterClass</c> that acts as base archetype for player created characters.
     /// </summary>
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        public string Id;
+        [PrimaryKey] public string Id;
         public GestaltCycle GestaltCycle;
-        public string Name;
+        [Unique] public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
