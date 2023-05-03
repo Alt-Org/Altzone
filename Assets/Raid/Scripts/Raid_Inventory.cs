@@ -95,7 +95,7 @@ public class Raid_Inventory : MonoBehaviour
     {
         GameObject SlotRow = Instantiate(SlotRowPrefab);
         SlotRow.transform.SetParent(PanelParent);
-        SlotRow.transform.localScale = new Vector3(1, 1, 0);
+        SlotRow.transform.localScale = new Vector3(1, 1, 0);       
     }
 
     void PlaceEmptySlots()
