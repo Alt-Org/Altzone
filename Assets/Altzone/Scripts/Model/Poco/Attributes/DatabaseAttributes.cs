@@ -4,13 +4,20 @@ namespace Altzone.Scripts.Model.Poco.Attributes
 {
     // See https://github.com/nhibernate/NHibernate.Mapping.Attributes
 
+    /// <summary>
+    /// Extension methods for <c>string</c> fields used in assertions.
+    /// </summary>
     public static class Precondition
     {
         public static bool IsPrimaryKey(this string key) => !string.IsNullOrWhiteSpace(key);
         public static bool IsMandatory(this string field) => !string.IsNullOrWhiteSpace(field);
-        public static bool IsNullOrNotEmpty(this string field) => field == null || !string.IsNullOrWhiteSpace(field);
+
+        /// <summary>
+        /// Check that field is either null or non empty (white space only is not allowed)
+        /// </summary>
+        public static bool IsNullOrNotEmpty(this string field) => field == null || !string.IsNullOrEmpty(field) || !string.IsNullOrWhiteSpace(field);
     }
-    
+
     /// <summary>
     /// ForeignKey to mark field or property as foreign key.<br />
     /// <b>Note</b> that foreign key can be either mandatory or optional!
