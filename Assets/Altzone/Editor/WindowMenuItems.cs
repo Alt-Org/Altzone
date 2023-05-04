@@ -13,6 +13,7 @@ namespace Altzone.Editor
 
         private const string MenuRoot = "Window/ALT-Zone/";
         private const string GameDebug = MenuRoot + "Game Debug/";
+        private const string Language = GameDebug + "Language/";
         private const string PhotonRegion = GameDebug + "Photon Region/";
 
         #region GameDebug
@@ -20,10 +21,13 @@ namespace Altzone.Editor
         [MenuItem(GameDebug + "Show Player Settings", false, 10)]
         private static void ShowLocalPlayerSettings() => DebugMenu.ShowLocalPlayerSettings();
 
-        [MenuItem(GameDebug + "Set Player Language to 'EN'", false, 11)]
+        [MenuItem(Language + "Finnish", false, 11)]
+        private static void SetLanguageToFinnish() => DebugMenu.SetLanguageToFinnish();
+
+        [MenuItem(Language + "English", false, 12)]
         private static void SetLanguageToEnglish() => DebugMenu.SetLanguageToEnglish();
 
-        [MenuItem(GameDebug + "Reset Player Settings", false, 12)]
+        [MenuItem(GameDebug + "Reset Player Settings", false, 13)]
         private static void ResetPlayerSettings() => DebugMenu.ResetPlayerSettings();
 
         [MenuItem(PhotonRegion + "Default", false, 20)]

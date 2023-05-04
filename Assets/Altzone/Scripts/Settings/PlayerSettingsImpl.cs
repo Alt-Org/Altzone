@@ -166,17 +166,13 @@ namespace Altzone.Scripts.Settings
             Localizer.SetLanguage(DefaultLanguage);
             _playerData.ResetData(DefaultLanguage);
             InternalSave();
-            Debug.Log(ToString());
         }
 
-        public void SetLanguageToEnglish()
+        public void SetLanguage(SystemLanguage language)
         {
-            const SystemLanguage english = SystemLanguage.English;
-            Localizer.LoadTranslations(english);
-            Localizer.SetLanguage(english);
-            Language = english;
-            InternalSave();
-            Debug.Log(ToString());
+            Localizer.LoadTranslations(language);
+            Localizer.SetLanguage(language);
+            Language = language;
         }
 #endif
 
@@ -246,6 +242,7 @@ namespace Altzone.Scripts.Settings
 
             protected override void InternalSave()
             {
+                Debug.Log($"{(Application.isPlaying ? "Playing" : "Editor")}");
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
                 PlayerPrefs.SetString(PlayerPrefKeys.PhotonRegion, PhotonRegion);
                 PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)_playerData.Language);
@@ -260,7 +257,13 @@ namespace Altzone.Scripts.Settings
             {
                 if (_host == null)
                 {
-                    // Can not delay, using UNITY default functionality save on exit
+                    if (Application.isPlaying)
+                    {
+                        // Can not delay, using UNITY default functionality save on application exit.
+                        return;
+                    }
+                    // In Editor just save and exit.
+                    InternalSave();
                     return;
                 }
                 if (_delayedSave != null)
@@ -277,7 +280,6 @@ namespace Altzone.Scripts.Settings
                 // By default Unity writes preferences to disk during OnApplicationQuit().
                 // - you can force them to disk using PlayerPrefs.Save().
                 yield return null;
-                Debug.Log("PlayerPrefs.Save");
                 InternalSave();
                 PlayerPrefs.Save();
                 _delayedSave = null;

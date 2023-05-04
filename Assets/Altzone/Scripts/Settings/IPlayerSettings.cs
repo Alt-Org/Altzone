@@ -23,7 +23,7 @@ namespace Altzone.Scripts.Settings
 
 #if UNITY_EDITOR
         void ResetPlayerSettings();
-        void SetLanguageToEnglish();
+        void SetLanguage(SystemLanguage language);
 #endif
     }
 }
