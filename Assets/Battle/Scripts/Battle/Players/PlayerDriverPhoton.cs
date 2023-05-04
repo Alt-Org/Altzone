@@ -18,7 +18,7 @@ namespace Battle.Scripts.Battle.Players
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private PlayerDriverState _state;
-        private PhotonView _photonView;
+        public PhotonView _photonView { get; private set; }
         private int _playerPos;
         private int _teamNumber;
         private double _movementDelay;

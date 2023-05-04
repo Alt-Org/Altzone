@@ -12,6 +12,8 @@ public class PlayerManager : MonoBehaviour
     [Header("Drivers")]
     [SerializeField] private List<PlayerDriverPhoton> _allDrivers;
 
+    private const float PhotonWaitTime = 2.1f;
+
     private void Start()
     {
         StartCoroutine(SearchPlayers());
@@ -19,8 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     private IEnumerator SearchPlayers()
     {
-        PhotonPlayerInstantiate ppi = FindObjectOfType<PhotonPlayerInstantiate>();
-        yield return new WaitUntil(() => !ppi.isActiveAndEnabled);
+        yield return new WaitForSeconds(PhotonWaitTime);
 
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton");
         foreach(GameObject playerObject in playerObjects) { _allDrivers.Add(playerObject.GetComponent<PlayerDriverPhoton>()); }
@@ -36,7 +37,7 @@ public class PlayerManager : MonoBehaviour
         foreach(PlayerDriverPhoton driver in _allDrivers)
         {
             // Figures who is the local player
-            if (driver.IsLocal)
+            if (driver._photonView.Controller.IsLocal)
             {
                 self = driver._playerActor.gameObject;
                 selfTeamNumber = driver.TeamNumber;
@@ -46,7 +47,7 @@ public class PlayerManager : MonoBehaviour
         foreach(PlayerDriverPhoton driver in _allDrivers)
         {
             // Figures who is the ally of local player and applies the range indicator
-            if (driver.TeamNumber == selfTeamNumber && driver._playerActor.gameObject != self)
+            if (driver.TeamNumber == selfTeamNumber && driver._playerActor.gameObject == self)
             {
                 Instantiate(_rangeIndicator, driver._playerActor.gameObject.transform);
                 break;
