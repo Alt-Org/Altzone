@@ -47,7 +47,7 @@ public class PlayerManager : MonoBehaviour
         foreach(PlayerDriverPhoton driver in _allDrivers)
         {
             // Figures who is the ally of local player and applies the range indicator
-            if (driver.TeamNumber == selfTeamNumber && driver._playerActor.gameObject == self)
+            if (driver.TeamNumber == selfTeamNumber && driver._playerActor.gameObject != self)
             {
                 Instantiate(_rangeIndicator, driver._playerActor.gameObject.transform);
                 break;
