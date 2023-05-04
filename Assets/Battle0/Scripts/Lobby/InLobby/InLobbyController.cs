@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
@@ -13,6 +12,8 @@ namespace Battle0.Scripts.Lobby.InLobby
     public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
+
+        private string _currentRegion;
 
         private void Awake()
         {
@@ -42,7 +43,9 @@ namespace Battle0.Scripts.Lobby.InLobby
 
         private void UpdateTitle()
         {
-            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonLobby.GetRegion()}";
+            // Save region for later use because getting it is not cheap (b ut not very expensive either). 
+            _currentRegion = PhotonLobby.GetRegion();
+            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion}";
         }
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
@@ -88,20 +91,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                 return;
             }
             var playerCount = PhotonNetwork.CountOfPlayers;
-            string text;
-            switch (playerCount)
-            {
-                case 0:
-                    text = "Wait";
-                    break;
-                case 1:
-                    text = "You are the only player";
-                    break;
-                default:
-                    text = $"There are {playerCount} players";
-                    break;
-            }
-            _view.LobbyText = $"{text}, ping {PhotonNetwork.GetPing()}";
+            _view.LobbyText = $"Players: {playerCount}, ping {_currentRegion} {PhotonNetwork.GetPing()} ms";
         }
 
         private void CharacterButtonOnClick()
