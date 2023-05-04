@@ -107,7 +107,12 @@ public class InvFront : MonoBehaviour
         for (int i = 0; i < _items.Count; i++)
         {
             GameObject newSlot = Instantiate(_invSlot, _content);
-            newSlot.GetComponent<Button>().onClick.AddListener(() => OnShowInfo(i));
+            var capturedSlotVal = i;
+            newSlot.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                // C# variable capture in the body of anonymous function!
+                OnShowInfo(capturedSlotVal);
+            });
             _slotsList.Add(newSlot);
         }
         Instantiate(_buySlot, _content);
