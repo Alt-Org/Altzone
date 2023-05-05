@@ -80,38 +80,6 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Game Test
---- !u!1 &1559001164620771178
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3688057643951819258}
-  m_Layer: 0
-  m_Name: slidig
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3688057643951819258
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559001164620771178}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -539.6132, y: -958.71277, z: 0}
-  m_LocalScale: {x: 3.597421, y: 3.597421, z: 3.597421}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2946997329743141813}
-  m_Father: {fileID: 2946997331089748536}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2652816514710575982
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,7 +710,7 @@ RectTransform:
   m_GameObject: {fileID: 2946997329743141812}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.27797693, y: 0.27797693, z: 0.27797693}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2946997330068113037}
@@ -751,13 +719,13 @@ RectTransform:
   - {fileID: 4378637747383218662}
   - {fileID: 2946997330226205264}
   - {fileID: 2116797017650383866}
-  m_Father: {fileID: 3688057643951819258}
-  m_RootOrder: 0
+  m_Father: {fileID: 2946997331089748536}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 150.00005, y: 266.50006}
-  m_SizeDelta: {x: 1079.2262, y: 1921.3766}
+  m_AnchoredPosition: {x: 0.000061035156, y: 0.00012207031}
+  m_SizeDelta: {x: 135.94629, y: -276.911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2946997329743141810
 MonoBehaviour:
@@ -1374,7 +1342,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 609955117111214357}
-  - {fileID: 3688057643951819258}
+  - {fileID: 2946997329743141813}
   m_Father: {fileID: 2946997330590361081}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3226,11 +3194,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Swipe
       objectReference: {fileID: 0}
+    - target: {fileID: 1440607170473138592, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
       propertyPath: _slidingUI
       value: 
-      objectReference: {fileID: 1559001164620771178}
+      objectReference: {fileID: 0}
     - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
       propertyPath: _nextNaviTarget
@@ -3248,6 +3221,16 @@ PrefabInstance:
       propertyPath: _YdistanceToNotSwitch
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
+        type: 3}
+      propertyPath: _slidingUI.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
+        type: 3}
+      propertyPath: _slidingUI.Array.data[0]
+      value: 
+      objectReference: {fileID: 2946997329743141812}
     - target: {fileID: 1440607170473138605, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
       propertyPath: m_RootOrder

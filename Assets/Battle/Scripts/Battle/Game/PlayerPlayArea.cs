@@ -28,8 +28,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GridPos _startPositionBeta1;
         [SerializeField] private GridPos _startPositionBeta2;
 
-        private GameObject[] _alphaTeamBricks;
-        private GameObject[] _betaTeamBricks;
+        [SerializeField] private GameObject[] _alphaTeamBricks;
+        [SerializeField] private GameObject[] _betaTeamBricks;
 
         private BoxCollider2D _rightWallCollider;
         private BoxCollider2D _leftWallCollider;
@@ -37,7 +37,7 @@ namespace Battle.Scripts.Battle.Game
         private BoxCollider2D _topWallCollider;
 
         private const float BrickSpriteWidth = 2.35f;
-        private const int BricksPerWall = 5;
+        private const int BricksPerWall = 7;
 
         private Rect _playStartAreaAlpha;
         private Rect _playStartAreaBeta;
