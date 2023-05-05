@@ -6,7 +6,7 @@ namespace Prg
     /// </summary>
     public static class BundleVersionCode
     {
-        private const string BundleVersionCodeValue = ".56";
+        private const string BundleVersionCodeValue = ".57";
 
         public static string Get => BundleVersionCodeValue;
     }
