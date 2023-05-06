@@ -14,7 +14,7 @@ namespace Prg.Editor.Build
     /// See <c>CommandLine</c> for supported command line options.
     /// </summary>
     /// <remarks>
-    /// Should be compatible with CI systems.<br />
+    /// Should be compatible with most CI systems.<br />
     /// For example TeamCity, Jenkins and CircleCI are some well known CI/CD systems.
     /// </remarks>
     internal static class TeamCity
@@ -48,7 +48,7 @@ namespace Prg.Editor.Build
         {
             _Build();
         }
-        
+
         internal static void CheckAndroidBuild()
         {
             // We assume that local keystore and password folder is one level up from current working directory (the UNITY project folder)
@@ -108,6 +108,7 @@ namespace Prg.Editor.Build
 
         internal static void CreateBuildScript()
         {
+            // (1) Create core build script.
             const string scriptName = "m_BuildScript.bat";
             var sep1 = Path.AltDirectorySeparatorChar.ToString();
             var sep2 = Path.DirectorySeparatorChar.ToString();
@@ -129,9 +130,11 @@ namespace Prg.Editor.Build
             File.WriteAllText(driverName, driverScript, Encoding);
             Debug.Log($"Build script driver '{driverName}' written");
 
+            // (2) Build output post processing (like copying to some other place).
             const string copyScriptName = "m_BuildScript_CopyOutput.bat";
             if (buildTarget != BuildTarget.WebGL)
             {
+                // Check other build target status.
                 if (!File.Exists(copyScriptName))
                 {
                     Debug.Log($"Create build copy output script '{copyScriptName}' is SKIPPED for {buildTarget}");
@@ -143,6 +146,7 @@ namespace Prg.Editor.Build
                 }
                 return;
             }
+            // Currently we create this automatically only for WebGL builds
             if (!File.Exists(copyScriptName))
             {
                 File.WriteAllText(copyScriptName, CommandLineTemplate.CopyBuildOutputScript, Encoding);
@@ -166,7 +170,7 @@ namespace Prg.Editor.Build
             }
         }
 
-        internal static void _Build()
+        private static void _Build()
         {
             BuildResult buildResult;
             try
@@ -465,7 +469,7 @@ namespace Prg.Editor.Build
             public readonly bool IsAndroidFull;
             public readonly bool IsDetailedBuildReport;
 
-            private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName, 
+            private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName,
                 bool isDevelopmentBuild, bool isAndroidFull, bool isDetailedBuildReport)
             {
                 ProjectPath = projectPath;
@@ -486,11 +490,18 @@ namespace Prg.Editor.Build
             // Build target parameter mapping
             // See: https://docs.unity3d.com/Manual/CommandLineArguments.html
             // See: https://docs.unity3d.com/2019.4/Documentation/ScriptReference/BuildTarget.html
+            // See: https://docs.unity3d.com/ScriptReference/BuildPipeline.GetBuildTargetName.html
             private static readonly Dictionary<string, BuildTarget> KnownBuildTargets = new()
             {
-                { "Win64", BuildTarget.StandaloneWindows64 },
-                { "Android", BuildTarget.Android },
-                { "WebGL", BuildTarget.WebGL },
+                {
+                    /*" Win64" */ BuildPipeline.GetBuildTargetName(BuildTarget.StandaloneWindows64), BuildTarget.StandaloneWindows64
+                },
+                {
+                    /*" Android" */ BuildPipeline.GetBuildTargetName(BuildTarget.Android), BuildTarget.Android
+                },
+                {
+                    /*" WebGL" */ BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), BuildTarget.WebGL
+                },
             };
 
             public static string BuildTargetNameFrom(BuildTarget buildTarget)
@@ -555,6 +566,7 @@ namespace Prg.Editor.Build
 
             #region BuildScriptContent
 
+            // Build target names are hard coded here - but they should be same that BuildPipeline.GetBuildTargetName() returns!
             private const string BuildScriptContent = @"@echo off
 set VERSION=<<unity_version>>
 set UNITY=<<unity_name>>
