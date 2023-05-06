@@ -28,10 +28,12 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int WebGlFramesToWaitFlush = 10;
+        private const float EditorDemoDelay = 1.0f;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
+        private readonly YieldInstruction _demoDelay;
 
         #region Version numbers for data update or upgrade checking
 
@@ -193,6 +195,9 @@ namespace Altzone.Scripts.Model
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
             Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
             // Player data validity can not be detected here!
+
+            // Simulate delay when fetching data from external server.
+            _demoDelay = AppPlatform.IsEditor ? new WaitForSeconds(EditorDemoDelay) : null;
         }
 
         internal void ResetDataForReload()
@@ -263,7 +268,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(0.5f), () => callback(playerData));
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () => callback(playerData));
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -372,7 +377,7 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(0.5f), () =>
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () =>
             {
                 callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
             });
