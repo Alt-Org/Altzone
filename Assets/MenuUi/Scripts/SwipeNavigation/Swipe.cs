@@ -20,6 +20,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private Vector2 _endPosition;
         private Vector2 _currentPosition;
         private List<Vector2> _defaultPos;
+        private Vector3 _moveTargetPos = Vector3.zero;
         private bool _isTouching;
         private bool _canCheck;
         private bool _canSlide;
@@ -28,7 +29,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         [Header("Swipe window chain"), SerializeField] private WindowDef _prevNaviTarget;
         [SerializeField] private WindowDef _nextNaviTarget;
-        
+
         [Header("Swipe sensitivity"), SerializeField] private float _distanceToSwitch;
 
         private void Awake()
@@ -89,9 +90,11 @@ namespace MenuUi.Scripts.SwipeNavigation
                 {
                     foreach (var slidingObj in _slidingUI)
                     {
+                        _moveTargetPos.x = _currentPosition.x - _startPosition.x + slidingPos.x;
+                        _moveTargetPos.y = slidingPos.y;
                         slidingObj.transform.position = Vector3.MoveTowards(
                             slidingObj.transform.position,
-                            new Vector3(_currentPosition.x - _startPosition.x + slidingPos.x, slidingPos.y, 0),
+                            _moveTargetPos,
                             SlideMoveSpeedFactor * Time.deltaTime);
                     }
                 }
@@ -101,8 +104,10 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 foreach (var slidingObj in _slidingUI)
                 {
+                    _moveTargetPos.x = sliding.x;
+                    _moveTargetPos.y = sliding.y;
                     slidingObj.transform.position = Vector3.MoveTowards(slidingObj.transform.position,
-                        new Vector3(sliding.x, sliding.y, 0),
+                        _moveTargetPos,
                         SlideMoveSpeedFactor * Time.deltaTime);
                 }
             }
