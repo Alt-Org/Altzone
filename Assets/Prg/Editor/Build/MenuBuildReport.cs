@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 
@@ -432,6 +433,7 @@ namespace Prg.Editor.Build
         private static List<AssetLine> ParseBuildReport(string buildReport, out double totalSize)
         {
             const string startMarkerLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string noDateMarkerLine = "Information on used Assets is not available, since player data was not rebuilt.";
             const string endMarkerLine = "-------------------------------------------------------------------------------";
             // Example lines:
             //  1.4 mb	 0.2% Assets/Altzone/Graphics/Logo/ALT ZONE logo.png
@@ -456,6 +458,12 @@ namespace Prg.Editor.Build
                 if (line == startMarkerLine)
                 {
                     processing = true;
+                }
+                else if (line == noDateMarkerLine)
+                {
+                    Debug.LogWarning($"Report file {Path.GetFileName(buildReport)} did not have data" +
+                              $" for 'Used Assets' because <b>player data was not rebuilt</b> on last build!");
+                    break;
                 }
             }
             return result;
