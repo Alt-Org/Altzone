@@ -138,8 +138,10 @@ public static class Debug
 
     [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color, float duration) => UnityEngine.Debug.DrawLine(start, end, color, duration);
+
     [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, Color color) => UnityEngine.Debug.DrawLine(start, end, color);
+
     [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end) => UnityEngine.Debug.DrawLine(start, end);
 
@@ -149,8 +151,10 @@ public static class Debug
 
     [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color, float duration) => UnityEngine.Debug.DrawRay(start, dir, color, duration);
+
     [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir, Color color) => UnityEngine.Debug.DrawRay(start, dir, color);
+
     [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 dir) => UnityEngine.Debug.DrawRay(start, dir);
 
@@ -210,14 +214,55 @@ public static class Debug
     }
 
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
+    public static void LogFormat(Object context, string format, params object[] args)
+    {
+        var frame = new StackFrame(1);
+        var method = frame.GetMethod();
+        if (method == null || method.ReflectedType == null)
+        {
+            UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, context, format, args);
+            return;
+        }
+        if (!IsMethodAllowedForLog(method))
+        {
+            return;
+        }
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, context, $"{GetPrefix(method)}{format}", args);
+    }
+    
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogWarning(string message, Object context = null)
     {
         UnityEngine.Debug.unityLogger.Log(LogType.Warning, (object)message, context);
     }
 
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
+    public static void LogWarningFormat(string format, params object[] args)
+    {
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Warning, format, args);
+    }
+
+    [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
+    public static void LogWarningFormat(Object context, string format, params object[] args)
+    {
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Warning, context, format, args);
+    }
+
+    public static void LogError(object message) => UnityEngine.Debug.unityLogger.Log(LogType.Error, message);
+
     public static void LogError(string message, Object context = null)
     {
         UnityEngine.Debug.unityLogger.Log(LogType.Error, (object)message, context);
+    }
+
+    public static void LogErrorFormat(string format, params object[] args)
+    {
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Error, format, args);
+    }
+
+    public static void LogErrorFormat(Object context, string format, params object[] args)
+    {
+        UnityEngine.Debug.unityLogger.LogFormat(LogType.Error, context, format, args);
     }
 
     public static void LogException(Exception exception)
