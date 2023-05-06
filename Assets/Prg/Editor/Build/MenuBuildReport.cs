@@ -54,7 +54,10 @@ namespace Prg.Editor.Build
 
         private static readonly string[] ExcludedFolders =
         {
+            "Assets/BuildReports",
             "Assets/Photon",
+            "Assets/Plugins",
+            "Assets/Presets",
             "Assets/Photon Unity Networking",
             ".*/Editor/.*",
             "Assets/Tests",
@@ -68,6 +71,11 @@ namespace Prg.Editor.Build
             ".*/zzDeleteMe/.*",
         };
 
+        private static readonly string[] ExcludedExtensions =
+        {
+            ".asmdef",
+            ".asmref",
+        };
         public static void CreateBuildScript()
         {
             Debug.Log("*");
@@ -112,17 +120,18 @@ namespace Prg.Editor.Build
                 return;
             }
 
-            var allFiles = ParseBuildReport(buildReport, out var totalSize);
-            logWriter.Log($"Build contains {allFiles.Count} total files, their size is {totalSize:### ### ##0.0} kb");
-            var usedAssets = new HashSet<string>();
+            var allAssets = ParseBuildReport(buildReport, out var totalSize);
+            
+            // Calculate base stats.
+            var usedAssets = new HashSet<AssetLine>();
             int[] fileCount = { 0, 0, 0, 0 };
             double[] fileSize = { 0, 0, 0, 0 };
             double[] filePercent = { 0, 0, 0, 0 };
-            foreach (var assetLine in allFiles)
+            foreach (var assetLine in allAssets)
             {
                 if (assetLine.IsAsset)
                 {
-                    usedAssets.Add(assetLine.FilePath);
+                    usedAssets.Add(assetLine);
                     fileCount[0] += 1;
                     fileSize[0] += assetLine.FileSizeKb;
                     filePercent[0] += assetLine.Percentage;
@@ -151,6 +160,7 @@ namespace Prg.Editor.Build
                     return;
                 }
             }
+            logWriter.Log($"Build contains {allAssets.Count} total files, their size is {totalSize:### ### ##0.0} kb");
             logWriter.Log($"Build contains {fileCount[0]} ASSET files, their size is {fileSize[0]:### ### ##0.0} kb ({filePercent[0]:0.0}%)");
             logWriter.Log($"Build contains {fileCount[1]} PACKAGE files, their size is {fileSize[1]:### ### ##0.0} kb ({filePercent[1]:0.0}%)");
             logWriter.Log($"Build contains {fileCount[2]} RESOURCE files, their size is {fileSize[2]:### ### ##0.0} kb ({filePercent[2]:0.0}%)");
@@ -158,7 +168,9 @@ namespace Prg.Editor.Build
             {
                 logWriter.Log($"Build contains {fileCount[3]} Built-in files, their size is {fileSize[3]:### ### ##0.0} kb ({filePercent[3]:0.0}%)");
             }
-            var testAssets = new List<string>();
+            
+            // Calculate un-used asset stats.
+            var testAssets = new List<AssetLine>();
             var unusedAssets = CheckUnusedAssets(usedAssets, testAssets);
             logWriter.Log($"Project contains {unusedAssets.Count} unused assets for {buildTargetName} build");
             if (_excludedFolderCount > 0 || _excludedFileCount > 0)
@@ -170,11 +182,12 @@ namespace Prg.Editor.Build
                 logWriter.Log($"Build uses {testAssets.Count} TEST assets");
                 foreach (var testAsset in testAssets)
                 {
-                    logWriter.Log($"TEST ASSET\t{testAsset}");
+                    logWriter.Log($"USED\tTEST\t{testAsset.FilePath}\t{testAsset.FileSizeKb:### ### ##0.0} kb");
                 }
             }
             var unusedAssetSizeTotal = unusedAssets.Select(x => x.FileSizeKb).Sum();
             logWriter.Log($"Unused assets total size is {unusedAssetSizeTotal:### ### ##0.0} kb");
+            
             var unusedCount = 0;
             var unusedSize = 0D;
             foreach (var unusedAsset in unusedAssets.Where(x => !x.IsTestAsset).OrderBy(x => x.FileSizeKb).Reverse())
@@ -202,7 +215,7 @@ namespace Prg.Editor.Build
         private static int _excludedFolderCount;
         private static int _excludedFileCount;
 
-        private static List<AssetLine> CheckUnusedAssets(HashSet<string> usedAssets, List<string> testAssets)
+        private static List<AssetLine> CheckUnusedAssets(HashSet<AssetLine> usedAssets, List<AssetLine> testAssets)
         {
             bool IsTestAsset(string assetPath, List<Regex> testFiles)
             {
@@ -213,7 +226,8 @@ namespace Prg.Editor.Build
                         return true;
                     }
                 }
-                return false;
+                // Test assets outside Test folder should end with "Test"!
+                return assetPath.Contains("Test.");
             }
 
             void HandleSubFolder(string parent, List<Regex> excluded, List<Regex> testFiles, ref List<AssetLine> result)
@@ -239,32 +253,38 @@ namespace Prg.Editor.Build
                     if (isExclude)
                     {
                         _excludedFileCount += 1;
+                        continue;
                     }
-                    else
+                    var extension = Path.GetExtension(assetPath);
+                    if (ExcludedExtensions.Contains(extension))
                     {
-                        var isUsed = usedAssets.Contains(assetPath);
-                        if (!isUsed)
+                        _excludedFileCount += 1;
+                        continue;
+                    }
+                    var isUsed = usedAssets.Any(x => x.FilePath.Equals(assetPath));
+                    if (!isUsed)
+                    {
+                        if (Directory.Exists(assetPath))
                         {
-                            if (Directory.Exists(assetPath))
-                            {
-                                continue; // Ignore folders
-                            }
-                            var assetLine = new AssetLine(assetPath, isFile: true);
-                            if (!result.Contains(assetLine))
-                            {
-                                if (IsTestAsset(assetPath, testFiles))
-                                {
-                                    assetLine.SetIsTestAsset();
-                                }
-                                result.Add(assetLine);
-                            }
-                            continue;
+                            continue; // Ignore folders
                         }
-                        if (IsTestAsset(assetPath, testFiles))
+                        var assetLine = new AssetLine(assetPath, isFile: true);
+                        if (!result.Contains(assetLine))
                         {
-                            testAssets.Add(assetPath);
-                            break;
+                            if (IsTestAsset(assetPath, testFiles))
+                            {
+                                assetLine.SetIsTestAsset();
+                            }
+                            result.Add(assetLine);
                         }
+                        continue;
+                    }
+                    if (IsTestAsset(assetPath, testFiles))
+                    {
+                        var assetLine = new AssetLine(assetPath, isFile: true);
+                        assetLine.SetIsTestAsset();
+                        testAssets.Add(assetLine);
+                        break;
                     }
                 }
             }
@@ -292,8 +312,13 @@ namespace Prg.Editor.Build
 
         private static List<AssetLine> ParseBuildReport(string buildReport, out double totalSize)
         {
-            const string markerLine = "-------------------------------------------------------------------------------";
-            const string assetsLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string startMarkerLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string endMarkerLine = "-------------------------------------------------------------------------------";
+            // Example lines:
+            //  1.4 mb	 0.2% Assets/Altzone/Graphics/Logo/ALT ZONE logo.png
+            //  341.5 kb	 0.1% Assets/TextMesh Pro/Sprites/EmojiOne.png
+            //  0.1 kb	 0.0% Assets/MenuUi/Scripts/Shop.cs
+
             var result = new List<AssetLine>();
             var processing = false;
             totalSize = 0;
@@ -301,7 +326,7 @@ namespace Prg.Editor.Build
             {
                 if (processing)
                 {
-                    if (line == markerLine)
+                    if (line == endMarkerLine)
                     {
                         break;
                     }
@@ -309,7 +334,7 @@ namespace Prg.Editor.Build
                     totalSize += assetLine.FileSizeKb;
                     result.Add(assetLine);
                 }
-                if (line == assetsLine)
+                if (line == startMarkerLine)
                 {
                     processing = true;
                 }
