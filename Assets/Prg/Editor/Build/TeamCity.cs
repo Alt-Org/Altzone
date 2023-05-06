@@ -122,7 +122,7 @@ namespace Prg.Editor.Build
             Debug.Log($"Build script '{scriptName}' written");
 
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
-            var buildTargetName = CommandLine.BuildTargetNameFrom(buildTarget);
+            var buildTargetName = CommandLine.GetBuildTargetName(buildTarget);
             var driverName = $"{Path.GetFileNameWithoutExtension(scriptName)}_{buildTargetName}.bat";
             var driverScript = CommandLineTemplate.BuildDriverScript
                 .Replace("<<build_script_name>>", scriptName)
@@ -499,11 +499,7 @@ namespace Prg.Editor.Build
                 },
             };
 
-            public static string BuildTargetNameFrom(BuildTarget buildTarget)
-            {
-                var pair = KnownBuildTargets.FirstOrDefault(x => x.Value == buildTarget);
-                return !string.IsNullOrEmpty(pair.Key) ? pair.Key : "Unknown";
-            }
+            public static string GetBuildTargetName(BuildTarget buildTarget) => BuildPipeline.GetBuildTargetName(buildTarget);
 
             public static CommandLine Parse(string[] args)
             {

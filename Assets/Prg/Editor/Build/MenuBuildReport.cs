@@ -111,7 +111,7 @@ namespace Prg.Editor.Build
             Debug.Log("*");
             var logWriter = new LogWriter();
 
-            var buildTargetName = TeamCity.CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
+            var buildTargetName = TeamCity.CommandLine.GetBuildTargetName(EditorUserBuildSettings.activeBuildTarget);
             logWriter.Log($"Build target is {buildTargetName}");
             var buildReport = $"m_Build_{buildTargetName}.log";
             if (!File.Exists(buildReport))
