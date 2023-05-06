@@ -6,12 +6,16 @@ using UnityEngine.InputSystem;
 
 namespace MenuUi.Scripts.SwipeNavigation
 {
+    /// <summary>
+    /// Simple swipe navigation controller to switch between windows horizontally using 'left' or 'right' swipe gestures.
+    /// </summary>
     public class Swipe : MonoBehaviour
     {
         private const float SlideTouchSensitivity = 5f;
         private const float SlideMoveSpeedFactor = 2000f;
 
         private PlayerInput _playerInput;
+        private InputAction _inputAction;
         private Vector2 _startPosition;
         private Vector2 _endPosition;
         private Vector2 _currentPosition;
@@ -20,17 +24,24 @@ namespace MenuUi.Scripts.SwipeNavigation
         private bool _canCheck;
         private bool _canSlide;
 
-        [SerializeField] private GameObject[] _slidingUI;
+        [Header("UI components that should slide"), SerializeField] private GameObject[] _slidingUI;
 
-        [SerializeField] private WindowDef _prevNaviTarget;
+        [Header("Swipe window chain"), SerializeField] private WindowDef _prevNaviTarget;
         [SerializeField] private WindowDef _nextNaviTarget;
-
-        [SerializeField] private float _distanceToSwitch;
+        
+        [Header("Swipe sensitivity"), SerializeField] private float _distanceToSwitch;
 
         private void Awake()
         {
-            _defaultPos = new List<Vector2>();
             _playerInput = GetComponent<PlayerInput>();
+            _inputAction = _playerInput.actions["TouchPosition"];
+            if (_slidingUI.Length == 0)
+            {
+                enabled = false;
+                _inputAction.Disable();
+                return;
+            }
+            _defaultPos = new List<Vector2>();
             foreach (var sliding in _slidingUI)
             {
                 _defaultPos.Add(sliding.transform.position);
@@ -41,7 +52,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (context.performed)
             {
-                _startPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
+                _startPosition = _inputAction.ReadValue<Vector2>();
                 _isTouching = true;
                 _canCheck = true;
                 _canSlide = false;
@@ -49,7 +60,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
             if (context.canceled)
             {
-                _endPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
+                _endPosition = _inputAction.ReadValue<Vector2>();
                 if (_startPosition.x - _distanceToSwitch > _endPosition.x && _nextNaviTarget != null && _canSlide)
                 {
                     var windowManager = WindowManager.Get();
@@ -69,10 +80,10 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (_isTouching)
             {
-                _currentPosition = _playerInput.actions["TouchPosition"].ReadValue<Vector2>();
+                _currentPosition = _inputAction.ReadValue<Vector2>();
                 UpdateSwipeState();
             }
-            if (_canSlide && _slidingUI.Length > 0)
+            if (_canSlide)
             {
                 foreach (var slidingPos in _defaultPos)
                 {
@@ -84,17 +95,15 @@ namespace MenuUi.Scripts.SwipeNavigation
                             SlideMoveSpeedFactor * Time.deltaTime);
                     }
                 }
+                return;
             }
-            else
+            foreach (var sliding in _defaultPos)
             {
-                foreach (var sliding in _defaultPos)
+                foreach (var slidingObj in _slidingUI)
                 {
-                    foreach (var slidingObj in _slidingUI)
-                    {
-                        slidingObj.transform.position = Vector3.MoveTowards(slidingObj.transform.position,
-                            new Vector3(sliding.x, sliding.y, 0),
-                            SlideMoveSpeedFactor * Time.deltaTime);
-                    }
+                    slidingObj.transform.position = Vector3.MoveTowards(slidingObj.transform.position,
+                        new Vector3(sliding.x, sliding.y, 0),
+                        SlideMoveSpeedFactor * Time.deltaTime);
                 }
             }
         }
