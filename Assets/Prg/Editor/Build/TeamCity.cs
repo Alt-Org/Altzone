@@ -179,14 +179,11 @@ namespace Prg.Editor.Build
                 WriteSourceCodeChanges(PlayerSettings.Android.bundleVersionCode);
                 var args = CommandLine.Parse(Environment.GetCommandLineArgs());
                 Log($"build with args: {args}");
-                var buildOptions = BuildOptions.None;
+                // By default we use always BuildOptions.DetailedBuildReport for build report analysis tools to use.
+                var buildOptions = BuildOptions.DetailedBuildReport;
                 if (args.IsDevelopmentBuild)
                 {
                     buildOptions |= BuildOptions.Development;
-                }
-                if (args.IsDetailedBuildReport)
-                {
-                    buildOptions |= BuildOptions.DetailedBuildReport;
                 }
                 string outputDir;
                 BuildTargetGroup targetGroup;
@@ -467,17 +464,15 @@ namespace Prg.Editor.Build
             public readonly string KeystoreName;
             public readonly bool IsDevelopmentBuild;
             public readonly bool IsAndroidFull;
-            public readonly bool IsDetailedBuildReport;
 
             private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName,
-                bool isDevelopmentBuild, bool isAndroidFull, bool isDetailedBuildReport)
+                bool isDevelopmentBuild, bool isAndroidFull)
             {
                 ProjectPath = projectPath;
                 BuildTarget = buildTarget;
                 KeystoreName = keystoreName;
                 IsDevelopmentBuild = isDevelopmentBuild;
                 IsAndroidFull = isAndroidFull;
-                IsDetailedBuildReport = isDetailedBuildReport;
             }
 
             public override string ToString()
@@ -517,7 +512,6 @@ namespace Prg.Editor.Build
                 var keystore = string.Empty;
                 var isDevelopmentBuild = false;
                 var isAndroidFull = false;
-                var isDetailedBuildReport = false;
                 for (var i = 0; i < args.Length; ++i)
                 {
                     var arg = args[i];
@@ -544,12 +538,9 @@ namespace Prg.Editor.Build
                         case "-AndroidFull":
                             isAndroidFull = true;
                             break;
-                        case "-DetailedBuildReport":
-                            isDetailedBuildReport = true;
-                            break;
                     }
                 }
-                return new CommandLine(projectPath, buildTarget, keystore, isDevelopmentBuild, isAndroidFull, isDetailedBuildReport);
+                return new CommandLine(projectPath, buildTarget, keystore, isDevelopmentBuild, isAndroidFull);
             }
         }
 
