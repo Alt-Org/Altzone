@@ -225,6 +225,7 @@ namespace Prg.Editor.Build
                 }
                 var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup).Split(';');
                 Log($"build defines:\r\n{string.Join("\r\n", defines)}");
+
                 var buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
                 var summary = buildReport.summary;
                 buildResult = summary.result;
@@ -459,17 +460,19 @@ namespace Prg.Editor.Build
             // Standard UNITY command line parameters.
             public readonly string ProjectPath;
             public readonly BuildTarget BuildTarget;
+            public readonly string LogFile;
 
             // Custom build parameters.
             public readonly string KeystoreName;
             public readonly bool IsDevelopmentBuild;
             public readonly bool IsAndroidFull;
 
-            private CommandLine(string projectPath, BuildTarget buildTarget, string keystoreName,
-                bool isDevelopmentBuild, bool isAndroidFull)
+            private CommandLine(string projectPath, BuildTarget buildTarget, string logFile,
+                string keystoreName, bool isDevelopmentBuild, bool isAndroidFull)
             {
                 ProjectPath = projectPath;
                 BuildTarget = buildTarget;
+                LogFile = logFile;
                 KeystoreName = keystoreName;
                 IsDevelopmentBuild = isDevelopmentBuild;
                 IsAndroidFull = isAndroidFull;
@@ -505,6 +508,7 @@ namespace Prg.Editor.Build
             {
                 var projectPath = "./";
                 var buildTarget = BuildTarget.StandaloneWindows64;
+                var logFile = string.Empty;
                 var keystore = string.Empty;
                 var isDevelopmentBuild = false;
                 var isAndroidFull = false;
@@ -534,9 +538,13 @@ namespace Prg.Editor.Build
                         case "-AndroidFull":
                             isAndroidFull = true;
                             break;
+                        case "-logFile":
+                            i += 1;
+                            logFile = args[i];
+                            break;
                     }
                 }
-                return new CommandLine(projectPath, buildTarget, keystore, isDevelopmentBuild, isAndroidFull);
+                return new CommandLine(projectPath, buildTarget, logFile, keystore, isDevelopmentBuild, isAndroidFull);
             }
         }
 
