@@ -22,25 +22,19 @@ public class Raid_Inventory : MonoBehaviour
     [SerializeField, Header("Reference GameObjects")]
     public GameObject RedScreen;
     public GameObject EndMenu;
-    public Transform PanelParent;
-    public GameObject SlotRowPrefab;
+    //public Transform PanelParent;
 
-    [Header("Inventory Content")]
-    /*public int AmountOfFives;
+    /*[SerializeField, Header("Inventory Content")]
+    public int AmountOfFives;
     public int AmountOfTens;
     public int AmountOfFifteens;
     public int AmountOfTwentiens;
     public int AmountOfTwentyfives;*/
-    public int AmountOfSlotRows;
 
     private void Start()
     {
         RedScreen.SetActive(false);
         EndMenu.SetActive(false);
-        for (int i = 0; i < AmountOfSlotRows; i++)
-        {
-            PlaceSlotRow();
-        }
         /*for (int i = 0; i < AmountOfFives; i++)
         {
             PlaceFives();
@@ -91,14 +85,7 @@ public class Raid_Inventory : MonoBehaviour
         }
     }
 
-    void PlaceSlotRow()
-    {
-        GameObject SlotRow = Instantiate(SlotRowPrefab);
-        SlotRow.transform.SetParent(PanelParent);
-        SlotRow.transform.localScale = new Vector3(1, 1, 0);       
-    }
-
-    void PlaceEmptySlots()
+    /*void PlaceEmptySlots()
     {
         for (int y = 0; y < 12; y++)
         {
@@ -217,7 +204,7 @@ public class Raid_Inventory : MonoBehaviour
         {
             PlaceTwentyFives();
         }
-    }
+    }*/
 
     void LootFurniture(int x, int y)
     {
