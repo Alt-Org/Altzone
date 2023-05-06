@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
 
 namespace Prg.Editor.Build
 {
@@ -33,13 +34,130 @@ namespace Prg.Editor.Build
         [MenuItem(Build + "Create Build Script for " + Target, false, 11)]
         private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
 
-        [MenuItem(Build + "Test Android Build Config", false, 12)]
+        [MenuItem(Build + "Android Build/Test Config", false, 12)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
 
-        [MenuItem(Build + "Set Android Build for Local APK Test", false, 13)]
+        [MenuItem(Build + "Android Build/Setup for Local APK Test", false, 13)]
         private static void SetAndroidBuildTestApk() => MenuBuildReport.SetAndroidBuildTestApk();
 
+        [MenuItem(Build + "Last Build Report/Create", false, 14)]
+        private static void CreateLastBuildReport() => LastBuildBuildReport.CreateLastBuildReport();
+
+        [MenuItem(Build + "Last Build Report/Show", false, 15)]
+        private static void ShowLastBuildReport() => LastBuildBuildReport.ShowLastBuildReport();
+
         #endregion
+    }
+
+    /// <summary>
+    /// UNITY Build Report utility.
+    /// </summary>
+    /// <remarks>
+    /// Idea from https://docs.unity3d.com/Packages/com.unity.build-report-inspector@0.3/manual/index.html
+    /// </remarks>
+    internal static class LastBuildBuildReport
+    {
+        internal static void CreateLastBuildReport()
+        {
+            const string lastBuildReport = "Library/LastBuild.buildreport";
+            const string buildReportDir = "Assets/BuildReports";
+
+            Debug.Log("*");
+            if (!File.Exists(lastBuildReport))
+            {
+                Debug.Log($"Last Build Report NOT FOUND: {lastBuildReport}");
+                return;
+            }
+            if (!Directory.Exists(buildReportDir))
+            {
+                Directory.CreateDirectory(buildReportDir);
+            }
+
+            var date = File.GetLastWriteTime(lastBuildReport);
+            var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
+            var assetPath = $"{buildReportDir}/{name}.buildreport";
+            File.Copy("Library/LastBuild.buildreport", assetPath, true);
+            AssetDatabase.ImportAsset(assetPath);
+            var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
+            buildReport.name = name;
+            AssetDatabase.SaveAssets();
+            Debug.Log($"{buildReport}");
+        }
+
+        internal static void ShowLastBuildReport()
+        {
+            const string outputFilename = "m_Build_Used_Large_Assets.tsv";
+            const string lastBuildReport = "Library/LastBuild.buildreport";
+            const string buildReportDir = "Assets/BuildReports";
+
+            Debug.Log("*");
+            if (!File.Exists(lastBuildReport))
+            {
+                Debug.Log($"Last Build Report NOT FOUND: {lastBuildReport}");
+                return;
+            }
+            var date = File.GetLastWriteTime(lastBuildReport);
+            var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
+            var assetPath = $"{buildReportDir}/{name}.buildreport";
+            var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
+            Debug.Log($"{buildReport}");
+
+            // Filter assets.
+            var ignoredCount = 0;
+            List<PackedAssetInfo> packedAssets = new List<PackedAssetInfo>();
+            foreach (var packedAsset in buildReport.packedAssets)
+            {
+                var contents = packedAsset.contents;
+                foreach (var assetInfo in contents)
+                {
+                    if (assetInfo.packedSize < 1024)
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    var sourceAssetGuid = assetInfo.sourceAssetGUID.ToString();
+                    if (sourceAssetGuid == "00000000000000000000000000000000" || sourceAssetGuid == "0000000000000000f000000000000000")
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    var sourceAssetPath = assetInfo.sourceAssetPath;
+                    if (sourceAssetPath.StartsWith("Packages/") || sourceAssetPath.StartsWith("Assets/Photon/"))
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    packedAssets.Add(assetInfo);
+                }
+            }
+            // Sort and save
+            packedAssets = packedAssets.OrderBy(x => x.packedSize).Reverse().ToList();
+            var builder = new StringBuilder();
+            builder.Append("type")
+                .Append('\t').Append("ratio")
+                .Append('\t').Append("packedSize")
+                .Append('\t').Append("fileSize")
+                .Append('\t').Append("path")
+                .Append('\t').Append("guid")
+                .AppendLine();
+            foreach (var assetInfo in packedAssets)
+            {
+                var packedSize = assetInfo.packedSize;
+                var fileSize = (ulong)new FileInfo(assetInfo.sourceAssetPath).Length;
+                var ratioText = packedSize < fileSize
+                    ? $"-{Math.Round(fileSize / (double)packedSize)}"
+                    : $"+{Math.Round(packedSize / (double)fileSize)}";
+                builder.Append(assetInfo.type.Name)
+                    .Append('\t').Append(ratioText)
+                    .Append('\t').Append(packedSize)
+                    .Append('\t').Append(fileSize)
+                    .Append('\t').Append(assetInfo.sourceAssetPath)
+                    .Append('\t').Append(assetInfo.sourceAssetGUID)
+                    .AppendLine();
+            }
+            File.WriteAllText(outputFilename, builder.ToString());
+            Debug.Log($"PackedAssetInfo count {packedAssets.Count} ignored {ignoredCount}");
+        }
     }
 
     /// <summary>
@@ -76,6 +194,7 @@ namespace Prg.Editor.Build
             ".asmdef",
             ".asmref",
         };
+
         public static void CreateBuildScript()
         {
             Debug.Log("*");
@@ -121,7 +240,7 @@ namespace Prg.Editor.Build
             }
 
             var allAssets = ParseBuildReport(buildReport, out var totalSize);
-            
+
             // Calculate base stats.
             var usedAssets = new HashSet<AssetLine>();
             int[] fileCount = { 0, 0, 0, 0 };
@@ -168,7 +287,7 @@ namespace Prg.Editor.Build
             {
                 logWriter.Log($"Build contains {fileCount[3]} Built-in files, their size is {fileSize[3]:### ### ##0.0} kb ({filePercent[3]:0.0}%)");
             }
-            
+
             // Calculate un-used asset stats.
             var testAssets = new List<AssetLine>();
             var unusedAssets = CheckUnusedAssets(usedAssets, testAssets);
@@ -187,7 +306,7 @@ namespace Prg.Editor.Build
             }
             var unusedAssetSizeTotal = unusedAssets.Select(x => x.FileSizeKb).Sum();
             logWriter.Log($"Unused assets total size is {unusedAssetSizeTotal:### ### ##0.0} kb");
-            
+
             var unusedCount = 0;
             var unusedSize = 0D;
             foreach (var unusedAsset in unusedAssets.Where(x => !x.IsTestAsset).OrderBy(x => x.FileSizeKb).Reverse())
