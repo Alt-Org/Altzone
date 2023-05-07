@@ -145,6 +145,9 @@ th {
 .texture2d {
   color: DarkRed;
 }
+.for-test {
+  color: CadetBlue;
+}
 </style>
 <title>@Build_Report@</title>
 </head>
@@ -178,6 +181,10 @@ th {
                     : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
                     : @"<span class=""same"">same</span>";
                 var name = Path.GetFileName(a.AssetPath);
+                if (a.IsTest)
+                {
+                    name = $"<span class=\"for-test\">{name}</span>";
+                }
                 var folder = Path.GetDirectoryName(a.AssetPath);
                 builder
                     .Append("<tr>")
@@ -229,13 +236,13 @@ th {
             {
                 return assetInfo.Type;
             }
-            var width = asset.width;
-            var height = asset.height;
+            // Recommended, default, and supported texture formats, by platform
+            // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
             var assetFormat = asset.format.ToString();
-            var format = assetFormat.Contains("DXT5") || assetFormat.Contains("ETC2")
+            var format = assetFormat.Contains("ETC2") || assetFormat.Contains("DXT5")
                 ? $"<b>{asset.format}</b>"
                 : asset.format.ToString();
-            return $"<span class=\"texture2d\">{format} {width}x{height}</span>";
+            return $"<span class=\"texture2d\">{format} {asset.width}x{asset.height}</span>";
         }
 
         private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
