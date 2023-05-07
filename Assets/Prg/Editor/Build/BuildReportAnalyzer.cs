@@ -169,12 +169,14 @@ namespace Editor.Build
 
         private static bool IsPathExcluded(string path)
         {
+            // Note that scenes are not included in Build Report as other assets.
             return path.StartsWith("Packages/") ||
                    path.StartsWith("Assets/BuildReport") ||
                    path.StartsWith("Assets/Photon/") ||
                    path.StartsWith("Assets/Plugins/") ||
                    path.StartsWith("Assets/TextMesh Pro/") ||
-                   path.Contains("/Editor/");
+                   path.Contains("/Editor/") ||
+                   path.EndsWith(".unity");
         }
 
         private static BuildReport GetOrCreateLastBuildReport()
