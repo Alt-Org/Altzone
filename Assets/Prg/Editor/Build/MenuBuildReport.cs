@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -51,12 +52,21 @@ namespace Prg.Editor.Build
         private static void ShowLastBuildReport() => LastBuildBuildReport.ShowLastBuildReport();
 
         [MenuItem(Build + "Last Build Report/Create HTML", false, 16)]
-        private static void TestingLastBuildReport()
+        private static void TestingLastBuildReport() => Logged(() => BuildReportAnalyzer.ShowLastBuildReport());
+
+        #endregion
+
+        #region File Logger Support
+
+        private static void Logged(Action action)
         {
             var logFileWriter = LogFileWriter.CreateLogFileWriter();
             try
             {
-                BuildReportAnalyzer.ShowLastBuildReport();
+                var stopwatch = Stopwatch.StartNew();
+                action();
+                stopwatch.Stop();
+                Debug.Log($"Command took {stopwatch.Elapsed.TotalSeconds:0.0} s");
             }
             finally
             {

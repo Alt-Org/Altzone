@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,7 +19,6 @@ namespace Editor.Build
 
         public static void ShowLastBuildReport(bool logDetails = false)
         {
-            var stopwatch = Stopwatch.StartNew();
             Debug.Log("*");
             var buildReport = GetOrCreateLastBuildReport();
             if (buildReport == null)
@@ -29,8 +27,6 @@ namespace Editor.Build
                 return;
             }
             AnalyzeLastBuildReport(buildReport, logDetails);
-            stopwatch.Stop();
-            Debug.Log($"Command took {stopwatch.Elapsed.TotalSeconds:0.0} s");
         }
 
         private static void AnalyzeLastBuildReport(BuildReport buildReport, bool logDetails)
