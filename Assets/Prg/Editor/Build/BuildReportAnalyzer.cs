@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace Editor.Build
     {
         private const string LastBuildReport = "Library/LastBuild.buildreport";
         private const string BuildReportDir = "Assets/BuildReports";
+
+        private const string HtmlFilename = "Assets/BuildReports/BuildReport.html";
 
         public static void ShowLastBuildReport()
         {
@@ -82,6 +85,60 @@ namespace Editor.Build
                 Debug.Log(
                     $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
             }
+
+            CreateBuildReportHtmlPage(unusedAssets, largeAssets);
+        }
+
+        private static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets)
+        {
+            const string htmlStart = @"<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-color: linen;
+}
+th {
+  text-align: left;
+}
+</style>
+</head>
+<body>
+<table>";
+            const string htmlEnd = @"</table>
+</body>
+</html>";
+
+            var allAssets = new List<BuildAssetInfo>(unusedAssets);
+            allAssets.AddRange(largeAssets);
+            allAssets = allAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+            var builder = new StringBuilder().Append(htmlStart).AppendLine()
+                .Append("<tr>")
+                .Append($"<th>PackedSize</th>")
+                .Append($"<th>FileSize</th>")
+                .Append($"<th>Type</th>")
+                .Append($"<th>Name</th>")
+                .Append($"<th>Path</th>")
+                .Append("</tr>").AppendLine();
+
+            foreach (var a in allAssets)
+            {
+                var name = Path.GetFileName(a.AssetPath);
+                var folder = Path.GetDirectoryName(a.AssetPath);
+                builder
+                    .Append("<tr>")
+                    .Append($"<td>{FormatSize(a.PackedSize)}</td>")
+                    .Append($"<td>{FormatSize(a.FileSize)}</td>")
+                    .Append($"<td>{a.Type}</td>")
+                    .Append($"<td>{name}</td>")
+                    .Append($"<td>{folder}</td>")
+                    .Append("</tr>").AppendLine();
+            }
+            var content = builder.Append(htmlEnd).ToString();
+            File.WriteAllText(HtmlFilename, content);
+            var htmlPath = Path.GetFullPath(HtmlFilename);
+            Debug.Log($"Application.OpenURL {htmlPath}");
+            Application.OpenURL(htmlPath);
         }
 
         private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
