@@ -95,10 +95,10 @@ namespace Editor.Build
                         $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
                 }
             }
-            CreateBuildReportHtmlPage(unusedAssets, largeAssets);
+            CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary);
         }
 
-        private static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets)
+        private static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
         {
             // Putting padding between the columns using CSS:
             // https://stackoverflow.com/questions/11800975/html-table-needs-spacing-between-columns-not-rows
@@ -117,6 +117,9 @@ tr > * + * {
 }
 th {
   text-align: left;
+}
+.smaller {
+  font-size: smaller;
 }
 .unused {
   color: Coral;
@@ -140,17 +143,22 @@ th {
   color: Silver;
 }
 </style>
+<title>@Build_Report@</title>
 </head>
 <body>
 <table>";
-            const string htmlEnd = @"</table>
-</body>
+            const string htmlEnd = @"</body>
 </html>";
+            const string tableEnd = @"</table>";
 
             var allAssets = new List<BuildAssetInfo>(unusedAssets);
             allAssets.AddRange(largeAssets);
             allAssets = allAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
-            var builder = new StringBuilder().Append(htmlStart).AppendLine()
+
+            var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
+            var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"Altzone {buildName} Build Report");
+            var builder = new StringBuilder()
+                .Append(fixedHtmlStart).AppendLine()
                 .Append("<tr>")
                 .Append($"<th>PackedSize</th>")
                 .Append($"<th>Check</th>")
@@ -178,7 +186,16 @@ th {
                     .Append($"<td>{folder}</td>")
                     .Append("</tr>").AppendLine();
             }
-            var content = builder.Append(htmlEnd).ToString();
+            builder
+                .Append(tableEnd).AppendLine()
+                .Append($"<p>Table row count is {allAssets.Count}</p>").AppendLine()
+                .Append($"<p>Build for {buildName} platform" +
+                        $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
+                        $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine()
+                .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}</p>").AppendLine()
+                .Append(htmlEnd);
+
+            var content = builder.ToString();
             File.WriteAllText(HtmlFilename, content);
             var htmlPath = Path.GetFullPath(HtmlFilename);
             Debug.Log($"Application.OpenURL {htmlPath}");
@@ -288,8 +305,13 @@ th {
                    path.StartsWith("Assets/BuildReport") ||
                    path.StartsWith("Assets/Photon/") ||
                    path.StartsWith("Assets/Plugins/") ||
+                   path.StartsWith("Assets/Tests/") ||
                    path.StartsWith("Assets/TextMesh Pro/") ||
                    path.Contains("/Editor/") ||
+                   path.Contains("/Test/") ||
+                   path.EndsWith(".asmdef") ||
+                   path.EndsWith(".asmref") ||
+                   path.EndsWith(".cs") ||
                    path.EndsWith(".unity");
         }
 
@@ -349,6 +371,7 @@ th {
             public readonly ulong FileSize;
             public readonly ulong MaxSize;
             public readonly string Type;
+            public readonly bool IsTest;
 
             public BuildAssetInfo(PackedAssetInfo assetInfo)
             {
@@ -358,6 +381,7 @@ th {
                 FileSize = (ulong)new FileInfo(AssetPath).Length;
                 MaxSize = Math.Max(PackedSize, FileSize);
                 Type = assetInfo.type.Name;
+                IsTest = AssetPath.Contains("Test");
             }
 
             public BuildAssetInfo(string assetPath, string assetGuid)
@@ -368,6 +392,7 @@ th {
                 FileSize = (ulong)new FileInfo(AssetPath).Length;
                 MaxSize = FileSize;
                 Type = Path.GetExtension(AssetPath).Replace(".", string.Empty);
+                IsTest = AssetPath.Contains("Test");
             }
         }
     }
