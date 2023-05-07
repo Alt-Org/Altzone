@@ -40,12 +40,62 @@ namespace Editor
                 : $"{buildStartedAt} {buildTargetName} {summary.result}";
             Debug.Log($"Build {buildText} <color=orange><b>*</b></color>", buildReport);
 
-            ShowPackedAssets(buildReport.packedAssets);
+            // Requires BuildOptions.DetailedBuildReport to be true for this data to be populated during build!
+            var scenesUsingAssets = buildReport.scenesUsingAssets;
+            if (scenesUsingAssets.Length > 0)
+            {
+                // Bill Of Materials for scenes: key is scene 'name' and content is list of assets used in this scene.
+                var bom = new Dictionary<string, HashSet<string>>();
+                GetScenesUsingAssets(scenesUsingAssets, bom);
+
+                Debug.Log("*");
+                Debug.Log($"Scenes in build {bom.Count}");
+                foreach (var entry in bom)
+                {
+                    Debug.Log($"{entry.Key} has {entry.Value.Count} dependencies");
+                }
+            }
+
+            var packedAssets = GetPackedAssets(buildReport.packedAssets);
+            Debug.Log("*");
+            Debug.Log($"Selected PackedAssets count {packedAssets.Count}");
+            packedAssets = packedAssets.OrderBy(x => x.packedSize).Reverse().ToList();
+            foreach (var assetInfo in packedAssets)
+            {
+                var packedSize = assetInfo.packedSize;
+                var fileSize = (ulong)new FileInfo(assetInfo.sourceAssetPath).Length;
+                var marker =
+                    packedSize < fileSize ? "<color=white><b><</b></color>"
+                    : packedSize > fileSize ? "<color=yellow><b>></b></color>"
+                    : "=";
+                Debug.Log(
+                    $"{FormatSize(assetInfo.packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.type.Name} {assetInfo.sourceAssetPath} {assetInfo.sourceAssetGUID}");
+            }
         }
 
-        private static void ShowPackedAssets(PackedAssets[] allPackedAssets)
+        private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
         {
-            Debug.Log("*");
+            // Plural - ScenesUsingAssets
+            foreach (var assets in scenesUsingAssets)
+            {
+                // Singular - ScenesUsingAsset
+                foreach (var asset in assets.list)
+                {
+                    foreach (var scenePath in asset.scenePaths)
+                    {
+                        if (!bom.TryGetValue(scenePath, out var assetList))
+                        {
+                            assetList = new HashSet<string>();
+                            bom.Add(scenePath, assetList);
+                        }
+                        assetList.Add(asset.assetPath);
+                    }
+                }
+            }
+        }
+
+        private static List<PackedAssetInfo> GetPackedAssets(PackedAssets[] allPackedAssets)
+        {
             var packedAssets = new List<PackedAssetInfo>();
             foreach (var packedAsset in allPackedAssets)
             {
@@ -66,8 +116,8 @@ namespace Editor
                         continue;
                     }
                     var sourceAssetPath = assetInfo.sourceAssetPath;
-                    if (sourceAssetPath.StartsWith("Packages/") || 
-                        sourceAssetPath.StartsWith("Assets/Photon/") 
+                    if (sourceAssetPath.StartsWith("Packages/") ||
+                        sourceAssetPath.StartsWith("Assets/Photon/")
                         || sourceAssetPath.StartsWith("Assets/Plugins/"))
                     {
                         continue;
@@ -75,14 +125,9 @@ namespace Editor
                     packedAssets.Add(assetInfo);
                 }
             }
-            Debug.Log($"Selected PackedAssets count {packedAssets.Count}");
-            packedAssets = packedAssets.OrderBy(x => x.packedSize).Reverse().ToList();
-            foreach (var assetInfo in packedAssets)
-            {
-                Debug.Log($"{FormatSize(assetInfo.packedSize)} {assetInfo.type.Name} {assetInfo.sourceAssetPath} {assetInfo.sourceAssetGUID}");
-            }
+            return packedAssets;
         }
-        
+
         private static BuildReport GetOrCreateLastBuildReport()
         {
             if (!File.Exists(LastBuildReport))
