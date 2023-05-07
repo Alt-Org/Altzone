@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
+// ReSharper disable once CheckNamespace
 namespace Editor.Build
 {
     internal static class BuildReportAnalyzer
@@ -16,8 +18,9 @@ namespace Editor.Build
 
         private const string HtmlFilename = "Assets/BuildReports/BuildReport.html";
 
-        public static void ShowLastBuildReport()
+        public static void ShowLastBuildReport(bool logDetails = false)
         {
+            var stopwatch = Stopwatch.StartNew();
             Debug.Log("*");
             var buildReport = GetOrCreateLastBuildReport();
             if (buildReport == null)
@@ -25,10 +28,12 @@ namespace Editor.Build
                 Debug.Log($"{LastBuildReport} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport);
+            AnalyzeLastBuildReport(buildReport, logDetails);
+            stopwatch.Stop();
+            Debug.Log($"Command took {stopwatch.Elapsed.TotalSeconds:0.0} s");
         }
 
-        private static void AnalyzeLastBuildReport(BuildReport buildReport)
+        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool logDetails)
         {
             var summary = buildReport.summary;
             var buildTargetName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -37,6 +42,7 @@ namespace Editor.Build
                 ? $"{buildStartedAt} {buildTargetName} {summary.result} {FormatSize(summary.totalSize)}"
                 : $"{buildStartedAt} {buildTargetName} {summary.result}";
             Debug.Log($"Build {buildText} <color=orange><b>*</b></color>", buildReport);
+            Debug.Log("*");
 
             // Requires BuildOptions.DetailedBuildReport to be true for this data to be populated during build!
             var scenesUsingAssets = buildReport.scenesUsingAssets;
@@ -50,11 +56,14 @@ namespace Editor.Build
                 var bom = new Dictionary<string, HashSet<string>>();
                 GetScenesUsingAssets(scenesUsingAssets, bom);
 
-                Debug.Log("*");
                 Debug.Log($"Scenes in build {bom.Count}");
-                foreach (var entry in bom)
+                if (logDetails)
                 {
-                    Debug.Log($"{entry.Key} has {entry.Value.Count} dependencies");
+                    Debug.Log("*");
+                    foreach (var entry in bom)
+                    {
+                        Debug.Log($"{entry.Key} has {entry.Value.Count} dependencies");
+                    }
                 }
             }
 
@@ -62,44 +71,77 @@ namespace Editor.Build
             var largeAssets = GetLargeAndAllAssets(buildReport.packedAssets, ref allBuildAssets);
 
             var unusedAssets = GetUnusedAssets(allBuildAssets);
-            Debug.Log("*");
             Debug.Log($"Unused Assets count {unusedAssets.Count}");
-            unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
-            foreach (var assetInfo in unusedAssets)
+            if (logDetails)
             {
-                Debug.Log(
-                    $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                Debug.Log("*");
+                unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+                foreach (var assetInfo in unusedAssets)
+                {
+                    Debug.Log(
+                        $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                }
             }
-
-            Debug.Log("*");
             Debug.Log($"Large Assets count {largeAssets.Count}");
-            largeAssets = largeAssets.OrderBy(x => x.PackedSize).Reverse().ToList();
-            foreach (var assetInfo in largeAssets)
+            if (logDetails)
             {
-                var packedSize = assetInfo.PackedSize;
-                var fileSize = assetInfo.FileSize;
-                var marker =
-                    packedSize < fileSize ? "<color=white><b><</b></color>"
-                    : packedSize > fileSize ? "<color=yellow><b>></b></color>"
-                    : "=";
-                Debug.Log(
-                    $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                Debug.Log("*");
+                largeAssets = largeAssets.OrderBy(x => x.PackedSize).Reverse().ToList();
+                foreach (var assetInfo in largeAssets)
+                {
+                    var packedSize = assetInfo.PackedSize;
+                    var fileSize = assetInfo.FileSize;
+                    var marker =
+                        packedSize < fileSize ? "<color=white><b><</b></color>"
+                        : packedSize > fileSize ? "<color=yellow><b>></b></color>"
+                        : "=";
+                    Debug.Log(
+                        $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                }
             }
-
             CreateBuildReportHtmlPage(unusedAssets, largeAssets);
         }
 
         private static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets)
         {
+            // Putting padding between the columns using CSS:
+            // https://stackoverflow.com/questions/11800975/html-table-needs-spacing-between-columns-not-rows
             const string htmlStart = @"<!DOCTYPE html>
 <html>
 <head>
 <style>
+html * {
+  font-family: Arial, Helvetica, sans-serif;
+}
 body {
   background-color: linen;
 }
+tr > * + * {
+  padding-left: .5em;
+}
 th {
   text-align: left;
+}
+.unused {
+  color: Coral;
+}
+.less {
+  color: DarkSeaGreen;
+}
+.more {
+  color: DarkSalmon;
+}
+.same {
+  color: DarkGray;
+}
+.megabytes {
+  color: DarkBlue;
+}
+.kilobytes {
+  color: DarkSlateGray;
+}
+.bytes {
+  color: Silver;
 }
 </style>
 </head>
@@ -115,6 +157,7 @@ th {
             var builder = new StringBuilder().Append(htmlStart).AppendLine()
                 .Append("<tr>")
                 .Append($"<th>PackedSize</th>")
+                .Append($"<th>Check</th>")
                 .Append($"<th>FileSize</th>")
                 .Append($"<th>Type</th>")
                 .Append($"<th>Name</th>")
@@ -123,12 +166,17 @@ th {
 
             foreach (var a in allAssets)
             {
+                var marker = a.PackedSize == 0 ? @"<span class=""unused"">unused</span>"
+                    : a.PackedSize < a.FileSize ? @"<span class=""less"">less</span>"
+                    : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
+                    : @"<span class=""same"">same</span>";
                 var name = Path.GetFileName(a.AssetPath);
                 var folder = Path.GetDirectoryName(a.AssetPath);
                 builder
                     .Append("<tr>")
-                    .Append($"<td>{FormatSize(a.PackedSize)}</td>")
-                    .Append($"<td>{FormatSize(a.FileSize)}</td>")
+                    .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
+                    .Append($"<td>{marker}</td>")
+                    .Append($"<td{GetStyleFromFileSize(a.FileSize)}>{FormatSize(a.FileSize)}</td>")
                     .Append($"<td>{a.Type}</td>")
                     .Append($"<td>{name}</td>")
                     .Append($"<td>{folder}</td>")
@@ -139,6 +187,19 @@ th {
             var htmlPath = Path.GetFullPath(HtmlFilename);
             Debug.Log($"Application.OpenURL {htmlPath}");
             Application.OpenURL(htmlPath);
+
+            string GetStyleFromFileSize(ulong fileSize)
+            {
+                if (fileSize < 1024)
+                {
+                    return @" class=""bytes""";
+                }
+                if (fileSize < 1024 * 1024)
+                {
+                    return @" class=""kilobytes""";
+                }
+                return @" class=""megabytes""";
+            }
         }
 
         private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
