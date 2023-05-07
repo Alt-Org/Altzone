@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,14 +6,8 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace Editor
+namespace Editor.Build
 {
-    internal static class BuildReportAnalyzerMenu
-    {
-        [MenuItem("Altzone/Show Last Build Report", false, 10)]
-        private static void ShowLastBuildReport() => BuildReportAnalyzer.ShowLastBuildReport();
-    }
-
     internal static class BuildReportAnalyzer
     {
         private const string LastBuildReport = "Library/LastBuild.buildreport";
@@ -42,7 +37,11 @@ namespace Editor
 
             // Requires BuildOptions.DetailedBuildReport to be true for this data to be populated during build!
             var scenesUsingAssets = buildReport.scenesUsingAssets;
-            if (scenesUsingAssets.Length > 0)
+            if (scenesUsingAssets.Length == 0)
+            {
+                Debug.Log($"Scenes in build not available and it requires '<b>BuildOptions.DetailedBuildReport</b>' to be set!");
+            }
+            else
             {
                 // Bill Of Materials for scenes: key is scene 'name' and content is list of assets used in this scene.
                 var bom = new Dictionary<string, HashSet<string>>();
@@ -56,20 +55,32 @@ namespace Editor
                 }
             }
 
-            var packedAssets = GetPackedAssets(buildReport.packedAssets);
+            var allBuildAssets = new List<BuildAssetInfo>();
+            var largeAssets = GetLargeAndAllAssets(buildReport.packedAssets, ref allBuildAssets);
+
+            var unusedAssets = GetUnusedAssets(allBuildAssets);
             Debug.Log("*");
-            Debug.Log($"Selected PackedAssets count {packedAssets.Count}");
-            packedAssets = packedAssets.OrderBy(x => x.packedSize).Reverse().ToList();
-            foreach (var assetInfo in packedAssets)
+            Debug.Log($"Unused Assets count {unusedAssets.Count}");
+            unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+            foreach (var assetInfo in unusedAssets)
             {
-                var packedSize = assetInfo.packedSize;
-                var fileSize = (ulong)new FileInfo(assetInfo.sourceAssetPath).Length;
+                Debug.Log(
+                    $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+            }
+
+            Debug.Log("*");
+            Debug.Log($"Large Assets count {largeAssets.Count}");
+            largeAssets = largeAssets.OrderBy(x => x.PackedSize).Reverse().ToList();
+            foreach (var assetInfo in largeAssets)
+            {
+                var packedSize = assetInfo.PackedSize;
+                var fileSize = assetInfo.FileSize;
                 var marker =
                     packedSize < fileSize ? "<color=white><b><</b></color>"
                     : packedSize > fileSize ? "<color=yellow><b>></b></color>"
                     : "=";
                 Debug.Log(
-                    $"{FormatSize(assetInfo.packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.type.Name} {assetInfo.sourceAssetPath} {assetInfo.sourceAssetGUID}");
+                    $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
             }
         }
 
@@ -94,15 +105,16 @@ namespace Editor
             }
         }
 
-        private static List<PackedAssetInfo> GetPackedAssets(PackedAssets[] allPackedAssets)
+        private static List<BuildAssetInfo> GetLargeAndAllAssets(PackedAssets[] allPackedAssets, ref List<BuildAssetInfo> allBuildAssets)
         {
-            var packedAssets = new List<PackedAssetInfo>();
+            var largeAssets = new List<BuildAssetInfo>();
             foreach (var packedAsset in allPackedAssets)
             {
                 var contents = packedAsset.contents;
                 foreach (var assetInfo in contents)
                 {
-                    if (assetInfo.packedSize < 1024)
+                    var sourceAssetPath = assetInfo.sourceAssetPath;
+                    if (IsPathExcluded(sourceAssetPath))
                     {
                         continue;
                     }
@@ -115,17 +127,54 @@ namespace Editor
                     {
                         continue;
                     }
-                    var sourceAssetPath = assetInfo.sourceAssetPath;
-                    if (sourceAssetPath.StartsWith("Packages/") ||
-                        sourceAssetPath.StartsWith("Assets/Photon/")
-                        || sourceAssetPath.StartsWith("Assets/Plugins/"))
+                    // Add to all build assets we want to analyze.
+                    var buildAssetInfo = new BuildAssetInfo(assetInfo);
+                    allBuildAssets.Add(buildAssetInfo);
+                    if (assetInfo.packedSize < 1024)
                     {
                         continue;
                     }
-                    packedAssets.Add(assetInfo);
+                    // Add to large build assets we want to analyze.
+                    largeAssets.Add(buildAssetInfo);
                 }
             }
-            return packedAssets;
+            return largeAssets;
+        }
+
+        private static List<BuildAssetInfo> GetUnusedAssets(List<BuildAssetInfo> usedAssets)
+        {
+            var allAssetGuids = AssetDatabase.FindAssets(string.Empty);
+            Debug.Log($"allAssets {allAssetGuids.Length}");
+            var unusedAssets = new List<BuildAssetInfo>();
+            foreach (var assetGuid in allAssetGuids)
+            {
+                var isAssetInUse = usedAssets.Any(x => x.AssetGuid == assetGuid);
+                if (isAssetInUse)
+                {
+                    continue;
+                }
+                var assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
+                if (Directory.Exists(assetPath))
+                {
+                    continue;
+                }
+                if (IsPathExcluded(assetPath))
+                {
+                    continue;
+                }
+                unusedAssets.Add(new BuildAssetInfo(assetPath, assetGuid));
+            }
+            return unusedAssets;
+        }
+
+        private static bool IsPathExcluded(string path)
+        {
+            return path.StartsWith("Packages/") ||
+                   path.StartsWith("Assets/BuildReport") ||
+                   path.StartsWith("Assets/Photon/") ||
+                   path.StartsWith("Assets/Plugins/") ||
+                   path.StartsWith("Assets/TextMesh Pro/") ||
+                   path.Contains("/Editor/");
         }
 
         private static BuildReport GetOrCreateLastBuildReport()
@@ -171,6 +220,39 @@ namespace Editor
                 return $"{bytes / 1024.0:0.0} KiB";
             }
             return $"{bytes / 1024.0 / 1024.0:0.0} MiB";
+        }
+
+        /// <summary>
+        /// Asset info for both used assets (<c>PackedAssetInfo</c>) and unused assets.
+        /// </summary>
+        private class BuildAssetInfo
+        {
+            public readonly string AssetPath;
+            public readonly string AssetGuid;
+            public readonly ulong PackedSize;
+            public readonly ulong FileSize;
+            public readonly ulong MaxSize;
+            public readonly string Type;
+
+            public BuildAssetInfo(PackedAssetInfo assetInfo)
+            {
+                AssetPath = assetInfo.sourceAssetPath;
+                AssetGuid = assetInfo.sourceAssetGUID.ToString();
+                PackedSize = assetInfo.packedSize;
+                FileSize = (ulong)new FileInfo(AssetPath).Length;
+                MaxSize = Math.Max(PackedSize, FileSize);
+                Type = assetInfo.type.Name;
+            }
+
+            public BuildAssetInfo(string assetPath, string assetGuid)
+            {
+                AssetPath = assetPath;
+                AssetGuid = assetGuid;
+                PackedSize = 0;
+                FileSize = (ulong)new FileInfo(AssetPath).Length;
+                MaxSize = FileSize;
+                Type = Path.GetExtension(AssetPath).Replace(".", string.Empty);
+            }
         }
     }
 }

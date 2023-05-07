@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Editor.Build;
+using Prg.Scripts.Common.Util;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -29,6 +31,20 @@ namespace Prg.Editor.Build
 #endif
 
         #region Build
+
+        [MenuItem("Altzone/Show Last Build Report", false, 10)]
+        private static void TestingLastBuildReport()
+        {
+            var logFileWriter = LogFileWriter.CreateLogFileWriter();
+            try
+            {
+                BuildReportAnalyzer.ShowLastBuildReport();
+            }
+            finally
+            {
+                logFileWriter.Close();
+            }
+        }
 
         [MenuItem(Build + "Create Build Report", false, 10)]
         private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
@@ -127,8 +143,8 @@ namespace Prg.Editor.Build
                         continue;
                     }
                     var sourceAssetPath = assetInfo.sourceAssetPath;
-                    if (sourceAssetPath.StartsWith("Packages/") || 
-                        sourceAssetPath.StartsWith("Assets/Photon/") 
+                    if (sourceAssetPath.StartsWith("Packages/") ||
+                        sourceAssetPath.StartsWith("Assets/Photon/")
                         || sourceAssetPath.StartsWith("Assets/Plugins/"))
                     {
                         ignoredCount += 1;
@@ -481,7 +497,7 @@ namespace Prg.Editor.Build
                     Debug.LogWarning($"Report file {filename} did not have data" +
                                      $" for 'Used Assets' because <b>player data was not rebuilt</b> on last build!");
                     return result;
-                }                
+                }
             }
             if (currentLine == lastLine)
             {
