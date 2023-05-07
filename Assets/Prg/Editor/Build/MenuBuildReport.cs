@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Prg.Editor.Build
@@ -58,25 +59,25 @@ namespace Prg.Editor.Build
     /// </remarks>
     internal static class LastBuildBuildReport
     {
+        const string LastBuildReport = "Library/LastBuild.buildreport";
+        const string BuildReportDir = "Assets/BuildReports";
+
         internal static void CreateLastBuildReport()
         {
-            const string lastBuildReport = "Library/LastBuild.buildreport";
-            const string buildReportDir = "Assets/BuildReports";
-
             Debug.Log("*");
-            if (!File.Exists(lastBuildReport))
+            if (!File.Exists(LastBuildReport))
             {
-                Debug.Log($"Last Build Report NOT FOUND: {lastBuildReport}");
+                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReport}");
                 return;
             }
-            if (!Directory.Exists(buildReportDir))
+            if (!Directory.Exists(BuildReportDir))
             {
-                Directory.CreateDirectory(buildReportDir);
+                Directory.CreateDirectory(BuildReportDir);
             }
 
-            var date = File.GetLastWriteTime(lastBuildReport);
+            var date = File.GetLastWriteTime(LastBuildReport);
             var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
-            var assetPath = $"{buildReportDir}/{name}.buildreport";
+            var assetPath = $"{BuildReportDir}/{name}.buildreport";
             File.Copy("Library/LastBuild.buildreport", assetPath, true);
             AssetDatabase.ImportAsset(assetPath);
             var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
@@ -88,18 +89,16 @@ namespace Prg.Editor.Build
         internal static void ShowLastBuildReport()
         {
             const string outputFilename = "m_Build_Used_Large_Assets.tsv";
-            const string lastBuildReport = "Library/LastBuild.buildreport";
-            const string buildReportDir = "Assets/BuildReports";
 
             Debug.Log("*");
-            if (!File.Exists(lastBuildReport))
+            if (!File.Exists(LastBuildReport))
             {
-                Debug.Log($"Last Build Report NOT FOUND: {lastBuildReport}");
+                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReport}");
                 return;
             }
-            var date = File.GetLastWriteTime(lastBuildReport);
+            var date = File.GetLastWriteTime(LastBuildReport);
             var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
-            var assetPath = $"{buildReportDir}/{name}.buildreport";
+            var assetPath = $"{BuildReportDir}/{name}.buildreport";
             var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
             Debug.Log($"{buildReport}");
 
@@ -116,6 +115,11 @@ namespace Prg.Editor.Build
                         ignoredCount += 1;
                         continue;
                     }
+                    if (assetInfo.type == typeof(MonoBehaviour))
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
                     var sourceAssetGuid = assetInfo.sourceAssetGUID.ToString();
                     if (sourceAssetGuid == "00000000000000000000000000000000" || sourceAssetGuid == "0000000000000000f000000000000000")
                     {
@@ -123,7 +127,9 @@ namespace Prg.Editor.Build
                         continue;
                     }
                     var sourceAssetPath = assetInfo.sourceAssetPath;
-                    if (sourceAssetPath.StartsWith("Packages/") || sourceAssetPath.StartsWith("Assets/Photon/"))
+                    if (sourceAssetPath.StartsWith("Packages/") || 
+                        sourceAssetPath.StartsWith("Assets/Photon/") 
+                        || sourceAssetPath.StartsWith("Assets/Plugins/"))
                     {
                         ignoredCount += 1;
                         continue;
