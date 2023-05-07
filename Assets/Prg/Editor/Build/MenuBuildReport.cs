@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEngine.Assertions;
 
 namespace Prg.Editor.Build
 {
@@ -432,8 +432,9 @@ namespace Prg.Editor.Build
 
         private static List<AssetLine> ParseBuildReport(string buildReport, out double totalSize)
         {
-            const string startMarkerLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
-            const string noDateMarkerLine = "Information on used Assets is not available, since player data was not rebuilt.";
+            const string buildReportLine = "Build Report";
+            const string usedAssetsLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string noDataMarkerLine = "Information on used Assets is not available, since player data was not rebuilt.";
             const string endMarkerLine = "-------------------------------------------------------------------------------";
             // Example lines:
             //  1.4 mb	 0.2% Assets/Altzone/Graphics/Logo/ALT ZONE logo.png
@@ -441,30 +442,58 @@ namespace Prg.Editor.Build
             //  0.1 kb	 0.0% Assets/MenuUi/Scripts/Shop.cs
 
             var result = new List<AssetLine>();
-            var processing = false;
             totalSize = 0;
-            foreach (var line in File.ReadAllLines(buildReport))
+            var filename = Path.GetFileName(buildReport);
+            var lines = File.ReadAllLines(buildReport);
+            var lastLine = lines.Length - 1;
+            var currentLine = 0;
+            // Find Build Report line.
+            for (; currentLine < lastLine; ++currentLine)
             {
-                if (processing)
+                var line = lines[currentLine];
+                if (line == buildReportLine)
                 {
-                    if (line == endMarkerLine)
-                    {
-                        break;
-                    }
-                    var assetLine = new AssetLine(line);
-                    totalSize += assetLine.FileSizeKb;
-                    result.Add(assetLine);
-                }
-                if (line == startMarkerLine)
-                {
-                    processing = true;
-                }
-                else if (line == noDateMarkerLine)
-                {
-                    Debug.LogWarning($"Report file {Path.GetFileName(buildReport)} did not have data" +
-                              $" for 'Used Assets' because <b>player data was not rebuilt</b> on last build!");
                     break;
                 }
+            }
+            if (currentLine == lastLine)
+            {
+                Debug.LogWarning($"Report file {filename} does not have a 'Build Report'");
+                return result;
+            }
+            // Find Used Assets line.
+            currentLine += 1;
+            for (; currentLine < lastLine; ++currentLine)
+            {
+                var line = lines[currentLine];
+                if (line == usedAssetsLine)
+                {
+                    break;
+                }
+                if (line == noDataMarkerLine)
+                {
+                    Debug.LogWarning($"Report file {filename} did not have data" +
+                                     $" for 'Used Assets' because <b>player data was not rebuilt</b> on last build!");
+                    return result;
+                }                
+            }
+            if (currentLine == lastLine)
+            {
+                Debug.LogWarning($"Report file {filename} does not have valid 'Build Report'");
+                return result;
+            }
+            // Read all Used Assets lines.
+            currentLine += 1;
+            for (; currentLine < lastLine; ++currentLine)
+            {
+                var line = lines[currentLine];
+                if (line == endMarkerLine)
+                {
+                    break;
+                }
+                var assetLine = new AssetLine(line);
+                totalSize += assetLine.FileSizeKb;
+                result.Add(assetLine);
             }
             return result;
         }
@@ -473,7 +502,7 @@ namespace Prg.Editor.Build
         {
             private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("en-US");
             private static readonly char[] Separators1 = { '%' };
-            private static readonly char[] Separators2 = { ' ' };
+            private static readonly char[] Separators2 = { ' ', '\t' };
 
             private readonly string _line;
             public readonly double FileSizeKb;
@@ -508,6 +537,14 @@ namespace Prg.Editor.Build
                     return;
                 }
                 FileSizeKb = double.Parse(tokens[0], Culture);
+                if (tokens[1] == "mb")
+                {
+                    FileSizeKb *= 1024;
+                }
+                else
+                {
+                    Assert.AreEqual("kb", tokens[1]);
+                }
                 Percentage = double.Parse(tokens[2], Culture);
             }
 
@@ -526,11 +563,7 @@ namespace Prg.Editor.Build
                 {
                     return true;
                 }
-                if (obj.GetType() != this.GetType())
-                {
-                    return false;
-                }
-                return Equals((AssetLine)obj);
+                return obj.GetType() == GetType() && Equals((AssetLine)obj);
             }
 
             public override int GetHashCode()
