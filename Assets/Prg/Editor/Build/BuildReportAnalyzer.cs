@@ -142,6 +142,9 @@ th {
 .bytes {
   color: Silver;
 }
+.texture2d {
+  color: DarkRed;
+}
 </style>
 <title>@Build_Report@</title>
 </head>
@@ -181,7 +184,7 @@ th {
                     .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
                     .Append($"<td>{marker}</td>")
                     .Append($"<td{GetStyleFromFileSize(a.FileSize)}>{FormatSize(a.FileSize)}</td>")
-                    .Append($"<td>{a.Type}</td>")
+                    .Append($"<td>{GetTypeExplained(a)}</td>")
                     .Append($"<td>{name}</td>")
                     .Append($"<td>{folder}</td>")
                     .Append("</tr>").AppendLine();
@@ -213,6 +216,26 @@ th {
                 }
                 return @" class=""megabytes""";
             }
+        }
+
+        private static string GetTypeExplained(BuildAssetInfo assetInfo)
+        {
+            if (assetInfo.Type != "Texture2D")
+            {
+                return assetInfo.Type;
+            }
+            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath);
+            if (asset == null)
+            {
+                return assetInfo.Type;
+            }
+            var width = asset.width;
+            var height = asset.height;
+            var assetFormat = asset.format.ToString();
+            var format = assetFormat.Contains("DXT5") || assetFormat.Contains("ETC2")
+                ? $"<b>{asset.format}</b>"
+                : asset.format.ToString();
+            return $"<span class=\"texture2d\">{format} {width}x{height}</span>";
         }
 
         private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
