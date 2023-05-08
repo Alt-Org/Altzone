@@ -141,8 +141,11 @@ th {
 .bytes {
   color: Silver;
 }
-.texture2d {
+.texture {
   color: DarkRed;
+}
+.npot {
+  color: OrangeRed;
 }
 .for-test {
   color: CadetBlue;
@@ -156,9 +159,12 @@ th {
             const string tableStart = @"<table>";
             const string tableEnd = @"</table>";
 
-            var allAssets = new List<BuildAssetInfo>(unusedAssets);
-            allAssets.AddRange(largeAssets);
-            allAssets = allAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+            var tempAssets = new List<BuildAssetInfo>(unusedAssets);
+            tempAssets.AddRange(largeAssets);
+            tempAssets = tempAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+
+            // Convert assets to have more details for report statistics.
+            var finalAssets = tempAssets.ConvertAll(x => new AssetInfoDetails(x));
 
             // Statistics by FileType.
             var prodFileTypes = new Dictionary<string, int>();
@@ -180,8 +186,10 @@ th {
                 .Append($"<th>Path</th>")
                 .Append("</tr>").AppendLine();
 
-            foreach (var a in allAssets)
+            foreach (var a in finalAssets)
             {
+                UpdateFileTypeStatistics(a);
+
                 var marker = a.IsUnused ? @"<span class=""unused"">unused</span>"
                     : a.PackedSize < a.FileSize ? @"<span class=""less"">less</span>"
                     : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
@@ -192,8 +200,19 @@ th {
                     name = $"<span class=\"for-test\">{name}</span>";
                 }
                 var folder = Path.GetDirectoryName(a.AssetPath);
-                var filetype = GetTypeExplained(a, out var fileTypeDiscriminator);
-                UpdateFileTypeStatistics(fileTypeDiscriminator, a.IsUnused, a.IsTest);
+                var filetype = a.Type;
+                if (a.IsTexture)
+                {
+                    // Special formatting for Texture details
+                    filetype = a.IsRecommendedFormat
+                        ? $"<b>{a.TextureType}</b>"
+                        : a.TextureType;
+                    filetype = $"<span class=\"texture\">{filetype} {a.TextureSize}</span>";
+                    if (a.IsNPOT)
+                    {
+                        filetype = $"{filetype} <span class=\"npot\">NPOT</span>";
+                    }
+                }
                 builder
                     .Append("<tr>")
                     .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
@@ -206,7 +225,7 @@ th {
             }
             builder
                 .Append(tableEnd).AppendLine()
-                .Append($"<p>Table row count is {allAssets.Count}</p>").AppendLine()
+                .Append($"<p>Table row count is {tempAssets.Count}</p>").AppendLine()
                 .Append($"<p>Build for {buildName} platform" +
                         $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
                         $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
@@ -273,44 +292,15 @@ th {
                 return @" class=""megabytes""";
             }
 
-            void UpdateFileTypeStatistics(string fileTypeKey, bool isUnused, bool isTest)
+            void UpdateFileTypeStatistics(AssetInfoDetails assetInfo)
             {
-                var dictionary = isUnused ? unusedFileTypes : isTest ? testFileTypes : prodFileTypes;
+                var dictionary = assetInfo.IsUnused ? unusedFileTypes : assetInfo.IsTest ? testFileTypes : prodFileTypes;
+                var fileTypeKey = assetInfo.GroupByTypeKey;
                 if (!dictionary.TryAdd(fileTypeKey, 1))
                 {
                     dictionary[fileTypeKey] += 1;
                 }
             }
-        }
-
-        private static string GetTypeExplained(BuildAssetInfo assetInfo, out string fileTypeDiscriminator)
-        {
-            fileTypeDiscriminator = Path.GetExtension(assetInfo.AssetPath).Replace(".", string.Empty).ToLower();
-            if (assetInfo.Type != "Texture2D")
-            {
-                return assetInfo.Type;
-            }
-            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath);
-            if (asset == null)
-            {
-                return assetInfo.Type;
-            }
-            // Recommended, default, and supported texture formats, by platform
-            // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
-            // ETC1, DXT1 - RGB texture
-            // ETC2, DXT5 - RGBA texture
-            var assetFormat = asset.format.ToString();
-            var isRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
-                                      assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
-            if (isRecommendedFormat)
-            {
-                // Add current "good" asset format to make report more comprehensible(?).
-                fileTypeDiscriminator = $"{assetFormat} {fileTypeDiscriminator}";
-            }
-            var format = isRecommendedFormat
-                ? $"<b>{asset.format}</b>"
-                : asset.format.ToString();
-            return $"<span class=\"texture2d\">{format} {asset.width}x{asset.height}</span>";
         }
 
         private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
@@ -397,6 +387,7 @@ th {
         }
 
         private static string PathExcludedWarning => "Scenes, C# source code and input actions are excluded form the report";
+
         private static bool IsPathExcluded(string path)
         {
             // Note that
@@ -463,6 +454,53 @@ th {
         }
 
         /// <summary>
+        /// Extended <c>BuildAssetInfo</c> for statistics and detailed reporting.
+        /// </summary>
+        private class AssetInfoDetails : BuildAssetInfo
+        {
+            public readonly string GroupByTypeKey;
+            public readonly string TextureType;
+            public readonly string TextureSize;
+            public readonly bool IsTexture;
+            public readonly bool IsRecommendedFormat;
+            public readonly bool IsNPOT;
+
+            public AssetInfoDetails(BuildAssetInfo assetInfo) : base(assetInfo)
+            {
+                bool IsPowerOfTwo(int x)
+                {
+                    // https://stackoverflow.com/questions/600293/how-to-check-if-a-number-is-a-power-of-2
+                    return (x != 0) && ((x & (x - 1)) == 0);
+                }
+
+                GroupByTypeKey = Type;
+                TextureType = Type;
+
+                var asset = Type == "Texture2D" ? AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath) : null;
+                if (asset == null)
+                {
+                    return;
+                }
+                // Recommended, default, and supported texture formats, by platform
+                // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
+                // ETC1, DXT1 - RGB texture
+                // ETC2, DXT5 - RGBA texture
+                var assetFormat = asset.format.ToString();
+                var width = asset.width;
+                var height = asset.height;
+
+                // Use asset extension and texture type for grouping.
+                GroupByTypeKey = $"{GetExtension(AssetPath)} {assetFormat}";
+                TextureType = assetFormat;
+                TextureSize = $"{width}x{height}";
+                IsTexture = true;
+                IsRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
+                                      assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
+                IsNPOT = !IsPowerOfTwo(width) || !IsPowerOfTwo(height);
+            }
+        }
+
+        /// <summary>
         /// Asset info for both used assets (<c>PackedAssetInfo</c>) and unused assets.
         /// </summary>
         private class BuildAssetInfo
@@ -475,6 +513,18 @@ th {
             public readonly string Type;
             public readonly bool IsTest;
             public readonly bool IsUnused;
+
+            public BuildAssetInfo(BuildAssetInfo other)
+            {
+                AssetPath = other.AssetPath;
+                AssetGuid = other.AssetGuid;
+                PackedSize = other.PackedSize;
+                FileSize = other.FileSize;
+                MaxSize = other.MaxSize;
+                Type = other.Type;
+                IsTest = other.IsTest;
+                IsUnused = other.IsUnused;
+            }
 
             public BuildAssetInfo(PackedAssetInfo assetInfo)
             {
@@ -498,9 +548,14 @@ th {
                 PackedSize = 0;
                 FileSize = (ulong)new FileInfo(AssetPath).Length;
                 MaxSize = FileSize;
-                Type = Path.GetExtension(AssetPath).Replace(".", string.Empty);
+                Type = GetExtension(AssetPath);
                 IsTest = AssetPath.Contains("Test");
                 IsUnused = true;
+            }
+
+            protected static string GetExtension(string assetPath)
+            {
+                return Path.GetExtension(assetPath).Replace(".", string.Empty).ToLower();
             }
         }
     }
