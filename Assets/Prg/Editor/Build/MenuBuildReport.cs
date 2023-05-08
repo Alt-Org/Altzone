@@ -30,7 +30,7 @@ namespace Prg.Editor.Build
         private const string Target = "Unsupported";
 #endif
 
-        #region Build
+        #region Build Menus
 
         [MenuItem(Build + "Create HTML Build Report", false, 10)]
         private static void TestingLastBuildReport() => Logged(() => BuildReportAnalyzer.ShowLastBuildReport());

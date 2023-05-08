@@ -9,6 +9,9 @@ using UnityEngine;
 
 namespace Prg.Editor.Build
 {
+    /// <summary>
+    /// Read and analyze UNITY Build Report (in binary format) by converting it to internal YAML format and saving as asset.
+    /// </summary>
     internal static class BuildReportAnalyzer
     {
         private const string LastBuildReport = "Library/LastBuild.buildreport";

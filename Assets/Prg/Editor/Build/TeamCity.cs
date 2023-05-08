@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Prg.Editor.Build
 {
     /// <summary>
-    /// Utility class to perform command line builds.<br />
+    /// Utility class to perform command line builds for Android, Desktop (Win64 only) and WebGL.<br />
     /// See <c>CommandLine</c> for supported command line options.
     /// </summary>
     /// <remarks>
