@@ -648,6 +648,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1937948498}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &481848227 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2211436060130418491, guid: 293f585c885e8be45989244f742c1777,
+    type: 3}
+  m_PrefabInstance: {fileID: 1937948498}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e479cf1a0a6a4eb48b6cd0cb7351d0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &577966834
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +718,77 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1595985728}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &640522016
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 640522018}
+  - component: {fileID: 640522017}
+  - component: {fileID: 640522019}
+  m_Layer: 0
+  m_Name: SlingController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &640522017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640522016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2387088fff2babb47a8127c2990b9a68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ball: {fileID: 481848227}
+  _slingDelaySec: 10
+  _startingDistance: 1
+  _defaultSpeed: 1
+--- !u!4 &640522018
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640522016}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &640522019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640522016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 18
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &668191975
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,6 +2071,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8473052537036719190, guid: 293f585c885e8be45989244f742c1777,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8473052537036719190, guid: 293f585c885e8be45989244f742c1777,
+        type: 3}
       propertyPath: m_TeleportEnabled
       value: 0
       objectReference: {fileID: 0}
@@ -1996,7 +2084,8 @@ PrefabInstance:
       propertyPath: m_SynchronizeAngularVelocity
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8473052537036719190, guid: 293f585c885e8be45989244f742c1777, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 293f585c885e8be45989244f742c1777, type: 3}
 --- !u!1001 &2073224928152158223
 PrefabInstance:

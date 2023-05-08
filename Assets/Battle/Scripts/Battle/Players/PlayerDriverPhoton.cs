@@ -90,6 +90,8 @@ namespace Battle.Scripts.Battle.Players
         public int TeamNumber => _teamNumber;
 
         public int ActorNumber => _photonView.Owner.ActorNumber;
+        
+        public Transform ActorTransform => _playerActor.transform;
 
         public bool IsLocal => _photonView.Owner.IsLocal;
 

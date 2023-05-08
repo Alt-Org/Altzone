@@ -1,22 +1,18 @@
-using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
-using Photon.Pun;
 using UnityConstants;
 using UnityEngine;
 
 public class BallHandlerTest : MonoBehaviour
 {
-    [SerializeField] private int _startingSpeed;
     private GridManager _gridManager;
     private PlayerPlayArea _battlePlayArea;
     private float _arenaScaleFactor;
     private float _angleLimit;
 
-    private const float waitTime = 2f;
-
     private Rigidbody2D _rb;
+    private SpriteRenderer _sprite;
 
     private void Start()
     {
@@ -25,26 +21,17 @@ public class BallHandlerTest : MonoBehaviour
         _angleLimit = variables._angleLimit;
         _gridManager = Context.GetGridManager;
         _rb = GetComponent<Rigidbody2D>();
+        _sprite = GetComponentInChildren<SpriteRenderer>();
+        _sprite.enabled = false;
         _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
         transform.localScale = Vector3.one * _arenaScaleFactor;
-        StartCoroutine(LaunchBall());
     }
 
-    private IEnumerator LaunchBall()
+    public void Launch(Vector3 position, Vector3 direction, float speed)
     {
-        yield return new WaitForSeconds(waitTime);
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            yield break;
-        }
-        var randomDir = new Vector2(Random.Range(-4f, 4f), Random.Range(4f, 8f));
-        var randomSide = Random.value;
-        if (randomSide < 0.5)
-        {
-            _rb.velocity = NewRotation(randomDir) * Vector2.up * - _startingSpeed;
-            yield break;
-        }
-        _rb.velocity = NewRotation(randomDir) * Vector2.up * _startingSpeed;
+        _rb.position = position;
+        _rb.velocity = NewRotation(direction) * Vector2.up * speed;
+        _sprite.enabled = true;
     }
 
     //private void Update()
@@ -56,10 +43,6 @@ public class BallHandlerTest : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return;
-        }
         if (!collision.gameObject.CompareTag(Tags.Player))
         {
             var normal = collision.contacts[0].normal;
