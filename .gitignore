@@ -90,8 +90,14 @@ crashlytics-build.properties
 /ProjectSettings/RiderScriptEditorPersistedState.asset
 
 # Project Auditor (https://github.com/Unity-Technologies/ProjectAuditor)
+# Build Report Inspector (https://docs.unity.cn/es/2019.4/Manual/com.unity.build-report-inspector.html)
 /[Aa]ssets/BuildReports/*
 /[Aa]ssets/BuildReports.meta
+
+# --- Build Report Tool (https://assetstore.unity.com/packages/tools/utilities/build-report-tool-8162)
+/[Aa]ssets/BuildReport/*
+/[Aa]ssets/BuildReport.meta
+/ProjectSettings/BuildReportToolOptions.xml
 
 # --- This Project
 
@@ -113,3 +119,6 @@ m_Build*
 
 # Local windows desktop shortcuts
 /*.lnk
+
+# Include Editor.Build "Namespace"
+!/Editor/Build/

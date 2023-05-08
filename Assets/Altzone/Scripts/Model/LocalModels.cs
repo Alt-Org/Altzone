@@ -13,7 +13,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Random = UnityEngine.Random;
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
 #endif
@@ -29,10 +28,12 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int WebGlFramesToWaitFlush = 10;
+        private const float EditorDemoDelay = 1.0f;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
+        private readonly YieldInstruction _demoDelay;
 
         #region Version numbers for data update or upgrade checking
 
@@ -194,6 +195,9 @@ namespace Altzone.Scripts.Model
             Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
             Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
             // Player data validity can not be detected here!
+
+            // Simulate delay when fetching data from external server.
+            _demoDelay = AppPlatform.IsEditor ? new WaitForSeconds(EditorDemoDelay) : null;
         }
 
         internal void ResetDataForReload()
@@ -264,7 +268,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(2f), () => callback(playerData));
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () => callback(playerData));
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -276,12 +280,9 @@ namespace Altzone.Scripts.Model
             }
             else
             {
-                if (playerData.Id == 0)
+                if (string.IsNullOrEmpty(playerData.Id))
                 {
-                    var id = _storageData.PlayerData.Count == 0
-                        ? 1
-                        : _storageData.PlayerData.Max(x => x.Id) + 1;
-                    playerData.Id = id;
+                    playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
                 _storageData.PlayerData.Add(playerData);
             }
@@ -329,7 +330,7 @@ namespace Altzone.Scripts.Model
             callback(_storageData.CustomCharacters);
         }
 
-        internal void GetBattleCharacterTest(int customCharacterId, Action<BattleCharacter> callback)
+        internal void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
@@ -349,14 +350,14 @@ namespace Altzone.Scripts.Model
             return battleCharacters;
         }
 
-        private BattleCharacter _GetBattleCharacter(int customCharacterId)
+        private BattleCharacter _GetBattleCharacter(string customCharacterId)
         {
             var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
             if (customCharacter == null)
             {
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
-            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.CharacterClassId == customCharacter.CharacterClassId);
+            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
@@ -376,11 +377,9 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(new WaitForSeconds(2f), () =>
+            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () =>
             {
-                callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture.GetRange(0,
-                    Mathf.Min(Random.Range(_storageData.GameFurniture.Count / 10, _storageData.GameFurniture.Count + 1),
-                        _storageData.GameFurniture.Count))));
+                callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
             });
         }
 

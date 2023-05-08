@@ -3,32 +3,45 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
-        public int Id;
-        public string ClanId;
-        public int CurrentCustomCharacterId;
-        public string Name;
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
+        [ForeignKey(nameof(CustomCharacter)), Optional] public string CurrentCustomCharacterId;
+        [Unique] public string Name;
         public int BackpackCapacity;
-        public string UniqueIdentifier;
-        
+
+        /// <summary>
+        /// Unique string to identify this player across devices and systems.
+        /// </summary>
+        [Unique] public string UniqueIdentifier;
+
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
-        
+
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
-        
-        public PlayerData(int id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
+
+        public PlayerData(string id, string clanId, string currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(currentCustomCharacterId.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(backpackCapacity >= 0);
+            Assert.IsTrue(uniqueIdentifier.IsMandatory());
             Id = id;
-            ClanId = clanId;
-            CurrentCustomCharacterId = currentCustomCharacterId;
+            ClanId = clanId ?? string.Empty;
+            CurrentCustomCharacterId = currentCustomCharacterId ?? string.Empty;
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
@@ -39,10 +52,10 @@ namespace Altzone.Scripts.Model.Poco.Player
             BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(customCharacters).ToList();
         }
-        
+
         public override string ToString()
         {
-            return 
+            return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(CurrentCustomCharacterId)}: {CurrentCustomCharacterId}" +
                 $", {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }

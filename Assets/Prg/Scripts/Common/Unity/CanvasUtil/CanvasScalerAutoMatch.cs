@@ -17,23 +17,24 @@ namespace Prg.Scripts.Common.Unity.CanvasUtil
         private const float DefaultLandscapeMatch = 0f;
         private const float DefaultPortraitMatch = 1f;
 
-        [SerializeField] private float _landscapeMatch = DefaultLandscapeMatch;
+        [Header("Settings"), SerializeField] private float _landscapeMatch = DefaultLandscapeMatch;
         [SerializeField] private float _portraitMatch = DefaultPortraitMatch;
         [SerializeField] private float _pollingInterval = 1.0f;
 
-        private CanvasScaler _canvasScaler;
-        private int _width;
-        private int _height;
-
         private void OnEnable()
         {
-            _canvasScaler = gameObject.GetComponent<CanvasScaler>();
-            if (_canvasScaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize)
+            var canvasScaler = GetComponent<CanvasScaler>();
+            if (canvasScaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize)
             {
                 enabled = false;
                 return;
             }
-            StartCoroutine(ScreenResolutionPoller());
+            if (AppPlatform.IsEditor)
+            {
+                StartCoroutine(ScreenResolutionPoller(canvasScaler));
+                return;
+            }
+            FixCanvasScaler(canvasScaler, _landscapeMatch, _portraitMatch);
         }
 
         private void OnDisable()
@@ -41,26 +42,33 @@ namespace Prg.Scripts.Common.Unity.CanvasUtil
             StopAllCoroutines();
         }
 
-        private IEnumerator ScreenResolutionPoller()
+        private static void FixCanvasScaler(CanvasScaler canvasScaler, float landscapeMatch, float portraitMatch)
         {
+            var match = Screen.width > Screen.height ? landscapeMatch : portraitMatch;
+            if (Mathf.Approximately(canvasScaler.matchWidthOrHeight, match))
+            {
+                return;
+            }
+            Debug.Log($"screen w={Screen.width} h={Screen.height} matchWidthOrHeight {canvasScaler.matchWidthOrHeight:0.0} <- {match:0.0}",
+                canvasScaler.gameObject);
+            canvasScaler.matchWidthOrHeight = match;
+        }
+
+        private IEnumerator ScreenResolutionPoller(CanvasScaler canvasScaler)
+        {
+            var width = 0;
+            var height = 0;
             YieldInstruction delay = _pollingInterval > 0 ? new WaitForSeconds(_pollingInterval) : null;
             for (; enabled;)
             {
                 yield return delay;
-                if (_height == Screen.height && _width == Screen.width)
+                if (height == Screen.height && width == Screen.width)
                 {
                     continue;
                 }
-                _width = Screen.width;
-                _height = Screen.height;
-                var match = _width > _height ? _landscapeMatch : _portraitMatch;
-                if (Mathf.Approximately(_canvasScaler.matchWidthOrHeight, match))
-                {
-                    continue;
-                }
-                Debug.Log($"matchWidthOrHeight w {_width} h {_height} : {_canvasScaler.matchWidthOrHeight} <- {match}",
-                    _canvasScaler.gameObject);
-                _canvasScaler.matchWidthOrHeight = match;
+                width = Screen.width;
+                height = Screen.height;
+                FixCanvasScaler(canvasScaler, _landscapeMatch, _portraitMatch);
             }
         }
     }

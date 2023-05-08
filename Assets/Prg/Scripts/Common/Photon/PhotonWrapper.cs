@@ -29,6 +29,11 @@ namespace Prg.Scripts.Common.Photon
         /// </remarks>
         public static bool CanJoinLobby => PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer;
 
+        /// <summary>
+        /// Alias for CanJoinLobby.
+        /// </summary>
+        public static bool IsConnectedToMasterServer => PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer;
+        
         public static bool InRoom => PhotonNetwork.InRoom;
         public static bool InLobby => PhotonNetwork.InLobby;
     }

@@ -6,11 +6,14 @@ using Prg.Scripts.Common.Http.RestApi;
 using Prg.Scripts.Common.MiniJson;
 using UnityEngine;
 using UnityEngine.Assertions;
+#if USE_UNITY_ADS
+using UnityEngine.Advertisements;
+#endif
 
 namespace Altzone.Scripts
 {
     /// <summary>
-    /// Query user's geolocation from current IP address using ip-api.com REST API free service and manage GDPR consent.
+    /// Example to query user's geolocation from current IP address using ip-api.com REST API free service and manage GDPR consent.
     /// </summary>
     /// <remarks>
     /// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes <br />
@@ -54,6 +57,7 @@ namespace Altzone.Scripts
         [Conditional("USE_UNITY_ADS")]
         public static void SetConsentMetaData(GeoLocation.LocationData data)
         {
+#if USE_UNITY_ADS
             // Google Play Families compliance:
             // - mixed indicates that the app is directed at mixed audiences (including children).
             var privacyValue = PlayerPrefs.GetString(PlayerPrefKeys.ConsentFamiliesPrivacyMode, "mixed");
@@ -74,6 +78,7 @@ namespace Altzone.Scripts
             metaData = new MetaData("user");
             metaData.Set("nonbehavioral", nonBehavioralValue);
             Advertisement.SetMetaData(metaData);
+#endif
         }
 
         private static async Task LoadLocationDataAsync(Action<LocationData> callback)

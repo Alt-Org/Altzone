@@ -162,9 +162,14 @@ namespace Prg.Scripts.Common.Photon
              * https://doc.photonengine.com/en-us/pun/v2/getting-started/feature-overview#versioning_by_gameversion
              * https://forum.photonengine.com/discussion/16543/how-to-prevent-older-versions-of-the-client-from-connecting-to-photonnetwork
              */
-            LogPhotonStatus(PhotonNetwork.OfflineMode
-                ? $"OfflineMode scene={SceneManager.GetActiveScene().name}"
-                : $"AppVersion={PhotonNetwork.AppVersion} GameVersion={PhotonNetwork.GameVersion} scene={SceneManager.GetActiveScene().name}");
+            if (PhotonNetwork.OfflineMode)
+            {
+                LogPhotonStatus($"OfflineMode scene={SceneManager.GetActiveScene().name}");
+                return;
+            }
+            LogPhotonStatus($"AppVersion={PhotonNetwork.AppVersion} GameVersion={PhotonNetwork.GameVersion}" +
+                            $" CloudRegion={PhotonNetwork.NetworkingClient.CloudRegion}" +
+                            $" scene={SceneManager.GetActiveScene().name}");
         }
 
         public void OnDisconnected(DisconnectCause cause)
@@ -174,7 +179,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnRegionListReceived(RegionHandler regionHandler)
         {
-            LogPhotonStatus($"BestRegion={regionHandler.BestRegion}");
+            LogPhotonStatus($"BestRegion={regionHandler.BestRegion} EnabledRegions={string.Join(',', regionHandler.EnabledRegions)}");
         }
 
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
@@ -197,7 +202,7 @@ namespace Prg.Scripts.Common.Photon
 
         public void OnJoinedLobby()
         {
-            LogPhotonStatus();
+            LogPhotonStatus($"CloudRegion={PhotonNetwork.NetworkingClient.CloudRegion}");
         }
 
         public void OnLeftLobby()

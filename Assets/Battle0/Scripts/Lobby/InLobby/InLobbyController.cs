@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Prg.Scripts.Common.Photon;
@@ -14,6 +13,8 @@ namespace Battle0.Scripts.Lobby.InLobby
     {
         [SerializeField] private InLobbyView _view;
 
+        private string _currentRegion;
+
         private void Awake()
         {
             _view.CharacterButtonOnClick = CharacterButtonOnClick;
@@ -24,37 +25,53 @@ namespace Battle0.Scripts.Lobby.InLobby
 
         private void OnEnable()
         {
-            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
+            var cloudRegion = PhotonNetwork.NetworkingClient?.CloudRegion;
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState} CloudRegion={cloudRegion} PhotonRegion={photonRegion}");
+            if (PhotonWrapper.IsConnectedToMasterServer && photonRegion != cloudRegion)
+            {
+                // We need to disconnect from current region because it is not the same as in player settings.
+                PhotonLobby.Disconnect();
+            }
             _view.Reset();
             UpdateTitle();
             _view.LobbyText = string.Empty;
-            StartCoroutine(StartLobby());
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         private void UpdateTitle()
         {
-            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion} {PhotonLobby.GetRegion()}";
+            // Save region for later use because getting it is not cheap (b ut not very expensive either). 
+            _currentRegion = PhotonLobby.GetRegion();
+            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion}";
         }
-        private IEnumerator StartLobby()
+
+        private IEnumerator StartLobby(string playerGuid, string photonRegion)
         {
+            var networkClientState = PhotonNetwork.NetworkClientState;
+            Debug.Log($"{networkClientState}");
             var delay = new WaitForSeconds(0.1f);
             while (!PhotonNetwork.InLobby)
             {
-                Debug.Log($"{PhotonNetwork.NetworkClientState}");
+                if (networkClientState != PhotonNetwork.NetworkClientState)
+                {
+                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
+                    networkClientState = PhotonNetwork.NetworkClientState;
+                    Debug.Log($"{networkClientState}");
+                }
                 if (PhotonNetwork.InRoom)
                 {
                     PhotonLobby.LeaveRoom();
                 }
                 else if (PhotonWrapper.CanConnect)
                 {
-                    var gameConfig = GameConfig.Get();
-                    var playerSettings = gameConfig.PlayerSettings;
-                    var playerGuid = playerSettings.PlayerGuid;
                     var store = Storefront.Get();
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
-                    PhotonLobby.Connect(playerData.Name);
+                    PhotonLobby.Connect(playerData.Name, photonRegion);
                 }
                 else if (PhotonWrapper.CanJoinLobby)
                 {
@@ -74,20 +91,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                 return;
             }
             var playerCount = PhotonNetwork.CountOfPlayers;
-            string text;
-            switch (playerCount)
-            {
-                case 0:
-                    text = "Wait";
-                    break;
-                case 1:
-                    text = "You are the only player";
-                    break;
-                default:
-                    text = $"There are {playerCount} players";
-                    break;
-            }
-            _view.LobbyText = $"{text}, ping {PhotonNetwork.GetPing()}";
+            _view.LobbyText = $"Players: {playerCount}, ping {_currentRegion} {PhotonNetwork.GetPing()} ms";
         }
 
         private void CharacterButtonOnClick()

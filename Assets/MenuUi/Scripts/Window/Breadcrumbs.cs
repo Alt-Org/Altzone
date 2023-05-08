@@ -21,7 +21,7 @@ namespace MenuUi.Scripts.Window
         private bool _hasStyles;
         private GUIStyle _guiLabelStyle;
         private StringBuilder _builder;
-        private readonly List<WindowManager.MyWindow> _windows = new();
+        private readonly List<MyWindow> _windows = new();
 
         private void OnEnable()
         {

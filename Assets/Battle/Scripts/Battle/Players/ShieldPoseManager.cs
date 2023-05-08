@@ -1,15 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    internal interface IShieldPoseManager
-    {
-        int MaxPoseIndex { get; }
-        void SetPose(int poseIndex);
-    }
-    public class ShieldPoseManager : MonoBehaviour, IShieldPoseManager
+    public class ShieldPoseManager : MonoBehaviour
     {
         private GameObject[] _shields;
         private GameObject _currentPose;
@@ -28,9 +21,9 @@ namespace Battle.Scripts.Battle.Players
             _shields[0].SetActive(true);
         }
 
-        int IShieldPoseManager.MaxPoseIndex => _maxPoseIndex;
+        public int MaxPoseIndex => _maxPoseIndex;
 
-        void IShieldPoseManager.SetPose(int poseIndex)
+        public void SetPose(int poseIndex)
         {
             if (_currentPose != null)
             {

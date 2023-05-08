@@ -161,16 +161,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 1811067620}
   SpawnPoint: {fileID: 595202044}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChance: 4
   SpawnPointsArray: []
   center: {x: 4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
   StartBool: 1
+  View: {fileID: 0}
 --- !u!114 &8474965504714634145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,16 +420,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 513267982}
   SpawnPoint: {fileID: 974187756}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChance: 4
   SpawnPointsArray: []
   center: {x: -4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
   StartBool: 1
+  View: {fileID: 0}
 --- !u!114 &6606595342933486695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -632,16 +644,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 1687272358}
   SpawnPoint: {fileID: 565639873}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChance: 4
   SpawnPointsArray: []
   center: {x: 4.09091, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
   StartBool: 1
+  View: {fileID: 0}
 --- !u!114 &7890064207720725737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -724,16 +742,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131c46e43cfaba419fe391ff8a31cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DiamondObject: {fileID: 0}
+  DiamondObject2: {fileID: 0}
   Diamond: {fileID: 0}
   SpawnPoints: {fileID: 2139112062}
   SpawnPoint: {fileID: 1315077237}
   SpawnSpace: 1.05
+  MinSpawnTime: 5
+  MaxSpawnTime: 10
+  MaxChance: 4
   SpawnPointsArray: []
   center: {x: -4.09091, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
   StartBool: 1
+  View: {fileID: 0}
 --- !u!114 &4401999409878782866
 MonoBehaviour:
   m_ObjectHideFlags: 0

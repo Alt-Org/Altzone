@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Prg.Scripts.Common.Util;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Prg.Editor.Build
 {
@@ -25,21 +30,166 @@ namespace Prg.Editor.Build
         private const string Target = "Unsupported";
 #endif
 
-        #region Build
+        #region Build Menus
 
-        [MenuItem(Build + "Create Build Report", false, 10)]
+        [MenuItem(Build + "Create HTML Build Report", false, 10)]
+        private static void TestingLastBuildReport() => Logged(() => BuildReportAnalyzer.ShowLastBuildReport());
+
+        [MenuItem(Build + "Create text Build Report", false, 11)]
         private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
 
-        [MenuItem(Build + "Create Build Script for " + Target, false, 11)]
+        [MenuItem(Build + "Create Build Script for " + Target, false, 12)]
         private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
 
-        [MenuItem(Build + "Test Android Build Config", false, 12)]
+        [MenuItem(Build + "Android Build/Test Config", false, 20)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
 
-        [MenuItem(Build + "Set Android Build for Local APK Test", false, 13)]
+        [MenuItem(Build + "Android Build/Setup for Local APK Test", false, 21)]
         private static void SetAndroidBuildTestApk() => MenuBuildReport.SetAndroidBuildTestApk();
 
+        [MenuItem(Build + "Last Build Report/Create", false, 30)]
+        private static void CreateLastBuildReport() => LastBuildBuildReport.CreateLastBuildReport();
+
+        [MenuItem(Build + "Last Build Report/Show", false, 31)]
+        private static void ShowLastBuildReport() => LastBuildBuildReport.ShowLastBuildReport();
+
         #endregion
+
+        #region File Logger Support
+
+        private static void Logged(Action action)
+        {
+            var logFileWriter = LogFileWriter.CreateLogFileWriter();
+            try
+            {
+                var stopwatch = Stopwatch.StartNew();
+                action();
+                stopwatch.Stop();
+                Debug.Log($"Command took {stopwatch.Elapsed.TotalSeconds:0.0} s");
+            }
+            finally
+            {
+                logFileWriter.Close();
+            }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// UNITY Build Report utility.
+    /// </summary>
+    /// <remarks>
+    /// Idea from https://docs.unity3d.com/Packages/com.unity.build-report-inspector@0.3/manual/index.html
+    /// </remarks>
+    internal static class LastBuildBuildReport
+    {
+        const string LastBuildReport = "Library/LastBuild.buildreport";
+        const string BuildReportDir = "Assets/BuildReports";
+
+        internal static void CreateLastBuildReport()
+        {
+            Debug.Log("*");
+            if (!File.Exists(LastBuildReport))
+            {
+                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReport}");
+                return;
+            }
+            if (!Directory.Exists(BuildReportDir))
+            {
+                Directory.CreateDirectory(BuildReportDir);
+            }
+
+            var date = File.GetLastWriteTime(LastBuildReport);
+            var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
+            var assetPath = $"{BuildReportDir}/{name}.buildreport";
+            File.Copy("Library/LastBuild.buildreport", assetPath, true);
+            AssetDatabase.ImportAsset(assetPath);
+            var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
+            buildReport.name = name;
+            AssetDatabase.SaveAssets();
+            Debug.Log($"{buildReport}");
+        }
+
+        internal static void ShowLastBuildReport()
+        {
+            const string outputFilename = "m_Build_Used_Large_Assets.tsv";
+
+            Debug.Log("*");
+            if (!File.Exists(LastBuildReport))
+            {
+                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReport}");
+                return;
+            }
+            var date = File.GetLastWriteTime(LastBuildReport);
+            var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
+            var assetPath = $"{BuildReportDir}/{name}.buildreport";
+            var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
+            Debug.Log($"{buildReport}");
+
+            // Filter assets.
+            var ignoredCount = 0;
+            List<PackedAssetInfo> packedAssets = new List<PackedAssetInfo>();
+            foreach (var packedAsset in buildReport.packedAssets)
+            {
+                var contents = packedAsset.contents;
+                foreach (var assetInfo in contents)
+                {
+                    if (assetInfo.packedSize < 1024)
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    if (assetInfo.type == typeof(MonoBehaviour))
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    var sourceAssetGuid = assetInfo.sourceAssetGUID.ToString();
+                    if (sourceAssetGuid == "00000000000000000000000000000000" || sourceAssetGuid == "0000000000000000f000000000000000")
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    var sourceAssetPath = assetInfo.sourceAssetPath;
+                    if (sourceAssetPath.StartsWith("Packages/") ||
+                        sourceAssetPath.StartsWith("Assets/Photon/")
+                        || sourceAssetPath.StartsWith("Assets/Plugins/"))
+                    {
+                        ignoredCount += 1;
+                        continue;
+                    }
+                    packedAssets.Add(assetInfo);
+                }
+            }
+            // Sort and save
+            packedAssets = packedAssets.OrderBy(x => x.packedSize).Reverse().ToList();
+            var builder = new StringBuilder();
+            builder.Append("type")
+                .Append('\t').Append("ratio")
+                .Append('\t').Append("packedSize")
+                .Append('\t').Append("fileSize")
+                .Append('\t').Append("path")
+                .Append('\t').Append("guid")
+                .AppendLine();
+            foreach (var assetInfo in packedAssets)
+            {
+                var packedSize = assetInfo.packedSize;
+                var fileSize = (ulong)new FileInfo(assetInfo.sourceAssetPath).Length;
+                var ratioText = packedSize < fileSize
+                    ? $"-{Math.Round(fileSize / (double)packedSize)}"
+                    : $"+{Math.Round(packedSize / (double)fileSize)}";
+                builder.Append(assetInfo.type.Name)
+                    .Append('\t').Append(ratioText)
+                    .Append('\t').Append(packedSize)
+                    .Append('\t').Append(fileSize)
+                    .Append('\t').Append(assetInfo.sourceAssetPath)
+                    .Append('\t').Append(assetInfo.sourceAssetGUID)
+                    .AppendLine();
+            }
+            File.WriteAllText(outputFilename, builder.ToString());
+            Debug.Log($"PackedAssetInfo count {packedAssets.Count} ignored {ignoredCount}");
+        }
     }
 
     /// <summary>
@@ -54,7 +204,10 @@ namespace Prg.Editor.Build
 
         private static readonly string[] ExcludedFolders =
         {
+            "Assets/BuildReports",
             "Assets/Photon",
+            "Assets/Plugins",
+            "Assets/Presets",
             "Assets/Photon Unity Networking",
             ".*/Editor/.*",
             "Assets/Tests",
@@ -66,6 +219,12 @@ namespace Prg.Editor.Build
             ".*/test/.*",
             ".*/zPlayGround/.*",
             ".*/zzDeleteMe/.*",
+        };
+
+        private static readonly string[] ExcludedExtensions =
+        {
+            ".asmdef",
+            ".asmref",
         };
 
         public static void CreateBuildScript()
@@ -103,7 +262,7 @@ namespace Prg.Editor.Build
             Debug.Log("*");
             var logWriter = new LogWriter();
 
-            var buildTargetName = TeamCity.CommandLine.BuildTargetNameFrom(EditorUserBuildSettings.activeBuildTarget);
+            var buildTargetName = TeamCity.CommandLine.GetBuildTargetName(EditorUserBuildSettings.activeBuildTarget);
             logWriter.Log($"Build target is {buildTargetName}");
             var buildReport = $"m_Build_{buildTargetName}.log";
             if (!File.Exists(buildReport))
@@ -112,17 +271,18 @@ namespace Prg.Editor.Build
                 return;
             }
 
-            var allFiles = ParseBuildReport(buildReport, out var totalSize);
-            logWriter.Log($"Build contains {allFiles.Count} total files, their size is {totalSize:### ### ##0.0} kb");
-            var usedAssets = new HashSet<string>();
+            var allAssets = ParseBuildReport(buildReport, out var totalSize);
+
+            // Calculate base stats.
+            var usedAssets = new HashSet<AssetLine>();
             int[] fileCount = { 0, 0, 0, 0 };
             double[] fileSize = { 0, 0, 0, 0 };
             double[] filePercent = { 0, 0, 0, 0 };
-            foreach (var assetLine in allFiles)
+            foreach (var assetLine in allAssets)
             {
                 if (assetLine.IsAsset)
                 {
-                    usedAssets.Add(assetLine.FilePath);
+                    usedAssets.Add(assetLine);
                     fileCount[0] += 1;
                     fileSize[0] += assetLine.FileSizeKb;
                     filePercent[0] += assetLine.Percentage;
@@ -151,6 +311,7 @@ namespace Prg.Editor.Build
                     return;
                 }
             }
+            logWriter.Log($"Build contains {allAssets.Count} total files, their size is {totalSize:### ### ##0.0} kb");
             logWriter.Log($"Build contains {fileCount[0]} ASSET files, their size is {fileSize[0]:### ### ##0.0} kb ({filePercent[0]:0.0}%)");
             logWriter.Log($"Build contains {fileCount[1]} PACKAGE files, their size is {fileSize[1]:### ### ##0.0} kb ({filePercent[1]:0.0}%)");
             logWriter.Log($"Build contains {fileCount[2]} RESOURCE files, their size is {fileSize[2]:### ### ##0.0} kb ({filePercent[2]:0.0}%)");
@@ -158,7 +319,9 @@ namespace Prg.Editor.Build
             {
                 logWriter.Log($"Build contains {fileCount[3]} Built-in files, their size is {fileSize[3]:### ### ##0.0} kb ({filePercent[3]:0.0}%)");
             }
-            var testAssets = new List<string>();
+
+            // Calculate un-used asset stats.
+            var testAssets = new List<AssetLine>();
             var unusedAssets = CheckUnusedAssets(usedAssets, testAssets);
             logWriter.Log($"Project contains {unusedAssets.Count} unused assets for {buildTargetName} build");
             if (_excludedFolderCount > 0 || _excludedFileCount > 0)
@@ -170,11 +333,12 @@ namespace Prg.Editor.Build
                 logWriter.Log($"Build uses {testAssets.Count} TEST assets");
                 foreach (var testAsset in testAssets)
                 {
-                    logWriter.Log($"TEST ASSET\t{testAsset}");
+                    logWriter.Log($"USED\tTEST\t{testAsset.FilePath}\t{testAsset.FileSizeKb:### ### ##0.0} kb");
                 }
             }
             var unusedAssetSizeTotal = unusedAssets.Select(x => x.FileSizeKb).Sum();
             logWriter.Log($"Unused assets total size is {unusedAssetSizeTotal:### ### ##0.0} kb");
+
             var unusedCount = 0;
             var unusedSize = 0D;
             foreach (var unusedAsset in unusedAssets.Where(x => !x.IsTestAsset).OrderBy(x => x.FileSizeKb).Reverse())
@@ -202,7 +366,7 @@ namespace Prg.Editor.Build
         private static int _excludedFolderCount;
         private static int _excludedFileCount;
 
-        private static List<AssetLine> CheckUnusedAssets(HashSet<string> usedAssets, List<string> testAssets)
+        private static List<AssetLine> CheckUnusedAssets(HashSet<AssetLine> usedAssets, List<AssetLine> testAssets)
         {
             bool IsTestAsset(string assetPath, List<Regex> testFiles)
             {
@@ -213,7 +377,8 @@ namespace Prg.Editor.Build
                         return true;
                     }
                 }
-                return false;
+                // Test assets outside Test folder should end with "Test"!
+                return assetPath.Contains("Test.");
             }
 
             void HandleSubFolder(string parent, List<Regex> excluded, List<Regex> testFiles, ref List<AssetLine> result)
@@ -239,32 +404,38 @@ namespace Prg.Editor.Build
                     if (isExclude)
                     {
                         _excludedFileCount += 1;
+                        continue;
                     }
-                    else
+                    var extension = Path.GetExtension(assetPath);
+                    if (ExcludedExtensions.Contains(extension))
                     {
-                        var isUsed = usedAssets.Contains(assetPath);
-                        if (!isUsed)
+                        _excludedFileCount += 1;
+                        continue;
+                    }
+                    var isUsed = usedAssets.Any(x => x.FilePath.Equals(assetPath));
+                    if (!isUsed)
+                    {
+                        if (Directory.Exists(assetPath))
                         {
-                            if (Directory.Exists(assetPath))
-                            {
-                                continue; // Ignore folders
-                            }
-                            var assetLine = new AssetLine(assetPath, isFile: true);
-                            if (!result.Contains(assetLine))
-                            {
-                                if (IsTestAsset(assetPath, testFiles))
-                                {
-                                    assetLine.SetIsTestAsset();
-                                }
-                                result.Add(assetLine);
-                            }
-                            continue;
+                            continue; // Ignore folders
                         }
-                        if (IsTestAsset(assetPath, testFiles))
+                        var assetLine = new AssetLine(assetPath, isFile: true);
+                        if (!result.Contains(assetLine))
                         {
-                            testAssets.Add(assetPath);
-                            break;
+                            if (IsTestAsset(assetPath, testFiles))
+                            {
+                                assetLine.SetIsTestAsset();
+                            }
+                            result.Add(assetLine);
                         }
+                        continue;
+                    }
+                    if (IsTestAsset(assetPath, testFiles))
+                    {
+                        var assetLine = new AssetLine(assetPath, isFile: true);
+                        assetLine.SetIsTestAsset();
+                        testAssets.Add(assetLine);
+                        break;
                     }
                 }
             }
@@ -292,27 +463,68 @@ namespace Prg.Editor.Build
 
         private static List<AssetLine> ParseBuildReport(string buildReport, out double totalSize)
         {
-            const string markerLine = "-------------------------------------------------------------------------------";
-            const string assetsLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string buildReportLine = "Build Report";
+            const string usedAssetsLine = "Used Assets and files from the Resources folder, sorted by uncompressed size:";
+            const string noDataMarkerLine = "Information on used Assets is not available, since player data was not rebuilt.";
+            const string endMarkerLine = "-------------------------------------------------------------------------------";
+            // Example lines:
+            //  1.4 mb	 0.2% Assets/Altzone/Graphics/Logo/ALT ZONE logo.png
+            //  341.5 kb	 0.1% Assets/TextMesh Pro/Sprites/EmojiOne.png
+            //  0.1 kb	 0.0% Assets/MenuUi/Scripts/Shop.cs
+
             var result = new List<AssetLine>();
-            var processing = false;
             totalSize = 0;
-            foreach (var line in File.ReadAllLines(buildReport))
+            var filename = Path.GetFileName(buildReport);
+            var lines = File.ReadAllLines(buildReport);
+            var lastLine = lines.Length - 1;
+            var currentLine = 0;
+            // Find Build Report line.
+            for (; currentLine < lastLine; ++currentLine)
             {
-                if (processing)
+                var line = lines[currentLine];
+                if (line == buildReportLine)
                 {
-                    if (line == markerLine)
-                    {
-                        break;
-                    }
-                    var assetLine = new AssetLine(line);
-                    totalSize += assetLine.FileSizeKb;
-                    result.Add(assetLine);
+                    break;
                 }
-                if (line == assetsLine)
+            }
+            if (currentLine == lastLine)
+            {
+                Debug.LogWarning($"Report file {filename} does not have a 'Build Report'");
+                return result;
+            }
+            // Find Used Assets line.
+            currentLine += 1;
+            for (; currentLine < lastLine; ++currentLine)
+            {
+                var line = lines[currentLine];
+                if (line == usedAssetsLine)
                 {
-                    processing = true;
+                    break;
                 }
+                if (line == noDataMarkerLine)
+                {
+                    Debug.LogWarning($"Report file {filename} did not have data" +
+                                     $" for 'Used Assets' because <b>player data was not rebuilt</b> on last build!");
+                    return result;
+                }
+            }
+            if (currentLine == lastLine)
+            {
+                Debug.LogWarning($"Report file {filename} does not have valid 'Build Report'");
+                return result;
+            }
+            // Read all Used Assets lines.
+            currentLine += 1;
+            for (; currentLine < lastLine; ++currentLine)
+            {
+                var line = lines[currentLine];
+                if (line == endMarkerLine)
+                {
+                    break;
+                }
+                var assetLine = new AssetLine(line);
+                totalSize += assetLine.FileSizeKb;
+                result.Add(assetLine);
             }
             return result;
         }
@@ -321,7 +533,7 @@ namespace Prg.Editor.Build
         {
             private static readonly CultureInfo Culture = CultureInfo.GetCultureInfo("en-US");
             private static readonly char[] Separators1 = { '%' };
-            private static readonly char[] Separators2 = { ' ' };
+            private static readonly char[] Separators2 = { ' ', '\t' };
 
             private readonly string _line;
             public readonly double FileSizeKb;
@@ -356,6 +568,14 @@ namespace Prg.Editor.Build
                     return;
                 }
                 FileSizeKb = double.Parse(tokens[0], Culture);
+                if (tokens[1] == "mb")
+                {
+                    FileSizeKb *= 1024;
+                }
+                else
+                {
+                    Assert.AreEqual("kb", tokens[1]);
+                }
                 Percentage = double.Parse(tokens[2], Culture);
             }
 
@@ -374,11 +594,7 @@ namespace Prg.Editor.Build
                 {
                     return true;
                 }
-                if (obj.GetType() != this.GetType())
-                {
-                    return false;
-                }
-                return Equals((AssetLine)obj);
+                return obj.GetType() == GetType() && Equals((AssetLine)obj);
             }
 
             public override int GetHashCode()

@@ -5,11 +5,14 @@ using System.Linq;
 namespace Prg.Scripts.Common.PubSub
 {
     /// <summary>
-    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation.
+    /// Simple Publish Subscribe Pattern <c>Hub</c> implementation using <c>WeakReference</c>.
     /// </summary>
+    /// <remarks>
+    /// This implementation is multi-threaded safe!
+    /// </remarks>
     public class Hub
     {
-        internal class Handler
+        private class Handler
         {
             public readonly Delegate Action;
             public readonly WeakReference Subscriber;
@@ -54,39 +57,27 @@ namespace Prg.Scripts.Common.PubSub
         }
 
         private readonly object _locker = new();
-        internal readonly List<Handler> Handlers = new();
+        private readonly List<Handler> _handlers = new();
 
-        /// <summary>
-        /// Checks if subscriber has subscribed to given message (type).
-        /// </summary>
-        /// <param name="subscriber"></param>
-        /// <typeparam name="T"></typeparam>
-        public bool Exists<T>(object subscriber)
+        public int CheckHandlerCount(bool isLogging = false)
         {
+            int handlerCount;
             lock (_locker)
             {
-                foreach (var handler in Handlers)
+                handlerCount = _handlers.Count;
+                if (handlerCount == 0 || !isLogging)
                 {
-                    if (!handler.Subscriber.IsAlive)
-                    {
-                        // This is actually not needed but used to emphasize the fact that we are using a WeakReference here:
-                        // - h.Subscriber.Target will be null if it has been Garbage Collected and Equals() test below fails.
-                        continue;
-                    }
-                    if (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber))
-                    {
-                        return true;
-                    }
+                    return handlerCount;
+                }
+                foreach (var handler in _handlers)
+                {
+                    Debug.Log($"handler {handler}");
                 }
             }
-            return false;
+            Debug.LogWarning($"handlerCount is {handlerCount}");
+            return handlerCount;
         }
 
-        /// <summary>
-        /// Allow publishing directly onto this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
         public void Publish<T>(T data = default)
         {
             var handlerList = new List<Handler>();
@@ -94,7 +85,7 @@ namespace Prg.Scripts.Common.PubSub
 
             lock (_locker)
             {
-                foreach (var handler in Handlers)
+                foreach (var handler in _handlers)
                 {
                     if (!handler.Subscriber.IsAlive)
                     {
@@ -110,40 +101,28 @@ namespace Prg.Scripts.Common.PubSub
                 foreach (var l in handlersToRemoveList)
                 {
                     //-Debug.Log($"remove {l}");
-                    Handlers.Remove(l);
+                    _handlers.Remove(l);
                 }
             }
 
             foreach (var handler in handlerList)
             {
-                if (!handler.Select(data))
-                {
-                    continue;
-                }
                 // Get reference to subscriber 1) to find that is is alive now and 2) to keep it alive during the callback.
-                // Note that this does not apply UnityEngine.Object's because they are managed in C++ side,
-                // but null check works fine for them as well.
                 var target = handler.Subscriber.Target;
                 if (target == null)
                 {
                     continue;
                 }
+                if (!handler.Select(data))
+                {
+                    continue;
+                }
                 ((Action<T>)handler.Action)(data);
+
                 // References the specified object, which makes it ineligible for garbage collection
                 // from the start of the current routine to the point where this method is called.
                 GC.KeepAlive(target);
             }
-        }
-
-        /// <summary>
-        /// Allow subscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="messageHandler"></param>
-        /// <param name="messageSelector"></param>
-        public void Subscribe<T>(Action<T> messageHandler, Predicate<T> messageSelector)
-        {
-            Subscribe(this, messageHandler, messageSelector);
         }
 
         public void Subscribe<T>(object subscriber, Action<T> messageHandler, Predicate<T> messageSelector)
@@ -153,59 +132,33 @@ namespace Prg.Scripts.Common.PubSub
             lock (_locker)
             {
                 //-Debug.Log($"subscribe {item}");
-                Handlers.Add(item);
+                _handlers.Add(item);
             }
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        public void Unsubscribe()
-        {
-            Unsubscribe(this);
         }
 
         public void Unsubscribe(object subscriber)
         {
             lock (_locker)
             {
-                var query = Handlers.Where(handler => !handler.Subscriber.IsAlive ||
-                                                      Equals(handler.Subscriber.Target, subscriber));
+                var query = _handlers
+                    .Where(handler => !handler.Subscriber.IsAlive ||
+                                      Equals(handler.Subscriber.Target, subscriber));
 
                 foreach (var h in query.ToList())
                 {
                     //-Debug.Log($"unsubscribe {h}");
-                    Handlers.Remove(h);
+                    _handlers.Remove(h);
                 }
             }
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public void Unsubscribe<T>()
-        {
-            Unsubscribe<T>(this);
-        }
-
-        /// <summary>
-        /// Allow unsubscribing directly to this Hub.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="handler"></param>
-        public void Unsubscribe<T>(Action<T> handler)
-        {
-            Unsubscribe(this, handler);
         }
 
         public void Unsubscribe<T>(object subscriber, Action<T> handlerToRemove = null)
         {
             lock (_locker)
             {
-                var query = Handlers
+                var query = _handlers
                     .Where(handler => !handler.Subscriber.IsAlive ||
-                                (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
+                                      (handler.MessageType == typeof(T) && Equals(handler.Subscriber.Target, subscriber)));
 
                 if (handlerToRemove != null)
                 {
@@ -216,7 +169,7 @@ namespace Prg.Scripts.Common.PubSub
                 foreach (var h in query.ToList())
                 {
                     //-Debug.Log($"unsubscribe {h}");
-                    Handlers.Remove(h);
+                    _handlers.Remove(h);
                 }
             }
         }

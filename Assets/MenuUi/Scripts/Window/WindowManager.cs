@@ -1,16 +1,70 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace MenuUi.Scripts.Window
 {
+    /// <summary>
+    /// Runtime class to hold <c>WindowDef</c> and its related 'window' instance (aka <c>GameObject</c>).
+    /// </summary>
+#if UNITY_EDITOR
+    [Serializable]
+#endif
+    public class MyWindow
+    {
+        public WindowDef _windowDef;
+        public GameObject _windowInst;
+
+        public bool IsValid => _windowInst != null;
+
+        public void Invalidate()
+        {
+            _windowInst = null;
+        }
+
+        public MyWindow(WindowDef windowDef, GameObject window)
+        {
+            _windowDef = windowDef;
+            _windowInst = window;
+        }
+
+        public override string ToString()
+        {
+            return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_windowInst != null ? _windowInst.name : "noname")}";
+        }
+    }
+
+    /// <summary>
+    /// Internal implementation to handle window showing and hiding so that <c>WindowManager</c> does not need to know anything about this.
+    /// </summary>
+    /// <remarks>
+    /// This also makes it possible to debug lod window management in better granularity. 
+    /// </remarks>
+    internal class WindowActivator
+    {
+        public void Show(MyWindow window)
+        {
+            Debug.Log($"Show {window._windowDef}", window._windowInst);
+            window._windowInst.SetActive(true);
+        }
+
+        public void Hide(MyWindow window)
+        {
+            Debug.Log($"Hide {window._windowDef}", window._windowInst);
+            if (window.IsValid)
+            {
+                window._windowInst.SetActive(false);
+            }
+        }
+    }
+
     /// <summary>
     /// Simple <c>WindowManager</c> with managed window bread crumbs list.
     /// </summary>
@@ -20,31 +74,6 @@ namespace MenuUi.Scripts.Window
         {
             Continue,
             Abort
-        }
-
-        [Serializable]
-        public class MyWindow
-        {
-            public WindowDef _windowDef;
-            public GameObject _windowInst;
-
-            public bool IsValid => _windowInst != null;
-
-            public void Invalidate()
-            {
-                _windowInst = null;
-            }
-
-            public MyWindow(WindowDef windowDef, GameObject window)
-            {
-                _windowDef = windowDef;
-                _windowInst = window;
-            }
-
-            public override string ToString()
-            {
-                return $"{(_windowDef != null ? _windowDef.name : "noname")}/{(_windowInst != null ? _windowInst.name : "noname")}";
-            }
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -68,6 +97,8 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private List<MyWindow> _currentWindows;
         [SerializeField] private List<MyWindow> _knownWindows;
 
+        private readonly WindowActivator _windowActivator = new();
+
         private GameObject _windowsParent;
         private WindowDef _pendingWindow;
 
@@ -79,6 +110,7 @@ namespace MenuUi.Scripts.Window
             Debug.Log("Awake");
             _currentWindows = new List<MyWindow>();
             _knownWindows = new List<MyWindow>();
+
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
             var handler = gameObject.AddComponent<EscapeKeyHandler>();
@@ -162,7 +194,7 @@ namespace MenuUi.Scripts.Window
 
         int IWindowManager.WindowCount => _currentWindows.Count;
 
-        List<MyWindow> IWindowManager.WindowStack => _currentWindows;
+        [MaybeNull] List<MyWindow> IWindowManager.WindowStack => _currentWindows;
 
         int IWindowManager.FindIndex(WindowDef windowDef)
         {
@@ -198,7 +230,7 @@ namespace MenuUi.Scripts.Window
             var currentWindow = _currentWindows[0];
             if (currentWindow.IsValid)
             {
-                Show(currentWindow);
+                _windowActivator.Show(currentWindow);
                 return;
             }
             // Re-create the window
@@ -293,7 +325,7 @@ namespace MenuUi.Scripts.Window
                     }
                     else
                     {
-                        Hide(previousWindow);
+                        _windowActivator.Hide(previousWindow);
                     }
                 }
                 if (!currentWindow.IsValid)
@@ -303,7 +335,7 @@ namespace MenuUi.Scripts.Window
                     currentWindow._windowInst = CreateWindowPrefab(currentWindow._windowDef);
                 }
                 _currentWindows.Insert(0, currentWindow);
-                Show(currentWindow);
+                _windowActivator.Show(currentWindow);
             }
 
             SafeExecution("DoShowWindow", DoShowWindow);
@@ -381,22 +413,7 @@ namespace MenuUi.Scripts.Window
             Assert.IsTrue(_currentWindows.Count > 0, "_currentWindows.Count > 0");
             var firstWindow = _currentWindows[0];
             _currentWindows.RemoveAt(0);
-            Hide(firstWindow);
-        }
-
-        private static void Show(MyWindow window)
-        {
-            Debug.Log($"Show {window._windowDef}", window._windowInst);
-            window._windowInst.SetActive(true);
-        }
-
-        private static void Hide(MyWindow window)
-        {
-            Debug.Log($"Hide {window._windowDef}", window._windowInst);
-            if (window.IsValid)
-            {
-                window._windowInst.SetActive(false);
-            }
+            _windowActivator.Hide(firstWindow);
         }
 
         private bool IsVisible(WindowDef windowDef)

@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanData
     {
-        public string Id;
-        public string Name;
-        public string Tag;
+        [PrimaryKey] public string Id;
+        [Unique] public string Name;
+        [Optional] public string Tag;
         public int GameCoins;
 
         public ClanInventory Inventory = new();
@@ -19,9 +21,13 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(tag.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(gameCoins >= 0);
             Id = id;
             Name = name;
-            Tag = tag;
+            Tag = tag ?? string.Empty;
             GameCoins = gameCoins;
         }
 

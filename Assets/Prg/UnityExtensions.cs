@@ -164,7 +164,7 @@ public static class UnityExtensions
     #region Coroutines
 
     /// <summary>
-    /// Execute an action as coroutine on next frame.
+    /// Execute an action as <c>Coroutine</c> on next frame.
     /// </summary>
     public static void ExecuteOnNextFrame(this MonoBehaviour component, Action action)
     {
@@ -172,7 +172,7 @@ public static class UnityExtensions
     }
 
     /// <summary>
-    /// Execute an action as coroutine with delay.
+    /// Execute an action as <c>Coroutine</c> with given delay.
     /// </summary>
     public static void ExecuteAsCoroutine(this MonoBehaviour component, YieldInstruction wait, Action action)
     {

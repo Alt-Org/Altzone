@@ -41,6 +41,22 @@ namespace Altzone.Scripts.Settings
         }
 
         /// <summary>
+        /// Photon Game Server Region Code for explicit region selection.
+        /// </summary>
+        /// <remarks>
+        /// Typically we use <c>PhotonServerSettings</c> or 'best region' for this.
+        /// </remarks>
+        public string PhotonRegion
+        {
+            get => _playerData.PhotonRegion;
+            set
+            {
+                _playerData.PhotonRegion = value ?? string.Empty;
+                Save();
+            }
+        }
+
+        /// <summary>
         /// Player's UNITY language.
         /// </summary>
         /// <remarks>
@@ -150,17 +166,13 @@ namespace Altzone.Scripts.Settings
             Localizer.SetLanguage(DefaultLanguage);
             _playerData.ResetData(DefaultLanguage);
             InternalSave();
-            Debug.Log(ToString());
         }
 
-        public void SetLanguageToEnglish()
+        public void SetLanguage(SystemLanguage language)
         {
-            const SystemLanguage english = SystemLanguage.English;
-            Localizer.LoadTranslations(english);
-            Localizer.SetLanguage(english);
-            Language = english;
-            InternalSave();
-            Debug.Log(ToString());
+            Localizer.LoadTranslations(language);
+            Localizer.SetLanguage(language);
+            Language = language;
         }
 #endif
 
@@ -170,6 +182,7 @@ namespace Altzone.Scripts.Settings
         private class PlayerData
         {
             public string PlayerGuid;
+            public string PhotonRegion;
             public SystemLanguage Language;
             public bool IsTosAccepted;
             public bool IsFirstTimePlaying;
@@ -179,6 +192,7 @@ namespace Altzone.Scripts.Settings
             public void ResetData(SystemLanguage language)
             {
                 PlayerGuid = Guid.NewGuid().ToString();
+                PhotonRegion = string.Empty;
                 Language = language;
                 IsTosAccepted = false;
                 IsFirstTimePlaying = false;
@@ -188,7 +202,7 @@ namespace Altzone.Scripts.Settings
 
             public override string ToString()
             {
-                return $"{nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
+                return $"{nameof(PhotonRegion)}: {PhotonRegion}, {nameof(Language)}: {Language}, {nameof(IsTosAccepted)}: {IsTosAccepted}" +
                        $", {nameof(IsFirstTimePlaying)}: {IsFirstTimePlaying}, {nameof(IsAccountVerified)}: {IsAccountVerified}" +
                        $", {nameof(IsDebugFlag)}: {IsDebugFlag}, {nameof(PlayerGuid)}: {PlayerGuid}";
             }
@@ -206,6 +220,7 @@ namespace Altzone.Scripts.Settings
             {
                 _host = UnityMonoHelper.Instance;
                 _playerData.PlayerGuid = PlayerPrefs.GetString(PlayerPrefKeys.PlayerGuid, string.Empty);
+                _playerData.PhotonRegion = PlayerPrefs.GetString(PlayerPrefKeys.PhotonRegion, string.Empty);
                 _playerData.Language = (SystemLanguage)PlayerPrefs.GetInt(PlayerPrefKeys.LanguageCode, (int)DefaultLanguage);
                 _playerData.IsTosAccepted = PlayerPrefs.GetInt(PlayerPrefKeys.TermsOfServiceAccepted, 0) == 1;
                 _playerData.IsFirstTimePlaying = PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
@@ -227,7 +242,9 @@ namespace Altzone.Scripts.Settings
 
             protected override void InternalSave()
             {
+                Debug.Log($"{(Application.isPlaying ? "Playing" : "Editor")}");
                 PlayerPrefs.SetString(PlayerPrefKeys.PlayerGuid, PlayerGuid);
+                PlayerPrefs.SetString(PlayerPrefKeys.PhotonRegion, PhotonRegion);
                 PlayerPrefs.SetInt(PlayerPrefKeys.LanguageCode, (int)_playerData.Language);
                 PlayerPrefs.SetInt(PlayerPrefKeys.TermsOfServiceAccepted, IsTosAccepted ? 1 : 0);
                 PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, IsFirstTimePlaying ? 1 : 0);
@@ -240,7 +257,13 @@ namespace Altzone.Scripts.Settings
             {
                 if (_host == null)
                 {
-                    // Can not delay, using UNITY default functionality save on exit
+                    if (Application.isPlaying)
+                    {
+                        // Can not delay, using UNITY default functionality save on application exit.
+                        return;
+                    }
+                    // In Editor just save and exit.
+                    InternalSave();
                     return;
                 }
                 if (_delayedSave != null)
@@ -257,7 +280,6 @@ namespace Altzone.Scripts.Settings
                 // By default Unity writes preferences to disk during OnApplicationQuit().
                 // - you can force them to disk using PlayerPrefs.Save().
                 yield return null;
-                Debug.Log("PlayerPrefs.Save");
                 InternalSave();
                 PlayerPrefs.Save();
                 _delayedSave = null;

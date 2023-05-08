@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -23,39 +24,55 @@ namespace Altzone.Scripts.Model
         /// For local data this means it could be deleted and re-created to get rid of all unwanted or obsoleted data.<br />
         /// You can change this for example if some data models has been changed that are not backwards compatible. 
         /// </summary>
-        internal const int MasterStorageVersionNumber = 3;
+        internal const int MasterStorageVersionNumber = 4;
+
+        internal static string FakeMongoDbId()
+        {
+            return Guid.NewGuid().ToString();
+        }
 
         /// <summary>
         /// [Player] <c>PlayerData</c> version number for data update purposes.
         /// </summary>
-        internal const int PlayerDataVersion = 2;
+        internal const int PlayerDataVersion = 3;
 
-        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
+        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, string currentCustomCharacterId)
         {
-            return new PlayerData(0, clanId, currentCustomCharacterId, "Player", 0, playerGuid);
+            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
 
         /// <summary>
         /// [Player] <c>ClanData</c> version number for data update purposes.
         /// </summary>
-        internal const int ClanDataVersion = 3;
+        internal const int ClanDataVersion = 7;
 
         internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
         {
+            var fakeFurnitureCounter = 0;
+
+            string FakeFurnitureId(string furnitureText)
+            {
+                return $"{furnitureText[0]}-{++fakeFurnitureCounter}";
+            }
+
             var clanData = new ClanData(clanId, "DemoClan", "[D]", 0);
             // Add every known furniture to clan inventory for testing.
-            var furnitureCounter = 0;
             foreach (var gameFurniture in furniture)
             {
-                clanData.Inventory.Furniture.Add(new ClanFurniture(++furnitureCounter, gameFurniture.Id));
+                if (gameFurniture.Id.Contains("pommi"))
+                {
+                    continue;
+                }
+                clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }
-            var bombs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pommi")).ToList();
             var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("tuoli")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pöytä")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.EndsWith("y")).ToList();
 
-            var bomb1 = bombs[0];
-            var bomb2 = bombs[bombs.Count - 1];
+            // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
+            var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
+            var bomb1 = new ClanFurniture(FakeFurnitureId(bombs[0].Id), bombs[0].Id);
+            var bomb2 = new ClanFurniture(FakeFurnitureId(bombs[bombs.Count - 1].Id), bombs[bombs.Count - 1].Id);
 
             // Create some Raid game rooms for testing.
             const int rowCount = 9;
@@ -63,47 +80,47 @@ namespace Altzone.Scripts.Model
             const int rowByMemberCount = 3;
             const int colByMemberCount = 3;
             {
-                var raidRoom = new RaidRoom(1, 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
                     rowCount + 1 * rowByMemberCount, colCount + 1 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb1.GameFurnitureId, 0, 0));
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
-                
-                roomFurniture.Add(new RaidRoomFurniture(1, chairs[0].GameFurnitureId, 1, 1));
-                roomFurniture.Add(new RaidRoomFurniture(1, tables[0].GameFurnitureId, 2, 2));
-                roomFurniture.Add(new RaidRoomFurniture(1, misc[0].GameFurnitureId, 3, 3));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
+
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureId, 1, 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureId, 2, 2));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureId, 3, 3));
             }
             {
-                var raidRoom = new RaidRoom(2, 0, RaidRoomType.Public,
+                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
                     rowCount + 3 * rowByMemberCount, colCount + 3 * colByMemberCount);
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
-                roomFurniture.Add(new RaidRoomFurniture(1, bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
 
                 var row = 0;
                 var col = 0;
                 foreach (var item in chairs)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in tables)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in misc)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(1, item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
                 }
             }
             return clanData;
@@ -112,7 +129,7 @@ namespace Altzone.Scripts.Model
         /// <summary>
         /// [Game] <c>CharacterClass</c> version number for data update purposes.
         /// </summary>
-        internal const int CharacterClassesVersion = 4;
+        internal const int CharacterClassesVersion = 8;
 
         /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
@@ -122,37 +139,37 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new((int)GestaltCycle.Desensitisation, GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
-                new((int)GestaltCycle.Deflection, GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
-                new((int)GestaltCycle.Introjection, GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
-                new((int)GestaltCycle.Projection, GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
-                new((int)GestaltCycle.Retroflection, GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
-                new((int)GestaltCycle.Egotism, GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new((int)GestaltCycle.Confluence, GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
+                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
+                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
+                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
+                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
+                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new(GestaltCycle.Egotism.ToString(), GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
+                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
 
         /// <summary>
         /// [Player] <c>CustomCharacter</c> version number for data update purposes.
         /// </summary>
-        internal const int CustomCharactersVersion = 5;
+        internal const int CustomCharactersVersion = 7;
 
         /// <summary>
         /// [Player] custom character classes are created by the player itself (or given to the player by the game).<br />
-        /// This collection should be the initial set of custom character classes the player has when game is started first time.
+        /// This collection could be the initial set of custom character classes the player has when game is started first time.
         /// </summary>
         /// <returns></returns>
         internal static List<CustomCharacter> CreateCustomCharacters()
         {
             return new List<CustomCharacter>
             {
-                new(1, 1, "1", "Keijo Kelmi", 0, 0, 0, 0),
-                new(2, 2, "2", "Huugo Hupaisa", 0, 0, 0, 0),
-                new(3, 3, "3", "Paavali Pappila", 0, 0, 0, 0),
-                new(4, 4, "4", "Tarmo Taide", 0, 0, 0, 0),
-                new(5, 5, "5", "Poju Pullukka", 0, 0, 0, 0),
-                new(6, 6, "6", "Albert Älypää", 0, 0, 0, 0),
-                new(7, 7, "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 06)
+                new("1", GestaltCycle.Desensitisation.ToString(), "1", "Keijo Kelmi", 0, 0, 0, 0),
+                new("2", GestaltCycle.Deflection.ToString(), "2", "Huugo Hupaisa", 0, 0, 0, 0),
+                new("3", GestaltCycle.Introjection.ToString(), "3", "Paavali Pappila", 0, 0, 0, 0),
+                new("4", GestaltCycle.Projection.ToString(), "4", "Tarmo Taide", 0, 0, 0, 0),
+                new("5", GestaltCycle.Retroflection.ToString(), "5", "Poju Pullukka", 0, 0, 0, 0),
+                new("6", GestaltCycle.Egotism.ToString(), "6", "Albert Älypää", 0, 0, 0, 0),
+                new("7", GestaltCycle.Confluence.ToString(), "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
             };
         }
 
@@ -193,26 +210,30 @@ namespace Altzone.Scripts.Model
                     Debug.Log($"Line is too short: {line.Replace(separator, '|')}");
                     continue;
                 }
+                var name = tokens[1];
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    // Create fake name.
+                    name = $"Furniture-{101 + gameFurniture.Count}";
+                }
+                var id = tokens[0];
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    // Create fake id from name.
+                    id = name;
+                    id = id.Trim().ToLower(cultureInfo).Replace(" ", ".");
+                }
                 var furniture = new GameFurniture
-                {
-                    Id = tokens[0],
-                    Name = tokens[1],
-                    Shape = tokens[2],
-                    Weight = ParseDouble(tokens[3]),
-                    Material = tokens[4],
-                    Recycling = tokens[5],
-                    UnityKey = tokens[6],
-                    Filename = tokens[7],
-                };
-                if (string.IsNullOrWhiteSpace(furniture.Name))
-                {
-                    furniture.Name = $"Furniture-{101 + gameFurniture.Count}";
-                }
-                if (string.IsNullOrWhiteSpace(furniture.Id))
-                {
-                    furniture.Id = furniture.Name;
-                }
-                furniture.Id = furniture.Id.Trim().ToLower(cultureInfo).Replace(" ", ".");
+                (
+                    id,
+                    name,
+                    tokens[2],
+                    ParseDouble(tokens[3]),
+                    tokens[4],
+                    tokens[5],
+                    tokens[6],
+                    tokens[7]
+                );
                 gameFurniture.Add(furniture);
             }
             return gameFurniture;

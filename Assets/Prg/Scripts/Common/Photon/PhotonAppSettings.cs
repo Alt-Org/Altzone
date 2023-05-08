@@ -1,5 +1,6 @@
 ﻿using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -13,11 +14,13 @@ namespace Prg.Scripts.Common.Photon
     //[CreateAssetMenu(menuName = "ALT-Zone/PhotonAppSettings")]
     public class PhotonAppSettings : ScriptableObject
     {
-        public AppSettings appSettings;
+        private const string Tooltip = "Use menu 'Window->Photon Unity Networking->Highlight Server Settings' to see other Photon settings";
+
+        [Tooltip(Tooltip)] public AppSettings _appSettings;
 
         public override string ToString()
         {
-            return appSettings != null ? appSettings.ToStringFull() : string.Empty;
+            return _appSettings != null ? _appSettings.ToStringFull() : string.Empty;
         }
     }
 }

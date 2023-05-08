@@ -9,8 +9,13 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 namespace Battle.Scripts.Battle.Players
 {
     /// <summary>
-    /// Class to instantiate local Photon player using <code>PhotonNetwork.Instantiate</code>.
+    /// Instantiates a Photon player using <code>PhotonNetwork.Instantiate</code>.<br />
+    /// Note that Photon player will be instantiated in all game clients that are in the room when this script is enabled in a scene.
     /// </summary>
+    /// <remarks>
+    /// In production we are already in the room but for testing we wait that a room is created
+    /// and then we try to find a free player position to instantiate a Photon player there for this room.
+    /// </remarks>
     public class PhotonPlayerInstantiate : MonoBehaviourPunCallbacks
     {
         [Serializable]
@@ -19,12 +24,13 @@ namespace Battle.Scripts.Battle.Players
             private const string Tooltip1 = "Polling delay for Photon Custom Player propeties update";
             private const string Tooltip2 = "Timeout to find free player position quickly";
             private const string Tooltip3 = "Preferred player start position for first player to come";
+            private const string Tooltip4 = "Preferred player start position for first player to come";
 
             [Min(0.1f), Tooltip(Tooltip1)] public float _waitForPlayerPropertiesToUpdate = 1f;
             [Min(1), Tooltip(Tooltip2)] public float _timeoutFastWait = 3f;
             [Range(1, 4), Tooltip(Tooltip3)] public int _playerPos = 1;
+            [Range(1, 4), Tooltip(Tooltip4)] public int _playerPrefabId = 1;
         }
-
         [Header("Prefab Settings"), SerializeField] private PlayerDriverPhoton _photonPrefab;
 
         [Header("Debug Settings"), SerializeField] private DebugSettings _debug;
@@ -62,7 +68,7 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
             // Trigger OnPlayerPropertiesUpdate in order to continue to OnLocalPlayerReady
-            SetDebugPlayer(player);
+            PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
         }
 
 
@@ -86,6 +92,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnLocalPlayerReady()
         {
             // Not important but give one frame slack for local player instantiation
+            
             StartCoroutine(OnLocalPlayerReadyForPlay());
         }
 
@@ -98,7 +105,7 @@ namespace Battle.Scripts.Battle.Players
             var player = PhotonNetwork.LocalPlayer;
             if (!PhotonBattle.IsValidPlayerPos(PhotonBattle.GetPlayerPos(player)))
             {
-                SetDebugPlayer(player);
+                PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
                 yield return delay;
             }
             var timeoutTime = Time.time + _debug._timeoutFastWait;
@@ -114,23 +121,26 @@ namespace Battle.Scripts.Battle.Players
                     yield break;
                 }
                 Debug.Log($"My player position was taken {player.GetDebugLabel()}");
-                SetDebugPlayer(player);
+                PhotonBattle.SetDebugPlayer(player, _debug._playerPos, _debug._playerPrefabId);
                 yield return delay;
             }
             InstantiateLocalPlayer(player, _photonPrefab.name);
             enabled = false;
         }
 
-        private void SetDebugPlayer(Player player)
-        {
-            PhotonBattle.SetDebugPlayer(player, _debug._playerPos);
-        }
-
         private static void InstantiateLocalPlayer(Player player, string networkPrefabName)
         {
             Assert.IsTrue(player.IsLocal, "player.IsLocal");
             Debug.Log($"{player.GetDebugLabel()} prefab {networkPrefabName}");
-            PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            // This prefab will be instantiated in all game clients - but only this one below will handle input!
+            var instance = PhotonNetwork.Instantiate(networkPrefabName, Vector3.zero, Quaternion.identity);
+            // Connect local player input handler to photon player driver. 
+            var playerDriver = instance.GetComponent<PlayerDriverPhoton>();
+            Assert.IsNotNull(playerDriver, $"top level 'PlayerDriverPhoton' is missing from prefab {networkPrefabName}");
+            var playerInputHandler = Context.GetPlayerInputHandler;
+            playerInputHandler._hostForInput = instance;
+            playerInputHandler.OnMoveTo = playerDriver.MoveTo;
         }
+ 
     }
 }

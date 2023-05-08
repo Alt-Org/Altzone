@@ -43,7 +43,7 @@ namespace MenuUi.Scripts.Window
                 throw new UnityException("PHOTON_UNITY_NETWORKING not available");
 #endif
             }
-            Debug.Log($"LOCAL {scene.SceneName} ({sceneIndex})", windowDef);
+            Debug.Log($"LOCAL {scene.SceneName} ({sceneIndex})", scene);
             SceneManager.LoadScene(sceneIndex);
         }
     }

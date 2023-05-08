@@ -23,23 +23,20 @@ namespace Battle.Scripts.Battle.Game
             _photonView = GetComponent<PhotonView>();
         }
         
-        private void OnCollisionEnter2D(Collision2D collision)
+        public void BrickHitInit(int damage)
         {
-            var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag("BallRigidBody") && PhotonNetwork.IsMasterClient)    //Tags.Ball
-            {
-                _photonView.RPC(nameof(BrickHitRPC), RpcTarget.All);
-            }
+            _photonView.RPC(nameof(BrickHitRPC), RpcTarget.All, damage);
         }
 
         [PunRPC]
-        private void BrickHitRPC()
+        private void BrickHitRPC(int damage)
         {
+            
             var color = _spriteRenderer.color;
             color.g -= _colorChangeFactor;
             color.b -= _colorChangeFactor;
             _spriteRenderer.color = color;
-            Health = Health - 1;
+            Health = Health - damage;
             if (Health <= 0)
             {
                 Destroy(gameObject);

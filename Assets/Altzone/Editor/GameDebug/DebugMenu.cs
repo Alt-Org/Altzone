@@ -17,10 +17,40 @@ namespace Altzone.Editor.GameDebug
             GameConfig.Get().PlayerSettings.ResetPlayerSettings();
         }
 
+        public static void SetPhotonRegionToDefault()
+        {
+            Debug.Log("*");
+            GameConfig.Get().PlayerSettings.PhotonRegion = string.Empty;
+        }
+
+        public static void SetPhotonRegionToEu()
+        {
+            Debug.Log("*");
+            GameConfig.Get().PlayerSettings.PhotonRegion = "eu";
+        }
+
+        public static void SetPhotonRegionToUs()
+        {
+            Debug.Log("*");
+            GameConfig.Get().PlayerSettings.PhotonRegion = "us";
+        }
+
+        public static void SetPhotonRegionToAsia()
+        {
+            Debug.Log("*");
+            GameConfig.Get().PlayerSettings.PhotonRegion = "asia";
+        }
+
+        public static void SetLanguageToFinnish()
+        {
+            Debug.Log("*");
+            GameConfig.Get().PlayerSettings.SetLanguage(SystemLanguage.Finnish);
+        }
+
         public static void SetLanguageToEnglish()
         {
             Debug.Log("*");
-            GameConfig.Get().PlayerSettings.SetLanguageToEnglish();
+            GameConfig.Get().PlayerSettings.SetLanguage(SystemLanguage.English);
         }
     }
 }

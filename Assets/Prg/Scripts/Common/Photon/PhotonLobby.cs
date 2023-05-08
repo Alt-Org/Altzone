@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,7 +49,7 @@ namespace Prg.Scripts.Common.Photon
 
         private static string DefaultGameVersion => Application.version;
 
-        public static void Connect(string playerName)
+        public static void Connect(string playerName, string regionCodeOverride = null)
         {
             if (_isApplicationQuitting)
             {
@@ -61,9 +63,12 @@ namespace Prg.Scripts.Common.Photon
             {
                 throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
             }
+            // We always use explicit settings, either our own or Photon default settings from Editor.
             var photonAppSettings = Resources.Load<PhotonAppSettings>(nameof(PhotonAppSettings));
-            var appSettings = photonAppSettings != null ? photonAppSettings.appSettings : null;
-            ConnectUsingSettings(appSettings, playerName);
+            var appSettings = photonAppSettings != null
+                ? photonAppSettings._appSettings
+                : PhotonNetwork.PhotonServerSettings.AppSettings;
+            ConnectUsingSettings(playerName, appSettings, regionCodeOverride);
         }
 
         public static void Disconnect()
@@ -207,7 +212,7 @@ namespace Prg.Scripts.Common.Photon
             return region;
         }
 
-        private static void ConnectUsingSettings(AppSettings appSettings, string playerName)
+        private static void ConnectUsingSettings(string playerName, AppSettings appSettings, string regionCodeOverride)
         {
             // See PhotonNetwork.SendRate and PhotonNetwork.SerializationRate
             // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
@@ -215,23 +220,32 @@ namespace Prg.Scripts.Common.Photon
             // Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
             // This means that if you serialize data always when OnPhotonSerializeView is called
             // then SendRate will effectively be same as SerializationRate if it is set to be less here.
-            
+
             // Defaults are 30 times/second for SendRate and 10 times/second for SerializationRate, we set both explicitly here.
             PhotonNetwork.SendRate = 30;
             PhotonNetwork.SerializationRate = 30;
-            Debug.Log(
-                $"ConnectUsingSettings {PhotonNetwork.NetworkClientState} scene={SceneManager.GetActiveScene().name} player={playerName}" +
-                $" {(appSettings != null ? appSettings.ToStringFull() : string.Empty)}");
+            if (!string.IsNullOrEmpty(regionCodeOverride))
+            {
+#if UNITY_EDITOR
+                // Create a copy so we do not change data we do not own.
+                // This is (copy) quite slow but its ok here when connecting to game server takes time by itself.
+                var instance = new AppSettings();
+                PropertyCopier<AppSettings, AppSettings>.CopyFields(appSettings, instance);
+                appSettings = instance;
+#endif
+                appSettings.FixedRegion = regionCodeOverride;
+            }
+            Debug.Log($"player={playerName} GameVersion={GameVersion} appSettings={appSettings.ToStringFull()}");
             PhotonNetwork.NickName = playerName;
             PhotonNetwork.GameVersion = string.Empty;
-            var started = appSettings != null
-                ? PhotonNetwork.ConnectUsingSettings(appSettings)
-                : PhotonNetwork.ConnectUsingSettings();
-            if (started)
+            var started = PhotonNetwork.ConnectUsingSettings(appSettings);
+            if (!started)
             {
-                PhotonNetwork.GameVersion = GameVersion;
-                Debug.Log($"Set GameVersion: {PhotonNetwork.GameVersion}");
+                Debug.LogError($"Failed to ConnectUsingSettings: state={PhotonNetwork.NetworkClientState} appSettings={appSettings.ToStringFull()}");
+                return;
             }
+            // Set the GameVersion right after calling ConnectUsingSettings!
+            PhotonNetwork.GameVersion = GameVersion;
         }
     }
 }

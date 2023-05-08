@@ -1,28 +1,39 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Model.Poco.Attributes;
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
     /// <summary>
     /// Player created custom 'game' character based on given <c>CharacterClass</c>.
     /// </summary>
-    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        public int Id;
-        public int CharacterClassId;
-        public string UnityKey;
-        public string Name;
+        [PrimaryKey] public string Id;
+        [ForeignKey(nameof(CharacterClass)), Mandatory] public string CharacterClassId;
+
+        /// <summary>
+        /// This can be used for example to load UNITY assets by name for UI at runtime. 
+        /// </summary>
+        [Optional] public string UnityKey;
+
+        [Mandatory] public string Name;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CustomCharacter(int id, int characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
+        public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
         {
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(characterClassId.IsMandatory());
+            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(name.IsMandatory());
             Id = id;
             CharacterClassId = characterClassId;
-            UnityKey = unityKey;
+            UnityKey = unityKey ?? string.Empty;
             Name = name;
             Speed = speed;
             Resistance = resistance;
