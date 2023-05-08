@@ -127,7 +127,7 @@ th {
   color: DarkSeaGreen;
 }
 .more {
-  color: DarkSalmon;
+  color: MediumPurple;
 }
 .same {
   color: DarkGray;
@@ -150,20 +150,26 @@ th {
 </style>
 <title>@Build_Report@</title>
 </head>
-<body>
-<table>";
+<body>";
             const string htmlEnd = @"</body>
 </html>";
+            const string tableStart = @"<table>";
             const string tableEnd = @"</table>";
 
             var allAssets = new List<BuildAssetInfo>(unusedAssets);
             allAssets.AddRange(largeAssets);
             allAssets = allAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
 
+            // Statistics by FileType.
+            var prodFileTypes = new Dictionary<string, int>();
+            var testFileTypes = new Dictionary<string, int>();
+
+            // Actual Build Report.
             var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
-            var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"Altzone {buildName} Build Report");
+            var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"{Application.productName} {buildName} Build Report");
             var builder = new StringBuilder()
                 .Append(fixedHtmlStart).AppendLine()
+                .Append(tableStart).AppendLine()
                 .Append("<tr>")
                 .Append($"<th>PackedSize</th>")
                 .Append($"<th>Check</th>")
@@ -185,12 +191,14 @@ th {
                     name = $"<span class=\"for-test\">{name}</span>";
                 }
                 var folder = Path.GetDirectoryName(a.AssetPath);
+                var filetype = GetTypeExplained(a, out var fileTypeDiscriminator);
+                UpdateFileTypeStatistics(fileTypeDiscriminator, a.IsTest);
                 builder
                     .Append("<tr>")
                     .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
                     .Append($"<td>{marker}</td>")
                     .Append($"<td{GetStyleFromFileSize(a.FileSize)}>{FormatSize(a.FileSize)}</td>")
-                    .Append($"<td>{GetTypeExplained(a)}</td>")
+                    .Append($"<td>{filetype}</td>")
                     .Append($"<td>{name}</td>")
                     .Append($"<td>{folder}</td>")
                     .Append("</tr>").AppendLine();
@@ -200,7 +208,41 @@ th {
                 .Append($"<p>Table row count is {allAssets.Count}</p>").AppendLine()
                 .Append($"<p>Build for {buildName} platform" +
                         $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
-                        $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine()
+                        $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
+
+            // FileType statistics
+            var keys = new HashSet<string>();
+            keys.UnionWith(prodFileTypes.Keys);
+            keys.UnionWith(testFileTypes.Keys);
+            var sortedKeys = keys.OrderBy(x => x).ToList();
+            builder
+                .Append(tableStart).AppendLine()
+                .Append("<tr>")
+                .Append($"<th>Type</th>")
+                .Append($"<th>Prod count</th>")
+                .Append($"<th>Test count</th>")
+                .Append("</tr>").AppendLine();
+            foreach (var key in sortedKeys)
+            {
+                if (!prodFileTypes.TryGetValue(key, out var prodCount))
+                {
+                    prodCount = 0;
+                }
+                if (!testFileTypes.TryGetValue(key, out var testCount))
+                {
+                    testCount = 0;
+                }
+                builder
+                    .Append("<tr>")
+                    .Append($"<td>{key}</td>")
+                    .Append($"<td>{prodCount}</td>")
+                    .Append($"<td>{(testCount>0?testCount.ToString():"&nbsp;")}</td>")
+                    .Append("</tr>").AppendLine();
+            }
+            builder
+                .Append(tableEnd).AppendLine();
+
+            builder
                 .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}</p>").AppendLine()
                 .Append(htmlEnd);
 
@@ -222,10 +264,20 @@ th {
                 }
                 return @" class=""megabytes""";
             }
+
+            void UpdateFileTypeStatistics(string fileTypeKey, bool isTest)
+            {
+                var dictionary = isTest ? testFileTypes : prodFileTypes;
+                if (!dictionary.TryAdd(fileTypeKey, 1))
+                {
+                    dictionary[fileTypeKey] += 1;
+                }
+            }
         }
 
-        private static string GetTypeExplained(BuildAssetInfo assetInfo)
+        private static string GetTypeExplained(BuildAssetInfo assetInfo, out string fileTypeDiscriminator)
         {
+            fileTypeDiscriminator = Path.GetExtension(assetInfo.AssetPath).Replace(".", string.Empty).ToLower();
             if (assetInfo.Type != "Texture2D")
             {
                 return assetInfo.Type;
@@ -240,8 +292,14 @@ th {
             // ETC1, DXT1 - RGB texture
             // ETC2, DXT5 - RGBA texture
             var assetFormat = asset.format.ToString();
-            var format = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
-                         assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5")
+            var isRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
+                                      assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
+            if (isRecommendedFormat)
+            {
+                // Add current "good" asset format to make report more comprehensible(?).
+                fileTypeDiscriminator = $"{assetFormat} {fileTypeDiscriminator}";
+            }
+            var format = isRecommendedFormat
                 ? $"<b>{asset.format}</b>"
                 : asset.format.ToString();
             return $"<span class=\"texture2d\">{format} {asset.width}x{asset.height}</span>";
@@ -407,17 +465,20 @@ th {
 
             public BuildAssetInfo(PackedAssetInfo assetInfo)
             {
+                // Build Report can be old and related assets deleted.
                 AssetPath = assetInfo.sourceAssetPath;
+                var fileExists = File.Exists(AssetPath);
                 AssetGuid = assetInfo.sourceAssetGUID.ToString();
                 PackedSize = assetInfo.packedSize;
-                FileSize = (ulong)new FileInfo(AssetPath).Length;
+                FileSize = fileExists ? (ulong)new FileInfo(AssetPath).Length : 0;
                 MaxSize = Math.Max(PackedSize, FileSize);
-                Type = assetInfo.type.Name;
+                Type = fileExists ? assetInfo.type.Name : "deleted";
                 IsTest = AssetPath.Contains("Test");
             }
 
             public BuildAssetInfo(string assetPath, string assetGuid)
             {
+                // This should be for existing (un-used) assets.
                 AssetPath = assetPath;
                 AssetGuid = assetGuid;
                 PackedSize = 0;

@@ -50,7 +50,7 @@ namespace Prg.Editor.Build
         [MenuItem(Build + "Last Build Report/Show", false, 15)]
         private static void ShowLastBuildReport() => LastBuildBuildReport.ShowLastBuildReport();
 
-        [MenuItem(Build + "Last Build Report/Create HTML", false, 16)]
+        [MenuItem(Build + "Last Build Report/Create HTML Report", false, 16)]
         private static void TestingLastBuildReport() => Logged(() => BuildReportAnalyzer.ShowLastBuildReport());
 
         #endregion
