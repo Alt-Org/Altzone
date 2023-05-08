@@ -7,8 +7,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-// ReSharper disable once CheckNamespace
-namespace Editor.Build
+namespace Prg.Editor.Build
 {
     internal static class BuildReportAnalyzer
     {
@@ -238,8 +237,11 @@ th {
             }
             // Recommended, default, and supported texture formats, by platform
             // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
+            // ETC1, DXT1 - RGB texture
+            // ETC2, DXT5 - RGBA texture
             var assetFormat = asset.format.ToString();
-            var format = assetFormat.Contains("ETC2") || assetFormat.Contains("DXT5")
+            var format = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
+                         assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5")
                 ? $"<b>{asset.format}</b>"
                 : asset.format.ToString();
             return $"<span class=\"texture2d\">{format} {asset.width}x{asset.height}</span>";
