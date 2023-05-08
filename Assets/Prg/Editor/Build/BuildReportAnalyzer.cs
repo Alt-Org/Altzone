@@ -163,6 +163,7 @@ th {
             // Statistics by FileType.
             var prodFileTypes = new Dictionary<string, int>();
             var testFileTypes = new Dictionary<string, int>();
+            var unusedFileTypes = new Dictionary<string, int>();
 
             // Actual Build Report.
             var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -181,7 +182,7 @@ th {
 
             foreach (var a in allAssets)
             {
-                var marker = a.PackedSize == 0 ? @"<span class=""unused"">unused</span>"
+                var marker = a.IsUnused ? @"<span class=""unused"">unused</span>"
                     : a.PackedSize < a.FileSize ? @"<span class=""less"">less</span>"
                     : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
                     : @"<span class=""same"">same</span>";
@@ -192,7 +193,7 @@ th {
                 }
                 var folder = Path.GetDirectoryName(a.AssetPath);
                 var filetype = GetTypeExplained(a, out var fileTypeDiscriminator);
-                UpdateFileTypeStatistics(fileTypeDiscriminator, a.IsTest);
+                UpdateFileTypeStatistics(fileTypeDiscriminator, a.IsUnused, a.IsTest);
                 builder
                     .Append("<tr>")
                     .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
@@ -214,6 +215,7 @@ th {
             var keys = new HashSet<string>();
             keys.UnionWith(prodFileTypes.Keys);
             keys.UnionWith(testFileTypes.Keys);
+            keys.UnionWith(unusedFileTypes.Keys);
             var sortedKeys = keys.OrderBy(x => x).ToList();
             builder
                 .Append(tableStart).AppendLine()
@@ -221,6 +223,7 @@ th {
                 .Append($"<th>Type</th>")
                 .Append($"<th>Prod count</th>")
                 .Append($"<th>Test count</th>")
+                .Append($"<th>Unused count</th>")
                 .Append("</tr>").AppendLine();
             foreach (var key in sortedKeys)
             {
@@ -232,18 +235,23 @@ th {
                 {
                     testCount = 0;
                 }
+                if (!unusedFileTypes.TryGetValue(key, out var unusedCount))
+                {
+                    unusedCount = 0;
+                }
                 builder
                     .Append("<tr>")
                     .Append($"<td>{key}</td>")
                     .Append($"<td>{prodCount}</td>")
-                    .Append($"<td>{(testCount>0?testCount.ToString():"&nbsp;")}</td>")
+                    .Append($"<td>{(testCount > 0 ? testCount.ToString() : "&nbsp;")}</td>")
+                    .Append($"<td>{(unusedCount > 0 ? unusedCount.ToString() : "&nbsp;")}</td>")
                     .Append("</tr>").AppendLine();
             }
             builder
                 .Append(tableEnd).AppendLine();
 
             builder
-                .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}</p>").AppendLine()
+                .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{PathExcludedWarning}</i></p>").AppendLine()
                 .Append(htmlEnd);
 
             var content = builder.ToString();
@@ -265,9 +273,9 @@ th {
                 return @" class=""megabytes""";
             }
 
-            void UpdateFileTypeStatistics(string fileTypeKey, bool isTest)
+            void UpdateFileTypeStatistics(string fileTypeKey, bool isUnused, bool isTest)
             {
-                var dictionary = isTest ? testFileTypes : prodFileTypes;
+                var dictionary = isUnused ? unusedFileTypes : isTest ? testFileTypes : prodFileTypes;
                 if (!dictionary.TryAdd(fileTypeKey, 1))
                 {
                     dictionary[fileTypeKey] += 1;
@@ -388,9 +396,12 @@ th {
             return unusedAssets;
         }
 
+        private static string PathExcludedWarning => "Scenes, C# source code and input actions are excluded form the report";
         private static bool IsPathExcluded(string path)
         {
-            // Note that scenes are not included in Build Report as other assets.
+            // Note that
+            // - scenes are not included in Build Report as other assets
+            // - inputactions can not be detected for now and we ignore them silently
             return path.StartsWith("Packages/") ||
                    path.StartsWith("Assets/BuildReport") ||
                    path.StartsWith("Assets/Photon/") ||
@@ -402,6 +413,7 @@ th {
                    path.EndsWith(".asmdef") ||
                    path.EndsWith(".asmref") ||
                    path.EndsWith(".cs") ||
+                   path.EndsWith(".inputactions") ||
                    path.EndsWith(".unity");
         }
 
@@ -462,6 +474,7 @@ th {
             public readonly ulong MaxSize;
             public readonly string Type;
             public readonly bool IsTest;
+            public readonly bool IsUnused;
 
             public BuildAssetInfo(PackedAssetInfo assetInfo)
             {
@@ -474,11 +487,12 @@ th {
                 MaxSize = Math.Max(PackedSize, FileSize);
                 Type = fileExists ? assetInfo.type.Name : "deleted";
                 IsTest = AssetPath.Contains("Test");
+                IsUnused = false;
             }
 
             public BuildAssetInfo(string assetPath, string assetGuid)
             {
-                // This should be for existing (un-used) assets.
+                // This should be for existing and un-used assets.
                 AssetPath = assetPath;
                 AssetGuid = assetGuid;
                 PackedSize = 0;
@@ -486,6 +500,7 @@ th {
                 MaxSize = FileSize;
                 Type = Path.GetExtension(AssetPath).Replace(".", string.Empty);
                 IsTest = AssetPath.Contains("Test");
+                IsUnused = true;
             }
         }
     }
