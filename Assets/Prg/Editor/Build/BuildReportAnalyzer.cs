@@ -101,6 +101,9 @@ namespace Prg.Editor.Build
         {
             // Putting padding between the columns using CSS:
             // https://stackoverflow.com/questions/11800975/html-table-needs-spacing-between-columns-not-rows
+
+            // HTML color names:
+            // https://htmlcolorcodes.com/color-names/
             const string htmlStart = @"<!DOCTYPE html>
 <html>
 <head>
@@ -109,6 +112,12 @@ html * {
   font-family: Arial, Helvetica, sans-serif;
 }
 body {
+  background-color: FloralWhite;
+}
+tr:nth-child(even) {
+  background-color: linen;
+}
+tr:nth-child(odd) {
   background-color: linen;
 }
 tr > * + * {
@@ -116,6 +125,12 @@ tr > * + * {
 }
 th {
   text-align: left;
+}
+td.center {
+  text-align: center;
+}
+td.right {
+  text-align: right;
 }
 .smaller {
   font-size: smaller;
@@ -170,6 +185,9 @@ th {
             var prodFileTypes = new Dictionary<string, int>();
             var testFileTypes = new Dictionary<string, int>();
             var unusedFileTypes = new Dictionary<string, int>();
+            var prodFileSizes = new Dictionary<string, ulong>();
+            var testFileSizes = new Dictionary<string, ulong>();
+            var unusedFileSizes = new Dictionary<string, ulong>();
 
             // Actual Build Report.
             var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -239,10 +257,19 @@ th {
             builder
                 .Append(tableStart).AppendLine()
                 .Append("<tr>")
-                .Append($"<th>Type</th>")
-                .Append($"<th>Prod count</th>")
-                .Append($"<th>Test count</th>")
-                .Append($"<th>Unused count</th>")
+                .Append("<th>File</th>")
+                .Append(@"<th colspan=""2"">Prod</th>")
+                .Append(@"<th colspan=""2"">Test</th>")
+                .Append(@"<th colspan=""2"">Unused</th>")
+                .Append("</tr>").AppendLine()
+                .Append("<tr>")
+                .Append("<th>Type</th>")
+                .Append("<th>Count</th>")
+                .Append("<th>PackedSize</th>")
+                .Append("<th>Count</th>")
+                .Append("<th>PackedSize</th>")
+                .Append("<th>Count</th>")
+                .Append("<th>FileSize</th>")
                 .Append("</tr>").AppendLine();
             foreach (var key in sortedKeys)
             {
@@ -258,12 +285,27 @@ th {
                 {
                     unusedCount = 0;
                 }
+                if (!prodFileSizes.TryGetValue(key, out var prodSize))
+                {
+                    prodSize = 0;
+                }
+                if (!testFileSizes.TryGetValue(key, out var testSize))
+                {
+                    testSize = 0;
+                }
+                if (!unusedFileSizes.TryGetValue(key, out var unusedSize))
+                {
+                    unusedSize = 0;
+                }
                 builder
                     .Append("<tr>")
                     .Append($"<td>{key}</td>")
-                    .Append($"<td>{prodCount}</td>")
-                    .Append($"<td>{(testCount > 0 ? testCount.ToString() : "&nbsp;")}</td>")
-                    .Append($"<td>{(unusedCount > 0 ? unusedCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td class=""right"">{prodCount}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(prodSize, "right")}>{FormatSize(prodSize)}</td>")
+                    .Append(@$"<td class=""right"">{(testCount > 0 ? testCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(testSize, "right")}>{FormatSizeNbsp(testSize)}</td>")
+                    .Append(@$"<td class=""right"">{(unusedCount > 0 ? unusedCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(unusedSize, "right")}>{FormatSizeNbsp(unusedSize)}</td>")
                     .Append("</tr>").AppendLine();
             }
             builder
@@ -279,26 +321,36 @@ th {
             Debug.Log($"Application.OpenURL {htmlPath}");
             Application.OpenURL(htmlPath);
 
-            string GetStyleFromFileSize(ulong fileSize)
+            string GetStyleFromFileSize(ulong fileSize, string otherClassNames = null)
             {
+                if (!string.IsNullOrEmpty(otherClassNames))
+                {
+                    otherClassNames = $" {otherClassNames}";
+                }
                 if (fileSize < 1024)
                 {
-                    return @" class=""bytes""";
+                    return @$" class=""bytes{otherClassNames}""";
                 }
                 if (fileSize < 1024 * 1024)
                 {
-                    return @" class=""kilobytes""";
+                    return @$" class=""kilobytes{otherClassNames}""";
                 }
-                return @" class=""megabytes""";
+                return @$" class=""megabytes{otherClassNames}""";
             }
 
             void UpdateFileTypeStatistics(AssetInfoDetails assetInfo)
             {
-                var dictionary = assetInfo.IsUnused ? unusedFileTypes : assetInfo.IsTest ? testFileTypes : prodFileTypes;
                 var fileTypeKey = assetInfo.GroupByTypeKey;
-                if (!dictionary.TryAdd(fileTypeKey, 1))
+                var counterDictionary = assetInfo.IsUnused ? unusedFileTypes : assetInfo.IsTest ? testFileTypes : prodFileTypes;
+                if (!counterDictionary.TryAdd(fileTypeKey, 1))
                 {
-                    dictionary[fileTypeKey] += 1;
+                    counterDictionary[fileTypeKey] += 1;
+                }
+                var fileSizeDictionary = assetInfo.IsUnused ? unusedFileSizes : assetInfo.IsTest ? testFileSizes : prodFileSizes;
+                var fileSize = assetInfo.IsUnused ? assetInfo.FileSize : assetInfo.PackedSize;
+                if (!fileSizeDictionary.TryAdd(fileTypeKey, fileSize))
+                {
+                    fileSizeDictionary[fileTypeKey] += fileSize;
                 }
             }
         }
@@ -437,6 +489,15 @@ th {
             buildReport.name = name;
             AssetDatabase.SaveAssets();
             return buildReport;
+        }
+
+        private static string FormatSizeNbsp(ulong bytes)
+        {
+            if (bytes == 0)
+            {
+                return "&nbsp;";
+            }
+            return FormatSize(bytes);
         }
 
         private static string FormatSize(ulong bytes)
