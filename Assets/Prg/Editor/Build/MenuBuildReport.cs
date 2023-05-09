@@ -32,10 +32,10 @@ namespace Prg.Editor.Build
 
         #region Build Menus
 
-        [MenuItem(Build + "HTML Build Report/Create", false, 10)]
+        [MenuItem(Build + "HTML Build Report/Show in browser", false, 10)]
         private static void HtmlBuildReportFast() => Logged(BuildReportAnalyzer.HtmlBuildReportFast);
 
-        [MenuItem(Build + "HTML Build Report/Create with Unused", false, 11)]
+        [MenuItem(Build + "HTML Build Report/Show with unused Assets", false, 11)]
         private static void HtmlBuildReportFull() => Logged(BuildReportAnalyzer.HtmlBuildReportFull);
 
         [MenuItem(Build + "Create Build Script for " + Target, false, 12)]
