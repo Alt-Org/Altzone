@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Editor.Build;
 using Prg.Scripts.Common.Util;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -31,28 +30,31 @@ namespace Prg.Editor.Build
         private const string Target = "Unsupported";
 #endif
 
-        #region Build
+        #region Build Menus
 
-        [MenuItem(Build + "Create Build Report", false, 10)]
-        private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
+        [MenuItem(Build + "HTML Build Report/Show in browser", false, 10)]
+        private static void HtmlBuildReportFast() => Logged(BuildReportAnalyzer.HtmlBuildReportFast);
 
-        [MenuItem(Build + "Create Build Script for " + Target, false, 11)]
+        [MenuItem(Build + "HTML Build Report/Show with unused Assets", false, 11)]
+        private static void HtmlBuildReportFull() => Logged(BuildReportAnalyzer.HtmlBuildReportFull);
+
+        [MenuItem(Build + "Create Build Script for " + Target, false, 12)]
         private static void CreateBuildScript() => MenuBuildReport.CreateBuildScript();
 
-        [MenuItem(Build + "Android Build/Test Config", false, 12)]
+        [MenuItem(Build + "Android Build/Test Config", false, 13)]
         private static void CheckAndroidBuild() => MenuBuildReport.CheckAndroidBuild();
 
-        [MenuItem(Build + "Android Build/Setup for Local APK Test", false, 13)]
+        [MenuItem(Build + "Android Build/Setup for Local APK Test", false, 14)]
         private static void SetAndroidBuildTestApk() => MenuBuildReport.SetAndroidBuildTestApk();
 
-        [MenuItem(Build + "Last Build Report/Create", false, 14)]
+        [MenuItem(Build + "Create text Build Report", false, 15)]
+        private static void CheckBuildReport() => MenuBuildReport.CheckBuildReport();
+
+        [MenuItem(Build + "Last Build Report/Create", false, 16)]
         private static void CreateLastBuildReport() => LastBuildBuildReport.CreateLastBuildReport();
 
-        [MenuItem(Build + "Last Build Report/Show", false, 15)]
+        [MenuItem(Build + "Last Build Report/Show", false, 17)]
         private static void ShowLastBuildReport() => LastBuildBuildReport.ShowLastBuildReport();
-
-        [MenuItem(Build + "Last Build Report/Create HTML", false, 16)]
-        private static void TestingLastBuildReport() => Logged(() => BuildReportAnalyzer.ShowLastBuildReport());
 
         #endregion
 

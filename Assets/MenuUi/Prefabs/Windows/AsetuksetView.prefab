@@ -242,13 +242,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Settings.AudioMenuSettings, MainMenu
-        m_MethodName: SetMusicLevel
-        m_Mode: 0
+      - m_Target: {fileID: 5469525059211397923}
+        m_TargetAssemblyTypeName: SettingEditor, Assembly-CSharp
+        m_MethodName: SetFromSlider
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1583937849799529714}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1511,13 +1511,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Settings.AudioMenuSettings, MainMenu
-        m_MethodName: SetMenuSFXLevel
-        m_Mode: 0
+      - m_Target: {fileID: 5469525059211397923}
+        m_TargetAssemblyTypeName: SettingEditor, Assembly-CSharp
+        m_MethodName: SetFromSlider
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 3568600065603732047}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1691,13 +1691,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Settings.AudioMenuSettings, MainMenu
-        m_MethodName: SetGameSFXLevel
-        m_Mode: 0
+      - m_Target: {fileID: 5469525059211397923}
+        m_TargetAssemblyTypeName: SettingEditor, Assembly-CSharp
+        m_MethodName: SetFromSlider
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 5258995359188039592}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3293,6 +3293,7 @@ GameObject:
   - component: {fileID: 8476324597984315406}
   - component: {fileID: 2758440867486610873}
   - component: {fileID: 6472772675716426705}
+  - component: {fileID: 5469525059211397923}
   m_Layer: 5
   m_Name: AsetuksetPanel
   m_TagString: Untagged
@@ -3379,6 +3380,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frameRate30: 30
   frameRate60: 60
+--- !u!114 &5469525059211397923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8790493282065773494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2deaf7f1b1acf9b46842f394531508b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8969048019789125325
 GameObject:
   m_ObjectHideFlags: 0
@@ -3471,13 +3484,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Settings.AudioMenuSettings, MainMenu
-        m_MethodName: SetMasterLevel
-        m_Mode: 0
+      - m_Target: {fileID: 5469525059211397923}
+        m_TargetAssemblyTypeName: SettingEditor, Assembly-CSharp
+        m_MethodName: SetFromSlider
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 7315169574925960315}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

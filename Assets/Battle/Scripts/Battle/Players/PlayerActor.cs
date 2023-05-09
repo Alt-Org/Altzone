@@ -147,7 +147,7 @@ namespace Battle.Scripts.Battle.Players
         public static PlayerActor InstantiatePrefabFor(IPlayerDriverCallback playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
-            Debug.Log($"heoooo{gameObjectName}");            
+            Debug.Log($"heoooo{gameObjectName}");
             var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
             var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
             var instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);

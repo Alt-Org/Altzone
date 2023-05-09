@@ -1,11 +1,9 @@
-using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Service.Audio;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -28,7 +26,6 @@ namespace Altzone.Scripts
 #if USE_LOCALIZER
             Localizer.LoadTranslations(Application.systemLanguage);
 #endif
-            AudioManager.Get();
             var store = Storefront.Get();
             if (store.Version.VersionNumber != CreateDefaultModels.MasterStorageVersionNumber)
             {

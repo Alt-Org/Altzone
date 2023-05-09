@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,29 +8,51 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-// ReSharper disable once CheckNamespace
-namespace Editor.Build
+namespace Prg.Editor.Build
 {
+    /// <summary>
+    /// Read and analyze UNITY Build Report (in binary format) by converting it to internal YAML format and saving as an asset.
+    /// </summary>
+    /// <remarks>
+    /// Idea and tech is from UNITY Build Report Inspector.
+    /// </remarks>
     internal static class BuildReportAnalyzer
     {
-        private const string LastBuildReport = "Library/LastBuild.buildreport";
+        private const string LastBuildReportPath = "Library/LastBuild.buildreport";
         private const string BuildReportDir = "Assets/BuildReports";
+        private const ulong MinPackedSize = 1024;
 
-        private const string HtmlFilename = "Assets/BuildReports/BuildReport.html";
+        private const string HtmlReportName = "Assets/BuildReports/BuildReport.html";
 
-        public static void ShowLastBuildReport(bool logDetails = false)
+        public static void HtmlBuildReportFast()
         {
             Debug.Log("*");
-            var buildReport = GetOrCreateLastBuildReport();
+            BuildReport buildReport = null;
+            Timed("Load Last Build Report", () =>
+                buildReport = GetOrCreateLastBuildReport());
             if (buildReport == null)
             {
-                Debug.Log($"{LastBuildReport} NOT FOUND");
+                Debug.Log($"{LastBuildReportPath} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport, logDetails);
+            AnalyzeLastBuildReport(buildReport, false, false);
         }
 
-        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool logDetails)
+        public static void HtmlBuildReportFull()
+        {
+            Debug.Log("*");
+            BuildReport buildReport = null;
+            Timed("Load Last Build Report", () =>
+                buildReport = GetOrCreateLastBuildReport());
+            if (buildReport == null)
+            {
+                Debug.Log($"{LastBuildReportPath} NOT FOUND");
+                return;
+            }
+            AnalyzeLastBuildReport(buildReport, true, false);
+        }
+
+        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool includeUnused, bool logDetails)
         {
             var summary = buildReport.summary;
             var buildTargetName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -41,47 +64,37 @@ namespace Editor.Build
             Debug.Log("*");
 
             // Requires BuildOptions.DetailedBuildReport to be true for this data to be populated during build!
-            var scenesUsingAssets = buildReport.scenesUsingAssets;
-            if (scenesUsingAssets.Length == 0)
+            AnalyzeLastScenesUsingAssets(buildReport, logDetails);
+
+            string[] databaseAssets = null;
+            Timed("Get all assets from AssetDatabase", () => databaseAssets = GetAllAssetDatabaseAssets());
+
+            var allBuildAssets = new List<BuildAssetInfo>();
+            Timed("Load used assets from Build Report",
+                () => allBuildAssets = LoadAssetsFromBuildReport(buildReport.packedAssets));
+
+            List<BuildAssetInfo> largeAssets = null;
+            Timed("Select large assets", () => largeAssets = allBuildAssets.Where(x => x.PackedSize >= MinPackedSize).ToList());
+
+            List<BuildAssetInfo> unusedAssets = new List<BuildAssetInfo>();
+            if (includeUnused)
             {
-                Debug.Log($"Scenes in build not available and it requires '<b>BuildOptions.DetailedBuildReport</b>' to be set!");
+                Timed("Get unused assets", () => unusedAssets = GetUnusedAssets(databaseAssets, allBuildAssets));
+            }
+
+            Debug.Log($"All Assets count {databaseAssets.Length}");
+            if (!logDetails)
+            {
+                Debug.Log($"Large Assets count {largeAssets.Count}");
+                if (includeUnused)
+                {
+                    Debug.Log($"Unused Assets count {unusedAssets.Count}");
+                }
             }
             else
             {
-                // Bill Of Materials for scenes: key is scene 'name' and content is list of assets used in this scene.
-                var bom = new Dictionary<string, HashSet<string>>();
-                GetScenesUsingAssets(scenesUsingAssets, bom);
-
-                Debug.Log($"Scenes in build {bom.Count}");
-                if (logDetails)
-                {
-                    Debug.Log("*");
-                    foreach (var entry in bom)
-                    {
-                        Debug.Log($"{entry.Key} has {entry.Value.Count} dependencies");
-                    }
-                }
-            }
-
-            var allBuildAssets = new List<BuildAssetInfo>();
-            var largeAssets = GetLargeAndAllAssets(buildReport.packedAssets, ref allBuildAssets);
-
-            var unusedAssets = GetUnusedAssets(allBuildAssets);
-            Debug.Log($"Unused Assets count {unusedAssets.Count}");
-            if (logDetails)
-            {
                 Debug.Log("*");
-                unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
-                foreach (var assetInfo in unusedAssets)
-                {
-                    Debug.Log(
-                        $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
-                }
-            }
-            Debug.Log($"Large Assets count {largeAssets.Count}");
-            if (logDetails)
-            {
-                Debug.Log("*");
+                Debug.Log($"Large Assets count {largeAssets.Count}");
                 largeAssets = largeAssets.OrderBy(x => x.PackedSize).Reverse().ToList();
                 foreach (var assetInfo in largeAssets)
                 {
@@ -94,181 +107,71 @@ namespace Editor.Build
                     Debug.Log(
                         $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
                 }
-            }
-            CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary);
-        }
-
-        private static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
-        {
-            // Putting padding between the columns using CSS:
-            // https://stackoverflow.com/questions/11800975/html-table-needs-spacing-between-columns-not-rows
-            const string htmlStart = @"<!DOCTYPE html>
-<html>
-<head>
-<style>
-html * {
-  font-family: Arial, Helvetica, sans-serif;
-}
-body {
-  background-color: linen;
-}
-tr > * + * {
-  padding-left: .5em;
-}
-th {
-  text-align: left;
-}
-.smaller {
-  font-size: smaller;
-}
-.unused {
-  color: Coral;
-}
-.less {
-  color: DarkSeaGreen;
-}
-.more {
-  color: DarkSalmon;
-}
-.same {
-  color: DarkGray;
-}
-.megabytes {
-  color: DarkBlue;
-}
-.kilobytes {
-  color: DarkSlateGray;
-}
-.bytes {
-  color: Silver;
-}
-.texture2d {
-  color: DarkRed;
-}
-.for-test {
-  color: CadetBlue;
-}
-</style>
-<title>@Build_Report@</title>
-</head>
-<body>
-<table>";
-            const string htmlEnd = @"</body>
-</html>";
-            const string tableEnd = @"</table>";
-
-            var allAssets = new List<BuildAssetInfo>(unusedAssets);
-            allAssets.AddRange(largeAssets);
-            allAssets = allAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
-
-            var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
-            var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"Altzone {buildName} Build Report");
-            var builder = new StringBuilder()
-                .Append(fixedHtmlStart).AppendLine()
-                .Append("<tr>")
-                .Append($"<th>PackedSize</th>")
-                .Append($"<th>Check</th>")
-                .Append($"<th>FileSize</th>")
-                .Append($"<th>Type</th>")
-                .Append($"<th>Name</th>")
-                .Append($"<th>Path</th>")
-                .Append("</tr>").AppendLine();
-
-            foreach (var a in allAssets)
-            {
-                var marker = a.PackedSize == 0 ? @"<span class=""unused"">unused</span>"
-                    : a.PackedSize < a.FileSize ? @"<span class=""less"">less</span>"
-                    : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
-                    : @"<span class=""same"">same</span>";
-                var name = Path.GetFileName(a.AssetPath);
-                if (a.IsTest)
+                if (includeUnused)
                 {
-                    name = $"<span class=\"for-test\">{name}</span>";
-                }
-                var folder = Path.GetDirectoryName(a.AssetPath);
-                builder
-                    .Append("<tr>")
-                    .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
-                    .Append($"<td>{marker}</td>")
-                    .Append($"<td{GetStyleFromFileSize(a.FileSize)}>{FormatSize(a.FileSize)}</td>")
-                    .Append($"<td>{GetTypeExplained(a)}</td>")
-                    .Append($"<td>{name}</td>")
-                    .Append($"<td>{folder}</td>")
-                    .Append("</tr>").AppendLine();
-            }
-            builder
-                .Append(tableEnd).AppendLine()
-                .Append($"<p>Table row count is {allAssets.Count}</p>").AppendLine()
-                .Append($"<p>Build for {buildName} platform" +
-                        $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
-                        $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine()
-                .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}</p>").AppendLine()
-                .Append(htmlEnd);
-
-            var content = builder.ToString();
-            File.WriteAllText(HtmlFilename, content);
-            var htmlPath = Path.GetFullPath(HtmlFilename);
-            Debug.Log($"Application.OpenURL {htmlPath}");
-            Application.OpenURL(htmlPath);
-
-            string GetStyleFromFileSize(ulong fileSize)
-            {
-                if (fileSize < 1024)
-                {
-                    return @" class=""bytes""";
-                }
-                if (fileSize < 1024 * 1024)
-                {
-                    return @" class=""kilobytes""";
-                }
-                return @" class=""megabytes""";
-            }
-        }
-
-        private static string GetTypeExplained(BuildAssetInfo assetInfo)
-        {
-            if (assetInfo.Type != "Texture2D")
-            {
-                return assetInfo.Type;
-            }
-            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath);
-            if (asset == null)
-            {
-                return assetInfo.Type;
-            }
-            // Recommended, default, and supported texture formats, by platform
-            // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
-            var assetFormat = asset.format.ToString();
-            var format = assetFormat.Contains("ETC2") || assetFormat.Contains("DXT5")
-                ? $"<b>{asset.format}</b>"
-                : asset.format.ToString();
-            return $"<span class=\"texture2d\">{format} {asset.width}x{asset.height}</span>";
-        }
-
-        private static void GetScenesUsingAssets(ScenesUsingAssets[] scenesUsingAssets, Dictionary<string, HashSet<string>> bom)
-        {
-            // Plural - ScenesUsingAssets
-            foreach (var assets in scenesUsingAssets)
-            {
-                // Singular - ScenesUsingAsset
-                foreach (var asset in assets.list)
-                {
-                    foreach (var scenePath in asset.scenePaths)
+                    Debug.Log("*");
+                    Debug.Log($"Unused Assets count {unusedAssets.Count}");
+                    unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+                    foreach (var assetInfo in unusedAssets)
                     {
-                        if (!bom.TryGetValue(scenePath, out var assetList))
+                        Debug.Log(
+                            $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                    }
+                }
+            }
+            Timed("HTML report", () =>
+                HtmlReporter.CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary));
+        }
+
+        private static void AnalyzeLastScenesUsingAssets(BuildReport buildReport, bool logDetails)
+        {
+            var scenesUsingAssets = buildReport.scenesUsingAssets;
+            if (scenesUsingAssets.Length == 0)
+            {
+                Debug.Log($"Scenes in build not available and it requires '<b>BuildOptions.DetailedBuildReport</b>' to be set!");
+            }
+            else
+            {
+                // Bill Of Materials for scenes: key is scene 'name' and content is list of assets used in this scene.
+                var bom = new Dictionary<string, HashSet<string>>();
+                Timed("Get Scenes Using Assets", () => PopulateDataLocal(ref bom));
+
+                Debug.Log($"Scenes in build {bom.Count}");
+                if (logDetails)
+                {
+                    Debug.Log("*");
+                    foreach (var entry in bom)
+                    {
+                        Debug.Log($"{entry.Key} has {entry.Value.Count} dependencies");
+                    }
+                }
+            }
+
+            void PopulateDataLocal(ref Dictionary<string, HashSet<string>> bom)
+            {
+                // Plural - ScenesUsingAssets
+                foreach (var assets in buildReport.scenesUsingAssets)
+                {
+                    // Singular - ScenesUsingAsset
+                    foreach (var asset in assets.list)
+                    {
+                        foreach (var scenePath in asset.scenePaths)
                         {
-                            assetList = new HashSet<string>();
-                            bom.Add(scenePath, assetList);
+                            if (!bom.TryGetValue(scenePath, out var assetList))
+                            {
+                                assetList = new HashSet<string>();
+                                bom.Add(scenePath, assetList);
+                            }
+                            assetList.Add(asset.assetPath);
                         }
-                        assetList.Add(asset.assetPath);
                     }
                 }
             }
         }
 
-        private static List<BuildAssetInfo> GetLargeAndAllAssets(PackedAssets[] allPackedAssets, ref List<BuildAssetInfo> allBuildAssets)
+        private static List<BuildAssetInfo> LoadAssetsFromBuildReport(PackedAssets[] allPackedAssets)
         {
-            var largeAssets = new List<BuildAssetInfo>();
+            List<BuildAssetInfo> allBuildAssets = new List<BuildAssetInfo>();
             foreach (var packedAsset in allPackedAssets)
             {
                 var contents = packedAsset.contents;
@@ -291,21 +194,18 @@ th {
                     // Add to all build assets we want to analyze.
                     var buildAssetInfo = new BuildAssetInfo(assetInfo);
                     allBuildAssets.Add(buildAssetInfo);
-                    if (assetInfo.packedSize < 1024)
-                    {
-                        continue;
-                    }
-                    // Add to large build assets we want to analyze.
-                    largeAssets.Add(buildAssetInfo);
                 }
             }
-            return largeAssets;
+            return allBuildAssets;
         }
 
-        private static List<BuildAssetInfo> GetUnusedAssets(List<BuildAssetInfo> usedAssets)
+        private static string[] GetAllAssetDatabaseAssets()
         {
-            var allAssetGuids = AssetDatabase.FindAssets(string.Empty);
-            Debug.Log($"allAssets {allAssetGuids.Length}");
+            return AssetDatabase.FindAssets(string.Empty);
+        }
+
+        private static List<BuildAssetInfo> GetUnusedAssets(string[] allAssetGuids, List<BuildAssetInfo> usedAssets)
+        {
             var unusedAssets = new List<BuildAssetInfo>();
             foreach (var assetGuid in allAssetGuids)
             {
@@ -314,6 +214,7 @@ th {
                 {
                     continue;
                 }
+                // This can be quite slow because it needs to go to the file system (or cache?).
                 var assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
                 if (Directory.Exists(assetPath))
                 {
@@ -330,7 +231,9 @@ th {
 
         private static bool IsPathExcluded(string path)
         {
-            // Note that scenes are not included in Build Report as other assets.
+            // Note that
+            // - scenes are not included in Build Report as other assets
+            // - inputactions can not be detected for now and we ignore them silently
             return path.StartsWith("Packages/") ||
                    path.StartsWith("Assets/BuildReport") ||
                    path.StartsWith("Assets/Photon/") ||
@@ -341,15 +244,27 @@ th {
                    path.Contains("/Test/") ||
                    path.EndsWith(".asmdef") ||
                    path.EndsWith(".asmref") ||
+                   path.EndsWith(".controller") ||
                    path.EndsWith(".cs") ||
+                   path.EndsWith(".inputactions") ||
+                   path.EndsWith(".preset") ||
                    path.EndsWith(".unity");
         }
 
+        /// <summary>
+        /// Gets last UNITY Build Report from file.
+        /// </summary>
+        /// <remarks>
+        /// This code is based on UNITY Build Report Inspector<br />
+        /// https://docs.unity3d.com/Packages/com.unity.build-report-inspector@0.1/manual/index.html<br />
+        /// https://github.com/Unity-Technologies/BuildReportInspector/blob/master/com.unity.build-report-inspector/Editor/BuildReportInspector.cs
+        /// </remarks>
+        /// <returns>the last <c>BuildReport</c> instance or <c>null</c> if one is not found</returns>
         private static BuildReport GetOrCreateLastBuildReport()
         {
-            if (!File.Exists(LastBuildReport))
+            if (!File.Exists(LastBuildReportPath))
             {
-                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReport}");
+                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReportPath}");
                 return null;
             }
             if (!Directory.Exists(BuildReportDir))
@@ -357,7 +272,7 @@ th {
                 Directory.CreateDirectory(BuildReportDir);
             }
 
-            var date = File.GetLastWriteTime(LastBuildReport);
+            var date = File.GetLastWriteTime(LastBuildReportPath);
             var name = $"Build_{date:yyyy-dd-MM_HH.mm.ss}";
             var assetPath = $"{BuildReportDir}/{name}.buildreport";
 
@@ -376,6 +291,25 @@ th {
             return buildReport;
         }
 
+        #region Utilities
+
+        private static void Timed(string message, Action action)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            action();
+            stopwatch.Stop();
+            Debug.Log($"{message} took {stopwatch.Elapsed.TotalSeconds:0.0} s");
+        }
+
+        private static string FormatSizeOrEmpty(ulong bytes, string empty = "&nbsp;")
+        {
+            if (bytes == 0)
+            {
+                return empty;
+            }
+            return FormatSize(bytes);
+        }
+
         private static string FormatSize(ulong bytes)
         {
             // https://www.atatus.com/blog/what-is-a-kibibyte/
@@ -390,6 +324,83 @@ th {
             return $"{bytes / 1024.0 / 1024.0:0.0} MiB";
         }
 
+        #endregion
+
+        #region Classes for asset files
+
+        /// <summary>
+        /// Extended <c>BuildAssetInfo</c> for statistics and detailed reporting.
+        /// </summary>
+        private class AssetInfoDetails : BuildAssetInfo
+        {
+            public readonly string GroupByTypeKey;
+            public readonly string AssetTypeTag;
+            public readonly string AssetSizeTag;
+            public readonly bool IsTexture;
+            public readonly bool IsAudioClip;
+            public readonly bool IsRecommendedFormat;
+            public readonly bool IsNPOT;
+
+            public AssetInfoDetails(BuildAssetInfo assetInfo) : base(assetInfo)
+            {
+                bool IsPowerOfTwo(int x)
+                {
+                    // https://stackoverflow.com/questions/600293/how-to-check-if-a-number-is-a-power-of-2
+                    return (x != 0) && ((x & (x - 1)) == 0);
+                }
+
+                GroupByTypeKey = Type;
+                AssetTypeTag = Type;
+
+                var texture2D = Type == "Texture2D" ? AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath) : null;
+                if (texture2D != null)
+                {
+                    // https://docs.unity3d.com/ScriptReference/Texture2D.html
+                    // Recommended, default, and supported texture formats, by platform
+                    // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
+                    // ETC1, DXT1 - RGB texture
+                    // ETC2, DXT5 - RGBA texture
+                    var assetFormat = texture2D.format.ToString();
+                    var width = texture2D.width;
+                    var height = texture2D.height;
+
+                    // Use asset extension and texture type for grouping.
+                    GroupByTypeKey = $"{GetExtension(AssetPath)} {assetFormat}";
+                    AssetTypeTag = assetFormat;
+                    AssetSizeTag = $"{width}x{height}";
+                    IsTexture = true;
+                    IsRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
+                                          assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
+                    IsNPOT = !IsPowerOfTwo(width) || !IsPowerOfTwo(height);
+                    return;
+                }
+
+                var audioClip = Type == "AudioClip" ? AssetDatabase.LoadAssetAtPath<AudioClip>(assetInfo.AssetPath) : null;
+                if (audioClip != null)
+                {
+                    // https://docs.unity3d.com/ScriptReference/AudioClip.html
+                    var extension = GetExtension(AssetPath);
+                    GroupByTypeKey = $"{Type} {extension}";
+                    AssetTypeTag = extension;
+                    var timeSpan = TimeSpan.FromSeconds(audioClip.length);
+                    var timeText = timeSpan.Minutes < 1
+                        ? $"{timeSpan.Seconds}.{timeSpan.Milliseconds:000}"
+                        : $"{timeSpan.Hours * 60 + timeSpan.Minutes}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}";
+                    AssetSizeTag = $"{GetFrequency(audioClip.frequency)} {timeText}";
+                    IsAudioClip = true;
+                }
+
+                string GetFrequency(float frequency)
+                {
+                    if (frequency < 1000.0)
+                    {
+                        return $"{frequency:0} Hz";
+                    }
+                    return $"{frequency / 1000:0} KHz";
+                }
+            }
+        }
+
         /// <summary>
         /// Asset info for both used assets (<c>PackedAssetInfo</c>) and unused assets.
         /// </summary>
@@ -402,28 +413,347 @@ th {
             public readonly ulong MaxSize;
             public readonly string Type;
             public readonly bool IsTest;
+            public readonly bool IsUnused;
+
+            protected BuildAssetInfo(BuildAssetInfo other)
+            {
+                AssetPath = other.AssetPath;
+                AssetGuid = other.AssetGuid;
+                PackedSize = other.PackedSize;
+                FileSize = other.FileSize;
+                MaxSize = other.MaxSize;
+                Type = other.Type;
+                IsTest = other.IsTest;
+                IsUnused = other.IsUnused;
+            }
 
             public BuildAssetInfo(PackedAssetInfo assetInfo)
             {
+                // Build Report can be old and related assets deleted.
                 AssetPath = assetInfo.sourceAssetPath;
+                var fileExists = File.Exists(AssetPath);
                 AssetGuid = assetInfo.sourceAssetGUID.ToString();
                 PackedSize = assetInfo.packedSize;
-                FileSize = (ulong)new FileInfo(AssetPath).Length;
+                FileSize = fileExists ? (ulong)new FileInfo(AssetPath).Length : 0;
                 MaxSize = Math.Max(PackedSize, FileSize);
-                Type = assetInfo.type.Name;
+                Type = fileExists ? assetInfo.type.Name : "deleted";
                 IsTest = AssetPath.Contains("Test");
+                IsUnused = false;
             }
 
             public BuildAssetInfo(string assetPath, string assetGuid)
             {
+                // This should be for existing and un-used assets.
                 AssetPath = assetPath;
                 AssetGuid = assetGuid;
                 PackedSize = 0;
                 FileSize = (ulong)new FileInfo(AssetPath).Length;
                 MaxSize = FileSize;
-                Type = Path.GetExtension(AssetPath).Replace(".", string.Empty);
+                Type = GetExtension(AssetPath);
                 IsTest = AssetPath.Contains("Test");
+                IsUnused = true;
+            }
+
+            protected static string GetExtension(string assetPath)
+            {
+                return Path.GetExtension(assetPath).Replace(".", string.Empty).ToLower();
             }
         }
+
+        #endregion
+
+        #region HTML Report
+
+        /// <summary>
+        /// Creates an HTML page with details and statistics from given asset files.
+        /// </summary>
+        private static class HtmlReporter
+        {
+            public static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
+            {
+                #region HTML Templates
+
+                // Putting padding between the columns using CSS:
+                // https://stackoverflow.com/questions/11800975/html-table-needs-spacing-between-columns-not-rows
+
+                // HTML color names:
+                // https://htmlcolorcodes.com/color-names/
+                const string htmlStart = @"<!DOCTYPE html>
+<html>
+<head>
+<style>
+html * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+body {
+  background-color: FloralWhite;
+}
+tr:nth-child(even) {
+  background-color: linen;
+}
+tr:nth-child(odd) {
+  background-color: linen;
+}
+tr > * + * {
+  padding-left: .5em;
+}
+th {
+  text-align: left;
+}
+td.center {
+  text-align: center;
+}
+td.right {
+  text-align: right;
+}
+.smaller {
+  font-size: smaller;
+}
+.unused {
+  color: Coral;
+}
+.less {
+  color: DarkSeaGreen;
+}
+.more {
+  color: MediumPurple;
+}
+.same {
+  color: DarkGray;
+}
+.megabytes {
+  color: DarkBlue;
+}
+.kilobytes {
+  color: DarkSlateGray;
+}
+.bytes {
+  color: Silver;
+}
+.texture {
+  color: DarkRed;
+}
+.npot {
+  color: OrangeRed;
+}
+.for-test {
+  color: CadetBlue;
+}
+</style>
+<title>@Build_Report@</title>
+</head>
+<body>";
+                const string htmlEnd = @"</body>
+</html>";
+                const string tableStart = @"<table>";
+                const string tableEnd = @"</table>";
+
+                const string excludeFilesWarning =
+                    "Note that C# source code, scenes and other components can be excluded form this report for various reasons";
+
+                #endregion
+
+                var tempAssets = new List<BuildAssetInfo>(unusedAssets);
+                tempAssets.AddRange(largeAssets);
+                tempAssets = tempAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+
+                // Convert assets to have more details for report statistics.
+                var finalAssets = tempAssets.ConvertAll(x => new AssetInfoDetails(x));
+
+                // Statistics by FileType.
+                var prodFileTypes = new Dictionary<string, int>();
+                var testFileTypes = new Dictionary<string, int>();
+                var unusedFileTypes = new Dictionary<string, int>();
+                var prodFileSizes = new Dictionary<string, ulong>();
+                var testFileSizes = new Dictionary<string, ulong>();
+                var unusedFileSizes = new Dictionary<string, ulong>();
+
+                // Actual Build Report.
+                var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
+                var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"{Application.productName} {buildName} Build Report");
+                var builder = new StringBuilder()
+                    .Append(fixedHtmlStart).AppendLine()
+                    .Append(tableStart).AppendLine()
+                    .Append("<tr>")
+                    .Append($"<th>PackedSize</th>")
+                    .Append($"<th>Check</th>")
+                    .Append($"<th>FileSize</th>")
+                    .Append($"<th>Type</th>")
+                    .Append($"<th>Name</th>")
+                    .Append($"<th>Path</th>")
+                    .Append("</tr>").AppendLine();
+
+                foreach (var a in finalAssets)
+                {
+                    UpdateFileTypeStatistics(a);
+
+                    var marker = a.IsUnused ? @"<span class=""unused"">unused</span>"
+                        : a.PackedSize < a.FileSize ? @"<span class=""less"">less</span>"
+                        : a.PackedSize > a.FileSize ? @"<span class=""more"">more</span>"
+                        : @"<span class=""same"">same</span>";
+                    var name = Path.GetFileName(a.AssetPath);
+                    if (a.IsTest)
+                    {
+                        name = $"<span class=\"for-test\">{name}</span>";
+                    }
+                    var folder = Path.GetDirectoryName(a.AssetPath);
+                    var filetype = a.Type;
+                    if (a.IsTexture)
+                    {
+                        // Special formatting for Texture details
+                        filetype = a.IsRecommendedFormat
+                            ? $"<b>{a.AssetTypeTag}</b>"
+                            : a.AssetTypeTag;
+                        filetype = $"<span class=\"texture\">{filetype} {a.AssetSizeTag}</span>";
+                        if (a.IsNPOT)
+                        {
+                            filetype = $"{filetype} <span class=\"npot\">NPOT</span>";
+                        }
+                    }
+                    else if (a.IsAudioClip)
+                    {
+                        filetype = $"{filetype} {a.AssetSizeTag}";
+                    }
+                    builder
+                        .Append("<tr>")
+                        .Append($"<td{GetStyleFromFileSize(a.PackedSize)}>{FormatSize(a.PackedSize)}</td>")
+                        .Append($"<td>{marker}</td>")
+                        .Append($"<td{GetStyleFromFileSize(a.FileSize)}>{FormatSize(a.FileSize)}</td>")
+                        .Append($"<td>{filetype}</td>")
+                        .Append($"<td>{name}</td>")
+                        .Append($"<td>{folder}</td>")
+                        .Append("</tr>").AppendLine();
+                }
+                builder
+                    .Append(tableEnd).AppendLine()
+                    .Append($"<p>Table row count is {tempAssets.Count}</p>").AppendLine()
+                    .Append($"<p>Build for {buildName} platform" +
+                            $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
+                            $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
+
+                // FileType statistics
+                var keys = new HashSet<string>();
+                keys.UnionWith(prodFileTypes.Keys);
+                keys.UnionWith(testFileTypes.Keys);
+                keys.UnionWith(unusedFileTypes.Keys);
+                var sortedKeys = keys.OrderBy(x => x).ToList();
+                builder
+                    .Append(tableStart).AppendLine()
+                    .Append("<tr>")
+                    .Append("<th>File</th>")
+                    .Append(@"<th colspan=""2"">Prod</th>")
+                    .Append(@"<th colspan=""2"">Test</th>")
+                    .Append(@"<th colspan=""2"">Unused</th>")
+                    .Append("</tr>").AppendLine()
+                    .Append("<tr>")
+                    .Append("<th>Type</th>")
+                    .Append("<th>Count</th>")
+                    .Append("<th>PackedSize</th>")
+                    .Append("<th>Count</th>")
+                    .Append("<th>PackedSize</th>")
+                    .Append("<th>Count</th>")
+                    .Append("<th>FileSize</th>")
+                    .Append("</tr>").AppendLine();
+                var totProdCount = 0;
+                var totTestCount = 0;
+                var totUnusedCount = 0;
+                var totProdSize = 0UL;
+                var totTestSize = 0UL;
+                var totUnusedSize = 0UL;
+                foreach (var key in sortedKeys)
+                {
+                    if (prodFileTypes.TryGetValue(key, out var prodCount))
+                    {
+                        totProdCount += prodCount;
+                    }
+                    if (testFileTypes.TryGetValue(key, out var testCount))
+                    {
+                        totTestCount += testCount;
+                    }
+                    if (unusedFileTypes.TryGetValue(key, out var unusedCount))
+                    {
+                        totUnusedCount += unusedCount;
+                    }
+                    if (prodFileSizes.TryGetValue(key, out var prodSize))
+                    {
+                        totProdSize += prodSize;
+                    }
+                    if (testFileSizes.TryGetValue(key, out var testSize))
+                    {
+                        totTestSize += testSize;
+                    }
+                    if (unusedFileSizes.TryGetValue(key, out var unusedSize))
+                    {
+                        totUnusedSize += unusedSize;
+                    }
+                    builder
+                        .Append("<tr>")
+                        .Append($"<td>{key}</td>")
+                        .Append(@$"<td class=""right"">{prodCount}</td>")
+                        .Append(@$"<td{GetStyleFromFileSize(prodSize, "right")}>{FormatSize(prodSize)}</td>")
+                        .Append(@$"<td class=""right"">{(testCount > 0 ? testCount.ToString() : "&nbsp;")}</td>")
+                        .Append(@$"<td{GetStyleFromFileSize(testSize, "right")}>{FormatSizeOrEmpty(testSize)}</td>")
+                        .Append(@$"<td class=""right"">{(unusedCount > 0 ? unusedCount.ToString() : "&nbsp;")}</td>")
+                        .Append(@$"<td{GetStyleFromFileSize(unusedSize, "right")}>{FormatSizeOrEmpty(unusedSize)}</td>")
+                        .Append("</tr>").AppendLine();
+                }
+                builder
+                    .Append("<tr>")
+                    .Append(@"<td><b>Total</b></td>")
+                    .Append(@$"<td class=""right"">{totProdCount}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totProdSize, "right")}>{FormatSize(totProdSize)}</td>")
+                    .Append(@$"<td class=""right"">{(totTestCount > 0 ? totTestCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totTestSize, "right")}>{FormatSizeOrEmpty(totTestSize)}</td>")
+                    .Append(@$"<td class=""right"">{(totUnusedCount > 0 ? totUnusedCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totUnusedSize, "right")}>{FormatSizeOrEmpty(totUnusedSize)}</td>")
+                    .Append("</tr>").AppendLine()
+                    .Append(tableEnd).AppendLine();
+
+                builder
+                    .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
+                    .Append(htmlEnd);
+
+                var content = builder.ToString();
+                File.WriteAllText(HtmlReportName, content);
+                var htmlPath = Path.GetFullPath(HtmlReportName);
+                Debug.Log($"Application.OpenURL {htmlPath}");
+                Application.OpenURL(htmlPath);
+
+                string GetStyleFromFileSize(ulong fileSize, string otherClassNames = null)
+                {
+                    if (!string.IsNullOrEmpty(otherClassNames))
+                    {
+                        otherClassNames = $" {otherClassNames}";
+                    }
+                    if (fileSize < 1024)
+                    {
+                        return @$" class=""bytes{otherClassNames}""";
+                    }
+                    if (fileSize < 1024 * 1024)
+                    {
+                        return @$" class=""kilobytes{otherClassNames}""";
+                    }
+                    return @$" class=""megabytes{otherClassNames}""";
+                }
+
+                void UpdateFileTypeStatistics(AssetInfoDetails assetInfo)
+                {
+                    var fileTypeKey = assetInfo.GroupByTypeKey;
+                    var counterDictionary = assetInfo.IsUnused ? unusedFileTypes : assetInfo.IsTest ? testFileTypes : prodFileTypes;
+                    if (!counterDictionary.TryAdd(fileTypeKey, 1))
+                    {
+                        counterDictionary[fileTypeKey] += 1;
+                    }
+                    var fileSizeDictionary = assetInfo.IsUnused ? unusedFileSizes : assetInfo.IsTest ? testFileSizes : prodFileSizes;
+                    var fileSize = assetInfo.IsUnused ? assetInfo.FileSize : assetInfo.PackedSize;
+                    if (!fileSizeDictionary.TryAdd(fileTypeKey, fileSize))
+                    {
+                        fileSizeDictionary[fileTypeKey] += fileSize;
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }
