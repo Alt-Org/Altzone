@@ -24,7 +24,7 @@ namespace Prg.Editor.Build
 
         private const string HtmlReportName = "Assets/BuildReports/BuildReport.html";
 
-        public static void ShowLastBuildReport(bool logDetails = false)
+        public static void HtmlBuildReportFast()
         {
             Debug.Log("*");
             BuildReport buildReport = null;
@@ -35,10 +35,24 @@ namespace Prg.Editor.Build
                 Debug.Log($"{LastBuildReportPath} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport, logDetails);
+            AnalyzeLastBuildReport(buildReport, false, false);
         }
 
-        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool logDetails)
+        public static void HtmlBuildReportFull()
+        {
+            Debug.Log("*");
+            BuildReport buildReport = null;
+            Timed("Load Last Build Report", () =>
+                buildReport = GetOrCreateLastBuildReport());
+            if (buildReport == null)
+            {
+                Debug.Log($"{LastBuildReportPath} NOT FOUND");
+                return;
+            }
+            AnalyzeLastBuildReport(buildReport, true, false);
+        }
+
+        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool includeUnused, bool logDetails)
         {
             var summary = buildReport.summary;
             var buildTargetName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -62,14 +76,20 @@ namespace Prg.Editor.Build
             List<BuildAssetInfo> largeAssets = null;
             Timed("Select large assets", () => largeAssets = allBuildAssets.Where(x => x.PackedSize >= MinPackedSize).ToList());
 
-            List<BuildAssetInfo> unusedAssets = null;
-            Timed("Get unused assets", () => unusedAssets = GetUnusedAssets(databaseAssets, allBuildAssets));
+            List<BuildAssetInfo> unusedAssets = new List<BuildAssetInfo>();
+            if (includeUnused)
+            {
+                Timed("Get unused assets", () => unusedAssets = GetUnusedAssets(databaseAssets, allBuildAssets));
+            }
 
             Debug.Log($"All Assets count {databaseAssets.Length}");
             if (!logDetails)
             {
                 Debug.Log($"Large Assets count {largeAssets.Count}");
-                Debug.Log($"Unused Assets count {unusedAssets.Count}");
+                if (includeUnused)
+                {
+                    Debug.Log($"Unused Assets count {unusedAssets.Count}");
+                }
             }
             else
             {
@@ -87,13 +107,16 @@ namespace Prg.Editor.Build
                     Debug.Log(
                         $"{FormatSize(packedSize)} {marker} {FormatSize(fileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
                 }
-                Debug.Log("*");
-                Debug.Log($"Unused Assets count {unusedAssets.Count}");
-                unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
-                foreach (var assetInfo in unusedAssets)
+                if (includeUnused)
                 {
-                    Debug.Log(
-                        $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                    Debug.Log("*");
+                    Debug.Log($"Unused Assets count {unusedAssets.Count}");
+                    unusedAssets = unusedAssets.OrderBy(x => x.MaxSize).Reverse().ToList();
+                    foreach (var assetInfo in unusedAssets)
+                    {
+                        Debug.Log(
+                            $"{FormatSize(assetInfo.PackedSize)} <color=magenta><b>u</b></color> {FormatSize(assetInfo.FileSize)} {assetInfo.Type} {assetInfo.AssetPath} {assetInfo.AssetGuid}");
+                    }
                 }
             }
             Timed("HTML report", () =>
