@@ -355,6 +355,10 @@ namespace Prg.Editor.Build
                 var texture2D = Type == "Texture2D" ? AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath) : null;
                 if (texture2D != null)
                 {
+                    if (AssetPath.Contains("TextMesh Pro") || AssetPath.Contains("Font"))
+                    {
+                        AssetTypeTag = "Font";
+                    }
                     // https://docs.unity3d.com/ScriptReference/Texture2D.html
                     // Recommended, default, and supported texture formats, by platform
                     // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
@@ -363,15 +367,29 @@ namespace Prg.Editor.Build
                     var assetFormat = texture2D.format.ToString();
                     var width = texture2D.width;
                     var height = texture2D.height;
+                    var extension = GetExtension(AssetPath);
 
                     // Use asset extension and texture type for grouping.
-                    GroupByTypeKey = $"{GetExtension(AssetPath)} {assetFormat}";
+                    GroupByTypeKey = $"{extension} {assetFormat}";
                     AssetTypeTag = assetFormat;
                     AssetSizeTag = $"{width}x{height}";
                     IsTexture = true;
                     IsRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
                                           assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
                     IsNPOT = !IsPowerOfTwo(width) || !IsPowerOfTwo(height);
+
+                    // Try to guess if asset is font.
+                    if (extension != "asset")
+                    {
+                        return;
+                    }
+                    if (!AssetPath.Contains("TextMesh Pro") && !AssetPath.Contains("Font"))
+                    {
+                        return;
+                    }
+                    // Should be font atlas (greyscale Alpha8).
+                    GroupByTypeKey = $"font {assetFormat}";
+                    AssetTypeTag = $"Font {AssetTypeTag}";
                     return;
                 }
 
@@ -595,7 +613,7 @@ td.right {
                         name = @$"<span class=""for-test"">{name}</span>";
                     }
                     var folder = Path.GetDirectoryName(a.AssetPath);
-                    var filetype = a.Type;
+                    var filetype = a.AssetTypeTag;
                     if (a.IsTexture)
                     {
                         // Special formatting for Texture details
