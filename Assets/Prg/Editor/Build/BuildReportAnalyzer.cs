@@ -120,7 +120,7 @@ namespace Prg.Editor.Build
                 }
             }
             Timed("HTML report", () =>
-                HtmlReporter.CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary));
+                HtmlReporter.CreateBuildReportHtmlPage(summary.buildEndedAt, unusedAssets, largeAssets, summary));
         }
 
         private static void AnalyzeLastScenesUsingAssets(BuildReport buildReport, bool logDetails)
@@ -469,7 +469,7 @@ namespace Prg.Editor.Build
         /// </summary>
         private static class HtmlReporter
         {
-            public static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
+            public static void CreateBuildReportHtmlPage(DateTime reportDate, List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
             {
                 #region HTML Templates
 
@@ -629,7 +629,8 @@ td.right {
                     .Append($"<p>Table row count is {tempAssets.Count}</p>").AppendLine()
                     .Append($"<p>Build for {buildName} platform" +
                             $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
-                            $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
+                            $" output size is {FormatSize(summary.totalSize)}." +
+                            $" <span class=\"smaller\">Build ended on {reportDate:yyyy-dd-MM HH:mm:ss}</span></p>").AppendLine();
 
                 // FileType statistics
                 var keys = new HashSet<string>();
