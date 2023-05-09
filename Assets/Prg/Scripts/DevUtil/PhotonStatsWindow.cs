@@ -91,8 +91,10 @@ namespace Prg.Scripts.DevUtil
                 ToggleWindowState();
                 return;
             }
+            var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
             var space = "  ";
-            var label = $"v={PhotonLobby.GameVersion} r={PhotonNetwork.CloudRegion} ping={PhotonNetwork.GetPing()}";
+            var label = $"game ver={PhotonLobby.GameVersion}\r\n" +
+                        $"reg={PhotonNetwork.CloudRegion} ping={peer.RoundTripTime} var={peer.RoundTripTimeVariance}";
             if (inRoom)
             {
                 label += $"\r\n--Room--";
