@@ -334,9 +334,10 @@ namespace Prg.Editor.Build
         private class AssetInfoDetails : BuildAssetInfo
         {
             public readonly string GroupByTypeKey;
-            public readonly string TextureType;
-            public readonly string TextureSize;
+            public readonly string AssetTypeTag;
+            public readonly string AssetSizeTag;
             public readonly bool IsTexture;
+            public readonly bool IsAudioClip;
             public readonly bool IsRecommendedFormat;
             public readonly bool IsNPOT;
 
@@ -349,29 +350,54 @@ namespace Prg.Editor.Build
                 }
 
                 GroupByTypeKey = Type;
-                TextureType = Type;
+                AssetTypeTag = Type;
 
-                var asset = Type == "Texture2D" ? AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath) : null;
-                if (asset == null)
+                var texture2D = Type == "Texture2D" ? AssetDatabase.LoadAssetAtPath<Texture2D>(assetInfo.AssetPath) : null;
+                if (texture2D != null)
                 {
+                    // https://docs.unity3d.com/ScriptReference/Texture2D.html
+                    // Recommended, default, and supported texture formats, by platform
+                    // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
+                    // ETC1, DXT1 - RGB texture
+                    // ETC2, DXT5 - RGBA texture
+                    var assetFormat = texture2D.format.ToString();
+                    var width = texture2D.width;
+                    var height = texture2D.height;
+
+                    // Use asset extension and texture type for grouping.
+                    GroupByTypeKey = $"{GetExtension(AssetPath)} {assetFormat}";
+                    AssetTypeTag = assetFormat;
+                    AssetSizeTag = $"{width}x{height}";
+                    IsTexture = true;
+                    IsRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
+                                          assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
+                    IsNPOT = !IsPowerOfTwo(width) || !IsPowerOfTwo(height);
                     return;
                 }
-                // Recommended, default, and supported texture formats, by platform
-                // https://docs.unity3d.com/Manual/class-TextureImporterOverride.html
-                // ETC1, DXT1 - RGB texture
-                // ETC2, DXT5 - RGBA texture
-                var assetFormat = asset.format.ToString();
-                var width = asset.width;
-                var height = asset.height;
 
-                // Use asset extension and texture type for grouping.
-                GroupByTypeKey = $"{GetExtension(AssetPath)} {assetFormat}";
-                TextureType = assetFormat;
-                TextureSize = $"{width}x{height}";
-                IsTexture = true;
-                IsRecommendedFormat = assetFormat.Contains("ETC1") || assetFormat.Contains("ETC2") ||
-                                      assetFormat.Contains("DXT1") || assetFormat.Contains("DXT5");
-                IsNPOT = !IsPowerOfTwo(width) || !IsPowerOfTwo(height);
+                var audioClip = Type == "AudioClip" ? AssetDatabase.LoadAssetAtPath<AudioClip>(assetInfo.AssetPath) : null;
+                if (audioClip != null)
+                {
+                    // https://docs.unity3d.com/ScriptReference/AudioClip.html
+                    var extension = GetExtension(AssetPath);
+                    GroupByTypeKey = $"{Type} {extension}";
+                    AssetTypeTag = extension;
+                    var timeSpan = TimeSpan.FromSeconds(audioClip.length);
+                    var timeText = timeSpan.Minutes < 1
+                        ? $"{timeSpan.Seconds}.{timeSpan.Milliseconds:000}"
+                        : $"{timeSpan.Hours * 60 + timeSpan.Minutes}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000}";
+                    AssetSizeTag = $"{GetFrequency(audioClip.frequency)} {timeText}";
+                    IsAudioClip = true;
+                }
+
+                string GetFrequency(float frequency)
+                {
+                    if (frequency < 1000.0)
+                    {
+                        return $"{frequency:0} Hz";
+                    }
+                    return $"{frequency / 1000:0} KHz";
+                }
             }
         }
 
@@ -576,13 +602,17 @@ td.right {
                     {
                         // Special formatting for Texture details
                         filetype = a.IsRecommendedFormat
-                            ? $"<b>{a.TextureType}</b>"
-                            : a.TextureType;
-                        filetype = $"<span class=\"texture\">{filetype} {a.TextureSize}</span>";
+                            ? $"<b>{a.AssetTypeTag}</b>"
+                            : a.AssetTypeTag;
+                        filetype = $"<span class=\"texture\">{filetype} {a.AssetSizeTag}</span>";
                         if (a.IsNPOT)
                         {
                             filetype = $"{filetype} <span class=\"npot\">NPOT</span>";
                         }
+                    }
+                    else if (a.IsAudioClip)
+                    {
+                        filetype = $"{filetype} {a.AssetSizeTag}";
                     }
                     builder
                         .Append("<tr>")
