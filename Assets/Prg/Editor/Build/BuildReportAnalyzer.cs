@@ -120,7 +120,7 @@ namespace Prg.Editor.Build
                 }
             }
             Timed("HTML report", () =>
-                HtmlReporter.CreateBuildReportHtmlPage(summary.buildEndedAt, unusedAssets, largeAssets, summary));
+                HtmlReporter.CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary));
         }
 
         private static void AnalyzeLastScenesUsingAssets(BuildReport buildReport, bool logDetails)
@@ -469,7 +469,7 @@ namespace Prg.Editor.Build
         /// </summary>
         private static class HtmlReporter
         {
-            public static void CreateBuildReportHtmlPage(DateTime reportDate, List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
+            public static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
             {
                 #region HTML Templates
 
@@ -594,7 +594,7 @@ td.right {
                     var name = Path.GetFileName(a.AssetPath);
                     if (a.IsTest)
                     {
-                        name = $"<span class=\"for-test\">{name}</span>";
+                        name = @$"<span class=""for-test"">{name}</span>";
                     }
                     var folder = Path.GetDirectoryName(a.AssetPath);
                     var filetype = a.Type;
@@ -604,10 +604,10 @@ td.right {
                         filetype = a.IsRecommendedFormat
                             ? $"<b>{a.AssetTypeTag}</b>"
                             : a.AssetTypeTag;
-                        filetype = $"<span class=\"texture\">{filetype} {a.AssetSizeTag}</span>";
+                        filetype = @$"<span class=""texture"">{filetype} {a.AssetSizeTag}</span>";
                         if (a.IsNPOT)
                         {
-                            filetype = $"{filetype} <span class=\"npot\">NPOT</span>";
+                            filetype = @$"{filetype} <span class=""npot"">NPOT</span>";
                         }
                     }
                     else if (a.IsAudioClip)
@@ -626,11 +626,10 @@ td.right {
                 }
                 builder
                     .Append(tableEnd).AppendLine()
-                    .Append($"<p>Table row count is {tempAssets.Count}</p>").AppendLine()
-                    .Append($"<p>Build for {buildName} platform" +
+                    .Append(@$"<p class=""smaller"">Table row count is {tempAssets.Count}</p>").AppendLine()
+                    .Append(@$"<p class=""smaller"">Build for {buildName} platform" +
                             $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
-                            $" output size is {FormatSize(summary.totalSize)}." +
-                            $" <span class=\"smaller\">Build ended on {reportDate:yyyy-dd-MM HH:mm:ss}</span></p>").AppendLine();
+                            $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
 
                 // FileType statistics
                 var keys = new HashSet<string>();
@@ -711,7 +710,7 @@ td.right {
                     .Append(tableEnd).AppendLine();
 
                 builder
-                    .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
+                    .Append(@$"<p class=""smaller"">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
                     .Append(htmlEnd);
 
                 var content = builder.ToString();
