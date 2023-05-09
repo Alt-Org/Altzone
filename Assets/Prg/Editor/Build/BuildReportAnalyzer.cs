@@ -619,31 +619,37 @@ td.right {
                     .Append("<th>Count</th>")
                     .Append("<th>FileSize</th>")
                     .Append("</tr>").AppendLine();
+                var totProdCount = 0;
+                var totTestCount = 0;
+                var totUnusedCount = 0;
+                var totProdSize = 0UL;
+                var totTestSize = 0UL;
+                var totUnusedSize = 0UL;
                 foreach (var key in sortedKeys)
                 {
-                    if (!prodFileTypes.TryGetValue(key, out var prodCount))
+                    if (prodFileTypes.TryGetValue(key, out var prodCount))
                     {
-                        prodCount = 0;
+                        totProdCount += prodCount;
                     }
-                    if (!testFileTypes.TryGetValue(key, out var testCount))
+                    if (testFileTypes.TryGetValue(key, out var testCount))
                     {
-                        testCount = 0;
+                        totTestCount += testCount;
                     }
-                    if (!unusedFileTypes.TryGetValue(key, out var unusedCount))
+                    if (unusedFileTypes.TryGetValue(key, out var unusedCount))
                     {
-                        unusedCount = 0;
+                        totUnusedCount += unusedCount;
                     }
-                    if (!prodFileSizes.TryGetValue(key, out var prodSize))
+                    if (prodFileSizes.TryGetValue(key, out var prodSize))
                     {
-                        prodSize = 0;
+                        totProdSize += prodSize;
                     }
-                    if (!testFileSizes.TryGetValue(key, out var testSize))
+                    if (testFileSizes.TryGetValue(key, out var testSize))
                     {
-                        testSize = 0;
+                        totTestSize += testSize;
                     }
-                    if (!unusedFileSizes.TryGetValue(key, out var unusedSize))
+                    if (unusedFileSizes.TryGetValue(key, out var unusedSize))
                     {
-                        unusedSize = 0;
+                        totUnusedSize += unusedSize;
                     }
                     builder
                         .Append("<tr>")
@@ -657,6 +663,15 @@ td.right {
                         .Append("</tr>").AppendLine();
                 }
                 builder
+                    .Append("<tr>")
+                    .Append(@"<td><b>Total</b></td>")
+                    .Append(@$"<td class=""right"">{totProdCount}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totProdSize, "right")}>{FormatSize(totProdSize)}</td>")
+                    .Append(@$"<td class=""right"">{(totTestCount > 0 ? totTestCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totTestSize, "right")}>{FormatSizeOrEmpty(totTestSize)}</td>")
+                    .Append(@$"<td class=""right"">{(totUnusedCount > 0 ? totUnusedCount.ToString() : "&nbsp;")}</td>")
+                    .Append(@$"<td{GetStyleFromFileSize(totUnusedSize, "right")}>{FormatSizeOrEmpty(totUnusedSize)}</td>")
+                    .Append("</tr>").AppendLine()
                     .Append(tableEnd).AppendLine();
 
                 builder
