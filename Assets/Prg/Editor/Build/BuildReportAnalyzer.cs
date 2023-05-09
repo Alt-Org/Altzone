@@ -545,8 +545,6 @@ td.right {
 <body>";
                 const string htmlEnd = @"</body>
 </html>";
-                const string tableStart = @"<table>";
-                const string tableEnd = @"</table>";
 
                 const string excludeFilesWarning =
                     "Note that C# source code, scenes and other components can be excluded form this report for various reasons";
@@ -573,14 +571,14 @@ td.right {
                 var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"{Application.productName} {buildName} Build Report");
                 var builder = new StringBuilder()
                     .Append(fixedHtmlStart).AppendLine()
-                    .Append(tableStart).AppendLine()
+                    .Append(@"<table id=""dataTable"">").AppendLine()
                     .Append("<tr>")
-                    .Append($"<th>PackedSize</th>")
-                    .Append($"<th>Check</th>")
-                    .Append($"<th>FileSize</th>")
-                    .Append($"<th>Type</th>")
-                    .Append($"<th>Name</th>")
-                    .Append($"<th>Path</th>")
+                    .Append(@"<th><button onclick=""sortTable(0)"">Packed Size</button></th>")
+                    .Append(@"<th><button onclick=""sortTable(1)"">Check</button></th>")
+                    .Append(@"<th><button onclick=""sortTable(2)"">File Size</button></th>")
+                    .Append(@"<th><button onclick=""sortTable(3)"">Type Info</button></th>")
+                    .Append(@"<th><button onclick=""sortTable(4)"">Asset Name</button></th>")
+                    .Append(@"<th><button onclick=""sortTable(5)"">Asset Path</button></th>")
                     .Append("</tr>").AppendLine();
 
                 foreach (var a in finalAssets)
@@ -625,8 +623,8 @@ td.right {
                         .Append("</tr>").AppendLine();
                 }
                 builder
-                    .Append(tableEnd).AppendLine()
-                    .Append(@$"<p class=""smaller"">Table row count is {tempAssets.Count}</p>").AppendLine()
+                    .Append("</table>").AppendLine()
+                    .Append(@$"<p class=""smaller"">Table row count is {tempAssets.Count}. Refresh page (F5) for default sort by largest size</p>").AppendLine()
                     .Append(@$"<p class=""smaller"">Build for {buildName} platform" +
                             $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
                             $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
@@ -638,9 +636,9 @@ td.right {
                 keys.UnionWith(unusedFileTypes.Keys);
                 var sortedKeys = keys.OrderBy(x => x).ToList();
                 builder
-                    .Append(tableStart).AppendLine()
+                    .Append(@"<table id=""stats"">").AppendLine()
                     .Append("<tr>")
-                    .Append("<th>File</th>")
+                    .Append(@"<th>File</th>")
                     .Append(@"<th colspan=""2"">Prod</th>")
                     .Append(@"<th colspan=""2"">Test</th>")
                     .Append(@"<th colspan=""2"">Unused</th>")
@@ -707,10 +705,58 @@ td.right {
                     .Append(@$"<td class=""right"">{(totUnusedCount > 0 ? totUnusedCount.ToString() : "&nbsp;")}</td>")
                     .Append(@$"<td{GetStyleFromFileSize(totUnusedSize, "right")}>{FormatSizeOrEmpty(totUnusedSize)}</td>")
                     .Append("</tr>").AppendLine()
-                    .Append(tableEnd).AppendLine();
+                    .Append("</table>").AppendLine();
+
+                const string javaScript = @"
+// https://www.w3schools.com/howto/howto_js_sort_table.asp
+const sortDir = [false,false,false,false,false,false];
+function sortTable(index) {
+  table = document.getElementById(""dataTable"");
+  sortingUp = !sortDir[index];
+  sortDir[index] = sortingUp;
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName(""TD"")[index];
+      y = rows[i + 1].getElementsByTagName(""TD"")[index];
+      //check if the two rows should switch place:
+      if (sortingUp) {
+        if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}";
 
                 builder
                     .Append(@$"<p class=""smaller"">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
+                    .Append(@$"<script>{javaScript}</script>").AppendLine()
                     .Append(htmlEnd);
 
                 var content = builder.ToString();
