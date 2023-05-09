@@ -244,8 +244,10 @@ namespace Prg.Editor.Build
                    path.Contains("/Test/") ||
                    path.EndsWith(".asmdef") ||
                    path.EndsWith(".asmref") ||
+                   path.EndsWith(".controller") ||
                    path.EndsWith(".cs") ||
                    path.EndsWith(".inputactions") ||
+                   path.EndsWith(".preset") ||
                    path.EndsWith(".unity");
         }
 
@@ -434,6 +436,8 @@ namespace Prg.Editor.Build
 
         #endregion
 
+        #region HTML Report
+
         /// <summary>
         /// Creates an HTML page with details and statistics from given asset files.
         /// </summary>
@@ -518,7 +522,8 @@ td.right {
                 const string tableStart = @"<table>";
                 const string tableEnd = @"</table>";
 
-                const string pathExcludedWarning = "Scenes, C# source code and input actions are excluded form the report";
+                const string excludeFilesWarning =
+                    "Note that C# source code, scenes and other components can be excluded form this report for various reasons";
 
                 #endregion
 
@@ -675,7 +680,7 @@ td.right {
                     .Append(tableEnd).AppendLine();
 
                 builder
-                    .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{pathExcludedWarning}</i></p>").AppendLine()
+                    .Append($"<p class=\"smaller\">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
                     .Append(htmlEnd);
 
                 var content = builder.ToString();
@@ -718,5 +723,7 @@ td.right {
                 }
             }
         }
+
+        #endregion
     }
 }
