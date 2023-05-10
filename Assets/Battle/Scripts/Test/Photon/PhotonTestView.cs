@@ -11,6 +11,7 @@ namespace Battle.Scripts.Test.Photon
 
         public void ResetView()
         {
+            _testButton.interactable = false;
         }
     }
 }

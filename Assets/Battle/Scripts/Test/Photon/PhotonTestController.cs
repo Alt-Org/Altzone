@@ -6,9 +6,11 @@ namespace Battle.Scripts.Test.Photon
 {
     public class PhotonTestController : MonoBehaviour
     {
-        [SerializeField] private PhotonTestView _view;
+        public static PhotonTestController Get() => _instance;
 
         private static PhotonTestController _instance;
+
+        [SerializeField] private PhotonTestView _view;
 
         private bool _isStarted;
         private PhotonView _photonView;
@@ -20,6 +22,7 @@ namespace Battle.Scripts.Test.Photon
 
         private void OnEnable()
         {
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
             _view.ResetView();
             if (!_isStarted)
             {
@@ -27,16 +30,16 @@ namespace Battle.Scripts.Test.Photon
             }
         }
 
-        public static void SetPhotonViewForUi(PhotonView photonView, Action onTestButton)
+        public void SetTestButton(Action onTestButton)
         {
-            if (photonView.Owner.IsMasterClient)
-            {
-                _instance._view.TestButton.onClick.AddListener(() => onTestButton());
-            }
-            else
-            {
-                _instance._view.TestButton.interactable = false;
-            }
+            // Only Photon Master Client should do this.
+            _view.TestButton.interactable = true;
+            _view.TestButton.onClick.AddListener(() => onTestButton());
+        }
+
+        public void SetPhotonView(PhotonView photonView)
+        {
+            Debug.Log($"{photonView.Owner.GetDebugLabel()}");
         }
     }
 }

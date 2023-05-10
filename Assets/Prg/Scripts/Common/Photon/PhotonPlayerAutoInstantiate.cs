@@ -13,9 +13,9 @@ namespace Prg.Scripts.Common.Photon
 
         private IEnumerator Start()
         {
+            Debug.Log($"wait for room {PhotonNetwork.NetworkClientState}");
             while (enabled)
             {
-                Debug.Log($"wait for room {PhotonNetwork.NetworkClientState}");
                 if (PhotonNetwork.InRoom)
                 {
                     break;
