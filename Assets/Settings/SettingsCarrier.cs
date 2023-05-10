@@ -37,9 +37,6 @@ public class SettingsCarrier : MonoBehaviour
             case SoundType.sound: otherVolume = soundVolume; break;
             default: break;
         }
-        // The math may require improvement
-        Debug.Log(1 * (otherVolume * masterVolume) + " volume");
         return 1 * (otherVolume * masterVolume);
     }
-
 }

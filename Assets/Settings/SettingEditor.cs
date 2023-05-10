@@ -1,19 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingEditor : MonoBehaviour
 {
-    SettingsCarrier carrier = SettingsCarrier.Instance;
+    private SettingsCarrier carrier = SettingsCarrier.Instance;
     public void SetFromSlider(Slider usedSlider)
     {
+        // Somewhat hardcoded, but best i could do way of setting volume to SettingsCarrier from the sliders
         switch (usedSlider.name)
         {
-            case "MasterVolume": carrier.masterVolume = usedSlider.value; break;
-            case "MenuSFXVolume": carrier.menuVolume = usedSlider.value; break;
-            case "MusicVolume": carrier.musicVolume = usedSlider.value; break;
-            case "GameSFXVolume": carrier.soundVolume = usedSlider.value; break;
+            case "MasterVolume":carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); break;
+            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); break;
+            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); break;
+            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); break;
         }
+    }
+
+    private float RoundToTwoDecimals(float toRound)
+    {
+        float multipliedVal = Mathf.Round(toRound * 100);
+        return multipliedVal / 100;
     }
 }
