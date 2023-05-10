@@ -91,6 +91,8 @@ namespace Prg.Scripts.DevUtil
                 ToggleWindowState();
                 return;
             }
+            // We use LoadBalancingPeer to access timing related info to explicitly to show how things work 'under the hood'.
+            // - typically we would use PhotonNetwork for this to hide actual internal implementation details for us.
             var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
             var space = "  ";
             var label = $"game ver={PhotonLobby.GameVersion}\r\n" +
@@ -143,13 +145,21 @@ namespace Prg.Scripts.DevUtil
                     label += $"AutoSyncScene ";
                 }
             }
-            label += $"\r\nnick={PhotonNetwork.NickName}\r\n{FormatServerTimestamp()}";
+            label += $"\r\nnick={PhotonNetwork.NickName}\r\n{FormatServerTimestamp(peer)}";
             GUILayout.Label(label, _guiLabelStyle);
         }
 
-        private static string FormatServerTimestamp()
+        private static string FormatServerTimestamp(LoadBalancingPeer peer)
         {
-            return $"server time {(uint)(PhotonNetwork.ServerTimestamp):# ### ### ##0}";
+            // Synchronized Timestamp (PhotonNetwork.ServerTimestamp)
+            // https://doc.photonengine.com/pun/v2/getting-started/feature-overview#synchronized_timestamp
+            // More details how it works
+            // https://forum.photonengine.com/discussion/1112/servertimeinmilliseconds-and-fetchservertimestamp
+            if (PhotonNetwork.OfflineMode)
+            {
+                return "offline";
+            }
+            return $"timestamp {(uint)(peer.ServerTimeInMilliSeconds):# ### ### ##0}";
         }
 
         #region Type names
