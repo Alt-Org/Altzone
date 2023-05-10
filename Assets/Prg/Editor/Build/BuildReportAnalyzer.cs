@@ -24,7 +24,7 @@ namespace Prg.Editor.Build
 
         private const string HtmlReportName = "Assets/BuildReports/BuildReport.html";
 
-        public static void HtmlBuildReportFast()
+        public static void HtmlBuildReportFast(bool useJavaScriptSort = false)
         {
             Debug.Log("*");
             BuildReport buildReport = null;
@@ -35,10 +35,10 @@ namespace Prg.Editor.Build
                 Debug.Log($"{LastBuildReportPath} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport, false, false);
+            AnalyzeLastBuildReport(buildReport, false, false, useJavaScriptSort);
         }
 
-        public static void HtmlBuildReportFull()
+        public static void HtmlBuildReportFull(bool useJavaScriptSort = false)
         {
             Debug.Log("*");
             BuildReport buildReport = null;
@@ -49,10 +49,10 @@ namespace Prg.Editor.Build
                 Debug.Log($"{LastBuildReportPath} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport, true, false);
+            AnalyzeLastBuildReport(buildReport, true, false, useJavaScriptSort);
         }
 
-        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool includeUnused, bool logDetails)
+        private static void AnalyzeLastBuildReport(BuildReport buildReport, bool includeUnused, bool logDetails, bool useJavaScriptSort = false)
         {
             var summary = buildReport.summary;
             var buildTargetName = BuildPipeline.GetBuildTargetName(summary.platform);
@@ -120,7 +120,7 @@ namespace Prg.Editor.Build
                 }
             }
             Timed("HTML report", () =>
-                HtmlReporter.CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary));
+                HtmlReporter.CreateBuildReportHtmlPage(unusedAssets, largeAssets, summary, useJavaScriptSort));
         }
 
         private static void AnalyzeLastScenesUsingAssets(BuildReport buildReport, bool logDetails)
@@ -487,7 +487,8 @@ namespace Prg.Editor.Build
         /// </summary>
         private static class HtmlReporter
         {
-            public static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary)
+            public static void CreateBuildReportHtmlPage(List<BuildAssetInfo> unusedAssets, List<BuildAssetInfo> largeAssets, BuildSummary summary,
+                bool useJavaScriptSort)
             {
                 #region HTML Templates
 
@@ -563,6 +564,52 @@ td.right {
 <body>";
                 const string htmlEnd = @"</body>
 </html>";
+                const string javaScript = @"
+// https://www.w3schools.com/howto/howto_js_sort_table.asp
+const sortDir = [false,false,false,false,false,false];
+function sortTable(index) {
+  table = document.getElementById(""dataTable"");
+  sortingUp = !sortDir[index];
+  sortDir[index] = sortingUp;
+  switching = true;
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName(""TD"")[index];
+      y = rows[i + 1].getElementsByTagName(""TD"")[index];
+      //check if the two rows should switch place:
+      if (sortingUp) {
+        if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}";
 
                 const string excludeFilesWarning =
                     "Note that C# source code, scenes and other components can be excluded form this report for various reasons";
@@ -589,16 +636,31 @@ td.right {
                 var fixedHtmlStart = htmlStart.Replace("@Build_Report@", $"{Application.productName} {buildName} Build Report");
                 var builder = new StringBuilder()
                     .Append(fixedHtmlStart).AppendLine()
-                    .Append(@"<table id=""dataTable"">").AppendLine()
-                    .Append("<tr>")
-                    .Append(@"<th><button onclick=""sortTable(0)"">Packed Size</button></th>")
-                    .Append(@"<th><button onclick=""sortTable(1)"">Check</button></th>")
-                    .Append(@"<th><button onclick=""sortTable(2)"">File Size</button></th>")
-                    .Append(@"<th><button onclick=""sortTable(3)"">Type Info</button></th>")
-                    .Append(@"<th><button onclick=""sortTable(4)"">Asset Name</button></th>")
-                    .Append(@"<th><button onclick=""sortTable(5)"">Asset Path</button></th>")
-                    .Append("</tr>").AppendLine();
-
+                    .Append(@"<table id=""dataTable"">").AppendLine();
+                if (useJavaScriptSort)
+                {
+                    builder
+                        .Append("<tr>")
+                        .Append(@"<th><button onclick=""sortTable(0)"">Packed Size</button></th>")
+                        .Append(@"<th><button onclick=""sortTable(1)"">Check</button></th>")
+                        .Append(@"<th><button onclick=""sortTable(2)"">File Size</button></th>")
+                        .Append(@"<th><button onclick=""sortTable(3)"">Type Info</button></th>")
+                        .Append(@"<th><button onclick=""sortTable(4)"">Asset Name</button></th>")
+                        .Append(@"<th><button onclick=""sortTable(5)"">Asset Path</button></th>")
+                        .Append("</tr>").AppendLine();
+                }
+                else
+                {
+                    builder
+                        .Append("<tr>")
+                        .Append($"<th>PackedSize</th>")
+                        .Append($"<th>Check</th>")
+                        .Append($"<th>FileSize</th>")
+                        .Append($"<th>Type</th>")
+                        .Append($"<th>Name</th>")
+                        .Append($"<th>Path</th>")
+                        .Append("</tr>").AppendLine();
+                }
                 foreach (var a in finalAssets)
                 {
                     UpdateFileTypeStatistics(a);
@@ -642,7 +704,8 @@ td.right {
                 }
                 builder
                     .Append("</table>").AppendLine()
-                    .Append(@$"<p class=""smaller"">Table row count is {tempAssets.Count}. Refresh page (F5) for default sort by largest size</p>").AppendLine()
+                    .Append(@$"<p class=""smaller"">Table row count is {tempAssets.Count}. Refresh page (F5) for default sort by largest size</p>")
+                    .AppendLine()
                     .Append(@$"<p class=""smaller"">Build for {buildName} platform" +
                             $" on {summary.buildEndedAt:yyyy-dd-MM HH:mm:ss}" +
                             $" output size is {FormatSize(summary.totalSize)}</p>").AppendLine();
@@ -725,56 +788,15 @@ td.right {
                     .Append("</tr>").AppendLine()
                     .Append("</table>").AppendLine();
 
-                const string javaScript = @"
-// https://www.w3schools.com/howto/howto_js_sort_table.asp
-const sortDir = [false,false,false,false,false,false];
-function sortTable(index) {
-  table = document.getElementById(""dataTable"");
-  sortingUp = !sortDir[index];
-  sortDir[index] = sortingUp;
-  switching = true;
-  /*Make a loop that will continue until
-  no switching has been done:*/
-  while (switching) {
-    //start by saying: no switching is done:
-    switching = false;
-    rows = table.rows;
-    /*Loop through all table rows (except the
-    first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
-      //start by saying there should be no switching:
-      shouldSwitch = false;
-      /*Get the two elements you want to compare,
-      one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName(""TD"")[index];
-      y = rows[i + 1].getElementsByTagName(""TD"")[index];
-      //check if the two rows should switch place:
-      if (sortingUp) {
-        if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
-          //if so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      } else {
-        if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
-          //if so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /*If a switch has been marked, make the switch
-      and mark that a switch has been done:*/
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-    }
-  }
-}";
-
                 builder
-                    .Append(@$"<p class=""smaller"">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>").AppendLine()
-                    .Append(@$"<script>{javaScript}</script>").AppendLine()
+                    .Append(@$"<p class=""smaller"">Page created on {DateTime.Now:yyyy-dd-MM HH:mm:ss}. <i>{excludeFilesWarning}</i></p>")
+                    .AppendLine();
+                if (useJavaScriptSort)
+                {
+                    builder
+                        .Append(@$"<script>{javaScript}</script>").AppendLine();
+                }
+                builder
                     .Append(htmlEnd);
 
                 var content = builder.ToString();
