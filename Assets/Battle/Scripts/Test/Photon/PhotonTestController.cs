@@ -1,4 +1,5 @@
-using Prg.Scripts.DevUtil;
+using System;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Battle.Scripts.Test.Photon
@@ -7,8 +8,15 @@ namespace Battle.Scripts.Test.Photon
     {
         [SerializeField] private PhotonTestView _view;
 
+        private static PhotonTestController _instance;
+
         private bool _isStarted;
-        private FpsCounterLabel _fpsCounterLabel;
+        private PhotonView _photonView;
+
+        private void Awake()
+        {
+            _instance = this;
+        }
 
         private void OnEnable()
         {
@@ -16,17 +24,19 @@ namespace Battle.Scripts.Test.Photon
             if (!_isStarted)
             {
                 _isStarted = true;
-                _fpsCounterLabel = GetComponentInParent<FpsCounterLabel>(true);
-                if (_fpsCounterLabel != null)
-                {
-                    _view.FpsToggleButton.onClick.AddListener(OnFpsToggle);
-                }
             }
         }
 
-        private void OnFpsToggle()
+        public static void SetPhotonViewForUi(PhotonView photonView, Action onTestButton)
         {
-            _fpsCounterLabel.enabled = !_fpsCounterLabel.enabled;
+            if (photonView.Owner.IsMasterClient)
+            {
+                _instance._view.TestButton.onClick.AddListener(() => onTestButton());
+            }
+            else
+            {
+                _instance._view.TestButton.interactable = false;
+            }
         }
     }
 }

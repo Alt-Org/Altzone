@@ -5,9 +5,9 @@ namespace Battle.Scripts.Test.Photon
 {
     public class PhotonTestView : MonoBehaviour
     {
-        [SerializeField] private Button _fpsToggleButton;
+        [SerializeField] private Button _testButton;
 
-        public Button FpsToggleButton => _fpsToggleButton;
+        public Button TestButton => _testButton;
 
         public void ResetView()
         {
