@@ -13,7 +13,6 @@ public class Raid_Inventory : MonoBehaviour
 
     [SerializeField, Header("Time manager")]
     private Raid_Timer raid_Timer;
-
     private Transform _transform;
 
     [SerializeField, Header("Sprites")]
