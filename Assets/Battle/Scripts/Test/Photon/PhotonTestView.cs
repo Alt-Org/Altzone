@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using Photon.Pun;
+using Prg.Scripts.Common.Photon;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +22,17 @@ namespace Battle.Scripts.Test.Photon
         [SerializeField] private TextMeshProUGUI _rpcText4;
         [SerializeField] private TextMeshProUGUI _rpcText5;
 
+        [Header("Player"), SerializeField] private TextMeshProUGUI _pingLabel;
+        [SerializeField] private TextMeshProUGUI _pingText;
+
         public Button TestButton => _testButton;
+
+        private string _currentRegion;
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+        }
 
         public void ResetView()
         {
@@ -27,30 +40,53 @@ namespace Battle.Scripts.Test.Photon
             foreach (var text in new[]
                      {
                          _playerLabel, _playerText,
-                         _rpcLabel, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5
+                         _rpcLabel, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5,
+                         _pingLabel, _pingText
                      })
             {
                 text.text = string.Empty;
             }
             _rpcLabel.text = "Frame Sync Rpc";
+            _pingLabel.text = "Ping";
+            _currentRegion = string.Empty;
+            StopAllCoroutines();
         }
 
         public void SetPhotonView(PhotonView photonView)
         {
-            _playerLabel.text = $"{PhotonNetwork.CurrentRoom.Name} {PhotonNetwork.NetworkingClient.CloudRegion}";
+            _currentRegion = PhotonLobby.GetRegion();
+            _playerLabel.text = $"{PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
             var playerLabel = photonView.Owner.GetDebugLabel();
             Debug.Log($"{playerLabel}");
             _playerText.text = playerLabel;
+            StartCoroutine(PingPoller());
+        }
+
+        private IEnumerator PingPoller()
+        {
+            var delay = new WaitForSeconds(2f);
+            yield return delay;
+            var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
+            while (enabled)
+            {
+                _pingText.text = $"{_currentRegion} {peer.RoundTripTime} ms (~{peer.RoundTripTimeVariance} ms)";
+                yield return delay;
+            }
         }
 
         public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int curFrameCount, int msgTimestamp)
         {
             var serverTimestamp = PhotonNetwork.ServerTimestamp;
-            _rpcText1.text = $"{(uint)rpcTimestamp:0 000 000} rpc sent time";
-            _rpcText2.text = $"{(uint)msgTimestamp:0 000 000} msg info time";
-            _rpcText3.text = $"{(uint)serverTimestamp:0 000 000} cur recv time";
-            _rpcText4.text = $"{rpcFrameCount:0 000 000} rpc sent frame";
-            _rpcText5.text = $"{curFrameCount:0 000 000} cur game frame";
+            var rpcDelta = (uint)serverTimestamp - (uint)rpcTimestamp;
+            var delta1 = (uint)msgTimestamp - (uint)rpcTimestamp;
+            var delta2 = (uint)serverTimestamp - (uint)msgTimestamp;
+            var frameDelta = (uint)curFrameCount - (uint)rpcFrameCount;
+            _rpcLabel.text = $"Frame Sync Rpc: d{rpcDelta:000}";
+            _rpcText1.text = $"t{(uint)rpcTimestamp:0 000 000} rpc <b>sent</b>";
+            _rpcText2.text = $"t{(uint)msgTimestamp:0 000 000} msg info : d{delta1:000}";
+            _rpcText3.text = $"t{(uint)serverTimestamp:0 000 000} cur recv : d{delta2:000}";
+            _rpcText4.text = $"f{(uint)rpcFrameCount:0 000 000} rpc <b>sent</b>";
+            _rpcText5.text = $"f{(uint)curFrameCount:0 000 000} cur game : d{frameDelta:000}";
         }
     }
 }
