@@ -41,5 +41,10 @@ namespace Battle.Scripts.Test.Photon
         {
             _view.SetPhotonView(photonView);
         }
+
+        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, PhotonMessageInfo info)
+        {
+            _view.ShowRecvFrameSyncTest(frameCount, timestamp, Time.frameCount, info.SentServerTimestamp);
+        }
     }
 }

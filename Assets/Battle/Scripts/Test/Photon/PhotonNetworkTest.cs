@@ -13,6 +13,7 @@ namespace Battle.Scripts.Test.Photon
         [SerializeField] private bool _isMasterClient;
         [SerializeField] private bool _isLocalPlayer;
         [SerializeField] private string _playerName;
+        [SerializeField] private PhotonTestController _controller;
 
         private void Awake()
         {
@@ -28,27 +29,35 @@ namespace Battle.Scripts.Test.Photon
         private void OnEnable()
         {
             Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState}");
-            var controller = PhotonTestController.Get();
-            controller.SetPhotonView(_photonView);
-            if (_isLocalPlayer && _isMasterClient)
+            if (!_isMasterClient)
             {
-                // Only local Photon Master Client can sen test messages.
-                controller.SetTestButton(OnTestButton);
+                return;
+            }
+            // We show only Photon Master Client info (local or remote).
+            _controller = PhotonTestController.Get();
+            _controller.SetPhotonView(_photonView);
+            if (_isLocalPlayer)
+            {
+                // Only local Photon Master Client can send and receive test messages!
+                _controller.SetTestButton(OnTestButton);
             }
         }
 
         private void OnTestButton()
         {
-            Debug.Log($"{_playerName} send FrameSyncTest");
+            var frameCount = Time.frameCount;
+            var timestamp = PhotonNetwork.ServerTimestamp;
+            Debug.Log($"SEND frame {frameCount} time {(uint)timestamp}", this);
             Assert.IsTrue(_isLocalPlayer);
             Assert.IsTrue(_isMasterClient);
-            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All);
+            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp);
         }
 
         [PunRPC]
-        private void FrameSyncTest()
+        private void FrameSyncTest(int frameCount, int timestamp, PhotonMessageInfo info)
         {
-            Debug.Log($"{_playerName} recv FrameSyncTest");
+            Debug.Log($"RECV FrameSyncTest frame {frameCount} time {(uint)timestamp}", this);
+            _controller.ShowRecvFrameSyncTest(frameCount, timestamp, info);
         }
     }
 }
