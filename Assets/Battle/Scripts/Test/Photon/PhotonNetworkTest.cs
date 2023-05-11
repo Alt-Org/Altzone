@@ -7,13 +7,14 @@ using UnityEngine.Assertions;
 namespace Battle.Scripts.Test.Photon
 {
     /// <summary>
-    /// Test Photon PUN 2 RPC functionality for better understanding how it works.
+    /// Test Photon PUN 2 RPC functionality for better understanding how it works.<be />
+    /// We use Photon MasterClient instance to send and receive RPC messages over network
+    /// and show some (timing) details about this on all clients in the room.
     /// </summary>
     public class PhotonNetworkTest : MonoBehaviour
     {
         [Header("Live Data"), SerializeField] private PhotonView _photonView;
         [SerializeField] private bool _isMasterClient;
-        [SerializeField] private bool _isLocalPlayer;
         [SerializeField] private string _playerName;
         [SerializeField] private PhotonTestController _controller;
 
@@ -24,7 +25,6 @@ namespace Battle.Scripts.Test.Photon
             _photonView = PhotonView.Get(this);
             var owner = _photonView.Owner;
             _isMasterClient = owner.IsMasterClient;
-            _isLocalPlayer = owner.IsLocal;
             _playerName = owner.GetDebugLabel();
             name = name.Replace("Clone", _playerName);
             Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState}");
@@ -44,8 +44,8 @@ namespace Battle.Scripts.Test.Photon
             {
                 yield return new WaitUntil(() => (_controller = PhotonTestController.Get()) != null);
             }
+            // Photon Master Client instance can send test messages (on behalf of local player).
             _controller.SetMasterClientPhotonView(_photonView);
-            // Any Photon Master Client instance can send test messages!
             _controller.SetMasterClientTestButton(OnTestButton);
         }
 
