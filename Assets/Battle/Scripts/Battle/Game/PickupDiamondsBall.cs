@@ -24,11 +24,6 @@ namespace Battle.Scripts.Battle.Game
         public TeamDiamondCount TeamDiamondCount2;
         public int TeamNumber;
 
-        private void Start()
-        {
-            View = transform.GetComponent<PhotonView>();
-        }
-
         public void TeamNumberChange(int TeamNumberParam)
         {
             View.RPC("TeamNumberChangeRPC",  RpcTarget.All, TeamNumberParam);

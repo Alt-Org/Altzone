@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle.Players
         private TMP_Text DiamondText2;
         public TeamDiamondCount TeamDiamondCount2;
 
-        public List<GameObject> PlayerActors = new List<GameObject>();
+        public List<GameObject> PlayerDriverPhotons = new List<GameObject>();
         public PlayerDriverPhoton PlayerDriverPhoton;
         [SerializeField] PlayerActor PlayerActor;
         public PhotonView View;
@@ -37,8 +37,8 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
 
-            PlayerActors = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").ToList();
-            foreach (GameObject t in PlayerActors)
+            PlayerDriverPhotons = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").ToList();
+            foreach (GameObject t in PlayerDriverPhotons)
             {
                 View = t.GetComponent<PhotonView>();
                 PlayerDriverPhoton = t.GetComponent<PlayerDriverPhoton>();
