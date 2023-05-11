@@ -1,3 +1,4 @@
+using System.Collections;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -28,16 +29,16 @@ namespace Battle.Scripts.Test.Photon
             Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState}");
         }
 
-        private void OnEnable()
+        private IEnumerator Start()
         {
             _startFrameCount = Time.frameCount;
             Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState} startFrameCount {_startFrameCount}");
             if (!_isMasterClient)
             {
-                return;
+                yield break;
             }
-            // We show only Photon Master Client info (local or remote).
-            _controller = PhotonTestController.Get();
+            // We show only Photon Master Client info (local or remote) when PhotonTestController has been created.
+            yield return new WaitUntil(() => (_controller = PhotonTestController.Get()) != null);
             _controller.SetPhotonView(_photonView);
             // Any Photon Master Client instance can send test messages!
             _controller.SetTestButton(OnTestButton);
