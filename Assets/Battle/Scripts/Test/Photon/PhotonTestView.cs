@@ -46,7 +46,7 @@ namespace Battle.Scripts.Test.Photon
             {
                 text.text = string.Empty;
             }
-            _rpcLabel.text = "Frame Sync Rpc";
+            _rpcLabel.text = "Rpc";
             _pingLabel.text = "Ping";
             _currentRegion = string.Empty;
             StopAllCoroutines();
@@ -74,19 +74,22 @@ namespace Battle.Scripts.Test.Photon
             }
         }
 
-        public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int curFrameCount, int msgTimestamp)
+        public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime, int curFrameCount, int msgTimestamp)
         {
             var serverTimestamp = PhotonNetwork.ServerTimestamp;
             var rpcDelta = (uint)serverTimestamp - (uint)rpcTimestamp;
             var delta1 = (uint)msgTimestamp - (uint)rpcTimestamp;
             var delta2 = (uint)serverTimestamp - (uint)msgTimestamp;
-            var frameDelta = (uint)curFrameCount - (uint)rpcFrameCount;
-            _rpcLabel.text = $"Frame Sync Rpc: d{rpcDelta:000}";
+            int frameDelta = (int)((uint)curFrameCount - (uint)rpcFrameCount);
+            var frameDeltaText = frameDelta >= 0
+                ? $"+{frameDelta:000}"
+                : $"{frameDelta:000}";
+            _rpcLabel.text = $"Rpc: rtt {rpcLastRoundTripTime:000} d{rpcDelta:000}";
             _rpcText1.text = $"t{(uint)rpcTimestamp:0 000 000} rpc <b>sent</b>";
             _rpcText2.text = $"t{(uint)msgTimestamp:0 000 000} msg info : d{delta1:000}";
             _rpcText3.text = $"t{(uint)serverTimestamp:0 000 000} cur recv : d{delta2:000}";
             _rpcText4.text = $"f{(uint)rpcFrameCount:0 000 000} rpc <b>sent</b>";
-            _rpcText5.text = $"f{(uint)curFrameCount:0 000 000} cur game : d{frameDelta:000}";
+            _rpcText5.text = $"f{(uint)curFrameCount:0 000 000} cur game : d{frameDeltaText}";
         }
     }
 }

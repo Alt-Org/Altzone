@@ -12,7 +12,7 @@ namespace Battle.Scripts.Test.Photon
 
         [SerializeField] private PhotonTestView _view;
 
-        private bool _isStarted;
+        private int _startFrameCount;
         private PhotonView _photonView;
 
         private void Awake()
@@ -22,12 +22,9 @@ namespace Battle.Scripts.Test.Photon
 
         private void OnEnable()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+            _startFrameCount = Time.frameCount;
+            Debug.Log($"{PhotonNetwork.NetworkClientState} startFrameCount {_startFrameCount}");
             _view.ResetView();
-            if (!_isStarted)
-            {
-                _isStarted = true;
-            }
         }
 
         public void SetTestButton(Action onTestButton)
@@ -42,9 +39,11 @@ namespace Battle.Scripts.Test.Photon
             _view.SetPhotonView(photonView);
         }
 
-        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, PhotonMessageInfo info)
+        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info)
         {
-            _view.ShowRecvFrameSyncTest(frameCount, timestamp, Time.frameCount, info.SentServerTimestamp);
+            _view.ShowRecvFrameSyncTest(
+                frameCount, timestamp, lastRoundTripTime,
+                Time.frameCount - _startFrameCount, info.SentServerTimestamp);
         }
     }
 }

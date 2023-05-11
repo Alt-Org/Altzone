@@ -15,6 +15,8 @@ namespace Battle.Scripts.Test.Photon
         [SerializeField] private string _playerName;
         [SerializeField] private PhotonTestController _controller;
 
+        private int _startFrameCount;
+
         private void Awake()
         {
             _photonView = PhotonView.Get(this);
@@ -28,7 +30,8 @@ namespace Battle.Scripts.Test.Photon
 
         private void OnEnable()
         {
-            Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState}");
+            _startFrameCount = Time.frameCount;
+            Debug.Log($"{_playerName} {PhotonNetwork.NetworkClientState} startFrameCount {_startFrameCount}");
             if (!_isMasterClient)
             {
                 return;
@@ -45,19 +48,20 @@ namespace Battle.Scripts.Test.Photon
 
         private void OnTestButton()
         {
-            var frameCount = Time.frameCount;
+            var frameCount = Time.frameCount - _startFrameCount;
             var timestamp = PhotonNetwork.ServerTimestamp;
-            Debug.Log($"SEND frame {frameCount} time {(uint)timestamp}", this);
+            var lastRoundTripTime = PhotonNetwork.NetworkingClient.LoadBalancingPeer.LastRoundTripTime;
+            Debug.Log($"SEND frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime}", this);
             Assert.IsTrue(_isLocalPlayer);
             Assert.IsTrue(_isMasterClient);
-            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp);
+            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp, lastRoundTripTime);
         }
 
         [PunRPC]
-        private void FrameSyncTest(int frameCount, int timestamp, PhotonMessageInfo info)
+        private void FrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info)
         {
-            Debug.Log($"RECV FrameSyncTest frame {frameCount} time {(uint)timestamp}", this);
-            _controller.ShowRecvFrameSyncTest(frameCount, timestamp, info);
+            Debug.Log($"RECV FrameSyncTest frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime}", this);
+            _controller.ShowRecvFrameSyncTest(frameCount, timestamp, lastRoundTripTime, info);
         }
     }
 }
