@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 8290781314376678510}
   - component: {fileID: 38541569189560006}
   m_Layer: 5
-  m_Name: Text
+  m_Name: PlayerText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -654,6 +654,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _testButton: {fileID: 1852218775790822991}
+  _playerLabel: {fileID: 5774704089050676048}
+  _playerText: {fileID: 38541569189560006}
 --- !u!114 &3085880365612362452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1399,7 +1401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2238916842760553104}
   m_Layer: 5
-  m_Name: LabelAndText
+  m_Name: Player LabelAndText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3370,7 +3372,7 @@ GameObject:
   - component: {fileID: 8878544205538389512}
   - component: {fileID: 5774704089050676048}
   m_Layer: 5
-  m_Name: Label
+  m_Name: PlayerLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3424,9 +3426,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'LABEL
-
-'
+  m_text: Player
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,

@@ -39,7 +39,7 @@ namespace Battle.Scripts.Test.Photon
 
         public void SetPhotonView(PhotonView photonView)
         {
-            Debug.Log($"{photonView.Owner.GetDebugLabel()}");
+            _view.SetPhotonView(photonView);
         }
     }
 }
