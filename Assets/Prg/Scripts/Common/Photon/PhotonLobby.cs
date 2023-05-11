@@ -63,6 +63,10 @@ namespace Prg.Scripts.Common.Photon
             {
                 throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
             }
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                throw new UnityException("Player name is missing");
+            }
             // We always use explicit settings, either our own or Photon default settings from Editor.
             var photonAppSettings = Resources.Load<PhotonAppSettings>(nameof(PhotonAppSettings));
             var appSettings = photonAppSettings != null
