@@ -39,11 +39,8 @@ namespace Battle.Scripts.Test.Photon
             // We show only Photon Master Client info (local or remote).
             _controller = PhotonTestController.Get();
             _controller.SetPhotonView(_photonView);
-            if (_isLocalPlayer)
-            {
-                // Only local Photon Master Client can send and receive test messages!
-                _controller.SetTestButton(OnTestButton);
-            }
+            // Any Photon Master Client instance can send test messages!
+            _controller.SetTestButton(OnTestButton);
         }
 
         private void OnTestButton()
@@ -52,7 +49,6 @@ namespace Battle.Scripts.Test.Photon
             var timestamp = PhotonNetwork.ServerTimestamp;
             var lastRoundTripTime = PhotonNetwork.NetworkingClient.LoadBalancingPeer.LastRoundTripTime;
             Debug.Log($"SEND frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime}", this);
-            Assert.IsTrue(_isLocalPlayer);
             Assert.IsTrue(_isMasterClient);
             _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp, lastRoundTripTime);
         }

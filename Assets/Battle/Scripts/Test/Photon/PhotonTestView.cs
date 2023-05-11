@@ -16,6 +16,7 @@ namespace Battle.Scripts.Test.Photon
         [SerializeField] private TextMeshProUGUI _playerText;
 
         [Header("Rpc"), SerializeField] private TextMeshProUGUI _rpcLabel;
+        [SerializeField] private TextMeshProUGUI _rpcText0;
         [SerializeField] private TextMeshProUGUI _rpcText1;
         [SerializeField] private TextMeshProUGUI _rpcText2;
         [SerializeField] private TextMeshProUGUI _rpcText3;
@@ -42,7 +43,7 @@ namespace Battle.Scripts.Test.Photon
             foreach (var text in new[]
                      {
                          _playerLabel, _playerText,
-                         _rpcLabel, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5,
+                         _rpcLabel, _rpcText0, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5,
                          _pingLabel, _pingText,
                          _gameInfoTextLines
                      })
@@ -88,8 +89,9 @@ namespace Battle.Scripts.Test.Photon
             }
         }
 
-        public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime, int curFrameCount, int msgTimestamp)
+        public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime, int curFrameCount, PhotonMessageInfo info)
         {
+            var msgTimestamp = info.SentServerTimestamp;
             var serverTimestamp = PhotonNetwork.ServerTimestamp;
             var rpcDelta = (uint)serverTimestamp - (uint)rpcTimestamp;
             var delta1 = (uint)msgTimestamp - (uint)rpcTimestamp;
@@ -99,6 +101,7 @@ namespace Battle.Scripts.Test.Photon
                 ? $"+{frameDelta:000}"
                 : $"{frameDelta:000}";
             _rpcLabel.text = $"Rpc: rtt {rpcLastRoundTripTime:000} d{rpcDelta:000}";
+            _rpcText0.text = $"Sender {info.Sender.NickName}";
             _rpcText1.text = $"t{(uint)rpcTimestamp:0 000 000} rpc <b>sent</b>";
             _rpcText2.text = $"t{(uint)msgTimestamp:0 000 000} msg info : d{delta1:000}";
             _rpcText3.text = $"t{(uint)serverTimestamp:0 000 000} cur recv : d{delta2:000}";

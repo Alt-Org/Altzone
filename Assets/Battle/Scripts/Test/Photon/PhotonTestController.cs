@@ -43,7 +43,7 @@ namespace Battle.Scripts.Test.Photon
         {
             _view.ShowRecvFrameSyncTest(
                 frameCount, timestamp, lastRoundTripTime,
-                Time.frameCount - _startFrameCount, info.SentServerTimestamp);
+                Time.frameCount - _startFrameCount, info);
         }
     }
 }
