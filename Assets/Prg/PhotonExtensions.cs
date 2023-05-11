@@ -219,7 +219,11 @@ public static class PhotonExtensions
         }
         if (verbose)
         {
-            status += $" {player.CustomProperties.AsSorted()}";
+            var customProperties = player.CustomProperties;
+            if (customProperties != null && customProperties.Count > 0)
+            {
+                status += $" {player.CustomProperties.AsSorted()}";
+            }
         }
         var playerName = verbose ? $"Player: {player.NickName}" : player.NickName;
         return $"{playerName} {status}";
