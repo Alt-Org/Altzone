@@ -32,6 +32,8 @@ namespace Battle.Scripts.Test.Photon
 
         private string _currentRegion;
         private int _currentPlayers;
+        private int _minPing;
+        private int _maxPing;
 
         private void OnDisable()
         {
@@ -54,6 +56,9 @@ namespace Battle.Scripts.Test.Photon
             _rpcLabel.text = "Rpc";
             _pingLabel.text = "Ping";
             _currentRegion = string.Empty;
+            _currentPlayers = 0;
+            _minPing = int.MaxValue;
+            _maxPing = int.MinValue;
             StopAllCoroutines();
         }
 
@@ -86,7 +91,16 @@ namespace Battle.Scripts.Test.Photon
             var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
             while (enabled && PhotonNetwork.InRoom)
             {
-                _pingText.text = $"{_currentRegion} {peer.RoundTripTime} ms (~{peer.RoundTripTimeVariance} ms)";
+                var currentPing = peer.RoundTripTime;
+                if (currentPing < _minPing)
+                {
+                    _minPing = currentPing;
+                }
+                if (currentPing > _maxPing)
+                {
+                    _maxPing = currentPing;
+                }
+                _pingText.text = $"{_currentRegion} {currentPing} [{_minPing}-{_maxPing}] ms (~{peer.RoundTripTimeVariance} ms)";
                 if (_currentPlayers != PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
