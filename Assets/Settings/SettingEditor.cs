@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +17,7 @@ public class SettingEditor : MonoBehaviour
     }
 
     private float RoundToTwoDecimals(float toRound)
-    {
+    { // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
         float multipliedVal = Mathf.Round(toRound * 100);
         return multipliedVal / 100;
     }

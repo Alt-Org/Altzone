@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SetVolume : MonoBehaviour
@@ -12,7 +10,7 @@ public class SetVolume : MonoBehaviour
 
     public void VolumeSet()
     {
-        // Gets the master volume and the volume for the type set in _soundType from SettingsCarrier
+        // Gets the wanted volume from SettingsCarrier
         gameObject.GetComponent<AudioSource>().volume = SettingsCarrier.Instance.SentVolume(_soundType);
     }
 }

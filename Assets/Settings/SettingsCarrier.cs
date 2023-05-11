@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class SettingsCarrier : MonoBehaviour
 {
     // Script for carrying settings data between scenes
