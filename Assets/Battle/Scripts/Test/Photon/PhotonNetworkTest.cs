@@ -20,6 +20,9 @@ namespace Battle.Scripts.Test.Photon
 
         private int _startFrameCount;
 
+        // Improve network marshalling performance and put all parameters with similar type in array.
+        private readonly int[] _sendBuffer = new int[4];
+
         private void Awake()
         {
             _photonView = PhotonView.Get(this);
@@ -57,12 +60,23 @@ namespace Battle.Scripts.Test.Photon
             var localPlayerActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
             Debug.Log($"SEND frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime} player {localPlayerActorNumber}", this);
             Assert.IsTrue(_isMasterClient);
-            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp, lastRoundTripTime, localPlayerActorNumber);
+            // We use int array to improve marshalling on Photon networking layer - contradictory to KISS principle.
+            var index = -1;
+            _sendBuffer[++index] = frameCount;
+            _sendBuffer[++index] = timestamp;
+            _sendBuffer[++index] = lastRoundTripTime;
+            _sendBuffer[++index] = localPlayerActorNumber;
+            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, _sendBuffer);
         }
 
         [PunRPC]
-        private void FrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, int localPlayerActorNumber, PhotonMessageInfo info)
+        private void FrameSyncTest(int[] recvBuffer, PhotonMessageInfo info)
         {
+            var index = -1;
+            var frameCount = recvBuffer[++index];
+            var timestamp = recvBuffer[++index];
+            var lastRoundTripTime = recvBuffer[++index];
+            var localPlayerActorNumber = recvBuffer[++index];
             Debug.Log($"RECV frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime} player {localPlayerActorNumber}", this);
             var localPlayer = PhotonNetwork.PlayerList.FirstOrDefault(x => x.ActorNumber == localPlayerActorNumber);
             _controller.ShowRecvFrameSyncTest(frameCount, timestamp, lastRoundTripTime, info, localPlayer);
