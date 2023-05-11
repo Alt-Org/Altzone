@@ -25,6 +25,8 @@ namespace Battle.Scripts.Test.Photon
         [Header("Player"), SerializeField] private TextMeshProUGUI _pingLabel;
         [SerializeField] private TextMeshProUGUI _pingText;
 
+        [Header("Player"), SerializeField] private TextMeshProUGUI _gameInfoTextLines;
+
         public Button TestButton => _testButton;
 
         private string _currentRegion;
@@ -41,7 +43,8 @@ namespace Battle.Scripts.Test.Photon
                      {
                          _playerLabel, _playerText,
                          _rpcLabel, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5,
-                         _pingLabel, _pingText
+                         _pingLabel, _pingText,
+                         _gameInfoTextLines
                      })
             {
                 text.text = string.Empty;
@@ -60,6 +63,17 @@ namespace Battle.Scripts.Test.Photon
             Debug.Log($"{playerLabel}");
             _playerText.text = playerLabel;
             StartCoroutine(PingPoller());
+            _gameInfoTextLines.text = "<b>Info</b>" +
+                                      $"\r\nDate {DateTime.Now:yyyy-dd-MM HH:mm}" +
+                                      $"\r\nPhoton ver {PhotonLobby.GameVersion}" +
+                                      $"\r\nPhoton send rate {PhotonNetwork.SendRate} Hz" +
+                                      $"\r\nGame phys step {1f / Time.fixedDeltaTime} Hz" +
+                                      $"\r\nGame frame rate {Application.targetFrameRate} Hz" +
+                                      $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {Screen.currentResolution.refreshRate} Hz";
+            if (PhotonNetwork.SerializationRate != PhotonNetwork.SendRate)
+            {
+                _gameInfoTextLines.text += $"\r\nSerialization rate {PhotonNetwork.SerializationRate} Hz";
+            }
         }
 
         private IEnumerator PingPoller()
