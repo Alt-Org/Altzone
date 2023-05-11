@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Battle.Scripts.Test.Photon
 
         [Header("Player"), SerializeField] private TextMeshProUGUI _playerLabel;
         [SerializeField] private TextMeshProUGUI _playerText;
+        [SerializeField] private TextMeshProUGUI _masterClientText;
 
         [Header("Rpc"), SerializeField] private TextMeshProUGUI _rpcLabel;
         [SerializeField] private TextMeshProUGUI _rpcText0;
@@ -45,7 +47,7 @@ namespace Battle.Scripts.Test.Photon
             _testButton.interactable = false;
             foreach (var text in new[]
                      {
-                         _playerLabel, _playerText,
+                         _playerLabel, _playerText, _masterClientText,
                          _rpcLabel, _rpcText0, _rpcText1, _rpcText2, _rpcText3, _rpcText4, _rpcText5,
                          _pingLabel, _pingText,
                          _gameInfoTextLines
@@ -62,14 +64,13 @@ namespace Battle.Scripts.Test.Photon
             StopAllCoroutines();
         }
 
-        public void SetPhotonView(PhotonView photonView)
+        public void SetPhotonView(Player localPlayer, Player masterClient)
         {
             _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
             _currentRegion = PhotonLobby.GetRegion();
             _playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
-            var playerLabel = photonView.Owner.GetDebugLabel();
-            Debug.Log($"{playerLabel}");
-            _playerText.text = playerLabel;
+            _playerText.text = $"Player: <b>{localPlayer.GetDebugLabel(false)}</b>";
+            _masterClientText.text = $"Master: {masterClient.GetDebugLabel(false)}";
             StartCoroutine(PingPoller());
             _gameInfoTextLines.text = "<b>Info</b>" +
                                       $"\r\nDate {DateTime.Now:yyyy-dd-MM HH:mm}" +
@@ -110,9 +111,10 @@ namespace Battle.Scripts.Test.Photon
             }
         }
 
-        public void ShowRecvFrameSyncTest(int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime, int curFrameCount, PhotonMessageInfo info)
+        public void ShowRecvFrameSyncTest(
+            int rpcFrameCount, int rpcTimestamp, int rpcLastRoundTripTime,
+            int msgTimestamp, int curFrameCount, Player sendingPlayer)
         {
-            var msgTimestamp = info.SentServerTimestamp;
             var serverTimestamp = PhotonNetwork.ServerTimestamp;
             var rpcDelta = (uint)serverTimestamp - (uint)rpcTimestamp;
             var delta1 = (uint)msgTimestamp - (uint)rpcTimestamp;
@@ -122,7 +124,7 @@ namespace Battle.Scripts.Test.Photon
                 ? $"+{frameDelta:000}"
                 : $"{frameDelta:000}";
             _rpcLabel.text = $"Rpc: rtt {rpcLastRoundTripTime:000} d{rpcDelta:000}";
-            _rpcText0.text = $"Sender <b>{info.Sender.NickName}</b>";
+            _rpcText0.text = $"From: <b>{sendingPlayer?.NickName ?? "MISSING"}</b>";
             _rpcText1.text = $"t{(uint)rpcTimestamp:0 000 000} rpc <b>sent</b>";
             _rpcText2.text = $"t{(uint)msgTimestamp:0 000 000} msg info : d{delta1:000}";
             _rpcText3.text = $"t{(uint)serverTimestamp:0 000 000} cur recv : d{delta2:000}";

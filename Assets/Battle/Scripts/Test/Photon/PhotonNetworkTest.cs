@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -37,11 +38,15 @@ namespace Battle.Scripts.Test.Photon
             {
                 yield break;
             }
-            // We show only Photon Master Client info (local or remote) when PhotonTestController has been created.
-            yield return new WaitUntil(() => (_controller = PhotonTestController.Get()) != null);
-            _controller.SetPhotonView(_photonView);
+            // Wait until PhotonTestController has been created.
+            _controller = PhotonTestController.Get();
+            if (_controller == null)
+            {
+                yield return new WaitUntil(() => (_controller = PhotonTestController.Get()) != null);
+            }
+            _controller.SetMasterClientPhotonView(_photonView);
             // Any Photon Master Client instance can send test messages!
-            _controller.SetTestButton(OnTestButton);
+            _controller.SetMasterClientTestButton(OnTestButton);
         }
 
         private void OnTestButton()
@@ -49,16 +54,18 @@ namespace Battle.Scripts.Test.Photon
             var frameCount = Time.frameCount - _startFrameCount;
             var timestamp = PhotonNetwork.ServerTimestamp;
             var lastRoundTripTime = PhotonNetwork.NetworkingClient.LoadBalancingPeer.LastRoundTripTime;
-            Debug.Log($"SEND frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime}", this);
+            var localPlayerActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+            Debug.Log($"SEND frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime} player {localPlayerActorNumber}", this);
             Assert.IsTrue(_isMasterClient);
-            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp, lastRoundTripTime);
+            _photonView.RPC(nameof(FrameSyncTest), RpcTarget.All, frameCount, timestamp, lastRoundTripTime, localPlayerActorNumber);
         }
 
         [PunRPC]
-        private void FrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info)
+        private void FrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, int localPlayerActorNumber, PhotonMessageInfo info)
         {
-            Debug.Log($"RECV FrameSyncTest frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime}", this);
-            _controller.ShowRecvFrameSyncTest(frameCount, timestamp, lastRoundTripTime, info);
+            Debug.Log($"RECV frame {frameCount} time {(uint)timestamp} last rtt {lastRoundTripTime} player {localPlayerActorNumber}", this);
+            var localPlayer = PhotonNetwork.PlayerList.FirstOrDefault(x => x.ActorNumber == localPlayerActorNumber);
+            _controller.ShowRecvFrameSyncTest(frameCount, timestamp, lastRoundTripTime, info, localPlayer);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Battle.Scripts.Test.Photon
 {
@@ -27,23 +29,27 @@ namespace Battle.Scripts.Test.Photon
             _view.ResetView();
         }
 
-        public void SetTestButton(Action onTestButton)
+        public void SetMasterClientTestButton(Action onTestButton)
         {
             // Only Photon Master Client should do this.
             _view.TestButton.interactable = true;
             _view.TestButton.onClick.AddListener(() => onTestButton());
         }
 
-        public void SetPhotonView(PhotonView photonView)
+        public void SetMasterClientPhotonView(PhotonView photonView)
         {
-            _view.SetPhotonView(photonView);
+            Assert.IsTrue(photonView.Owner.IsMasterClient);
+            _view.SetPhotonView(PhotonNetwork.LocalPlayer, photonView.Owner);
         }
 
-        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info)
+        public void ShowRecvFrameSyncTest(int frameCount, int timestamp, int lastRoundTripTime, PhotonMessageInfo info, Player sendingPlayer)
         {
             _view.ShowRecvFrameSyncTest(
-                frameCount, timestamp, lastRoundTripTime,
-                Time.frameCount - _startFrameCount, info);
+                frameCount,
+                timestamp, lastRoundTripTime,
+                info.SentServerTimestamp,
+                Time.frameCount - _startFrameCount,
+                sendingPlayer);
         }
     }
 }
