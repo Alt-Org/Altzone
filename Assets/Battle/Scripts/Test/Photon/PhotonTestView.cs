@@ -31,6 +31,7 @@ namespace Battle.Scripts.Test.Photon
         public Button TestButton => _testButton;
 
         private string _currentRegion;
+        private int _currentPlayers;
 
         private void OnDisable()
         {
@@ -58,8 +59,9 @@ namespace Battle.Scripts.Test.Photon
 
         public void SetPhotonView(PhotonView photonView)
         {
+            _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
             _currentRegion = PhotonLobby.GetRegion();
-            _playerLabel.text = $"{PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
+            _playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
             var playerLabel = photonView.Owner.GetDebugLabel();
             Debug.Log($"{playerLabel}");
             _playerText.text = playerLabel;
@@ -82,9 +84,14 @@ namespace Battle.Scripts.Test.Photon
             var delay = new WaitForSeconds(2f);
             yield return delay;
             var peer = PhotonNetwork.NetworkingClient.LoadBalancingPeer;
-            while (enabled)
+            while (enabled && PhotonNetwork.InRoom)
             {
                 _pingText.text = $"{_currentRegion} {peer.RoundTripTime} ms (~{peer.RoundTripTimeVariance} ms)";
+                if (_currentPlayers != PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+                    _playerLabel.text = $"{_currentPlayers} in {PhotonNetwork.CurrentRoom.Name} {_currentRegion}";
+                }
                 yield return delay;
             }
         }
@@ -101,7 +108,7 @@ namespace Battle.Scripts.Test.Photon
                 ? $"+{frameDelta:000}"
                 : $"{frameDelta:000}";
             _rpcLabel.text = $"Rpc: rtt {rpcLastRoundTripTime:000} d{rpcDelta:000}";
-            _rpcText0.text = $"Sender {info.Sender.NickName}";
+            _rpcText0.text = $"Sender <b>{info.Sender.NickName}</b>";
             _rpcText1.text = $"t{(uint)rpcTimestamp:0 000 000} rpc <b>sent</b>";
             _rpcText2.text = $"t{(uint)msgTimestamp:0 000 000} msg info : d{delta1:000}";
             _rpcText3.text = $"t{(uint)serverTimestamp:0 000 000} cur recv : d{delta2:000}";
