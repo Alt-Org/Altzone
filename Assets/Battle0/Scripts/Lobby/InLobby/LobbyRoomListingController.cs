@@ -11,6 +11,8 @@ namespace Battle0.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingController : MonoBehaviourPunCallbacks
     {
+        private const string DefaultRoomNameName = "Battle ";
+
         [SerializeField] private LobbyRoomListingView _view;
         [SerializeField] private InputField _roomName;
 
@@ -43,12 +45,8 @@ namespace Battle0.Scripts.Lobby.InLobby
 
         private void CreateRoomOnClick()
         {
-            var roomName = $"Room{DateTime.Now.Second:00}";
-            if (_roomName.text != "")
-            {
-                roomName = _roomName.text;
-            }
-            RoomOptions roomOptions = new RoomOptions()
+            var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
+            var roomOptions = new RoomOptions()
             {
                 IsVisible = true,
                 IsOpen = true,
