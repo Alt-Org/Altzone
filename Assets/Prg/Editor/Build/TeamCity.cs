@@ -266,35 +266,44 @@ namespace Prg.Editor.Build
         private static void WriteSourceCodeChanges(int bundleVersionCode)
         {
             const string bundleVersionCodeFilename = @"Assets\Prg\BundleVersionCode.cs";
-            const string bundleVersionCodeText1 = @"private const string BundleVersionCodeValue = """;
-            const string bundleVersionCodeText2 = @""";";
+            const string bundleVersionCodeTextStart = @"private const string BundleVersionCodeValue = """;
+            const string bundleVersionCodeTextEnd = @""";";
+            const string compiledOnDateTextStart = @"private const string CompiledOnDateValue = """;
+            const string compiledOnDateTextEnd = @""";";
 
             if (!File.Exists(bundleVersionCodeFilename))
             {
                 Log($"File not found {bundleVersionCodeFilename}");
                 return;
             }
-            var sourceText = File.ReadAllText(bundleVersionCodeFilename, Encoding);
-            var index1 = sourceText.IndexOf(bundleVersionCodeText1, StringComparison.Ordinal);
-            if (index1 > 0)
-            {
-                index1 += bundleVersionCodeText1.Length;
-            }
-            var index2 = sourceText.IndexOf(bundleVersionCodeText2, StringComparison.Ordinal);
-            var isValid = index1 > 0 && index1 <= index2;
-            if (!isValid)
-            {
-                Log($"Original BundleVersionCodeText not found {bundleVersionCodeFilename}");
-                return;
-            }
-            var builder = new StringBuilder();
-            builder.Append(sourceText.Substring(0, index1));
-            builder.Append('.');
-            builder.Append(bundleVersionCode);
-            builder.Append(sourceText.Substring(index2));
+            var orgContent = File.ReadAllText(bundleVersionCodeFilename, Encoding);
+            var newContent = ReplaceTextLocal(orgContent, bundleVersionCodeTextStart, bundleVersionCodeTextEnd,
+                $".{bundleVersionCode}");
+            newContent = ReplaceTextLocal(newContent, compiledOnDateTextStart, compiledOnDateTextEnd,
+                DateTime.Now.FormatMinutes());
 
-            File.WriteAllText(bundleVersionCodeFilename, builder.ToString(), Encoding);
+            File.WriteAllText(bundleVersionCodeFilename, newContent, Encoding);
             AssetDatabase.Refresh(ImportAssetOptions.Default);
+
+            string ReplaceTextLocal(string text, string startMarker, string endMarker, object replacement)
+            {
+                var builder = new StringBuilder();
+                var index1 = text.IndexOf(startMarker, 0, StringComparison.Ordinal);
+                if (index1 < 0)
+                {
+                    throw new UnityException($"Start marker {startMarker} not found {bundleVersionCodeFilename}");
+                }
+                index1 += startMarker.Length;
+                var index2 = text.IndexOf(endMarker, index1, StringComparison.Ordinal);
+                if (index2 < 0)
+                {
+                    throw new UnityException($"Start marker {endMarker} not found {bundleVersionCodeFilename}");
+                }
+                builder.Append(text[..index1]);
+                builder.Append(replacement);
+                builder.Append(text[index2..]);
+                return builder.ToString();
+            }
         }
 
         private static string GetOutputFile(BuildTarget buildTarget)
