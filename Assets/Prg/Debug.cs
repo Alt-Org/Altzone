@@ -11,10 +11,12 @@ using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// Conditional (thread-safe) UnityEngine.Debug wrapper for development (and optionally for production).
+/// UnityEngine.Debug (thread-safe) wrapper for development (and optionally for production testing).
 /// </summary>
-[DefaultExecutionOrder(-100)]
-[SuppressMessage("ReSharper", "CheckNamespace")]
+/// <remarks>
+/// Using <c>Conditional</c> attribute to disable logging unless compiled with <b>UNITY_EDITOR</b> or <b>FORCE_LOG defines</b>.
+/// </remarks>
+[DefaultExecutionOrder(-100), SuppressMessage("ReSharper", "CheckNamespace")]
 public static class Debug
 {
     // See: https://answers.unity.com/questions/126315/debuglog-in-build.html
@@ -60,13 +62,24 @@ public static class Debug
 #endif
     }
 
+    #region Log formatting and filtering support
+
     private static bool _isClassNamePrefix;
     private static string _prefixTag;
     private static string _suffixTag;
     private static string _contextTag = string.Empty;
+
     private static bool _isEditorHook;
     private static int _mainThreadId;
     private static int _currentFrameCount;
+
+    private static void RemoveTags()
+    {
+        _isClassNamePrefix = false;
+        _prefixTag = null;
+        _suffixTag = null;
+        _contextTag = string.Empty;
+    }
 
     /// <summary>
     /// Filters log lines based on method class, name or other method properties.
@@ -110,14 +123,6 @@ public static class Debug
         _contextTag = contextTag;
     }
 
-    private static void RemoveTags()
-    {
-        _isClassNamePrefix = false;
-        _prefixTag = null;
-        _suffixTag = null;
-        _contextTag = string.Empty;
-    }
-
     private static int GetSafeFrameCount()
     {
         if (_mainThreadId == Thread.CurrentThread.ManagedThreadId)
@@ -127,7 +132,9 @@ public static class Debug
         return _currentFrameCount;
     }
 
-    #region Just for compability in UnityEngine namespace
+    #endregion
+
+    #region DUPLICATED : Just for compability in UnityEngine namespace
 
     public static void Break() => UnityEngine.Debug.Break();
     public static void DebugBreak() => UnityEngine.Debug.DebugBreak();
@@ -159,6 +166,8 @@ public static class Debug
     public static void DrawRay(Vector3 start, Vector3 dir) => UnityEngine.Debug.DrawRay(start, dir);
 
     #endregion
+
+    #region DUPLICATED : Actual UnityEngine.Debug Logging API
 
     /// <summary>
     /// Logs a string message.
@@ -229,7 +238,7 @@ public static class Debug
         }
         UnityEngine.Debug.unityLogger.LogFormat(LogType.Log, context, $"{GetPrefix(method)}{format}", args);
     }
-    
+
     [Conditional("UNITY_EDITOR"), Conditional("FORCE_LOG")]
     public static void LogWarning(string message, Object context = null)
     {
@@ -269,6 +278,10 @@ public static class Debug
     {
         UnityEngine.Debug.unityLogger.LogException(exception);
     }
+
+    #endregion
+
+    #region Static helpers
 
     private static string GetPrefix(MemberInfo method, string memberName = null)
     {
@@ -353,4 +366,6 @@ public static class Debug
             }
         }
     }
+
+    #endregion
 }

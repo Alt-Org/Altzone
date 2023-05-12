@@ -1,16 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SetVolume : MonoBehaviour
 {
     [SerializeField] SettingsCarrier.SoundType _soundType;
-
-    private AudioSource m_AudioSource;
     private void Start()
     {
-        m_AudioSource = gameObject.GetComponent<AudioSource>();
+        VolumeSet();
+    }
 
-        m_AudioSource.volume = SettingsCarrier.Instance.SentVolume(_soundType);
+    public void VolumeSet()
+    {
+        // Gets the wanted volume from SettingsCarrier
+        gameObject.GetComponent<AudioSource>().volume = SettingsCarrier.Instance.SentVolume(_soundType);
     }
 }

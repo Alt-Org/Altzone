@@ -21,6 +21,10 @@ namespace Battle.Scripts.Battle.Game
 
         [SerializeField] private GameObject _alphaTeamBrickWall;
         [SerializeField] private GameObject _betaTeamBrickWall;
+        [SerializeField] private GameObject _alphaTeamLeftBricks;
+        [SerializeField] private GameObject _betaTeamLeftBricks;
+        [SerializeField] private GameObject _betaTeamRightBricks;
+        [SerializeField] private GameObject _alphaTeamRightBricks;
         public int BrickHealth;
 
         [Header("Player Start Positions"), SerializeField] private GridPos _startPositionAlpha1;
@@ -30,6 +34,10 @@ namespace Battle.Scripts.Battle.Game
 
         [SerializeField] private GameObject[] _alphaTeamBricks;
         [SerializeField] private GameObject[] _betaTeamBricks;
+        [SerializeField] private GameObject[] _alphaTeamBricksLeft;
+        [SerializeField] private GameObject[] _alphaTeamBricksRight;
+        [SerializeField] private GameObject[] _betaTeamBricksLeft;
+        [SerializeField] private GameObject[] _betaTeamBricksRight;
 
         private BoxCollider2D _rightWallCollider;
         private BoxCollider2D _leftWallCollider;
@@ -37,7 +45,7 @@ namespace Battle.Scripts.Battle.Game
         private BoxCollider2D _topWallCollider;
 
         private const float BrickSpriteWidth = 2.35f;
-        private const int BricksPerWall = 7;
+        private const int BricksPerWall = 5;
 
         private Rect _playStartAreaAlpha;
         private Rect _playStartAreaBeta;
@@ -45,7 +53,8 @@ namespace Battle.Scripts.Battle.Game
         private void Awake()
         {
             SetupArenaBorders();
-            SetupBrickWalls();
+            SetupBottomBrickWalls();
+            SetupSideBrickWalls();
 
             var middleAreaHeight = _middleAreaHeight * _arenaHeight / _gridHeight;
             var squareHeight = _arenaHeight / _gridHeight;
@@ -72,7 +81,7 @@ namespace Battle.Scripts.Battle.Game
             _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
         }
 
-        private void SetupBrickWalls()
+        private void SetupBottomBrickWalls()
         {
             _alphaTeamBricks = new GameObject[BricksPerWall];
             _betaTeamBricks = new GameObject[BricksPerWall];
@@ -86,6 +95,36 @@ namespace Battle.Scripts.Battle.Game
                 _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeight / 2 - _arenaHeight / (_gridHeight));
                 _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
                 _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
+            }
+        }
+
+        private void SetupSideBrickWalls()
+        {
+            _alphaTeamBricksLeft = new GameObject[BricksPerWall];
+            _alphaTeamBricksRight = new GameObject[BricksPerWall];
+            _betaTeamBricksLeft = new GameObject[BricksPerWall];
+            _betaTeamBricksRight = new GameObject[BricksPerWall];
+            for (int i = 0; i < BricksPerWall; i++)
+            {
+                _alphaTeamBricksLeft[i] = _alphaTeamLeftBricks.transform.GetChild(i).gameObject;
+                _alphaTeamBricksRight[i] = _betaTeamRightBricks.transform.GetChild(i).gameObject;
+                _betaTeamBricksLeft[i] = _betaTeamLeftBricks.transform.GetChild(i).gameObject;
+                _betaTeamBricksRight[i] = _alphaTeamRightBricks.transform.GetChild(i).gameObject;
+
+                _alphaTeamBricksLeft[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
+                _alphaTeamBricksRight[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
+                _betaTeamBricksLeft[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
+                _betaTeamBricksRight[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
+
+                _alphaTeamBricksLeft[i].transform.position = new Vector2(-_arenaHeight / 3.3f + _arenaHeight / (_gridHeight), _alphaTeamBricksLeft[i].transform.position.y);
+                _alphaTeamBricksRight[i].transform.position = new Vector2( -_arenaHeight / 3.3f + _arenaHeight / (_gridHeight), _alphaTeamBricksRight[i].transform.position.y);
+                _betaTeamBricksLeft[i].transform.position = new Vector2(_arenaHeight / 3.3f - _arenaHeight / (_gridHeight), _betaTeamBricksLeft[i].transform.position.y);
+                _betaTeamBricksRight[i].transform.position = new Vector2(_arenaHeight / 3.3f - _arenaHeight / (_gridHeight), _betaTeamBricksRight[i].transform.position.y);
+
+                _alphaTeamBricksLeft[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
+                _alphaTeamBricksRight[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
+                _betaTeamBricksLeft[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
+                _betaTeamBricksRight[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
             }
         }
 
@@ -133,7 +172,7 @@ namespace Battle.Scripts.Battle.Game
                 default:
                     throw new UnityException($"Invalid player position {playerPos}");
             }
-                return startPosition;
+            return startPosition;
         }
     }
 }

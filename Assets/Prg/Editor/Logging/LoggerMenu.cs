@@ -69,7 +69,9 @@ namespace Prg.Editor.Logging
             if (File.Exists(path))
             {
                 InternalEditorUtility.OpenFileAtLineExternal(path, 1);
+                return;
             }
+            Debug.Log($"Editor log {RichText.Brown("NOT FOUND")}: {path} ");
         }
 
         private static string GetLogFilePath()

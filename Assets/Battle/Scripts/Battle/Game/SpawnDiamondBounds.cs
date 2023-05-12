@@ -30,7 +30,6 @@ public class SpawnDiamondBounds : MonoBehaviour
 
     void Start()
     {
-        View = transform.GetComponent<PhotonView>();
         int i = 1;
         foreach (Transform t in SpawnPoints)
         { 
@@ -84,8 +83,8 @@ public class SpawnDiamondBounds : MonoBehaviour
             {
                 Diamond = DiamondObject2;
             }
-            Vector3 pos = new Vector3(SpawnPoint.position.x, SpawnPointsArray[SpawnY], Random.Range(-size.z/2, size.z/2));  //pos = center + new vector3(center.x, )...
-            var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));   // transform.TransformPoint(pos)
+            Vector3 pos = new Vector3(SpawnPoint.position.x, SpawnPointsArray[SpawnY], Random.Range(-size.z/2, size.z/2));
+            var DiamondParent = GameObject.Instantiate(Diamond, pos, Quaternion.Euler (0f, 0f, 90f));
             DiamondParent.transform.parent = transform;
             DiamondParent.SetActive(true);
         }

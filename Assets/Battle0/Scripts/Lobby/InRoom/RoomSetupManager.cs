@@ -62,7 +62,7 @@ namespace Battle0.Scripts.Lobby.InRoom
 
         private void OnEnable()
         {
-            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState}");
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
             _buttonPlayerP1.interactable = false;
             _buttonPlayerP2.interactable = false;
             _buttonPlayerP3.interactable = false;
@@ -78,6 +78,7 @@ namespace Battle0.Scripts.Lobby.InRoom
 
         private void OnDisable()
         {
+            Debug.Log($"{PhotonNetwork.NetworkClientState}");
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
@@ -108,13 +109,14 @@ namespace Battle0.Scripts.Lobby.InRoom
                     { PlayerPositionKey, playerPos },
                     { PlayerMainSkillKey, prefabIndex }
                 });
+                Debug.Log($"{PhotonNetwork.NetworkClientState} {enabled}");
                 UpdateStatus();
             });
         }
 
         private void UpdateStatus()
         {
-            if (!PhotonNetwork.InRoom)
+            if (!enabled || !PhotonNetwork.InRoom)
             {
                 return;
             }

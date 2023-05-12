@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Battle.Scripts.Battle.Players;
 using UnityEngine;
 
@@ -11,47 +10,50 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Drivers")]
     [SerializeField] private List<PlayerDriverPhoton> _allDrivers;
+    private PlayerDriverPhoton _localPlayer;
 
     private const float PhotonWaitTime = 2.1f;
 
-    private void Start()
-    {
-        StartCoroutine(SearchPlayers());
-    }
-
-    private IEnumerator SearchPlayers()
+    private IEnumerator Start()
     {
         yield return new WaitForSeconds(PhotonWaitTime);
 
-        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton");
-        foreach(GameObject playerObject in playerObjects) { _allDrivers.Add(playerObject.GetComponent<PlayerDriverPhoton>()); }
-
-        AttachRangeIndicator();
+        SearchPlayers(); // Finds all drivers and puts them in _allDrivers
+        GetLocalDriver(); // Finds the local driver from _allDrivers and sets it in _localPlayer
+        AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
     }
 
-    private void AttachRangeIndicator()
+    private void SearchPlayers()
     {
-        int selfTeamNumber = 404;
-        GameObject self = null;
-
-        foreach(PlayerDriverPhoton driver in _allDrivers)
+        GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton");
+        foreach(GameObject playerObject in playerObjects) { _allDrivers.Add(playerObject.GetComponent<PlayerDriverPhoton>()); }
+    }
+    private void GetLocalDriver()
+    {
+        foreach (PlayerDriverPhoton driver in _allDrivers)
         {
-            // Figures who is the local player
             if (driver._photonView.Controller.IsLocal)
             {
-                self = driver._playerActor.gameObject;
-                selfTeamNumber = driver.TeamNumber;
+                _localPlayer = driver;
                 break;
             }
         }
-        foreach(PlayerDriverPhoton driver in _allDrivers)
+    }
+    private void AttachRangeIndicator()
+    {
+        try { Instantiate(_rangeIndicator, GetAlly(_localPlayer).transform); }
+        catch { Debug.Log("Local player is missing an ally"); }
+    }
+    private GameObject GetAlly(PlayerDriverPhoton selfDriver)
+    {
+        // Returns the ally GameObject of the drivers owner
+        foreach (PlayerDriverPhoton driver in _allDrivers)
         {
-            // Figures who is the ally of local player and applies the range indicator
-            if (driver.TeamNumber == selfTeamNumber && driver._playerActor.gameObject != self)
+            if (driver.TeamNumber == selfDriver.TeamNumber && driver._playerActor.gameObject != selfDriver._playerActor.gameObject)
             {
-                Instantiate(_rangeIndicator, driver._playerActor.gameObject.transform);
-                break;
+                return driver._playerActor.gameObject;
             }
         }
+        return null;
     }
 }

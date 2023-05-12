@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,19 @@ namespace Prg.Scripts.DevUtil
         private string _fpsLabel = string.Empty;
         private readonly Dictionary<int, string> _labels = new();
 
-        private IEnumerator Start()
+        private void OnEnable()
+        {
+            _fpsLabel = "fps";
+            StartCoroutine(TryStartFrameRateCalculator());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            _fpsLabel = string.Empty;
+        }
+
+        private IEnumerator TryStartFrameRateCalculator()
         {
             if (FindObjectsOfType(GetType()).Length > 1)
             {
@@ -34,9 +47,9 @@ namespace Prg.Scripts.DevUtil
 
         private IEnumerator FrameRateCalculator()
         {
+            Debug.Log("start");
             var delay = new WaitForSeconds(1.0f);
-            yield return delay;
-            for (; enabled;)
+            while (enabled)
             {
                 var startTime = Time.time;
                 var startFrames = Time.frameCount;
@@ -50,10 +63,15 @@ namespace Prg.Scripts.DevUtil
                 }
                 _fpsLabel = label;
             }
+            Debug.Log("exit");
         }
 
         private void OnGUI()
         {
+            if (_fpsLabel == string.Empty)
+            {
+                return;
+            }
             GUI.Box(_guiBoxPosition, string.Empty);
             GUI.Label(_guiLabelPosition, _fpsLabel, _guiLabelStyle);
         }

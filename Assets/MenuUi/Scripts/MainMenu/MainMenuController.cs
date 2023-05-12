@@ -10,7 +10,7 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            _view.Reset();
+            _view.ResetView();
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;

@@ -18,7 +18,7 @@ namespace MenuUi.Scripts.MainMenu
             set => _clanName.text = value;
         }
 
-        public void Reset()
+        public void ResetView()
         {
             PlayerName = string.Empty;
             ClanName = string.Empty;

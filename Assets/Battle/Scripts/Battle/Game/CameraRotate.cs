@@ -5,6 +5,7 @@ namespace Battle.Scripts.Battle.Game
 {
     internal class CameraRotate : MonoBehaviour
     {
+        //UiGridRenderer laittaa tämän koodin päälle kun grid on luotu, jotta sitä voi kääntää tämän koodin startissa
         [SerializeField] Transform Camera;
         [SerializeField] Transform Background;
         [SerializeField] Transform GridOverlay;
