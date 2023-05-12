@@ -293,12 +293,22 @@ namespace Prg.Editor.Build
 
         #region Utilities
 
-        private static void Timed(string message, Action action)
+        private static void Timed(string message, Action action, double minTimeToLog = 0.1)
         {
             var stopwatch = Stopwatch.StartNew();
             action();
             stopwatch.Stop();
-            Debug.Log($"{message} took {stopwatch.Elapsed.TotalSeconds:0.0} s");
+            var totalSeconds = stopwatch.Elapsed.TotalSeconds;
+            if (totalSeconds < minTimeToLog)
+            {
+                return;
+            }
+            if (totalSeconds < 0.1)
+            {
+                Debug.Log($"{message} took {totalSeconds:0.000} s");
+                return;
+            }
+            Debug.Log($"{message} took {totalSeconds:0.0} s");
         }
 
         private static string FormatSizeOrEmpty(ulong bytes, string empty = "&nbsp;")
