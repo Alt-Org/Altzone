@@ -1042,6 +1042,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1550062017}
     m_Modifications:
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: TestImage
+      value: 
+      objectReference: {fileID: 918462337, guid: 83a57713deb523349854e26c634fa7ee,
+        type: 3}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: TestItemWeight
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8100441790794122374, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1115,7 +1126,7 @@ PrefabInstance:
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1480
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -1125,7 +1136,7 @@ PrefabInstance:
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 740
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791056074069, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -1656,7 +1667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryUI: {fileID: 371317729}
-  InventorySize: 24
+  InventorySize: 28
 --- !u!4 &943703427
 Transform:
   m_ObjectHideFlags: 0
