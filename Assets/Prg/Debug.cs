@@ -31,25 +31,25 @@ public static class Debug
     private static void SubsystemRegistration()
     {
         // Manual reset if UNITY Domain Reloading is disabled.
-        _logLineAllowedFilter = null;
         _mainThreadId = Thread.CurrentThread.ManagedThreadId;
         _currentFrameCount = 0;
         RemoveTags();
-        CachedMethods.Clear();
+        _logLineAllowedFilter = null;
+        CachedLogLineMethods.Clear();
         SetEditorStatus();
     }
 
     [Conditional("UNITY_EDITOR")]
     private static void SetEditorStatus()
     {
+        // Reset log line filtering and caching in Editor when we switch form Player Mode to Edit Mode.
 #if UNITY_EDITOR
         void LogPlayModeState(PlayModeStateChange state)
         {
-            // UnityEngine.Debug.Log($"PlayModeStateChange {state}");
             if (state == PlayModeStateChange.EnteredEditMode)
             {
                 _logLineAllowedFilter = null;
-                CachedMethods.Clear();
+                CachedLogLineMethods.Clear();
             }
         }
 
@@ -89,7 +89,7 @@ public static class Debug
     /// <summary>
     /// Cache for tracking whether method should be logged or not.
     /// </summary>
-    private static readonly Dictionary<MethodBase, bool> CachedMethods = new();
+    private static readonly Dictionary<MethodBase, bool> CachedLogLineMethods = new();
 
     /// <summary>
     /// Adds log line filter.
@@ -336,7 +336,7 @@ public static class Debug
         {
             return true;
         }
-        if (CachedMethods.TryGetValue(method, out var isAllowed))
+        if (CachedLogLineMethods.TryGetValue(method, out var isAllowed))
         {
             return isAllowed;
         }
@@ -347,18 +347,15 @@ public static class Debug
         // Local function to make code more readable.
         void TryAddCachedMethod()
         {
-            // UnityEngine.Debug.Log(isAllowed
-            //     ? $"[{RichText.Brown("ACCEPT")}] {method.Name} in {method.ReflectedType?.FullName}"
-            //     : $"[{RichText.Brown("REJECT")}] {method.Name} in {method.ReflectedType?.FullName}");
             // Dictionary is not thread safe - so we guard it without locking!
-            if (CachedMethods.ContainsKey(method))
+            if (CachedLogLineMethods.ContainsKey(method))
             {
                 return;
             }
             // On rare cases some other thread might add the same method before us - and it is ok.
             try
             {
-                CachedMethods.Add(method, isAllowed);
+                CachedLogLineMethods.Add(method, isAllowed);
             }
             catch (ArgumentException)
             {
