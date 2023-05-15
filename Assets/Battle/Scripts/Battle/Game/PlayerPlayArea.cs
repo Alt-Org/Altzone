@@ -14,8 +14,12 @@ namespace Battle.Scripts.Battle.Game
         [Tooltip("Middle area height in grid squares"), SerializeField] private int _middleAreaHeight;
         [Tooltip("How many squares is the brick wall height"), SerializeField] private int _brickHeight;
 
-        [Header("Wall Colliders"), SerializeField] private GameObject _leftWall;
-        [SerializeField] private GameObject _rightWall;
+        [Header("Wall Colliders"), SerializeField] private GameObject _leftTopWall;
+        [SerializeField] private GameObject _rightTopWall;
+        [SerializeField] private GameObject _leftBottomWall;
+        [SerializeField] private GameObject _rightBottomWall;
+        [SerializeField] private GameObject _leftMidWall;
+        [SerializeField] private GameObject _rightMidWall;
         [SerializeField] private GameObject _bottomWall;
         [SerializeField] private GameObject _topWall;
 
@@ -25,6 +29,7 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GameObject _betaTeamLeftBricks;
         [SerializeField] private GameObject _betaTeamRightBricks;
         [SerializeField] private GameObject _alphaTeamRightBricks;
+
         public int BrickHealth;
 
         [Header("Player Start Positions"), SerializeField] private GridPos _startPositionAlpha1;
@@ -39,8 +44,14 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GameObject[] _betaTeamBricksLeft;
         [SerializeField] private GameObject[] _betaTeamBricksRight;
 
-        private BoxCollider2D _rightWallCollider;
-        private BoxCollider2D _leftWallCollider;
+
+        private BoxCollider2D _rightTopWallCollider;
+        private BoxCollider2D _leftTopWallCollider;
+        private BoxCollider2D _rightBottomWallCollider;
+        private BoxCollider2D _leftBottomWallCollider;
+        private BoxCollider2D _rightMidWallCollider;
+        private BoxCollider2D _leftMidWallCollider;
+
         private BoxCollider2D _bottomWallCollider;
         private BoxCollider2D _topWallCollider;
 
@@ -64,19 +75,32 @@ namespace Battle.Scripts.Battle.Game
 
         private void SetupArenaBorders()
         {
-            _rightWallCollider = _rightWall.GetComponent<BoxCollider2D>();
-            _leftWallCollider = _leftWall.GetComponent<BoxCollider2D>();
+
+            _rightTopWallCollider = _rightTopWall.GetComponent<BoxCollider2D>();
+            _leftTopWallCollider = _leftTopWall.GetComponent<BoxCollider2D>();
+            _rightBottomWallCollider = _rightBottomWall.GetComponent<BoxCollider2D>();
+            _leftBottomWallCollider = _leftBottomWall.GetComponent<BoxCollider2D>();
             _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
             _topWallCollider = _topWall.GetComponent<BoxCollider2D>();
+            _rightMidWallCollider = _rightMidWall.GetComponent<BoxCollider2D>();
+            _leftMidWallCollider = _leftMidWall.GetComponent<BoxCollider2D>();
 
             var arenaSize = new Vector2(_arenaWidth, _arenaHeight);
-            _rightWallCollider.size = arenaSize;
+            _rightTopWallCollider.size = arenaSize;
+            _leftTopWallCollider.size = arenaSize;
+            _rightBottomWallCollider.size = arenaSize;
+            _leftBottomWallCollider.size = arenaSize;
             _bottomWallCollider.size = arenaSize;
-            _leftWallCollider.size = arenaSize;
             _topWallCollider.size = arenaSize;
+            _rightMidWallCollider.size = arenaSize;
+            _leftMidWallCollider.size = arenaSize;
 
-            _leftWall.transform.position = new Vector2(-_arenaWidth, 0);
-            _rightWall.transform.position = new Vector2(_arenaWidth, 0);
+            _leftMidWall.transform.position = new Vector2(-_arenaWidth + -0.01f, 0);
+            _rightMidWall.transform.position = new Vector2(_arenaWidth + 0.01f, 0);
+            _leftTopWall.transform.position = new Vector2(-_arenaWidth, .7f + _arenaHeight / 2);
+            _rightTopWall.transform.position = new Vector2(_arenaWidth, .7f + _arenaHeight / 2);
+            _leftBottomWall.transform.position = new Vector2(-_arenaWidth, -.7f + -_arenaHeight / 2);
+            _rightBottomWall.transform.position = new Vector2(_arenaWidth, -.7f + -_arenaHeight / 2);
             _topWall.transform.position = new Vector2(0, _arenaHeight);
             _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
         }
@@ -100,6 +124,8 @@ namespace Battle.Scripts.Battle.Game
 
         private void SetupSideBrickWalls()
         {
+            _alphaTeamBricksLeft = new GameObject[BricksPerWall];
+            _alphaTeamBricksRight = new GameObject[BricksPerWall];
             _alphaTeamBricksLeft = new GameObject[BricksPerWall];
             _alphaTeamBricksRight = new GameObject[BricksPerWall];
             _betaTeamBricksLeft = new GameObject[BricksPerWall];
