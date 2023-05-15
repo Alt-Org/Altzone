@@ -171,7 +171,7 @@ MonoBehaviour:
   MaxSpawnTime: 10
   MaxChance: 4
   SpawnPointsArray: []
-  center: {x: 4.09091, y: 4, z: 0}
+  center: {x: 3.91, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
@@ -430,7 +430,7 @@ MonoBehaviour:
   MaxSpawnTime: 10
   MaxChance: 4
   SpawnPointsArray: []
-  center: {x: -4.09091, y: -4, z: 0}
+  center: {x: -3.91, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
@@ -654,7 +654,7 @@ MonoBehaviour:
   MaxSpawnTime: 10
   MaxChance: 4
   SpawnPointsArray: []
-  center: {x: 4.09091, y: -4, z: 0}
+  center: {x: 3.91, y: -4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
@@ -752,7 +752,7 @@ MonoBehaviour:
   MaxSpawnTime: 10
   MaxChance: 4
   SpawnPointsArray: []
-  center: {x: -4.09091, y: 4, z: 0}
+  center: {x: -3.91, y: 4, z: 0}
   size: {x: 0.8181818, y: 6.4, z: 0}
   SpawnY: 0
   PlayerLimit: 4
@@ -2396,6 +2396,10 @@ MonoBehaviour:
   _topWall: {fileID: 6707511437302172081}
   _alphaTeamBrickWall: {fileID: 7754314476380310042}
   _betaTeamBrickWall: {fileID: 3394065157751883121}
+  _alphaTeamLeftBricks: {fileID: 0}
+  _betaTeamLeftBricks: {fileID: 0}
+  _betaTeamRightBricks: {fileID: 0}
+  _alphaTeamRightBricks: {fileID: 0}
   BrickHealth: 3
   _startPositionAlpha1:
     _row: 10
@@ -2409,6 +2413,12 @@ MonoBehaviour:
   _startPositionBeta2:
     _row: 37
     _col: 20
+  _alphaTeamBricks: []
+  _betaTeamBricks: []
+  _alphaTeamBricksLeft: []
+  _alphaTeamBricksRight: []
+  _betaTeamBricksLeft: []
+  _betaTeamBricksRight: []
 --- !u!1 &1239007466319828630
 GameObject:
   m_ObjectHideFlags: 0
