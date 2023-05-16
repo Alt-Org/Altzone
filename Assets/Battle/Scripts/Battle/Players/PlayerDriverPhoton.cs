@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : MonoBehaviour, IPlayerDriverCallback
+    internal class PlayerDriverPhoton : MonoBehaviour
     {
         [SerializeField] private PlayerActor _playerPrefab;
 
@@ -110,7 +110,7 @@ namespace Battle.Scripts.Battle.Players
             _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
         }
 
-        void IPlayerDriverCallback.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
             if (!IsNetworkSynchronize)
             {

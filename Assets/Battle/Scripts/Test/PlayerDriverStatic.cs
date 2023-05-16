@@ -16,7 +16,7 @@ namespace Battle.Scripts.Test
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriverCallback
+    internal class PlayerDriverStatic : MonoBehaviour
     {
         [Serializable]
         internal class Settings
@@ -55,7 +55,7 @@ namespace Battle.Scripts.Test
             }
             _gridManager = Context.GetGridManager;
             var playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
-            _playerActor = PlayerActor.InstantiatePrefabFor(this, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
+            _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _settings._teamNumber);
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
@@ -103,9 +103,9 @@ namespace Battle.Scripts.Test
             _state.DelayedMove(gridPos, (float)_movementDelay);
         }
 
-        void IPlayerDriverCallback.SetCharacterPose(int poseIndex)
+        public void SetCharacterPose(int poseIndex)
         {
-            _playerActor.SetCharacterPose(poseIndex);
+            throw new NotImplementedException("only PlayerDriverPhoton can do this");
         }
     }
 }

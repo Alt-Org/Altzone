@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players
         public static string PlayerName;
         private bool StartBool = true;
 
-        private IPlayerDriverCallback _playerDriver;
+        private PlayerDriverPhoton _playerDriver;
         private ShieldPoseManager _shieldPoseManager;
         private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -110,7 +110,7 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(MoveCoroutine(targetPosition));
         }
 
-        public void SetPlayerDriver(IPlayerDriverCallback playerDriver)
+        public void SetPlayerDriver(PlayerDriverPhoton playerDriver)
         {
             _playerDriver = playerDriver;
         }
@@ -144,7 +144,7 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
-        public static PlayerActor InstantiatePrefabFor(IPlayerDriverCallback playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
             PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");
