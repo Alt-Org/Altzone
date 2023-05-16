@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Altzone.Scripts.Model;
-using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Temp;
 using ExitGames.Client.Photon;
@@ -109,6 +107,30 @@ namespace Battle0.Scripts
             return IsValidPlayerPos(playerPos);
         }
 
+        public static int GetPlayerPos(Player player)
+        {
+            return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+        }
+
+        public static int GetTeamNumber(Player player)
+        {
+            var playerPos = GetPlayerPos(player);
+
+            return IsValidPlayerPos(playerPos)
+                ? GetTeamNumber(playerPos)
+                : NoTeamValue;
+        }
+
+        public static Player GetTeamPlayer(Player player)
+        {
+            if (!IsRealPlayer(player))
+            {
+                return null;
+            }
+            var teamNumber = GetTeamNumber(player);
+            return PhotonNetwork.PlayerListOthers.FirstOrDefault(x => GetTeamNumber(x) == teamNumber);
+        }
+
         public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1, bool isAllocateByTeams = false)
         {
             var usedPlayerPositions = new HashSet<int>();
@@ -147,7 +169,7 @@ namespace Battle0.Scripts
 
         public static int CountRealPlayers()
         {
-            return PhotonNetwork.CurrentRoom.Players.Values.Where(IsRealPlayer).Count();
+            return PhotonNetwork.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);
         }
 
         public static bool IsValidGameplayPos(int playerPos)
@@ -162,12 +184,7 @@ namespace Battle0.Scripts
 
         public static bool IsValidPlayerPos(int playerPos)
         {
-            return playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4;
-        }
-
-        public static int GetPlayerPos(Player player)
-        {
-            return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
         }
 
         public static int GetTeamMemberPlayerPos(int playerPos)
@@ -360,7 +377,7 @@ namespace Battle0.Scripts
             }
             return defaultValue;
         }
-        
+
         /// <summary>
         /// Gets <c>IBattleCharacter</c> for a player in a room.
         /// </summary>
