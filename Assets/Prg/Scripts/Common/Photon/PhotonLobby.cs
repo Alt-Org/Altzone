@@ -40,7 +40,7 @@ namespace Prg.Scripts.Common.Photon
         /// <summary>
         /// Official game version for Photon (with Android bundle version code).
         /// </summary>
-        public static string GameVersion => $"{GetGameVersion()}{BundleVersionCode.Get}";
+        public static string GameVersion => $"{GetGameVersion()}.{BuildProperties.BundleVersionCode}";
 
         /// <summary>
         /// To override default <c>PhotonNetwork.GameVersion</c> (that is alias for <c>Application.version</c>).

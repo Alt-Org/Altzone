@@ -265,7 +265,7 @@ namespace Prg.Editor.Build
 
         private static void WriteSourceCodeChanges(int bundleVersionCode)
         {
-            const string bundleVersionCodeFilename = @"Assets\Prg\BundleVersionCode.cs";
+            const string bundleVersionCodeFilename = @"Assets\Prg\BuildProperties.cs";
             const string bundleVersionCodeTextStart = @"private const string BundleVersionCodeValue = """;
             const string bundleVersionCodeTextEnd = @""";";
             const string compiledOnDateTextStart = @"private const string CompiledOnDateValue = """;
@@ -278,7 +278,7 @@ namespace Prg.Editor.Build
             }
             var orgContent = File.ReadAllText(bundleVersionCodeFilename, Encoding);
             var newContent = ReplaceTextLocal(orgContent, bundleVersionCodeTextStart, bundleVersionCodeTextEnd,
-                $".{bundleVersionCode}");
+                $"{bundleVersionCode}");
             newContent = ReplaceTextLocal(newContent, compiledOnDateTextStart, compiledOnDateTextEnd,
                 DateTime.Now.FormatMinutes());
 
