@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -484,7 +485,7 @@ namespace Prg.Editor.Build
 
             protected static string GetExtension(string assetPath)
             {
-                return Path.GetExtension(assetPath).Replace(".", string.Empty).ToLower();
+                return Path.GetExtension(assetPath).Replace(".", string.Empty).ToLower(CultureInfo.InvariantCulture);
             }
         }
 

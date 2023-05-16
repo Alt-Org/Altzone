@@ -13,16 +13,14 @@ public class PlayerManager : MonoBehaviour
     private PlayerDriverPhoton _localPlayer;
 
     private const float PhotonWaitTime = 2.1f;
-
     private IEnumerator Start()
     {
-        yield return new WaitForSeconds(PhotonWaitTime);
+        yield return new WaitUntil(() => !FindObjectOfType<PhotonPlayerInstantiate>().enabled);
 
         SearchPlayers(); // Finds all drivers and puts them in _allDrivers
         GetLocalDriver(); // Finds the local driver from _allDrivers and sets it in _localPlayer
         AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
     }
-
     private void SearchPlayers()
     {
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("PlayerDriverPhoton");
@@ -56,4 +54,11 @@ public class PlayerManager : MonoBehaviour
         }
         return null;
     }
+
+    public bool AllExist()
+    {
+        if (_allDrivers.Count == 4) { return true; }
+        return false;
+    }
+
 }

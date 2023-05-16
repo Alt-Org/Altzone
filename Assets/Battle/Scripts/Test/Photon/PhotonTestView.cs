@@ -80,7 +80,7 @@ namespace Battle.Scripts.Test.Photon
                                       $"\r\nGame phys step {1f / Time.fixedDeltaTime} Hz" +
                                       $"\r\nGame frame rate {Application.targetFrameRate} Hz" +
                                       $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {Screen.currentResolution.refreshRate} Hz" +
-                                      $"\r\nCompiled {BundleVersionCode.CompiledOnDate}";
+                                      $"\r\nCompiled {BuildProperties.CompiledOnDate}";
             if (PhotonNetwork.SerializationRate != PhotonNetwork.SendRate)
             {
                 _gameInfoTextLines.text += $"\r\nSerialization rate {PhotonNetwork.SerializationRate} Hz";

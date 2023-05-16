@@ -29,6 +29,11 @@ public class Raid_InventoryItem : MonoBehaviour
         empty = false;
     }
 
+    public void RemoveData()
+    {
+        this.ItemImage.gameObject.SetActive(false);
+    }
+
     public void OnPointerClick(BaseEventData data)
     {
         if(empty)

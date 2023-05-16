@@ -577,6 +577,7 @@ GameObject:
   - component: {fileID: 8100441791093507179}
   - component: {fileID: 8100441791093507176}
   - component: {fileID: 8100441791093507173}
+  - component: {fileID: 7569432504062211167}
   m_Layer: 5
   m_Name: LootBag
   m_TagString: Untagged
@@ -690,6 +691,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &7569432504062211167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8100441791093507182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe3f669106d4fb94ebcd61d419d58f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentLootText: {fileID: 8100441792127549319}
+  OutOfText: {fileID: 8100441791056074068}
+  MaxLootText: {fileID: 8100441790832277365}
 --- !u!1 &8100441791181853597
 GameObject:
   m_ObjectHideFlags: 0
@@ -1254,6 +1270,9 @@ MonoBehaviour:
   ItemPrefab: {fileID: 7481540141435164365, guid: 59f733f3d92449d4a8da7c84514fdf3b,
     type: 3}
   ContentPanel: {fileID: 8100441790942708954}
+  LootTracker: {fileID: 7569432504062211167}
+  TestImage: {fileID: 0}
+  TestItemWeight: 0
 --- !u!1 &8100441792720133282
 GameObject:
   m_ObjectHideFlags: 0
