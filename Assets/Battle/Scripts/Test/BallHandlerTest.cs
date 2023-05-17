@@ -15,6 +15,8 @@ public class BallHandlerTest : MonoBehaviour
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
 
+    public Vector2 StartBallSpeed;
+
     private void Start()
     {
         _battlePlayArea = Context.GetBattlePlayArea;
@@ -33,6 +35,7 @@ public class BallHandlerTest : MonoBehaviour
         _rb.position = position;
         _rb.velocity = NewRotation(direction) * Vector2.up * speed;
         _sprite.enabled = true;
+        StartBallSpeed = new Vector2(_rb.velocity.x, _rb.velocity.y);
     }
 
     //private void Update()
@@ -68,4 +71,9 @@ public class BallHandlerTest : MonoBehaviour
         var newAngle = -multiplier * _angleLimit;
         return Quaternion.Euler(0, 0, newAngle);
     }
+
+    // public void NewSpeed(float NewBallSpeed)
+    // {
+    //     _rb.velocity = StartBallSpeed * NewBallSpeed;     //NewRotation(direction) * Vector2.up * 
+    // }
 }

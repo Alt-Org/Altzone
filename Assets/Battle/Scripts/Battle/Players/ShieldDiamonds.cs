@@ -12,6 +12,10 @@ namespace Battle.Scripts.Battle.Players
         private int TeamNumber;
         public PickupDiamondsBall PickupDiamondsBall;
 
+        public float Attack;
+        public float NewBallSpeed;
+        public BallHandlerTest BallHandlerTest;
+
         void Start()
         {
             if (!PhotonNetwork.InRoom)
@@ -22,6 +26,7 @@ namespace Battle.Scripts.Battle.Players
             
             TeamNumber = Pickup.TeamNumber;
             PickupDiamondsBall = GameObject.FindGameObjectWithTag("BallRigidBody").GetComponent<PickupDiamondsBall>();
+            BallHandlerTest = GameObject.FindGameObjectWithTag("BallRigidBody").GetComponent<BallHandlerTest>();
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
@@ -34,6 +39,8 @@ namespace Battle.Scripts.Battle.Players
                     //PickupDiamondsBall.TeamNumber = TeamNumber;
                     PickupDiamondsBall.TeamNumberChange(TeamNumber);
                 }
+                // NewBallSpeed = Attack + Pickup.OwnDiamonds1/30;
+                // BallHandlerTest.NewSpeed(NewBallSpeed);
             }
         }
     }

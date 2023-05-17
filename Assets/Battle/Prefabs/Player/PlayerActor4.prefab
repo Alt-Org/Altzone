@@ -131,10 +131,11 @@ MonoBehaviour:
   TeamDiamondCount: {fileID: 0}
   TeamDiamonds2: {fileID: 0}
   TeamDiamondCount2: {fileID: 0}
-  PlayerActors: []
+  PlayerDriverPhotons: []
   PlayerDriverPhoton: {fileID: 0}
   PlayerActor: {fileID: 8975400094333793158}
   View: {fileID: 0}
+  OwnDiamonds1: 0
   TeamNumber: 0
   EventSender: 
 --- !u!1 &8975400094333793159
@@ -409,6 +410,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &692432064203281466 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6605808331677378400, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -429,6 +433,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &1143231511168279991 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6768096489952024301, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -449,6 +456,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &1181344494426693276 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4779570902087364038, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -469,6 +479,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &2224969655507804448 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5534966803774542458, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -489,6 +502,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &2641928922049560033 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8546297990267489979, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -509,6 +525,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &2748858172726817323 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8364714028245762417, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -529,6 +548,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &3223068154321325215 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9118148286315577285, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -549,6 +571,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &3681972344363783820 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7000976120585840086, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -569,6 +594,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &3734945168307135782 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7054246912116741756, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -589,6 +617,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &4108933902087321343 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7725174725301110181, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -609,6 +640,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &4342551995132152226 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7958793952421444344, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -629,6 +663,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &5323668174928605171 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2004663793114979497, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -649,6 +686,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &6451001271741223486 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 843870350157930852, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -669,6 +709,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &6563820291374257662 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 659732410434479780, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -689,6 +732,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &6736153935887935761 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1102019296557292107, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -709,6 +755,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &7691076541430357169 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4074835975913910251, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -729,6 +778,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
 --- !u!1 &8694708647633931773 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3069563323245903527, guid: 2457932d6d029d74ba852ee545d0bfb7,
@@ -749,3 +801,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Pickup: {fileID: 4494353262941421778}
   PickupDiamondsBall: {fileID: 0}
+  Attack: 0.8
+  NewBallSpeed: 0
+  BallHandlerTest: {fileID: 0}
