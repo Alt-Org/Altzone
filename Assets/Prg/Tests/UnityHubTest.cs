@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace Prg.Tests
 {
@@ -40,11 +39,19 @@ namespace Prg.Tests
             Assert.AreEqual(2, callbackCount);
             yield return null;
 
-            // Destroy and invalidate our reference.
+            // Destroy and invalidate our reference - game1 should be null if referenced again..
             // Subscription should be removed automatically.
             Object.DestroyImmediate(game1);
             yield return null;
-            Assert.AreEqual((Object)null, game1);
+            // Jetbrains Rider can not understand this behaviour because game1 should be valid in normal applications - but in UNITY!
+            if (game1 == null)
+            {
+                Assert.IsNull(game1);
+            }
+            else
+            {
+                Assert.IsNull(game1);
+            }
             Debug.Log($"destroyed {game1}");
 
             // Subscription should be available.
@@ -72,7 +79,7 @@ namespace Prg.Tests
             var hub = game1.GetHub();
             Debug.Log($"<b>test</b> {hub}");
             Assert.IsNotNull(hub);
-            
+
             var callbackCount = 0;
             game1.Subscribe<GameObject>(param =>
             {
@@ -82,7 +89,7 @@ namespace Prg.Tests
             var handlerCount = hub.CheckHandlerCount();
             Assert.AreEqual(1, handlerCount);
             yield return null;
-            
+
             game1.Subscribe<GameObject>(param =>
             {
                 callbackCount += 1;
@@ -93,21 +100,21 @@ namespace Prg.Tests
             handlerCount = hub.CheckHandlerCount();
             Assert.AreEqual(2, handlerCount);
             yield return null;
-            
+
             game1.Publish(game1);
             // Yes callbacks, handlers created.
             Assert.AreEqual(2, callbackCount);
             handlerCount = hub.CheckHandlerCount();
             Assert.AreEqual(2, handlerCount);
             yield return null;
-            
+
             game1.Unsubscribe();
             // No more callbacks, handlers removed.
             Assert.AreEqual(2, callbackCount);
             handlerCount = hub.CheckHandlerCount();
             Assert.AreEqual(0, handlerCount);
             yield return null;
-            
+
             game1.Publish(game1);
             // Same as before - no more callbacks, no handlers.
             Assert.AreEqual(2, callbackCount);
