@@ -2287,6 +2287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2394007347555682035}
   - component: {fileID: 2813740666288388218}
+  - component: {fileID: 5922802932909908462}
   m_Layer: 0
   m_Name: RightWall
   m_TagString: Untagged
@@ -2335,6 +2336,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5922802932909908462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 428402334129762466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WinText: {fileID: 0}
+  LoseText: {fileID: 0}
+  LobbyButton: {fileID: 0}
+  _WallCollider: {fileID: 2813740666288388218}
+  TestLimit: 2
+  GoalNumber: 2
 --- !u!1 &671832651596286402
 GameObject:
   m_ObjectHideFlags: 0
@@ -2390,8 +2409,12 @@ MonoBehaviour:
   _gridWidth: 27
   _middleAreaHeight: 4
   _brickHeight: 2
-  _leftWall: {fileID: 1239007466319828630}
-  _rightWall: {fileID: 428402334129762466}
+  _leftTopWall: {fileID: 0}
+  _rightTopWall: {fileID: 0}
+  _leftBottomWall: {fileID: 0}
+  _rightBottomWall: {fileID: 0}
+  _leftMidWall: {fileID: 0}
+  _rightMidWall: {fileID: 0}
   _bottomWall: {fileID: 37722840573782679}
   _topWall: {fileID: 6707511437302172081}
   _alphaTeamBrickWall: {fileID: 7754314476380310042}
@@ -2429,6 +2452,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8521630630986352802}
   - component: {fileID: 797134521860904503}
+  - component: {fileID: 5765051813907257761}
   m_Layer: 0
   m_Name: LeftWall
   m_TagString: Untagged
@@ -2477,6 +2501,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5765051813907257761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239007466319828630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WinText: {fileID: 0}
+  LoseText: {fileID: 0}
+  LobbyButton: {fileID: 0}
+  _WallCollider: {fileID: 797134521860904503}
+  TestLimit: 2
+  GoalNumber: 2
 --- !u!1 &1253440901854599680
 GameObject:
   m_ObjectHideFlags: 0

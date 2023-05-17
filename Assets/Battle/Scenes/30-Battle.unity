@@ -4808,7 +4808,7 @@ MonoBehaviour:
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 1405209089}
   TestLimit: 2
-  GoalNumber: 2
+  GoalNumber: 1
 --- !u!114 &1405209091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6006,7 +6006,7 @@ MonoBehaviour:
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 1884429960}
   TestLimit: 2
-  GoalNumber: 2
+  GoalNumber: 1
 --- !u!114 &1884429962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7212,6 +7212,36 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: WinText
+      value: 
+      objectReference: {fileID: 1070883255}
+    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: LoseText
+      value: 
+      objectReference: {fileID: 31162645}
+    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: LobbyButton
+      value: 
+      objectReference: {fileID: 671105154}
+    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: WinText
+      value: 
+      objectReference: {fileID: 1070883255}
+    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: LoseText
+      value: 
+      objectReference: {fileID: 31162645}
+    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: LobbyButton
+      value: 
+      objectReference: {fileID: 671105154}
     - target: {fileID: 6707511437302172081, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
@@ -7285,54 +7315,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 7192120351933927697}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &7192120351933927705 stripped
-BoxCollider2D:
-  m_CorrespondingSourceObject: {fileID: 2813740666288388218, guid: c5c41f82aa33699438e94e6b2118282d,
-    type: 3}
-  m_PrefabInstance: {fileID: 7192120351933927697}
-  m_PrefabAsset: {fileID: 0}
---- !u!61 &7192120351933927706 stripped
-BoxCollider2D:
-  m_CorrespondingSourceObject: {fileID: 797134521860904503, guid: c5c41f82aa33699438e94e6b2118282d,
-    type: 3}
-  m_PrefabInstance: {fileID: 7192120351933927697}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7192120351933927707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7192120351933927701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WinText: {fileID: 1070883255}
-  LoseText: {fileID: 31162645}
-  LobbyButton: {fileID: 671105154}
-  _WallCollider: {fileID: 7192120351933927705}
-  TestLimit: 2
-  GoalNumber: 1
---- !u!114 &7192120351933927708
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7192120351933927702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WinText: {fileID: 1070883255}
-  LoseText: {fileID: 31162645}
-  LobbyButton: {fileID: 671105154}
-  _WallCollider: {fileID: 7192120351933927706}
-  TestLimit: 2
-  GoalNumber: 1
 --- !u!114 &7192120351933927709
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] PlayerActor PlayerActor;
         public PhotonView View;
 
+        public int OwnDiamonds1;
         public int TeamNumber;
 
         private const byte PickupEvent = 0;
@@ -116,6 +117,7 @@ namespace Battle.Scripts.Battle.Players
                 int DiamondType = (int)content[1];
                 if (EventSender == PlayerActor.SeePlayerName && DiamondType == 1)
                 {
+                    OwnDiamonds1 = OwnDiamonds1 + 1;
                     TeamDiamondCount.TeamDiamondCounter = TeamDiamondCount.TeamDiamondCounter + 1;
                     DiamondText.SetText(TeamDiamondCount.TeamDiamondCounter.ToString());
                     //collectionSoundEffect.PlayOneShot(collect);
