@@ -1,5 +1,7 @@
 using MenuUi.Scripts.Window.ScriptableObjects;
+#if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
+#endif
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
