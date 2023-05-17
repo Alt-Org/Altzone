@@ -92,11 +92,11 @@ namespace Battle.Scripts.Battle.Game
             _leftBottomWallCollider.size = arenaSize;
             _bottomWallCollider.size = arenaSize;
             _topWallCollider.size = arenaSize;
-            _rightMidWallCollider.size = arenaSize;
-            _leftMidWallCollider.size = arenaSize;
+            _rightMidWallCollider.size = new Vector2(_arenaWidth, 1.6f);
+            _leftMidWallCollider.size = new Vector2(_arenaWidth, 1.6f);
 
-            _leftMidWall.transform.position = new Vector2(-_arenaWidth + -0.01f, 0);
-            _rightMidWall.transform.position = new Vector2(_arenaWidth + 0.01f, 0);
+            _leftMidWall.transform.position = new Vector2(-_arenaWidth, 0);
+            _rightMidWall.transform.position = new Vector2(_arenaWidth, 0);
             _leftTopWall.transform.position = new Vector2(-_arenaWidth, .7f + _arenaHeight / 2);
             _rightTopWall.transform.position = new Vector2(_arenaWidth, .7f + _arenaHeight / 2);
             _leftBottomWall.transform.position = new Vector2(-_arenaWidth, -.7f + -_arenaHeight / 2);

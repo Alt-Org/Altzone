@@ -4745,7 +4745,7 @@ GameObject:
   - component: {fileID: 1405209091}
   m_Layer: 0
   m_Name: RightBottomWall
-  m_TagString: Wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4807,7 +4807,7 @@ MonoBehaviour:
   LoseText: {fileID: 31162645}
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 1405209089}
-  TestLimit: 2
+  TestLimit: 6
   GoalNumber: 2
 --- !u!114 &1405209091
 MonoBehaviour:
@@ -5408,9 +5408,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1789467502}
   - component: {fileID: 1789467503}
+  - component: {fileID: 1789467504}
   m_Layer: 0
   m_Name: RightMidWall
-  m_TagString: Wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5456,6 +5457,28 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1789467504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789467501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 48
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1793557228 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9189273488952845651, guid: 907511086931f3f45b201a61b68fdc37,
@@ -5943,7 +5966,7 @@ GameObject:
   - component: {fileID: 1884429962}
   m_Layer: 0
   m_Name: LeftBottomWall
-  m_TagString: Wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6005,7 +6028,7 @@ MonoBehaviour:
   LoseText: {fileID: 31162645}
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 1884429960}
-  TestLimit: 2
+  TestLimit: 6
   GoalNumber: 2
 --- !u!114 &1884429962
 MonoBehaviour:
@@ -6187,9 +6210,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1945831993}
   - component: {fileID: 1945831994}
+  - component: {fileID: 1945831995}
   m_Layer: 0
   m_Name: LeftMidWall
-  m_TagString: Wall
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6235,6 +6259,28 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1945831995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945831992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 47
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1996232322
 GameObject:
   m_ObjectHideFlags: 0
@@ -6842,6 +6888,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 31162645}
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
       objectReference: {fileID: 671105154}
@@ -6929,6 +6979,10 @@ PrefabInstance:
       propertyPath: LoseText
       value: 
       objectReference: {fileID: 31162645}
+    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
+      propertyPath: TestLimit
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: LobbyButton
       value: 
@@ -7080,7 +7134,7 @@ PrefabInstance:
     - target: {fileID: 37722840573782679, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 428402334129762466, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7095,7 +7149,7 @@ PrefabInstance:
     - target: {fileID: 428402334129762466, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 671832651596286402, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7115,7 +7169,7 @@ PrefabInstance:
     - target: {fileID: 1239007466319828630, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1253440901854599680, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7215,7 +7269,12 @@ PrefabInstance:
     - target: {fileID: 6707511437302172081, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6928115954222428759, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7192120351933927700, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7313,7 +7372,7 @@ MonoBehaviour:
   LoseText: {fileID: 31162645}
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 7192120351933927705}
-  TestLimit: 2
+  TestLimit: 6
   GoalNumber: 1
 --- !u!114 &7192120351933927708
 MonoBehaviour:
@@ -7331,7 +7390,7 @@ MonoBehaviour:
   LoseText: {fileID: 31162645}
   LobbyButton: {fileID: 671105154}
   _WallCollider: {fileID: 7192120351933927706}
-  TestLimit: 2
+  TestLimit: 6
   GoalNumber: 1
 --- !u!114 &7192120351933927709
 MonoBehaviour:
