@@ -16,6 +16,7 @@ using UnityEngine;
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
 #endif
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts.Model
 {

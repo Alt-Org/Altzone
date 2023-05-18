@@ -6,6 +6,7 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts
 {
