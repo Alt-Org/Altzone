@@ -37,7 +37,7 @@ namespace Altzone.Scripts
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class DataStore
     {
-        private const string StorageFilename = "LocalModels.json";
+        private const string StorageFilename = "DemoModels.json";
 
         private readonly LocalModels _localModels;
 

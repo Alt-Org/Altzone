@@ -13,9 +13,6 @@ namespace Altzone.Scripts.Model
     /// <summary>
     /// Initializes game model objects to a known state for a new player (installation).
     /// </summary>
-    /// <remarks>
-    /// Note that 'data ownership' is tagged with [Player] or [Game] to indicate its relation to for example future data updates.
-    /// </remarks>
     internal static class CreateDefaultModels
     {
         internal static string FakeMongoDbId()

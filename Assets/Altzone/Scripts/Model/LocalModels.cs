@@ -28,12 +28,10 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int WebGlFramesToWaitFlush = 10;
-        private const float EditorDemoDelay = 0f;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
-        private readonly YieldInstruction _demoDelay;
 
         #region WebGL support
 
@@ -98,14 +96,10 @@ namespace Altzone.Scripts.Model
             {
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
-            var exists = File.Exists(_storagePath);
-            Debug.Log($"StoragePath {_storagePath} exists {exists}");
-            _storageData = exists
+            Debug.Log($"StorageFilename {_storagePath}");
+            _storageData = File.Exists(_storagePath)
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
-
-            // Simulate delay when fetching data from external server.
-            _demoDelay = AppPlatform.IsEditor ? new WaitForSeconds(EditorDemoDelay) : null;
         }
 
         #region WebGL support for file system level sync aka flush data.
@@ -152,7 +146,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () => callback(playerData));
+            callback(playerData);
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -262,8 +256,7 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay,
-                () => { callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture)); });
+            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
         #endregion
@@ -315,11 +308,6 @@ namespace Altzone.Scripts.Model
         {
             var jsonText = File.ReadAllText(storagePath, Encoding);
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
-            if (storageData.VersionNumber != 0)
-            {
-                // Currently storage version number must be 0 for it to be considered up-to-date.
-                return CreateDefaultStorage(storagePath);
-            }
             return storageData;
         }
 
@@ -334,7 +322,6 @@ namespace Altzone.Scripts.Model
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     internal class StorageData
     {
-        public int VersionNumber;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();
