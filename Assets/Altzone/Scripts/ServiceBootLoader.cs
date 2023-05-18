@@ -46,15 +46,8 @@ namespace Altzone.Scripts
         {
             Debug.Log($"start");
 
-            var playerSettings = gameConfig.PlayerSettings;
-            if (playerSettings.IsFirstTimePlaying)
-            {
-                Debug.Log("This Is First Time Playing");
-                // TODO: this might have some effect to game server operations to set it up correctly for first time!? 
-                playerSettings.IsFirstTimePlaying = false;
-            }
-
             // Get current player.
+            var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
             PlayerData playerData = null;
             var isCallbackDone = false;

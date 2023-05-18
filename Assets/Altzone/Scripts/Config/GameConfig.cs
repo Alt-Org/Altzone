@@ -18,30 +18,20 @@ namespace Altzone.Scripts.Config
 
         public static GameConfig Get() => _instance ??= new GameConfig();
 
-        public GameVariables Variables
-        {
-            get => _gameVariables;
-            set => UpdateFrom(value, _gameVariables);
-        }
+        public GameVariables Variables { get; }
 
         public PlayerPrefabs PlayerPrefabs { get; }
 
-        public IPlayerSettings PlayerSettings { get; }
+        public PlayerSettings PlayerSettings { get; }
 
         public Characters Characters { get; }
 
-        #region Private serializable variables
-
-        private readonly GameVariables _gameVariables;
-
-        #endregion
-
         private GameConfig()
         {
-            PlayerSettings = Settings.PlayerSettings.Create();
+            PlayerSettings = new PlayerSettings();
             var settings = GameSettings.Load();
             Characters = settings._characters;
-            _gameVariables = CreateCopyFrom(settings._variables);
+            Variables = CreateCopyFrom(settings._variables);
             PlayerPrefabs = settings._playerPrefabs;
         }
 

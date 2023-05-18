@@ -321,9 +321,9 @@ namespace Battle0.Scripts
             return _instance;
         }
 
-        public static bool IsFirstTimePlaying => PlayerPrefs.GetInt(PlayerPrefKeys.IsFirstTimePlaying, 1) == 1;
+        public static bool IsFirstTimePlaying => false;
 
-        public static void RemoveIsFirstTimePlayingStatus() => PlayerPrefs.SetInt(PlayerPrefKeys.IsFirstTimePlaying, 0);
+        public static void RemoveIsFirstTimePlayingStatus() => throw new NotSupportedException();
 
         #region UNITY Editor
 

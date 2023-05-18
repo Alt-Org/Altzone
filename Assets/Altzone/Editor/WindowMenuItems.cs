@@ -21,15 +21,6 @@ namespace Altzone.Editor
         [MenuItem(GameDebug + "Show Player Settings", false, 10)]
         private static void ShowLocalPlayerSettings() => DebugMenu.ShowLocalPlayerSettings();
 
-        [MenuItem(Language + "Finnish", false, 11)]
-        private static void SetLanguageToFinnish() => DebugMenu.SetLanguageToFinnish();
-
-        [MenuItem(Language + "English", false, 12)]
-        private static void SetLanguageToEnglish() => DebugMenu.SetLanguageToEnglish();
-
-        [MenuItem(GameDebug + "Reset Player Settings", false, 13)]
-        private static void ResetPlayerSettings() => DebugMenu.ResetPlayerSettings();
-
         [MenuItem(PhotonRegion + "Default", false, 20)]
         private static void SetPhotonRegionToDefault() => DebugMenu.SetPhotonRegionToDefault();
 
