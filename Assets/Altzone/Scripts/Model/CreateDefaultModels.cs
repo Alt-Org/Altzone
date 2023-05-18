@@ -18,35 +18,17 @@ namespace Altzone.Scripts.Model
     /// </remarks>
     internal static class CreateDefaultModels
     {
-        /// <summary>
-        /// Master version number for storage data.<br />
-        /// Changing this will force full storage reset, what ever this means!<br />
-        /// For local data this means it could be deleted and re-created to get rid of all unwanted or obsoleted data.<br />
-        /// You can change this for example if some data models has been changed that are not backwards compatible. 
-        /// </summary>
-        internal const int MasterStorageVersionNumber = 4;
-
         internal static string FakeMongoDbId()
         {
             return Guid.NewGuid().ToString();
         }
-
-        /// <summary>
-        /// [Player] <c>PlayerData</c> version number for data update purposes.
-        /// </summary>
-        internal const int PlayerDataVersion = 3;
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, string currentCustomCharacterId)
         {
             return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
 
-        /// <summary>
-        /// [Player] <c>ClanData</c> version number for data update purposes.
-        /// </summary>
-        internal const int ClanDataVersion = 7;
-
-        internal static ClanData CreateClanData(string clanId, ReadOnlyCollection<GameFurniture> furniture)
+        internal static ClanData CreateClanData(string clanId, List<GameFurniture> furniture)
         {
             var fakeFurnitureCounter = 0;
 
@@ -127,11 +109,6 @@ namespace Altzone.Scripts.Model
         }
 
         /// <summary>
-        /// [Game] <c>CharacterClass</c> version number for data update purposes.
-        /// </summary>
-        internal const int CharacterClassesVersion = 8;
-
-        /// <summary>
         /// Character classes are permanent and immutable that can be added but never deleted after game has been published.
         /// </summary>
         /// <returns></returns>
@@ -148,11 +125,6 @@ namespace Altzone.Scripts.Model
                 new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
             };
         }
-
-        /// <summary>
-        /// [Player] <c>CustomCharacter</c> version number for data update purposes.
-        /// </summary>
-        internal const int CustomCharactersVersion = 7;
 
         /// <summary>
         /// [Player] custom character classes are created by the player itself (or given to the player by the game).<br />
@@ -172,11 +144,6 @@ namespace Altzone.Scripts.Model
                 new("7", GestaltCycle.Confluence.ToString(), "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
             };
         }
-
-        /// <summary>
-        /// [Game] <c>GameFurniture</c> version number for data update purposes.
-        /// </summary>
-        internal const int GameFurnitureVersion = 3;
 
         /// <summary>
         /// Game Furniture is based from data in Google Sheets.<br />

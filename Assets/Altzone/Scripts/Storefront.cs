@@ -40,6 +40,7 @@ namespace Altzone.Scripts
         private const string StorageFilename = "LocalModels.json";
 
         private readonly LocalModels _localModels;
+
         public DataStore()
         {
             _localModels = new LocalModels(StorageFilename);
@@ -82,7 +83,31 @@ namespace Altzone.Scripts
         /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY <c>Coroutine</c> using <code>yield return</code></returns>
         public CustomYieldInstruction GetAllGameFurnitureYield(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            throw new NotImplementedException();
+            return new MYCustomYieldInstruction(_localModels, callback);
+        }
+
+        private class MYCustomYieldInstruction : CustomYieldInstruction
+        {
+            public override bool keepWaiting => _keepWaiting;
+
+            private bool _keepWaiting = true;
+
+            public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<GameFurniture>> callback)
+            {
+                void SafeCallbackWrapper(ReadOnlyCollection<GameFurniture> result)
+                {
+                    try
+                    {
+                        callback(result);
+                    }
+                    finally
+                    {
+                        _keepWaiting = false;
+                    }
+                }
+
+                localModels.GetAllGameFurniture(SafeCallbackWrapper);
+            }
         }
     }
 }
