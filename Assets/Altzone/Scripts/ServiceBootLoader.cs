@@ -42,7 +42,7 @@ namespace Altzone.Scripts
             IsReady = true;
         }
 
-        private static IEnumerator CheckPlayerDataAndState(DataStore store, IGameConfig gameConfig)
+        private static IEnumerator CheckPlayerDataAndState(DataStore store, GameConfig gameConfig)
         {
             Debug.Log($"start");
 
