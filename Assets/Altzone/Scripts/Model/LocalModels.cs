@@ -28,7 +28,7 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int WebGlFramesToWaitFlush = 10;
-        private const float EditorDemoDelay = 1.0f;
+        private const float EditorDemoDelay = 0f;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
