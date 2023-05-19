@@ -74,6 +74,6 @@ public class BallHandlerTest : MonoBehaviour
 
     // public void NewSpeed(float NewBallSpeed)
     // {
-    //     _rb.velocity = StartBallSpeed * NewBallSpeed;     //NewRotation(direction) * Vector2.up * 
+    //     _rb.velocity = StartBallSpeed * NewBallSpeed;
     // }
 }
