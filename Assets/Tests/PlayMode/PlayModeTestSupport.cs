@@ -5,6 +5,7 @@ using Prg.Scripts.Common.Unity.CameraUtil;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 namespace Tests.PlayMode
 {
@@ -22,7 +23,6 @@ namespace Tests.PlayMode
         public void OneTimeSetUp()
         {
             _logFileWriter = LogFileWriter.CreateLogFileWriter();
-            Debug.SetTagsForClassName(null, null);
             Store = Storefront.Get();
             Assert.IsNotNull(Store);
 

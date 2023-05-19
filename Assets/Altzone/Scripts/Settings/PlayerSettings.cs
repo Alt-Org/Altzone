@@ -1,0 +1,19 @@
+using UnityEngine;
+
+namespace Altzone.Scripts.Settings
+{
+    public class PlayerSettings
+    {
+        public string PlayerGuid
+        {
+            get => PlayerPrefs.GetString("PlayerGuid", "12345");
+            set => PlayerPrefs.SetString("PlayerGuid", value);
+        }
+
+        public string PhotonRegion
+        {
+            get => PlayerPrefs.GetString("PhotonRegion", "");
+            set => PlayerPrefs.SetString("PhotonRegion", value);
+        }
+    }
+}

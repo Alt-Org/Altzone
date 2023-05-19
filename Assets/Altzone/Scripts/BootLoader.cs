@@ -6,6 +6,7 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts
 {
@@ -31,46 +32,6 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
-            PrepareLocalDevice();
-            UnitySingleton.CreateStaticSingleton<ServiceBootLoader>();
-            PlatformInfo();
-        }
-
-        /// <summary>
-        /// Device specific local setup before game is started.
-        /// </summary>
-        private static void PrepareLocalDevice()
-        {
-            // Nothing special to do here, ServiceLoader & co takes care of things for now.
-        }
-
-        /// <summary>
-        /// Throws informative exception if is platform is not officially supported. 
-        /// </summary>
-        /// <remarks>
-        /// This list should contain all possible defines for platform specific compilation.
-        /// https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
-        /// </remarks>
-        private static void PlatformInfo()
-        {
-#if UNITY_EDITOR
-            return;
-#elif UNITY_STANDALONE_WIN
-            return;
-#elif UNITY_STANDALONE_LINUX
-            return;
-#elif UNITY_STANDALONE_OSX
-            return;
-#elif UNITY_ANDROID
-            return;
-#elif UNITY_IOS
-            return;
-#elif UNITY_WEBGL
-            return;
-#else
-            // This is 'harmless' but gets logged into analytics system for resolving.
-            throw new UnityException($"INFO: this {Application.platform} platform is not officially supported");
-#endif
         }
 
         private static void PrepareLocalTesting()

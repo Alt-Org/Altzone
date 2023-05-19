@@ -5,25 +5,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Config
 {
-    /// <summary>
-    /// Runtime <c>IGameConfig</c> variables that can be referenced from anywhere safely and
-    /// optionally can be changed on the fly without any side effects.
-    /// </summary>
-    /// <remarks>
-    /// Note that some parts of <c>GameConfig</c> can be synchronized over network thus requiring a setter to update its local state.<br />
-    /// Network synchronization can only work for selected data types with public properties. See <c>BinarySerializer</c> for more.
-    /// </remarks>
-    public interface IGameConfig
-    {
-        GameFeatures Features { get; }
-        GameConstants Constants { get; }
-        GameVariables Variables { get; }
-        PlayerPrefabs PlayerPrefabs { get; }
-        IPlayerSettings PlayerSettings { get; }
-        Characters Characters { get; }
-    }
-
-    public class GameConfig : IGameConfig
+    public class GameConfig
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
@@ -34,50 +16,22 @@ namespace Altzone.Scripts.Config
 
         private static GameConfig _instance;
 
-        public static IGameConfig Get() => _instance ??= new GameConfig();
+        public static GameConfig Get() => _instance ??= new GameConfig();
 
-        public GameFeatures Features
-        {
-            get => _gameFeatures;
-            set => UpdateFrom(value, _gameFeatures);
-        }
-
-        public GameConstants Constants
-        {
-            get => _gameConstants;
-            set => UpdateFrom(value, _gameConstants);
-        }
-
-        public GameVariables Variables
-        {
-            get => _gameVariables;
-            set => UpdateFrom(value, _gameVariables);
-        }
+        public GameVariables Variables { get; }
 
         public PlayerPrefabs PlayerPrefabs { get; }
 
-        public IPlayerSettings PlayerSettings { get; }
+        public PlayerSettings PlayerSettings { get; }
 
         public Characters Characters { get; }
 
-        #region Private serializable variables
-
-        private GameFeatures _permanentFeatures;
-        private GameConstants _permanentConstants;
-        private readonly GameVariables _gameVariables;
-        private readonly GameFeatures _gameFeatures;
-        private readonly GameConstants _gameConstants;
-
-        #endregion
-
         private GameConfig()
         {
-            PlayerSettings = Settings.PlayerSettings.Create();
+            PlayerSettings = new PlayerSettings();
             var settings = GameSettings.Load();
             Characters = settings._characters;
-            _gameFeatures = CreateCopyFrom(settings._features);
-            _gameConstants = CreateCopyFrom(settings._constants);
-            _gameVariables = CreateCopyFrom(settings._variables);
+            Variables = CreateCopyFrom(settings._variables);
             PlayerPrefabs = settings._playerPrefabs;
         }
 

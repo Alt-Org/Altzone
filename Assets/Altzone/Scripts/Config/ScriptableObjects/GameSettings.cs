@@ -17,10 +17,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         private const string GameSettingsName = "GameSettings";
 
-        [Header("Game Features")] public GameFeatures _features;
-
-        [Header("Game Constants")] public GameConstants _constants;
-
         [Header("Game Variables")] public GameVariables _variables;
 
         [Header("Player Prefabs")] public PlayerPrefabs _playerPrefabs;
@@ -36,28 +32,6 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     }
 
     #region GameSettings "Parts"
-
-    /// <summary>
-    /// Game features that can be toggled on and off.
-    /// </summary>
-    /// <remarks>
-    /// Note that these member variables can be serialized over network and thus must be internally serializable.
-    /// </remarks>
-    [Serializable]
-    public class GameFeatures
-    {
-    }
-
-    /// <summary>
-    /// Game constraints that that control the workings of the game.
-    /// </summary>
-    [Serializable]
-    public class GameConstants
-    {
-        private const string FurniturePrefabFolder = "Folder name inside a Resources folder for Furniture prefabs";
-        
-        [Header("Furniture"), Tooltip(FurniturePrefabFolder)] public string _furniturePrefabFolder;
-    }
 
     /// <summary>
     /// Game variables that control game play somehow.

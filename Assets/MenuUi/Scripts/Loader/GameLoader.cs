@@ -1,8 +1,6 @@
-using UnityEngine;
-using System.Collections;
-using Altzone.Scripts;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using UnityEngine;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -16,15 +14,9 @@ namespace MenuUi.Scripts.Loader
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
 
-        private float _timeOutTime;
-
-        private IEnumerator Start()
+        private void Start()
         {
             Debug.Log("start");
-            
-            ServiceBootLoader serviceBootLoader = null;
-            yield return new WaitUntil(() => (serviceBootLoader = FindObjectOfType<ServiceBootLoader>()) != null);
-            yield return new WaitUntil(() => serviceBootLoader.IsReady);
 
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");

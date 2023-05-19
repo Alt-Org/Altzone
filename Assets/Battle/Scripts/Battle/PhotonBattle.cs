@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Assertions;
+using Debug = UnityEngine.Debug;
 
 namespace Battle.Scripts.Battle
 {

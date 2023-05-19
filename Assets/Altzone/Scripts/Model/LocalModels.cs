@@ -10,12 +10,13 @@ using System.Text;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Settings;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
-using UnityEngine.Assertions;
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
 #endif
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts.Model
 {
@@ -28,76 +29,10 @@ namespace Altzone.Scripts.Model
     internal class LocalModels
     {
         private const int WebGlFramesToWaitFlush = 10;
-        private const float EditorDemoDelay = 1.0f;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
-        private readonly YieldInstruction _demoDelay;
-
-        #region Version numbers for data update or upgrade checking
-
-        internal int VersionNumber
-        {
-            get => _storageData.VersionNumber;
-            set
-            {
-                _storageData.VersionNumber = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        internal int CharacterClassesVersion
-        {
-            get => _storageData.CharacterClassesVersion;
-            set
-            {
-                _storageData.CharacterClassesVersion = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        internal int CustomCharactersVersion
-        {
-            get => _storageData.CustomCharactersVersion;
-            set
-            {
-                _storageData.CustomCharactersVersion = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        internal int GameFurnitureVersion
-        {
-            get => _storageData.GameFurnitureVersion;
-            set
-            {
-                _storageData.GameFurnitureVersion = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        internal int PlayerDataVersion
-        {
-            get => _storageData.PlayerDataVersion;
-            set
-            {
-                _storageData.PlayerDataVersion = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        internal int ClanDataVersion
-        {
-            get => _storageData.ClanDataVersion;
-            set
-            {
-                _storageData.ClanDataVersion = value;
-                SaveStorage(_storageData, _storagePath);
-            }
-        }
-
-        #endregion
 
         #region WebGL support
 
@@ -151,17 +86,8 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        internal LocalModels(string storageFilename, int storageVersionNumber = 0)
+        internal LocalModels(string storageFilename)
         {
-            string VersionInfo(int version1, int version2)
-            {
-                if (version1 == version2)
-                {
-                    return version1.ToString();
-                }
-                return $"{version1} <- {version2} needs update";
-            }
-
 #if UNITY_WEBGL
             InitFsSyncFs();
 #endif
@@ -171,57 +97,10 @@ namespace Altzone.Scripts.Model
             {
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
-            if (storageVersionNumber == 0)
-            {
-                storageVersionNumber = CreateDefaultModels.MasterStorageVersionNumber;
-            }
-            var exists = File.Exists(_storagePath);
-            Debug.Log($"StoragePath {_storagePath} exists {exists}");
-            _storageData = exists
+            Debug.Log($"StorageFilename {_storagePath}");
+            _storageData = File.Exists(_storagePath)
                 ? LoadStorage(_storagePath)
-                : CreateDefaultStorage(_storagePath, storageVersionNumber);
-            Debug.Log($"{(exists ? "Load" : "Create")} storageData {_storageData}");
-            Debug.Log($"StorageVersionNumber {VersionInfo(_storageData.VersionNumber, CreateDefaultModels.MasterStorageVersionNumber)}");
-            Debug.Log($"CharacterClasses {_storageData.CharacterClasses.Count}" +
-                      $" ver {VersionInfo(CharacterClassesVersion, CreateDefaultModels.CharacterClassesVersion)}");
-            Debug.Log($"CustomCharacters {_storageData.CustomCharacters.Count}" +
-                      $" ver {VersionInfo(CustomCharactersVersion, CreateDefaultModels.CustomCharactersVersion)}");
-            Debug.Log($"Furniture {_storageData.GameFurniture.Count}" +
-                      $" ver {VersionInfo(GameFurnitureVersion, CreateDefaultModels.GameFurnitureVersion)}");
-            Debug.Log($"PlayerData {_storageData.PlayerData.Count}" +
-                      $" ver {VersionInfo(PlayerDataVersion, CreateDefaultModels.PlayerDataVersion)}");
-            Debug.Log($"ClanData {_storageData.ClanData.Count}" +
-                      $" ver {VersionInfo(ClanDataVersion, CreateDefaultModels.ClanDataVersion)}");
-            Assert.IsTrue(_storageData.CharacterClasses.Count > 0);
-            Assert.IsTrue(_storageData.CustomCharacters.Count > 0);
-            // Player data validity can not be detected here!
-
-            // Simulate delay when fetching data from external server.
-            _demoDelay = AppPlatform.IsEditor ? new WaitForSeconds(EditorDemoDelay) : null;
-        }
-
-        internal void ResetDataForReload()
-        {
-#if UNITY_WEBGL
-            Debug.Log($"Storage delete {_storagePath}");
-            File.Delete(_storagePath);
-#else
-            var backupPath = $"{_storagePath}.ver-{_storageData.VersionNumber}";
-            if (File.Exists(backupPath))
-            {
-                Debug.Log($"Delete backup {backupPath}");
-                File.Delete(backupPath);
-            }
-            Debug.Log($"Storage backup {backupPath}");
-            try
-            {
-                File.Move(_storagePath, backupPath);
-            }
-            catch (Exception e)
-            {
-                Debug.Log($"Storage backup (move) failed {e}");
-            }
-#endif
+                : CreateDefaultStorage(_storagePath);
         }
 
         #region WebGL support for file system level sync aka flush data.
@@ -268,7 +147,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () => callback(playerData));
+            callback(playerData);
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
@@ -357,7 +236,8 @@ namespace Altzone.Scripts.Model
             {
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
-            var characterClass = _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+            var characterClass =
+                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
@@ -377,10 +257,7 @@ namespace Altzone.Scripts.Model
 
         internal void GetAllGameFurniture(Action<ReadOnlyCollection<GameFurniture>> callback)
         {
-            UnityMonoHelper.Instance.ExecuteAsCoroutine(_demoDelay, () =>
-            {
-                callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
-            });
+            callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
         #endregion
@@ -410,20 +287,20 @@ namespace Altzone.Scripts.Model
 
         #endregion
 
-        private static StorageData CreateDefaultStorage(string storagePath, int storageVersionNumber)
+        private static StorageData CreateDefaultStorage(string storagePath)
         {
-            var storageData = new StorageData
-            {
-                VersionNumber = storageVersionNumber,
-                CharacterClassesVersion = CreateDefaultModels.CharacterClassesVersion,
-                CustomCharactersVersion = CreateDefaultModels.CustomCharactersVersion,
-                GameFurnitureVersion = CreateDefaultModels.GameFurnitureVersion,
-            };
+            var storageData = new StorageData();
+
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
             storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
-            // Player data should not be created automatically!
-            Assert.IsTrue(storageData.PlayerData.Count == 0, "do not create PlayerData here");
+
+            var playerGuid = new PlayerSettings().PlayerGuid;
+            var clanGuid = playerGuid;
+            var customCharacterId = storageData.CustomCharacters[0].Id;
+            storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, customCharacterId));
+            storageData.ClanData.Add(CreateDefaultModels.CreateClanData(clanGuid, storageData.GameFurniture));
+
             SaveStorage(storageData, storagePath);
             return storageData;
         }
@@ -446,12 +323,6 @@ namespace Altzone.Scripts.Model
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     internal class StorageData
     {
-        public int VersionNumber = 1;
-        public int CharacterClassesVersion = 1;
-        public int CustomCharactersVersion = 1;
-        public int GameFurnitureVersion = 1;
-        public int PlayerDataVersion = 1;
-        public int ClanDataVersion = 1;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();

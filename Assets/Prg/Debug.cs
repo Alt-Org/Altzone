@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
+namespace Prg
+{
 /// <summary>
 /// UnityEngine.Debug (thread-safe) wrapper for development (and optionally for production testing).
 /// </summary>
@@ -365,4 +367,5 @@ public static class Debug
     }
 
     #endregion
+}
 }

@@ -3,6 +3,7 @@ using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 namespace MenuUi.Scripts.Window
 {
