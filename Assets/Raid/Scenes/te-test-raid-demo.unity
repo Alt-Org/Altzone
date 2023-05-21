@@ -379,16 +379,49 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
+      propertyPath: Image1
+      value: 
+      objectReference: {fileID: 21300000, guid: 7885ceb830b5c1e4da9fbbc74d381f44,
+        type: 3}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: Image2
+      value: 
+      objectReference: {fileID: 21300000, guid: 5deb40e35c0016342a4092b45b898f31,
+        type: 3}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: Image3
+      value: 
+      objectReference: {fileID: 21300000, guid: 2690c1905d305284ca175774bf350e4d,
+        type: 3}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
       propertyPath: TestImage
       value: 
-      objectReference: {fileID: 918462337, guid: 83a57713deb523349854e26c634fa7ee,
+      objectReference: {fileID: 21300000, guid: 7885ceb830b5c1e4da9fbbc74d381f44,
         type: 3}
     - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: TestImage2
       value: 
-      objectReference: {fileID: 1273852041, guid: 83a57713deb523349854e26c634fa7ee,
+      objectReference: {fileID: 21300000, guid: 5deb40e35c0016342a4092b45b898f31,
         type: 3}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: ItemWeight1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: ItemWeight2
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: ItemWeight3
+      value: 56
+      objectReference: {fileID: 0}
     - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: TestItemWeight
@@ -397,8 +430,13 @@ PrefabInstance:
     - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: TestItemWeight2
-      value: 8
+      value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
+      propertyPath: raid_InventoryHandler
+      value: 
+      objectReference: {fileID: 943703426}
     - target: {fileID: 7569432504062211167, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: MaxLootWeight
@@ -817,6 +855,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryUI: {fileID: 371317729}
   InventorySize: 28
+  MediumItemMaxAmount: 7
+  LargeItemMaxAmount: 3
 --- !u!4 &943703427
 Transform:
   m_ObjectHideFlags: 0

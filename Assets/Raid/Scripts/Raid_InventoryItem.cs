@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image ItemImage;
+    [SerializeField] public int ItemWeight;
     // [SerializeField] private TMP_Text ItemWeightText;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
@@ -21,7 +22,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         empty = true;
     }
 
-    public void SetData(Sprite ItemSprite, int ItemWeight)
+    public void SetData(Sprite ItemSprite, int LootItemWeight)
     {
         this.ItemImage.gameObject.SetActive(true);
         this.ItemImage.sprite = ItemSprite;
