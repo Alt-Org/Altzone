@@ -9,6 +9,7 @@ public class Raid_LootTracking : MonoBehaviour
     [SerializeField] private TMP_Text OutOfText;
     [SerializeField] private TMP_Text MaxLootText;
     [SerializeField] private int CurrentLootWeight;
+    [SerializeField] public int MaxLootWeight;
 
     public void Awake()
     {
@@ -18,9 +19,9 @@ public class Raid_LootTracking : MonoBehaviour
     public void ResetLootCount()
     {
         CurrentLootWeight = 0;
-        this.CurrentLootText.text = "0 kg";
+        this.CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
         this.OutOfText.text = "Out of";
-        this.MaxLootText.text = "250 kg";
+        this.MaxLootText.text =  MaxLootWeight.ToString() + " kg";
     }
 
     public void SetLootCount(int AddedLootWeight, int MaxLootWeight)

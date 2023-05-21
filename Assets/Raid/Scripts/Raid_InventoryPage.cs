@@ -12,8 +12,8 @@ public class Raid_InventoryPage : MonoBehaviour
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
 
-    public Sprite TestImage;
-    public int TestItemWeight;
+    public Sprite TestImage, TestImage2;
+    public int TestItemWeight, TestItemWeight2;
 
     private void Awake()
     {
@@ -32,15 +32,30 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    private void HandleItemLooting(Raid_InventoryItem obj)
+    private void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
-        LootTracker.SetLootCount(TestItemWeight, 250);
-        ListOfUIItems[0].RemoveData();
-        TestItemWeight = 0;
+        int index = ListOfUIItems.IndexOf(inventoryItem);
+        if(index == -1)
+        {
+            return;
+        }
+        else if(index == 0)
+        {
+            LootTracker.SetLootCount(TestItemWeight, LootTracker.MaxLootWeight);
+            ListOfUIItems[0].RemoveData();
+            TestItemWeight = 0;
+        }
+        else if(index == 1)
+        {
+            LootTracker.SetLootCount(TestItemWeight2, LootTracker.MaxLootWeight);
+            ListOfUIItems[1].RemoveData();
+            TestItemWeight2 = 0;
+        }
     }
 
-    public void TestMethod()
+    public void SetInventorySlotData()
     {
         ListOfUIItems[0].SetData(TestImage, TestItemWeight);
+        ListOfUIItems[1].SetData(TestImage2, TestItemWeight2);
     }
 }

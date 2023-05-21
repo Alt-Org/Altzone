@@ -6,10 +6,10 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 
-public class Raid_InventoryItem : MonoBehaviour
+public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image ItemImage;
-    [SerializeField] private TMP_Text ItemWeightText;
+    // [SerializeField] private TMP_Text ItemWeightText;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
 
@@ -25,7 +25,7 @@ public class Raid_InventoryItem : MonoBehaviour
     {
         this.ItemImage.gameObject.SetActive(true);
         this.ItemImage.sprite = ItemSprite;
-        this.ItemWeightText.text = ItemWeight + "kg";
+        // this.ItemWeightText.text = ItemWeight + "kg";
         empty = false;
     }
 
@@ -34,14 +34,13 @@ public class Raid_InventoryItem : MonoBehaviour
         this.ItemImage.gameObject.SetActive(false);
     }
 
-    public void OnPointerClick(BaseEventData data)
+    public void OnPointerClick(PointerEventData pointerData)
     {
-        if(empty)
+        if (empty)
         {
             return;
         }
-        PointerEventData pointerData = (PointerEventData)data;
-        if(pointerData.button == PointerEventData.InputButton.Left)
+        if (pointerData.button == PointerEventData.InputButton.Left)
         {
             OnItemClicked?.Invoke(this);
         }

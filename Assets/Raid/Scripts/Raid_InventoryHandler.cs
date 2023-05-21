@@ -13,6 +13,6 @@ public class Raid_InventoryHandler : MonoBehaviour
     {
         InventoryUI.InitializeInventoryUI(InventorySize);
         Debug.Log("Inventory initialized");
-        InventoryUI.TestMethod();
+        InventoryUI.SetInventorySlotData();
     }
 }
