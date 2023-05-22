@@ -8,7 +8,7 @@ public class Raid_LootTracking : MonoBehaviour
     [SerializeField] private TMP_Text CurrentLootText;
     [SerializeField] private TMP_Text OutOfText;
     [SerializeField] private TMP_Text MaxLootText;
-    [SerializeField] private int CurrentLootWeight;
+    [SerializeField] public int CurrentLootWeight;
     [SerializeField] public int MaxLootWeight;
 
     public void Awake()

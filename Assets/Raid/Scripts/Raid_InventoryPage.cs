@@ -10,11 +10,16 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_InventoryItem ItemPrefab;
     [SerializeField] private RectTransform ContentPanel;
     [SerializeField] private Raid_LootTracking LootTracker;
+    [SerializeField] private Raid_Timer raid_Timer;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
 
-    public Sprite Image1, Image2, Image3;
-    public int ItemWeight1, ItemWeight2, ItemWeight3;
+    [SerializeField, Header("Furniture and weight")] private Sprite Image1;
+    [SerializeField] private int ItemWeight1;
+    [SerializeField] private Sprite Image2;
+    [SerializeField] private int ItemWeight2;
+    [SerializeField] private Sprite Image3;
+    [SerializeField] private int ItemWeight3;
 
     public event Action<int> OnLootDataRequested;
 
@@ -42,28 +47,33 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             return;
         }
-        if(inventoryItem.ItemWeight == ItemWeight1)
-        {
-            LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);
-            ListOfUIItems[index].RemoveData();
-            ListOfUIItems[index].ItemWeight = 0;
-        }
-        else if (inventoryItem.ItemWeight == ItemWeight2)
-        {
-            LootTracker.SetLootCount(ItemWeight2, LootTracker.MaxLootWeight);
-            ListOfUIItems[index].RemoveData();
-            ListOfUIItems[index].ItemWeight = 0;
-        }
-        if (inventoryItem.ItemWeight == ItemWeight3)
-        {
-            LootTracker.SetLootCount(ItemWeight3, LootTracker.MaxLootWeight);
-            ListOfUIItems[index].RemoveData();
-            ListOfUIItems[index].ItemWeight = 0;
-        }
-        else
+        if (raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight)
         {
             return;
         }
+        else
+        {
+            if (inventoryItem.ItemWeight == ItemWeight1)
+            {
+                LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);
+                ListOfUIItems[index].RemoveData();
+            }
+            else if (inventoryItem.ItemWeight == ItemWeight2)
+            {
+                LootTracker.SetLootCount(ItemWeight2, LootTracker.MaxLootWeight);
+                ListOfUIItems[index].RemoveData();
+            }
+            else if (inventoryItem.ItemWeight == ItemWeight3)
+            {
+                LootTracker.SetLootCount(ItemWeight3, LootTracker.MaxLootWeight);
+                ListOfUIItems[index].RemoveData();
+            }
+            else
+            {
+                Debug.Log("This inventory slot has already been looted!");
+            }
+            ListOfUIItems[index].ItemWeight = 0;
+        }        
     }
 
     public void SetInventorySlotData(int InventorySize)

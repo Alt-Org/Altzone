@@ -19,8 +19,6 @@ public class Raid_Inventory : MonoBehaviour
     public Sprite EmptySlot;
 
     /*[SerializeField, Header("Reference GameObjects")]
-    public GameObject RedScreen;
-    public GameObject EndMenu;
     public Transform PanelParent;
 
     [SerializeField, Header("Inventory Content")]
@@ -32,9 +30,7 @@ public class Raid_Inventory : MonoBehaviour
 
     private void Start()
     {
-        /*RedScreen.SetActive(false);
-        EndMenu.SetActive(false);
-        for (int i = 0; i < AmountOfFives; i++)
+        /*for (int i = 0; i < AmountOfFives; i++)
         {
             PlaceFives();
         }
