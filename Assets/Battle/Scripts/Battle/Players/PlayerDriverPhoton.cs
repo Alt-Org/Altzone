@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle.Game;
 using Photon.Pun;
@@ -15,6 +16,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private PlayerActor _playerPrefab;
 
         public PlayerActor _playerActor { get; private set; }
+        private PlayerManager _playerManager;
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private PlayerDriverState _state;
@@ -23,6 +25,7 @@ namespace Battle.Scripts.Battle.Players
         private int _teamNumber;
         private double _movementDelay;
         private float _arenaScaleFactor;
+        private int _peerCount;
         private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
         public string PlayerName;
@@ -74,6 +77,11 @@ namespace Battle.Scripts.Battle.Players
             {
                 Rotate(180f);
             }
+
+            _playerManager = FindObjectOfType<PlayerManager>();
+            _playerManager.RegisterPlayer(this);
+            _peerCount = 0;
+            this.ExecuteOnNextFrame(() => _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All));
         }
 
         public string NickName => _photonView.Owner.NickName;
@@ -87,6 +95,8 @@ namespace Battle.Scripts.Battle.Players
         public bool IsLocal => _photonView.Owner.IsLocal;
 
         public int PlayerPos => _playerPos;
+
+        public int PeerCount => _peerCount;
 
         public void Rotate(float angle)
         {
@@ -133,6 +143,13 @@ namespace Battle.Scripts.Battle.Players
         private void SetPlayerCharacterPoseRpc(int poseIndex)
         {
             _playerActor.SetCharacterPose(poseIndex);
+        }
+
+        [PunRPC]
+        private void SendPlayerPeerCountRpc()
+        {
+            _peerCount += 1;
+            _playerManager.UpdatePeerCount();
         }
 
         #endregion
