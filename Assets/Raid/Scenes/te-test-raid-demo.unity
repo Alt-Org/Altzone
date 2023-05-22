@@ -409,6 +409,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
+      propertyPath: raid_Timer
+      value: 
+      objectReference: {fileID: 1918953308}
+    - target: {fileID: 4440646677521073066, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
       propertyPath: ItemWeight1
       value: 2
       objectReference: {fileID: 0}
@@ -505,32 +510,32 @@ PrefabInstance:
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1480
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 740
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791056074069, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -625,32 +630,32 @@ PrefabInstance:
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 620
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 720
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 350
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -400
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441792127549316, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -844,6 +849,7 @@ GameObject:
   m_Component:
   - component: {fileID: 943703427}
   - component: {fileID: 943703426}
+  - component: {fileID: 943703428}
   m_Layer: 0
   m_Name: ScriptHolder
   m_TagString: Untagged
@@ -882,6 +888,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &943703428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943703425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5525cbc59bf5b4784c5ea50b218a1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RedScreen: {fileID: 1867729179}
+  EndMenu: {fileID: 1977162774}
 --- !u!1 &992487981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,7 +1549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1867729180
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1627,10 +1647,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e8242d5382bed4f88ea23b44ed1370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raid_References: {fileID: 943703428}
   TimerText: {fileID: 251360814}
   CurrentTime: 10
   CountUp: 0
-  HasLimit: 0
+  HasLimit: 1
   TimerLimit: 0
   HasFormat: 1
   Format: 0
