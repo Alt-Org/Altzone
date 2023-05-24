@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Raid_References : MonoBehaviour
 {
@@ -8,9 +9,15 @@ public class Raid_References : MonoBehaviour
     public GameObject RedScreen;
     public GameObject EndMenu;
 
+    [SerializeField, Header("Reference game components")]
+    public TextMeshProUGUI OutOfTime;
+    public TextMeshProUGUI OutOfSpace;
+
     private void Start()
     {
         RedScreen.SetActive(false);
         EndMenu.SetActive(false);
+        OutOfTime.enabled = false;
+        OutOfSpace.enabled = false;
     }
 }

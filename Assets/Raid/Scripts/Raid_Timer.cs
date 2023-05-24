@@ -42,6 +42,14 @@ public class Raid_Timer : MonoBehaviour
         {
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
+            if(raid_References.OutOfSpace.enabled == true)
+            {
+                raid_References.OutOfTime.enabled = false;
+            }
+            else if(raid_References.OutOfSpace.enabled == false)
+            {
+                raid_References.OutOfTime.enabled = true;
+            }
             CurrentTime = TimerLimit;
             SetTimerText();
             TimerText.color = Color.red;

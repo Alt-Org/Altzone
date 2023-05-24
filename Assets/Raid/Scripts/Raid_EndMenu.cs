@@ -9,4 +9,9 @@ public class Raid_EndMenu : MonoBehaviour
     {
         SceneManager.LoadScene("20-Lobby");
     }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }
