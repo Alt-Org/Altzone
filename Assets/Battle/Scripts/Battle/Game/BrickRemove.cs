@@ -1,6 +1,6 @@
 using UnityConstants;
 using UnityEngine;
-using Photon.Pun;
+//using Photon.Pun;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -9,7 +9,7 @@ namespace Battle.Scripts.Battle.Game
     /// </summary>
     internal class BrickRemove : MonoBehaviour
     {
-        private PhotonView _photonView;
+        //private PhotonView _photonView;
         private SpriteRenderer _spriteRenderer;
         public PlayerPlayArea PlayerPlayArea;
         private float _colorChangeFactor;
@@ -20,14 +20,25 @@ namespace Battle.Scripts.Battle.Game
             Health = PlayerPlayArea.BrickHealth;
             _colorChangeFactor = 1f / Health;
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _photonView = GetComponent<PhotonView>();
+            //_photonView = GetComponent<PhotonView>();
         }
         
         public void BrickHitInit(int damage)
         {
-            _photonView.RPC(nameof(BrickHitRPC), RpcTarget.All, damage);
+            var color = _spriteRenderer.color;
+            color.g -= _colorChangeFactor;
+            color.b -= _colorChangeFactor;
+            _spriteRenderer.color = color;
+            Health = Health - damage;
+            if (Health <= 0)
+            {
+                Destroy(gameObject);
+            }
+
+            //_photonView.RPC(nameof(BrickHitRPC), RpcTarget.All, damage);
         }
 
+        /*
         [PunRPC]
         private void BrickHitRPC(int damage)
         {
@@ -42,5 +53,6 @@ namespace Battle.Scripts.Battle.Game
                 Destroy(gameObject);
             }
         }
+        */
     }
 }

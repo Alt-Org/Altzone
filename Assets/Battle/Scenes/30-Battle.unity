@@ -2118,9 +2118,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ball: {fileID: 539224845}
-  _slingDelaySec: 3
+  _slingDelaySec: 10
   _startingDistance: 1
   _defaultSpeed: 7
+  _indicatorLengthMultiplier: 1.25
+  _indicatorWidthMultiplier: 0.25
+  _indicatorNormalOpacity: 1
+  _indicatorLowOpacity: 0.5
 --- !u!114 &598810582
 MonoBehaviour:
   m_ObjectHideFlags: 0

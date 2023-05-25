@@ -13,6 +13,10 @@ public class SlingControllerTest : MonoBehaviour
     [SerializeField] private double _slingDelaySec;
     [SerializeField] private float _startingDistance;
     [SerializeField] private int _defaultSpeed;
+    [SerializeField] private float _indicatorLengthMultiplier;
+    [SerializeField] private float _indicatorWidthMultiplier;
+    [SerializeField] private float _indicatorNormalOpacity;
+    [SerializeField] private float _indicatorLowOpacity;
 
     private PhotonView _photonView;
 
@@ -162,15 +166,17 @@ public class SlingControllerTest : MonoBehaviour
         }
 
         {
+            Team teamWithMoreDistance = _teams[0].Distance > _teams[1].Distance ? _teams[0] : _teams[1];
             int i = 0;
             foreach (Team team in _teams)
             {
                 if (team.Distance >= 0)
                 {
-                    float length = team.Distance * 1.25f + 2.5f;
+                    float length = team.Distance * _indicatorLengthMultiplier + 2.5f;
                     _slingIndicators[i].Transform.position = team.BackPlayer.position + (team.LaunchDirection * length * 0.5f);
                     _slingIndicators[i].Transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(team.LaunchDirection.y, team.LaunchDirection.x) * (360 / (Mathf.PI * 2.0f)), Vector3.forward);
-                    _slingIndicators[i].SpriteRenderer.size = new Vector2(length * 2.0f, 2.0f);
+                    _slingIndicators[i].SpriteRenderer.size = new Vector2(length * 2.0f, team.Distance * _indicatorWidthMultiplier * 2.0f);
+                    _slingIndicators[i].SpriteRenderer.color = new Color(1.0f, 1.0f, 1.0f, team == teamWithMoreDistance ? _indicatorNormalOpacity : _indicatorLowOpacity);
                     _slingIndicators[i].SpriteRenderer.enabled = true;
                 }
                 else
