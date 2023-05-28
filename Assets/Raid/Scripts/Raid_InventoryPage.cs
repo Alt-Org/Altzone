@@ -40,7 +40,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    private void HandleItemLooting(Raid_InventoryItem inventoryItem)
+    public void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
         if(index == -1)
