@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Raid_Slot : MonoBehaviour
+public class zzRaid_Slot : MonoBehaviour
 {
     public enum SlotType
     {

@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
-public class Raid_Input : MonoBehaviour
+
+public class zzRaid_Input : MonoBehaviour
 {
-    [SerializeField, Header("Inventory")] private Raid_Inventory raid_Inventory;
+    [SerializeField, Header("Inventory")] private zzRaid_Inventory zzraid_Inventory;
 
     [SerializeField, Header("Settings"), Range(0, 100)] private float _trackingSensitivityPercent = 1.0f;
     [SerializeField] private InputActionReference _tapActionRef;
@@ -23,7 +24,7 @@ public class Raid_Input : MonoBehaviour
     private void Awake()
     {
         Debug.Log($"");
-        Assert.IsNotNull(raid_Inventory);
+        Assert.IsNotNull(zzraid_Inventory);
 
         Debug.Log($"{_tapActionRef} | {_positionActionRef}");
         Assert.IsTrue(_tapActionRef != null && _positionActionRef != null);
@@ -83,7 +84,7 @@ public class Raid_Input : MonoBehaviour
         switch (interaction)
         {
             case TapInteraction:
-                raid_Inventory.QuickTapPerformed(_inputPosition);
+                zzraid_Inventory.QuickTapPerformed(_inputPosition);
                 break;
         }
     }

@@ -4,12 +4,12 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using TMPro;
 
-public class Raid_Inventory : MonoBehaviour
+public class zzRaid_Inventory : MonoBehaviour
 {
-    public Raid_Slot[,] Inventory = new Raid_Slot[4, 6];
+    public zzRaid_Slot[,] Inventory = new zzRaid_Slot[4, 6];
 
     [SerializeField, Header("Loot manager")]
-    private Raid_LootManagement raid_LootManagement;
+    private zzRaid_LootManagement zzraid_LootManagement;
 
     [SerializeField, Header("Time manager")]
     private Raid_Timer raid_Timer;
@@ -61,19 +61,19 @@ public class Raid_Inventory : MonoBehaviour
         int x = Mathf.RoundToInt(mousePosition.x);
         int y = Mathf.RoundToInt(mousePosition.y);
 
-        Raid_Slot raid_Slot = Inventory[x, y];
+        zzRaid_Slot zzraid_Slot = Inventory[x, y];
         Debug.Log("Multi tap recognized at (" + x + ", " + y + ")");
-        if(raid_Timer.CurrentTime <= 0 || raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
+        if (raid_Timer.CurrentTime <= 0 || zzraid_LootManagement.CurrentLootWeight > zzraid_LootManagement.WeightLimit)
         {
             return;
         }
         else if (raid_Timer.CurrentTime > 0)
         {
-            if (raid_Slot.slotType == Raid_Slot.SlotType.Empty)
+            if (zzraid_Slot.slotType == zzRaid_Slot.SlotType.Empty)
             {
                 return;
             }
-            else if (raid_Slot.slotType == Raid_Slot.SlotType.Occupied)
+            else if (zzraid_Slot.slotType == zzRaid_Slot.SlotType.Occupied)
             {
                 LootFurniture(x, y);
             }
@@ -88,7 +88,7 @@ public class Raid_Inventory : MonoBehaviour
             {
                 if (Inventory[x, y] == null)
                 {
-                    Raid_Slot EmptySlot = Instantiate(Resources.Load("Prefabs/EmptySlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+                    zzRaid_Slot EmptySlot = Instantiate(Resources.Load("Prefabs/EmptySlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
                     Inventory[x, y] = EmptySlot;
                     //EmptySlot.transform.SetParent(PanelParent);
                 }
@@ -103,9 +103,9 @@ public class Raid_Inventory : MonoBehaviour
 
         if (Inventory[x, y] == null)
         {
-            Raid_Slot WeightFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+            zzRaid_Slot WeightFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
             WeightFive.GetComponentInChildren<TextMeshPro>().text = "5 kg";
-            WeightFive.slotWeight = Raid_Slot.SlotWeight.Five;
+            WeightFive.slotWeight = zzRaid_Slot.SlotWeight.Five;
             //WeightFive.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightFive;
@@ -124,9 +124,9 @@ public class Raid_Inventory : MonoBehaviour
 
         if (Inventory[x, y] == null)
         {
-            Raid_Slot WeightTen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+            zzRaid_Slot WeightTen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
             WeightTen.GetComponentInChildren<TextMeshPro>().text = "10 kg";
-            WeightTen.slotWeight = Raid_Slot.SlotWeight.Ten;
+            WeightTen.slotWeight = zzRaid_Slot.SlotWeight.Ten;
             //WeightTen.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTen;
@@ -145,9 +145,9 @@ public class Raid_Inventory : MonoBehaviour
 
         if (Inventory[x, y] == null)
         {
-            Raid_Slot WeightFifteen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+            zzRaid_Slot WeightFifteen = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
             WeightFifteen.GetComponentInChildren<TextMeshPro>().text = "15 kg";
-            WeightFifteen.slotWeight = Raid_Slot.SlotWeight.Fifteen;
+            WeightFifteen.slotWeight = zzRaid_Slot.SlotWeight.Fifteen;
             //WeightFifteen.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightFifteen;
@@ -166,9 +166,9 @@ public class Raid_Inventory : MonoBehaviour
 
         if (Inventory[x, y] == null)
         {
-            Raid_Slot WeightTwenty = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+            zzRaid_Slot WeightTwenty = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
             WeightTwenty.GetComponentInChildren<TextMeshPro>().text = "20 kg";
-            WeightTwenty.slotWeight = Raid_Slot.SlotWeight.Twenty;
+            WeightTwenty.slotWeight = zzRaid_Slot.SlotWeight.Twenty;
             //WeightTwenty.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTwenty;
@@ -187,9 +187,9 @@ public class Raid_Inventory : MonoBehaviour
 
         if (Inventory[x, y] == null)
         {
-            Raid_Slot WeightTwentyFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(Raid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as Raid_Slot;
+            zzRaid_Slot WeightTwentyFive = Instantiate(Resources.Load("Prefabs/FurnitureSlot", typeof(zzRaid_Slot)), new Vector3(x, y, 0), Quaternion.identity, _transform) as zzRaid_Slot;
             WeightTwentyFive.GetComponentInChildren<TextMeshPro>().text = "25 kg";
-            WeightTwentyFive.slotWeight = Raid_Slot.SlotWeight.TwentyFive;
+            WeightTwentyFive.slotWeight = zzRaid_Slot.SlotWeight.TwentyFive;
             //WeightTwentyFive.transform.SetParent(PanelParent);
 
             Inventory[x, y] = WeightTwentyFive;
@@ -203,54 +203,54 @@ public class Raid_Inventory : MonoBehaviour
 
     void LootFurniture(int x, int y)
     {
-        Raid_Slot raid_Slot = Inventory[x, y];
+        zzRaid_Slot zzraid_Slot = Inventory[x, y];
 
-        if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Five)
+        if (zzraid_Slot.slotWeight == zzRaid_Slot.SlotWeight.Five)
         {
-            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
-            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+            zzraid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            zzraid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
 
-            raid_LootManagement.CurrentLootWeight += 5;
-            raid_LootManagement.SetLootWeightText();
+            zzraid_LootManagement.CurrentLootWeight += 5;
+            zzraid_LootManagement.SetLootWeightText();
         }
-        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Ten)
+        else if (zzraid_Slot.slotWeight == zzRaid_Slot.SlotWeight.Ten)
         {
-            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
-            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+            zzraid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            zzraid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
 
-            raid_LootManagement.CurrentLootWeight += 10;
-            raid_LootManagement.SetLootWeightText();
+            zzraid_LootManagement.CurrentLootWeight += 10;
+            zzraid_LootManagement.SetLootWeightText();
         }
-        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Fifteen)
+        else if (zzraid_Slot.slotWeight == zzRaid_Slot.SlotWeight.Fifteen)
         {
-            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
-            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+            zzraid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            zzraid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
 
-            raid_LootManagement.CurrentLootWeight += 15;
-            raid_LootManagement.SetLootWeightText();
+            zzraid_LootManagement.CurrentLootWeight += 15;
+            zzraid_LootManagement.SetLootWeightText();
         }
-        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.Twenty)
+        else if (zzraid_Slot.slotWeight == zzRaid_Slot.SlotWeight.Twenty)
         {
-            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
-            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+            zzraid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            zzraid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
 
-            raid_LootManagement.CurrentLootWeight += 20;
-            raid_LootManagement.SetLootWeightText();
+            zzraid_LootManagement.CurrentLootWeight += 20;
+            zzraid_LootManagement.SetLootWeightText();
         }
-        else if (raid_Slot.slotWeight == Raid_Slot.SlotWeight.TwentyFive)
+        else if (zzraid_Slot.slotWeight == zzRaid_Slot.SlotWeight.TwentyFive)
         {
-            raid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
-            raid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
+            zzraid_Slot.GetComponent<SpriteRenderer>().sprite = EmptySlot;
+            zzraid_Slot.GetComponentInChildren<TextMeshPro>().text = "";
 
-            raid_LootManagement.CurrentLootWeight += 25;
-            raid_LootManagement.SetLootWeightText();
+            zzraid_LootManagement.CurrentLootWeight += 25;
+            zzraid_LootManagement.SetLootWeightText();
         }
 
-        raid_Slot.slotType = Raid_Slot.SlotType.Empty;
+        zzraid_Slot.slotType = zzRaid_Slot.SlotType.Empty;
 
-        if(raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
+        if (zzraid_LootManagement.CurrentLootWeight > zzraid_LootManagement.WeightLimit)
         {
-            raid_LootManagement.LootWeightText.color = Color.red;
+            zzraid_LootManagement.LootWeightText.color = Color.red;
             // RedScreen.SetActive(true);
             // EndMenu.SetActive(true);
         }

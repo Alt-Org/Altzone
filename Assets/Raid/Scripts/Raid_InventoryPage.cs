@@ -21,8 +21,6 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Sprite Image3;
     [SerializeField] private int ItemWeight3;
 
-    public event Action<int> OnLootDataRequested;
-
     private void Awake()
     {
         LootTracker.ResetLootCount();

@@ -5,9 +5,6 @@ using TMPro;
 
 public class Raid_Timer : MonoBehaviour
 {
-    /*[SerializeField, Header("Loot manager")]
-    private Raid_LootManagement raid_LootManagement;*/
-
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
 
@@ -54,14 +51,6 @@ public class Raid_Timer : MonoBehaviour
             SetTimerText();
             TimerText.color = Color.red;
             enabled = false;
-            /*if(raid_LootManagement.CurrentLootWeight <= raid_LootManagement.WeightLimit)
-            {
-                raid_LootManagement.LootWeightText.color = Color.green;
-            }
-            else if (raid_LootManagement.CurrentLootWeight > raid_LootManagement.WeightLimit)
-            {
-                raid_LootManagement.LootWeightText.color = Color.red;
-            }*/
         }
         SetTimerText();
     }
