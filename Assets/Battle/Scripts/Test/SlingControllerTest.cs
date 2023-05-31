@@ -9,10 +9,14 @@ using Prg.Scripts.Common.PubSub;
 
 public class SlingControllerTest : MonoBehaviour
 {
+    [Header("Sling")]
     [SerializeField] private BallHandlerTest _ball;
-    [SerializeField] private double _slingDelaySec;
+    [SerializeField] private double _aimingTimeSec;
     [SerializeField] private float _startingDistance;
     [SerializeField] private int _defaultSpeed;
+    [SerializeField] private bool _autoStart;
+
+    [Header("Indicator")]
     [SerializeField] private float _indicatorLengthMultiplier;
     [SerializeField] private float _indicatorWidthMultiplier;
     [SerializeField] private float _indicatorNormalOpacity;
@@ -22,17 +26,12 @@ public class SlingControllerTest : MonoBehaviour
 
     private class Team
     {
+        public bool SlingActive = false;
         public List<Transform> List = new();
         public Transform FrontPlayer;
         public Transform BackPlayer;
-
         public float Distance;
         public Vector3 LaunchDirection;
-
-        /*
-        public float DistanceSquared;
-        public Vector3 LaunchVector;
-        */
     };
     private Team[] _teams;
 
@@ -49,6 +48,7 @@ public class SlingControllerTest : MonoBehaviour
     }
     private SlingIndicator[] _slingIndicators;
 
+    bool _teamsAreReadyForGameplay = false;
     bool _slingMode = false;
 
     void Start()
@@ -64,48 +64,76 @@ public class SlingControllerTest : MonoBehaviour
                 i++;
             }
         }
-        StartCoroutine(nameof(InitializeTeams));
     }
 
     void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
     {
-        if (PhotonNetwork.IsMasterClient)
+        _teams = new Team[2];
+        _teams[0] = new Team();
+        foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[0].List.Add(driver.ActorTransform);
+        _teams[1] = new Team();
+        foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[1].List.Add(driver.ActorTransform);
+        _teamsAreReadyForGameplay = true;
+
+        if (PhotonNetwork.IsMasterClient && _autoStart)
         {
-            _photonView.RPC(nameof(SlingRpc), RpcTarget.All, PhotonNetwork.Time + _slingDelaySec);
+            SlingActivate(_aimingTimeSec);
         }
     }
 
-    private IEnumerator InitializeTeams()
+    public bool SlingMode => _slingMode;
+
+    public void SlingActivate(double aimingTimeSec)
     {
-        yield return new WaitForSeconds(1.0f);
+        SlingModeActivate(true, true, aimingTimeSec);
+    }
 
-        _teams = new Team[2];
-        _teams[0] = new Team();
-        _teams[1] = new Team();
-
-        foreach (PlayerDriverPhoton driver in Object.FindObjectsOfType<PlayerDriverPhoton>())
+    public void SlingActivate(int teamNumber, double aimingTimeSec)
+    {
+        switch (teamNumber)
         {
-            switch (driver.TeamNumber)
-            {
-                case PhotonBattle.TeamAlphaValue:
-                    _teams[0].List.Add(driver.ActorTransform);
-                    break;
+            case PhotonBattle.TeamAlphaValue:
+                SlingModeActivate(true, false, aimingTimeSec);
+                break;
 
-                case PhotonBattle.TeamBetaValue:
-                    _teams[1].List.Add(driver.ActorTransform);
-                    break;
-            }
+            case PhotonBattle.TeamBetaValue:
+                SlingModeActivate(false, true, aimingTimeSec);
+                break;
         }
+    }
+
+    public void SlingDeactivate()
+    {
+        _slingMode = false;
+    }
+
+    private void SlingModeActivate(bool teamAlpha, bool teamBeta, double aimingTimeSec)
+    {
+        if (!_teamsAreReadyForGameplay)
+        {
+            Debug.Log("Teams are not ready for gameplay");
+            return;
+        }
+
+        if (_slingMode)
+        {
+            Debug.Log("Sling already active");
+            return;
+        }
+
+        _photonView.RPC(nameof(SlingRpc), RpcTarget.All, teamAlpha, teamBeta, PhotonNetwork.Time + aimingTimeSec);
     }
 
     [PunRPC]
-    private void SlingRpc(double launchTimeS)
+    private void SlingRpc(bool teamAlpha, bool teamBeta, double launchTimeS)
     {
-        StartCoroutine(SlingDelayd((float)Math.Max(launchTimeS - PhotonNetwork.Time, 0.0)));
+        StartCoroutine(SlingDelayd(teamAlpha, teamBeta, (float)Math.Max(launchTimeS - PhotonNetwork.Time, 0.0)));
     }
 
-    private IEnumerator SlingDelayd(float waitTimeS)
+    private IEnumerator SlingDelayd(bool teamAlpha, bool teamBeta, float waitTimeS)
     {
+        _teams[0].SlingActive = teamAlpha;
+        _teams[1].SlingActive = teamBeta;
         _slingMode = true;
         yield return new WaitForSeconds(waitTimeS);
 
@@ -126,6 +154,11 @@ public class SlingControllerTest : MonoBehaviour
             launchPosition = Vector3.zero;
         }
 
+        foreach (Team team in _teams)
+        {
+            team.SlingActive = false;
+        }
+
         _slingMode = false;
         foreach (SlingIndicator slingIndicator in _slingIndicators)
         {
@@ -142,7 +175,7 @@ public class SlingControllerTest : MonoBehaviour
         {
             team.Distance = -1;
 
-            if (team.List.Count != 2) continue;
+            if (!team.SlingActive || team.List.Count != 2) continue;
 
             float player0YDistance = Mathf.Abs(team.List[0].position.y);
             float player1YDistance = Mathf.Abs(team.List[1].position.y);
