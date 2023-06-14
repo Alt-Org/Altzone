@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Raid_InventoryHandler : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Raid_InventoryHandler : MonoBehaviour
     {
         InventoryUI.InitializeInventoryUI(InventorySize);
         Debug.Log("Inventory initialized");
-        InventoryUI.SetInventorySlotData(InventorySize);
+        if (PhotonNetwork.IsMasterClient)
+            InventoryUI.SetInventorySlotData(InventorySize);
     }
 }

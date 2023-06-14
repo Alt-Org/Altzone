@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 using Random = UnityEngine.Random;
 
 public class Raid_InventoryPage : MonoBehaviour
@@ -21,12 +22,15 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Sprite Image3;
     [SerializeField] private int ItemWeight3;
 
+    public PhotonView _photonView { get; private set; }
     private void Awake()
     {
         LootTracker.ResetLootCount();
+        _photonView = gameObject.AddComponent<PhotonView>();
+        _photonView.ViewID = 1;
     }
 
-    public void InitializeInventoryUI (int InventorySize)
+    public void InitializeInventoryUI(int InventorySize)
     {
         for (int i = 0; i < InventorySize; i++)
         {
@@ -41,7 +45,13 @@ public class Raid_InventoryPage : MonoBehaviour
     public void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
-        if(index == -1)
+        _photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
+    }
+
+    [PunRPC]
+    public void HandleItemLootingRPC(int index, int itemWeight)
+    {
+        if (index == -1)
         {
             return;
         }
@@ -51,17 +61,17 @@ public class Raid_InventoryPage : MonoBehaviour
         }
         else
         {
-            if (inventoryItem.ItemWeight == ItemWeight1)
+            if (itemWeight == ItemWeight1)
             {
                 LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);
                 ListOfUIItems[index].RemoveData();
             }
-            else if (inventoryItem.ItemWeight == ItemWeight2)
+            else if (itemWeight == ItemWeight2)
             {
                 LootTracker.SetLootCount(ItemWeight2, LootTracker.MaxLootWeight);
                 ListOfUIItems[index].RemoveData();
             }
-            else if (inventoryItem.ItemWeight == ItemWeight3)
+            else if (itemWeight == ItemWeight3)
             {
                 LootTracker.SetLootCount(ItemWeight3, LootTracker.MaxLootWeight);
                 ListOfUIItems[index].RemoveData();
@@ -71,7 +81,7 @@ public class Raid_InventoryPage : MonoBehaviour
                 Debug.Log("This inventory slot has already been looted!");
             }
             ListOfUIItems[index].ItemWeight = 0;
-        }        
+        }
     }
 
     public void SetInventorySlotData(int InventorySize)
@@ -80,39 +90,46 @@ public class Raid_InventoryPage : MonoBehaviour
         for (int i = 0; i < InventorySize; i++)
         {
             int RandomFurniture = Random.Range(0, 3);
-            switch (RandomFurniture)
-            {
-                case 0:
-                    ListOfUIItems[i].ItemWeight = ItemWeight1;
-                    ListOfUIItems[i].SetData(Image1, ListOfUIItems[i].ItemWeight);
-                    break;
-                case 1:
-                    if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                    {
-                        ListOfUIItems[i].ItemWeight = ItemWeight1;
-                        ListOfUIItems[i].SetData(Image1, ListOfUIItems[i].ItemWeight);
-                    }
-                    else
-                    {
-                        ListOfUIItems[i].ItemWeight = ItemWeight2;
-                        ListOfUIItems[i].SetData(Image2, ListOfUIItems[i].ItemWeight);
-                        raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                    }
-                    break;
-                case 2:
-                    if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                    {
-                        ListOfUIItems[i].ItemWeight = ItemWeight1;
-                        ListOfUIItems[i].SetData(Image1, ListOfUIItems[i].ItemWeight);
-                    }
-                    else
-                    {
-                        ListOfUIItems[i].ItemWeight = ItemWeight3;
-                        ListOfUIItems[i].SetData(Image3, ListOfUIItems[i].ItemWeight);
-                        raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                    }
-                    break;
-            }
+            _photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
+        }
+
+    }
+
+    [PunRPC]
+    public void SetInventorySlotDataRPC(int Index, int RandomFurniture)
+    {
+        switch (RandomFurniture)
+        {
+            case 0:
+                ListOfUIItems[Index].ItemWeight = ItemWeight1;
+                ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
+                break;
+            case 1:
+                if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
+                {
+                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
+                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
+                }
+                else
+                {
+                    ListOfUIItems[Index].ItemWeight = ItemWeight2;
+                    ListOfUIItems[Index].SetData(Image2, ListOfUIItems[Index].ItemWeight);
+                    raid_InventoryHandler.MediumItemMaxAmount -= 1;
+                }
+                break;
+            case 2:
+                if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
+                {
+                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
+                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
+                }
+                else
+                {
+                    ListOfUIItems[Index].ItemWeight = ItemWeight3;
+                    ListOfUIItems[Index].SetData(Image3, ListOfUIItems[Index].ItemWeight);
+                    raid_InventoryHandler.LargeItemMaxAmount -= 1;
+                }
+                break;
         }
     }
 }

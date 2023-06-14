@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
+using Photon.Pun;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
@@ -15,6 +16,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public event Action<Raid_InventoryItem> OnItemClicked;
 
     private bool empty = true;
+
+    public PhotonView _photonView { get; set; }
 
     public void Awake()
     {
