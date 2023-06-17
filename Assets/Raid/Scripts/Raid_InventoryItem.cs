@@ -10,7 +10,7 @@ using Photon.Pun;
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image ItemImage;
-    [SerializeField] public int ItemWeight;
+    [SerializeField] public float ItemWeight;
     // [SerializeField] private TMP_Text ItemWeightText;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
@@ -25,7 +25,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         empty = true;
     }
 
-    public void SetData(Sprite ItemSprite, int LootItemWeight)
+    public void SetData(Sprite ItemSprite, float LootItemWeight)
     {
         this.ItemImage.gameObject.SetActive(true);
         this.ItemImage.sprite = ItemSprite;
