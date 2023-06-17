@@ -34,6 +34,7 @@ public class Raid_LootTracking : MonoBehaviour
     public void SetRandomMaxLootWeightRPC(float maxLootWeight)
     {
         MaxLootWeight = maxLootWeight;
+        this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
     }
 
     public void ResetLootCount()
