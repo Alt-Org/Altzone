@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Random = UnityEngine.Random;
+using Photon.Pun;
 
 public class Raid_LootTracking : MonoBehaviour
 {
@@ -11,12 +13,27 @@ public class Raid_LootTracking : MonoBehaviour
     [SerializeField] private TMP_Text OutOfText;
     [SerializeField] private TMP_Text MaxLootText;
 
-    [SerializeField, Header("Variables")] public int CurrentLootWeight;
-    [SerializeField] public int MaxLootWeight;
+    [SerializeField, Header("Variables")] public float CurrentLootWeight;
+    [SerializeField] public float MaxLootWeight;
+
+    public PhotonView _photonView { get; private set; }
 
     public void Awake()
     {
+        _photonView = gameObject.AddComponent<PhotonView>();
+        _photonView.ViewID = 2;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            float randomlootWeight = Random.Range(200, 501);
+            _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.All, randomlootWeight);
+        }
         ResetLootCount();
+    }
+
+    [PunRPC]
+    public void SetRandomMaxLootWeightRPC(float maxLootWeight)
+    {
+        MaxLootWeight = maxLootWeight;
     }
 
     public void ResetLootCount()
@@ -27,9 +44,9 @@ public class Raid_LootTracking : MonoBehaviour
         this.MaxLootText.text =  MaxLootWeight.ToString() + " kg";
     }
 
-    public void SetLootCount(int AddedLootWeight, int MaxLootWeight)
+    public void SetLootCount(float AddedLootWeight, float MaxLootWeight)
     {
-        int NewLootWeight = CurrentLootWeight + AddedLootWeight;
+        float NewLootWeight = CurrentLootWeight + AddedLootWeight;
         CurrentLootWeight = NewLootWeight;
         this.CurrentLootText.text = NewLootWeight.ToString() + " kg";
         this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
