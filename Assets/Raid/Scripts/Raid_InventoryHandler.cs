@@ -22,7 +22,7 @@ public class Raid_InventoryHandler : MonoBehaviour
         _photonView.ViewID = 1;
         if (PhotonNetwork.IsMasterClient)
         {
-            int randomInventorySize = Random.Range(1, 26);
+            int randomInventorySize = Random.Range(4, 26);
             _photonView.RPC(nameof(SetRandomInventorySizeRPC), RpcTarget.All, randomInventorySize);
         }
     }
