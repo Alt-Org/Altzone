@@ -45,7 +45,7 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         LootTracker.ResetLootCount();
         _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 1;
+        _photonView.ViewID = 2;
     }
 
     public void InitializeInventoryUI(int InventorySize)
@@ -152,7 +152,7 @@ public class Raid_InventoryPage : MonoBehaviour
         InventorySize = raid_InventoryHandler.InventorySize;
         for (int i = 0; i < InventorySize; i++)
         {
-            int RandomFurniture = Random.Range(0, 12);
+            int RandomFurniture = Random.Range(0, 13);
             _photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
         }
 
@@ -273,6 +273,8 @@ public class Raid_InventoryPage : MonoBehaviour
                     ListOfUIItems[Index].SetData(Image12, ListOfUIItems[Index].ItemWeight);
                     raid_InventoryHandler.LargeItemMaxAmount -= 1;
                 }
+                break;
+            case 12:
                 break;
         }
     }

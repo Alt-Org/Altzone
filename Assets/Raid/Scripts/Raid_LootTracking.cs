@@ -21,7 +21,7 @@ public class Raid_LootTracking : MonoBehaviour
     public void Awake()
     {
         _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 2;
+        _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
         {
             float randomlootWeight = Random.Range(200, 501);

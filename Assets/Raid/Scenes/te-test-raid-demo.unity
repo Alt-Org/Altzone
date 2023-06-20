@@ -959,15 +959,20 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
+    - target: {fileID: 8100441790868650068, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
-      propertyPath: m_AnchorMax.y
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
+        type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790942708954, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -1323,8 +1328,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryUI: {fileID: 371317729}
   InventorySize: 20
-  MediumItemMaxAmount: 13
-  LargeItemMaxAmount: 5
+  MediumItemMaxAmount: 16
+  LargeItemMaxAmount: 8
 --- !u!4 &943703427
 Transform:
   m_ObjectHideFlags: 0
