@@ -20,10 +20,12 @@ namespace Battle.Scripts.Battle.Players
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private PlayerDriverState _state;
+        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
         public PhotonView _photonView { get; private set; }
         private int _playerPos;
         private int _teamNumber;
-        private double _movementDelay;
+        private float _playerMoveSpeedMultiplier;
+        private double _movementMinTimeS;
         private float _arenaScaleFactor;
         private int _peerCount;
         private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
@@ -38,12 +40,15 @@ namespace Battle.Scripts.Battle.Players
         {
             _battlePlayArea = Context.GetBattlePlayArea;
             _photonView = PhotonView.Get(this);
+            _playerManager = Context.GetPlayerManager;
             _gridManager = Context.GetGridManager;
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
-            _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            _movementMinTimeS = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
         }
 
@@ -78,7 +83,6 @@ namespace Battle.Scripts.Battle.Players
                 Rotate(180f);
             }
 
-            _playerManager = FindObjectOfType<PlayerManager>();
             _playerManager.RegisterPlayer(this);
             _peerCount = 0;
             this.ExecuteOnNextFrame(() => _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All));
@@ -105,19 +109,20 @@ namespace Battle.Scripts.Battle.Players
 
         public void MoveTo(Vector2 targetPosition)
         {
-            if (!_state.CanRequestMove)
-            {
-                return;
-            }
-            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _teamNumber);
-            if (!isSpaceFree)
-            {
-                return;
-            }
+            if (!_state.CanRequestMove) return;
+
+            Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
+            GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
+            GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+
+            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _teamNumber)) return;
+
             _state.IsWaitingToMove(true);
-            var movementStartTime = PhotonNetwork.Time + _movementDelay;
-            _photonView.RPC(nameof(MoveDelayedRpc), RpcTarget.All, gridPos.Row, gridPos.Col, movementStartTime);
+            float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
+            float distance = (targetPosition - position).magnitude;
+            double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
+            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS + PlayerActor.PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS);
+            _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
         }
 
         public void SetCharacterPose(int poseIndex)
@@ -132,11 +137,18 @@ namespace Battle.Scripts.Battle.Players
         #region Photon RPC
 
         [PunRPC]
+        /* old
         private void MoveDelayedRpc(int row, int col, double movementStartTime)
         {
             var moveExecuteDelay = Math.Max(0, movementStartTime - PhotonNetwork.Time);
             var gridPos = new GridPos(row, col);
             _state.DelayedMove(gridPos, (float)moveExecuteDelay);
+        }
+        */
+        private void MoveRpc(int row, int col, int teleportUpdateNumber)
+        {
+            var gridPos = new GridPos(row, col);
+            _state.Move(gridPos, teleportUpdateNumber);
         }
 
         [PunRPC]

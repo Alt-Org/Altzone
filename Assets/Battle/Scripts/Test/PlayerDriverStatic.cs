@@ -100,7 +100,13 @@ namespace Battle.Scripts.Test
                 return;
             }
             _state.IsWaitingToMove(true);
+            /*
+            method removed
             _state.DelayedMove(gridPos, (float)_movementDelay);
+
+            use void PlayerDriverState.Move(GridPos gridPos, int teleportUpdateNumber) instead
+            see PlayerDriverPhoton.MoveRpc and PlayerDriverPhoton.MoveTo for reference
+            */
         }
 
         public void SetCharacterPose(int poseIndex)

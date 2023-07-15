@@ -66,6 +66,8 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
+        /*
+        old
         private IEnumerator DelayTime(GridPos gridPos, float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
@@ -73,6 +75,7 @@ namespace Battle.Scripts.Battle.Players
             _playerActor.MoveTo(targetPosition);
             IsWaitingToMove(false);
         }
+        */
 
         internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
@@ -91,9 +94,19 @@ namespace Battle.Scripts.Battle.Players
             _gridManager = Context.GetGridManager;
         }
 
+        /* 
+        old
         internal void DelayedMove(GridPos gridPos, float moveExecuteDelay)
         {
             StartCoroutine(DelayTime(gridPos, moveExecuteDelay));
+        }
+        */
+
+        internal void Move(GridPos gridPos, int teleportUpdateNumber)
+        {
+            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
+            _playerActor.MoveTo(targetPosition, teleportUpdateNumber);
+            IsWaitingToMove(false);
         }
 
         internal void IsWaitingToMove(bool isWaitingToMove)

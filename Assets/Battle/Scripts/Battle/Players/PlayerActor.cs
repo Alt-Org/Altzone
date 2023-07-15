@@ -21,12 +21,20 @@ namespace Battle.Scripts.Battle.Players
         public static string PlayerName;
         private bool StartBool = true;
 
+        public const double PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS = 0.35;
+
+        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
         private PlayerDriverPhoton _playerDriver;
+        private Transform _playerCharacterTransform;
+        private Animator _playerCharacterAnimator;
         private ShieldPoseManager _shieldPoseManager;
+        /*
         private float _playerMoveSpeedMultiplier;
+        */
         private Transform _transform;
         private Vector3 _tempPosition;
         private bool _hasTarget;
+        private bool _isBusy;
         private int _shieldResistance;
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
@@ -36,13 +44,20 @@ namespace Battle.Scripts.Battle.Players
         private int _currentPoseIndex;
         private bool _allowShieldHit;
 
+        private SpriteRenderer _tempShieldSpriteRenderer;
 
         private void Awake()
         {
             _allowShieldHit = true;
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _transform = GetComponent<Transform>();
+            _playerCharacterTransform = _transform.GetChild(0).Find("PLayerCharacter");
+            _playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
+            _tempShieldSpriteRenderer = _transform.GetChild(0).Find("ShieldTempSprite").GetComponent<SpriteRenderer>();
             var variables = GameConfig.Get().Variables;
+            /*
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
+            */
             _shieldResistance = variables._shieldResistance;
             _shieldHitPoints = _shieldResistance;
             _shieldDeformDelay = variables._shieldDeformDelay;
@@ -62,18 +77,19 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"{gameObject.name} {SeePlayerName}");
         }
 
-        private IEnumerator MoveCoroutine(Vector2 position)
+        private IEnumerator MoveCoroutine(Vector2 position, float movementSpeed)
         {
             Vector3 targetPosition = position;
             _hasTarget = true;
             while (_hasTarget)
             {
                 yield return null;
-                var maxDistanceDelta = _movementSpeed * _playerMoveSpeedMultiplier * Time.deltaTime;
-                _tempPosition = Vector3.MoveTowards(_transform.position, targetPosition, maxDistanceDelta);
-                _transform.position = _tempPosition;
+                float maxDistanceDelta = movementSpeed * Time.deltaTime;
+                _tempPosition = Vector3.MoveTowards(_playerCharacterTransform.position, targetPosition, maxDistanceDelta);
+                _playerCharacterTransform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
+            _playerCharacterAnimator.SetTrigger("Shield Animation Trigger");
         }
 
         private IEnumerator ResetPose()
@@ -103,11 +119,28 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        public bool IsBusy => _hasTarget;
+        public bool IsBusy => _isBusy;
 
-        public void MoveTo(Vector2 targetPosition)
+        public float MovementSpeed => _movementSpeed;
+
+        public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
-            StartCoroutine(MoveCoroutine(targetPosition));
+            _isBusy = true;
+            _playerCharacterAnimator.SetTrigger("Moving Trigger");
+            _tempShieldSpriteRenderer.enabled = true;
+
+            float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
+            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.ToUpdates(PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS) - _syncedFixedUpdateClock.UpdateCount, 1));
+            float movementSpeed = targetDistance / movementTimeS;
+
+            StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
+            _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
+            {
+                _tempShieldSpriteRenderer.enabled = false;
+                _transform.position = targetPosition;
+                _playerCharacterTransform.position = targetPosition;
+                _isBusy = false;
+            });
         }
 
         public void SetPlayerDriver(PlayerDriverPhoton playerDriver)

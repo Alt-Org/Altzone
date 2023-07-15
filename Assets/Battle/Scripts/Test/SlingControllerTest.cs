@@ -1,4 +1,5 @@
 using Math = System.Math;
+using Action = System.Action;
 using System.Collections;
 using System.Collections.Generic;
 using Battle.Scripts.Battle;
@@ -23,6 +24,7 @@ public class SlingControllerTest : MonoBehaviour
     [SerializeField] private float _indicatorLowOpacity;
 
     private PhotonView _photonView;
+    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
 
     private class Team
     {
@@ -54,6 +56,7 @@ public class SlingControllerTest : MonoBehaviour
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
+        _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
         _slingIndicators = new SlingIndicator[2];
         {
@@ -102,11 +105,6 @@ public class SlingControllerTest : MonoBehaviour
         }
     }
 
-    public void SlingDeactivate()
-    {
-        _slingMode = false;
-    }
-
     private void SlingModeActivate(bool teamAlpha, bool teamBeta, double aimingTimeSec)
     {
         if (!_teamsAreReadyForGameplay)
@@ -121,50 +119,51 @@ public class SlingControllerTest : MonoBehaviour
             return;
         }
 
-        _photonView.RPC(nameof(SlingRpc), RpcTarget.All, teamAlpha, teamBeta, PhotonNetwork.Time + aimingTimeSec);
+        _photonView.RPC(nameof(SlingRpc), RpcTarget.All, teamAlpha, teamBeta, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(aimingTimeSec));
     }
 
     [PunRPC]
-    private void SlingRpc(bool teamAlpha, bool teamBeta, double launchTimeS)
+    private void SlingRpc(bool teamAlpha, bool teamBeta, int launchUpdateNumber)
     {
-        StartCoroutine(SlingDelayd(teamAlpha, teamBeta, (float)Math.Max(launchTimeS - PhotonNetwork.Time, 0.0)));
+        Sling(teamAlpha, teamBeta, launchUpdateNumber);
     }
 
-    private IEnumerator SlingDelayd(bool teamAlpha, bool teamBeta, float waitTimeS)
+    private void Sling(bool teamAlpha, bool teamBeta, int launchUpdateNumber)
     {
         _teams[0].SlingActive = teamAlpha;
         _teams[1].SlingActive = teamBeta;
         _slingMode = true;
-        yield return new WaitForSeconds(waitTimeS);
+        _syncedFixedUpdateClock.ExecuteOnUpdate(launchUpdateNumber, -1, () =>
+        {
+            Vector3 launchPosition;
+            Vector3 launchDirection;
+            float launchSpeed;
+            if (_teams[0].Distance >= 0 || _teams[1].Distance >= 0)
+            {
+                Team team = _teams[0].Distance > _teams[1].Distance ? _teams[0] : _teams[1];
+                launchSpeed = team.Distance * 2f;
+                launchDirection = team.LaunchDirection;
+                launchPosition = team.FrontPlayer.position + launchDirection * _startingDistance;
+            }
+            else
+            {
+                launchDirection = new Vector3(0.5f, 0.5f);
+                launchSpeed = _defaultSpeed;
+                launchPosition = Vector3.zero;
+            }
 
-        Vector3 launchPosition;
-        Vector3 launchDirection;
-        float launchSpeed;
-        if (_teams[0].Distance >= 0 || _teams[1].Distance >= 0)
-        {
-            Team team = _teams[0].Distance > _teams[1].Distance ? _teams[0] : _teams[1];
-            launchSpeed = team.Distance * 2f;
-            launchDirection = team.LaunchDirection;
-            launchPosition = team.FrontPlayer.position + launchDirection * _startingDistance;
-        }
-        else
-        {
-            launchDirection = new Vector3(0.5f, 0.5f);
-            launchSpeed = _defaultSpeed;
-            launchPosition = Vector3.zero;
-        }
+            foreach (Team team in _teams)
+            {
+                team.SlingActive = false;
+            }
 
-        foreach (Team team in _teams)
-        {
-            team.SlingActive = false;
-        }
-
-        _slingMode = false;
-        foreach (SlingIndicator slingIndicator in _slingIndicators)
-        {
-            slingIndicator.SpriteRenderer.enabled = false;
-        }
-        _ball.Launch(launchPosition, launchDirection, launchSpeed);
+            _slingMode = false;
+            foreach (SlingIndicator slingIndicator in _slingIndicators)
+            {
+                slingIndicator.SpriteRenderer.enabled = false;
+            }
+            _ball.Launch(launchPosition, launchDirection, launchSpeed);
+        });
     }
 
     private void Update()

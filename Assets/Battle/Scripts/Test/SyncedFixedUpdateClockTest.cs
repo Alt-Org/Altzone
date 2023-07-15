@@ -7,6 +7,7 @@ using Photon.Pun;
 
 public class SyncedFixedUpdateClockTest : MonoBehaviour
 {
+    public const int UPDATES_PER_SECONDS = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
     private bool _synced = false;
     private int _updateCount = 0;
 
@@ -94,7 +95,7 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
         public static void Execute(int updateNumber)
         {
-            // execute event this updates events
+            // execute this updates events
             int i = s_first;
             Event @event;
             while(i < s_size)
@@ -128,6 +129,26 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
     public bool Synced => _synced;
 
     public int UpdateCount => _updateCount;
+
+    public int ToUpdates(int seconds)
+    {
+        return seconds * UPDATES_PER_SECONDS;
+    }
+
+    public int ToUpdates(float seconds)
+    {
+        return (int)Mathf.Ceil(seconds * UPDATES_PER_SECONDS);
+    }
+
+    public int ToUpdates(double seconds)
+    {
+        return (int)Math.Ceiling(seconds * UPDATES_PER_SECONDS);
+    }
+
+    public double ToSeconds(int updates)
+    {
+        return ((double)updates) / ((double)UPDATES_PER_SECONDS);
+    }
 
     public void ExecuteOnUpdate(int updateNumber, int priority, Action action)
     {
