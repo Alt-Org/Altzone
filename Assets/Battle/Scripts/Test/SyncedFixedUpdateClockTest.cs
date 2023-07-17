@@ -113,12 +113,18 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
     private PhotonView _photonView;
 
+#if DEVELOPMENT_BUILD
     private TextMeshPro _textMeshPro;
+#endif
 
     private void Start()
     {
-        _photonView = GetComponent<PhotonView>();
+#if DEVELOPMENT_BUILD
+        transform.GetChild(0).gameObject.SetActive(true);
         _textMeshPro = GetComponentInChildren<TextMeshPro>();
+#endif
+
+        _photonView = GetComponent<PhotonView>();
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -170,7 +176,11 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
     private void FixedUpdate()
     {
         if (!_synced) return;
+
+#if DEVELOPMENT_BUILD
         _textMeshPro.text = "Update\n" + _updateCount.ToString();
+#endif
+
         UpdateQueue.Execute(_updateCount);
         _updateCount++;
     }
