@@ -8,6 +8,17 @@ using UnityEngine;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 
+public class BallSlinged
+{
+    public readonly int SlingingTeamNumber;
+
+    public BallSlinged(int slingingTeamNumber)
+    {
+        SlingingTeamNumber = slingingTeamNumber;
+    }
+}
+
+
 public class SlingControllerTest : MonoBehaviour
 {
     [Header("Sling")]
@@ -135,18 +146,22 @@ public class SlingControllerTest : MonoBehaviour
         _slingMode = true;
         _syncedFixedUpdateClock.ExecuteOnUpdate(launchUpdateNumber, -1, () =>
         {
+            int slingingTeamNumber;
             Vector3 launchPosition;
             Vector3 launchDirection;
             float launchSpeed;
             if (_teams[0].Distance >= 0 || _teams[1].Distance >= 0)
             {
-                Team team = _teams[0].Distance > _teams[1].Distance ? _teams[0] : _teams[1];
+                bool b = _teams[0].Distance > _teams[1].Distance;
+                slingingTeamNumber = b ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
+                Team team = b ? _teams[0] : _teams[1];
                 launchSpeed = team.Distance * 2f;
                 launchDirection = team.LaunchDirection;
                 launchPosition = team.FrontPlayer.position + launchDirection * _startingDistance;
             }
             else
             {
+                slingingTeamNumber = PhotonBattle.NoTeamValue;
                 launchDirection = new Vector3(0.5f, 0.5f);
                 launchSpeed = _defaultSpeed;
                 launchPosition = Vector3.zero;
@@ -163,6 +178,7 @@ public class SlingControllerTest : MonoBehaviour
                 slingIndicator.SpriteRenderer.enabled = false;
             }
             _ball.Launch(launchPosition, launchDirection, launchSpeed);
+            this.Publish(new BallSlinged(slingingTeamNumber));
         });
     }
 
