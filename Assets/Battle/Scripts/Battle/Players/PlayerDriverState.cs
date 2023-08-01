@@ -45,6 +45,7 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
+        /*
         private void Update()
         {
             var actorRotation = _defaultRotation;
@@ -65,6 +66,7 @@ namespace Battle.Scripts.Battle.Players
                 _playerActor.SetRotation(actorRotation);
             }
         }
+        */
 
         /*
         old

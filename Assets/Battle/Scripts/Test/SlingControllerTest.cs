@@ -99,7 +99,10 @@ public class SlingControllerTest : MonoBehaviour
 
     public void SlingActivate(double aimingTimeSec)
     {
-        SlingModeActivate(true, true, aimingTimeSec);
+        int teamNumber = new[] { PhotonBattle.TeamAlphaValue, PhotonBattle.TeamBetaValue }[Random.Range(0, 2)];
+        SlingActivate(teamNumber, aimingTimeSec);
+
+       //SlingModeActivate(true, true, aimingTimeSec);
     }
 
     public void SlingActivate(int teamNumber, double aimingTimeSec)

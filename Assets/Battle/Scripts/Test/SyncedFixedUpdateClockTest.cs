@@ -4,6 +4,10 @@ using Action = System.Action;
 using TMPro;
 using UnityEngine;
 using Photon.Pun;
+using Prg.Scripts.Common.PubSub;
+
+public class SyncedFixedUpdateClockStarted
+{ }
 
 public class SyncedFixedUpdateClockTest : MonoBehaviour
 {
@@ -56,8 +60,13 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
          */
 
         private static int s_size = 10;
-        private static int s_first = s_size;
         private static Event[] s_eventArray = new Event[s_size];
+        private static int s_first;
+
+        public static void init()
+        {
+             s_first = s_size;
+        }
 
         public static void Add(Event @event)
         {
@@ -124,6 +133,8 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
         _textMeshPro = GetComponentInChildren<TextMeshPro>();
 #endif
 
+        UpdateQueue.init();
+
         _photonView = GetComponent<PhotonView>();
 
         if (PhotonNetwork.IsMasterClient)
@@ -171,6 +182,7 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
         _synced = true;
+        this.Publish(new SyncedFixedUpdateClockStarted());
     }
 
     private void FixedUpdate()
