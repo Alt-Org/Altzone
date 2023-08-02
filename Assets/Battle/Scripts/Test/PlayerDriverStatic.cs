@@ -16,7 +16,7 @@ namespace Battle.Scripts.Test
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : MonoBehaviour
+    internal class PlayerDriverStatic : MonoBehaviour, IDriver
     {
         [Serializable]
         internal class Settings
@@ -38,6 +38,8 @@ namespace Battle.Scripts.Test
         private PlayerPlayArea _battlePlayArea;
         private float _arenaScaleFactor;
 
+        private float _hasRealPlayerShotBall; // this will turn True when the ball is moving after the player has stayed near the bot player
+
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
         private void Awake()
@@ -45,6 +47,8 @@ namespace Battle.Scripts.Test
             _battlePlayArea = Context.GetBattlePlayArea;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
+           PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+            playerManager.RegisterBot(this);
         }
 
         private void Start()
@@ -81,11 +85,12 @@ namespace Battle.Scripts.Test
 
         public int PlayerPos => _settings._playerPos;
 
+        public Transform ActorTransform => _playerActor.transform;
+
         public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
-
         private void OnMoveTo(Vector2 targetPosition)
         {
             // Make this public if you want to test it.
