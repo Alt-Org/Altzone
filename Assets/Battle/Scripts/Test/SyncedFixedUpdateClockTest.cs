@@ -11,6 +11,7 @@ public class SyncedFixedUpdateClockStarted
 
 public class SyncedFixedUpdateClockTest : MonoBehaviour
 {
+    [SerializeField] private bool OfflineMode;
     public const int UPDATES_PER_SECONDS = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
     private bool _synced = false;
     private int _updateCount = 0;
@@ -137,6 +138,12 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
         _photonView = GetComponent<PhotonView>();
 
+        if (OfflineMode)
+        {
+            StartClock();
+            return;
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             _photonView.RPC(nameof(StartClockRpc), RpcTarget.All, PhotonNetwork.Time + 1.0);
@@ -177,14 +184,17 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
     {
         StartCoroutine(StartClockDelayed((float)Math.Max(startTimeSec - PhotonNetwork.Time, 0.0)));
     }
-
+    
     private IEnumerator StartClockDelayed(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        StartClock();
+    }
+    private void StartClock()
+    {
         _synced = true;
         this.Publish(new SyncedFixedUpdateClockStarted());
     }
-
     private void FixedUpdate()
     {
         if (!_synced) return;
