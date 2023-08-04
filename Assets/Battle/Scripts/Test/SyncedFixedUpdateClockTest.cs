@@ -4,9 +4,14 @@ using Action = System.Action;
 using TMPro;
 using UnityEngine;
 using Photon.Pun;
+using Prg.Scripts.Common.PubSub;
+
+public class SyncedFixedUpdateClockStarted
+{ }
 
 public class SyncedFixedUpdateClockTest : MonoBehaviour
 {
+    [SerializeField] private bool OfflineMode;
     public const int UPDATES_PER_SECONDS = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
     private bool _synced = false;
     private int _updateCount = 0;
@@ -56,8 +61,13 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
          */
 
         private static int s_size = 10;
-        private static int s_first = s_size;
         private static Event[] s_eventArray = new Event[s_size];
+        private static int s_first;
+
+        public static void init()
+        {
+             s_first = s_size;
+        }
 
         public static void Add(Event @event)
         {
@@ -124,7 +134,15 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
         _textMeshPro = GetComponentInChildren<TextMeshPro>();
 #endif
 
+        UpdateQueue.init();
+
         _photonView = GetComponent<PhotonView>();
+
+        if (OfflineMode)
+        {
+            StartClock();
+            return;
+        }
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -166,13 +184,17 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
     {
         StartCoroutine(StartClockDelayed((float)Math.Max(startTimeSec - PhotonNetwork.Time, 0.0)));
     }
-
+    
     private IEnumerator StartClockDelayed(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        _synced = true;
+        StartClock();
     }
-
+    private void StartClock()
+    {
+        _synced = true;
+        this.Publish(new SyncedFixedUpdateClockStarted());
+    }
     private void FixedUpdate()
     {
         if (!_synced) return;

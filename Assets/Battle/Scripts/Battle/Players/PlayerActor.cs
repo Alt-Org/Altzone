@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players
         public static string PlayerName;
         private bool StartBool = true;
 
-        public const double PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS = 0.35;
+        public const double PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS = 0.3;
 
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
         private PlayerDriverPhoton _playerDriver;
@@ -44,8 +44,6 @@ namespace Battle.Scripts.Battle.Players
         private int _currentPoseIndex;
         private bool _allowShieldHit;
 
-        private SpriteRenderer _tempShieldSpriteRenderer;
-
         private void Awake()
         {
             _allowShieldHit = true;
@@ -53,7 +51,6 @@ namespace Battle.Scripts.Battle.Players
             _transform = GetComponent<Transform>();
             _playerCharacterTransform = _transform.GetChild(0).Find("PLayerCharacter");
             _playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
-            _tempShieldSpriteRenderer = _transform.GetChild(0).Find("ShieldTempSprite").GetComponent<SpriteRenderer>();
             var variables = GameConfig.Get().Variables;
             /*
             _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
@@ -119,7 +116,7 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        public bool IsBusy => _isBusy;
+        public bool IsBusy => _isBusy || _hasTarget;
 
         public float MovementSpeed => _movementSpeed;
 
@@ -127,7 +124,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _isBusy = true;
             _playerCharacterAnimator.SetTrigger("Moving Trigger");
-            _tempShieldSpriteRenderer.enabled = true;
+            _playerCharacterTransform.position = transform.position;
 
             float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.ToUpdates(PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS) - _syncedFixedUpdateClock.UpdateCount, 1));
@@ -136,7 +133,6 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
-                _tempShieldSpriteRenderer.enabled = false;
                 _transform.position = targetPosition;
                 _playerCharacterTransform.position = targetPosition;
                 _isBusy = false;
@@ -153,6 +149,13 @@ namespace Battle.Scripts.Battle.Players
             var multiplier = Mathf.Round (angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
             _geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
+        }
+
+        public void SetCharacterRotation(float angle)
+        {
+            var multiplier = Mathf.Round(angle / _angleLimit);
+            var newAngle = _angleLimit * multiplier;
+            _playerCharacterTransform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         public void ShieldHit(int damage)

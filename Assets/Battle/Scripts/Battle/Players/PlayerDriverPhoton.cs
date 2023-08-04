@@ -5,6 +5,7 @@ using Battle.Scripts.Battle.Game;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -50,6 +51,22 @@ namespace Battle.Scripts.Battle.Players
             _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
+
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
+        }
+
+        void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+        {
+            bool rotate = _teamNumber == PhotonBattle.TeamBetaValue;
+            if (rotate)
+            {
+                Rotate(180f);
+            }
+
+            if (data.LocalPlayer.TeamNumber != _teamNumber)
+            {
+                _playerActor.SetCharacterRotation(rotate ? 0f : 180f);
+            }
         }
 
         private PlayerActor InstantiatePlayerPrefab(Player player)
@@ -78,10 +95,6 @@ namespace Battle.Scripts.Battle.Players
             var player = _photonView.Owner;
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _teamNumber);
-            if (_teamNumber == PhotonBattle.TeamBetaValue)
-            {
-                Rotate(180f);
-            }
 
             _playerManager.RegisterPlayer(this);
             _peerCount = 0;
@@ -110,14 +123,18 @@ namespace Battle.Scripts.Battle.Players
         public void MoveTo(Vector2 targetPosition)
         {
             if (!_state.CanRequestMove) return;
+            _state.IsWaitingToMove(true);
 
             Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
 
-            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _teamNumber)) return;
+            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _teamNumber))
+            {
+                _state.IsWaitingToMove(false);
+                return;
+            }
 
-            _state.IsWaitingToMove(true);
             float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
             float distance = (targetPosition - position).magnitude;
             double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
@@ -147,6 +164,7 @@ namespace Battle.Scripts.Battle.Players
         */
         private void MoveRpc(int row, int col, int teleportUpdateNumber)
         {
+            _state.IsWaitingToMove(true);
             var gridPos = new GridPos(row, col);
             _state.Move(gridPos, teleportUpdateNumber);
         }

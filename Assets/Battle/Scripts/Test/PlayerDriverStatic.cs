@@ -1,10 +1,13 @@
+
 using System;
+using Random = UnityEngine.Random;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
 using Unity.Collections;
 using UnityEngine;
+using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Test
 {
@@ -16,7 +19,7 @@ namespace Battle.Scripts.Test
     /// Note that this (class) is strictly for testing purposes!
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : MonoBehaviour
+    internal class PlayerDriverStatic : MonoBehaviour, IDriver
     {
         [Serializable]
         internal class Settings
@@ -37,6 +40,25 @@ namespace Battle.Scripts.Test
         private PlayerDriverState _state;
         private PlayerPlayArea _battlePlayArea;
         private float _arenaScaleFactor;
+        private float _playerMoveSpeedMultiplier;
+        private double _movementMinTimeS;
+        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+
+
+        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
+        {
+            PickRandomPosition();
+        }
+        private void OnBallslinged(BallSlinged data)
+        {
+            PickRandomPosition();
+
+        }
+        private void PickRandomPosition()
+        {
+            OnMoveTo(_gridManager.GridPositionToWorldPoint(new GridPos(5, Random.Range(1, 25))));
+
+        }
 
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
@@ -45,6 +67,13 @@ namespace Battle.Scripts.Test
             _battlePlayArea = Context.GetBattlePlayArea;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
+           PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+            playerManager.RegisterBot(this);
+            this.Subscribe<BallSlinged>(OnBallslinged);
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+            _movementMinTimeS = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
         private void Start()
@@ -66,9 +95,7 @@ namespace Battle.Scripts.Test
             {
                 return;
             }
-            var playerInputHandler = Context.GetPlayerInputHandler;
-            playerInputHandler._hostForInput = gameObject;
-            playerInputHandler.OnMoveTo = OnMoveTo;
+            
         }
 
         public string NickName => _settings._nickName;
@@ -81,32 +108,49 @@ namespace Battle.Scripts.Test
 
         public int PlayerPos => _settings._playerPos;
 
+        public Transform ActorTransform => _playerActor.transform;
+
         public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
         }
-
         private void OnMoveTo(Vector2 targetPosition)
         {
             // Make this public if you want to test it.
-            if (!_state.CanRequestMove)
-            {
-                return;
-            }
-            var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-            var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _settings._teamNumber);
-            if (!isSpaceFree)
-            {
-                return;
-            }
-            _state.IsWaitingToMove(true);
-            /*
-            method removed
-            _state.DelayedMove(gridPos, (float)_movementDelay);
+            //
+            //             OLD
+            /* if (!_state.CanRequestMove)
+           {
+               return;
+           }
+           var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+           var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _settings._teamNumber);
+           if (!isSpaceFree)
+           {
+               return;
+           }
+           _state.IsWaitingToMove(true);
+           */
 
-            use void PlayerDriverState.Move(GridPos gridPos, int teleportUpdateNumber) instead
-            see PlayerDriverPhoton.MoveRpc and PlayerDriverPhoton.MoveTo for reference
-            */
+            if (!_state.CanRequestMove) return;
+            _state.IsWaitingToMove(true);
+
+            Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
+            GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
+            GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+
+            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _settings._teamNumber))
+            {
+                _state.IsWaitingToMove(false);
+                return;
+            }
+
+            float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
+            float distance = (targetPosition - position).magnitude;
+            double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
+            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS + PlayerActor.PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS);
+
+            _state.Move(targetGridPos, teleportUpdateNumber);      
         }
 
         public void SetCharacterPose(int poseIndex)

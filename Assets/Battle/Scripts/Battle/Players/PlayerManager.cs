@@ -5,6 +5,7 @@ using Battle.Scripts.Battle;
 using UnityEngine;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
+using Battle.Scripts.Test;
 
 
 // this interface probably should be somewhere else
@@ -22,7 +23,7 @@ interface IReadOnlyBattleTeam
     public int GetTeamNumber();
     public IReadOnlyList<IDriver> GetAllDrivers();
     public IReadOnlyList<PlayerDriverPhoton> GetPlayerDrivers();
-    //public IReadOnlyList<[Insert type here]> GetBotDrivers();
+    public IReadOnlyList<PlayerDriverStatic> GetBotDrivers();
 }
 
 internal class BattleTeam : IReadOnlyBattleTeam
@@ -30,7 +31,7 @@ internal class BattleTeam : IReadOnlyBattleTeam
     public int TeamNumber;
     public List<IDriver> AllDrivers = new();
     public List<PlayerDriverPhoton> PlayerDrivers = new();
-    //public List<[Insert type here]> BotDrivers = new();
+    public List<PlayerDriverStatic> BotDrivers = new();
 
     public BattleTeam(int teamNumber)
     {
@@ -47,10 +48,10 @@ internal class BattleTeam : IReadOnlyBattleTeam
     public IReadOnlyList<PlayerDriverPhoton> GetPlayerDrivers()
         { return PlayerDrivers; }
 
-    /*
-    public IReadOnlyList<[Insert type here]> GetBotDrivers();
+    
+    public IReadOnlyList<PlayerDriverStatic> GetBotDrivers()
         { return BotDrivers; }
-     */
+     
 
     public void AddPlayer(PlayerDriverPhoton player)
     {
@@ -58,13 +59,13 @@ internal class BattleTeam : IReadOnlyBattleTeam
         AllDrivers.Add(player);
     }
 
-    /*
-    public void AddBot([Insert type here] bot)
+    
+    public void AddBot(PlayerDriverStatic bot)
     {
-        BotDrivers.Add(player);
+        BotDrivers.Add(bot);
         AllDrivers.Add(bot);
     }
-    */
+    
 }
 
 internal class TeamsAreReadyForGameplay
@@ -85,12 +86,14 @@ internal class TeamsAreReadyForGameplay
 
 internal class PlayerManager : MonoBehaviour
 {
+    /*
     [Header("Prefabs")]
     [SerializeField] private GameObject _rangeIndicator;
+    */
 
     private List<IDriver> _allDrivers = new();
     private List<PlayerDriverPhoton> _allPlayerDrivers = new();
-    //private List<[Insert type here]> _allBotDrivers = new();
+    private List<PlayerDriverStatic> _allBotDrivers = new();
     private BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
     private BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
     private PlayerDriverPhoton _localPlayer;
@@ -111,23 +114,23 @@ internal class PlayerManager : MonoBehaviour
         }
     }
 
-    /*
-    public void RegisterBot([Insert type here] botrDriver)
+    
+    public void RegisterBot(PlayerDriverStatic botDriver)
     {
-        _allDrivers.Add(botrDriver);
-        _allBotDrivers.Add(botrDriver);
-        switch (botrDriver.TeamNumber)
+        _allDrivers.Add(botDriver);
+        _allBotDrivers.Add(botDriver);
+        switch (botDriver.TeamNumber)
         {
             case PhotonBattle.TeamAlphaValue:
-                _teamAlpha.AddBot(playerDriver);
+                _teamAlpha.AddBot(botDriver);
                 break;
 
             case PhotonBattle.TeamBetaValue:
-                _teamBeta.AddBotplayerDriver);
+                _teamBeta.AddBot(botDriver);
                 break;
         }
     }
-    */
+ 
 
     public void UpdatePeerCount()
     {
@@ -147,11 +150,11 @@ internal class PlayerManager : MonoBehaviour
         if (readyPeers == realPlayerCount)
         {
             GetLocalDriver(); // Finds the local driver from _allDrivers and sets it in _localPlayer
-            AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
+            //AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
             this.ExecuteOnNextFrame(() =>
             {
                 Debug.Log("TeamsAreReadyForGameplay");
-                this.Publish(new TeamsAreReadyForGameplay(_allPlayerDrivers, _teamAlpha, _teamBeta, _localPlayer));
+                this.Publish(new TeamsAreReadyForGameplay(_allDrivers, _teamAlpha, _teamBeta, _localPlayer));
             });
         }
     }
@@ -168,11 +171,13 @@ internal class PlayerManager : MonoBehaviour
         }
     }
 
+    /*
     private void AttachRangeIndicator()
     {
         try { Instantiate(_rangeIndicator, GetAlly(_localPlayer).transform); }
         catch { Debug.Log("Local player is missing an ally"); }
     }
+    */
 
     private GameObject GetAlly(PlayerDriverPhoton selfDriver)
     {
