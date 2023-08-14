@@ -11,8 +11,7 @@ public class ExplotionTimer : MonoBehaviour
     }
     private IEnumerator die()
     {
-        
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2.8f);
         Destroy(gameObject);
     }
 }

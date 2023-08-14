@@ -3,6 +3,7 @@ using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using UnityConstants;
 using UnityEngine;
+using Photon.Pun;
 
 public class BallHandlerTest : MonoBehaviour
 {
@@ -38,6 +39,13 @@ public class BallHandlerTest : MonoBehaviour
         StartBallSpeed = new Vector2(_rb.velocity.x, _rb.velocity.y);
     }
 
+    public void Stop()
+    {
+        _rb.position = Vector2.zero;
+        _rb.velocity = Vector2.zero;
+        _sprite.enabled = false;
+    }
+
     //private void Update()
     //{
     //    var velocity = rb.velocity;
@@ -61,6 +69,11 @@ public class BallHandlerTest : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             collision.gameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
+            Stop();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Context.GetSlingController.SlingActivate();
+            }
         }
     }
 

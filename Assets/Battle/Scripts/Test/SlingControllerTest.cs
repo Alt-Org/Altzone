@@ -91,11 +91,13 @@ public class SlingControllerTest : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient && _autoStart)
         {
-            SlingActivate(_aimingTimeSec);
+            SlingActivate();
         }
     }
 
     public bool SlingMode => _slingMode;
+
+    public void SlingActivate() { SlingActivate(_aimingTimeSec); }
 
     public void SlingActivate(double aimingTimeSec)
     {
@@ -104,6 +106,8 @@ public class SlingControllerTest : MonoBehaviour
 
        //SlingModeActivate(true, true, aimingTimeSec);
     }
+
+    public void SlingActivate(int teamNumber) { SlingActivate(teamNumber, _aimingTimeSec); }
 
     public void SlingActivate(int teamNumber, double aimingTimeSec)
     {
