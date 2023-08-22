@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 57ab47e46ec017849a0e075488399c15
+guid: 73dca07caf12f834789901ad8d99a4e6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -153,55 +153,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player Green Character Sprite Sheet_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 256
-        width: 256
-        height: 256
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3946783251942064dad950ead65b0c45
-      internalID: 748889862
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player Green Character Sprite Sheet_1
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 256
-        width: 256
-        height: 256
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 80229ca2e49c5a545ae5210883d26453
-      internalID: -10119561
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player Green Character Sprite Sheet_2
+      name: Player Grayscale Shield Sprite Sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 256
-        height: 256
+        height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,20 +167,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9320080c8c1b12f478e7786603db4dde
-      internalID: 838849862
+      spriteID: 37f6b834820082440be4a6e1ad01ac04
+      internalID: -1394633155
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player Green Character Sprite Sheet_3
+      name: Player Grayscale Shield Sprite Sheet_1
       rect:
         serializedVersion: 2
         x: 256
         y: 0
         width: 256
-        height: 256
+        height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -230,8 +188,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d4fca3acb3f10e841b0b45636a3f9925
-      internalID: -805719047
+      spriteID: 4322a2b79ed2eee4aad90755898b4430
+      internalID: -1123096065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Player Grayscale Shield Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffa0bf44c483b2a4298311a68d0669bb
+      internalID: -1231964683
       vertices: []
       indices: 
       edges: []
@@ -247,10 +226,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Player Green Character Sprite Sheet_3: -805719047
-      Player Green Character Sprite Sheet_2: 838849862
-      Player Green Character Sprite Sheet_1: -10119561
-      Player Green Character Sprite Sheet_0: 748889862
+      Player Grayscale Shield Sprite Sheet_0: -1394633155
+      Player Grayscale Shield Sprite Sheet_1: -1123096065
+      Player Grayscale Shield Sprite Sheet_2: -1231964683
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 1
