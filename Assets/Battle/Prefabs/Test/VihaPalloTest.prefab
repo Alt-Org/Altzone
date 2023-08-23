@@ -204,8 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e479cf1a0a6a4eb48b6cd0cb7351d0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startingSpeed: 7
   _damage: 1
+  StartBallSpeed: {x: 0, y: 0}
 --- !u!114 &794425541132071188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,3 +281,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _explotion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
     type: 3}
+  _hit: {fileID: 9163433076916735973, guid: 892e1521431e66f4fb73d7087e045393, type: 3}

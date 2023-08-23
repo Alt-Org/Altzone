@@ -4,6 +4,7 @@ using Battle.Scripts.Battle.Game;
 using UnityConstants;
 using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 public class BallHandlerTest : MonoBehaviour
 {
@@ -70,10 +71,16 @@ public class BallHandlerTest : MonoBehaviour
         {
             collision.gameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
             Stop();
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Context.GetSlingController.SlingActivate();
-            }
+            StartCoroutine(SlingReactivate());
+        }
+    }
+
+    private IEnumerator SlingReactivate()
+    {
+        yield return new WaitForSeconds(3.8f);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Context.GetSlingController.SlingActivate();
         }
     }
 
