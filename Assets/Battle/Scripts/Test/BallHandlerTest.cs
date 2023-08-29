@@ -70,11 +70,13 @@ public class BallHandlerTest : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             collision.gameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
-            StartCoroutine(SlingReactivate(transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue));
             Stop();
+            //StartCoroutine(SlingReactivate(transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue));
+            Context.GetSlingController.SlingActivate(transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue);
         }
     }
 
+    /*
     private IEnumerator SlingReactivate(int TeamNumber)
     {
         yield return new WaitForSeconds(3.8f);
@@ -83,6 +85,7 @@ public class BallHandlerTest : MonoBehaviour
             Context.GetSlingController.SlingActivate(TeamNumber);
         }
     }
+    */
 
     private Quaternion NewRotation(Vector2 direction)
     {
