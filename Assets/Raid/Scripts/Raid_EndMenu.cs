@@ -9,9 +9,9 @@ public class Raid_EndMenu : MonoBehaviour
     {
         SceneManager.LoadScene("20-Lobby");
     }
-
-    public void Quit()
+    //TODO: This is used for testing / debugging only, remove when releasing demo
+    public void Restart() 
     {
-        Application.Quit();
+        SceneManager.LoadScene("te-test-raid-demo");
     }
 }
