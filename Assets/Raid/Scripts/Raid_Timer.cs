@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Raid_Timer : MonoBehaviour
@@ -10,6 +11,9 @@ public class Raid_Timer : MonoBehaviour
 
     [Header("Timer text")]
     public TextMeshProUGUI TimerText;
+
+    [Header("Timer graphic")]
+    public Image Lungs;
 
     [Header("Timer settings")]
     public float CurrentTime;
@@ -53,11 +57,16 @@ public class Raid_Timer : MonoBehaviour
             enabled = false;
         }
         SetTimerText();
+        SetTimerGraphic();
     }
 
     private void SetTimerText()
     {
         TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
+    }
+    private void SetTimerGraphic()
+    {
+        Lungs.fillAmount = 1.0f - (10.0f - CurrentTime) * 0.1f;
     }
 
     public enum TimerFormat
