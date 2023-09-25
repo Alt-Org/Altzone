@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 73dca07caf12f834789901ad8d99a4e6
+guid: 5ff5f04059e1de545bf350a564700dcc
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 512
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -153,11 +153,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player Grayscale Shield Sprite Sheet_0
+      name: PlayerGrayscaleShieldSpriteSheet_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 392
         width: 256
         height: 120
       alignment: 0
@@ -167,18 +167,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 37f6b834820082440be4a6e1ad01ac04
-      internalID: -1394633155
+      spriteID: d991ded11afab994491dc72dc1131d1f
+      internalID: -646930848
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player Grayscale Shield Sprite Sheet_1
+      name: PlayerGrayscaleShieldSpriteSheet_1
       rect:
         serializedVersion: 2
         x: 256
-        y: 0
+        y: 392
         width: 256
         height: 120
       alignment: 0
@@ -188,18 +188,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4322a2b79ed2eee4aad90755898b4430
-      internalID: -1123096065
+      spriteID: 561ff93e00bfa5748ba9e2d761d40356
+      internalID: 760182919
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player Grayscale Shield Sprite Sheet_2
+      name: PlayerGrayscaleShieldSpriteSheet_2
       rect:
         serializedVersion: 2
-        x: 512
-        y: 0
+        x: 0
+        y: 272
         width: 256
         height: 120
       alignment: 0
@@ -209,8 +209,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ffa0bf44c483b2a4298311a68d0669bb
-      internalID: -1231964683
+      spriteID: 924dac1531ea6a547be82f9fe23c1da1
+      internalID: 2003606155
       vertices: []
       indices: 
       edges: []
@@ -226,9 +226,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Player Grayscale Shield Sprite Sheet_0: -1394633155
-      Player Grayscale Shield Sprite Sheet_1: -1123096065
-      Player Grayscale Shield Sprite Sheet_2: -1231964683
+      PlayerGrayscaleShieldSpriteSheet_2: 2003606155
+      PlayerGrayscaleShieldSpriteSheet_1: 760182919
+      PlayerGrayscaleShieldSpriteSheet_0: -646930848
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 1

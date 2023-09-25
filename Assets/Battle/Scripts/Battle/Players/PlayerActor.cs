@@ -4,6 +4,8 @@ using Altzone.Scripts.Config;
 using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Prg.Scripts.Common.PubSub;
+using System.Collections.Generic;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -17,24 +19,29 @@ namespace Battle.Scripts.Battle.Players
     {
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
+        [SerializeField] private float _shieldActivationDistance;
         public string SeePlayerName;
         public static string PlayerName;
         private bool StartBool = true;
 
-        public const double PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS = 0.3;
+        [SerializeField] private Sprite[] _playerCharacterSpriteSheet;
+
+        // public const double PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS
 
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
         private PlayerDriverPhoton _playerDriver;
         private Transform _playerCharacterTransform;
-        private Animator _playerCharacterAnimator;
+        // private Animator _playerCharacterAnimator;
+        private SpriteRenderer _playerCharacterSpriteRenderer;
+        private GameObject _shield;
         private ShieldPoseManager _shieldPoseManager;
-        /*
-        private float _playerMoveSpeedMultiplier;
-        */
+        // private float _playerMoveSpeedMultiplier;
         private Transform _transform;
         private Vector3 _tempPosition;
         private bool _hasTarget;
-        private bool _isBusy;
+        private bool _isMoving;
+        private bool _isTakingOutShield;
+        private bool _isUsingShield;
         private int _shieldResistance;
         private int _shieldHitPoints;
         private float _shieldDeformDelay;
@@ -44,17 +51,19 @@ namespace Battle.Scripts.Battle.Players
         private int _currentPoseIndex;
         private bool _allowShieldHit;
 
+        private List<IDriver> _otherDrivers = new();
+
         private void Awake()
         {
             _allowShieldHit = true;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _transform = GetComponent<Transform>();
-            _playerCharacterTransform = _transform.GetChild(0).Find("PLayerCharacter");
-            _playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
+            _playerCharacterTransform = _geometryRoot.Find("PLayerCharacter");
+            //_playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
+            _playerCharacterSpriteRenderer = _playerCharacterTransform.GetComponent<SpriteRenderer>();
+            _shield = _geometryRoot.Find("BoxShield").gameObject;
             var variables = GameConfig.Get().Variables;
-            /*
-            _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
-            */
+            // _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             _shieldResistance = variables._shieldResistance;
             _shieldHitPoints = _shieldResistance;
             _shieldDeformDelay = variables._shieldDeformDelay;
@@ -66,12 +75,23 @@ namespace Battle.Scripts.Battle.Players
                 StartCoroutine(ResetPose());
             }
 
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
+
             if (StartBool == true)
             {
                 SeePlayerName = PlayerName;
                 StartBool = false;
             }
             Debug.Log($"{gameObject.name} {SeePlayerName}");
+        }
+
+        void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+        {
+            foreach (IDriver driver in data.AllDrivers)
+            {
+                if (driver.ActorTransform == _transform) continue;
+                _otherDrivers.Add(driver);
+            }
         }
 
         private IEnumerator MoveCoroutine(Vector2 position, float movementSpeed)
@@ -86,7 +106,8 @@ namespace Battle.Scripts.Battle.Players
                 _playerCharacterTransform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
-            _playerCharacterAnimator.SetTrigger("Shield Animation Trigger");
+            //_playerCharacterAnimator.SetTrigger("Shield Animation Trigger");
+            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[_isUsingShield ? 3 : 1];
         }
 
         private IEnumerator ResetPose()
@@ -116,18 +137,19 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        public bool IsBusy => _isBusy || _hasTarget;
+        public bool IsBusy => _isMoving || _hasTarget || _isTakingOutShield;
 
         public float MovementSpeed => _movementSpeed;
 
         public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
-            _isBusy = true;
-            _playerCharacterAnimator.SetTrigger("Moving Trigger");
+            _isMoving = true;
+            //_playerCharacterAnimator.SetTrigger("Moving Trigger");
+            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[0];
             _playerCharacterTransform.position = transform.position;
 
             float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
-            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.ToUpdates(PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS) - _syncedFixedUpdateClock.UpdateCount, 1));
+            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - 5 - _syncedFixedUpdateClock.UpdateCount, 1));
             float movementSpeed = targetDistance / movementTimeS;
 
             StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
@@ -135,8 +157,51 @@ namespace Battle.Scripts.Battle.Players
             {
                 _transform.position = targetPosition;
                 _playerCharacterTransform.position = targetPosition;
-                _isBusy = false;
+                _isMoving = false;
             });
+        }
+
+        private void FixedUpdate()
+        {
+            if (_isTakingOutShield) return;
+
+            bool useShield = false;
+            foreach (IDriver driver in _otherDrivers)
+            {
+                if ((_transform.position - driver.ActorTransform.position).sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
+                {
+                    useShield = true;
+                    break;
+                }
+            }
+
+            if (_isUsingShield == useShield) return;
+            _isUsingShield = useShield;
+
+            if (useShield)
+            {
+                _isTakingOutShield = true;
+                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, 3, () =>
+                {
+                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[2];
+                });
+                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 10, 3, () =>
+                {
+                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
+                    _shield.SetActive(true);
+                    _isTakingOutShield = false;
+                });
+                
+            }
+            else
+            {
+                if (!_isMoving)
+                {
+                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[1];
+                }
+                _shield.SetActive(false);
+            }
+
         }
 
         public void SetPlayerDriver(PlayerDriverPhoton playerDriver)

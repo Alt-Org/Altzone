@@ -149,7 +149,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6849142217903140471}
   - component: {fileID: 6289725413899245875}
-  - component: {fileID: 4093988708180655943}
   m_Layer: 0
   m_Name: PLayerCharacter
   m_TagString: Untagged
@@ -213,7 +212,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -373776451, guid: 5acdc9f6b12ab8a489abc4118641d5c0, type: 3}
+  m_Sprite: {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
   m_Color: {r: 1, g: 0, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -224,26 +223,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &4093988708180655943
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6445645060191955456}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e8a9bc7f49d0a7f48ade7438bdfa15e8, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &8975400094333793159
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +270,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _geometryRoot: {fileID: 4593924629702427175}
   _movementSpeed: 2
+  _shieldActivationDistance: 2
   SeePlayerName: 
+  _playerCharacterSpriteSheet:
+  - {fileID: -491030298, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: 1336272110, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: -1584630499, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
 --- !u!1 &8975400094745045858
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,12 +380,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1130798196111562229, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1394633155, guid: 73dca07caf12f834789901ad8d99a4e6,
-        type: 3}
-    - target: {fileID: 1130798196111562229, guid: 2457932d6d029d74ba852ee545d0bfb7,
-        type: 3}
       propertyPath: m_Color.b
       value: 0.5019608
       objectReference: {fileID: 0}
@@ -434,12 +413,6 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2439914585400943914, guid: 2457932d6d029d74ba852ee545d0bfb7,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1123096065, guid: 73dca07caf12f834789901ad8d99a4e6,
-        type: 3}
     - target: {fileID: 2439914585400943914, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
       propertyPath: m_Color.b
@@ -480,6 +453,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoxShield
       objectReference: {fileID: 0}
+    - target: {fileID: 3462671058047938166, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3695636814472449335, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
       propertyPath: m_Size.x
@@ -490,12 +468,6 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3695636814472449335, guid: 2457932d6d029d74ba852ee545d0bfb7,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1231964683, guid: 73dca07caf12f834789901ad8d99a4e6,
-        type: 3}
     - target: {fileID: 3695636814472449335, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
       propertyPath: m_Color.a
