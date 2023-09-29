@@ -33,7 +33,6 @@ namespace Battle.Scripts.Battle.Players
         private Transform _playerCharacterTransform;
         // private Animator _playerCharacterAnimator;
         private SpriteRenderer _playerCharacterSpriteRenderer;
-        private GameObject _shield;
         private ShieldPoseManager _shieldPoseManager;
         // private float _playerMoveSpeedMultiplier;
         private Transform _transform;
@@ -61,7 +60,6 @@ namespace Battle.Scripts.Battle.Players
             _playerCharacterTransform = _geometryRoot.Find("PLayerCharacter");
             //_playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
             _playerCharacterSpriteRenderer = _playerCharacterTransform.GetComponent<SpriteRenderer>();
-            _shield = _geometryRoot.Find("BoxShield").gameObject;
             var variables = GameConfig.Get().Variables;
             // _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             _shieldResistance = variables._shieldResistance;
@@ -115,6 +113,8 @@ namespace Battle.Scripts.Battle.Players
             yield return new WaitUntil(() => _shieldPoseManager.MaxPoseIndex > 0);
             _currentPoseIndex = 0;
             _shieldPoseManager.SetPose(_currentPoseIndex);
+            _shieldPoseManager.SetHitboxActive(false);
+            _shieldPoseManager.SetShow(false);
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
         }
 
@@ -180,6 +180,7 @@ namespace Battle.Scripts.Battle.Players
 
             if (useShield)
             {
+                _shieldPoseManager.SetHitboxActive(true);
                 _isTakingOutShield = true;
                 _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, 3, () =>
                 {
@@ -188,7 +189,7 @@ namespace Battle.Scripts.Battle.Players
                 _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 10, 3, () =>
                 {
                     _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
-                    _shield.SetActive(true);
+                    _shieldPoseManager.SetShow(true);
                     _isTakingOutShield = false;
                 });
                 
@@ -199,7 +200,8 @@ namespace Battle.Scripts.Battle.Players
                 {
                     _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[1];
                 }
-                _shield.SetActive(false);
+                _shieldPoseManager.SetShow(false);
+                _shieldPoseManager.SetHitboxActive(false);
             }
 
         }
