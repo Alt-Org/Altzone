@@ -12,7 +12,7 @@ public class SyncedFixedUpdateClockStarted
 public class SyncedFixedUpdateClockTest : MonoBehaviour
 {
     [SerializeField] private bool OfflineMode;
-    public const int UPDATES_PER_SECONDS = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
+    public const int UPDATES_PER_SECOND = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
     private bool _synced = false;
     private int _updateCount = 0;
 
@@ -156,22 +156,22 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
     public int ToUpdates(int seconds)
     {
-        return seconds * UPDATES_PER_SECONDS;
+        return seconds * UPDATES_PER_SECOND;
     }
 
     public int ToUpdates(float seconds)
     {
-        return (int)Mathf.Ceil(seconds * UPDATES_PER_SECONDS);
+        return (int)Mathf.Ceil(seconds * UPDATES_PER_SECOND);
     }
 
     public int ToUpdates(double seconds)
     {
-        return (int)Math.Ceiling(seconds * UPDATES_PER_SECONDS);
+        return (int)Math.Ceiling(seconds * UPDATES_PER_SECOND);
     }
 
     public double ToSeconds(int updates)
     {
-        return ((double)updates) / ((double)UPDATES_PER_SECONDS);
+        return updates / (double)UPDATES_PER_SECOND;
     }
 
     public void ExecuteOnUpdate(int updateNumber, int priority, Action action)

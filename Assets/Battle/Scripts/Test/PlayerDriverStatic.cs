@@ -148,9 +148,9 @@ namespace Battle.Scripts.Test
             float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
             float distance = (targetPosition - position).magnitude;
             double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
-            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS + PlayerActor.PLAYER_SHIELD_ANIMATION_LENGTH_SECONDS);
+            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS) + 5;
 
-            _state.Move(targetGridPos, teleportUpdateNumber);      
+            _state.Move(targetGridPos, teleportUpdateNumber);
         }
 
         public void SetCharacterPose(int poseIndex)

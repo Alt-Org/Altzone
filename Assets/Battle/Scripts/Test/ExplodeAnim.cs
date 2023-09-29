@@ -12,7 +12,7 @@ public class ExplodeAnim : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            Instantiate(_explotion, transform.position, transform.rotation);
+            Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
         }
     }
 }

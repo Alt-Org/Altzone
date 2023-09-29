@@ -24,8 +24,9 @@ public class SlingControllerTest : MonoBehaviour
     [Header("Sling")]
     [SerializeField] private BallHandlerTest _ball;
     [SerializeField] private double _aimingTimeSec;
+    [SerializeField] private float _slingSpeedMultiplier;
     [SerializeField] private float _startingDistance;
-    [SerializeField] private int _defaultSpeed;
+    [SerializeField] private int _defaultSlingSpeed;
     [SerializeField] private bool _autoStart;
 
     [Header("Indicator")]
@@ -162,7 +163,7 @@ public class SlingControllerTest : MonoBehaviour
                 bool b = _teams[0].Distance > _teams[1].Distance;
                 slingingTeamNumber = b ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
                 Team team = b ? _teams[0] : _teams[1];
-                launchSpeed = team.Distance * 2f;
+                launchSpeed = team.Distance * _slingSpeedMultiplier;
                 launchDirection = team.LaunchDirection;
                 launchPosition = team.FrontPlayer.position + launchDirection * _startingDistance;
             }
@@ -170,7 +171,7 @@ public class SlingControllerTest : MonoBehaviour
             {
                 slingingTeamNumber = PhotonBattle.NoTeamValue;
                 launchDirection = new Vector3(0.5f, 0.5f);
-                launchSpeed = _defaultSpeed;
+                launchSpeed = _defaultSlingSpeed;
                 launchPosition = Vector3.zero;
             }
 

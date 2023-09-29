@@ -1194,9 +1194,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ball: {fileID: 539224845}
-  _aimingTimeSec: 10
+  _aimingTimeSec: 5
+  _slingSpeedMultiplier: 3
   _startingDistance: 1
-  _defaultSpeed: 7
+  _defaultSlingSpeed: 7
   _autoStart: 1
   _indicatorLengthMultiplier: 1
   _indicatorWidthMultiplier: 0.25
