@@ -9,11 +9,12 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Removes a brick from the wall when hit conditions are met.
     /// </summary>
-    internal class Goal : MonoBehaviour
+    internal class Goal : MonoBehaviourPunCallbacks
     {
         [SerializeField] GameObject WinText;
         [SerializeField] GameObject LoseText;
         [SerializeField] GameObject LobbyButton;
+        [SerializeField] GameObject RaidButton;
         [SerializeField] BoxCollider2D _WallCollider;
         [SerializeField] int TestLimit;
         [SerializeField] int GoalNumber;
@@ -49,9 +50,14 @@ namespace Battle.Scripts.Battle.Game
                     if (GoalNumber != teamNumber)
                     {
                         WinText.SetActive(true);
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            RaidButton.SetActive(true);
+                        }
                     }
                     else
                     {
+                        PhotonNetwork.LeaveRoom();
                         LoseText.SetActive(true);
                     }
                     LobbyButton.SetActive(true);

@@ -43,11 +43,11 @@ public class Raid_Timer : MonoBehaviour
         {
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
-            if(raid_References.OutOfSpace.enabled == true)
+            if(raid_References.OutOfSpace.enabled || raid_References.RaidEndedText.enabled)
             {
                 raid_References.OutOfTime.enabled = false;
             }
-            else if(raid_References.OutOfSpace.enabled == false)
+            else if(!raid_References.OutOfSpace.enabled && !raid_References.RaidEndedText.enabled)
             {
                 raid_References.OutOfTime.enabled = true;
             }

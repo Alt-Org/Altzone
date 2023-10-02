@@ -12,6 +12,7 @@ public class Raid_References : MonoBehaviour
     [SerializeField, Header("Reference game components")]
     public TextMeshProUGUI OutOfTime;
     public TextMeshProUGUI OutOfSpace;
+    public TextMeshProUGUI RaidEndedText;
 
     private void Start()
     {
@@ -19,5 +20,6 @@ public class Raid_References : MonoBehaviour
         EndMenu.SetActive(false);
         OutOfTime.enabled = false;
         OutOfSpace.enabled = false;
+        RaidEndedText.enabled = false;
     }
 }

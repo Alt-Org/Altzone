@@ -12,6 +12,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private RectTransform ContentPanel;
     [SerializeField] private Raid_LootTracking LootTracker;
     [SerializeField] private Raid_Timer raid_Timer;
+    [SerializeField] private ExitRaid exitraid;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
 
@@ -73,7 +74,7 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             return;
         }
-        if (raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight)
+        if (raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
         {
             return;
         }

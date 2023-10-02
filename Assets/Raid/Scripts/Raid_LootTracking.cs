@@ -5,7 +5,7 @@ using TMPro;
 using Random = UnityEngine.Random;
 using Photon.Pun;
 
-public class Raid_LootTracking : MonoBehaviour
+public class Raid_LootTracking : MonoBehaviourPunCallbacks
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
 
@@ -24,9 +24,10 @@ public class Raid_LootTracking : MonoBehaviour
         _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
         {
-            float randomlootWeight = Random.Range(200, 501);
-            _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.All, randomlootWeight);
+            //float randomlootWeight = Random.Range(200, 501);
+            //_photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.All, randomlootWeight);
         }
+
         ResetLootCount();
     }
 
@@ -34,6 +35,7 @@ public class Raid_LootTracking : MonoBehaviour
     public void SetRandomMaxLootWeightRPC(float maxLootWeight)
     {
         MaxLootWeight = maxLootWeight;
+        //Debug.Log("maxLootWeight has been set");
         this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
     }
 
@@ -58,4 +60,5 @@ public class Raid_LootTracking : MonoBehaviour
             raid_References.OutOfSpace.enabled = true;
         }
     }
+    
 }
