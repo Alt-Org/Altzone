@@ -138,7 +138,7 @@ namespace Battle.Scripts.Battle.Players
             float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
             float distance = (targetPosition - position).magnitude;
             double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
-            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS) + 5;
+            int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
             _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
         }
 

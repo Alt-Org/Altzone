@@ -39,7 +39,6 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _tempPosition;
         private bool _hasTarget;
         private bool _isMoving;
-        private bool _isTakingOutShield;
         private bool _isUsingShield;
         private int _shieldResistance;
         private int _shieldHitPoints;
@@ -137,7 +136,7 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        public bool IsBusy => _isMoving || _hasTarget || _isTakingOutShield;
+        public bool IsBusy => _isMoving || _hasTarget;
 
         public float MovementSpeed => _movementSpeed;
 
@@ -149,7 +148,7 @@ namespace Battle.Scripts.Battle.Players
             _playerCharacterTransform.position = transform.position;
 
             float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
-            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - 5 - _syncedFixedUpdateClock.UpdateCount, 1));
+            float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
             float movementSpeed = targetDistance / movementTimeS;
 
             StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
@@ -163,8 +162,6 @@ namespace Battle.Scripts.Battle.Players
 
         private void FixedUpdate()
         {
-            if (_isTakingOutShield) return;
-
             bool useShield = false;
             foreach (IDriver driver in _otherDrivers)
             {
@@ -180,19 +177,9 @@ namespace Battle.Scripts.Battle.Players
 
             if (useShield)
             {
+                _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
                 _shieldPoseManager.SetHitboxActive(true);
-                _isTakingOutShield = true;
-                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, 3, () =>
-                {
-                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[2];
-                });
-                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 10, 3, () =>
-                {
-                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
-                    _shieldPoseManager.SetShow(true);
-                    _isTakingOutShield = false;
-                });
-                
+                _shieldPoseManager.SetShow(true);
             }
             else
             {
