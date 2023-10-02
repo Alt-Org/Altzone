@@ -145,8 +145,6 @@ GameObject:
   - component: {fileID: 2211436060130418491}
   - component: {fileID: 794425541132071188}
   - component: {fileID: 8473052537036719184}
-  - component: {fileID: 8473052537036719190}
-  - component: {fileID: 1927593940927509934}
   m_Layer: 9
   m_Name: VihaPalloTest
   m_TagString: BallRigidBody
@@ -205,6 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 1
+  _explotion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
+    type: 3}
   StartBallSpeed: {x: 0, y: 0}
 --- !u!114 &794425541132071188
 MonoBehaviour:
@@ -243,42 +243,10 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 8473052537036719190}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8473052537036719190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8473052537036719186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &1927593940927509934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8473052537036719186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e47ddf977dbbbc45835e2bb9ba49055, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _explotion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
-    type: 3}
-  _hit: {fileID: 9163433076916735973, guid: 892e1521431e66f4fb73d7087e045393, type: 3}

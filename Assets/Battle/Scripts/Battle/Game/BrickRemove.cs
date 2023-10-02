@@ -13,7 +13,7 @@ namespace Battle.Scripts.Battle.Game
         private SpriteRenderer _spriteRenderer;
         public PlayerPlayArea PlayerPlayArea;
         private float _colorChangeFactor;
-        private int Health = 0;
+        public int Health { get; private set; } = 0;
 
         private void Start()
         {

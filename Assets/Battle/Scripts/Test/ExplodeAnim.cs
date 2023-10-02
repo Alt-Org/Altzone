@@ -1,3 +1,4 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using Battle.Scripts.Battle;
@@ -16,3 +17,4 @@ public class ExplodeAnim : MonoBehaviour
         }
     }
 }
+*/
