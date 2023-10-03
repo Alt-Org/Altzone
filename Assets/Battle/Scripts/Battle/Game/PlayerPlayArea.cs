@@ -14,21 +14,14 @@ namespace Battle.Scripts.Battle.Game
         [Tooltip("Middle area height in grid squares"), SerializeField] private int _middleAreaHeight;
         [Tooltip("How many squares is the brick wall height"), SerializeField] private int _brickHeight;
 
-        [Header("Wall Colliders"), SerializeField] private GameObject _leftTopWall;
-        [SerializeField] private GameObject _rightTopWall;
-        [SerializeField] private GameObject _leftBottomWall;
-        [SerializeField] private GameObject _rightBottomWall;
-        [SerializeField] private GameObject _leftMidWall;
-        [SerializeField] private GameObject _rightMidWall;
-        [SerializeField] private GameObject _bottomWall;
+        [Header("Wall Colliders")]
         [SerializeField] private GameObject _topWall;
+        [SerializeField] private GameObject _bottomWall;
+        [SerializeField] private GameObject _rightWall;
+        [SerializeField] private GameObject _leftWall;
 
         [SerializeField] private GameObject _alphaTeamBrickWall;
         [SerializeField] private GameObject _betaTeamBrickWall;
-        [SerializeField] private GameObject _alphaTeamLeftBricks;
-        [SerializeField] private GameObject _betaTeamLeftBricks;
-        [SerializeField] private GameObject _betaTeamRightBricks;
-        [SerializeField] private GameObject _alphaTeamRightBricks;
 
         public int BrickHealth;
 
@@ -40,16 +33,11 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private GameObject[] _alphaTeamBricks;
         [SerializeField] private GameObject[] _betaTeamBricks;
 
-
-        private BoxCollider2D _rightTopWallCollider;
-        private BoxCollider2D _leftTopWallCollider;
-        private BoxCollider2D _rightBottomWallCollider;
-        private BoxCollider2D _leftBottomWallCollider;
-        private BoxCollider2D _rightMidWallCollider;
-        private BoxCollider2D _leftMidWallCollider;
-
         private BoxCollider2D _bottomWallCollider;
         private BoxCollider2D _topWallCollider;
+        private BoxCollider2D _rightWallCollider;
+        private BoxCollider2D _leftWallCollider;
+
 
         private const float BrickSpriteWidth = 2.35f;
         private const int BricksPerWall = 5;
@@ -70,34 +58,22 @@ namespace Battle.Scripts.Battle.Game
 
         private void SetupArenaBorders()
         {
-
-            _rightTopWallCollider = _rightTopWall.GetComponent<BoxCollider2D>();
-            _leftTopWallCollider = _leftTopWall.GetComponent<BoxCollider2D>();
-            _rightBottomWallCollider = _rightBottomWall.GetComponent<BoxCollider2D>();
-            _leftBottomWallCollider = _leftBottomWall.GetComponent<BoxCollider2D>();
-            _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
             _topWallCollider = _topWall.GetComponent<BoxCollider2D>();
-            _rightMidWallCollider = _rightMidWall.GetComponent<BoxCollider2D>();
-            _leftMidWallCollider = _leftMidWall.GetComponent<BoxCollider2D>();
+            _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
+            _rightWallCollider = _rightWall.GetComponent<BoxCollider2D>();
+            _leftWallCollider = _leftWall.GetComponent<BoxCollider2D>();
 
-            var arenaSize = new Vector2(_arenaWidth, _arenaHeight);
-            _rightTopWallCollider.size = arenaSize;
-            _leftTopWallCollider.size = arenaSize;
-            _rightBottomWallCollider.size = arenaSize;
-            _leftBottomWallCollider.size = arenaSize;
-            _bottomWallCollider.size = arenaSize;
-            _topWallCollider.size = arenaSize;
-            _rightMidWallCollider.size = new Vector2(_arenaWidth, 1.4f);
-            _leftMidWallCollider.size = new Vector2(_arenaWidth, 1.4f);
+            _topWallCollider.size = new Vector2(_arenaWidth, _arenaHeight);
+            _bottomWallCollider.size = new Vector2(_arenaWidth, _arenaHeight);
+            _rightWallCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
+            _leftWallCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
 
-            _leftMidWall.transform.position = new Vector2(-_arenaWidth, 0);
-            _rightMidWall.transform.position = new Vector2(_arenaWidth, 0);
-            _leftTopWall.transform.position = new Vector2(-_arenaWidth, .7f + _arenaHeight / 2);
-            _rightTopWall.transform.position = new Vector2(_arenaWidth, .7f + _arenaHeight / 2);
-            _leftBottomWall.transform.position = new Vector2(-_arenaWidth, -.7f + -_arenaHeight / 2);
-            _rightBottomWall.transform.position = new Vector2(_arenaWidth, -.7f + -_arenaHeight / 2);
             _topWall.transform.position = new Vector2(0, _arenaHeight);
             _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
+            _rightWallCollider.transform.position = new Vector2(_arenaWidth, 0);
+            _leftWallCollider.transform.position = new Vector2(-_arenaWidth, 0);
+
+
         }
 
         private void SetupBottomBrickWalls()
