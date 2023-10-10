@@ -1,0 +1,56 @@
+{
+    "name": "ChatContoroller",
+    "maps": [
+        {
+            "name": "ChatsActions",
+            "id": "e3b97d84-4a83-47c6-a8b8-dddd32ee386f",
+            "actions": [
+                {
+                    "name": "SendMsg",
+                    "type": "Button",
+                    "id": "671d000e-fcdd-4784-8b29-8cfc80d44007",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d9615cbf-e42d-42f3-b06a-73bcf7dcd486",
+                    "path": "<Keyboard>/numpadEnter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendMsg",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "32221692-3cc2-4e14-8818-9158d7ce9991",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendMsg",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1d40b0f0-e64d-4c82-9e9b-3c423e9a7e06",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendMsg",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
