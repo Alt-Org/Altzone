@@ -153,7 +153,6 @@ internal class PlayerManager : MonoBehaviour
             //AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
             this.ExecuteOnNextFrame(() =>
             {
-                Debug.Log("TeamsAreReadyForGameplay");
                 this.Publish(new TeamsAreReadyForGameplay(_allDrivers, _teamAlpha, _teamBeta, _localPlayer));
             });
         }

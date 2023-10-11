@@ -2841,7 +2841,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3732939097844463752}
   - component: {fileID: 2839696463098414047}
-  - component: {fileID: 857361949999817770}
   - component: {fileID: 5413650301981630468}
   m_Layer: 0
   m_Name: RightWall
@@ -2891,25 +2890,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &857361949999817770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3268114360173429259}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WinText: {fileID: 0}
-  LoseText: {fileID: 0}
-  LobbyButton: {fileID: 0}
-  RaidButton: {fileID: 0}
-  _WallCollider: {fileID: 2839696463098414047}
-  TestLimit: 2
-  GoalNumber: 2
 --- !u!114 &5413650301981630468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4186,7 +4166,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8912497810383331320}
   - component: {fileID: 6609997953601358770}
-  - component: {fileID: 1239562129981826417}
   - component: {fileID: 1359140011649192209}
   m_Layer: 0
   m_Name: LeftWall
@@ -4236,25 +4215,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1239562129981826417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8628255448681582580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WinText: {fileID: 0}
-  LoseText: {fileID: 0}
-  LobbyButton: {fileID: 0}
-  RaidButton: {fileID: 0}
-  _WallCollider: {fileID: 6609997953601358770}
-  TestLimit: 2
-  GoalNumber: 2
 --- !u!114 &1359140011649192209
 MonoBehaviour:
   m_ObjectHideFlags: 0

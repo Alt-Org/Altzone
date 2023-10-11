@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
+using Altzone.Scripts.Config;
 
 public class SyncedFixedUpdateClockStarted
 { }
@@ -138,6 +139,11 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
         _photonView = GetComponent<PhotonView>();
 
+        this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
+    }
+
+    private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+    {
         if (OfflineMode)
         {
             StartClock();
@@ -146,7 +152,7 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient)
         {
-            _photonView.RPC(nameof(StartClockRpc), RpcTarget.All, PhotonNetwork.Time + 1.0);
+            _photonView.RPC(nameof(StartClockRpc), RpcTarget.All, PhotonNetwork.Time + GameConfig.Get().Variables._playerMovementNetworkDelay);
         }
     }
 

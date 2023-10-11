@@ -8,6 +8,9 @@ using UnityEngine;
 using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 
+public class SlingControllerReady
+{ }
+
 public class BallSlinged
 {
     public readonly int SlingingTeamNumber;
@@ -18,7 +21,6 @@ public class BallSlinged
     }
 }
 
-
 public class SlingControllerTest : MonoBehaviour
 {
     [Header("Sling")]
@@ -27,7 +29,6 @@ public class SlingControllerTest : MonoBehaviour
     [SerializeField] private float _slingSpeedMultiplier;
     [SerializeField] private float _startingDistance;
     [SerializeField] private int _defaultSlingSpeed;
-    [SerializeField] private bool _autoStart;
 
     [Header("Indicator")]
     [SerializeField] private float _indicatorLengthMultiplier;
@@ -60,8 +61,8 @@ public class SlingControllerTest : MonoBehaviour
     }
     private SlingIndicator _slingIndicator;
 
-    bool _teamsAreReadyForGameplay = false;
-    bool _slingMode = false;
+    private bool _teamsAreReadyForGameplay = false;
+    private bool _slingMode = false;
 
     void Start()
     {
@@ -71,7 +72,7 @@ public class SlingControllerTest : MonoBehaviour
         _slingIndicator = new SlingIndicator(transform.Find("Sling Indicator").gameObject);
     }
 
-    void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+    private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
     {
         _teams = new Team[2];
         _teams[0] = new Team();
@@ -80,10 +81,7 @@ public class SlingControllerTest : MonoBehaviour
         foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[1].List.Add(driver.ActorTransform);
         _teamsAreReadyForGameplay = true;
 
-        if (PhotonNetwork.IsMasterClient && _autoStart)
-        {
-            SlingActivate();
-        }
+        this.Publish(new SlingControllerReady());
     }
 
     public bool SlingMode => _slingMode;
