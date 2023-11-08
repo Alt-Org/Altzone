@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2646674471352073176}
   - component: {fileID: 2261026606916043575}
   - component: {fileID: 2546953072522480116}
-  - component: {fileID: 5074448541448401534}
+  - component: {fileID: 4289486775655671870}
   m_Layer: 5
   m_Name: BT_CHAT
   m_TagString: Untagged
@@ -27,10 +27,10 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2472968820478298304}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -122,17 +122,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5074448541448401534
-MonoBehaviour:
+--- !u!111 &4289486775655671870
+Animation:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2472968820478298304}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 5fb42aa655b1148458150c9df547c26b, type: 2}
-  _isCurrentPopOutWindow: 0
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: fa3d40614f59dd94bac6bb64f66f2b45, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: fa3d40614f59dd94bac6bb64f66f2b45, type: 2}
+  - {fileID: 7400000, guid: 3ebbf791150c5bd459145cb6d4b8ea50, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
