@@ -8,37 +8,17 @@ using System.Collections;
 
 public class BallHandlerTest : MonoBehaviour
 {
+    // Serialized Fields
     [SerializeField] private int _damage;
     [SerializeField] private GameObject _explotion;
-    private GridManager _gridManager;
-    private PlayerPlayArea _battlePlayArea;
-    private float _arenaScaleFactor;
-    private float _angleLimit;
 
-    private Rigidbody2D _rb;
-    private SpriteRenderer _sprite;
-
-    public Vector2 StartBallSpeed;
-
-    private void Start()
-    {
-        _battlePlayArea = Context.GetBattlePlayArea;
-        var variables = GameConfig.Get().Variables;
-        _angleLimit = variables._angleLimit;
-        _gridManager = Context.GetGridManager;
-        _rb = GetComponent<Rigidbody2D>();
-        _sprite = GetComponentInChildren<SpriteRenderer>();
-        _sprite.enabled = false;
-        _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
-        transform.localScale = Vector3.one * _arenaScaleFactor;
-    }
+    #region Public Methods
 
     public void Launch(Vector3 position, Vector3 direction, float speed)
     {
         _rb.position = position;
         _rb.velocity = NewRotation(direction) * Vector2.up * speed;
         _sprite.enabled = true;
-        StartBallSpeed = new Vector2(_rb.velocity.x, _rb.velocity.y);
     }
 
     public void Stop()
@@ -48,12 +28,39 @@ public class BallHandlerTest : MonoBehaviour
         _sprite.enabled = false;
     }
 
-    //private void Update()
-    //{
-    //    var velocity = rb.velocity;
-    //    var angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-    //    _transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-    //}
+    #endregion
+
+    private float _arenaScaleFactor;
+
+    // Important Objects
+    private PlayerPlayArea _battlePlayArea;
+    private GridManager _gridManager;
+
+    // Game Config Variables
+    private float _angleLimit;
+
+    // Components
+    private Rigidbody2D _rb;
+    private SpriteRenderer _sprite;
+
+    private void Start()
+    {
+        // get components
+        _rb = GetComponent<Rigidbody2D>();
+        _sprite = GetComponentInChildren<SpriteRenderer>();
+
+        // get important objects
+        _battlePlayArea = Context.GetBattlePlayArea;
+        _gridManager = Context.GetGridManager;
+
+        // get game config variables
+        var variables = GameConfig.Get().Variables;
+        _angleLimit = variables._angleLimit;
+
+        _sprite.enabled = false;
+        _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
+        transform.localScale = Vector3.one * _arenaScaleFactor;
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -77,23 +84,9 @@ public class BallHandlerTest : MonoBehaviour
             {
                 Stop();
                 Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
-                //StartCoroutine(SlingReactivate(transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue));
-                Context.GetSlingController.SlingActivate(transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue);
             }
-
         }
     }
-
-    /*
-    private IEnumerator SlingReactivate(int TeamNumber)
-    {
-        yield return new WaitForSeconds(3.8f);
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Context.GetSlingController.SlingActivate(TeamNumber);
-        }
-    }
-    */
 
     private Quaternion NewRotation(Vector2 direction)
     {
@@ -103,8 +96,4 @@ public class BallHandlerTest : MonoBehaviour
         return Quaternion.Euler(0, 0, newAngle);
     }
 
-    // public void NewSpeed(float NewBallSpeed)
-    // {
-    //     _rb.velocity = StartBallSpeed * NewBallSpeed;
-    // }
 }

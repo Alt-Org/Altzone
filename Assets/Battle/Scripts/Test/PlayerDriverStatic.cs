@@ -34,12 +34,14 @@ namespace Battle.Scripts.Test
 
         [SerializeField] private PlayerActor _playerPrefab;
 
-        private double _movementDelay;
+        //private double _movementDelay;
         private PlayerActor _playerActor;
         private GridManager _gridManager;
+        private PlayerManager _playerManager;
         private PlayerDriverState _state;
         private PlayerPlayArea _battlePlayArea;
         private float _arenaScaleFactor;
+        private bool _movementEnabled;
         private float _playerMoveSpeedMultiplier;
         private double _movementMinTimeS;
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
@@ -66,12 +68,12 @@ namespace Battle.Scripts.Test
         {
             _battlePlayArea = Context.GetBattlePlayArea;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
-            _movementDelay = GameConfig.Get().Variables._playerMovementNetworkDelay;
-           PlayerManager playerManager = FindObjectOfType<PlayerManager>();
-            playerManager.RegisterBot(this);
+            //_movementDelay = GameConfig.Get().Variables._networkDelay;
+            _playerManager = FindObjectOfType<PlayerManager>();
+            _playerManager.RegisterBot(this);
             this.Subscribe<BallSlinged>(OnBallslinged);
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-            _movementMinTimeS = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
             _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
@@ -110,6 +112,8 @@ namespace Battle.Scripts.Test
 
         public Transform ActorTransform => _playerActor.transform;
 
+        public bool MovementEnabled { get => _movementEnabled; set => _movementEnabled = value; }
+
         public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
@@ -135,7 +139,7 @@ namespace Battle.Scripts.Test
             if (!_state.CanRequestMove) return;
             _state.IsWaitingToMove(true);
 
-            Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
+            Vector2 position = new(ActorTransform.position.x, ActorTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
 
@@ -150,6 +154,7 @@ namespace Battle.Scripts.Test
             double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
 
+            _playerManager.ReportMovement(teleportUpdateNumber);
             _state.Move(targetGridPos, teleportUpdateNumber);
         }
 

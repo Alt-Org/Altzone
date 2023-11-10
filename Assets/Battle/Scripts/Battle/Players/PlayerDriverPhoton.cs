@@ -25,6 +25,7 @@ namespace Battle.Scripts.Battle.Players
         public PhotonView _photonView { get; private set; }
         private int _playerPos;
         private int _teamNumber;
+        private bool _movementEnabled;
         private float _playerMoveSpeedMultiplier;
         private double _movementMinTimeS;
         private float _arenaScaleFactor;
@@ -47,8 +48,9 @@ namespace Battle.Scripts.Battle.Players
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
-            _movementMinTimeS = GameConfig.Get().Variables._playerMovementNetworkDelay;
+            _movementEnabled = false;
             _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
+            _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             //_photonView.ObservedComponents.Add((PlayerActor)_playerActor);
 
@@ -115,6 +117,8 @@ namespace Battle.Scripts.Battle.Players
 
         public int PeerCount => _peerCount;
 
+        public bool MovementEnabled { get => _movementEnabled; set => _movementEnabled = value; }
+
         public void Rotate(float angle)
         {
             _playerActor.SetRotation(angle);
@@ -122,7 +126,7 @@ namespace Battle.Scripts.Battle.Players
 
         public void MoveTo(Vector2 targetPosition)
         {
-            if (!_state.CanRequestMove) return;
+            if (!_movementEnabled || !_state.CanRequestMove) return;
             _state.IsWaitingToMove(true);
 
             Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
@@ -164,6 +168,7 @@ namespace Battle.Scripts.Battle.Players
         */
         private void MoveRpc(int row, int col, int teleportUpdateNumber)
         {
+            _playerManager.ReportMovement(teleportUpdateNumber);
             _state.IsWaitingToMove(true);
             var gridPos = new GridPos(row, col);
             _state.Move(gridPos, teleportUpdateNumber);

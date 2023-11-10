@@ -7,7 +7,6 @@ using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Battle.Scripts.Test;
 
-
 // this interface probably should be somewhere else
 // also maybe more properties/methods that are in all drivers should be added
 interface IDriver
@@ -15,8 +14,11 @@ interface IDriver
     public int TeamNumber { get; }
 
     public Transform ActorTransform { get; }
+
+    public bool MovementEnabled { get; set; }
 }
 
+#region Battle Team
 
 interface IReadOnlyBattleTeam
 {
@@ -68,6 +70,9 @@ internal class BattleTeam : IReadOnlyBattleTeam
     
 }
 
+#endregion Battle Team
+
+#region Message Classes
 internal class TeamsAreReadyForGameplay
 {
     public readonly IReadOnlyList<IDriver> AllDrivers;
@@ -83,6 +88,7 @@ internal class TeamsAreReadyForGameplay
         LocalPlayer = localPlayer;
     }
 }
+#endregion Message Classes
 
 internal class PlayerManager : MonoBehaviour
 {
@@ -91,12 +97,10 @@ internal class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject _rangeIndicator;
     */
 
-    private List<IDriver> _allDrivers = new();
-    private List<PlayerDriverPhoton> _allPlayerDrivers = new();
-    private List<PlayerDriverStatic> _allBotDrivers = new();
-    private BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
-    private BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
-    private PlayerDriverPhoton _localPlayer;
+    // Public Properties
+    public int LastPlayerTeleportUpdateNumber => _lastPlayerTeleportUpdateNumber;
+
+    #region Public Methods
 
     public void RegisterPlayer(PlayerDriverPhoton playerDriver)
     {
@@ -114,7 +118,6 @@ internal class PlayerManager : MonoBehaviour
         }
     }
 
-    
     public void RegisterBot(PlayerDriverStatic botDriver)
     {
         _allDrivers.Add(botDriver);
@@ -130,7 +133,6 @@ internal class PlayerManager : MonoBehaviour
                 break;
         }
     }
- 
 
     public void UpdatePeerCount()
     {
@@ -157,6 +159,39 @@ internal class PlayerManager : MonoBehaviour
             });
         }
     }
+
+    public void ReportMovement(int teleportUpdateNumber)
+    {
+        if (teleportUpdateNumber > _lastPlayerTeleportUpdateNumber)
+        {
+            _lastPlayerTeleportUpdateNumber = teleportUpdateNumber;
+        }
+    }
+
+    public void SetPlayerMovementEnabled(bool value)
+    {
+        foreach (IDriver driver in _allDrivers)
+        {
+            driver.MovementEnabled = value;
+        }
+    }
+
+    #endregion Public Methods
+
+    // Driver Lists
+    private List<IDriver> _allDrivers = new();
+    private List<PlayerDriverPhoton> _allPlayerDrivers = new();
+    private List<PlayerDriverStatic> _allBotDrivers = new();
+
+    // Teams
+    private BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
+    private BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
+
+    private PlayerDriverPhoton _localPlayer;
+
+    private int _lastPlayerTeleportUpdateNumber;
+
+    #region Private Methods
 
     private void GetLocalDriver()
     {
@@ -190,4 +225,6 @@ internal class PlayerManager : MonoBehaviour
         }
         return null;
     }
+
+    #endregion Private Methods
 }

@@ -34,40 +34,37 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - DiamondForBallRPC
+  - DiamondRPC
+  - DisappearRPC
+  - FrameSyncTest
+  - GoalRPC
+  - HandleItemLootingRPC
   - MoveDelayedRpc
   - MovePlayerToRpc
+  - MoveRpc
   - ProcessMoveRequestRpc
   - RotatePlayerRpc
   - SendPlayerPeerCountRpc
   - SetBallPositionRpc
   - SetBallStateRpc
   - SetBallVelocityRpc
+  - SetInventorySlotDataRPC
   - SetPlayerCharacterPoseRpc
   - SetPlayerPlayModeRpc
   - SetPlayerShieldResistanceRpc
   - SetPlayerShieldVisibilityRpc
   - SetPlayerStunnedRpc
+  - SetRandomInventorySizeRPC
+  - SetRandomMaxLootWeightRPC
   - SetWaitingStateRpc
   - SlingEndRpc
+  - SlingReactivate
   - SlingStartRpc
-  - SetAll
-  - huhuh
-  - DiamondRPC
-  - GoalRPC
-  - DisappearRPC
-  - BrickHitRPC
-  - SlingRpc
-  - DiamondForBallRPC
-  - TeamNumberChangeRPC
-  - PickupRPC
-  - FrameSyncTest
   - StartClockRpc
-  - HandleItemLootingRPC
-  - SetInventorySlotDataRPC
-  - SetRandomMaxLootWeightRPC
-  - SetRandomInventorySizeRPC
-  - MoveRpc
-  - TryToStartRpc
+  - StartGameRpc
+  - TeamNumberChangeRPC
+  - TryToStartGameRpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

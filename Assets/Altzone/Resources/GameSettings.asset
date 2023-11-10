@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   _variables:
+    _slingAimingTimeSec: 5
     _angleLimit: 22.5
+    _networkDelay: 0.1
     _playerMoveSpeedMultiplier: 7
     _playerAttackMultiplier: 7
     _ballSpeedCompensation: 0.2
     _shieldResistance: 3
     _shieldDeformDelay: 0.3
     _shieldHitDelay: 0.1
-    _playerMovementNetworkDelay: 0.1
   _playerPrefabs:
     _playerPrefabs:
     - {fileID: 8975400094333793158, guid: f71ca8d92faed714eaaaae378bf48bca, type: 3}

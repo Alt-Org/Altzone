@@ -1,12 +1,10 @@
-using Math = System.Math;
-using Action = System.Action;
-using System.Collections;
 using System.Collections.Generic;
 using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Players;
 using UnityEngine;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
+using System.Collections;
+
+#region Message Classes
 
 public class SlingControllerReady
 { }
@@ -21,24 +19,102 @@ public class BallSlinged
     }
 }
 
+#endregion Message Classes
+
 public class SlingControllerTest : MonoBehaviour
 {
+    // Serialized Fields
     [Header("Sling")]
-    [SerializeField] private BallHandlerTest _ball;
-    [SerializeField] private double _aimingTimeSec;
-    [SerializeField] private float _slingSpeedMultiplier;
-    [SerializeField] private float _startingDistance;
-    [SerializeField] private int _defaultSlingSpeed;
-
+    [SerializeField] private float _minDistance;
+    [SerializeField] private float _maxDistance;
+    [SerializeField] private float _slingMinSpeed;
+    [SerializeField] private float _slingMaxSpeed;
+    [SerializeField] private int _slingDefaultgSpeed;
+    [SerializeField] private float _ballStartingDistance;
     [Header("Indicator")]
-    [SerializeField] private float _indicatorLengthMultiplier;
-    [SerializeField] private float _indicatorWidthMultiplier;
+    [SerializeField] private float _wingMinAngleDegrees;
+    [SerializeField] private float _wingMaxAngleDegrees;
+    [Header("Game Objects")]
+    [SerializeField] private BallHandlerTest _ball;
+    [SerializeField] private SlingIndicatorTest _slingIndicator;
 
-    private PhotonView _photonView;
-    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+    // Public Properties
+    public bool SlingMode => _slingMode;
 
+    #region Public Methods
+
+    public void SlingActivate(int teamNumber)
+    {
+        if (_slingMode)
+        {
+            Debug.LogWarning("Sling already active");
+            return;
+        }
+
+        switch (teamNumber)
+        {
+            case PhotonBattle.TeamAlphaValue:
+                _currentTeam = _teams[TEAM_ALPHA];
+                break;
+
+            case PhotonBattle.TeamBetaValue:
+                _currentTeam = _teams[TEAM_BETA];
+                break;
+        }
+        _slingMode = true;
+        _slingIndicator.SetPusherPosition(0);
+    }
+
+    public void SlingLaunch()
+    {
+        if (!_slingMode)
+        {
+            Debug.LogWarning("Sling not active");
+            return;
+        }
+
+        int teamNumber = _currentTeam.TeamNumber;
+        Vector3 launchPosition;
+        Vector3 launchDirection;
+        float launchSpeed;
+
+        if (_currentTeam.Distance >= 0)
+        {
+            launchSpeed = ClampAndRemap(_currentTeam.Distance, _minDistance, _maxDistance, _slingMinSpeed, _slingMaxSpeed);
+            launchDirection = _currentTeam.LaunchDirection;
+            launchPosition = _currentTeam.FrontPlayer.position + launchDirection * _ballStartingDistance;
+
+            float launchDuration = _currentTeam.Distance / launchSpeed;
+
+            _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + Mathf.Max(_syncedFixedUpdateClock.ToUpdates(launchDuration), 1), -1, () =>
+            {
+                SlingLaunch(teamNumber, launchPosition, launchDirection, launchSpeed);
+            });
+
+            StartCoroutine(MovePusherCoroutine(launchDuration));
+        }
+        else
+        {
+            teamNumber = PhotonBattle.NoTeamValue;
+            launchDirection = new Vector3(0.5f, 0.5f);
+            launchSpeed = _slingDefaultgSpeed;
+            launchPosition = Vector3.zero;
+
+            SlingLaunch(teamNumber, launchPosition, launchDirection, launchSpeed);
+        }
+    }
+
+    #endregion Public Methods
+
+    // State
+    private bool _slingMode = false;
+
+    // Teams
+    private const int TEAM_ALPHA = 0;
+    private const int TEAM_BETA  = 1;
     private class Team
     {
+        public int TeamNumber;
         public List<Transform> List = new();
         public Transform FrontPlayer;
         public Transform BackPlayer;
@@ -48,122 +124,40 @@ public class SlingControllerTest : MonoBehaviour
     private Team[] _teams;
     private Team _currentTeam;
 
-    private class SlingIndicator
-    {
-        public Transform Transform;
-        public SpriteRenderer SpriteRenderer;
-
-        public SlingIndicator(GameObject gameObject)
-        {
-            Transform = gameObject.transform;
-            SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        }
-    }
-    private SlingIndicator _slingIndicator;
-
-    private bool _teamsAreReadyForGameplay = false;
-    private bool _slingMode = false;
+    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
 
     void Start()
     {
-        _photonView = GetComponent<PhotonView>();
-        _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+        // subscribe to messages
         this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
-        _slingIndicator = new SlingIndicator(transform.Find("Sling Indicator").gameObject);
+
+        _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
     }
 
+    #region Message Listeners
     private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
     {
         _teams = new Team[2];
-        _teams[0] = new Team();
-        foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[0].List.Add(driver.ActorTransform);
-        _teams[1] = new Team();
-        foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[1].List.Add(driver.ActorTransform);
-        _teamsAreReadyForGameplay = true;
+
+        _teams[TEAM_ALPHA] = new();
+        _teams[TEAM_ALPHA].TeamNumber = PhotonBattle.TeamAlphaValue;
+        foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[TEAM_ALPHA].List.Add(driver.ActorTransform);
+
+        _teams[TEAM_BETA] = new();
+        _teams[TEAM_BETA].TeamNumber = PhotonBattle.TeamBetaValue;
+        foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[TEAM_BETA].List.Add(driver.ActorTransform);
 
         this.Publish(new SlingControllerReady());
     }
+    #endregion Message Listeners
 
-    public bool SlingMode => _slingMode;
+    #region Update
 
-    public void SlingActivate() { SlingActivate(_aimingTimeSec); }
-    public void SlingActivate(double aimingTimeSec)
-    {
-        int teamNumber = new[] { PhotonBattle.TeamAlphaValue, PhotonBattle.TeamBetaValue }[Random.Range(0, 2)];
-        SlingActivate(teamNumber, aimingTimeSec);
-    }
-
-    public void SlingActivate(int teamNumber) { SlingActivate(teamNumber, _aimingTimeSec); }
-    public void SlingActivate(int teamNumber, double aimingTimeSec)
-    {
-        if (!_teamsAreReadyForGameplay)
-        {
-            Debug.Log("Teams are not ready for gameplay");
-            return;
-        }
-
-        if (_slingMode)
-        {
-            Debug.Log("Sling already active");
-            return;
-        }
-
-        _photonView.RPC(nameof(SlingRpc), RpcTarget.All, teamNumber, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(aimingTimeSec));
-    }
-
-    [PunRPC]
-    private void SlingRpc(int teamNumber, int launchUpdateNumber)
-    {
-        Sling(teamNumber, launchUpdateNumber);
-    }
-
-    private void Sling(int teamNumber, int launchUpdateNumber)
-    {
-        switch (teamNumber)
-        {
-            case PhotonBattle.TeamAlphaValue:
-                _currentTeam = _teams[0];
-                break;
-
-            case PhotonBattle.TeamBetaValue:
-                _currentTeam = _teams[1];
-                break;
-        }
-        _slingMode = true;
-
-        _syncedFixedUpdateClock.ExecuteOnUpdate(launchUpdateNumber, -1, () =>
-        {
-            Vector3 launchPosition;
-            Vector3 launchDirection;
-            float launchSpeed;
-
-            if (_currentTeam.Distance >= 0)
-            {
-                launchSpeed = _currentTeam.Distance * _slingSpeedMultiplier;
-                launchDirection = _currentTeam.LaunchDirection;
-                launchPosition = _currentTeam.FrontPlayer.position + launchDirection * _startingDistance;
-            }
-            else
-            {
-                teamNumber = PhotonBattle.NoTeamValue;
-                launchDirection = new Vector3(0.5f, 0.5f);
-                launchSpeed = _defaultSlingSpeed;
-                launchPosition = Vector3.zero;
-            }
-
-            _slingMode = false;
-            _slingIndicator.SpriteRenderer.enabled = false;
-
-            _ball.Launch(launchPosition, launchDirection, launchSpeed);
-            this.Publish(new BallSlinged(teamNumber));
-        });
-    }
-
-    private void Update()
+    void Update()
     {
         if (!_slingMode) return;
         SlingUpdate();
-        SlingIndicatorsUpdate();
+        SlingIndicatorUpdate();
     }
 
     private void SlingUpdate()
@@ -193,19 +187,58 @@ public class SlingControllerTest : MonoBehaviour
         _currentTeam.LaunchDirection = launchVector / _currentTeam.Distance;
     }
 
-    private void SlingIndicatorsUpdate()
+    private void SlingIndicatorUpdate()
     {
         if (_currentTeam.Distance >= 0)
         {
-            float length = _currentTeam.Distance * _indicatorLengthMultiplier + 2.5f;
-            _slingIndicator.Transform.position = _currentTeam.BackPlayer.position + (_currentTeam.LaunchDirection * length * 0.5f);
-            _slingIndicator.Transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(_currentTeam.LaunchDirection.y, _currentTeam.LaunchDirection.x) * (360 / (Mathf.PI * 2.0f)), Vector3.forward);
-            _slingIndicator.SpriteRenderer.size = new Vector2(length * 2.0f, _currentTeam.Distance * _indicatorWidthMultiplier * 2.0f);
-            _slingIndicator.SpriteRenderer.enabled = true;
+            float length = _currentTeam.Distance;
+            _slingIndicator.SetPosition(_currentTeam.BackPlayer.position + (_currentTeam.LaunchDirection * (length * 0.5f)));
+            _slingIndicator.SetRotationRadians(Mathf.Atan2(_currentTeam.LaunchDirection.y, _currentTeam.LaunchDirection.x)); 
+            _slingIndicator.SetLength(length);
+            _slingIndicator.SetWingAngleDegrees(ClampAndRemap(_currentTeam.Distance, _minDistance, _maxDistance, _wingMinAngleDegrees, _wingMaxAngleDegrees));
+            _slingIndicator.SetShow(true);
         }
         else
         {
-            _slingIndicator.SpriteRenderer.enabled = false;
+            _slingIndicator.SetShow(false);
         }
     }
+
+    #endregion Update
+
+    #region Private Methods
+
+    private void SlingLaunch(int teamNumber, Vector3 position, Vector3 direction, float speed)
+    {
+        _slingMode = false;
+        _slingIndicator.SetShow(false);
+
+        _ball.Launch(position, direction, speed);
+        this.Publish(new BallSlinged(teamNumber));
+    }
+
+    private IEnumerator MovePusherCoroutine(float duration)
+    {
+        float speed = 1 / duration;
+        float pusherPosition = 0;
+        while (pusherPosition < 1)
+        {
+            yield return null;
+            pusherPosition += speed * Time.deltaTime;
+            _slingIndicator.SetPusherPosition(pusherPosition);
+        }
+    }
+
+    #region Private Utility Methods
+    private float ClampAndRemap(float value, float min, float max, float newMin, float newMax)
+    {
+        return
+            (Mathf.Clamp(value, min, max) - min)
+            / (max - min)
+            * (newMax - newMin)
+            + newMin;
+    }
+    #endregion Private Utility Methods
+
+    #endregion Private Methods
 }

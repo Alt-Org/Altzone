@@ -42,15 +42,18 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     [Serializable]
     public class GameVariables
     {
-        [Header("Battle"), Min(1), Tooltip("Ball movement and character turning is limited to certain angles")] public float _angleLimit;
+        [Header("Battle")]
+        [Min(0), Tooltip("The amount of time in seconds that players have for aiming the sling")] public float _slingAimingTimeSec;
+        [Min(1), Tooltip("Ball movement and character turning is limited to certain angles")] public float _angleLimit;
+        [Min(0), Tooltip("A delay in seconds that can be used to give network messages enough time to arrive")] public float _networkDelay;
 
-        [Header("Battle Player"), Min(0)] public float _playerMoveSpeedMultiplier;
+        [Header("Battle Player")]
+        [Min(0)] public float _playerMoveSpeedMultiplier;
         [Min(0)] public float _playerAttackMultiplier;
         [Min(0), Tooltip("How far from shield collision should raycast take place to compensate for high speed")] public float _ballSpeedCompensation;
         [Min(0), Tooltip("How many hits does a shield take before deforming")] public int _shieldResistance;
         [Min(0), Tooltip("Small delay after shield has been hit, before the shield deforms")] public float _shieldDeformDelay;
         [Min(0), Tooltip("Adds a small delay after shield has been hit, so hits from multiple colliders dont register")] public float _shieldHitDelay;
-        [Min(0), Tooltip("Delay in seconds when movement starts after movement request has been made")] public float _playerMovementNetworkDelay;
     }
 
     /// <summary>
