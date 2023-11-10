@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Random = UnityEngine.Random;
+using static Battle0.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
@@ -14,7 +15,17 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
 
+    [System.Serializable]
+    public class BombData
+    {
+        public int bombIndex;
+         //type 0: default, type 1: lock
+        public int bombType;
+    }
+    [SerializeField] BombData[] Bombs;
+
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
+    private bool spectator;
 
     [SerializeField, Header("Furniture and weight")] private Sprite Image1;
     [SerializeField] private float ItemWeight1;
@@ -47,6 +58,11 @@ public class Raid_InventoryPage : MonoBehaviour
         LootTracker.ResetLootCount();
         _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 2;
+        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+        {
+            spectator = true;
+        }
+
     }
 
     public void InitializeInventoryUI(int InventorySize)
@@ -59,6 +75,17 @@ public class Raid_InventoryPage : MonoBehaviour
             ListOfUIItems.Add(UIItem);
             UIItem.OnItemClicked += HandleItemLooting;
         }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //RandomizeBombs();
+            //string jsonBombs = JsonUtility.ToJson(Bombs);
+            //_photonView.RPC("SendBombLocationsRPC", RpcTarget.All, jsonBombs);
+        }
+        for (int j = 0; j < Bombs.Length; j++)
+        {
+            ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetBomb(Bombs[j].bombType);
+        }
     }
 
     public void HandleItemLooting(Raid_InventoryItem inventoryItem)
@@ -70,6 +97,17 @@ public class Raid_InventoryPage : MonoBehaviour
     [PunRPC]
     public void HandleItemLootingRPC(int index, float itemWeight)
     {
+        if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>().bomb)
+        {
+            ListOfUIItems[index].RemoveData();
+            ListOfUIItems[index].GetComponent<Raid_InventoryItem>().TriggerBomb();
+            if(ListOfUIItems[index].GetComponent<Raid_InventoryItem>()._bombType == 1)
+            {
+                LockItems(index);
+            }
+            return;
+        }
+            
         if (index == -1)
         {
             return;
@@ -158,7 +196,39 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
     }
+    public void RandomizeBombs()
+    {
+        Bombs[0].bombIndex = Random.Range(0, (ListOfUIItems.Count / 3));
+        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, (ListOfUIItems.Count / 3) * 2);
+        Bombs[2].bombIndex = Random.Range(((ListOfUIItems.Count / 3) * 2) + 1, ListOfUIItems.Count);
+    }
+    [PunRPC]
+    public void SendBombLocationsRPC(string jsonBombs)
+    {
+        Bombs = JsonUtility.FromJson<BombData[]>(jsonBombs);
+    }
+    public void LockItems(int index)
+    {
+        int column = -1;
+        bool topRow = false;
 
+        if (index == 0 || index == 1 || index == 2 || index == 3)
+        {
+            topRow = true;
+            column = index;
+        }
+        if (column == -1)
+            column = index % 4;
+
+        if (column != 3)
+            ListOfUIItems[index + 1].GetComponent<Raid_InventoryItem>().SetLocked();
+        if (column != 0)
+            ListOfUIItems[index - 1].GetComponent<Raid_InventoryItem>().SetLocked();
+        if (!topRow)
+            ListOfUIItems[index - 4].GetComponent<Raid_InventoryItem>().SetLocked();
+        if (ListOfUIItems[index + 4])
+            ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
+    }
     [PunRPC]
     public void SetInventorySlotDataRPC(int Index, int RandomFurniture)
     {

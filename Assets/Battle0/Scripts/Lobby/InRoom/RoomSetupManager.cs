@@ -60,6 +60,14 @@ namespace Battle0.Scripts.Lobby.InRoom
         private string _captionGuest;
         private string _captionSpectator;
 
+        PlayerRole currentRole = PlayerRole.Player;
+
+        public enum PlayerRole
+        {
+            Player,
+            Spectator
+        }
+
         private void OnEnable()
         {
             Debug.Log($"{PhotonNetwork.NetworkClientState}");
@@ -107,7 +115,8 @@ namespace Battle0.Scripts.Lobby.InRoom
                 player.SetCustomProperties(new Hashtable
                 {
                     { PlayerPositionKey, playerPos },
-                    { PlayerMainSkillKey, prefabIndex }
+                    { PlayerMainSkillKey, prefabIndex },
+                    { "Role", (int)currentRole }
                 });
                 Debug.Log($"{PhotonNetwork.NetworkClientState} {enabled}");
                 UpdateStatus();
@@ -124,6 +133,7 @@ namespace Battle0.Scripts.Lobby.InRoom
             // We need local player to check against other players
             var localPLayer = PhotonNetwork.LocalPlayer;
             _localPlayerPosition = localPLayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            //currentRole = PlayerRole.Player;
             _isLocalPlayerPositionUnique = true;
 
             CheckMasterClient();
