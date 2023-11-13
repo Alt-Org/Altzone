@@ -140,7 +140,7 @@ public class GameControllerTest : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient)
         {
-            int slingingTeam = Random.Range(0, 2) == 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamAlphaValue;
+            int slingingTeam = Random.Range(0, 2) == 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
             _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GAME_START_DELAY), slingingTeam);
         }
     }
