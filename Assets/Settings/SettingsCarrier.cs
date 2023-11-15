@@ -51,8 +51,6 @@ public class SettingsCarrier : MonoBehaviour
 
     public void PlaySound(AudioClip audioClip, float volume)
     {
-        audioSource.clip = audioClip;
-        audioSource.volume = volume;
-        audioSource.Play();
+        audioSource.PlayOneShot(audioClip, volume);
     }
 }
