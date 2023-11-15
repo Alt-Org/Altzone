@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SetVolume : MonoBehaviour
 {
-    [SerializeField] SettingsCarrier.SoundType _soundType;
+    [SerializeField] public SettingsCarrier.SoundType _soundType;
     private void Start()
     {
         VolumeSet();

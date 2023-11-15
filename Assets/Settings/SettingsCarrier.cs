@@ -3,11 +3,23 @@ public class SettingsCarrier : MonoBehaviour
 {
     // Script for carrying settings data between scenes
     public static SettingsCarrier Instance { get; private set; }
+
+    private AudioSource audioSource;
+
     private void Awake()
     {
-        Instance = this;
 
-        DontDestroyOnLoad(this);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     public float masterVolume;
@@ -35,5 +47,12 @@ public class SettingsCarrier : MonoBehaviour
             default: break;
         }
         return 1 * (otherVolume * masterVolume);
+    }
+
+    public void PlaySound(AudioClip audioClip, float volume)
+    {
+        audioSource.clip = audioClip;
+        audioSource.volume = volume;
+        audioSource.Play();
     }
 }
