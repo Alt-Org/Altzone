@@ -24,7 +24,7 @@ public class Raid_LootTracking : MonoBehaviourPunCallbacks
         _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
         {
-            float randomlootWeight = Random.Range(200, 501);
+            float randomlootWeight = Random.Range(140, 241);
             _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.AllBuffered, randomlootWeight);
         }
 
