@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1440607170473138605
 Transform:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b5abc78edb60dd4ba0e6af595735fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _slidingUI: []
   _prevNaviTarget: {fileID: 0}
   _nextNaviTarget: {fileID: 0}
   _distanceToSwitch: 100
-  _YdistanceToNotSwitch: 200

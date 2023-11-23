@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace Battle0.Scripts.Lobby.InLobby
         private const string DefaultRoomNameName = "Battle ";
 
         [SerializeField] private LobbyRoomListingView _view;
-        [SerializeField] private InputField _roomName;
+        [SerializeField] private TMP_InputField _roomName;
 
         private PhotonRoomList _photonRoomList;
 

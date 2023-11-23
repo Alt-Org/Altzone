@@ -27,6 +27,14 @@ public class InvFront : MonoBehaviour
     [SerializeField] private GameObject _buySlot;
     [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
 
+    [Header("Information GameObject")]
+    [SerializeField] private Image _icon;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _weight;
+    [SerializeField] private TMP_Text _material;
+    [SerializeField] private Image _type;
+    [SerializeField] private TMP_Text _typeText;
+
     private List<GameFurniture> _items;
     private List<GameObject> _slotsList = new();
 
@@ -149,15 +157,15 @@ public class InvFront : MonoBehaviour
         switch (_sortingBy)
         {
             case 0:
-                _sortText.text = "Jarjestetty : Aakkoset";
+                _sortText.text = "Jarjestetty\nAakkoset";
                 _items.Sort((GameFurniture a, GameFurniture b) => { return a.Name.CompareTo(b.Name); });
                 break;
             case 1:
-                _sortText.text = "Jarjestetty : Paino";
+                _sortText.text = "Jarjestetty\nPaino";
                 _items.Sort((GameFurniture a, GameFurniture b) => { return a.Weight.CompareTo(b.Weight); });
                 break;
             case 2:
-                _sortText.text = "Jarjestetty : Materiaali";
+                _sortText.text = "Jarjestetty\nMateriaali";
                 _items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
                 break;
         }
@@ -170,22 +178,22 @@ public class InvFront : MonoBehaviour
         GameFurniture _furn = _items[slotVal];
 
         // Icon
-        parentSlot.GetChild(0).GetComponent<Image>().sprite = GetIcon(_furn.Filename);
+        _icon.sprite = GetIcon(_furn.Filename);
 
         // Name
-        parentSlot.GetChild(1).GetComponent<TMP_Text>().text = _furn.Name;
+        _name.text = _furn.Name;
 
         // Weight
-        parentSlot.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+        _weight.text = _furn.Weight + " KG";
 
         // Material text
-        parentSlot.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
+        _material.text = _furn.Material;
 
         // Type
-        parentSlot.GetChild(4).GetComponent<Image>().sprite = GetIcon(_furn.Shape);
+        _type.sprite = GetIcon(_furn.Shape);
 
         // Type Text
-        parentSlot.GetChild(5).GetComponent<TMP_Text>().text = _furn.Shape;
+        _typeText.text = _furn.Shape;
 
         _infoSlot.SetActive(true);
     }

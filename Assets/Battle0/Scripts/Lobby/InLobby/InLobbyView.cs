@@ -1,13 +1,14 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Battle0.Scripts.Lobby.InLobby
 {
     public class InLobbyView : MonoBehaviour
     {
-        [SerializeField] private Text _titleText;
-        [SerializeField] private Text _lobbyText;
+        [SerializeField] private TextMeshProUGUI _titleText;
+        [SerializeField] private TextMeshProUGUI _lobbyText;
         [SerializeField] private Button _characterButton;
         [SerializeField] private Button _roomButton;
         [SerializeField] private Button _raidButton;

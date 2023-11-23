@@ -7,7 +7,7 @@ public class Raid_EndMenu : MonoBehaviour
 {
     public void ReturnToLobby()
     {
-        SceneManager.LoadScene("20-Lobby");
+        SceneManager.LoadScene("10-MenuUI");
     }
     //TODO: This is used for testing / debugging only, remove when releasing demo
     public void Restart() 

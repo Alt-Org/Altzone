@@ -3,13 +3,14 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
+using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Battle0.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour
+    public class InLobbyController : MonoBehaviourPunCallbacks
     {
         [SerializeField] private InLobbyView _view;
 
@@ -23,8 +24,10 @@ namespace Battle0.Scripts.Lobby.InLobby
             _view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
+
             var cloudRegion = PhotonNetwork.NetworkingClient?.CloudRegion;
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
@@ -92,6 +95,16 @@ namespace Battle0.Scripts.Lobby.InLobby
             }
             var playerCount = PhotonNetwork.CountOfPlayers;
             _view.LobbyText = $"Players: {playerCount}, ping {_currentRegion} {PhotonNetwork.GetPing()} ms";
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            Debug.Log($"OnDisconnected {cause}");
+
+            if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
+            {
+                OnEnable();
+            }
         }
 
         private void CharacterButtonOnClick()

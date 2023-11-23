@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 588215203830690390}
   - component: {fileID: -4777393187917965587}
   - component: {fileID: -3863063704894773627}
+  - component: {fileID: 593284891625424638}
   m_Layer: 5
   m_Name: BT_ALTZONE
   m_TagString: Untagged
@@ -30,7 +31,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712389070812600571}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41,7 +42,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -109.61438}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 210, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9146134680212115252
@@ -126,6 +127,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: -4777393187917965587}
+        m_TargetAssemblyTypeName: SetVolume, Assembly-CSharp
+        m_MethodName: VolumeSet
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: -3863063704894773627}
         m_TargetAssemblyTypeName: PlayAudioClip, Assembly-CSharp
         m_MethodName: PlayAudio
@@ -134,6 +147,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 593284891625424638}
+        m_TargetAssemblyTypeName: SetMainMenuWindowIndex, MainMenu
+        m_MethodName: SetMainMenuWindowIndexValue
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -150,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 49456bc2e3f05254bb9bf031f48128d4, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!82 &588215203830690390
 AudioSource:
@@ -271,6 +296,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &593284891625424638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712389070812600571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8867406680005535824

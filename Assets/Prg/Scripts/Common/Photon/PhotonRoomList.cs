@@ -49,7 +49,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            //PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         private void UpdateRoomListing(List<RoomInfo> roomList)

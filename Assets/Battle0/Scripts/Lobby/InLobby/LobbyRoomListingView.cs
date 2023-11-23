@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -75,7 +76,7 @@ namespace Battle0.Scripts.Lobby.InLobby
                 roomText += $" ({room.PlayerCount} playing)";
                 roomText = $"<color=brown>{roomText}</color>";
             }
-            var text = button.GetComponentInChildren<Text>();
+            var text = button.GetComponentInChildren<TextMeshProUGUI>();
             Debug.Log($"update '{text.text}' -> '{roomText}' for {room.GetDebugLabel()}");
             text.text = roomText;
             button.onClick.RemoveAllListeners();

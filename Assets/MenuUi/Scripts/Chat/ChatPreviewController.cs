@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Globalization;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -7,7 +9,6 @@ public class ChatPreviewController : MonoBehaviour
 {
     [Header("Amount of chat messages shown in chat preview window")]
     [Tooltip("The amount of messages shown in the chat box")] public int chatMessageAmount;
-    [Tooltip("How much of the chat message will be shown before it is cut off")] public float textCutOffDistance;
 
     [Header("GameObjects")]
     [SerializeField] private GameObject chatPreviewMessagePrefab;
@@ -25,13 +26,17 @@ public class ChatPreviewController : MonoBehaviour
     public AnimationClip _chatButtonExpandAnim;
     private Animation _chatButtonAnim;
 
+    private RectTransform _chatButtonRect;
+    private Vector2[] _chatButtonDefaultAnchors;
+    private Vector2[] _chatButtonShrinkAnchors;
+
     public TextMeshProUGUI ActiveChatChannelText { get => _activeChatChannelText; set => _activeChatChannelText = value; }
 
     private void Awake()
     {
         _isEnabled = _chatMessagesContainer.activeInHierarchy;
         _backgroundImage = GetComponent<Image>();
-        _toggleChatButton.onClick.AddListener(() => ToggleChatMessages(!_isEnabled));
+        _toggleChatButton.onClick.AddListener(() => ToggleChatMessages(!_isEnabled, true));
 
         _chatButtonAnim = _toggleChatButton.GetComponent<Animation>();
         _chatMessageGameobjects = new GameObject[chatMessageAmount];
@@ -43,13 +48,16 @@ public class ChatPreviewController : MonoBehaviour
             chatMessage.GetComponentInChildren<Image>().color = Color.clear;
             chatMessage.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
-    }
 
-    private void Start()
-    {
-        ChatListener.Instance.ChatPreviewController = this;
-        ChatListener.Instance.ChatPreviewController.OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
-        MessageReceived(ChatListener.Instance._activeChatChannel);
+        _chatButtonRect = _toggleChatButton.gameObject.GetComponent<RectTransform>();
+
+        _chatButtonDefaultAnchors = new Vector2[2];
+        _chatButtonShrinkAnchors = new Vector2[2];
+
+        _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
+        _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
+        _chatButtonShrinkAnchors[0] = new Vector2(0, 0.6f);
+        _chatButtonShrinkAnchors[1] = new Vector2(0.15f, 1);
     }
 
     private void OnEnable()
@@ -58,7 +66,7 @@ public class ChatPreviewController : MonoBehaviour
         {
             ChatListener.Instance.ChatPreviewController = this;
             OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
-            ToggleChatMessages(ChatListener.Instance._chatPreviewIsEnabled);
+            ToggleChatMessages(ChatListener.Instance._chatPreviewIsEnabled, false);
         }
     }
 
@@ -67,22 +75,38 @@ public class ChatPreviewController : MonoBehaviour
         ChatListener.Instance.ChatPreviewController = null;
     }
 
-    internal void ToggleChatMessages(bool value)
+    internal void ToggleChatMessages(bool value, bool playAnimation)
     {
         _backgroundImage.enabled = value;
         _chatMessagesContainer.SetActive(value);
         _isEnabled = value;
         ChatListener.Instance._chatPreviewIsEnabled = value;
 
-        if ((value && _chatButtonAnim.clip != _chatButtonExpandAnim) || (!value && _chatButtonAnim.clip != _chatButtonShrinkAnim))
-        {
-            if (value)
-                _chatButtonAnim.clip = _chatButtonExpandAnim;
-            else
-                _chatButtonAnim.clip = _chatButtonShrinkAnim;
+        if (value)
+            _chatButtonAnim.clip = _chatButtonExpandAnim;
+        else
+            _chatButtonAnim.clip = _chatButtonShrinkAnim;
 
+        if (playAnimation)
+        {
             _chatButtonAnim.Play();
         }
+        else
+        {
+            if (value)
+            {
+                _chatButtonRect.anchorMin = _chatButtonDefaultAnchors[0];
+                _chatButtonRect.anchorMax = _chatButtonDefaultAnchors[1];
+            }
+            else
+            {
+                _chatButtonRect.anchorMin = _chatButtonShrinkAnchors[0];
+                _chatButtonRect.anchorMax = _chatButtonShrinkAnchors[1];
+            }
+        }
+
+        if (value)
+            OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
     }
 
     internal void OnActiveChatWindowChange(ChatChannel chatChannel)
@@ -129,43 +153,53 @@ public class ChatPreviewController : MonoBehaviour
         }
 
         // Inserts the chat message and shortens it to fit the chatbox window
-
         for (int i = 0; i < index; i++)
         {
-            if (noMessagesTextGameobject.activeInHierarchy)
+            if (noMessagesTextGameobject.activeSelf)
                 noMessagesTextGameobject.SetActive(false);
 
-            ChatMessagePrefab chatMessagePrefab = _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>();
-            chatMessagePrefab.SetMessage(recentMessages[i]._message);
-            chatMessagePrefab.SetProfilePicture(channel._chatChannelType);
-
             TextMeshProUGUI textMeshProUGUI = _chatMessageGameobjects[i].GetComponentInChildren<TextMeshProUGUI>();
-            textMeshProUGUI.ForceMeshUpdate();
 
-            string shortenedMessage = ShortenChatMessage(textMeshProUGUI.textInfo);
-
-            chatMessagePrefab.SetMessage(shortenedMessage);
+            ChatMessagePrefab chatMessagePrefab = _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>();
+            chatMessagePrefab.SetProfilePicture(channel._chatChannelType);
+            StartCoroutine(SetShortenedMessageOnDelay(chatMessagePrefab, textMeshProUGUI,  recentMessages[i]._message));
         }
     }
 
-    private string ShortenChatMessage(TMP_TextInfo textInfo)
+    private IEnumerator SetShortenedMessageOnDelay(ChatMessagePrefab chatMessagePrefab, TextMeshProUGUI textMeshProUGUI,  string message)
+    {
+        yield return new WaitForEndOfFrame();
+
+        chatMessagePrefab.SetMessage(message);
+        textMeshProUGUI.ForceMeshUpdate();
+        string shortenedMessage = ShortenChatMessage(textMeshProUGUI);
+        chatMessagePrefab.SetMessage(shortenedMessage);
+
+    }
+
+    private string ShortenChatMessage(TextMeshProUGUI text)
     {
         string returnString = string.Empty;
+        Vector2 size = text.GetComponent<RectTransform>().rect.size;
 
-        for (int j = 0; j < textInfo.characterCount; ++j)
+        if (text.preferredWidth < size.x)
+            return text.text;
+
+        for (int i = 0; i < text.textInfo.characterCount; i++)
         {
-            returnString += textInfo.characterInfo[j].character;
+            if (text.textInfo.characterInfo[i].bottomLeft.x > size.x)
+                break;
 
-            if (!textInfo.characterInfo[j].isVisible || textInfo.characterInfo[j].bottomRight.x < textCutOffDistance)
-                continue;
-
-            StringBuilder sb = new StringBuilder(returnString.TrimEnd(' '));
-            sb[returnString.Length - 1] = '.';
-            sb[returnString.Length - 2] = '.';
-            sb[returnString.Length - 3] = '.';
-            returnString = sb.ToString();
-            break;
+            returnString += text.textInfo.characterInfo[i].character;
         }
+
+        returnString = returnString.Replace("\n", "").Replace("\r", "");
+
+        StringBuilder sb = new StringBuilder(returnString);
+        sb[returnString.Length - 1] = '.';
+        sb[returnString.Length - 2] = '.';
+        sb[returnString.Length - 3] = '.';
+        returnString = sb.ToString();
 
         return returnString;
     }

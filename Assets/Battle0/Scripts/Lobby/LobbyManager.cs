@@ -29,7 +29,7 @@ namespace Battle0.Scripts.Lobby
         private const string TeamBlueNameKey = PhotonBattle.TeamBlueNameKey;
         private const string TeamRedNameKey = PhotonBattle.TeamRedNameKey;
 
-        [Header("Settings"), SerializeField] private WindowDef _lobbyWindow;
+        [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private WindowDef _gameWindow;
         [SerializeField] private bool _isCloseRoomOnGameStart;
@@ -193,7 +193,8 @@ namespace Battle0.Scripts.Lobby
             // Goto lobby if we left (in)voluntarily any room
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             // - can not use GoBack() because we do not know the reason for player leaving the room.
-            WindowManager.Get().ShowWindow(_lobbyWindow);
+            // UPDATE 17.11.2023 - Since Lobby-scene has been moved to the main menu we will now load the main menu instead.
+            WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
         public class PlayerPosEvent
