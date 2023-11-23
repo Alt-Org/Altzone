@@ -128,6 +128,9 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 #if UNITY_ANDROID
         if (Input.touchCount == 1)
         {
+            if (AppPlatform.IsSimulator)
+                return;
+
             Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Began)
