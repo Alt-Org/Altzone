@@ -34,6 +34,7 @@ namespace Battle.Scripts.Battle.Players
         // private Animator _playerCharacterAnimator;
         private SpriteRenderer _playerCharacterSpriteRenderer;
         private ShieldPoseManager _shieldPoseManager;
+        private AudioSource _audioSource;
         // private float _playerMoveSpeedMultiplier;
         private Transform _transform;
         private Vector3 _tempPosition;
@@ -57,6 +58,7 @@ namespace Battle.Scripts.Battle.Players
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _transform = GetComponent<Transform>();
             _playerCharacterTransform = _geometryRoot.Find("PLayerCharacter");
+            _audioSource = GetComponent<AudioSource>();
             //_playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
             _playerCharacterSpriteRenderer = _playerCharacterTransform.GetComponent<SpriteRenderer>();
             var variables = GameConfig.Get().Variables;
@@ -121,6 +123,7 @@ namespace Battle.Scripts.Battle.Players
         {
             yield return new WaitForSeconds(_shieldDeformDelay);
             _shieldPoseManager.SetPose(poseIndex);
+            _audioSource.Play();
         }
 
         private IEnumerator ShieldHitDelay(int damage)

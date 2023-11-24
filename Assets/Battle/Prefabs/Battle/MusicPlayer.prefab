@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8689527316273912413}
-  - component: {fileID: 8689527316273912412}
   - component: {fileID: 6545950512548347017}
+  - component: {fileID: 8689527316273912412}
   - component: {fileID: -8315914090935516441}
   m_Layer: 0
   m_Name: MusicPlayer
@@ -34,6 +34,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6545950512548347017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8689527316273912415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93bdd28e1586a14baa29840f17b2b56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _startSetting: 2
+  _loopSetting: 1
+  _audioList:
+  - {fileID: 8300000, guid: ec0b74f7243b5e345aff6aebfc903744, type: 3}
+  - {fileID: 8300000, guid: 1930601a439bd514baa6bb131cead5d8, type: 3}
+  - {fileID: 8300000, guid: 77c802fde8f161246a91ef9abdb760ea, type: 3}
+  - {fileID: 8300000, guid: 1b4d67f25f8bc834a977fceaf21c4ecb, type: 3}
+  - {fileID: 8300000, guid: f0492b07cdff59b4bb404ed42f91b1ae, type: 3}
+  - {fileID: 8300000, guid: 6b278daf87f4f464db5b8e1db640e277, type: 3}
 --- !u!82 &8689527316273912412
 AudioSource:
   m_ObjectHideFlags: 0
@@ -130,27 +151,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6545950512548347017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8689527316273912415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c93bdd28e1586a14baa29840f17b2b56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _startSetting: 2
-  _loopSetting: 1
-  _audioList:
-  - {fileID: 8300000, guid: ec0b74f7243b5e345aff6aebfc903744, type: 3}
-  - {fileID: 8300000, guid: 1930601a439bd514baa6bb131cead5d8, type: 3}
-  - {fileID: 8300000, guid: 77c802fde8f161246a91ef9abdb760ea, type: 3}
-  - {fileID: 8300000, guid: 1b4d67f25f8bc834a977fceaf21c4ecb, type: 3}
-  - {fileID: 8300000, guid: f0492b07cdff59b4bb404ed42f91b1ae, type: 3}
-  - {fileID: 8300000, guid: 6b278daf87f4f464db5b8e1db640e277, type: 3}
 --- !u!114 &-8315914090935516441
 MonoBehaviour:
   m_ObjectHideFlags: 0

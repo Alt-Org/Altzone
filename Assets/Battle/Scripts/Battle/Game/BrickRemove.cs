@@ -23,11 +23,15 @@ namespace Battle.Scripts.Battle.Game
     /// <summary>
     /// Removes a brick from the wall when hit conditions are met.
     /// </summary>
+    [RequireComponent(typeof(SpriteRenderer))]
     internal class BrickRemove : MonoBehaviour
     {
-        // Public Properties and Fields
+        // Serialized Fields
+        [SerializeField] public PlayerPlayArea PlayerPlayArea;
+        [SerializeField] public AudioPlayer _audioPlayer;
+
+        // Public Properties
         public int Health { get; private set; } = 0;
-        public PlayerPlayArea PlayerPlayArea;
 
         #region Public Methods
         public void BrickHitInit(int damage)
@@ -41,10 +45,19 @@ namespace Battle.Scripts.Battle.Game
             {
                 Destroy(gameObject);
                 this.Publish(new BrickRemoved(_side));
+                _audioPlayer.Play(BREAK_EFFECT_INDEX);
+            }
+            else
+            {
+                _audioPlayer.Play(HIT_EFFECT_INDEX);
             }
         }
         #endregion Public Methods
 
+        // Private Constants
+        private const int HIT_EFFECT_INDEX = 0;
+        private const int BREAK_EFFECT_INDEX = 1;
+        
         private int _side;
         private float _colorChangeFactor;
 
@@ -59,6 +72,7 @@ namespace Battle.Scripts.Battle.Game
 
             // get components
             _spriteRenderer = GetComponent<SpriteRenderer>();
+
         }
     }
 }

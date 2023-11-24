@@ -2,28 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlingIndicatorTest : MonoBehaviour
+public class SlingIndicator : MonoBehaviour
 {
     #region Public Methods 
 
+    /// <summary>
+    /// Shows or hides sling indicator.
+    /// </summary>
+    /// <param name="show">true = show, false = hide</param>
     public void SetShow(bool show)
     {
         _spriteRenderer.enabled = show;
-        foreach (Wing wing in _wings) wing.SpriteRenderer.enabled = show;
+        //foreach (Wing wing in _wings) wing.SpriteRenderer.enabled = show;
         _pusher.GameObject.SetActive(show);
     }
 
+    /// <summary>
+    /// Sets the position of the sling indicator.
+    /// </summary>
+    /// <param name="position">The new position of the sling indicator.</param>
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
     }
 
+    /// <summary>
+    /// Sets the rotation/angle of the sling indicator in radians.
+    /// </summary>
+    /// <param name="angle">The new angle of sling indicator in radians.</param>
     public void SetRotationRadians(float angle) { SetRotationDegrees(angle * (360 / (Mathf.PI * 2.0f))); }
+
+    /// <summary>
+    /// Sets the rotation/angle of the sling indicator in degrees.
+    /// </summary>
+    /// <param name="angle">The new angle of sling indicator in degrees.</param>
     public void SetRotationDegrees(float angle)
     {
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
+    /// <summary>
+    /// Sets the length of the sling indicator.
+    /// </summary>
+    /// <param name="length">The new length of the sling indicator.</param>
     public void SetLength(float length)
     {
         _length = length;
@@ -37,13 +58,19 @@ public class SlingIndicatorTest : MonoBehaviour
         UpdatePusherPosition();
     }
 
+    /*
     public void SetWingAngleRadians(float angle) { SetRotationDegrees(angle * (360 / (Mathf.PI * 2.0f))); }
     public void SetWingAngleDegrees(float angle)
     {
         _wings[WING_LEFT].Transform.localRotation = Quaternion.AngleAxis(-90 + angle, Vector3.forward);
         _wings[WING_RIGHT].Transform.localRotation = Quaternion.AngleAxis(-90 - angle, Vector3.forward);
     }
+    */
 
+    /// <summary>
+    /// Sets the position of the pusher. min 0, max 1
+    /// </summary>
+    /// <param name="position">The new position of the pusher. min 0, max 1</param>
     public void SetPusherPosition(float position)
     {
         _pusher.Position = position;

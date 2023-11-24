@@ -31,7 +31,7 @@ public class GameControllerTest : MonoBehaviour
     // Other Control Objects
     private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
     private PlayerManager _playerManager;
-    private SlingControllerTest _slingController;
+    private SlingController _slingController;
 
     void Start()
     {

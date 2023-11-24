@@ -21,7 +21,8 @@ public class BallSlinged
 
 #endregion Message Classes
 
-public class SlingControllerTest : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+public class SlingController : MonoBehaviour
 {
     // Serialized Fields
     [Header("Sling")]
@@ -36,16 +37,28 @@ public class SlingControllerTest : MonoBehaviour
     [SerializeField] private float _wingMaxAngleDegrees;
     [Header("Game Objects")]
     [SerializeField] private BallHandlerTest _ball;
-    [SerializeField] private SlingIndicatorTest _slingIndicator;
+    [SerializeField] private SlingIndicator _slingIndicator;
 
     // Public Properties
-    public bool SlingMode => _slingMode;
+    public bool SlingActive => _slingActive;
 
     #region Public Methods
 
+    /// <summary>
+    /// <para>Activates a teams sling.</para>
+    /// <para>
+    /// Slings can not be activated when a sling is already active.
+    /// The sling stays active until it is launched after which it is deactivated.
+    /// Deactivating the sling without launching is not implemented.
+    /// </para>
+    /// <para>
+    /// This method only effects slings on this client.
+    /// </para>
+    /// </summary>
+    /// <param name="teamNumber">The PhotonBattle team number of the team which sling is going to be activated</param>
     public void SlingActivate(int teamNumber)
     {
-        if (_slingMode)
+        if (_slingActive)
         {
             Debug.LogWarning("Sling already active");
             return;
@@ -61,13 +74,26 @@ public class SlingControllerTest : MonoBehaviour
                 _currentTeam = _teams[TEAM_BETA];
                 break;
         }
-        _slingMode = true;
+        _slingActive = true;
         _slingIndicator.SetPusherPosition(0);
     }
 
+    /// <summary>
+    /// <para>
+    /// Launches the sling that is currently active.
+    /// </para>
+    /// A sling needs to be already be active.
+    /// The sling is deactivated after launching.
+    /// Deactivating the sling without launching is not implemented.
+    /// <para>
+    /// </para>
+    /// <para>
+    /// This method only effects slings on this client.
+    /// </para>
+    /// </summary>
     public void SlingLaunch()
     {
-        if (!_slingMode)
+        if (!_slingActive)
         {
             Debug.LogWarning("Sling not active");
             return;
@@ -88,7 +114,7 @@ public class SlingControllerTest : MonoBehaviour
 
             _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + Mathf.Max(_syncedFixedUpdateClock.ToUpdates(launchDuration), 1), -1, () =>
             {
-                SlingLaunch(teamNumber, launchPosition, launchDirection, launchSpeed);
+                SlingLaunchPrivate(teamNumber, launchPosition, launchDirection, launchSpeed);
             });
 
             StartCoroutine(MovePusherCoroutine(launchDuration));
@@ -100,14 +126,14 @@ public class SlingControllerTest : MonoBehaviour
             launchSpeed = _slingDefaultgSpeed;
             launchPosition = Vector3.zero;
 
-            SlingLaunch(teamNumber, launchPosition, launchDirection, launchSpeed);
+            SlingLaunchPrivate(teamNumber, launchPosition, launchDirection, launchSpeed);
         }
     }
 
     #endregion Public Methods
 
     // State
-    private bool _slingMode = false;
+    private bool _slingActive = false;
 
     // Teams
     private const int TEAM_ALPHA = 0;
@@ -124,10 +150,16 @@ public class SlingControllerTest : MonoBehaviour
     private Team[] _teams;
     private Team _currentTeam;
 
+    // Components
+    private AudioSource _audioSource;
+
     private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
 
     void Start()
     {
+        // get components
+        _audioSource = GetComponent<AudioSource>();
+
         // subscribe to messages
         this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
@@ -155,7 +187,7 @@ public class SlingControllerTest : MonoBehaviour
 
     void Update()
     {
-        if (!_slingMode) return;
+        if (!_slingActive) return;
         SlingUpdate();
         SlingIndicatorUpdate();
     }
@@ -195,7 +227,7 @@ public class SlingControllerTest : MonoBehaviour
             _slingIndicator.SetPosition(_currentTeam.BackPlayer.position + (_currentTeam.LaunchDirection * (length * 0.5f)));
             _slingIndicator.SetRotationRadians(Mathf.Atan2(_currentTeam.LaunchDirection.y, _currentTeam.LaunchDirection.x)); 
             _slingIndicator.SetLength(length);
-            _slingIndicator.SetWingAngleDegrees(ClampAndRemap(_currentTeam.Distance, _minDistance, _maxDistance, _wingMinAngleDegrees, _wingMaxAngleDegrees));
+            //_slingIndicator.SetWingAngleDegrees(ClampAndRemap(_currentTeam.Distance, _minDistance, _maxDistance, _wingMinAngleDegrees, _wingMaxAngleDegrees));
             _slingIndicator.SetShow(true);
         }
         else
@@ -208,12 +240,13 @@ public class SlingControllerTest : MonoBehaviour
 
     #region Private Methods
 
-    private void SlingLaunch(int teamNumber, Vector3 position, Vector3 direction, float speed)
+    private void SlingLaunchPrivate(int teamNumber, Vector3 position, Vector3 direction, float speed)
     {
-        _slingMode = false;
+        _slingActive = false;
         _slingIndicator.SetShow(false);
 
         _ball.Launch(position, direction, speed);
+        _audioSource.Play();
         this.Publish(new BallSlinged(teamNumber));
     }
 
