@@ -106,7 +106,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     private void UpdateInput()
     {
         if (isSwipeMode == true) return;
-#if UNITY_EDITOR || UNITY_STANDALONE
+
         if (Input.GetMouseButtonDown(0))
         {
             startTouchX = Input.mousePosition.x;
@@ -119,18 +119,16 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
             }
             else
             {
-                endTouchX = Input.mousePosition.x;
-                UpdateSwipe();
+                if(startTouchX != 0)
+                {
+                    endTouchX = Input.mousePosition.x;
+                    UpdateSwipe();
+                }
             }
         }
-#endif
 
-#if UNITY_ANDROID
         if (Input.touchCount == 1)
         {
-            if (AppPlatform.IsSimulator)
-                return;
-
             Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Began)
@@ -145,19 +143,24 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
                 }
                 else
                 {
-                    endTouchX = touch.position.x;
+                    if (startTouchX != 0)
+                    {
+                        endTouchX = touch.position.x;
+                        UpdateSwipe();
+                    }
                 }
-                UpdateSwipe();
             }
         }
-#endif
     }
 
-    private void UpdateSwipe()
+    public void UpdateSwipe()
     {
+        if (isSwipeMode)
+            return;
 
         if (Mathf.Abs(startTouchX - endTouchX) < swipeDistance)
         {
+            StartCoroutine(OnSwipeOneStep(CurrentPage));
             return;
         }
 

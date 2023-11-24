@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using MenuUi.Scripts.Window;
@@ -11,6 +12,19 @@ namespace MenuUi.Scripts.MainMenu
     public class MainMenuController : MonoBehaviour
     {
         [SerializeField] private MainMenuView _view;
+        public float _interval = 2f;
+
+        private GameObject[] _layoutElementsGameObjects;
+        private RectTransform _scrollRectCanvas;
+
+        private int lastWidth;
+        private int lastHeight;
+
+        private void Awake()
+        {
+            lastWidth = Screen.width;
+            lastHeight = Screen.height;
+        }
 
         private void OnEnable()
         {
@@ -36,28 +50,50 @@ namespace MenuUi.Scripts.MainMenu
                     _view.ClanName = clanData?.Name ?? "Clan?";
                 });
             });
+
+            StartCoroutine(CheckWindowSize());
         }
 
         private void Start()
         {
             var windowManager = WindowManager.Get();
-            SetMainMenuLayoutDimensions(GameObject.FindGameObjectsWithTag("MainMenuWindow"), GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>());
+            _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
+            _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
+            SetMainMenuLayoutDimensions();
         }
 
-        private void SetMainMenuLayoutDimensions(GameObject[] layoutElementsGameObjects, RectTransform scrollRectCanvas)
+        private void SetMainMenuLayoutDimensions()
         {
-            LayoutElement[] layoutElements = new LayoutElement[layoutElementsGameObjects.Length];
+            Debug.Log("Setting dimensions");
 
-            for (int i = 0; i < layoutElementsGameObjects.Length; i++)
-                layoutElements[i] = layoutElementsGameObjects[i].GetComponent<LayoutElement>();
+            LayoutElement[] layoutElements = new LayoutElement[_layoutElementsGameObjects.Length];
 
-            float width = scrollRectCanvas.sizeDelta.x;
-            float height = scrollRectCanvas.sizeDelta.y;
+            for (int i = 0; i < _layoutElementsGameObjects.Length; i++)
+                layoutElements[i] = _layoutElementsGameObjects[i].GetComponent<LayoutElement>();
+
+            float width = _scrollRectCanvas.sizeDelta.x;
+            float height = _scrollRectCanvas.sizeDelta.y;
 
             foreach (LayoutElement element in layoutElements)
             {
                 element.preferredWidth = width;
                 element.preferredHeight = height;
+            }
+        }
+
+        private IEnumerator CheckWindowSize()
+        {
+            while (true)
+            {
+                if (lastWidth != Screen.width || lastHeight != Screen.height)
+                {
+                    SetMainMenuLayoutDimensions();
+                    GetComponentInParent<SwipeUI>().UpdateSwipe();
+                    lastWidth = Screen.width;
+                    lastHeight = Screen.height;
+                }
+
+                yield return new WaitForSeconds(_interval);
             }
         }
     }
