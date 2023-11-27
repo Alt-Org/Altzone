@@ -74,6 +74,9 @@ namespace Battle.Scripts.Battle.Players
                 StartCoroutine(ResetPose());
             }
 
+            _isUsingShield = true;
+            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
+
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
             if (StartBool == true)
@@ -114,8 +117,8 @@ namespace Battle.Scripts.Battle.Players
             yield return new WaitUntil(() => _shieldPoseManager.MaxPoseIndex > 0);
             _currentPoseIndex = 0;
             _shieldPoseManager.SetPose(_currentPoseIndex);
-            _shieldPoseManager.SetHitboxActive(false);
-            _shieldPoseManager.SetShow(false);
+            _shieldPoseManager.SetHitboxActive(true);
+            _shieldPoseManager.SetShow(true);
             _maxPoseIndex = _shieldPoseManager.MaxPoseIndex;
         }
 
@@ -165,12 +168,12 @@ namespace Battle.Scripts.Battle.Players
 
         private void FixedUpdate()
         {
-            bool useShield = false;
+            bool useShield = true;
             foreach (IDriver driver in _otherDrivers)
             {
                 if ((_transform.position - driver.ActorTransform.position).sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
                 {
-                    useShield = true;
+                    useShield = false;
                     break;
                 }
             }
