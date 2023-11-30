@@ -363,8 +363,8 @@ GameObject:
   m_Component:
   - component: {fileID: 499193424449846710}
   - component: {fileID: 499193424449846711}
-  - component: {fileID: 499193424449846709}
   - component: {fileID: 499193424449846708}
+  - component: {fileID: 499193424449846709}
   m_Layer: 0
   m_Name: SlingController
   m_TagString: Untagged
@@ -410,19 +410,6 @@ MonoBehaviour:
   _wingMaxAngleDegrees: 60
   _ball: {fileID: 0}
   _slingIndicator: {fileID: 499193423677818289}
---- !u!114 &499193424449846709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499193424449846705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _soundType: 3
 --- !u!82 &499193424449846708
 AudioSource:
   m_ObjectHideFlags: 0
@@ -519,6 +506,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &499193424449846709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499193424449846705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundType: 3
 --- !u!1 &499193424947866311
 GameObject:
   m_ObjectHideFlags: 0
