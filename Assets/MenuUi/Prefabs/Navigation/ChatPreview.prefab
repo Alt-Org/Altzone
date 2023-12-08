@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2944218699197935947
 RectTransform:
   m_ObjectHideFlags: 0
@@ -254,7 +254,6 @@ MonoBehaviour:
   noMessagesTextGameobject: {fileID: 8704106174827259905}
   _chatMessagesContainer: {fileID: 9171750505955421907}
   _toggleChatButton: {fileID: 3362067586292196235}
-  _activeChatChannelText: {fileID: 2450204337092868606}
   _chatButtonShrinkAnim: {fileID: 7400000, guid: 3ebbf791150c5bd459145cb6d4b8ea50,
     type: 2}
   _chatButtonExpandAnim: {fileID: 7400000, guid: fa3d40614f59dd94bac6bb64f66f2b45,

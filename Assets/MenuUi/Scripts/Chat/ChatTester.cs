@@ -96,7 +96,7 @@ public class ChatTester : MonoBehaviour
         {
             ChatChannel chatChannel = ChatListener.Instance._chatChannels[Random.Range(0, ChatListener.Instance._chatChannels.Length)];
             object[] dataToSend;
-            dataToSend = new object[] { ChatListener.Instance._username, message, Random.Range(0, Enum.GetValues(typeof(ChatListener.Mood)).Length - 1), chatChannel._chatChannelType };
+            dataToSend = new object[] {ChatListener.Instance._username, message, Random.Range(0, Enum.GetValues(typeof(ChatListener.Mood)).Length - 1), chatChannel._chatChannelType };
             ChatListener.Instance.ChatClient.PublishMessage(chatChannel._channelName, dataToSend, true);
         }
     }

@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class SwipeUI : MonoBehaviour, IBeginDragHandler
 {
+    [Header("Swipe Area")]
+    [SerializeField, Tooltip("The area on the sides of the screen from where swiping is disabled (between 0/1)")] private float horizontalDeadzone;
+    [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
+
     private ScrollRect scrollRect;
     [SerializeField] private Scrollbar scrollBar;
     [SerializeField] private Button[] buttons;
@@ -19,7 +23,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     public float endTouchX;
     private bool isSwipeMode = false;
 
-    private bool isEnabled;
+    public bool isEnabled;
+    private Rect swipeRect;
 
     public bool IsEnabled
     {
@@ -27,7 +32,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         set
         {
             isEnabled = value;
-            scrollRect.enabled = value;
+            ToggleScrollRect(value);
 
             if (!IsEnabled)
             {
@@ -62,6 +67,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         maxPage = 5;
         CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
         scrollRect = GetComponent<ScrollRect>();
+        UpdateSwipeAreaValues();
     }
 
     private void Start()
@@ -93,6 +99,17 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         //UpdateButtonContent();
     }
 
+    public Rect UpdateSwipeAreaValues()
+    {
+        float windowWidth = Screen.width * horizontalDeadzone;
+        float windowHeight = Screen.height * verticalDeadzone;
+        float x = (Screen.width - windowWidth) / 2;
+        float y = (Screen.height - windowHeight);
+        swipeRect = new Rect(x, y, windowWidth, windowHeight);
+
+        return swipeRect;
+    }
+
     public IEnumerator SetScrollBarValue(int index)
     {
         yield return new WaitForEndOfFrame();
@@ -100,7 +117,12 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         CurrentPage = index;
 
         if (scrollBar)
+        {
+            if (!IsEnabled)
+                IsEnabled = true;
+
             scrollBar.value = scrollPageValues[index];
+        }
     }
 
     private void UpdateInput()
@@ -109,46 +131,49 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (!swipeRect.Contains(Input.mousePosition))
+            {
+                IsEnabled = false;
+                return;
+            }
+
+            IsEnabled = true;
             startTouchX = Input.mousePosition.x;
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            if (!IsEnabled)
+            if (startTouchX != 0)
             {
-                IsEnabled = true;
+                endTouchX = Input.mousePosition.x;
+                UpdateSwipe();
             }
-            else
-            {
-                if(startTouchX != 0)
-                {
-                    endTouchX = Input.mousePosition.x;
-                    UpdateSwipe();
-                }
-            }
-        }
 
-        if (Input.touchCount == 1)
+            IsEnabled = true;
+        }
+        else if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began)
+            if (touch.phase == TouchPhase.Began && swipeRect.Contains(touch.position))
             {
+                if (!swipeRect.Contains(touch.position))
+                {
+                    IsEnabled = false;
+                    return;
+                }
+
+                IsEnabled = true;
                 startTouchX = touch.position.x;
             }
             else if (touch.phase == TouchPhase.Ended)
             {
-                if (!IsEnabled)
+                if (startTouchX != 0)
                 {
-                    IsEnabled = true;
+                    endTouchX = touch.position.x;
+                    UpdateSwipe();
                 }
-                else
-                {
-                    if (startTouchX != 0)
-                    {
-                        endTouchX = touch.position.x;
-                        UpdateSwipe();
-                    }
-                }
+
+                IsEnabled = true;
             }
         }
     }
@@ -199,6 +224,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
 
         isSwipeMode = false;
+        startTouchX = 0;
+        endTouchX = 0;
     }
 
     private void UpdateButtonContent()
@@ -216,21 +243,11 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
                 buttonImages[i].color = buttons[i].colors.normalColor;
             }
         }
+    }
 
-        //for (int i = 0; i < scrollPageValues.Length; ++i)
-        //{
-        //    //buttons[i].interactable = true;
-
-        //    if (scrollBar.value < scrollPageValues[i] + (valueDistance / 2) && scrollBar.value > scrollPageValues[i] - (valueDistance / 2))
-        //    {
-        //        //buttons[i].interactable = false;
-        //        buttonImages[i].color = buttons[i].colors.disabledColor;
-        //    }
-        //    else
-        //    {
-        //        buttonImages[i].color = buttons[i].colors.normalColor;
-        //    }
-        //}
+    public void ToggleScrollRect(bool value)
+    {
+        scrollRect.enabled = value;
     }
 
     public void OnBeginDrag(BaseEventData eventData)
@@ -243,7 +260,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
         else
         {
-            IsEnabled = true;
+            if (startTouchX != 0)
+                IsEnabled = true;
         }
     }
 
@@ -257,7 +275,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
         else
         {
-            IsEnabled = true;
+            if (startTouchX != 0)
+                IsEnabled = true;
         }
 
     }

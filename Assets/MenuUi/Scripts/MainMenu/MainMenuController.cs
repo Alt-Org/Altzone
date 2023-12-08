@@ -12,6 +12,8 @@ namespace MenuUi.Scripts.MainMenu
     public class MainMenuController : MonoBehaviour
     {
         [SerializeField] private MainMenuView _view;
+        private SwipeUI swipe;
+
         public float _interval = 2f;
 
         private GameObject[] _layoutElementsGameObjects;
@@ -51,6 +53,7 @@ namespace MenuUi.Scripts.MainMenu
                 });
             });
 
+            swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
         }
 
@@ -79,6 +82,8 @@ namespace MenuUi.Scripts.MainMenu
                 element.preferredWidth = width;
                 element.preferredHeight = height;
             }
+
+            swipe.UpdateSwipeAreaValues();
         }
 
         private IEnumerator CheckWindowSize()
@@ -88,7 +93,7 @@ namespace MenuUi.Scripts.MainMenu
                 if (lastWidth != Screen.width || lastHeight != Screen.height)
                 {
                     SetMainMenuLayoutDimensions();
-                    GetComponentInParent<SwipeUI>().UpdateSwipe();
+                    swipe.UpdateSwipe();
                     lastWidth = Screen.width;
                     lastHeight = Screen.height;
                 }

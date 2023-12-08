@@ -15,7 +15,7 @@ public class ChatPreviewController : MonoBehaviour
     [SerializeField] private GameObject noMessagesTextGameobject;
     [SerializeField] private GameObject _chatMessagesContainer;
     [SerializeField] private Button _toggleChatButton;
-    [SerializeField] private TextMeshProUGUI _activeChatChannelText;
+    //[SerializeField] private TextMeshProUGUI _activeChatChannelText;
 
     private GameObject[] _chatMessageGameobjects;
     private bool _isEnabled;
@@ -30,7 +30,7 @@ public class ChatPreviewController : MonoBehaviour
     private Vector2[] _chatButtonDefaultAnchors;
     private Vector2[] _chatButtonShrinkAnchors;
 
-    public TextMeshProUGUI ActiveChatChannelText { get => _activeChatChannelText; set => _activeChatChannelText = value; }
+    //public TextMeshProUGUI ActiveChatChannelText { get => _activeChatChannelText; set => _activeChatChannelText = value; }
 
     private void Awake()
     {
@@ -111,14 +111,13 @@ public class ChatPreviewController : MonoBehaviour
 
     internal void OnActiveChatWindowChange(ChatChannel chatChannel)
     {
-        ClearChatMessages();
+        DeleteChatHistory();
         MessageReceived(chatChannel);
 
-        ChatListener.Instance._activeChatChannel = chatChannel;
-        ActiveChatChannelText.text = $"{chatChannel._channelName}";
+        //ActiveChatChannelText.text = $"{chatChannel._channelName}";
     }
 
-    internal void ClearChatMessages()
+    internal void DeleteChatHistory()
     {
         for (int i = 0; i < _chatMessageGameobjects.Length; i++)
         {
@@ -143,7 +142,7 @@ public class ChatPreviewController : MonoBehaviour
         {
             ChatMessage message = ChatListener.Instance._chatMessages[i];
 
-            if (message._channelName != channel._channelName)
+            if (message._channel._channelName != channel._channelName)
                 continue;
 
             recentMessages[index++] = message;
