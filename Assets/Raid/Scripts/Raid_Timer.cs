@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class Raid_Timer : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class Raid_Timer : MonoBehaviour
     public TimerFormat Format;
     private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
 
+    public event Action TimeEnded;
+
     void Start()
     {
         TimeFormat.Add(TimerFormat.Whole, "0");
@@ -41,6 +44,7 @@ public class Raid_Timer : MonoBehaviour
 
         if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
         {
+            OnTimeEnd();
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
             if(raid_References.OutOfSpace.enabled || raid_References.RaidEndedText.enabled)
@@ -67,6 +71,10 @@ public class Raid_Timer : MonoBehaviour
     private void SetTimerGraphic()
     {
         Lungs.fillAmount = 1.0f - (10.0f - CurrentTime) * 0.1f;
+    }
+    void OnTimeEnd()
+    {
+        TimeEnded?.Invoke();
     }
 
     public enum TimerFormat

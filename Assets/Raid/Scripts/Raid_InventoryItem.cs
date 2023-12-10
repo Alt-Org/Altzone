@@ -29,6 +29,12 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public bool bomb = false;
 
+    private bool timeEnded = false;
+
+    private AudioSource audioSource;
+    public AudioClip pickUp;
+    public AudioClip explosion;
+
     //type 0: default, type 1: lock
     public int _bombType = 0; 
 
@@ -36,6 +42,12 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void Awake()
     {
+        Raid_Timer raidTimer = FindObjectOfType<Raid_Timer>();
+        if (raidTimer != null)
+        {
+            raidTimer.TimeEnded += OnTimeEnded;
+        }
+        audioSource = GetComponent<AudioSource>();
         this.ItemImage.gameObject.SetActive(false);
         empty = true;
 
@@ -64,10 +76,11 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     }
     public void TriggerBomb()
     {
-        if(!triggered)
+        if(!triggered && !timeEnded)
         {
             Bomb.SetActive(true);
             triggered = true;
+            audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         }
         //BombIndicator.SetActive(false);
     }
@@ -75,6 +88,10 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         Lock.SetActive(true);
         locked = true;
+    }
+    void OnTimeEnded()
+    {
+        timeEnded = true;
     }
 
     public void OnPointerClick(PointerEventData pointerData)
@@ -85,8 +102,11 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
         if (pointerData.button == PointerEventData.InputButton.Left)
         {
-            if(!spectator)
+            if (!spectator && !timeEnded)
+            {
                 OnItemClicked?.Invoke(this);
+                audioSource.PlayOneShot(pickUp, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
+            }       
         }
         else
         {
