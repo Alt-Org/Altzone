@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.Loader
         private const string Tooltip1 = "First window to show after services has been loaded";
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
+        [SerializeField] private WindowDef _privacyPolicyWindow;
 
         private void Start()
         {
@@ -20,7 +21,12 @@ namespace MenuUi.Scripts.Loader
 
             var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
-            windowManager.ShowWindow(_mainWindow);
+
+            if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
+                windowManager.ShowWindow(_privacyPolicyWindow);
+            else
+                windowManager.ShowWindow(_mainWindow);
+
             Debug.Log("exit");
         }
     }
