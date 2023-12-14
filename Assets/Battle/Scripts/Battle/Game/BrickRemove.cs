@@ -45,12 +45,13 @@ namespace Battle.Scripts.Battle.Game
             {
                 Destroy(gameObject);
                 this.Publish(new BrickRemoved(_side));
-                _audioPlayer.Play(BREAK_EFFECT_INDEX);
+                //_audioPlayer.Play(BREAK_EFFECT_INDEX);
             }
             else
             {
-                _audioPlayer.Play(HIT_EFFECT_INDEX);
+                //_audioPlayer.Play(HIT_EFFECT_INDEX);
             }
+            _audioPlayer.PlayRandom();
         }
         #endregion Public Methods
 
