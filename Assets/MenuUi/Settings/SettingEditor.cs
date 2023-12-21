@@ -8,9 +8,13 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Button[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
 
+    private SetVolume[] audioSources;
+
     private void OnEnable()
     {
-        foreach(Slider slider in volumeSliders)
+        audioSources = FindObjectsOfType<SetVolume>(true);
+
+        foreach (Slider slider in volumeSliders)
         {
             SetToSlider(slider);
         }
@@ -20,13 +24,23 @@ public class SettingEditor : MonoBehaviour
 
     public void SetFromSlider(Slider usedSlider)
     {
+        SettingsCarrier.SoundType soundType = SettingsCarrier.SoundType.none;
+
         // Somewhat hardcoded, but best i could do way of setting volume to SettingsCarrier from the sliders
         switch (usedSlider.name)
         {
-            case "MasterVolume":carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); break;
-            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); break;
-            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); break;
-            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); break;
+            case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.none; break;
+            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.menu; break;
+            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.music; break;
+            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.sound; break;
+        }
+
+        foreach (SetVolume audioSource in audioSources)
+        {
+            if (audioSource._soundType == soundType || soundType == SettingsCarrier.SoundType.none)
+            {
+                audioSource.VolumeSet();
+            }
         }
     }
 
@@ -46,7 +60,7 @@ public class SettingEditor : MonoBehaviour
     {
         if (Application.targetFrameRate == Screen.currentResolution.refreshRate)
             fpsButtons[0].onClick.Invoke();
-        else if(Application.targetFrameRate == 60)
+        else if (Application.targetFrameRate == 60)
             fpsButtons[1].onClick.Invoke();
         else if (Application.targetFrameRate == 30)
             fpsButtons[2].onClick.Invoke();
