@@ -134,7 +134,7 @@ namespace Battle.Scripts.Battle.Players
         {
             yield return new WaitForSeconds(_shieldDeformDelay);
             _shieldPoseManager.SetPose(poseIndex);
-            _audioSource.Play();
+            //_audioSource.Play();
         }
 
         private IEnumerator ShieldHitDelay(int damage)
