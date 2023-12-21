@@ -8,13 +8,15 @@ namespace Battle.Scripts.Battle.Players
         {
             public GameObject ShieldGameObject { get; }
             public GameObject ShieldHitbox { get; }
+            public GameObject ShieldSpriteGameObject { get; }
             public SpriteRenderer ShieldSpriteRenderer { get; }
 
             public Shield(GameObject shieldGameObject)
             {
                 ShieldGameObject = shieldGameObject;
                 ShieldHitbox = shieldGameObject.transform.Find("Colliders").gameObject;
-                ShieldSpriteRenderer = shieldGameObject.GetComponentInChildren<SpriteRenderer>();
+                ShieldSpriteGameObject = shieldGameObject.transform.Find("Sprite").gameObject;
+                ShieldSpriteRenderer = ShieldSpriteGameObject.GetComponentInChildren<SpriteRenderer>();
             }
         }
 
@@ -50,6 +52,14 @@ namespace Battle.Scripts.Battle.Players
             _currentPose.ShieldGameObject.SetActive(true);
             _currentPose.ShieldHitbox.SetActive(_hitboxActive);
             _currentPose.ShieldSpriteRenderer.enabled = _showShield;
+        }
+
+        public void SetShieldSpriteRotation(float angle)
+        {
+            foreach (Shield shield in _shields)
+            {
+                shield.ShieldSpriteGameObject.transform.eulerAngles = new Vector3(0, 0, angle);
+            }
         }
 
         public void SetHitboxActive(bool active)

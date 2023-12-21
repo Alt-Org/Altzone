@@ -68,6 +68,10 @@ namespace Battle.Scripts.Battle.Players
             if (data.LocalPlayer.TeamNumber != _teamNumber)
             {
                 _playerActor.SetCharacterRotation(rotate ? 0f : 180f);
+                if (_playerActor.IsUsingNewRotionSysten)
+                {
+                    _playerActor.SetShieldRotation(rotate ? 0f : 180f);
+                }
             }
         }
 

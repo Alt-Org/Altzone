@@ -17,9 +17,22 @@ namespace Battle.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : PlayerActorBase
     {
+        class PlayerCharacter
+        {
+            public Transform Transform;
+            public SpriteRenderer SpriteRenderer;
+
+            public PlayerCharacter(Transform transform)
+            {
+                Transform = transform;
+                SpriteRenderer = Transform.GetComponentInChildren<SpriteRenderer>();
+            }
+        }
+
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _shieldActivationDistance;
+        [SerializeField] private bool _useNewRotationSysten;
         public string SeePlayerName;
         public static string PlayerName;
         private bool StartBool = true;
@@ -30,9 +43,7 @@ namespace Battle.Scripts.Battle.Players
 
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
         private PlayerDriverPhoton _playerDriver;
-        private Transform _playerCharacterTransform;
-        // private Animator _playerCharacterAnimator;
-        private SpriteRenderer _playerCharacterSpriteRenderer;
+        private PlayerCharacter _playerCharacter;
         private ShieldPoseManager _shieldPoseManager;
         private AudioSource _audioSource;
         // private float _playerMoveSpeedMultiplier;
@@ -57,10 +68,8 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _transform = GetComponent<Transform>();
-            _playerCharacterTransform = _geometryRoot.Find("PLayerCharacter");
+            _playerCharacter = new(_geometryRoot.Find("PLayerCharacter"));
             _audioSource = GetComponent<AudioSource>();
-            //_playerCharacterAnimator = _playerCharacterTransform.GetComponent<Animator>();
-            _playerCharacterSpriteRenderer = _playerCharacterTransform.GetComponent<SpriteRenderer>();
             var variables = GameConfig.Get().Variables;
             // _playerMoveSpeedMultiplier = variables._playerMoveSpeedMultiplier;
             _shieldResistance = variables._shieldResistance;
@@ -75,7 +84,7 @@ namespace Battle.Scripts.Battle.Players
             }
 
             _isUsingShield = true;
-            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
+            _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
 
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
@@ -104,12 +113,11 @@ namespace Battle.Scripts.Battle.Players
             {
                 yield return null;
                 float maxDistanceDelta = movementSpeed * Time.deltaTime;
-                _tempPosition = Vector3.MoveTowards(_playerCharacterTransform.position, targetPosition, maxDistanceDelta);
-                _playerCharacterTransform.position = _tempPosition;
+                _tempPosition = Vector3.MoveTowards(_playerCharacter.Transform.position, targetPosition, maxDistanceDelta);
+                _playerCharacter.Transform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
-            //_playerCharacterAnimator.SetTrigger("Shield Animation Trigger");
-            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[_isUsingShield ? 3 : 1];
+            _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[_isUsingShield ? 3 : 1];
         }
 
         private IEnumerator ResetPose()
@@ -146,12 +154,13 @@ namespace Battle.Scripts.Battle.Players
 
         public float MovementSpeed => _movementSpeed;
 
+        public bool IsUsingNewRotionSysten => _useNewRotationSysten;
+
         public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
             _isMoving = true;
-            //_playerCharacterAnimator.SetTrigger("Moving Trigger");
-            _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[0];
-            _playerCharacterTransform.position = transform.position;
+            _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[0];
+            _playerCharacter.Transform.position = transform.position;
 
             float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
@@ -161,7 +170,7 @@ namespace Battle.Scripts.Battle.Players
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
                 _transform.position = targetPosition;
-                _playerCharacterTransform.position = targetPosition;
+                _playerCharacter.Transform.position = targetPosition;
                 _isMoving = false;
             });
         }
@@ -183,7 +192,7 @@ namespace Battle.Scripts.Battle.Players
 
             if (useShield)
             {
-                _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
+                _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[3];
                 _shieldPoseManager.SetHitboxActive(true);
                 _shieldPoseManager.SetShow(true);
             }
@@ -191,7 +200,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 if (!_isMoving)
                 {
-                    _playerCharacterSpriteRenderer.sprite = _playerCharacterSpriteSheet[1];
+                    _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[1];
                 }
                 _shieldPoseManager.SetShow(false);
                 _shieldPoseManager.SetHitboxActive(false);
@@ -215,7 +224,14 @@ namespace Battle.Scripts.Battle.Players
         {
             var multiplier = Mathf.Round(angle / _angleLimit);
             var newAngle = _angleLimit * multiplier;
-            _playerCharacterTransform.eulerAngles = new Vector3(0, 0, newAngle);
+            _playerCharacter.Transform.eulerAngles = new Vector3(0, 0, newAngle);
+        }
+
+        public void SetShieldRotation(float angle)
+        {
+            var multiplier = Mathf.Round(angle / _angleLimit);
+            var newAngle = _angleLimit * multiplier;
+            _shieldPoseManager.SetShieldSpriteRotation(newAngle);
         }
 
         public void ShieldHit(int damage)
