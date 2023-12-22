@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,13 +6,15 @@ using UnityEngine;
 
 public class ExitRaid : MonoBehaviour
 {
+
+    public event Action ExitedRaid;
     public bool raidEnded = false;
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
-   
+
     public void EndRaid()
     {
         raidEnded = true;
-
+        OnEndRaid();
         raid_References.RedScreen.SetActive(true);
         raid_References.EndMenu.SetActive(true);
 
@@ -20,4 +23,9 @@ public class ExitRaid : MonoBehaviour
 
 
     }
+    public void OnEndRaid()
+    {
+        ExitedRaid?.Invoke();
+    }
 }
+

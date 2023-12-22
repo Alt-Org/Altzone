@@ -96,18 +96,7 @@ public class Raid_InventoryPage : MonoBehaviour
 
     [PunRPC]
     public void HandleItemLootingRPC(int index, float itemWeight)
-    {
-        if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>().bomb)
-        {
-            ListOfUIItems[index].RemoveData();
-            ListOfUIItems[index].GetComponent<Raid_InventoryItem>().TriggerBomb();
-            if(ListOfUIItems[index].GetComponent<Raid_InventoryItem>()._bombType == 1)
-            {
-                LockItems(index);
-            }
-            return;
-        }
-            
+    {    
         if (index == -1)
         {
             return;
@@ -118,6 +107,18 @@ public class Raid_InventoryPage : MonoBehaviour
         }
         else
         {
+            if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>().bomb)
+            {
+                ListOfUIItems[index].RemoveData();
+                ListOfUIItems[index].GetComponent<Raid_InventoryItem>().TriggerBomb();
+                if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>()._bombType == 1)
+                {
+                    LockItems(index);
+                }
+                return;
+            }
+            ListOfUIItems[index].LaunchBall();
+
             if (itemWeight == ItemWeight1)
             {
                 LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);

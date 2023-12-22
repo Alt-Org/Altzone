@@ -30,18 +30,36 @@ public class Raid_Timer : MonoBehaviour
     private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
 
     public event Action TimeEnded;
+    public ExitRaid exitRaid;
+
+    public Image lungsEmpty;
+    private Color startColor = Color.white;
+    private Color endColor = Color.red;
+    [SerializeField]
+    private float duration;
 
     void Start()
     {
         TimeFormat.Add(TimerFormat.Whole, "0");
         TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
         TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
+
+        if (exitRaid != null)
+        {
+            exitRaid.ExitedRaid += RaidExited;
+        }
     }
 
     void Update()
     {
         CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
+        if(CurrentTime <= 5)
+        {
+            float t = Mathf.PingPong(Time.time / duration, 1f);
+            Color lerped = Color.Lerp(startColor, endColor, t);
 
+            lungsEmpty.color = lerped;
+        }
         if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
         {
             OnTimeEnd();
@@ -75,6 +93,10 @@ public class Raid_Timer : MonoBehaviour
     void OnTimeEnd()
     {
         TimeEnded?.Invoke();
+    }
+    void RaidExited()
+    {
+        CurrentTime = 0;
     }
 
     public enum TimerFormat
