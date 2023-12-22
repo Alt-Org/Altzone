@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 7757632669673988376}
   - component: {fileID: 154243440753551014}
   - component: {fileID: 1890408356208413452}
+  - component: {fileID: -3065874919624737077}
   m_Layer: 5
   m_Name: BT_DEFENSSIT
   m_TagString: Untagged
@@ -275,18 +276,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 154243440753551014}
-        m_TargetAssemblyTypeName: PlayAudioClip, Assembly-CSharp
-        m_MethodName: PlayAudio
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1890408356208413452}
         m_TargetAssemblyTypeName: SetMainMenuWindowIndex, MainMenu
         m_MethodName: SetMainMenuWindowIndexValue
@@ -296,6 +285,18 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: -3065874919624737077}
+        m_TargetAssemblyTypeName: SetMusicComposerTime, MainMenu
+        m_MethodName: SetTime
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 57
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
@@ -444,5 +445,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3065874919624737077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7371302892792201885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a1f8f6c27f3b724db1a22153e3583e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
