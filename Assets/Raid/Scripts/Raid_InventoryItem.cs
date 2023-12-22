@@ -127,7 +127,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemBall.GetComponent<RectTransform>().anchoredPosition = newPosition;
 
         //WIP, korjaa kovakoodaus
-        if ((ItemBall.transform.position.y - endLoc.y) <= 250f)
+        if (Vector2.Distance(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc) <= 20f)
         {
             //Vector2.Distance(ItemBall.transform.position, endLoc)
             moving = false;
