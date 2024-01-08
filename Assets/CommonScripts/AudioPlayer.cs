@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace CommonScripts
 {
+    /// <summary>
+    /// Playes specific or random audio clips from an array.
+    /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class AudioPlayer : MonoBehaviour
     {
