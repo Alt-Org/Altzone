@@ -1,7 +1,7 @@
 using UnityConstants;
 using UnityEngine;
 using Prg.Scripts.Common.PubSub;
-using CommonScripts;
+using Prg.Scripts.Common.AudioPlayer;
 //using Photon.Pun;
 
 namespace Battle.Scripts.Battle.Game

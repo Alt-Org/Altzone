@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CommonScripts
+namespace Prg.Scripts.Common.AudioPlayer
 {
     /// <summary>
     /// Plays specific or random audio clips from an array.
