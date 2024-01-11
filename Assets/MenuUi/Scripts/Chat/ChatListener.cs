@@ -148,7 +148,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private ChatAppSettings _appSettings;
 
-    internal string _serverAddress = "https://altzone.fi/chat/";
+    internal string _serverAddress = "https://altzone.fi/api/chat/";
 
     internal ChatPreviewController ChatPreviewController { get => _chatPreviewController; set => _chatPreviewController = value; }
     internal ChatController ChatController { get => _chatController; set => _chatController = value; }
