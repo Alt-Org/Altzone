@@ -10,6 +10,7 @@ namespace Battle.Scripts.Test
 {
     public class ShieldBoxColliderTest : MonoBehaviour
     {
+        // Serialized Fields
         [SerializeField] private float _bounceAngle;
 
         private GridManager _gridManager;
@@ -18,6 +19,10 @@ namespace Battle.Scripts.Test
         private Collider2D _collider;
         private float _attackMultiplier;
 
+        // Debug
+        private const string DEBUG_LOG_BALL_COLLISION = "[{0:000000}] [BATTLE] [SHIELD BOX COLLIDER] Ball collision: ";
+        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();
@@ -25,6 +30,9 @@ namespace Battle.Scripts.Test
             _attackMultiplier = GameConfig.Get().Variables._playerAttackMultiplier;
             _playerActor = transform.root.GetComponent<PlayerActor>();
             _gridManager = Context.GetGridManager;
+
+            // Debug
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
         private IEnumerator OnTriggerEnter2D(Collider2D collider)
@@ -36,11 +44,11 @@ namespace Battle.Scripts.Test
                 var gridPos = _gridManager.WorldPointToGridPosition(rb.position);
                 rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
                 var angle = _transform.rotation.eulerAngles.z + _bounceAngle;
-                Debug.Log($"shield angle {angle}");
+                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "shield angle {1}", _syncedFixedUpdateClock.UpdateCount, angle));
                 var rotation = Quaternion.Euler(0, 0, angle);
-                Debug.Log($"rot: {rotation}");
+                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "rotation {1}", _syncedFixedUpdateClock.UpdateCount, rotation));
                 rb.velocity = rotation * Vector2.up * _attackMultiplier;
-                Debug.Log($"vel: {rb.velocity}");
+                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "velocity {1}", _syncedFixedUpdateClock.UpdateCount, rb.velocity));
                 if (_playerActor != null)
                 {
                     _playerActor.ShieldHit(1);

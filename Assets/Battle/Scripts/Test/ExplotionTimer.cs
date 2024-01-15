@@ -11,7 +11,7 @@ public class ExplotionTimer : MonoBehaviour
     void Awake()
     {
         _explotionAnimator = _explotionAnimationGameObject.GetComponent<Animator>();
-        Debug.Log(""+transform.position);
+        //Debug.Log(""+transform.position);
         /*
         StartCoroutine(ExplotionAnimation());
         StartCoroutine(ShadowAnimation());

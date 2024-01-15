@@ -42,6 +42,7 @@ namespace Battle.Scripts.Battle.Game
             color.b -= _colorChangeFactor;
             _spriteRenderer.color = color;
             Health = Health - damage;
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Brick hit (health: {1})", _syncedFixedUpdateClock.UpdateCount, Health));
             if (Health <= 0)
             {
                 Destroy(gameObject);
@@ -66,6 +67,11 @@ namespace Battle.Scripts.Battle.Game
         // Components
         private SpriteRenderer _spriteRenderer;
 
+        // Degbug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [BRICK REMOVE] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+
         private void Start()
         {
             _side = transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
@@ -75,6 +81,8 @@ namespace Battle.Scripts.Battle.Game
             // get components
             _spriteRenderer = GetComponent<SpriteRenderer>();
 
+            // Debug
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
     }
 }

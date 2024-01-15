@@ -210,6 +210,7 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
         private static int s_eventArrayFirst;
         private static Event[] s_eventArray = new Event[s_eventArraySize];
 
+        // Event Temp Array
         private static int s_eventTempArrayCapacity = 5;
         private static int s_eventTempArraySize;
         private static Event[] s_eventTempArray = new Event[s_eventTempArrayCapacity];

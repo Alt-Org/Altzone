@@ -19,6 +19,8 @@ public class BallHandlerTest : MonoBehaviour
         _rb.position = position;
         _rb.velocity = NewRotation(direction) * Vector2.up * speed;
         _sprite.enabled = true;
+
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
     }
 
     public void Stop()
@@ -26,6 +28,8 @@ public class BallHandlerTest : MonoBehaviour
         _rb.position = Vector2.zero;
         _rb.velocity = Vector2.zero;
         _sprite.enabled = false;
+
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
     }
 
     #endregion
@@ -42,6 +46,11 @@ public class BallHandlerTest : MonoBehaviour
     // Components
     private Rigidbody2D _rb;
     private SpriteRenderer _sprite;
+
+    // Degbug
+    private const string DEBUG_LOG_NAME = "[BATTLE] [BALL HANDLER] ";
+    private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
 
     private void Start()
     {
@@ -60,23 +69,33 @@ public class BallHandlerTest : MonoBehaviour
         _sprite.enabled = false;
         _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
         transform.localScale = Vector3.one * _arenaScaleFactor;
+
+        // Debug
+        _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        GridPos gridPos = null;
         if (!collision.gameObject.CompareTag(Tags.Player))
         {
-            var normal = collision.contacts[0].normal;
+            Vector2 normal = collision.contacts[0].normal;
             Debug.DrawRay(collision.GetContact(0).point, normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
-            var currentVelocity = _rb.velocity;
-            var direction = Vector2.Reflect(currentVelocity, normal);
+            Vector2 currentVelocity = _rb.velocity;
+            Vector2 direction = Vector2.Reflect(currentVelocity, normal);
             Debug.DrawRay(collision.GetContact(0).point, direction * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 5f);
-            var gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
+            gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
             _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
             _rb.velocity = NewRotation(direction) * Vector2.up * currentVelocity.magnitude;
         }
+        else
+        {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player)", _syncedFixedUpdateClock.UpdateCount));
+        }
+
         if (collision.gameObject.CompareTag("Wall"))
         {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: soul wall, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
             int BrickHealt = collision.gameObject.GetComponent<BrickRemove>().Health;
             collision.gameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
 
@@ -85,6 +104,10 @@ public class BallHandlerTest : MonoBehaviour
                 Stop();
                 Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
             }
+        }
+        else
+        {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: arena border, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
         }
     }
 

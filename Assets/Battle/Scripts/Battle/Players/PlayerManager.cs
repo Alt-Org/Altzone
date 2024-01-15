@@ -110,10 +110,12 @@ internal class PlayerManager : MonoBehaviour
         {
             case PhotonBattle.TeamAlphaValue:
                 _teamAlpha.AddPlayer(playerDriver);
+                Debug.Log(DEBUG_LOG_NAME + "Registered player to team alpha");
                 break;
 
             case PhotonBattle.TeamBetaValue:
                 _teamBeta.AddPlayer(playerDriver);
+                Debug.Log(DEBUG_LOG_NAME + "Registered player to team beta");
                 break;
         }
     }
@@ -126,10 +128,12 @@ internal class PlayerManager : MonoBehaviour
         {
             case PhotonBattle.TeamAlphaValue:
                 _teamAlpha.AddBot(botDriver);
+                Debug.Log(DEBUG_LOG_NAME + "Registered bot to team alpha");
                 break;
 
             case PhotonBattle.TeamBetaValue:
                 _teamBeta.AddBot(botDriver);
+                Debug.Log(DEBUG_LOG_NAME + "Registered bot to team beta");
                 break;
         }
     }
@@ -139,6 +143,7 @@ internal class PlayerManager : MonoBehaviour
         var roomPlayers = PhotonNetwork.CurrentRoom.Players.Values;
         int roomPlayerCount = roomPlayers.Count();
         int realPlayerCount = roomPlayers.Sum(x => PhotonBattle.IsRealPlayer(x) ? 1 : 0);
+        Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount));
         if (realPlayerCount < roomPlayerCount) return;
         int readyPeers = 0;
         foreach (PlayerDriverPhoton player in _allPlayerDrivers)
@@ -148,6 +153,7 @@ internal class PlayerManager : MonoBehaviour
                 readyPeers += 1;
             }
         }
+        Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (ready peers: {0})", readyPeers));
 
         if (readyPeers == realPlayerCount)
         {
@@ -174,6 +180,7 @@ internal class PlayerManager : MonoBehaviour
         {
             driver.MovementEnabled = value;
         }
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player movement set to {1}", _syncedFixedUpdateClock.UpdateCount, value));
     }
 
     #endregion Public Methods
@@ -190,6 +197,17 @@ internal class PlayerManager : MonoBehaviour
     private PlayerDriverPhoton _localPlayer;
 
     private int _lastPlayerTeleportUpdateNumber;
+
+    // Debug
+    private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER MANAGER] ";
+    private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+
+    // Debug
+    private void Start()
+    {
+        _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+    }
 
     #region Private Methods
 

@@ -33,6 +33,12 @@ public class GameControllerTest : MonoBehaviour
     private PlayerManager _playerManager;
     private SlingController _slingController;
 
+    // Degbug
+    private const string DEBUG_LOG_NAME = "[BATTLE] [GAME CONTROLLER] ";
+    private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+    private const string DEBUG_LOG_GAME_STARTUP = DEBUG_LOG_NAME + "GAME STARTUP: ";
+    private const string DEBUG_LOG_SLING_SEQUENCE = DEBUG_LOG_NAME_AND_TIME + "Sling sequence: ";
+
     void Start()
     {
         // get components
@@ -57,21 +63,21 @@ public class GameControllerTest : MonoBehaviour
 
     private void OnSyncedFixedUpdateClockStarted(SyncedFixedUpdateClockStarted data)
     {
-        Debug.Log("[GAME CONTROLLER] SYNCED FIXED UPDATE CLOCK STARTED");
+        Debug.Log(DEBUG_LOG_GAME_STARTUP + "SYNCED FIXED UPDATE CLOCK STARTED");
         _syncedFixedUpdateClockStarted = true;
         TryToStart();
     }
 
     private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
     {
-        Debug.Log("[GAME CONTROLLER] TEAMS ARE READY FOR GAMEPLAY");
+        Debug.Log(DEBUG_LOG_GAME_STARTUP + "TEAMS ARE READY FOR GAMEPLAY");
         _teamsAreReadyForGameplay = true;
         TryToStart();
     }
 
     private void OnSlingControllerReady(SlingControllerReady data)
     {
-        Debug.Log("[GAME CONTROLLER] SLING CONTROLLER READY");
+        Debug.Log(DEBUG_LOG_GAME_STARTUP + "SLING CONTROLLER READY");
         _slingControllerReady = true;
         TryToStart();
     }
@@ -80,11 +86,15 @@ public class GameControllerTest : MonoBehaviour
 
     private void OnBallSlinged(BallSlinged data)
     {
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball slinged", _syncedFixedUpdateClock.UpdateCount));
+        Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "enabling player movement", _syncedFixedUpdateClock.UpdateCount));
         _playerManager.SetPlayerMovementEnabled(true);
+        Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "finished", _syncedFixedUpdateClock.UpdateCount));
     }
 
     private void OnBrickRemoved(BrickRemoved data)
     {
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Brick removed", _syncedFixedUpdateClock.UpdateCount));
         if (PhotonNetwork.IsMasterClient)
         {
             _photonView.RPC(nameof(SlingReactivate), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._networkDelay), data.Side);
@@ -108,17 +118,21 @@ public class GameControllerTest : MonoBehaviour
 
     private void Sling(int slingingTeam)
     {
+        Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "activating sling", _syncedFixedUpdateClock.UpdateCount));
         _slingController.SlingActivate(slingingTeam);
         int slingModeEndUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._slingAimingTimeSec);
         _syncedFixedUpdateClock.ExecuteOnUpdate(slingModeEndUpdateNumber, 0, () =>
         {
+            Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "disabling player movement", _syncedFixedUpdateClock.UpdateCount));
             _playerManager.SetPlayerMovementEnabled(false);
         });
 
         _syncedFixedUpdateClock.ExecuteOnUpdate(slingModeEndUpdateNumber + _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._networkDelay), 0, () =>
         {
+            Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "waiting for players to stop moving", _syncedFixedUpdateClock.UpdateCount));
             _syncedFixedUpdateClock.ExecuteOnUpdate(Mathf.Max(_playerManager.LastPlayerTeleportUpdateNumber, _syncedFixedUpdateClock.UpdateCount) + 1, -1, () =>
             {
+                Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "launching sling", _syncedFixedUpdateClock.UpdateCount));
                 _slingController.SlingLaunch();
             });
         });
@@ -135,7 +149,7 @@ public class GameControllerTest : MonoBehaviour
     {
         _clientsReady++;
         int realPlayerCount = PhotonNetwork.CurrentRoom.Players.Values.Sum(x => PhotonBattle.IsRealPlayer(x) ? 1 : 0);
-        Debug.Log("[GAME CONTROLLER] " + _clientsReady + "/" + realPlayerCount + " CLIENTS READY");
+        Debug.Log(string.Format(DEBUG_LOG_GAME_STARTUP + "{0}/{1} CLIENTS READY",_clientsReady, realPlayerCount));
         if (_clientsReady < realPlayerCount) return;
 
         if (PhotonNetwork.IsMasterClient)
@@ -150,10 +164,13 @@ public class GameControllerTest : MonoBehaviour
     {
         _syncedFixedUpdateClock.ExecuteOnUpdate(gameStartUpdateNumber, 0, () =>
         {
+            Debug.Log(DEBUG_LOG_GAME_STARTUP + "STARTING GAME");
+            Debug.Log(DEBUG_LOG_GAME_STARTUP + "ENABLING PLAYER MOVEMENT");
             _playerManager.SetPlayerMovementEnabled(true);
+            Debug.Log(DEBUG_LOG_GAME_STARTUP + "STARTING SLING SEQUENCE");
             Sling(slingingTeam);
             _gameStarted = true;
-            Debug.Log("[GAME CONTROLLER] GAME STARTED");
+            Debug.Log(DEBUG_LOG_GAME_STARTUP + "GAME STARTED");
             this.Publish(new GameStarted());
         });
     }
@@ -163,7 +180,10 @@ public class GameControllerTest : MonoBehaviour
     [PunRPC]
     private void SlingReactivate(int activationUpdateNumber, int slingingTeam)
     {
-        _syncedFixedUpdateClock.ExecuteOnUpdate(activationUpdateNumber, 0, () => { Sling(slingingTeam); });
+        _syncedFixedUpdateClock.ExecuteOnUpdate(activationUpdateNumber, 0, () => {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Starting sling sequence", _syncedFixedUpdateClock.UpdateCount));
+            Sling(slingingTeam);
+        });
     }
 
     #endregion Photon RPC
