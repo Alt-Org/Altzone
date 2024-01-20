@@ -96,7 +96,7 @@ namespace Battle.Scripts.Battle.Game
                     countingdown = false;
                     if (PhotonNetwork.IsMasterClient)
                     {
-                        PhotonNetwork.LoadLevel("te-test-raid-demoNew");
+                        PhotonNetwork.LoadLevel("40-Raid");
                     }
                 }
             }

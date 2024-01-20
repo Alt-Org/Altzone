@@ -14,6 +14,8 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_LootTracking LootTracker;
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
+    [SerializeField] private bool spectator;
+    [SerializeField] private bool firstItem = true;
 
     [System.Serializable]
     public class BombData
@@ -25,7 +27,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] BombData[] Bombs;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
-    private bool spectator;
+    
 
     [SerializeField, Header("Furniture and weight")] private Sprite Image1;
     [SerializeField] private float ItemWeight1;
@@ -96,7 +98,12 @@ public class Raid_InventoryPage : MonoBehaviour
 
     [PunRPC]
     public void HandleItemLootingRPC(int index, float itemWeight)
-    {    
+    {
+        if (firstItem)
+        {
+            raid_Timer.StartTimer();
+            firstItem = false;
+        }
         if (index == -1)
         {
             return;

@@ -7,6 +7,6 @@ public class SetBombInactive : MonoBehaviour
     // Start is called before the first frame update
     public void TurnBombOff()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 }

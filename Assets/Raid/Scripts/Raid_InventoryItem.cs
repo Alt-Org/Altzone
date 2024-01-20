@@ -25,7 +25,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private float journeyLength;
     private float t = 0f;
     [SerializeField] private float speed = 15f;
-    // [SerializeField] private TMP_Text ItemWeightText;
+    [SerializeField] private TMP_Text ItemWeightText;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
 
@@ -118,6 +118,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
         ItemBall.transform.SetParent(Heart.transform);
         moving = true;
+
+        ItemWeightText.gameObject.SetActive(true);
+        ItemWeightText.text = ("+" + ItemWeight + "kg");
     }
     public void BallToHeart()
     {
@@ -126,10 +129,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         Vector2 newPosition = Vector2.Lerp(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc, step);
         ItemBall.GetComponent<RectTransform>().anchoredPosition = newPosition;
 
-        //WIP, korjaa kovakoodaus
         if (Vector2.Distance(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc) <= 20f)
         {
-            //Vector2.Distance(ItemBall.transform.position, endLoc)
             moving = false;
             Heart.GetComponent<HeartScript>().UpdateColor();
             ItemBall.SetActive(false);
