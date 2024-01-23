@@ -209,7 +209,7 @@ public class SlingController : MonoBehaviour
 
     #region Update
 
-    void Update()
+    private void Update()
     {
         if (!_slingActive) return;
         SlingUpdate();

@@ -203,7 +203,7 @@ internal class PlayerManager : MonoBehaviour
     private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
     private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
 
-    // Debug
+    // debug
     private void Start()
     {
         _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
@@ -215,7 +215,7 @@ internal class PlayerManager : MonoBehaviour
     {
         foreach (PlayerDriverPhoton driver in _allPlayerDrivers)
         {
-            if (driver._photonView.Controller.IsLocal)
+            if (driver.IsLocal)
             {
                 _localPlayer = driver;
                 break;
@@ -231,18 +231,20 @@ internal class PlayerManager : MonoBehaviour
     }
     */
 
+    /*
     private GameObject GetAlly(PlayerDriverPhoton selfDriver)
     {
         // Returns the ally GameObject of the drivers owner
         foreach (PlayerDriverPhoton driver in _allPlayerDrivers)
         {
-            if (driver.TeamNumber == selfDriver.TeamNumber && driver._playerActor.gameObject != selfDriver._playerActor.gameObject)
+            if (driver.TeamNumber == selfDriver.TeamNumber && driver.PlayerActor.gameObject != selfDriver.PlayerActor.gameObject)
             {
-                return driver._playerActor.gameObject;
+                return driver.PlayerActor.gameObject;
             }
         }
         return null;
     }
+    */
 
     #endregion Private Methods
 }

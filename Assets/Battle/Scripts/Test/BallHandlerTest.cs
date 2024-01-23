@@ -70,7 +70,7 @@ public class BallHandlerTest : MonoBehaviour
         _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
         transform.localScale = Vector3.one * _arenaScaleFactor;
 
-        // Debug
+        // debug
         _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
     }
 

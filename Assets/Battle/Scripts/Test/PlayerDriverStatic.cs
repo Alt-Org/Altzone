@@ -15,8 +15,8 @@ namespace Battle.Scripts.Test
     /// Static <c>PlayerDriver</c> implementation.
     /// </summary>
     /// <remarks>
-    /// Set our ExecutionOrder a bit lower to let other components initialize properly before us.<br />
-    /// Note that this (class) is strictly for testing purposes!
+    /// <para>Set our ExecutionOrder a bit lower to let other components initialize properly before us.</para>
+    /// <para>this (class) was strictly for testing purposes but it was converted to work as bot in tutorial sling scene. (wasn't my idea)</para>
     /// </remarks>
     [DefaultExecutionOrder(100)]
     internal class PlayerDriverStatic : MonoBehaviour, IDriver
@@ -30,52 +30,72 @@ namespace Battle.Scripts.Test
             public bool _isLocal;
         }
 
+        // Serialized Fields
         [Header("Settings"), SerializeField] private Settings _settings;
-
         [SerializeField] private PlayerActor _playerPrefab;
+        [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
-        //private double _movementDelay;
-        private PlayerActor _playerActor;
-        private GridManager _gridManager;
-        private PlayerManager _playerManager;
-        private PlayerDriverState _state;
-        private PlayerPlayArea _battlePlayArea;
-        private float _arenaScaleFactor;
-        private bool _movementEnabled;
+        // { Public Properties and Fields
+
+        public string NickName => _settings._nickName;
+        public int TeamNumber => _settings._teamNumber;
+        public int PlayerPos => _settings._playerPos;
+
+        public bool MovementEnabled { get => _state.MovementEnabled; set => _state.MovementEnabled = value; }
+
+        //public PlayerActor PlayerActor => _playerActor;
+        public int ActorNumber => _actorNumber;
+        public Transform ActorTransform => _playerActor.transform;
+
+        public bool IsLocal => _settings._isLocal;
+
+        // } Public Properties and Fields
+
+        #region Public Methods
+
+        public void Rotate(float angle)
+        {
+            _playerActor.SetRotation(angle);
+        }
+
+        public void SetCharacterPose(int poseIndex)
+        {
+            throw new NotImplementedException("only PlayerDriverPhoton can do this");
+        }
+
+        #endregion Public Methods
+
+        // Config
         private float _playerMoveSpeedMultiplier;
         private double _movementMinTimeS;
+        private float _arenaScaleFactor;
+
+        private PlayerDriverState _state;
+
+        private PlayerActor _playerActor;
+
+        // Important Objects
+        private PlayerManager _playerManager;
+        private GridManager _gridManager;
+        private PlayerPlayArea _battlePlayArea;
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
-
-
-        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
-        {
-            PickRandomPosition();
-        }
-        private void OnBallslinged(BallSlinged data)
-        {
-            PickRandomPosition();
-
-        }
-        private void PickRandomPosition()
-        {
-            OnMoveTo(_gridManager.GridPositionToWorldPoint(new GridPos(5, Random.Range(1, 25))));
-
-        }
-
-        [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
         private void Awake()
         {
+            // get important objects
+            _playerManager = Context.GetPlayerManager;
+            _gridManager = Context.GetGridManager;
             _battlePlayArea = Context.GetBattlePlayArea;
-            _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
-            //_movementDelay = GameConfig.Get().Variables._networkDelay;
-            _playerManager = FindObjectOfType<PlayerManager>();
-            _playerManager.RegisterBot(this);
-            this.Subscribe<BallSlinged>(OnBallslinged);
-            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+
+            // get config
             _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
             _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
+
+            // subscribe to messages
+            this.Subscribe<BallSlinged>(OnBallslinged);
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
         private void Start()
@@ -84,11 +104,16 @@ namespace Battle.Scripts.Test
             {
                 _settings._nickName = name;
             }
-            _gridManager = Context.GetGridManager;
-            var playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
+
+            string playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
+
             _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _settings._teamNumber);
+            _state.MovementEnabled = false;
+
+            _playerManager.RegisterBot(this);
+
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
             {
                 Rotate(180f);
@@ -100,43 +125,30 @@ namespace Battle.Scripts.Test
             
         }
 
-        public string NickName => _settings._nickName;
+        #region Message Listeners
 
-        public int TeamNumber => _settings._teamNumber;
-
-        public int ActorNumber => _actorNumber;
-
-        public bool IsLocal => _settings._isLocal;
-
-        public int PlayerPos => _settings._playerPos;
-
-        public Transform ActorTransform => _playerActor.transform;
-
-        public bool MovementEnabled { get => _movementEnabled; set => _movementEnabled = value; }
-
-        public void Rotate(float angle)
+        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            _playerActor.SetRotation(angle);
+            PickRandomPosition();
         }
+
+        private void OnBallslinged(BallSlinged data)
+        {
+            PickRandomPosition();
+
+        }
+
+        #endregion Message Listeners
+
+        private void PickRandomPosition()
+        {
+            OnMoveTo(_gridManager.GridPositionToWorldPoint(new GridPos(5, Random.Range(1, 25))));
+
+        }
+
         private void OnMoveTo(Vector2 targetPosition)
         {
-            // Make this public if you want to test it.
-            //
-            //             OLD
-            /* if (!_state.CanRequestMove)
-           {
-               return;
-           }
-           var gridPos = _gridManager.WorldPointToGridPosition(targetPosition);
-           var isSpaceFree = _gridManager.IsMovementGridSpaceFree(gridPos, _settings._teamNumber);
-           if (!isSpaceFree)
-           {
-               return;
-           }
-           _state.IsWaitingToMove(true);
-           */
-
-            if (!_state.CanRequestMove) return;
+            if (!_state.MovementEnabled || !_state.CanRequestMove) return;
             _state.IsWaitingToMove(true);
 
             Vector2 position = new(ActorTransform.position.x, ActorTransform.position.y);
@@ -156,11 +168,6 @@ namespace Battle.Scripts.Test
 
             _playerManager.ReportMovement(teleportUpdateNumber);
             _state.Move(targetGridPos, teleportUpdateNumber);
-        }
-
-        public void SetCharacterPose(int poseIndex)
-        {
-            throw new NotImplementedException("only PlayerDriverPhoton can do this");
         }
     }
 }

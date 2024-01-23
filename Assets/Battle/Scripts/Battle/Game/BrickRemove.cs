@@ -81,7 +81,7 @@ namespace Battle.Scripts.Battle.Game
             // get components
             _spriteRenderer = GetComponent<SpriteRenderer>();
 
-            // Debug
+            // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
     }

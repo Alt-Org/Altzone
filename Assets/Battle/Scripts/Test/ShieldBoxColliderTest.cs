@@ -31,7 +31,7 @@ namespace Battle.Scripts.Test
             _playerActor = transform.root.GetComponent<PlayerActor>();
             _gridManager = Context.GetGridManager;
 
-            // Debug
+            // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
