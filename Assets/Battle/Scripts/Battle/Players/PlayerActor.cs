@@ -103,9 +103,19 @@ namespace Battle.Scripts.Battle.Players
 
         public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
+            Debug.Log(string.Format(
+                DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Moving (current position: {3}, target position: {4})",
+                _syncedFixedUpdateClock.UpdateCount,
+                _playerDriver.TeamNumber,
+                _playerDriver.PlayerPos,
+                transform.position,
+                targetPosition
+            ));
+
             _isMoving = true;
             _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[0];
             _playerCharacter.Transform.position = transform.position;
+            Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _isMoving));
 
             float targetDistance = (targetPosition - new Vector2(_transform.position.x, _transform.position.y)).magnitude;
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
@@ -115,10 +125,20 @@ namespace Battle.Scripts.Battle.Players
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
                 StopCoroutine(move);
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
                 _hasTarget = false;
                 _transform.position = targetPosition;
                 _playerCharacter.Transform.position = targetPosition;
                 _isMoving = false;
+                Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _hasTarget));
+                Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _isMoving));
+                Debug.Log(string.Format(
+                    DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Shield teleported (current position: {3})",
+                    _syncedFixedUpdateClock.UpdateCount,
+                    _playerDriver.TeamNumber,
+                    _playerDriver.PlayerPos,
+                    transform.position
+                ));
             });
         }
 
@@ -184,6 +204,13 @@ namespace Battle.Scripts.Battle.Players
         private AudioSource _audioSource;
 
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+
+        // Debug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER ACTOR] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
+        private const string DEBUG_LOG_IS_MOVING = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Is moving: {3}";
+        private const string DEBUG_LOG_HAS_TARGET = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Has target: {3}";
 
         private void Awake()
         {
@@ -258,8 +285,10 @@ namespace Battle.Scripts.Battle.Players
 
         private IEnumerator MoveCoroutine(Vector2 position, float movementSpeed)
         {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine started", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
             Vector3 targetPosition = position;
             _hasTarget = true;
+            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _hasTarget));
             while (_hasTarget)
             {
                 yield return null;
@@ -269,6 +298,8 @@ namespace Battle.Scripts.Battle.Players
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
             _playerCharacter.SpriteRenderer.sprite = _playerCharacterSpriteSheet[_isUsingShield ? 3 : 1];
+            Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _hasTarget));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine finished", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
         }
 
         private IEnumerator ShieldDeformDelay(int poseIndex)

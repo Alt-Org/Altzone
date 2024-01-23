@@ -27,7 +27,15 @@ namespace Battle.Scripts.Battle.Players
         public int TeamNumber => _teamNumber;
         public int PlayerPos => _playerPos;
 
-        public bool MovementEnabled { get => _state.MovementEnabled; set => _state.MovementEnabled = value; }
+        public bool MovementEnabled
+        {
+            get => _state.MovementEnabled;
+            set
+            {
+                _state.MovementEnabled = value;
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement set to {3}", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos, _state.MovementEnabled));
+            }
+        }
 
         //public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _photonView.Owner.ActorNumber;
@@ -56,16 +64,40 @@ namespace Battle.Scripts.Battle.Players
 
         public void MoveTo(Vector2 targetPosition)
         {
-            if (!_state.MovementEnabled || !_state.CanRequestMove) return;
+            // debug
+            const string DEBUG_LOG_MOVEMENT_DENIED = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement denied";
+
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement requested", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+            _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
+            if (!_state.MovementEnabled || !_state.CanRequestMove)
+            {
+                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+                return;
+            }
             _state.IsWaitingToMove(true);
+            _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
 
             Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
 
+            Debug.Log(string.Format(
+                DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement info (current position: {3}, current grid position: ({4}), target position: {5}, target grid position: ({6}))",
+                _syncedFixedUpdateClock.UpdateCount,
+                _teamNumber,
+                _playerPos,
+                position,
+                gridPos,
+                targetPosition,
+                targetGridPos
+            ));
+
             if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _teamNumber))
             {
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Invalid movement destination", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
                 _state.IsWaitingToMove(false);
+                _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
                 return;
             }
 
@@ -73,6 +105,7 @@ namespace Battle.Scripts.Battle.Players
             float distance = (targetPosition - position).magnitude;
             double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Sending player movement network message", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
             _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
         }
 
@@ -102,6 +135,11 @@ namespace Battle.Scripts.Battle.Players
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+
+        // Debug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER DRIVER PHOTON] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
 
         private void Awake()
         {
@@ -199,9 +237,22 @@ namespace Battle.Scripts.Battle.Players
         [PunRPC]
         private void MoveRpc(int row, int col, int teleportUpdateNumber)
         {
+            var gridPos = new GridPos(row, col);
+
+            // debug
+            GridPos debugGridPos = _gridManager.WorldPointToGridPosition(new Vector2(ActorTransform.position.x, ActorTransform.position.y));
+
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Received player movement network message (current grid position: ({3}), target grid position: ({4}))",
+                _syncedFixedUpdateClock.UpdateCount,
+                _teamNumber,
+                _playerPos,
+                debugGridPos,
+                gridPos
+            ));
+
             _playerManager.ReportMovement(teleportUpdateNumber);
             _state.IsWaitingToMove(true);
-            var gridPos = new GridPos(row, col);
+            _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
             _state.Move(gridPos, teleportUpdateNumber);
         }
 

@@ -19,6 +19,11 @@ namespace Battle.Scripts.Battle.Players
         private PlayerActor _playerActor;
         private GridManager _gridManager;
 
+        // Debug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER DRIVER STATE] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
+
         internal void ResetState(PlayerActor playerActor, int teamNumber)
         {
             _playerActor = playerActor;
@@ -36,6 +41,19 @@ namespace Battle.Scripts.Battle.Players
         internal void IsWaitingToMove(bool isWaitingToMove)
         {
             _isWaitingToMove = isWaitingToMove;
+        }
+
+        internal void DebugLogState(int updateCount)
+        {
+            Debug.Log(string.Format(
+                DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "State (movement enabled: {3}, is waiting to move: {4}, player actor is busy: {5})",
+                updateCount,
+                _teamNumber,
+                _playerPos,
+                _movementEnabled,
+                _isWaitingToMove,
+                _playerActor.IsBusy
+            ));
         }
     }
 }
