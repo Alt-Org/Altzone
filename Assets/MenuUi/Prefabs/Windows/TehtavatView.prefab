@@ -3034,7 +3034,6 @@ GameObject:
   m_Component:
   - component: {fileID: 671222610020024307}
   - component: {fileID: 7858388365811441307}
-  - component: {fileID: 8369306912023349984}
   - component: {fileID: 5140618674262901196}
   m_Layer: 5
   m_Name: DailyTimer
@@ -3071,19 +3070,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7051497797943841166}
   m_CullTransparentMesh: 1
---- !u!114 &8369306912023349984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7051497797943841166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2688c91a93151546932b2da050fc4e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timerText: {fileID: 5140618674262901196}
 --- !u!114 &5140618674262901196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4479,7 +4465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0070057, y: 0.50768787}
+  m_AnchoredPosition: {x: -0.0070057, y: -0.44295827}
   m_SizeDelta: {x: 1080, y: 2228.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6525380796245569949
@@ -4891,6 +4877,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6048438708361435988}
     m_Modifications:
+    - target: {fileID: 6936325995167446264, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7695168990374541657, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Name
