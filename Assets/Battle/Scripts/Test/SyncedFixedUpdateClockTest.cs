@@ -130,6 +130,7 @@ public class SyncedFixedUpdateClockTest : MonoBehaviour
             if (s_executing)
             {
                 AddToTemp(@event);
+                return;
             }
 
             // allocate bigger array if full
