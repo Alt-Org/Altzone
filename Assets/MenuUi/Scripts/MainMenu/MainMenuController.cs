@@ -6,6 +6,7 @@ using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
+using static SettingsCarrier;
 
 namespace MenuUi.Scripts.MainMenu
 {
@@ -21,6 +22,9 @@ namespace MenuUi.Scripts.MainMenu
 
         private int lastWidth;
         private int lastHeight;
+
+        private SetVolume[] audioSources;
+        private SettingsCarrier carrier = SettingsCarrier.Instance;
 
         private void Awake()
         {
@@ -63,8 +67,23 @@ namespace MenuUi.Scripts.MainMenu
             _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
             _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
             SetMainMenuLayoutDimensions();
+            SetAudioVolumeLevels();
         }
 
+        public void SetAudioVolumeLevels()
+        {
+            audioSources = FindObjectsOfType<SetVolume>(true);
+
+            carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
+            carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
+            carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
+            carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
+
+            foreach (SetVolume audioSource in audioSources)
+            {
+                audioSource.VolumeSet();
+            }
+        }
         private void SetMainMenuLayoutDimensions()
         {
             Debug.Log("Setting dimensions");
