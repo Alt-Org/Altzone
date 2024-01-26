@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using Photon.Pun;
 
@@ -12,6 +13,7 @@ public class Raid_LootTracking : MonoBehaviourPunCallbacks
     [SerializeField, Header("Reference game components")] private TMP_Text CurrentLootText;
     [SerializeField] private TMP_Text OutOfText;
     [SerializeField] private TMP_Text MaxLootText;
+    [SerializeField] private TMP_Text HeartLootText;
 
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
@@ -42,22 +44,36 @@ public class Raid_LootTracking : MonoBehaviourPunCallbacks
     public void ResetLootCount()
     {
         CurrentLootWeight = 0;
-        this.CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
-        this.OutOfText.text = "Out of";
-        this.MaxLootText.text =  MaxLootWeight.ToString() + " kg";
+        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
+        OutOfText.text = "Out of";
+        MaxLootText.text =  MaxLootWeight.ToString() + " kg";
     }
 
     public void SetLootCount(float AddedLootWeight, float MaxLootWeight)
     {
         float NewLootWeight = CurrentLootWeight + AddedLootWeight;
         CurrentLootWeight = NewLootWeight;
-        this.CurrentLootText.text = NewLootWeight.ToString() + " kg";
-        this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
-        if(CurrentLootWeight > MaxLootWeight)
+
+        CurrentLootText.text = NewLootWeight.ToString() + " kg";
+        MaxLootText.text = MaxLootWeight.ToString() + " kg";
+        float weightTMP = MaxLootWeight - NewLootWeight;
+        HeartLootText.text = (MaxLootWeight - NewLootWeight).ToString("F0");
+        if (CurrentLootWeight > MaxLootWeight)
         {
+            //EndScreen
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
             raid_References.OutOfSpace.enabled = true;
+
+            //HeartBreak animation
+            Color tmp = raid_References.Heart.GetComponent<Image>().color;
+            Image[] children = raid_References.HeartHalves.GetComponentsInChildren<Image>();
+            foreach (Image image in children)
+            {
+                image.color = tmp;
+            }
+            raid_References.HeartHalves.SetActive(true);
+            raid_References.Heart.GetComponent<Image>().enabled = false;
         }
     }
     

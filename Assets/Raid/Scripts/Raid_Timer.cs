@@ -110,7 +110,7 @@ public class Raid_Timer : MonoBehaviour
     private void SetTimerText()
     {
         //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
-        TimerText.text = CurrentTime.ToString("F2");
+        TimerText.text = CurrentTime.ToString("F0");
     }
     private void SetTimerGraphic()
     {
