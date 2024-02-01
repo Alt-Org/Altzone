@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1001533debbb30645ac5d15d56acac2d
+guid: 371fb4caf8d3e774b8fe3110c9852517
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -153,13 +153,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerGrayscaleCharacterSpriteSheet_0
+      name: BattlePlayerEgotism1CharacterSpriteSheet_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 256
-        width: 256
-        height: 256
+        y: 512
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,20 +167,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bc64e1964050ca64f92294c26f17a1ad
-      internalID: -491030298
+      spriteID: 0f802d6ff026132419b8313ee033f17c
+      internalID: 1285055412
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerGrayscaleCharacterSpriteSheet_1
+      name: BattlePlayerEgotism1CharacterSpriteSheet_1
       rect:
         serializedVersion: 2
-        x: 256
-        y: 256
-        width: 256
-        height: 256
+        x: 512
+        y: 512
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,20 +188,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae1ba40d911e98641a9a7bfae371a195
-      internalID: -78565320
+      spriteID: 5f639e0405e544e4fb3efaabedb02e08
+      internalID: -978449100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerGrayscaleCharacterSpriteSheet_2
+      name: BattlePlayerEgotism1CharacterSpriteSheet_2
       rect:
         serializedVersion: 2
-        x: 0
+        x: 512
         y: 0
-        width: 256
-        height: 256
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,29 +209,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0eef254bc124610438632f71dea3104f
-      internalID: 1336272110
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerGrayscaleCharacterSpriteSheet_3
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 0
-        width: 256
-        height: 256
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 74fd33ef2904de046b8a547aa769be31
-      internalID: -1584630499
+      spriteID: 2dacebba9fbe2ce47a97bccdd5f9b20c
+      internalID: 1163642509
       vertices: []
       indices: 
       edges: []
@@ -247,10 +226,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerGrayscaleCharacterSpriteSheet_0: -491030298
-      PlayerGrayscaleCharacterSpriteSheet_3: -1584630499
-      PlayerGrayscaleCharacterSpriteSheet_1: -78565320
-      PlayerGrayscaleCharacterSpriteSheet_2: 1336272110
+      BattlePlayerEgotism1CharacterSpriteSheet_1: -978449100
+      BattlePlayerEgotism1CharacterSpriteSheet_2: 1163642509
+      BattlePlayerEgotism1CharacterSpriteSheet_0: 1285055412
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 1

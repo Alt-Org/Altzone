@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5ff5f04059e1de545bf350a564700dcc
+guid: b2e24b9ecfaffc0418614a53736ad690
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -153,13 +153,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerGrayscaleShieldSpriteSheet_0
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 392
-        width: 256
-        height: 120
+        y: 512
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,20 +167,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d991ded11afab994491dc72dc1131d1f
-      internalID: -646930848
+      spriteID: dd59f8fc1aa756640a95d206048e7b44
+      internalID: 705883896
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerGrayscaleShieldSpriteSheet_1
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_1
       rect:
         serializedVersion: 2
-        x: 256
-        y: 392
-        width: 256
-        height: 120
+        x: 512
+        y: 512
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,20 +188,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 561ff93e00bfa5748ba9e2d761d40356
-      internalID: 760182919
+      spriteID: 9a30e2c440432e44d83b834b53e24f8c
+      internalID: -895151963
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerGrayscaleShieldSpriteSheet_2
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 272
-        width: 256
-        height: 120
+        x: 512
+        y: 0
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,8 +209,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 924dac1531ea6a547be82f9fe23c1da1
-      internalID: 2003606155
+      spriteID: 43ccc2819b44973459bddca4ab302595
+      internalID: 1197504487
       vertices: []
       indices: 
       edges: []
@@ -226,9 +226,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerGrayscaleShieldSpriteSheet_2: 2003606155
-      PlayerGrayscaleShieldSpriteSheet_1: 760182919
-      PlayerGrayscaleShieldSpriteSheet_0: -646930848
+      BattlePlayerRetroflection1CharacterSpriteSheet_1: -895151963
+      BattlePlayerRetroflection1CharacterSpriteSheet_2: 1197504487
+      BattlePlayerRetroflection1CharacterSpriteSheet_0: 705883896
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 1

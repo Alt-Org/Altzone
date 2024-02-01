@@ -39,7 +39,8 @@ namespace Battle.Scripts.Battle.Players
 
         //public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _photonView.Owner.ActorNumber;
-        public Transform ActorTransform => _playerActor.transform;
+        public Transform ActorShieldTransform => _playerActor.ShieldTransform;
+        public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
 
         public bool IsLocal => _photonView.Owner.IsLocal;
         public int PeerCount => _peerCount;
@@ -47,11 +48,6 @@ namespace Battle.Scripts.Battle.Players
         // } Public Properties and Fields
 
         #region Public Methods
-
-        public void Rotate(float angle)
-        {
-            _playerActor.SetRotation(angle);
-        }
 
         public void SetCharacterPose(int poseIndex)
         {
@@ -77,7 +73,7 @@ namespace Battle.Scripts.Battle.Players
             _state.IsWaitingToMove(true);
             _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
 
-            Vector2 position = new Vector2(ActorTransform.position.x, ActorTransform.position.y);
+            Vector2 position = new Vector2(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
 
@@ -181,20 +177,9 @@ namespace Battle.Scripts.Battle.Players
         #region Message Listeners
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            bool rotate = _teamNumber == PhotonBattle.TeamBetaValue;
-            if (rotate)
-            {
-                Rotate(180f);
-            }
-
-            if (data.LocalPlayer.TeamNumber != _teamNumber)
-            {
-                _playerActor.SetCharacterRotation(rotate ? 0f : 180f);
-                if (_playerActor.IsUsingNewRotionSysten)
-                {
-                    _playerActor.SetShieldRotation(rotate ? 0f : 180f);
-                }
-            }
+            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ?  0 : 180f);
+            _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SPRITE_VARIANT_A : PlayerActor.SPRITE_VARIANT_B);
+            _playerActor.ResetSprite();
         }
         #endregion Message Listeners
 
@@ -231,7 +216,7 @@ namespace Battle.Scripts.Battle.Players
         [PunRPC]
         private void SetPlayerCharacterPoseRpc(int poseIndex)
         {
-            _playerActor.SetCharacterPose(poseIndex);
+            _playerActor.SetShieldPose(poseIndex);
         }
 
         [PunRPC]
@@ -240,7 +225,7 @@ namespace Battle.Scripts.Battle.Players
             var gridPos = new GridPos(row, col);
 
             // debug
-            GridPos debugGridPos = _gridManager.WorldPointToGridPosition(new Vector2(ActorTransform.position.x, ActorTransform.position.y));
+            GridPos debugGridPos = _gridManager.WorldPointToGridPosition(new Vector2(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y));
 
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Received player movement network message (current grid position: ({3}), target grid position: ({4}))",
                 _syncedFixedUpdateClock.UpdateCount,
