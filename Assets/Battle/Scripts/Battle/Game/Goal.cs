@@ -24,6 +24,9 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] int GoalNumber;
         [SerializeField] TMP_Text CountDownText;
 
+        [SerializeField, Header("End Screen Graphics")] private GameObject WinGraphics;
+        [SerializeField] private GameObject LossGraphics;
+
         PlayerRole currentRole = PlayerRole.Player;
         private float timeLeft = 5.5f;
         private bool countingdown = false;
@@ -65,7 +68,8 @@ namespace Battle.Scripts.Battle.Game
 
                 if (GoalNumber != teamNumber)
                 {
-                    WinText.SetActive(true);
+                    //WinText.SetActive(true);
+                    WinGraphics.SetActive(true);
                     if (PhotonNetwork.IsMasterClient)
                     {
                         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
@@ -78,6 +82,7 @@ namespace Battle.Scripts.Battle.Game
                     PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
                     { {"Role", (int)PlayerRole.Spectator } });
                     //PhotonNetwork.LeaveRoom();
+                    LossGraphics.SetActive(true);
                     LobbyButton.SetActive(true);
                 }
             }
@@ -89,7 +94,7 @@ namespace Battle.Scripts.Battle.Game
                 if(timeLeft > 0)
                 {
                     timeLeft -= Time.deltaTime;
-                    CountDownText.text = "Ryöstön alkuun:" + "\n" + timeLeft.ToString("F0");
+                    CountDownText.text = timeLeft.ToString("F0");
                 }
                 else
                 {

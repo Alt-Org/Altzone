@@ -45,7 +45,8 @@ namespace Battle.Scripts.Test
 
         //public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _actorNumber;
-        public Transform ActorTransform => _playerActor.transform;
+        public Transform ActorShieldTransform => _playerActor.ShieldTransform;
+        public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
 
         public bool IsLocal => _settings._isLocal;
 
@@ -114,15 +115,19 @@ namespace Battle.Scripts.Test
 
             _playerManager.RegisterBot(this);
 
+            // this needs to be changed later (see PlayerDriverPhoton.OnTeamsReadyForGameplay)
             if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
             {
                 Rotate(180f);
             }
+
+            // this doesn't do anything
+            // at some point there probably was code afer this that should only execute when _settings._isLocal is true
+            // it's probably good idea to know why this is here before removing it
             if (!_settings._isLocal)
             {
                 return;
             }
-            
         }
 
         #region Message Listeners
@@ -151,7 +156,7 @@ namespace Battle.Scripts.Test
             if (!_state.MovementEnabled || !_state.CanRequestMove) return;
             _state.IsWaitingToMove(true);
 
-            Vector2 position = new(ActorTransform.position.x, ActorTransform.position.y);
+            Vector2 position = new(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
 

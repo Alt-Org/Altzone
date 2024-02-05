@@ -25,6 +25,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private float journeyLength;
     private float t = 0f;
     [SerializeField] private float speed = 15f;
+    [SerializeField] private TMP_Text ItemWeightPopUp;
     [SerializeField] private TMP_Text ItemWeightText;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
@@ -65,7 +66,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             raidTimer.TimeEnded += OnTimeEnded;
         }
         audioSource = GetComponent<AudioSource>();
-        this.ItemImage.gameObject.SetActive(false);
+        ItemImage.gameObject.SetActive(false);
         empty = true;
 
         if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
@@ -79,15 +80,15 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void SetData(Sprite ItemSprite, float LootItemWeight)
     {
-        this.ItemImage.gameObject.SetActive(true);
-        this.ItemImage.sprite = ItemSprite;
-        // this.ItemWeightText.text = ItemWeight + "kg";
+        ItemImage.gameObject.SetActive(true);
+        ItemImage.sprite = ItemSprite;
+        ItemWeightText.text = ItemWeight + "kg";
         empty = false;
     }
 
     public void RemoveData()
     {
-        this.ItemImage.gameObject.SetActive(false);
+        ItemImage.gameObject.SetActive(false);
     }
     public void SetBomb(int bombType)
     {
@@ -112,6 +113,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     }
     public void LaunchBall()
     {
+        ItemWeightText.gameObject.SetActive(false);
         audioSource.PlayOneShot(pickUp, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         offset = new Vector3(target.rect.width / 2, -target.rect.height / 2, 0f);
         endLoc = target.position + offset;
@@ -119,8 +121,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemBall.transform.SetParent(Heart.transform);
         moving = true;
 
-        ItemWeightText.gameObject.SetActive(true);
-        ItemWeightText.text = ("+" + ItemWeight + "kg");
+        ItemWeightPopUp.gameObject.SetActive(true);
+        ItemWeightPopUp.text = ("+" + ItemWeight + "kg");
     }
     public void BallToHeart()
     {

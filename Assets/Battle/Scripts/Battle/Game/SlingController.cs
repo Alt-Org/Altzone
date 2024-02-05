@@ -197,11 +197,11 @@ public class SlingController : MonoBehaviour
 
         _teams[TEAM_ALPHA] = new();
         _teams[TEAM_ALPHA].TeamNumber = PhotonBattle.TeamAlphaValue;
-        foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[TEAM_ALPHA].List.Add(driver.ActorTransform);
+        foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[TEAM_ALPHA].List.Add(driver.ActorShieldTransform);
 
         _teams[TEAM_BETA] = new();
         _teams[TEAM_BETA].TeamNumber = PhotonBattle.TeamBetaValue;
-        foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[TEAM_BETA].List.Add(driver.ActorTransform);
+        foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[TEAM_BETA].List.Add(driver.ActorShieldTransform);
 
         this.Publish(new SlingControllerReady());
     }

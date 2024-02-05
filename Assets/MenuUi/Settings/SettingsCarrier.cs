@@ -20,7 +20,7 @@ public class SettingsCarrier : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", Screen.currentResolution.refreshRate);
         mainMenuWindowIndex = 0;
     }
 

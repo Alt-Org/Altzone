@@ -13,7 +13,8 @@ interface IDriver
 {
     public int TeamNumber { get; }
 
-    public Transform ActorTransform { get; }
+    public Transform ActorShieldTransform { get; }
+    public Transform ActorCharacterTransform { get; }
 
     public bool MovementEnabled { get; set; }
 }

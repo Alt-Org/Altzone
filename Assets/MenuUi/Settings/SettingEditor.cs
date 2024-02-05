@@ -1,18 +1,19 @@
+using MenuUi.Scripts.MainMenu;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingEditor : MonoBehaviour
 {
     private SettingsCarrier carrier = SettingsCarrier.Instance;
+    private MainMenuController mainMenuController = null;
 
     [SerializeField] private Button[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
 
-    private SetVolume[] audioSources;
-
     private void OnEnable()
     {
-        audioSources = FindObjectsOfType<SetVolume>(true);
+        if(mainMenuController == null)
+            mainMenuController = FindObjectOfType<MainMenuController>(true);
 
         foreach (Slider slider in volumeSliders)
         {
@@ -24,24 +25,16 @@ public class SettingEditor : MonoBehaviour
 
     public void SetFromSlider(Slider usedSlider)
     {
-        SettingsCarrier.SoundType soundType = SettingsCarrier.SoundType.none;
-
         // Somewhat hardcoded, but best i could do way of setting volume to SettingsCarrier from the sliders
         switch (usedSlider.name)
         {
-            case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.none; break;
-            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.menu; break;
-            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.music; break;
-            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); soundType = SettingsCarrier.SoundType.sound; break;
+            case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MasterVolume", carrier.masterVolume); break;
+            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume); break;
+            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MusicVolume", carrier.musicVolume); break;
+            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume); break;
         }
 
-        foreach (SetVolume audioSource in audioSources)
-        {
-            if (audioSource._soundType == soundType || soundType == SettingsCarrier.SoundType.none)
-            {
-                audioSource.VolumeSet();
-            }
-        }
+        mainMenuController.SetAudioVolumeLevels();
     }
 
     public void SetToSlider(Slider usedSlider)
