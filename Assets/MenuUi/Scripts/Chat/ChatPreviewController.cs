@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Globalization;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -73,6 +72,11 @@ public class ChatPreviewController : MonoBehaviour
     private void OnDisable()
     {
         ChatListener.Instance.ChatPreviewController = null;
+    }
+
+    private void Reset()
+    {
+        StopAllCoroutines();
     }
 
     internal void ToggleChatMessages(bool value, bool playAnimation)

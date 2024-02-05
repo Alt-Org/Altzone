@@ -7,6 +7,7 @@ public class ChatMessagePrefab : MonoBehaviour
     [SerializeField] private TMP_Text _senderNameText;
     [SerializeField] private TMP_Text _messageContentText;
 
+    [SerializeField] private Image _backgroundImage = null;
     [SerializeField] private Image _profileImage = null;
     [SerializeField] private Image _moodImage = null;
 
@@ -22,7 +23,6 @@ public class ChatMessagePrefab : MonoBehaviour
 
     internal void SetMood(ChatListener.Mood mood)
     {
-        //Load a Sprite (Assets/Resources/Sprites/sprite01.png)
         Sprite sprite = Resources.Load<Sprite>("test-emojis/" + mood.ToString().ToLower());
         _moodImage.sprite = sprite;
     }
@@ -52,5 +52,10 @@ public class ChatMessagePrefab : MonoBehaviour
             _profileImage.sprite = sprite;
 
         _profileImage.color = Color.white;
+    }
+
+    internal void SetErrorColor()
+    {
+        _backgroundImage.color = Color.red;
     }
 }

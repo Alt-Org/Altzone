@@ -9,12 +9,14 @@ using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
+using static ServerManager;
 
 public class InvFront : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TMP_Text _sortText;
     [SerializeField] private Transform _content;
+    [SerializeField] private BaseScrollRect _scrollRect;
     [SerializeField] private GameObject _infoSlot;
     [SerializeField] private GameObject _loadingText;
     [SerializeField] private GameObject _topButtons;
@@ -39,13 +41,24 @@ public class InvFront : MonoBehaviour
     private List<GameObject> _slotsList = new();
 
     bool _startCompleted = false;
+    bool _updatingInventory = false;
 
     private int _maxSortingBy = 2;
     private int _sortingBy = -1; // used as a carrier for info on how to sort
 
+    private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+
     private void OnEnable()
     {
         if (!_startCompleted) { StartCoroutine(Begin()); }
+
+        ServerManager.OnClanInventoryChanged += UpdateInventory;
+        UpdateInventory();
+    }
+
+    private void OnDisable()
+    {
+        ServerManager.OnClanInventoryChanged -= UpdateInventory;
     }
 
     private IEnumerator Begin()
@@ -58,10 +71,59 @@ public class InvFront : MonoBehaviour
         MakeSlots();
         SortStored(); // Sorting before setting the slots / SetSlots is already in SortStored so no need to do it here
 
-        _loadingText.SetActive(false);
-        _topButtons.SetActive(true); // The sorting button should not be available if items are yet to be loaded
+        if(_items.Count == 0)
+        {
+            _loadingText.GetComponent<TextMeshProUGUI>().text = INVENTORY_EMPTY_TEXT;
+        }
+        else
+        {
+            _loadingText.SetActive(false);
+            _topButtons.SetActive(true); // The sorting button should not be available if items are yet to be loaded
+        }
+
 
         _startCompleted = true;
+    }
+
+    private void Reset()
+    {
+        foreach (Transform child in _content)
+        {
+            Destroy(child.gameObject);
+        }
+
+         _scrollRect.NormalizedPosition = new Vector2(0, 1);
+
+        _items.Clear();
+        _slotsList.Clear();
+
+        _loadingText.SetActive(true);
+        _topButtons.SetActive(false); // The sorting button should not be available if items are yet to be loaded
+    }
+
+    public void UpdateInventory()
+    {
+        if (_updatingInventory)
+            return;
+
+        _updatingInventory = true;
+        StartCoroutine(UpdateInventoryCoroutine());
+    }
+
+    private IEnumerator UpdateInventoryCoroutine()
+    {
+        yield return new WaitUntil(() => _startCompleted);
+
+        Reset();
+
+        if (ServerManager.Instance.Clan != null)
+        {
+            List<ServerItem> serverItems = new List<ServerItem>();
+            yield return StartCoroutine(ServerManager.Instance.SaveClanFromServerToDataStorage(ServerManager.Instance.Clan));
+        }
+
+        yield return StartCoroutine(Begin());
+        _updatingInventory = false;
     }
 
     private IEnumerator GetFurnitureFromClanInventory(string playerGuid)
@@ -123,7 +185,7 @@ public class InvFront : MonoBehaviour
             });
             _slotsList.Add(newSlot);
         }
-        Instantiate(_buySlot, _content);
+        //Instantiate(_buySlot, _content);
     }
 
     private void SetSlots()

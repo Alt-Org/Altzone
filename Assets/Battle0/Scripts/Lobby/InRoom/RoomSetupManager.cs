@@ -1,6 +1,7 @@
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -94,6 +95,7 @@ namespace Battle0.Scripts.Lobby.InRoom
         {
             yield return new WaitUntil(() => PhotonNetwork.InRoom);
 
+            UpdatePhotonNickname();
             var room = PhotonNetwork.CurrentRoom;
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
@@ -168,6 +170,14 @@ namespace Battle0.Scripts.Lobby.InRoom
                 _upperTeamText.gameObject.SetActive(false);
                 _lowerTeamText.gameObject.SetActive(false);
             }
+        }
+
+        private void UpdatePhotonNickname()
+        {
+            var store = Storefront.Get();
+            PlayerData playerData = null;
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+            PhotonNetwork.NickName = playerData.Name;
         }
 
         private void SetTeamText()
