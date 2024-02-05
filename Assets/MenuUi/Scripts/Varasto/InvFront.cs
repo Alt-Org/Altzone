@@ -116,9 +116,8 @@ public class InvFront : MonoBehaviour
 
         Reset();
 
-        if (ServerManager.Instance.Clan != null)
+        if (ServerManager.Instance.Stock != null)
         {
-            List<ServerItem> serverItems = new List<ServerItem>();
             yield return StartCoroutine(ServerManager.Instance.SaveClanFromServerToDataStorage(ServerManager.Instance.Clan));
         }
 
