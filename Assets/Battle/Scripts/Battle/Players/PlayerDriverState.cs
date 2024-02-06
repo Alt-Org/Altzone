@@ -24,9 +24,10 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
 
-        internal void ResetState(PlayerActor playerActor, int teamNumber)
+        internal void ResetState(PlayerActor playerActor, int playerPos, int teamNumber)
         {
             _playerActor = playerActor;
+            _playerPos = playerPos;
             _teamNumber = teamNumber;
             _gridManager = Context.GetGridManager;
         }

@@ -75,7 +75,7 @@ namespace Battle.Scripts.Battle.Players
 
             Vector2 position = new Vector2(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
-            GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+            GridPos targetGridPos = _gridManager.ClampGridPosition(_gridManager.WorldPointToGridPosition(targetPosition));
 
             Debug.Log(string.Format(
                 DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement info (current position: {3}, current grid position: ({4}), target position: {5}, target grid position: ({6}))",
@@ -166,7 +166,7 @@ namespace Battle.Scripts.Battle.Players
         {
             var player = _photonView.Owner;
             _state ??= gameObject.AddComponent<PlayerDriverState>();
-            _state.ResetState(_playerActor, _teamNumber);
+            _state.ResetState(_playerActor, _playerPos, _teamNumber);
             _state.MovementEnabled = false;
 
             _playerManager.RegisterPlayer(this);
