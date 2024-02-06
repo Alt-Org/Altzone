@@ -169,6 +169,20 @@ namespace Altzone.Scripts.Model
             SaveStorage(_storageData, _storagePath);
             callback?.Invoke(playerData);
         }
+        internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
+        {
+            var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
+            if (index >= 0)
+            {
+                _storageData.PlayerData.Remove(_storageData.PlayerData[index]);
+                SaveStorage(_storageData, _storagePath);
+                callback?.Invoke(true);
+            }
+            else
+            {
+                callback?.Invoke(false);
+            }
+        }
 
         #endregion
 

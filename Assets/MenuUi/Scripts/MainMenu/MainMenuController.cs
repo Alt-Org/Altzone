@@ -12,10 +12,9 @@ namespace MenuUi.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private MainMenuView _view;
-        private SwipeUI swipe;
-
         public float _interval = 2f;
+
+        private SwipeUI _swipe;
 
         private GameObject[] _layoutElementsGameObjects;
         private RectTransform _scrollRectCanvas;
@@ -34,30 +33,7 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            _view.ResetView();
-            var gameConfig = GameConfig.Get();
-            var playerSettings = gameConfig.PlayerSettings;
-            var playerGuid = playerSettings.PlayerGuid;
-            var store = Storefront.Get();
-            store.GetPlayerData(playerGuid, playerData =>
-            {
-                if (playerData == null)
-                {
-                    _view.PlayerName = "Player?";
-                    return;
-                }
-                _view.PlayerName = playerData.Name;
-                if (!playerData.HasClanId)
-                {
-                    return;
-                }
-                store.GetClanData(playerData.ClanId, clanData =>
-                {
-                    _view.ClanName = clanData?.Name ?? "Clan?";
-                });
-            });
-
-            swipe = GetComponentInParent<SwipeUI>();
+            _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
         }
 
@@ -102,7 +78,7 @@ namespace MenuUi.Scripts.MainMenu
                 element.preferredHeight = height;
             }
 
-            swipe.UpdateSwipeAreaValues();
+            _swipe.UpdateSwipeAreaValues();
         }
 
         private IEnumerator CheckWindowSize()
@@ -112,7 +88,7 @@ namespace MenuUi.Scripts.MainMenu
                 if (lastWidth != Screen.width || lastHeight != Screen.height)
                 {
                     SetMainMenuLayoutDimensions();
-                    swipe.UpdateSwipe();
+                    _swipe.UpdateSwipe();
                     lastWidth = Screen.width;
                     lastHeight = Screen.height;
                 }

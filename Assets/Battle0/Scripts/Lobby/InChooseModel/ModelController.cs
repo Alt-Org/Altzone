@@ -18,7 +18,12 @@ namespace Battle0.Scripts.Lobby.InChooseModel
 
         private PlayerData _playerData;
 
-        private IEnumerator Start()
+        private void OnEnable()
+        {
+            StartCoroutine(Load());
+        }
+
+        private IEnumerator Load()
         {
             Debug.Log("Start");
             yield return new WaitUntil(() => _view.IsReady);

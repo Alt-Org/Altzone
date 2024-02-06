@@ -70,11 +70,27 @@ namespace Altzone.Scripts
         }
 
         /// <summary>
+        /// Deletes <c>PlayerData</c> entity.
+        /// </summary>
+        public void DeletePlayerData(PlayerData playerData, Action<bool> callback)
+        {
+            _localModels.DeletePlayerData(playerData, callback);
+        }
+
+        /// <summary>
         /// Gets <c>ClanData</c> entity using its ID property.
         /// </summary>
         public void GetClanData(string id, Action<ClanData> callback)
         {
             _localModels.GetClanData(id, callback);
+        }
+
+        /// <summary>
+        /// Saves <c>ClanData</c> entity.
+        /// </summary>
+        public void SaveClanData(ClanData clanData, Action<ClanData> callback)
+        {
+            _localModels.SaveClanData(clanData, callback);
         }
 
         /// <summary>
