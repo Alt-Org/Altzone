@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
@@ -16,7 +15,7 @@ public class ChatController : MonoBehaviour
 
     [Header("Top Bar")]
     [SerializeField] private TMP_Text _connectionStatusText;
-    [SerializeField] private TMP_Dropdown _chatChannelDropdown;
+    [SerializeField] private TMP_Text _chatroomNameText;
 
     [Header("Chat Windows")]
     [SerializeField] private ChatWindow _globalChatWindow;
@@ -33,8 +32,9 @@ public class ChatController : MonoBehaviour
     [SerializeField] private GameObject _chatMessageLocalPrefab;
     [SerializeField] private GameObject _chatMessageOthersPrefab;
 
-    [Header("ErrorPanel")]
+    [Header("Error Handling")]
     [SerializeField] internal GameObject _errorPanel;
+    [SerializeField] internal GameObject _errorPrefab;
 
     public ChatWindow ActiveChatWindow { get => _activeChatWindow; set => _activeChatWindow = value; }
 
@@ -47,29 +47,20 @@ public class ChatController : MonoBehaviour
         _clanChatWindow.ChannelType = ChatListener.ChatChannelType.Clan;
         _countryChatWindow.ChannelType = ChatListener.ChatChannelType.Country;
 
-        _globalChatWindow.DropdownOptions = new List<TMP_Dropdown.OptionData> { new TMP_Dropdown.OptionData("Global") };
-        _clanChatWindow.DropdownOptions = new List<TMP_Dropdown.OptionData> { new TMP_Dropdown.OptionData("Clan 1"), new TMP_Dropdown.OptionData("Clan 2"), new TMP_Dropdown.OptionData("Clan 3") };
-        _countryChatWindow.DropdownOptions = new List<TMP_Dropdown.OptionData> { new TMP_Dropdown.OptionData("Country 1"), new TMP_Dropdown.OptionData("Country 2"), new TMP_Dropdown.OptionData("Country 3") };
-
-        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChange(ChatListener.ChatChannelType.Global));
-        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChange(ChatListener.ChatChannelType.Clan));
-        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChange(ChatListener.ChatChannelType.Country));
+        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Global));
+        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Clan));
+        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Country));
 
         #endregion
 
         _sendMessageButton.onClick.AddListener(() => SendChatMessage(_chatMessageInputField.text));
-
-        _chatChannelDropdown.onValueChanged.AddListener(delegate
-        {
-            OnChatWindowChange(ChatListener.Instance._activeChatChannel._chatChannelType);
-        });
     }
 
     private void Start()
     {
         ChatListener.Instance.ChatController = this;
 
-        OnChatWindowChange(ChatListener.Instance._activeChatChannel._chatChannelType);
+        OnChatWindowChanged(ChatListener.Instance._activeChatChannel._chatChannelType);
 
         if (ChatListener.Instance._chatMessages != null)
         {
@@ -90,22 +81,37 @@ public class ChatController : MonoBehaviour
             _connectionStatusText.text = DisconnectedText;
     }
 
+    private void OnEnable()
+    {
+        ServerManager.OnLogInStatusChanged += OnLoginStatusChanged;
+    }
+
+    private void OnDisable()
+    {
+        ServerManager.OnLogInStatusChanged -= OnLoginStatusChanged;
+    }
+
+    private void OnLoginStatusChanged(bool isLoggedIn)
+    {
+        OnChatWindowChanged(ChatListener.Instance._activeChatChannel._chatChannelType);
+    }
+
     internal void SendChatMessage(string message)
     {
         if (message == "")
             return;
 
-        object[] dataToSend = new object[] {ChatListener.Instance._username, _chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance._activeChatChannel._chatChannelType };
+        object[] dataToSend = new object[] { ChatListener.Instance._username, _chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance._activeChatChannel._chatChannelType };
         ChatListener.Instance.ChatClient.PublishMessage(ChatListener.Instance._activeChatChannel._channelName, dataToSend, true);
         _chatMessageInputField.text = null;
     }
 
-    internal void InstantiateChatMessagePrefab(ChatMessage message, bool instantiateOnTop)
+    internal ChatMessagePrefab InstantiateChatMessagePrefab(ChatMessage message, bool instantiateOnTop)
     {
         ChatWindow chatWindow;
 
         if (!(chatWindow = Array.Find(_chatWindows, item => item.ChannelType == message._channel._chatChannelType)))
-            return;
+            return null;
 
         ChatMessagePrefab chatMessageInstance;
 
@@ -128,56 +134,46 @@ public class ChatController : MonoBehaviour
             ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
 
         ForceRebuild(chatWindow.RectTransform);
+
+        return chatMessageInstance;
     }
 
-    internal void OnChatWindowChange(ChatListener.ChatChannelType channelType)
+    internal void OnChatWindowChanged(ChatListener.ChatChannelType channelType)
     {
         ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channelType);
         int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == channelType);
 
-        if (!ActiveChatWindow || channelType != ActiveChatWindow.ChannelType)
+        foreach (ChatWindow window in _chatWindows)
         {
-            foreach (ChatWindow window in _chatWindows)
-            {
-                window.gameObject.SetActive(!(window != chatWindow));
-                window.ChangeToWindowButton.interactable = (window != chatWindow);
-            }
-
-            _chatChannelDropdown.interactable = true;
-            _chatChannelDropdown.ClearOptions();
-            _chatChannelDropdown.AddOptions(chatWindow.DropdownOptions);
-
-            if (chatWindow.ChannelType == ChatListener.ChatChannelType.Global)
-                _chatChannelDropdown.interactable = false;
-            else
-                _chatChannelDropdown.SetValueWithoutNotify((_chatChannelDropdown.options.FindIndex(option => option.text == ChatListener.Instance._chatChannels[activeChatChannelIndex]._channelName)));
-
-            ActiveChatWindow = chatWindow;
-            ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
-            ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
-            ForceRebuild(ActiveChatWindow.RectTransform);
+            window.gameObject.SetActive(!(window != chatWindow));
+            window.ChangeToWindowButton.interactable = (window != chatWindow);
         }
-        else
-        {
-            ChatListener.Instance.ChatClient.Unsubscribe(new string[] { ChatListener.Instance._activeChatChannel._channelName });
-            ChatListener.Instance.DeleteChatHistory(ChatListener.Instance._chatChannels[activeChatChannelIndex]);
 
-            ActiveChatWindow = chatWindow;
-            ChatChannel activeChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
-            activeChannel.Reset();
-            activeChannel._channelName = _chatChannelDropdown.options[_chatChannelDropdown.value].text;
-
-            ChatListener.Instance._activeChatChannel = activeChannel;
-            ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
-            StartCoroutine(ChatListener.Instance.GetChatHistoryAndSubscribe(new ChatChannel[] { activeChannel }, null));
-        }
+        ActiveChatWindow = chatWindow;
+        ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
+        ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
+        _chatroomNameText.text = ChatListener.Instance._activeChatChannel._channelName;
+        ForceRebuild(ActiveChatWindow.RectTransform);
 
         ChatListener.Instance?.ChatPreviewController?.OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
     }
 
-    public void ShowErrorMessage(bool value, string errorText)
+    public void OnClanChatChanged(string chatName)
     {
-        // Not implemented
+        int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == ChatListener.ChatChannelType.Clan);
+
+        ChatChannel clanChannel = ChatListener.Instance._chatChannels[clanChannelIndex];
+        clanChannel.Reset();
+        clanChannel._channelName = chatName;
+
+        _chatroomNameText.text = ChatListener.Instance._activeChatChannel._channelName;
+    }
+
+    public void ShowErrorMessage(string errorText)
+    {
+        GameObject errorInstance = Instantiate(_errorPrefab, _errorPanel.transform);
+        ChatError errorComponent = errorInstance.GetComponent<ChatError>();
+        errorComponent.SetErrorText(errorText);
     }
 
     public void DeleteChatHistory(ChatChannel channel)
