@@ -3,6 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// SwipeUI handles swiping that snaps to windows between different main menu windows.
+/// </summary>
+/// <remarks>
+/// Modified version of: https://www.youtube.com/watch?v=zeHdty9RUaA
+/// </remarks>
 public class SwipeUI : MonoBehaviour, IBeginDragHandler
 {
     [Header("Swipe Area")]
@@ -99,6 +105,14 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         //UpdateButtonContent();
     }
 
+    /// <summary>
+    /// Updates the area where swiping is allowed based on screen width and height.
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// Swiping has been disabled on bottom buttons and the very edges of the screen
+    /// to better work with Android's gesture navigation
+    /// </remarks>
     public Rect UpdateSwipeAreaValues()
     {
         float windowWidth = Screen.width * horizontalDeadzone;
@@ -110,6 +124,11 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         return swipeRect;
     }
 
+    /// <summary>
+    /// Sets the scroll view scrollbar value and scroll to the correct point.
+    /// </summary>
+    /// <param name="index">Index of the window to scroll to.</param>
+    /// <returns></returns>
     public IEnumerator SetScrollBarValue(int index)
     {
         yield return new WaitForEndOfFrame();
@@ -127,10 +146,14 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 
     private void UpdateInput()
     {
+        // Return if currently swiping
         if (isSwipeMode == true) return;
 
+        //Checks mouse input first and then touch input
+        //Since WebGL can be run on PC or mobile we need to check both
         if (Input.GetMouseButtonDown(0))
         {
+            // Return if input is outside of scroll area
             if (!swipeRect.Contains(Input.mousePosition))
             {
                 IsEnabled = false;
@@ -142,6 +165,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
         else if (Input.GetMouseButtonUp(0))
         {
+            // Update swipe when mouse is released
             if (startTouchX != 0)
             {
                 endTouchX = Input.mousePosition.x;
@@ -178,13 +202,18 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
     }
 
+    /// <summary>
+    /// Checks swipe direction and length and starts swiping to next window.
+    /// </summary>
     public void UpdateSwipe()
     {
         if (isSwipeMode)
             return;
 
+        // Checks that the swipe was long enough
         if (Mathf.Abs(startTouchX - endTouchX) < swipeDistance)
         {
+            // Swipe back to the previous window
             StartCoroutine(OnSwipeOneStep(CurrentPage));
             return;
         }
@@ -205,6 +234,11 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         StartCoroutine(OnSwipeOneStep(CurrentPage));
     }
 
+    /// <summary>
+    /// Snaps to next/pervious window.
+    /// </summary>
+    /// <param name="index">Index of the page we are snapping to.</param>
+    /// <returns></returns>
     private IEnumerator OnSwipeOneStep(int index)
     {
         float start = scrollBar.value;
@@ -228,6 +262,9 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         endTouchX = 0;
     }
 
+    /// <summary>
+    /// Changes the color of currently active main menu widow's button.
+    /// </summary>
     private void UpdateButtonContent()
     {
         if (buttonImages == null || buttonImages.Length == 0) return;

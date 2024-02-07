@@ -49,12 +49,15 @@ public class PlayerPanel : MonoBehaviour
         ServerManager.OnLogInStatusChanged -= SetPlayerPanelValues;
     }
 
+    /// <summary>
+    /// Sets the name text and clan text of player panel when log in status changes
+    /// </summary>
+    /// <param name="isLoggedIn">Logged in status</param>
     private void SetPlayerPanelValues(bool isLoggedIn)
     {
-        // Placeholder values for now
-
         if(isLoggedIn)
         {
+            // Gets the player name from DataStorage
             var store = Storefront.Get();
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);

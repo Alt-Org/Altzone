@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using static ChatListener;
 
+/// <summary>
+/// Message instance received and sent using Photon Chat.
+/// </summary>
 [Serializable]
 public class ChatMessage : IEquatable<ChatMessage>
 {

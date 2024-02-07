@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// ChatMessagePrefab contains references to children of an instantiated chat message prefab.
+/// </summary>
 public class ChatMessagePrefab : MonoBehaviour
 {
     [SerializeField] private TMP_Text _senderNameText;
@@ -21,14 +24,26 @@ public class ChatMessagePrefab : MonoBehaviour
         _messageContentText.text = message;
     }
 
+
+    /// <summary>
+    /// Sets the correct emoji and message background for the chat message instance.
+    /// </summary>
+    /// <<param name="mood">Mood value received from the server/Photon Chat</param>
     internal void SetMood(ChatListener.Mood mood)
     {
-        Sprite sprite = Resources.Load<Sprite>("test-emojis/" + mood.ToString().ToLower());
-        _moodImage.sprite = sprite;
+        Sprite moodSprite = Resources.Load<Sprite>("test-emojis/" + mood.ToString().ToLower());
+        _moodImage.sprite = moodSprite;
+
+        //Sprite backgroundSprite = Resources.Load<Sprite>(null);
+        //_backgroundImage.sprite = backgroundSprite;
     }
 
     internal void SetFontSize(int size) { _messageContentText.fontSize = size; }
 
+
+    /// <summary>
+    /// Sets the profile picture for the chat message instance.
+    /// </summary>
     internal void SetProfilePicture(ChatListener.ChatChannelType chatChannelType)
     {
         string location = "";

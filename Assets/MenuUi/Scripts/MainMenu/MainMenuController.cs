@@ -46,6 +46,9 @@ namespace MenuUi.Scripts.MainMenu
             SetAudioVolumeLevels();
         }
 
+        /// <summary>
+        /// Sets the audio levels of main menu audio sources according to the values in PlayerPrefs
+        /// </summary>
         public void SetAudioVolumeLevels()
         {
             audioSources = FindObjectsOfType<SetVolume>(true);
@@ -60,6 +63,15 @@ namespace MenuUi.Scripts.MainMenu
                 audioSource.VolumeSet();
             }
         }
+
+        /// <summary>
+        /// Sets the correct windows size to swipeable main menu windows.
+        /// </summary>
+        /// <remarks>
+        /// Each individual window should be exactly the size of the device screen.
+        /// Since the main menu windows are inside of a scroll view component we cannot just use anchors
+        /// to fit the windows to screen.
+        /// </remarks>
         private void SetMainMenuLayoutDimensions()
         {
             Debug.Log("Setting dimensions");
@@ -81,6 +93,14 @@ namespace MenuUi.Scripts.MainMenu
             _swipe.UpdateSwipeAreaValues();
         }
 
+
+        /// <summary>
+        /// Checks periodically if device screen dimensions have changed and sets the windows sizes accordingly.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// This might only be necessary on PC and Unity Editor
+        /// </remarks>
         private IEnumerator CheckWindowSize()
         {
             while (true)

@@ -9,8 +9,8 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private Transform _parent;
     [SerializeField] private GameObject _loadMoreButton;
 
-    private int currentPage;
-    private int totalPages;
+    private int currentPage;    // Current page found in pagination data
+    private int totalPages;     // Total pages in pagination data
 
     private void Awake()
     {
@@ -24,9 +24,7 @@ public class ClanSearchView : MonoBehaviour
         StartCoroutine(ServerManager.Instance.GetAllClans(++currentPage, new Action<List<ServerClan>, PaginationData>((clans, paginationData) =>
         {
             if (clans == null || paginationData == null)
-            {
                 return;
-            }
 
             ListClans(clans, paginationData);
         }
@@ -72,12 +70,14 @@ public class ClanSearchView : MonoBehaviour
                     clanListing.ToggleJoinButton(false);
         }
 
+        // Only the first page in pagination data has totalPages field
         if (paginationData.pageCount != 0)
             totalPages = paginationData.pageCount;
 
         if (paginationData.currentPage != 0)
             currentPage = paginationData.currentPage;
 
+        // Check if we have reached the last page of pagination data
         if (paginationData != null && paginationData.currentPage < totalPages)
             _loadMoreButton.SetActive(true);
         else

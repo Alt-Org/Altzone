@@ -3,6 +3,9 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 
+/// <summary>
+/// ChatController handles sending new chat messages and displaying received chat messages on the Global, Country and Clan chat windows.
+/// /// </summary>
 public class ChatController : MonoBehaviour
 {
     private ChatWindow _activeChatWindow;
@@ -62,6 +65,7 @@ public class ChatController : MonoBehaviour
 
         OnChatWindowChanged(ChatListener.Instance._activeChatChannel._chatChannelType);
 
+        // If we have received chat messages before opening chat for the first time, display those messages.
         if (ChatListener.Instance._chatMessages != null)
         {
             foreach (var message in ChatListener.Instance._chatMessages)
@@ -71,31 +75,16 @@ public class ChatController : MonoBehaviour
 
     private void Update()
     {
-        // So we can send messages with "enter" key on PC
-        if (SystemInfo.deviceType == DeviceType.Desktop && _chatMessageInputField.IsActive() && Input.GetKeyDown(KeyCode.Return))
-            SendChatMessage(_chatMessageInputField.text);
-
         if (ChatListener.Instance.ChatClient != null && ChatListener.Instance.ChatClient.CanChat)
             _connectionStatusText.text = ConnectedText;
         else
             _connectionStatusText.text = DisconnectedText;
     }
 
-    private void OnEnable()
-    {
-        ServerManager.OnLogInStatusChanged += OnLoginStatusChanged;
-    }
-
-    private void OnDisable()
-    {
-        ServerManager.OnLogInStatusChanged -= OnLoginStatusChanged;
-    }
-
-    private void OnLoginStatusChanged(bool isLoggedIn)
-    {
-        OnChatWindowChanged(ChatListener.Instance._activeChatChannel._chatChannelType);
-    }
-
+    /// <summary>
+    /// Sends a chat message through Photon Chat.
+    /// </summary>
+    /// <param name="message">Text from InputField</param>
     internal void SendChatMessage(string message)
     {
         if (message == "")
@@ -106,6 +95,12 @@ public class ChatController : MonoBehaviour
         _chatMessageInputField.text = null;
     }
 
+    /// <summary>
+    /// Creates an instance from received chat message.
+    /// </summary>
+    /// <param name="message">Message</param>
+    /// <param name="instantiateOnTop">Bool representing if the created instance should be instantiated on top of current messages. Older messages are instantiated on top.</param>
+    /// <returns></returns>
     internal ChatMessagePrefab InstantiateChatMessagePrefab(ChatMessage message, bool instantiateOnTop)
     {
         ChatWindow chatWindow;
@@ -115,6 +110,7 @@ public class ChatController : MonoBehaviour
 
         ChatMessagePrefab chatMessageInstance;
 
+        // Own messages are on right, other player messages on left
         if (message._username == ChatListener.Instance._username)
             chatMessageInstance = Instantiate(_chatMessageLocalPrefab, chatWindow.RectTransform).GetComponent<ChatMessagePrefab>();
         else
@@ -130,6 +126,7 @@ public class ChatController : MonoBehaviour
         if (instantiateOnTop)
             chatMessageInstance.gameObject.transform.SetSiblingIndex(1);
 
+        // Check if message id is 1 meaning that the message is first message in chat. If not, there are older messages on server so we set 'ToggleLoadMoreButton' active.
         if (ActiveChatWindow)
             ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
 
@@ -138,11 +135,19 @@ public class ChatController : MonoBehaviour
         return chatMessageInstance;
     }
 
+    /// <summary>
+    /// Changes the currently active chat window.
+    /// </summary>
+    /// <param name="channelType">Type of chat to set active</param>
+    /// <remarks>
+    /// This function gets called when Global, Clan or Country button gets pressed in the UI.
+    /// </remarks>
     internal void OnChatWindowChanged(ChatListener.ChatChannelType channelType)
     {
         ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channelType);
         int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == channelType);
 
+        // Changes the desired window active and disable others
         foreach (ChatWindow window in _chatWindows)
         {
             window.gameObject.SetActive(!(window != chatWindow));
@@ -155,9 +160,14 @@ public class ChatController : MonoBehaviour
         _chatroomNameText.text = ChatListener.Instance._activeChatChannel._channelName;
         ForceRebuild(ActiveChatWindow.RectTransform);
 
+        // Refreshes the preview chat (the small chat) window messages
         ChatListener.Instance?.ChatPreviewController?.OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
     }
 
+    /// <summary>
+    /// Changes the currently active clan chat.
+    /// </summary>
+    /// <param name="chatName"></param>
     public void OnClanChatChanged(string chatName)
     {
         int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == ChatListener.ChatChannelType.Clan);

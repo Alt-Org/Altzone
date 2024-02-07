@@ -44,14 +44,16 @@ public class ClanModifyInventoryView : MonoBehaviour
         _scrollViewListings.Clear();
     }
 
+    /// <summary>
+    /// Fetches the most current clan information from server, gets clan stock or creates a new one if not available
+    /// and fetches the stocks items.
+    /// </summary>
     private void GetStockData()
     {
         StartCoroutine(ServerManager.Instance.GetClanFromServer(clan =>
         {
             if(clan == null)
                 return;
-
-            Debug.Log(clan.name);
 
             if (clan.stockCount == 0)
             {
@@ -80,6 +82,9 @@ public class ClanModifyInventoryView : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Populates the list of items that we can add to clan stock using GameFurniture items located in DemoModels.json file.
+    /// </summary>
     private void PopulateFurnitureList()
     {
         ReadOnlyCollection<GameFurniture> allItems = null;
@@ -87,6 +92,7 @@ public class ClanModifyInventoryView : MonoBehaviour
 
         foreach (var clanFurniture in allItems)
         {
+            // We skip the "pommi" items as they are not furniture
             if (clanFurniture.Id.Contains("pommi"))
                 continue;
 
@@ -98,12 +104,17 @@ public class ClanModifyInventoryView : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Adds the correct amount of items to the list.
+    /// </summary>
+    /// <param name="items"></param>
     private void AddItemsToUI(List<ServerItem> items)
     {
         foreach (var item in items)
         {
             ClanFurniture clanFurniture = new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", "."));
 
+            // Checks that ServerItem GameFurnitureId is in GameFurniture list
             var listing = _scrollViewListings.Find(i => i.Furniture.Id == clanFurniture.GameFurnitureId);
 
             if (listing)
@@ -118,6 +129,7 @@ public class ClanModifyInventoryView : MonoBehaviour
     {
         StartCoroutine(SaveCoroutine());
     }
+
     public IEnumerator SaveCoroutine()
     {
         yield return StartCoroutine(ServerManager.Instance.SaveClanFromServerToDataStorage(ServerManager.Instance.Clan));
@@ -125,6 +137,11 @@ public class ClanModifyInventoryView : MonoBehaviour
         returnToClanMainViewButton.onClick.Invoke();
     }
 
+    /// <summary>
+    /// Posts item to clan stock.
+    /// </summary>
+    /// <param name="furniture">Furniture to add to stock</param>
+    /// <param name="callback">Callback</param>
     public void AddItemToServer(GameFurniture furniture, Action<ServerItem> callback)
     {
         ServerStock stock = ServerManager.Instance.Stock;
@@ -139,7 +156,7 @@ public class ClanModifyInventoryView : MonoBehaviour
         if (furniture.Filename == string.Empty)
             furniture.Filename = "NoFileName";
 
-
+        // Column and row number not implemented
         body = @$"{{""name"":""{furniture.Name}"",""shape"":""{furniture.Shape}"",""weight"":{(int)furniture.Weight},
                                 ""material"":""{furniture.Material}"",""recycling"":""{furniture.Recycling}"", ""unityKey"":""{furniture.UnityKey}"",
                                 ""filename"":""{furniture.Filename}"",""rowNumber"":0,""columnNumber"":0,""isInStock"":true,""isFurniture"":true,""stock_id"":""{stock._id}""}}";
@@ -163,6 +180,11 @@ public class ClanModifyInventoryView : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Removes item from clan stock.
+    /// </summary>
+    /// <param name="itemToRemove">Item to remove</param>
+    /// <param name="callback">Callback</param>
     public void RemoveItemFromServer(ServerItem itemToRemove, Action<bool> callback)
     {
         StartCoroutine(WebRequests.Delete(ServerManager.ADDRESS + "item/" + itemToRemove._id, ServerManager.Instance.AccessToken, request =>

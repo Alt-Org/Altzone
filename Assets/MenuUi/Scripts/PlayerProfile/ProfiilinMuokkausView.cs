@@ -110,6 +110,9 @@ public class ProfiilinMuokkausView : MonoBehaviour
         Application.OpenURL(PRIVACYPOLICYADDRESS);
     }
 
+    /// <summary>
+    /// Deletes user data from server.
+    /// </summary>
     public void DeleteUser()
     {
         if (ServerManager.Instance.Player == null)
@@ -126,6 +129,7 @@ public class ProfiilinMuokkausView : MonoBehaviour
             }
             else
             {
+                // Deletes the user data from DataStorage also
                 var gameConfig = GameConfig.Get();
                 var playerSettings = gameConfig.PlayerSettings;
                 var playerGuid = playerSettings.PlayerGuid;

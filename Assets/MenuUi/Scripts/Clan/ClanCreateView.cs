@@ -19,8 +19,6 @@ public class ClanCreateView : MonoBehaviour
         _openClanButton.onClick.Invoke();
     }
 
-
-
     public void PostClanToServer()
     {
         string clanName = _clanNameInputField.text;

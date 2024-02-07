@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ChatPreviewController handles displaying chat messages in the small chat window in main menu.
+/// /// </summary>
 public class ChatPreviewController : MonoBehaviour
 {
     [Header("Amount of chat messages shown in chat preview window")]
@@ -53,6 +56,8 @@ public class ChatPreviewController : MonoBehaviour
         _chatButtonDefaultAnchors = new Vector2[2];
         _chatButtonShrinkAnchors = new Vector2[2];
 
+        // These anchors are the positions of the image that shrinks and expands the chat when pressed. Default is default pos & Shrink is the shrunken pos.
+
         _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
         _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
         _chatButtonShrinkAnchors[0] = new Vector2(0, 0.6f);
@@ -79,6 +84,11 @@ public class ChatPreviewController : MonoBehaviour
         StopAllCoroutines();
     }
 
+    /// <summary>
+    /// Displays and hides the chat when Chat Preview image is pressed.
+    /// </summary>
+    /// <param name="value">Active or not</param>
+    /// <param name="playAnimation">Determines if we play the animation or not</param>
     internal void ToggleChatMessages(bool value, bool playAnimation)
     {
         _backgroundImage.enabled = value;
@@ -109,10 +119,16 @@ public class ChatPreviewController : MonoBehaviour
             }
         }
 
+        // Refresh the chat messages to see if we have received new messages while the chat was hidden.
         if (value)
             OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
     }
 
+
+    /// <summary>
+    /// Deletes current chat messages and gets the lates ones.
+    /// </summary>
+    /// <param name="chatChannel">Chat channel from which the latest messages are fetched from.</param>
     internal void OnActiveChatWindowChange(ChatChannel chatChannel)
     {
         DeleteChatHistory();
@@ -132,6 +148,11 @@ public class ChatPreviewController : MonoBehaviour
         noMessagesTextGameobject.SetActive(true);
     }
 
+
+    /// <summary>
+    /// Retrieves the latest chat messages from _chatMessages list and displays them in the preview window.
+    /// </summary>
+    /// <param name="channel">Chat messages channel</param>
     internal void MessageReceived(ChatChannel channel)
     {
         if (ChatListener.Instance._chatMessages.Count == 0)
@@ -140,7 +161,7 @@ public class ChatPreviewController : MonoBehaviour
         ChatMessage[] recentMessages = new ChatMessage[chatMessageAmount];
         int index = 0;
 
-        // Checks the x amount of most recent chat messages that match the currently active chat channel name
+        // Checks the x amount of most recent chat messages that match the given chat channel name
 
         for (int i = ChatListener.Instance._chatMessages.Count - 1; i >= 0; i--)
         {
@@ -169,8 +190,16 @@ public class ChatPreviewController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Inserts the chat messages to the Chat Preview window on delay.
+    /// </summary>
+    /// <param name="chatMessagePrefab">Chat message prefab</param>
+    /// <param name="textMeshProUGUI">TextMeshProUGUI component of _chatMessageGameobject</param>
+    /// <param name="message">Chat message string</param>
+    /// <returns></returns>
     private IEnumerator SetShortenedMessageOnDelay(ChatMessagePrefab chatMessagePrefab, TextMeshProUGUI textMeshProUGUI,  string message)
     {
+        // Wait till the Unity UI has rendered so the message displays correctly
         yield return new WaitForEndOfFrame();
 
         chatMessagePrefab.SetMessage(message);
@@ -180,11 +209,18 @@ public class ChatPreviewController : MonoBehaviour
 
     }
 
+
+    /// <summary>
+    /// Sets the last three characters to dots so they fit in chat preview message container.
+    /// </summary>
+    /// <param name="text">TextMeshProUGUI component of chat message</param>
+    /// <returns>Shortened message</returns>
     private string ShortenChatMessage(TextMeshProUGUI text)
     {
         string returnString = string.Empty;
         Vector2 size = text.GetComponent<RectTransform>().rect.size;
 
+        // If the message is shorter than the chat preview container, return the original text.
         if (text.preferredWidth < size.x)
             return text.text;
 

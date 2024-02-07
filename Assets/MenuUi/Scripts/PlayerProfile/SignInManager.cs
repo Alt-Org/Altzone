@@ -63,6 +63,9 @@ public class SignInManager : MonoBehaviour
         registerPassword2InputField.text = "";
     }
 
+    /// <summary>
+    /// Logs the user in.
+    /// </summary>
     public void LogIn()
     {
         ClearMessage();
@@ -102,6 +105,7 @@ public class SignInManager : MonoBehaviour
             }
             else
             {
+                // Parses user info and sends it to ServerManager
                 Debug.Log("Log in successful!");
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.Log(request.downloadHandler.text);
@@ -121,6 +125,7 @@ public class SignInManager : MonoBehaviour
         string password1 = registerPasswordInputField.text;
         string password2 = registerPassword2InputField.text;
 
+        // Checks empty fields and password requirements
         if (registerUsernameInputField.text == string.Empty || registerPasswordInputField.text == string.Empty || registerPassword2InputField.text == string.Empty)
         {
             ShowMessage(ERROR_EMPTY_FIELD, Color.red);

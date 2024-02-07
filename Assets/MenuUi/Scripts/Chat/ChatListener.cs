@@ -14,6 +14,14 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
+
+/// <summary>
+/// ChatListener is the main class handling interaction bewtween Photon chat service, our own server for chat history and the game.
+/// </summary>
+/// <remarks>
+/// AltZone's chat feature is built using Photon Chat. Photon Chat handles subscribing to chat rooms, sending and receiving messages over internet. Chat history is saved and retrieved
+/// from AltZone's own server.
+/// </remarks>
 public class ChatListener : MonoBehaviour, IChatClientListener
 {
     public enum ChatChannelType
@@ -36,7 +44,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         None
     }
 
-    public enum ServerHistoryCause
+    public enum ServerHistoryLoadingCause
     {
         FirstTimeLoading,
         LoadMoreButtonClicked,
@@ -51,7 +59,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
     internal bool _chatPreviewIsEnabled;
 
     private ChatClient _chatClient;
-    private ChatController _chatController;         // Controller for the main chat
+    private ChatController _chatController;                 // Controller for the main chat
     private ChatPreviewController _chatPreviewController;   // Controller for the small chat preview outside of main chat
 
     [SerializeField] internal ChatChannel _activeChatChannel, _globalChatChannel, _clanChatChannel, _countryChatChannel;
@@ -61,7 +69,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private ChatAppSettings _appSettings;
 
-    internal string _serverAddress = "https://altzone.fi/api/chat/";
+    private const string SERVER_ADDRESS = "https://altzone.fi/api/chat/";
 
     internal ChatPreviewController ChatPreviewController { get => _chatPreviewController; set => _chatPreviewController = value; }
     internal ChatController ChatController { get => _chatController; set => _chatController = value; }
@@ -97,7 +105,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
         #endregion
 
-
+        // Random username if the player is not logged in
         _username = PlayerPrefs.GetString("ChatUsername", "TestUser-" + UnityEngine.Random.Range(0, 10000));
         _id = Guid.NewGuid().ToString();
 
@@ -130,16 +138,16 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private void OnEnable()
     {
-        ServerManager.OnLogInStatusChanged += SetPlayerValues;
+        ServerManager.OnLogInStatusChanged += OnLoginStatusChanged;
         ServerManager.OnClanChanged += OnClanChanged;
     }
     private void OnDisable()
     {
-        ServerManager.OnLogInStatusChanged -= SetPlayerValues;
+        ServerManager.OnLogInStatusChanged -= OnLoginStatusChanged;
         ServerManager.OnClanChanged -= OnClanChanged;
     }
 
-    private void SetPlayerValues(bool isLoggedIn)
+    private void OnLoginStatusChanged(bool isLoggedIn)
     {
         var store = Storefront.Get();
         PlayerData playerData = null;
@@ -160,6 +168,9 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Connects to chat if we are in the main menu or lobby scene
+        // (Lobby has been later integrated to the 10-MenuUi)
+
         if (scene.name == "10-MenuUi" || scene.name == "20-Lobby")
         {
             if (!ChatClient.CanChat)
@@ -182,6 +193,15 @@ public class ChatListener : MonoBehaviour, IChatClientListener
             ChatPreviewController?.DeleteChatHistory();
     }
 
+
+    /// <summary>
+    /// Deletes active chat's history from server, creates a new history with the same name and subscribes to the new channel.
+    /// </summary>
+    /// <param name="channelName">Name of the channel to be deleted</param>
+    /// <param name="sender"> Name of the sender of delete request</param>
+    /// <param name="data"> Chat message data</param>
+    /// <param name="channel">Chat channel</param>
+    /// <remarks> This feature is only intended for development use!</remarks>
     private void DeleteChatDebug(string channelName, string sender, object[] data, ChatChannel channel)
     {
         string username = data[0].ToString();
@@ -191,9 +211,12 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
         if (substrings.Length <= 1)
         {
+            // Checks that the sender is local player. Only local player (the sender of the delete command) deletes the chat from server.
             if (sender == _id)
             {
                 StopAllCoroutines();
+
+                // Sends a delete command to the server and sends a message to all other chat users to resubscribe to the new (now empty and deleted) chat.
 
                 StartCoroutine(DeleteChat(channel._id, (success) =>
                 {
@@ -219,6 +242,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         }
         else if (substrings[1] == "resubscribe")
         {
+            // Deletes local chat history.
             DeleteChatHistory(channel);
 
             if (sender != _id)
@@ -228,6 +252,12 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         }
     }
 
+
+    /// <summary>
+    /// Unsubscribes from current clan chat and subscribes to new clan's chat.
+    /// </summary>
+    /// <param name="clan">New clan</param>
+    /// <returns></returns>
     public IEnumerator ChangeClanChat(ServerClan clan)
     {
         string clanChatName = string.Empty;
@@ -248,15 +278,15 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         StartCoroutine(GetChatHistoryAndSubscribe(new ChatChannel[] { _clanChatChannel }, null));
     }
 
-    #region Server Webrequests
-    internal void GetChatHistoryFromServer(ChatChannel channel, ServerHistoryCause serverHistoryCause, Action<bool> callbackOnFinish) { StartCoroutine(GetChatHistoryFromServerCoroutine(channel, serverHistoryCause, callbackOnFinish)); }
+    #region Server WebRequests
+    internal void GetChatHistoryFromServer(ChatChannel channel, ServerHistoryLoadingCause serverHistoryCause, Action<bool> callbackOnFinish) { StartCoroutine(GetChatHistoryFromServerCoroutine(channel, serverHistoryCause, callbackOnFinish)); }
 
-    private IEnumerator PostChatToServerCoroutine(string channelName, System.Action<JObject> callbackOnFinish)
+    private IEnumerator PostChatToServer(string channelName, System.Action<JObject> callbackOnFinish)
     {
         string json = "{\"name\": \"" + channelName + "\"}";
         var bytes = Encoding.UTF8.GetBytes(json);
 
-        using (UnityWebRequest request = UnityWebRequest.Put(_serverAddress, bytes))
+        using (UnityWebRequest request = UnityWebRequest.Put(SERVER_ADDRESS, bytes))
         {
             request.method = "POST"; // Hack to send POST to server instead of PUT
             request.SetRequestHeader("Content-Type", "application/json");
@@ -278,9 +308,9 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         }
     }
 
-    private IEnumerator GetChatFromServerCoroutine(string channelName, System.Action<JObject> callbackOnFinish)
+    private IEnumerator GetChatFromServer(string channelName, System.Action<JObject> callbackOnFinish)
     {
-        using (UnityWebRequest request = UnityWebRequest.Get(_serverAddress + @"?search=name=""" + channelName + @""""))
+        using (UnityWebRequest request = UnityWebRequest.Get(SERVER_ADDRESS + @"?search=name=""" + channelName + @""""))
         {
             yield return request.SendWebRequest();
 
@@ -302,14 +332,23 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         }
     }
 
-    private IEnumerator GetChatHistoryFromServerCoroutine(ChatChannel channel, ServerHistoryCause serverHistoryCause, System.Action<bool> callbackOnFinish)
+    private IEnumerator GetChatHistoryFromServerCoroutine(ChatChannel channel, ServerHistoryLoadingCause serverHistoryCause, System.Action<bool> callbackOnFinish)
     {
         string query = string.Empty;
+        bool loadingNewMessages = true;
 
-        if (serverHistoryCause == ServerHistoryCause.FirstTimeLoading || serverHistoryCause == ServerHistoryCause.TimedOutFromPhotonChat)
-            query = $"{_serverAddress}{channel._id}/messages?sort=id&desc&limit=50";
-        else if (serverHistoryCause == ServerHistoryCause.LoadMoreButtonClicked)
-            query = $"{_serverAddress}{channel._id}/messages?search=id<{channel._firstMsgIndex};AND;id>{channel._firstMsgIndex - 50}&sort=id&asc&limit=50";
+        // Checks why we want to fetch chat history. If we are loading for the first time or reconnecting after timeout we get the most recent 50 messages
+        // Load more buttons fetches older messages based on current last/first message index. 
+        if (serverHistoryCause == ServerHistoryLoadingCause.FirstTimeLoading || serverHistoryCause == ServerHistoryLoadingCause.TimedOutFromPhotonChat)
+        {
+            query = $"{SERVER_ADDRESS}{channel._id}/messages?sort=id&desc&limit=50";
+            loadingNewMessages = true;
+        }
+        else if (serverHistoryCause == ServerHistoryLoadingCause.LoadMoreButtonClicked)
+        {
+            query = $"{SERVER_ADDRESS}{channel._id}/messages?search=id<{channel._firstMsgIndex};AND;id>{channel._firstMsgIndex - 50}&sort=id&asc&limit=50";
+            loadingNewMessages = false;
+        }
 
         using (UnityWebRequest request = UnityWebRequest.Get(query))
         {
@@ -327,6 +366,8 @@ public class ChatListener : MonoBehaviour, IChatClientListener
                 JObject json = JObject.Parse(request.downloadHandler.text);
                 JArray messages = (JArray)json["data"]["Chat"];
 
+                // Goes through all received messages and instantiates them.
+                // We go through the list in reverse order as the first index is the most recent message and we want the most recent message at the bottom of chat
                 for (int i = messages.Count - 1; i >= 0; i--)
                 {
                     int id = int.Parse(messages[i]["id"].ToString());
@@ -335,23 +376,29 @@ public class ChatListener : MonoBehaviour, IChatClientListener
                     Enum.TryParse(messages[i]["feeling"].ToString(), out Mood mood);
 
                     ChatMessage chatMessage = new ChatMessage(id, username, message, channel, mood);
-                    _chatMessages.Add(chatMessage);
+
+                    // New messages are put at the end of the list, old ones to the front
+                    if (loadingNewMessages)
+                        _chatMessages.Add(chatMessage);
+                    else
+                        _chatMessages.Insert(0, chatMessage);
 
                     int index = int.Parse(messages[i]["id"].ToString());
 
+                    // Checks if the message id is lower or higher than the current channel lowest/highest index.
                     if (channel._firstMsgIndex == 0 || index < channel._firstMsgIndex)
                         channel._firstMsgIndex = index;
 
                     if (channel._lastMsgIndex == 0 || index > channel._lastMsgIndex)
                         channel._lastMsgIndex = index;
 
-
                     if (channel == _activeChatChannel)
                         ChatPreviewController?.MessageReceived(_activeChatChannel);
 
-                    if (serverHistoryCause == ServerHistoryCause.LoadMoreButtonClicked)
+                    // Old messages are instantiated on top, new ones on the bottom
+                    if (serverHistoryCause == ServerHistoryLoadingCause.LoadMoreButtonClicked)
                         ChatController?.InstantiateChatMessagePrefab(chatMessage, true);
-                    else if (serverHistoryCause == ServerHistoryCause.FirstTimeLoading || serverHistoryCause == ServerHistoryCause.TimedOutFromPhotonChat)
+                    else if (serverHistoryCause == ServerHistoryLoadingCause.FirstTimeLoading || serverHistoryCause == ServerHistoryLoadingCause.TimedOutFromPhotonChat)
                         ChatController?.InstantiateChatMessagePrefab(chatMessage, false);
                 }
 
@@ -360,7 +407,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
             }
         }
     }
-    private IEnumerator PostMessageToServerCoroutine(ChatMessage message, ChatMessagePrefab chatMessageInstance)
+    private IEnumerator PostMessageToServer(ChatMessage message, ChatMessagePrefab chatMessageInstance)
     {
         if (message._message == null || message._message.Length == 0)
             yield break;
@@ -369,7 +416,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         string json = "{\"id\":" + message._id + ",\"senderUsername\":\"" + message._username + "\",\"content\":\"" + message._message + "\",\"feeling\":" + enumIndex.ToString() + "}";
         var bytes = Encoding.UTF8.GetBytes(json);
 
-        using(UnityWebRequest request = UnityWebRequest.Put($"{_serverAddress}{message._channel._id}/messages", bytes))
+        using(UnityWebRequest request = UnityWebRequest.Put($"{SERVER_ADDRESS}{message._channel._id}/messages", bytes))
         {
             request.method = "POST"; // Hack to send POST to server instead of PUT
             request.SetRequestHeader("Content-Type", "application/json");
@@ -391,7 +438,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private IEnumerator DeleteChat(string id, Action<bool> callbackOnFinish)
     {
-        using(UnityWebRequest request = UnityWebRequest.Delete(_serverAddress + id))
+        using(UnityWebRequest request = UnityWebRequest.Delete(SERVER_ADDRESS + id))
         {
             yield return request.SendWebRequest();
 
@@ -412,17 +459,26 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         }
     }
 
+
+    /// <summary>
+    /// Fetches the chat history from server (or posts a new one if not found) and subscribes to the chat thorugh Photon Chat
+    /// </summary>
+    /// <param name="channels">Channels to subscribe</param>
+    /// <param name="callbackOnFinish">Callback</param>
+    /// <returns></returns>
     public IEnumerator GetChatHistoryAndSubscribe(ChatChannel[] channels, Action<bool> callbackOnFinish)
     {
         for (int i = 0; i < channels.Length; i++)
         {
             ChatChannel channel = channels[i];
 
-            StartCoroutine(GetChatFromServerCoroutine(channel._channelName, (returnData) =>
+            // Tries to fetch the chat history from server
+            StartCoroutine(GetChatFromServer(channel._channelName, (returnData) =>
             {
                 if (returnData == null)
                 {
-                    StartCoroutine(PostChatToServerCoroutine(channel._channelName, (returnData) =>
+                    // If chat history was not found, create a new one
+                    StartCoroutine(PostChatToServer(channel._channelName, (returnData) =>
                     {
                         if (returnData == null)
                         {
@@ -433,6 +489,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
                         }
                         else
                         {
+                            //Creating chat history was successful so we subscribe to the channel through Photon Chat's chat client
                             Debug.Log("Successfully created " + channel._channelName + " to server with id " + returnData["data"]["Chat"]["_id"].ToString());
                             channel._id = returnData["data"]["Chat"]["_id"].ToString();
                             ChatClient.Subscribe(channel._channelName, 0, 0);
@@ -446,13 +503,16 @@ public class ChatListener : MonoBehaviour, IChatClientListener
                 {
                     Debug.Log("Found " + returnData["name"] + " from server. Attempting to get chat history");
                     channel._id = returnData["_id"].ToString();
-                    StartCoroutine(GetChatHistoryFromServerCoroutine(channel, ServerHistoryCause.FirstTimeLoading, (returnData) =>
+
+                    // Chat history was found so we fetch it
+                    StartCoroutine(GetChatHistoryFromServerCoroutine(channel, ServerHistoryLoadingCause.FirstTimeLoading, (returnData) =>
                     {
                         if (returnData == false)
                             Debug.LogWarning("Could not get chat history for " + channel._channelName + ". This chat might not any messages posted yet.");
                         else
                             Debug.Log("Chat history found for " + channel._channelName);
 
+                        // Subscribe to the channel through Photon Chat's ChatClient
                         ChatClient.Subscribe(channel._channelName, 0, 0);
 
                         if (callbackOnFinish != null)
@@ -465,10 +525,9 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         yield break;
     }
 
-
     #endregion
 
-    #region IChatClientListener implementation
+    #region IChatClientListener Implementation
 
     public void DebugReturn(DebugLevel level, string message) => Debug.Log($"{level}: {message}");
     public void OnChatStateChange(ChatState state)
@@ -478,12 +537,14 @@ public class ChatListener : MonoBehaviour, IChatClientListener
     public void OnConnected()
     {
         Debug.Log("Connected to chat");
+        // Fetches the chat history and subscribes to the channels after connecting
         StartCoroutine(GetChatHistoryAndSubscribe(_chatChannels, null));
     }
     public void OnDisconnected()
     {
         Debug.Log("Disconnected from chat.");
 
+        // Deletes the chat's and tries to reconnect to Photon Chat if the disconnection was not because of client or server logic
         StopAllCoroutines();
 
         foreach (ChatChannel channel in _chatChannels)
@@ -494,12 +555,20 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         if (ChatClient.DisconnectedCause != ChatDisconnectCause.DisconnectByClientLogic && ChatClient.DisconnectedCause != ChatDisconnectCause.DisconnectByServerLogic)
             ConnectToPhotonChat();
     }
+
+    /// <summary>
+    /// Parses messages received through Photon Chat, instantiates new message to the chat and posts the message to server.
+    /// </summary>
+    /// <param name="channelName">Name of the messages channel</param>
+    /// <param name="senders">Sender's Id</param>
+    /// <param name="data">Message data</param>
     public void OnGetMessages(string channelName, string[] senders, object[] data)
     {
         Debug.Log($"New messages from channel {channelName}");
 
         for (int i = 0; i < senders.Length; i++)
         {
+            // Parsing message data
             object[] dataToParse = (object[])data[i];
             ChatChannel channel = Array.Find(_chatChannels, item => item._channelName == channelName);
 
@@ -507,6 +576,8 @@ public class ChatListener : MonoBehaviour, IChatClientListener
             string username = dataToParse[0].ToString();
             string message = dataToParse[1].ToString();
 
+            // If the message starts with 'Delete' we delete the chat and its history. THIS IS MEANT FOR DEVELOPEMENT USE ONLY
+            // It's a convenient way to delete chat history if we want to get rid of it for some reason.
             if (message.StartsWith("/delete"))
             {
                 DeleteChatDebug(channelName, senders[i], dataToParse, channel);
@@ -516,14 +587,17 @@ public class ChatListener : MonoBehaviour, IChatClientListener
                 ChatMessage chatMessage = new ChatMessage(id, username, message, channel, (Mood)dataToParse[2]);
                 _chatMessages.Add(chatMessage);
 
+                //If the message is from currently active channel, tell the chat preview to show new message
                 if (channelName == _activeChatChannel._channelName)
                     ChatPreviewController?.MessageReceived(channel);
 
                 ChatMessagePrefab chatMessageInstance = ChatController?.InstantiateChatMessagePrefab(chatMessage, false);
 
+                // OnGetMessages gets called on all chat subscribers (local and remote) so we only upload the message to server if the message is from local player
+                // (So we avoid duplicates on server)
                 if (senders[i] == _id)
                 {
-                    StartCoroutine(PostMessageToServerCoroutine(chatMessage, chatMessageInstance));
+                    StartCoroutine(PostMessageToServer(chatMessage, chatMessageInstance));
                 }
 
             }
