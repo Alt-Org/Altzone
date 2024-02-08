@@ -2,6 +2,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ClanListing contains references to instantiated ClanListPrefab.
+/// </summary>
 public class ClanListing : MonoBehaviour
 {
     [SerializeField] private Button _joinButton;

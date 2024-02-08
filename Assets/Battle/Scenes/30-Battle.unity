@@ -4149,16 +4149,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6545950512548347017, guid: f21751cf82a4ac443acb0fb5c781caf2,
-        type: 3}
-      propertyPath: _audioList.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6545950512548347017, guid: f21751cf82a4ac443acb0fb5c781caf2,
-        type: 3}
-      propertyPath: _audioList.Array.data[6]
-      value: 
-      objectReference: {fileID: 8300000, guid: 6b278daf87f4f464db5b8e1db640e277, type: 3}
     - target: {fileID: 8689527316273912413, guid: f21751cf82a4ac443acb0fb5c781caf2,
         type: 3}
       propertyPath: m_RootOrder
@@ -5491,10 +5481,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3440205131502962469, guid: d3a082e879120504aa52f8e368d7fe52,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4a8ed091e0042794dad3a4d47b4e7109,
+        type: 3}
     - target: {fileID: 3440205131502962471, guid: d3a082e879120504aa52f8e368d7fe52,
         type: 3}
       propertyPath: m_Name
       value: Background
+      objectReference: {fileID: 0}
+    - target: {fileID: 3440205131502962471, guid: d3a082e879120504aa52f8e368d7fe52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3a082e879120504aa52f8e368d7fe52, type: 3}

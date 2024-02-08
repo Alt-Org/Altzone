@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using static ChatListener;
 
+/// <summary>
+/// Class containing information about individual chat channel. Chat channel can be Global, Clan or Country. This is determined by chat channels ChatChannelType
+/// </summary>
 [Serializable]
 public class ChatChannel
 {

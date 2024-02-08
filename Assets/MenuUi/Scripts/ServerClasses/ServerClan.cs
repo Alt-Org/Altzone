@@ -3,7 +3,6 @@ using System.Collections.Generic;
 /// <summary>
 /// Clan object received from the server
 /// </summary>
-/// </summary>
 public class ServerClan
 {
     public string _id { get; set; }

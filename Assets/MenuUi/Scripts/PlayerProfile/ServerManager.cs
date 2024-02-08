@@ -10,15 +10,23 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 
+/// <summary>
+/// ServerManager acts as an interface between the server and the game.
+/// Stores information about the logged in Player, Clan, Stock, Items etc.
+/// </summary>
 public class ServerManager : MonoBehaviour
 {
     public static ServerManager Instance { get; private set; }
 
-    private ServerPlayer _player;
-    private ServerClan _clan;
-    private ServerStock _stock;
+    private ServerPlayer _player;               // Player info from server
+    private ServerClan _clan;                   // Clan info from server
+    private ServerStock _stock;                 // Stock info from server
 
     private int _accessTokenExpiration;
+    public bool isLoggedIn = false;
+    public static string ADDRESS = "https://altzone.fi/api/";
+
+    #region Delegates & Events
 
     public delegate void LogInStatusChanged(bool isLoggedIn);
     public static event LogInStatusChanged OnLogInStatusChanged;
@@ -29,7 +37,9 @@ public class ServerManager : MonoBehaviour
     public delegate void ClanInventoryChanged();
     public static event ClanInventoryChanged OnClanInventoryChanged;
 
-    public bool isLoggedIn = false;
+    #endregion
+
+    #region Getters & Setters
 
     public string AccessToken { get => PlayerPrefs.GetString("accessToken", string.Empty); set => PlayerPrefs.SetString("accessToken", value); }
     public int AccessTokenExpiration { get => _accessTokenExpiration; set => _accessTokenExpiration = value; }
@@ -46,7 +56,7 @@ public class ServerManager : MonoBehaviour
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
 
-    public static string ADDRESS = "https://altzone.fi/api/";
+    #endregion
 
     private void Awake()
     {
@@ -77,17 +87,27 @@ public class ServerManager : MonoBehaviour
         PlayerPrefs.SetString("profileId", string.Empty);
     }
 
+    /// <summary>
+    /// Raises OnClanChanged event when clan has changed.
+    /// </summary>
     public void RaiseClanChangedEvent()
     {
         if (OnClanChanged != null)
             OnClanChanged(Clan);
     }
+
+    /// <summary>
+    /// Raises ClanInventoryChanged event when clan stock has changed.
+    /// </summary>
     public void RaiseClanInventoryChangedEvent()
     {
         if (OnClanInventoryChanged != null)
             OnClanInventoryChanged();
     }
 
+    /// <summary>
+    /// Tries to log in player if access token is found.
+    /// </summary>
     private void LogIn()
     {
         if (AccessToken == string.Empty)
@@ -96,6 +116,7 @@ public class ServerManager : MonoBehaviour
         }
         else
         {
+            // Checks if we can get Player & player Clan from the server
             StartCoroutine(GetPlayerFromServer(player =>
             {
                 if (player == null)
@@ -122,12 +143,19 @@ public class ServerManager : MonoBehaviour
             }));
         }
     }
+
+    /// <summary>
+    /// Logs player out.
+    /// </summary>
     public void LogOut()
     {
         Reset();
 
         var playerSettings = GameConfig.Get().PlayerSettings;
-        playerSettings.PlayerGuid = "12345";                    //Default player
+
+        // 12345 is the DemoPlayer player in DataStorage
+        // If in the future we force log in, this default player is not necessary.
+        playerSettings.PlayerGuid = "12345";
         isLoggedIn = false;
 
         if (OnLogInStatusChanged != null)
@@ -137,6 +165,14 @@ public class ServerManager : MonoBehaviour
             OnClanChanged(null);
     }
 
+    /// <summary>
+    /// Sets values related to "Profile" received from server
+    /// </summary>
+    /// <param name="profileJSON">JSON object containing Profile info from server</param>
+    /// <remarks>
+    /// Profile and Player are not the same as Profile might hold personal information!
+    /// Player contains exclusively data related to in game Player.
+    /// </remarks>
     public void SetProfileValues(JObject profileJSON)
     {
         AccessToken = profileJSON["accessToken"].ToString();
@@ -146,14 +182,17 @@ public class ServerManager : MonoBehaviour
         LogIn();
     }
 
+    /// <summary>
+    /// Sets Player values from server and saves it to DataStorage.
+    /// </summary>
+    /// <param name="player">ServerPlayer from server containing the most up to date player data.</param>
     public void SetPlayerValues(ServerPlayer player)
     {
         string clanId = player.clan_id;
 
+        // 12345 is DemoClan in DataStore
         if (clanId == null)
             clanId = "12345";
-
-        // 12345 is DemoClan in DataStore
 
         // Check if the customplayer index is in DataStorage
         var storefront = Storefront.Get();
@@ -178,6 +217,12 @@ public class ServerManager : MonoBehaviour
         if (OnLogInStatusChanged != null)
             OnLogInStatusChanged(true);
     }
+
+    /// <summary>
+    /// Fetches Clan, Stock and Items data from server and saves it to DataStorage.
+    /// </summary>
+    /// <param name="clan">Clan to be saved.</param>
+    /// <returns></returns>
     public IEnumerator SaveClanFromServerToDataStorage(ServerClan clan)
     {
         PlayerData playerData = null;
@@ -188,6 +233,7 @@ public class ServerManager : MonoBehaviour
         var playerGuid = playerSettings.PlayerGuid;
         var store = Storefront.Get();
 
+        // Checks that the player is found in DataStorage
         store.GetPlayerData(playerGuid, playerDataFromStorage =>
         {
             if (playerDataFromStorage == null)
@@ -197,9 +243,11 @@ public class ServerManager : MonoBehaviour
 
             playerData = playerDataFromStorage;
 
+            // Changes player clan and saves it to DataStorage.
             playerData.ClanId = clan._id;
             store.SavePlayerData(playerData, null);
 
+            // Checks if the clan is found in DataStorage or if we have to create new one.
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
@@ -215,6 +263,7 @@ public class ServerManager : MonoBehaviour
             });
         });
 
+        // Creates or fetches the most up to date clan Stock before saving.
         if (Stock == null)
         {
             yield return StartCoroutine(GetStockFromServer(clan, stock =>
@@ -232,6 +281,7 @@ public class ServerManager : MonoBehaviour
             }));
         }
 
+        // Get Clan Items
         yield return StartCoroutine(GetStockItemsFromServer(Stock, new List<ServerItem>(), null, 0, items =>
         {
             if (items != null)
@@ -249,6 +299,7 @@ public class ServerManager : MonoBehaviour
             }
         }));
 
+        // Saves clan data including its items.
         store.SaveClanData(clanData, null);
     }
 
@@ -299,6 +350,7 @@ public class ServerManager : MonoBehaviour
                 ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
                 Clan = clan;
 
+                // Saves clan data to DataStorage
                 StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
                 if (callback != null)

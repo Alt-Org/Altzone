@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ClanFurnitureListing contains references to instantiated ClanFurnitureList prefab.
+/// </summary>
 public class ClanFurnitureListing : MonoBehaviour
 {
     [Header("Settings")]

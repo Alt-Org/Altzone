@@ -23,6 +23,9 @@ namespace Battle.Scripts.Test
         private const string DEBUG_LOG_BALL_COLLISION = "[{0:000000}] [BATTLE] [SHIELD BOX COLLIDER] Ball collision: ";
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
 
+        public Transform ShieldTransform => _transform;
+
+
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();
@@ -41,14 +44,27 @@ namespace Battle.Scripts.Test
             if (otherGameObject.CompareTag(Tags.Ball))
             {
                 var rb = otherGameObject.GetComponentInParent<Rigidbody2D>();
+
+                // Tämä tarkistaa, meneekö ammus oikeaan suuntaan
+                var incomingDirection = (rb.position - (Vector2)_transform.position).normalized;
+                var shieldDirection = _transform.up; // Kilven suunta
+                var isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0; 
+
+                // Tämä kohta laskee uuden nopeuden ja suunnan
                 var gridPos = _gridManager.WorldPointToGridPosition(rb.position);
                 rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
                 var angle = _transform.rotation.eulerAngles.z + _bounceAngle;
-                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "shield angle {1}", _syncedFixedUpdateClock.UpdateCount, angle));
                 var rotation = Quaternion.Euler(0, 0, angle);
-                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "rotation {1}", _syncedFixedUpdateClock.UpdateCount, rotation));
-                rb.velocity = rotation * Vector2.up * _attackMultiplier;
-                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "velocity {1}", _syncedFixedUpdateClock.UpdateCount, rb.velocity));
+                var originalVelocityNormalized = rb.velocity.normalized; 
+                var newSpeed = rb.velocity.magnitude + _attackMultiplier; 
+                var newVelocity = originalVelocityNormalized * newSpeed; 
+
+                
+                // Päätetään nopeuttaako kilpi ammusta
+                var isAccelerated = newVelocity.magnitude > rb.velocity.magnitude;
+
+                Debug.Log(string.Format(DEBUG_LOG_BALL_COLLISION + "shield angle {1}, correct direction: {2}, accelerated: {3}", _syncedFixedUpdateClock.UpdateCount, angle, isCorrectDirection, isAccelerated));
+                rb.velocity = newVelocity;
                 if (_playerActor != null)
                 {
                     _playerActor.ShieldHit(1);
@@ -57,7 +73,9 @@ namespace Battle.Scripts.Test
                 yield return new WaitForSeconds(.1f);
                 _collider.enabled = true;
             }
-
         }
     }
 }
+
+
+

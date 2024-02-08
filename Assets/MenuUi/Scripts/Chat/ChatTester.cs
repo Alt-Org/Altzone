@@ -2,8 +2,15 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+
+/// <summary>
+/// Sends random messages to chat for testing purposes.
+/// </summary>
 public class ChatTester : MonoBehaviour
 {
+    //
+    // THIS SCRIPT HAS NOT BEEN UPDATED IN A WHILE AND MAY NOT WORK!
+    //
     public static ChatTester Instance;
 
     [Tooltip("ChatTester can be activated/stopped by pressing z and x keys simultaneously on keyboard")] public bool isActive;

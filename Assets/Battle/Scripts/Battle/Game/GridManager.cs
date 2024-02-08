@@ -116,6 +116,11 @@ namespace Battle.Scripts.Battle.Game
             return gridPos;
         }
 
+        internal GridPos ClampGridPosition(GridPos gridPos)
+        {
+            return new GridPos(Math.Clamp(gridPos.Row, 0, _gridHeight), Math.Clamp(gridPos.Col, 0, _gridWidth));
+        }
+
         internal bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
         {
             switch (teamNumber)

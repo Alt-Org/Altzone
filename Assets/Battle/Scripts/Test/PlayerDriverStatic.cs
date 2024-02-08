@@ -110,7 +110,7 @@ namespace Battle.Scripts.Test
 
             _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             _state ??= gameObject.AddComponent<PlayerDriverState>();
-            _state.ResetState(_playerActor, _settings._teamNumber);
+            _state.ResetState(_playerActor, _settings._playerPos, _settings._teamNumber);
             _state.MovementEnabled = false;
 
             _playerManager.RegisterBot(this);
@@ -158,7 +158,7 @@ namespace Battle.Scripts.Test
 
             Vector2 position = new(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
-            GridPos targetGridPos = _gridManager.WorldPointToGridPosition(targetPosition);
+            GridPos targetGridPos = _gridManager.ClampGridPosition(_gridManager.WorldPointToGridPosition(targetPosition));
 
             if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _settings._teamNumber))
             {
