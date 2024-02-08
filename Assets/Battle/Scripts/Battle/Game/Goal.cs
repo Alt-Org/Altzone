@@ -23,6 +23,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] int TestLimit;
         [SerializeField] int GoalNumber;
         [SerializeField] TMP_Text CountDownText;
+        [SerializeField] AudioSource _AudioSource;
+        [SerializeField] AudioClip[] _AudioClips;
 
         [SerializeField, Header("End Screen Graphics")] private GameObject WinGraphics;
         [SerializeField] private GameObject LossGraphics;
@@ -83,7 +85,7 @@ namespace Battle.Scripts.Battle.Game
                     { {"Role", (int)PlayerRole.Spectator } });
                     //PhotonNetwork.LeaveRoom();
                     LossGraphics.SetActive(true);
-                    LobbyButton.SetActive(true);
+                    //LobbyButton.SetActive(true);
                 }
             }
         }

@@ -31,6 +31,13 @@ public class GraphicsChanger : MonoBehaviour
             SwitchToLoserGraphics();
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            TestGraphicsChanger();
+        }
+    }
     private void SwitchToLoserGraphics()
     {
         Heart.sprite = LoserHeart;
@@ -39,5 +46,17 @@ public class GraphicsChanger : MonoBehaviour
         TextBox.sprite = LoserTextBox;
         LungsEmpty.sprite = LoserLungsEmpty;
         LungsFull.sprite = LoserLungsFull;
+    }
+    public void TestGraphicsChanger()
+    {
+        if (Application.isEditor)
+        {
+            Heart.sprite = LoserHeart;
+            BackGround.sprite = LoserBackGround;
+            Loot_BackGround.sprite = Loser_Loot_BackGround;
+            TextBox.sprite = LoserTextBox;
+            LungsEmpty.sprite = LoserLungsEmpty;
+            LungsFull.sprite = LoserLungsFull;
+        }
     }
 }
