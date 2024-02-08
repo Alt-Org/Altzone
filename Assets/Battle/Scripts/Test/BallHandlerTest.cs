@@ -14,7 +14,6 @@ public class BallHandlerTest : MonoBehaviour
     [SerializeField] private GameObject _explotion;
     [SerializeField] private Color[] _colors;
     [SerializeField] private float _maxSpeed;
- 
 
     private float _arenaScaleFactor;
 
@@ -59,7 +58,7 @@ public class BallHandlerTest : MonoBehaviour
     public void Launch(Vector3 position, Vector3 direction, float speed)
     {
         _rb.position = position;
-        _rb.velocity = NewRotation(direction) * Vector2.up * speed;
+        SetVelocity(NewRotation(direction) * Vector2.up * speed);
         _sprite.enabled = true;
 
         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
@@ -77,52 +76,49 @@ public class BallHandlerTest : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         GridPos gridPos = null;
-        var otherGameObject = collision.gameObject; 
+        var otherGameObject = collision.gameObject;
 
-        if (!otherGameObject.CompareTag(Tags.Player))
+        Debug.Log(otherGameObject.tag);
+
+        if (!otherGameObject.CompareTag("ShieldBoxCollider"))
         {
             Vector2 normal = collision.contacts[0].normal;
             Vector2 currentVelocity = _rb.velocity;
             Vector2 direction = Vector2.Reflect(currentVelocity, normal);
             gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
             _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
-            _rb.velocity = NewRotation(direction) * Vector2.up * currentVelocity.magnitude;
+            SetVelocity(NewRotation(direction) * Vector2.up * currentVelocity.magnitude);
         }
         else
         {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player)", _syncedFixedUpdateClock.UpdateCount));
-        }
+            var shield = otherGameObject.GetComponent<ShieldBoxColliderTest>(); 
+            if (shield != null)
+            {
+                var shieldTransform = shield.ShieldTransform; 
+                var bounceAngle = shield.BounceAngle;
+                var attackMultiplier = shield.AttackMultiplier;
+                var incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
+                var shieldDirection = shieldTransform.up; 
+                var isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0; 
 
-    
-        if (otherGameObject.CompareTag("Shield"))
-        {
-
-        var shield = otherGameObject.GetComponent<ShieldBoxColliderTest>(); 
-        if (shield != null)
-        {
-              var shieldTransform = shield.ShieldTransform; 
-              var bounceAngle = shield.BounceAngle;
-              var attackMultiplier = shield.AttackMultiplier;
-              var incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
-              var shieldDirection = shieldTransform.up; 
-              var isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0; 
-
-        if (isCorrectDirection) 
-        {
-             gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
-            _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
-             var angle = shieldTransform.rotation.eulerAngles.z + bounceAngle; // Käytä kilven kulmaa
-             var rotation = Quaternion.Euler(0, 0, angle);
-             var newVelocity = rotation * Vector2.up * (_rb.velocity.magnitude + attackMultiplier); 
+                if (isCorrectDirection) 
+                {
+                    gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
+                    _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
+                    var angle = shieldTransform.rotation.eulerAngles.z + bounceAngle; // Käytä kilven kulmaa
+                    var rotation = Quaternion.Euler(0, 0, angle);
+                    var newVelocity = rotation * Vector2.up * (_rb.velocity.magnitude + attackMultiplier); 
             
-            SetVelocity(newVelocity);
+                    SetVelocity(newVelocity);
+
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                }
+            }
         }
-    }
-}
 
-
-        else if (otherGameObject.CompareTag("Wall"))
+        if (otherGameObject.CompareTag("Wall"))
         {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: soul wall, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
             int BrickHealth = otherGameObject.GetComponent<BrickRemove>().Health;
             otherGameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
 
@@ -132,8 +128,11 @@ public class BallHandlerTest : MonoBehaviour
                 Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
             }
         }
+        else
+        {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: arena border, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+        }
     }
-
 
     private void SetVelocity(Vector3 velocity)
     {
@@ -146,7 +145,7 @@ public class BallHandlerTest : MonoBehaviour
             _colors.Length - 1
         );
         _sprite.color = _colors[colorIndex];
-        }
+    }
 
     private Quaternion NewRotation(Vector2 direction)
     {
