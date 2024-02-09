@@ -17,6 +17,10 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject BombIndicator;
     [SerializeField] private GameObject ItemBall;
     [SerializeField] private GameObject Heart;
+    [SerializeField] public Image Aura;
+    [SerializeField] public Image Bubble;
+    [SerializeField] public Sprite[] Auras;
+    [SerializeField] public Sprite[] Bubbles;
 
     private RectTransform target;
     Vector2 endLoc;
@@ -58,7 +62,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         Heart = GameObject.FindWithTag("Heart");
         target = Heart.GetComponent<RectTransform>();
-        
 
         Raid_Timer raidTimer = FindObjectOfType<Raid_Timer>();
         if (raidTimer != null)
@@ -84,6 +87,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemImage.sprite = ItemSprite;
         ItemWeightText.text = ItemWeight + "kg";
         empty = false;
+        SetBGColor();
     }
 
     public void RemoveData()
@@ -143,12 +147,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         Lock.SetActive(true);
         locked = true;
     }
-    void OnTimeEnded()
-    {
-        timeEnded = true;
-        active = false;
-    }
-
+    
     public void OnPointerClick(PointerEventData pointerData)
     {
         if (empty || locked)
@@ -166,5 +165,41 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         {
             return;
         }
+    }
+    void OnTimeEnded()
+    {
+        timeEnded = true;
+        active = false;
+    }
+    void SetBGColor()
+    {
+        Debug.Log("SetBGColorissa: " + ItemWeight);
+        switch (ItemWeight)
+        {
+            case <= 1.0f:
+                Bubble.sprite = Bubbles[1];
+                Aura.sprite = Auras[1];
+                break;
+            case <= 7.5f:
+                Bubble.sprite = Bubbles[0];
+                Aura.sprite = Auras[0];
+                break;
+            case <= 40.0f:
+                Bubble.sprite = Bubbles[4];
+                Aura.sprite = Auras[4];
+                break;
+            case <= 70.0f:
+                Bubble.sprite = Bubbles[3];
+                Aura.sprite = Auras[3];
+                break;
+            default:
+                Bubble.sprite = Bubbles[2];
+                Aura.sprite = Auras[2];
+                break;
+
+        }
+
+            
+
     }
 }

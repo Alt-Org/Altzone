@@ -21,6 +21,7 @@ public class Raid_Timer : MonoBehaviour
     public float CurrentTime;
     public bool CountUp;
     private bool timerActive;
+    private bool started;
 
     [Header("Start Timer settings")]
     public float TimeUntilStart;
@@ -89,11 +90,14 @@ public class Raid_Timer : MonoBehaviour
         }
         else
         {
-            TimeUntilStart -= Time.deltaTime;
-            StartTimerText.text = "Aikaa alkuun: " + TimeUntilStart.ToString("F0");
-            if (TimeUntilStart <= 0)
+            if (!started)
             {
-                StartTimer();
+                TimeUntilStart -= Time.deltaTime;
+                StartTimerText.text = "Aikaa alkuun: " + TimeUntilStart.ToString("F0");
+                if (TimeUntilStart <= 0)
+                {
+                    StartTimer();
+                }
             }
         }
         
@@ -102,9 +106,18 @@ public class Raid_Timer : MonoBehaviour
     }
     public void StartTimer()
     {
-        StartTimerText.gameObject.SetActive(false);
-        if (!timerActive)
+        StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
+        if (!timerActive && !started)
+        {
             timerActive = true;
+            started = true;
+        }
+            
+    }
+    public void FinishRaid()
+    {
+        timerActive = false;
+
     }
 
     private void SetTimerText()
