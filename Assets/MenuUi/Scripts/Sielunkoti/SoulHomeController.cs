@@ -1,23 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MenuUI.Scripts.SoulHome;
+using TMPro;
 
-public class SoulHomeController : MonoBehaviour
+namespace MenuUI.Scripts.SoulHome
 {
-    // Start is called before the first frame update
-    void Start()
+    public class SoulHomeController : MonoBehaviour
     {
-        
-    }
+        [SerializeField]
+        private GameObject _roomName;
+        // Start is called before the first frame update
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        }
 
-    public void ReturnToMainMenu()
-    {
+        // Update is called once per frame
+        void Update()
+        {
 
+        }
+
+        public void SetRoomName(GameObject room)
+        {
+            if (room != null)
+            {
+                _roomName.SetActive(true);
+                string roomName = room.GetComponent<RoomData>().Id.ToString();
+                _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
+            }
+            else _roomName.SetActive(false);
+        }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
+using MenuUI.Scripts.SoulHome;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -11,26 +12,6 @@ namespace MenuUI.Scripts.SoulHome {
     {
         OneXOne,
         OneXTwo
-    }
-
-    [System.Serializable]
-    public class Furniture
-    {
-        public int Id;
-        public string Name;
-        public Vector2 Position;
-        public FurnitureSize Size;
-        public float Weight;
-
-        public Furniture(int Id, string Name, Vector2 Position, FurnitureSize Size, float Weight)
-        {
-            this.Id = Id;
-            this.Name = Name;
-            this.Position = Position;
-            this.Size = Size;
-            this.Weight = Weight;
-            
-        }
     }
 
     [System.Serializable]
@@ -56,6 +37,7 @@ namespace MenuUI.Scripts.SoulHome {
     {
         private SoulHome _soulHomeRooms;
         [Tooltip("Instead of getting information from the server, generate random information."), SerializeField] private bool _ignoreServer;
+        [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
 
         [SerializeField] private GameObject _roomPositions;
@@ -92,13 +74,13 @@ namespace MenuUI.Scripts.SoulHome {
                     room.Id = i;
                     if (_randomColour) //If using random colours.
                     {
-                        room.floor = Random.ColorHSV(0f, 1f, 1f, 1f, .5f, 1f);
-                        room.walls = Random.ColorHSV(0f, 1f, 1f, 1f, 0f, 1f);
+                        room.floor = Random.ColorHSV(0f, 1f, 1f, 1f, .3f, 1f);
+                        room.walls = Random.ColorHSV(0f, 1f, 1f, 1f, .5f, 1f);
                     }
                     else //And if not.
                     {
-                        room.floor = Color.white;
-                        room.walls = Color.yellow;
+                        room.floor = new Color(0.4f,0,0);
+                        room.walls = new Color(0.7f, 0, 0);
                     }
                     soulHome.Room.Add(room);
                 }
@@ -134,9 +116,30 @@ namespace MenuUI.Scripts.SoulHome {
             foreach (Room room in _soulHomeRooms.Room)
             {
                 Instantiate (_roomPrefab, roompositions[i].transform);
-                //roompositions[i].transform.GetChild(0).Find("Floor").gameObject.GetComponent<Image>().color = room.floor;
-                //roompositions[i].transform.GetChild(0).Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = room.walls;
-                //roompositions[i].transform.GetChild(0).Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = room.walls;
+                roompositions[i].transform.GetChild(0).GetComponent<RoomData>().Id = room.Id;
+                if (_isometric) { 
+                roompositions[i].transform.GetChild(0).Find("Floor").gameObject.GetComponent<Image>().color = room.floor;
+                roompositions[i].transform.GetChild(0).Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = room.walls;
+                roompositions[i].transform.GetChild(0).Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = room.walls;
+                }
+                else
+                {
+                    GameObject floor = roompositions[i].transform.GetChild(0).Find("Floor").gameObject;
+                    floor.GetComponent<SpriteRenderer>().color = room.floor;
+                    foreach (SpriteRenderer floorPiece in floor.transform.GetComponentsInChildren<SpriteRenderer>())
+                    {
+                        floorPiece.color = room.floor;
+                    }
+                    roompositions[i].transform.GetChild(0).Find("BackWall").gameObject.GetComponent<SpriteRenderer>().color = room.walls;
+
+                    Color newColour = room.walls;
+                    newColour.r *= 0.8f;
+                    newColour.g *= 0.8f;
+                    newColour.b *= 0.8f;
+
+                    roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
+                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
+                }
                 i++;
             }
         }

@@ -9,9 +9,16 @@ namespace MenuUI.Scripts.SoulHome
     {
         private Camera Camera;
         private Vector3 prevWideCameraPos = new(0,0);
+        private float prevWideCameraFoV;
         private GameObject selectedRoom = null;
         [SerializeField]
+        private float scrollSpeed = 2f;
+        [SerializeField]
         private SpriteRenderer backgroundSprite;
+        [SerializeField]
+        private bool isometric = false;
+        [SerializeField]
+        private SoulHomeController _soulHomeController;
 
         private Bounds cameraBounds;
         private float cameraMinX;
@@ -41,14 +48,14 @@ namespace MenuUI.Scripts.SoulHome
                     float currentY = transform.position.y;
                     float offsetY = Mathf.Abs(currentY-bl.y);
                     float moveAmountY = Input.GetAxis("Mouse Y");
-                    float targetY = currentY - moveAmountY;
+                    float targetY = currentY - moveAmountY*scrollSpeed;
 
                     float y = Mathf.Clamp(targetY, cameraMinY+offsetY, cameraMaxY - offsetY);
 
                     float currentX = transform.position.x;
                     float offsetX = Mathf.Abs(currentX - bl.x);
                     float moveAmountX = Input.GetAxis("Mouse X");
-                    float targetX = currentX - moveAmountX;
+                    float targetX = currentX - moveAmountX * scrollSpeed;
 
                     float x = Mathf.Clamp(targetX, cameraMinX + offsetX, cameraMaxX - offsetX);
                     transform.position = new(x, y, transform.position.z);
@@ -74,7 +81,11 @@ namespace MenuUI.Scripts.SoulHome
                         Debug.Log("Camera2: " + hit2.collider.gameObject.name);
                         Vector3 hitPoint = hit2.transform.InverseTransformPoint(hit2.point);
                         Debug.Log("Camera2: " + hitPoint);
-                        GameObject roomObject = hit2.collider.gameObject.transform.parent.parent.gameObject;
+                        GameObject roomObject;
+                        if (isometric)
+                            roomObject = hit2.collider.gameObject.transform.parent.parent.gameObject;
+                        else
+                            roomObject = hit2.collider.gameObject;
                         if (selectedRoom == null)
                         {
                             selectedRoom = roomObject;
@@ -94,14 +105,22 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ZoomIn(GameObject room)
         {
+            _soulHomeController.SetRoomName(selectedRoom);
             prevWideCameraPos = Camera.transform.position;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y+4, -10);
+            prevWideCameraFoV = Camera.fieldOfView;
+            Camera.transform.position = new(room.transform.position.x, room.transform.position.y+10, -30);
+            Camera.fieldOfView = 60;
         }
 
         public void ZoomOut()
         {
-            selectedRoom = null;
-            Camera.transform.position = prevWideCameraPos;
+            if (selectedRoom != null)
+            {
+                selectedRoom = null;
+                _soulHomeController.SetRoomName(selectedRoom);
+                Camera.transform.position = prevWideCameraPos;
+                Camera.fieldOfView = prevWideCameraFoV;
+            }
         }
     }
 }
