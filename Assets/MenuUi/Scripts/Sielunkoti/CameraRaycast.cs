@@ -55,7 +55,7 @@ namespace MenuUI.Scripts.SoulHome
                         Touch touch = Input.GetTouch(0);
                         if (touch.phase == TouchPhase.Began) prevp = touch.position;
                         Vector2 lp = touch.position;
-                        targetY = currentY - (prevp.y - lp.y) / scrollSpeed;
+                        targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
                         Debug.Log("Touch: Y: "+(prevp.y - lp.y));
                         prevp = touch.position;
                         if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
