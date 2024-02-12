@@ -25,6 +25,8 @@ namespace MenuUI.Scripts.SoulHome
         private float cameraMinY;
         private float cameraMaxX;
         private float cameraMaxY;
+
+        private Vector2 prevp;
         // Start is called before the first frame update
         void Start()
         {
@@ -39,7 +41,7 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) || Input.touchCount == 1)
             {
                 if (selectedRoom == null)
                 {
@@ -47,8 +49,22 @@ namespace MenuUI.Scripts.SoulHome
                     Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
                     float currentY = transform.position.y;
                     float offsetY = Mathf.Abs(currentY-bl.y);
-                    float moveAmountY = Input.GetAxis("Mouse Y");
-                    float targetY = currentY - moveAmountY*scrollSpeed;
+                    float targetY;
+                    if (Input.touchCount == 1)
+                    {
+                        Touch touch = Input.GetTouch(0);
+                        if (touch.phase == TouchPhase.Began) prevp = touch.position;
+                        Vector2 lp = touch.position;
+                        targetY = currentY - (prevp.y - lp.y) / scrollSpeed;
+                        Debug.Log("Touch: Y: "+(prevp.y - lp.y));
+                        prevp = touch.position;
+                        if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
+                    }
+                    else
+                    {
+                        float moveAmountY = Input.GetAxis("Mouse Y");
+                        targetY = currentY - moveAmountY * scrollSpeed;
+                    }
 
                     float y = Mathf.Clamp(targetY, cameraMinY+offsetY, cameraMaxY - offsetY);
 
