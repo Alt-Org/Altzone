@@ -5,15 +5,22 @@ using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
+    public enum FurnitureSize
+    {
+        OneXOne,
+        OneXTwo
+    }
+
+    [Serializable]
     public class Furniture
     {
         public int Id;
         public string Name;
-        public Vector2 Position;
+        public Vector2Int Position;
         public FurnitureSize Size;
         public float Weight;
 
-        public Furniture(int Id, string Name, Vector2 Position, FurnitureSize Size, float Weight)
+        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, float Weight)
         {
             this.Id = Id;
             this.Name = Name;

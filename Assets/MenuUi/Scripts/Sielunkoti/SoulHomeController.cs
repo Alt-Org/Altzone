@@ -27,7 +27,7 @@ namespace MenuUI.Scripts.SoulHome
             if (room != null)
             {
                 _roomName.SetActive(true);
-                string roomName = room.GetComponent<RoomData>().Id.ToString();
+                string roomName = room.GetComponent<RoomData>().RoomInfo.Id.ToString();
                 _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
             }
             else _roomName.SetActive(false);
