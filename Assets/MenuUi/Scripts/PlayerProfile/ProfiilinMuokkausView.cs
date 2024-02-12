@@ -19,11 +19,12 @@ public class ProfiilinMuokkausView : MonoBehaviour
     [Header("Help Text")]
     [SerializeField] private TextMeshProUGUI _helpText;
 
-    [SerializeField] private const string _loggedOutSuccessText = "Kirjauduttu ulos!";
-    [SerializeField] private const string _loggedOutNullText = "Olet jo kirjautunut ulos!";
-    [SerializeField] private const string _deleteUserSuccessText = "Käyttäjä poistettu onnistuneesti!";
-    [SerializeField] private const string _deleteUserFailText = "Käyttäjän poistamisessa tapahtui virhe!";
-    [SerializeField] private const string _deleteUserNullText = "Et ole kirjautunut sisään!";
+    [SerializeField] private const string LOGGED_OUT_SUCCESS = "Kirjauduttu ulos!";
+    [SerializeField] private const string LOGGED_OUT_NULL = "Olet jo kirjautunut ulos!";
+    [SerializeField] private const string DELETE_USER_SUCCESS = "Käyttäjä poistettu onnistuneesti!";
+    [SerializeField] private const string DELETE_USER_FAIL = "Käyttäjän poistamisessa tapahtui virhe!";
+    [SerializeField] private const string DELETE_USER_NULL = "Et ole kirjautunut sisään!";
+    [SerializeField] private const string LEAVE_CLAN_FAIL = "Klaanista poistuminen epäonnistui!";
 
 
     //[SerializeField] private TextMeshProUGUI _usernameText;
@@ -97,11 +98,11 @@ public class ProfiilinMuokkausView : MonoBehaviour
         if (ServerManager.Instance.Player != null)
         {
             ServerManager.Instance.LogOut();
-            _helpText.text = _loggedOutSuccessText;
+            _helpText.text = LOGGED_OUT_SUCCESS;
         }
         else
         {
-            _helpText.text = _loggedOutSuccessText;
+            _helpText.text = LOGGED_OUT_SUCCESS;
         }
     }
 
@@ -117,15 +118,28 @@ public class ProfiilinMuokkausView : MonoBehaviour
     {
         if (ServerManager.Instance.Player == null)
         {
-            _helpText.text = _deleteUserNullText;
+            _helpText.text = DELETE_USER_NULL;
             return;
         }
+
+        // Leave current clan before deleting user
+        //if(ServerManager.Instance.Clan != null)
+        //{
+        //    StartCoroutine(ServerManager.Instance.LeaveClan(success =>
+        //    {
+        //        if(!success)
+        //        {
+        //            _helpText.text = LEAVE_CLAN_FAIL;
+        //            return;
+        //        }
+        //    }));
+        //}
 
         StartCoroutine(WebRequests.Delete(ServerManager.ADDRESS + "profile/" + PlayerPrefs.GetString("profileId", string.Empty), ServerManager.Instance.AccessToken, request =>
         {
             if (request.result != UnityWebRequest.Result.Success)
             {
-                _helpText.text = _deleteUserFailText + "\n" + request.error;
+                _helpText.text = DELETE_USER_FAIL + "\n" + request.error;
             }
             else
             {
@@ -145,7 +159,7 @@ public class ProfiilinMuokkausView : MonoBehaviour
                         {
                             Debug.Log("Player deleted from storage");
                             LogOut();
-                            _helpText.text = _deleteUserSuccessText;
+                            _helpText.text = DELETE_USER_SUCCESS;
 
                         }
                         else
