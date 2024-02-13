@@ -39,6 +39,7 @@ namespace MenuUI.Scripts.SoulHome
 
             foreach (Transform pointRow in points)
             {
+                col = 0;
                 foreach(Transform point in pointRow)
                 {
                     point.GetComponent<FurnitureSlot>().InitializeSlot(row, col);

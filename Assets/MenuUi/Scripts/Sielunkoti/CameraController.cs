@@ -15,6 +15,9 @@ namespace MenuUI.Scripts.SoulHome
         Vector3 startPosition;
         float startTime;
 
+        float backDelay = 0;
+        float inDelay = 0;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -24,16 +27,20 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            Touch touch = Input.GetTouch(0);
+            if (Input.GetMouseButtonDown(0) || touch.phase == UnityEngine.TouchPhase.Began)
             {
-                startPosition = Mouse.current.position.ReadValue();
+                if(Input.touchCount >= 1) startPosition = touch.position;
+                else startPosition = Mouse.current.position.ReadValue();
                 startTime = Time.time;
                 Debug.Log(startPosition);
                 Debug.Log(startTime);
             }
-            if (Input.GetMouseButtonUp(0))
+            if ((Input.GetMouseButtonUp(0) || touch.phase == UnityEngine.TouchPhase.Ended) && inDelay + 0.4f < Time.time)
             {
-                Vector3 endPosition = Mouse.current.position.ReadValue();
+                Vector2 endPosition;
+                if (Input.touchCount >= 1) endPosition = touch.position;
+                else endPosition = Mouse.current.position.ReadValue();
                 float endTime = Time.time;
 
                 Debug.Log(endPosition);
@@ -41,7 +48,9 @@ namespace MenuUI.Scripts.SoulHome
 
                 if (endTime - startTime > 0.2f || Mathf.Abs(startPosition.x-endPosition.x)+Mathf.Abs(startPosition.y - endPosition.y) > 1) return;
 
-                Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+                Ray ray;
+                if (Input.touchCount >= 1) ray = _camera.ScreenPointToRay(touch.position);
+                else ray = _camera.ScreenPointToRay(Input.mousePosition);
                 //Vector2 click2D = new Vector2(clickpos.x, clickpos.y);
                 //Debug.Log(ray);
                 // Debug.Log(click2D);
@@ -57,12 +66,14 @@ namespace MenuUI.Scripts.SoulHome
                     float y = hit.transform.GetComponent<RectTransform>().rect.height;
                     Vector2 relPos = new((x / 2 + hitPoint.x) / x, (y / 2 + hitPoint.y) / y);
                     Debug.Log(relPos);
-                    secondCamera.FindRayPoint(relPos);
+                    bool check = secondCamera.FindRayPoint(relPos);
+                    //if(check)backDelay = Time.time;
                 }
             }
-            if (Input.GetMouseButtonUp(1))
+            if ((Input.GetMouseButtonUp(1) || touch.tapCount > 1) && backDelay + 0.4f < Time.time)
             {
                 secondCamera.ZoomOut();
+                //inDelay = Time.time;
             }
         }
     }

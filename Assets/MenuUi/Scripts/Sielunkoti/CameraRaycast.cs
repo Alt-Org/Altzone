@@ -27,6 +27,9 @@ namespace MenuUI.Scripts.SoulHome
         private float cameraMaxY;
 
         private Vector2 prevp;
+
+        private float outDelay = 0;
+        private float inDelay = 0;
         // Start is called before the first frame update
         void Start()
         {
@@ -79,13 +82,14 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void FindRayPoint(Vector2 relPoint)
+        public bool FindRayPoint(Vector2 relPoint)
         {
             Ray ray = Camera.ViewportPointToRay(relPoint);
             RaycastHit2D[] hit;
             Debug.Log("Camera2: " + ray);
             hit = Physics2D.GetRayIntersectionAll(ray, 1000);
             bool hitRoom = false;
+            bool enterRoom = false;
             foreach (RaycastHit2D hit2 in hit)
             {
                 if (hit2.collider != null)
@@ -106,6 +110,7 @@ namespace MenuUI.Scripts.SoulHome
                         {
                             selectedRoom = roomObject;
                             ZoomIn(roomObject);
+                            //enterRoom = true;
                         }
                         else if (selectedRoom != roomObject)
                         {
@@ -116,26 +121,35 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (!hitRoom && selectedRoom != null) ZoomOut();
+            if (!hitRoom && selectedRoom != null)
+            {
+                ZoomOut();
+            }
+            return enterRoom;
         }
 
         public void ZoomIn(GameObject room)
         {
-            _soulHomeController.SetRoomName(selectedRoom);
-            prevWideCameraPos = Camera.transform.position;
-            prevWideCameraFoV = Camera.fieldOfView;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y+10, -30);
-            Camera.fieldOfView = 60;
+            if (inDelay + 1f < Time.time)
+            {
+                _soulHomeController.SetRoomName(selectedRoom);
+                prevWideCameraPos = Camera.transform.position;
+                prevWideCameraFoV = Camera.fieldOfView;
+                Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10, -30);
+                Camera.fieldOfView = 60;
+                outDelay = Time.time;
+            }
         }
 
         public void ZoomOut()
         {
-            if (selectedRoom != null)
+            if (selectedRoom != null && outDelay + 1f < Time.time)
             {
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
                 Camera.transform.position = prevWideCameraPos;
                 Camera.fieldOfView = prevWideCameraFoV;
+                inDelay = Time.time;
             }
         }
     }

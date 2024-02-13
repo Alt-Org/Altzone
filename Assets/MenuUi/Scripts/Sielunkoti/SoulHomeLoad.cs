@@ -8,21 +8,6 @@ using MenuUI.Scripts.SoulHome;
 
 namespace MenuUI.Scripts.SoulHome {
 
-    /*public enum FurnitureSize
-    {
-        OneXOne,
-        OneXTwo
-    }*/
-
-    [System.Serializable]
-    public class SoulHome
-    {
-        public int Id;
-        public ClanMemberRole editPermission;
-        public ClanMemberRole addRemovePermission;
-        public List<Room> Room;
-    }
-
     public class SoulHomeLoad : MonoBehaviour
     {
         private SoulHome _soulHomeRooms;
