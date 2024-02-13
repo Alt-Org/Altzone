@@ -523,7 +523,6 @@ GameObject:
   - component: {fileID: 194934047}
   - component: {fileID: 194934046}
   - component: {fileID: 194934048}
-  - component: {fileID: 194934049}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -621,24 +620,12 @@ MonoBehaviour:
   - {fileID: 1335374773}
   - {fileID: 713901222}
   - {fileID: 1935926299}
-  - {fileID: 1935926299}
-  - {fileID: 1935926299}
-  - {fileID: 1935926299}
-  - {fileID: 1935926299}
+  - {fileID: 310374802}
+  - {fileID: 1923710551}
+  - {fileID: 2115722698}
+  - {fileID: 606721204}
   scrollRect: {fileID: 1138825008}
   scrollbar: {fileID: 135090748}
---- !u!114 &194934049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194934044}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aef6d8106ef25f4f87840a6ab6e5a6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &218046833
 GameObject:
   m_ObjectHideFlags: 0
@@ -4235,7 +4222,7 @@ GameObject:
   - component: {fileID: 1935926300}
   - component: {fileID: 1935926301}
   - component: {fileID: 1935926303}
-  - component: {fileID: 1935926302}
+  - component: {fileID: 1935926304}
   m_Layer: 5
   m_Name: ParentSlider (4)
   m_TagString: Untagged
@@ -4285,7 +4272,15 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &1935926302
+--- !u!222 &1935926303
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935926299}
+  m_CullTransparentMesh: 1
+--- !u!114 &1935926304
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4315,14 +4310,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!222 &1935926303
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1935926299}
-  m_CullTransparentMesh: 1
 --- !u!1 &2005144367
 GameObject:
   m_ObjectHideFlags: 0

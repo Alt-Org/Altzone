@@ -37,7 +37,7 @@ public static class WebRequests
     {
         byte[] data = new UTF8Encoding().GetBytes(body);
 
-        using (UnityWebRequest request = UnityWebRequest.Post(address, body))
+        using (UnityWebRequest request = UnityWebRequest.PostWwwForm(address, body))
         {
             using (UploadHandlerRaw uploadHandler = new UploadHandlerRaw(data))
             {
