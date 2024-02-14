@@ -113,13 +113,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Koulukiusaaja", 3, 9, 7, 3),
-                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Vitsiniekka", 9, 3, 3, 4),
-                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Pappi", 5, 5, 4, 4),
-                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Taiteilija", 4, 2, 9, 5),
-                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Hodariläski", 3, 7, 2, 9),
+                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Tunnoton", 3, 9, 7, 3),
+                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Hämääjä", 9, 3, 3, 4),
+                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Tottelija", 5, 5, 4, 4),
+                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Peilaaja", 4, 2, 9, 5),
+                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Torjuja", 3, 7, 2, 9),
                 new(GestaltCycle.Egotism.ToString(), GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Tytöt", 5, 6, 2, 6)
+                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Sulautuja", 5, 6, 2, 6)
             };
         }
 

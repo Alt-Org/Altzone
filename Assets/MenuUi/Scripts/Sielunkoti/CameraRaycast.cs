@@ -9,15 +9,27 @@ namespace MenuUI.Scripts.SoulHome
     {
         private Camera Camera;
         private Vector3 prevWideCameraPos = new(0,0);
+        private float prevWideCameraFoV;
         private GameObject selectedRoom = null;
         [SerializeField]
+        private float scrollSpeed = 2f;
+        [SerializeField]
         private SpriteRenderer backgroundSprite;
+        [SerializeField]
+        private bool isometric = false;
+        [SerializeField]
+        private SoulHomeController _soulHomeController;
 
         private Bounds cameraBounds;
         private float cameraMinX;
         private float cameraMinY;
         private float cameraMaxX;
         private float cameraMaxY;
+
+        private Vector2 prevp;
+
+        private float outDelay = 0;
+        private float inDelay = 0;
         // Start is called before the first frame update
         void Start()
         {
@@ -32,7 +44,7 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) || Input.touchCount == 1)
             {
                 if (selectedRoom == null)
                 {
@@ -40,15 +52,29 @@ namespace MenuUI.Scripts.SoulHome
                     Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
                     float currentY = transform.position.y;
                     float offsetY = Mathf.Abs(currentY-bl.y);
-                    float moveAmountY = Input.GetAxis("Mouse Y");
-                    float targetY = currentY - moveAmountY;
+                    float targetY;
+                    if (Input.touchCount == 1)
+                    {
+                        Touch touch = Input.GetTouch(0);
+                        if (touch.phase == TouchPhase.Began) prevp = touch.position;
+                        Vector2 lp = touch.position;
+                        targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
+                        Debug.Log("Touch: Y: "+(prevp.y - lp.y));
+                        prevp = touch.position;
+                        if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
+                    }
+                    else
+                    {
+                        float moveAmountY = Input.GetAxis("Mouse Y");
+                        targetY = currentY - moveAmountY * scrollSpeed;
+                    }
 
                     float y = Mathf.Clamp(targetY, cameraMinY+offsetY, cameraMaxY - offsetY);
 
                     float currentX = transform.position.x;
                     float offsetX = Mathf.Abs(currentX - bl.x);
                     float moveAmountX = Input.GetAxis("Mouse X");
-                    float targetX = currentX - moveAmountX;
+                    float targetX = currentX - moveAmountX * scrollSpeed;
 
                     float x = Mathf.Clamp(targetX, cameraMinX + offsetX, cameraMaxX - offsetX);
                     transform.position = new(x, y, transform.position.z);
@@ -56,13 +82,14 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void FindRayPoint(Vector2 relPoint)
+        public bool FindRayPoint(Vector2 relPoint)
         {
             Ray ray = Camera.ViewportPointToRay(relPoint);
             RaycastHit2D[] hit;
             Debug.Log("Camera2: " + ray);
             hit = Physics2D.GetRayIntersectionAll(ray, 1000);
             bool hitRoom = false;
+            bool enterRoom = false;
             foreach (RaycastHit2D hit2 in hit)
             {
                 if (hit2.collider != null)
@@ -74,11 +101,16 @@ namespace MenuUI.Scripts.SoulHome
                         Debug.Log("Camera2: " + hit2.collider.gameObject.name);
                         Vector3 hitPoint = hit2.transform.InverseTransformPoint(hit2.point);
                         Debug.Log("Camera2: " + hitPoint);
-                        GameObject roomObject = hit2.collider.gameObject.transform.parent.parent.gameObject;
+                        GameObject roomObject;
+                        if (isometric)
+                            roomObject = hit2.collider.gameObject.transform.parent.parent.gameObject;
+                        else
+                            roomObject = hit2.collider.gameObject;
                         if (selectedRoom == null)
                         {
                             selectedRoom = roomObject;
                             ZoomIn(roomObject);
+                            //enterRoom = true;
                         }
                         else if (selectedRoom != roomObject)
                         {
@@ -89,19 +121,36 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (!hitRoom && selectedRoom != null) ZoomOut();
+            if (!hitRoom && selectedRoom != null)
+            {
+                ZoomOut();
+            }
+            return enterRoom;
         }
 
         public void ZoomIn(GameObject room)
         {
-            prevWideCameraPos = Camera.transform.position;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y+4, -10);
+            if (inDelay + 1f < Time.time)
+            {
+                _soulHomeController.SetRoomName(selectedRoom);
+                prevWideCameraPos = Camera.transform.position;
+                prevWideCameraFoV = Camera.fieldOfView;
+                Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10, -30);
+                Camera.fieldOfView = 60;
+                outDelay = Time.time;
+            }
         }
 
         public void ZoomOut()
         {
-            selectedRoom = null;
-            Camera.transform.position = prevWideCameraPos;
+            if (selectedRoom != null && outDelay + 1f < Time.time)
+            {
+                selectedRoom = null;
+                _soulHomeController.SetRoomName(selectedRoom);
+                Camera.transform.position = prevWideCameraPos;
+                Camera.fieldOfView = prevWideCameraFoV;
+                inDelay = Time.time;
+            }
         }
     }
 }
