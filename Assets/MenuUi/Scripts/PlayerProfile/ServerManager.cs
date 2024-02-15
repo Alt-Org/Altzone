@@ -9,6 +9,7 @@ using System.Globalization;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
+using Photon.Realtime;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -50,7 +51,7 @@ public class ServerManager : MonoBehaviour
         {
             _clan = value;
 
-            if (Player != null)
+            if (Player != null && Clan != null)
                 Player.clan_id = Clan._id;
         }
     }
@@ -396,7 +397,7 @@ public class ServerManager : MonoBehaviour
 
         StartCoroutine(WebRequests.Post(ADDRESS + "clan/join", body, AccessToken, request =>
         {
-            if (request.result == UnityWebRequest.Result.Success || request.responseCode == 500)
+            if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 string clanId = result["data"]["Join"]["clan_id"].ToString();
@@ -425,6 +426,39 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+
+        yield break;
+    }
+    public IEnumerator LeaveClan(Action<bool> callback)
+    {
+        StartCoroutine(WebRequests.Delete(ADDRESS + "clan/join/" + Clan._id, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Clan = null;
+                Player.clan_id = null;
+                Stock = null;
+
+                PlayerData playerData = null;
+                var storefront = Storefront.Get();
+
+                storefront.GetPlayerData(Player.uniqueIdentifier, data => playerData = data);
+
+                if(playerData != null)
+                {
+                    playerData.ClanId = "12345";                    //Demo-clan for not logged in players
+                    storefront.SavePlayerData(playerData, null);
+                }
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
 
@@ -542,7 +576,7 @@ public class ServerManager : MonoBehaviour
             {
                 string debugString = "Could not fetch items from stock!";
 
-                if(request.responseCode == 404)
+                if (request.responseCode == 404)
                 {
                     debugString += " The stock might not have any items.";
                 }

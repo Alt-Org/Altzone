@@ -24,6 +24,14 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    private void Reset()
+    {
+        ToggleClanPanel(false);
+        _clanNameTextField.text = "Clan Name";
+        _clanMembers.text = "-1";
+        _clanCoins.text = "-1";
+    }
+
     private void ToggleClanPanel(bool isInClan)
     {
         _inClanPanel.SetActive(isInClan);
@@ -35,5 +43,14 @@ public class ClanMainView : MonoBehaviour
         _clanNameTextField.text = clan.name;
         _clanMembers.text = clan.playerCount.ToString();
         _clanCoins.text = clan.gameCoins.ToString();
+    }
+
+    public void LeaveClan()
+    {
+        StartCoroutine(ServerManager.Instance.LeaveClan(success =>
+        {
+            if(success)
+                Reset();
+        }));
     }
 }
