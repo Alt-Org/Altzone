@@ -14,7 +14,6 @@ public class BallHandlerTest : MonoBehaviour
     [SerializeField] private GameObject _explotion;
     [SerializeField] private Color[] _colors;
     [SerializeField] private float _maxSpeed;
-    [SerializeField] private float _hotFixMax;
 
     private float _arenaScaleFactor;
 
@@ -137,11 +136,7 @@ public class BallHandlerTest : MonoBehaviour
 
     private void SetVelocity(Vector3 velocity)
     {
-        if(velocity.magnitude > _hotFixMax)
-        {
-             velocity = Vector3.ClampMagnitude(velocity, _hotFixMax);
-        }
-            _rb.velocity = velocity;
+        _rb.velocity = velocity;
          int colorIndex = Mathf.Clamp(
             (int)Mathf.Floor(
                 _rb.velocity.magnitude / _maxSpeed * (_colors.Length - 1)

@@ -316,7 +316,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channelName + "\n" + request.error);
+                //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channelName + "\n" + request.error);
 
                 if (callbackOnFinish != null)
                     callbackOnFinish(null);
