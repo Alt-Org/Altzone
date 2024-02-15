@@ -19,6 +19,7 @@ namespace MenuUI.Scripts.SoulHome
         public Vector2Int Position;
         public FurnitureSize Size;
         public float Weight;
+        public float value;
 
         public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, float Weight)
         {
