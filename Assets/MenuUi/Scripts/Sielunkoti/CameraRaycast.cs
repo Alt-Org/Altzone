@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -19,6 +20,8 @@ namespace MenuUI.Scripts.SoulHome
         private bool isometric = false;
         [SerializeField]
         private SoulHomeController _soulHomeController;
+        [SerializeField]
+        private RawImage _displayScreen;
 
         private Bounds cameraBounds;
         private float cameraMinX;
@@ -39,6 +42,10 @@ namespace MenuUI.Scripts.SoulHome
             cameraMinY = cameraBounds.min.y;
             cameraMaxX = cameraBounds.max.x;
             cameraMaxY = cameraBounds.max.y;
+            Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
+            //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
+            Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+
         }
 
         // Update is called once per frame
@@ -78,6 +85,37 @@ namespace MenuUI.Scripts.SoulHome
 
                     float x = Mathf.Clamp(targetX, cameraMinX + offsetX, cameraMaxX - offsetX);
                     transform.position = new(x, y, transform.position.z);
+                }
+                else
+                {
+                    Bounds roomCameraBounds = selectedRoom.GetComponent<BoxCollider2D>().bounds;
+                    float roomCameraMinX = roomCameraBounds.min.x;
+                    float roomCameraMinY = roomCameraBounds.min.y;
+                    float roomCameraMaxX = roomCameraBounds.max.x;
+                    float roomCameraMaxY = roomCameraBounds.max.y;
+                    Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                    Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
+                    float currentX = transform.position.x;
+                    float offsetX = Mathf.Abs(currentX - bl.x);
+                    float targetX;
+                    if (Input.touchCount == 1)
+                    {
+                        Touch touch = Input.GetTouch(0);
+                        if (touch.phase == TouchPhase.Began) prevp = touch.position;
+                        Vector2 lp = touch.position;
+                        targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
+                        Debug.Log("Touch: X: " + (prevp.x - lp.x));
+                        prevp = touch.position;
+                        if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
+                    }
+                    else
+                    {
+                        float moveAmountY = Input.GetAxis("Mouse X");
+                        targetX = currentX - moveAmountY * scrollSpeed;
+                    }
+
+                    float x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
+                    transform.position = new(x, transform.position.y, transform.position.z);
                 }
             }
         }
@@ -135,9 +173,13 @@ namespace MenuUI.Scripts.SoulHome
                 _soulHomeController.SetRoomName(selectedRoom);
                 prevWideCameraPos = Camera.transform.position;
                 prevWideCameraFoV = Camera.fieldOfView;
-                Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10, -30);
+                Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 7.5f, -25);
                 Camera.fieldOfView = 60;
                 outDelay = Time.time;
+
+                //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
+                //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.6f);
+                //Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             }
         }
 
@@ -150,6 +192,10 @@ namespace MenuUI.Scripts.SoulHome
                 Camera.transform.position = prevWideCameraPos;
                 Camera.fieldOfView = prevWideCameraFoV;
                 inDelay = Time.time;
+
+                //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
+                //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.8f);
+                //Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             }
         }
     }
