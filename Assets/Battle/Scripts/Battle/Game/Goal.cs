@@ -10,9 +10,6 @@ using TMPro;
 
 namespace Battle.Scripts.Battle.Game
 {
-    /// <summary>
-    /// Removes a brick from the wall when hit conditions are met.
-    /// </summary>
     internal class Goal : MonoBehaviour
     {
         [SerializeField] GameObject WinText;
