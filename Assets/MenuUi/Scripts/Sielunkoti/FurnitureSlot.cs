@@ -16,6 +16,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             this.row = row;
             this.column = column;
+            //GetComponent<PolygonCollider2D>().points;
         }
 
     }
