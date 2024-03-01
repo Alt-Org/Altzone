@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 
 [System.Serializable]
 public class CharacterData
@@ -22,15 +22,14 @@ public class HahmonValinta : MonoBehaviour
     [SerializeField] private Button[] characterButtons;
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
+    [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
 
-    private bool characterChosen = false;
     private int selectedCharacterIndex = -1;
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Disable the lock-in button initially
-        lockInButton.interactable = false;
+        // Initialize the pop-up window as inactive
+        popupWindow.SetActive(false);
 
         // Assign onClick events for character buttons
         for (int i = 0; i < characterButtons.Length; i++)
@@ -43,21 +42,19 @@ public class HahmonValinta : MonoBehaviour
         lockInButton.onClick.AddListener(LockInCharacter);
     }
 
-    // Method to handle character selection
     void CharacterSelected(int characterIndex)
     {
         // Update the selected character index
         selectedCharacterIndex = characterIndex;
 
-        // Enable the lock-in button
-        lockInButton.interactable = true;
+        // Activate the pop-up window
+        popupWindow.SetActive(true);
 
-        // Log the character name associated with the button clicked
+        // Log the selected character's name
         Debug.Log("Selected character: " + characterData[characterIndex].characterName);
     }
 
-    // Method to handle locking in the character
-    void LockInCharacter()
+    public void LockInCharacter()
     {
         // Check if a character is selected
         if (selectedCharacterIndex != -1)
@@ -68,6 +65,9 @@ public class HahmonValinta : MonoBehaviour
             // Reset the selected character index and disable the lock-in button
             selectedCharacterIndex = -1;
             lockInButton.interactable = false;
+
+            // Deactivate the pop-up window
+            popupWindow.SetActive(false);
         }
         else
         {
