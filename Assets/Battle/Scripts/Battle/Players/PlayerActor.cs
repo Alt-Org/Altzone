@@ -39,6 +39,7 @@ namespace Battle.Scripts.Battle.Players
         //public bool IsUsingNewRotionSysten => _useNewRotationSysten;
         public Transform ShieldTransform => _playerShield.Transform;
         public Transform CharacterTransform => _playerCharacter.Transform;
+        public Transform SoulTransform => _playerSoul.Transform;
 
         #region Public Methods
 
@@ -99,6 +100,7 @@ namespace Battle.Scripts.Battle.Players
             //_geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
             _playerShield.Transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
             _playerCharacter.Transform.eulerAngles = new Vector3(0, 0, newAngle);
+            _playerSoul.Transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -138,20 +140,21 @@ namespace Battle.Scripts.Battle.Players
             _isMoving = true;
             //_playerCharacter.SetSprite(PlayerCharacter.MOVING_SPRITE_INDEX, _playerCharacterSpriteSheet);
             _playerCharacter.Transform.position = _playerShield.Transform.position;
+            _playerSoul.setShow(true);
             Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _isMoving));
 
             float targetDistance = (targetPosition - new Vector2(_playerShield.Transform.position.x, _playerShield.Transform.position.y)).magnitude;
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
-            //float movementSpeed = targetDistance / movementTimeS;
+            float movementSpeed = targetDistance / movementTimeS;
 
-            //Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
-            Coroutine animation = StartCoroutine(TeleportAnimationCoroutine(movementTimeS));
+            //Coroutine animation = StartCoroutine(TeleportAnimationCoroutine(movementTimeS));
+            Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
-                //StopCoroutine(move);
-                StopCoroutine(animation);
-                //Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Teleport animatio coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
+                //StopCoroutine(animation);
+                StopCoroutine(move);
+                //Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Teleport animatio coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
 
                 _hasTarget = false;
 
@@ -161,6 +164,8 @@ namespace Battle.Scripts.Battle.Players
                 _playerCharacter.Transform.position = targetPosition;
                 _playerCharacter.SetSprite(_isUsingShield ? PlayerCharacter.INDE_WITH_SHIELD_SPRITE_INDEX : PlayerCharacter.INDE_WITHOUT_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
                 _playerCharacter.Opacity = 1f;
+
+                _playerSoul.setShow(false);
 
                 _isMoving = false;
 
@@ -276,6 +281,39 @@ namespace Battle.Scripts.Battle.Players
         }
         private PlayerCharacter _playerCharacter;
 
+        private class PlayerSoul
+        {
+            public Transform Transform;
+
+            public PlayerSoul(Transform transform)
+            {
+                Transform = transform;
+                _spriteGameObjects = new GameObject[SPRITE_VARIANT_COUNT];
+                _spriteGameObjects[SPRITE_VARIANT_A] = transform.Find("SpriteA").gameObject;
+                _spriteGameObjects[SPRITE_VARIANT_B] = transform.Find("SpriteB").gameObject;
+                _spriteRenderers = new SpriteRenderer[SPRITE_VARIANT_COUNT];
+                _spriteRenderers[SPRITE_VARIANT_A] = _spriteGameObjects[SPRITE_VARIANT_A].GetComponent<SpriteRenderer>();
+                _spriteRenderers[SPRITE_VARIANT_B] = _spriteGameObjects[SPRITE_VARIANT_B].GetComponent<SpriteRenderer>();
+            }
+
+            public void setShow(bool show)
+            {
+                _spriteRenderers[_spriteVariant].enabled = show;
+            }
+
+            public void SetSpriteVariant(int variant)
+            {
+                _spriteGameObjects[_spriteVariant].SetActive(false);
+                _spriteVariant = variant;
+                _spriteGameObjects[_spriteVariant].SetActive(true);
+            }
+
+            private GameObject[] _spriteGameObjects;
+            private SpriteRenderer[] _spriteRenderers;
+            private int _spriteVariant;
+        }
+        private PlayerSoul _playerSoul;
+
         private Vector3 _tempPosition;
 
         // Drivers
@@ -317,6 +355,7 @@ namespace Battle.Scripts.Battle.Players
 
             _playerShield = new(_geometryRoot.Find("BoxShield"));
             _playerCharacter = new(_geometryRoot.Find("PLayerCharacter"));
+            _playerSoul = new(_geometryRoot.Find("PLayerSoul"));
 
             // get components
             //_transform = GetComponent<Transform>();
@@ -375,8 +414,10 @@ namespace Battle.Scripts.Battle.Players
             {
                 yield return null;
                 float maxDistanceDelta = movementSpeed * Time.deltaTime;
-                _tempPosition = Vector3.MoveTowards(_playerCharacter.Transform.position, targetPosition, maxDistanceDelta);
-                _playerCharacter.Transform.position = _tempPosition;
+                //_tempPosition = Vector3.MoveTowards(_playerCharacter.Transform.position, targetPosition, maxDistanceDelta);
+                _tempPosition = Vector3.MoveTowards(_playerSoul.Transform.position, targetPosition, maxDistanceDelta);
+                //_playerCharacter.Transform.position = _tempPosition;
+                _playerSoul.Transform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
             Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _hasTarget));
