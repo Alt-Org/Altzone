@@ -21,6 +21,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _shieldActivationDistance;
+        [SerializeField] private float _impactForce;
         [SerializeField] private bool _useNewRotationSysten; // unused (old and "new" rotation systems are replaced by newer system)
         [SerializeField] private Sprite[] _playerCharacterSpriteSheet;
         [SerializeField] public string SeePlayerName;
@@ -40,6 +41,11 @@ namespace Battle.Scripts.Battle.Players
         public Transform ShieldTransform => _playerShield.Transform;
         public Transform CharacterTransform => _playerCharacter.Transform;
         public Transform SoulTransform => _playerSoul.Transform;
+           public float ImpactForce
+        {
+            get { return _impactForce; }
+            set { _impactForce = value; }
+        }
 
         #region Public Methods
 
@@ -197,6 +203,12 @@ namespace Battle.Scripts.Battle.Players
                 StartCoroutine(ShieldHitDelay(damage));
             }
         }
+
+        public void SetImpactForce(float newImpactForce)
+        {
+            _impactForce = newImpactForce;
+        }
+
 
         #endregion Public Methods
         
