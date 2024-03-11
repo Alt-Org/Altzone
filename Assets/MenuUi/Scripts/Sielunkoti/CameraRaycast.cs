@@ -14,6 +14,8 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject selectedRoom = null;
         private GameObject tempSelectedRoom = null;
         [SerializeField]
+        private CameraController mainScreen;
+        [SerializeField]
         private float scrollSpeed = 2f;
         [SerializeField]
         private SpriteRenderer backgroundSprite;
@@ -35,9 +37,14 @@ namespace MenuUI.Scripts.SoulHome
         private float cameraMaxY;
 
         private Vector2 prevp;
+        private bool cameraMove = false;
 
         private float outDelay = 0;
         private float inDelay = 0;
+
+        public GameObject SelectedRoom { get => selectedRoom; private set => selectedRoom = value; }
+        public GameObject SelectedFurniture { get => _selectedFurniture; private set => _selectedFurniture = value; }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -66,7 +73,9 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetMouseButton(0) || Input.touchCount == 1)
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
+            if ((Input.GetMouseButton(0) || Input.touchCount == 1) && cameraMove)
             {
                 if (selectedRoom == null)
                 {
@@ -76,13 +85,13 @@ namespace MenuUI.Scripts.SoulHome
                     float targetY;
                     if (Input.touchCount == 1)
                     {
-                        Touch touch = Input.GetTouch(0);
-                        if (touch.phase == TouchPhase.Began) prevp = touch.position;
+                        touch = Input.GetTouch(0);
+                        if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
                         Vector2 lp = touch.position;
                         targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
                         prevp = touch.position;
-                        if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
+                        if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
                     }
                     else
                     {
@@ -113,13 +122,13 @@ namespace MenuUI.Scripts.SoulHome
                     float targetX;
                     if (Input.touchCount == 1)
                     {
-                        Touch touch = Input.GetTouch(0);
-                        if (touch.phase == TouchPhase.Began) prevp = touch.position;
+                        touch = Input.GetTouch(0);
+                        if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
                         Vector2 lp = touch.position;
                         targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
                         //Debug.Log("Touch: X: " + (prevp.x - lp.x));
                         prevp = touch.position;
-                        if (touch.phase == TouchPhase.Ended) prevp = Vector2.zero;
+                        if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
                     }
                     else
                     {
@@ -130,7 +139,9 @@ namespace MenuUI.Scripts.SoulHome
                     float x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }
+                cameraMove = false;
             }
+            if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
         }
 
         void OnEnable()
@@ -138,8 +149,14 @@ namespace MenuUI.Scripts.SoulHome
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
         }
 
-            public bool FindRayPoint(Vector2 relPoint, ClickState click)
+        public bool FindRayPoint(Vector2 relPoint, ClickState click)
         {
+            //if (click == ClickState.Start) cameraMove = true;
+            //if(click is ClickState.Hold or ClickState.Move) cameraMove = true;
+            //if (click == ClickState.End) cameraMove = false;
+            cameraMove = true;
+
+
             Ray ray = Camera.ViewportPointToRay(relPoint);
             RaycastHit2D[] hit;
             //Debug.Log("Camera2: " + ray);
@@ -306,6 +323,7 @@ namespace MenuUI.Scripts.SoulHome
                 Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10f, -27.5f);
                 Camera.fieldOfView = 60;
                 outDelay = Time.time;
+                mainScreen.EnableTray(true);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
                 //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.6f);
@@ -317,15 +335,51 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (selectedRoom != null && outDelay + 1f < Time.time)
             {
+                if (mainScreen.TrayOpen) mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
                 Camera.transform.position = prevWideCameraPos;
                 Camera.fieldOfView = prevWideCameraFoV;
                 inDelay = Time.time;
+                mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
                 //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.8f);
                 //Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            }
+        }
+
+        public void SetFurniture(GameObject furniture)
+        {
+            var furnitureObject = Instantiate(furniture.GetComponent<TrayFurniture>().FurnitureObject);
+            furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture.GetComponent<TrayFurniture>().Furniture;
+            furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
+            furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
+            _selectedFurniture = furnitureObject;
+            Color color = _selectedFurniture.GetComponent<SpriteRenderer>().color;
+            color.a = 0.5f;
+            _selectedFurniture.GetComponent<SpriteRenderer>().color = color;
+        }
+
+        public void RemoveFurniture()
+        {
+            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
+                selectedRoom.GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size, _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
+            Destroy(_selectedFurniture);
+        }
+
+
+        public void DeselectFurniture()
+        {
+            _tempSelectedFurniture = null;
+            if (_selectedFurniture != null)
+            {
+                selectedRoom.GetComponent<RoomData>().ResetPosition(SelectedFurniture);
+                Color color = _selectedFurniture.GetComponent<SpriteRenderer>().color;
+                color.a = 1f;
+                _selectedFurniture.GetComponent<SpriteRenderer>().color = color;
+                _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                _selectedFurniture = null;
             }
         }
     }

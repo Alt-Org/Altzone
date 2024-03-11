@@ -47,6 +47,7 @@ namespace Battle.Scripts.Test
         public int ActorNumber => _actorNumber;
         public Transform ActorShieldTransform => _playerActor.ShieldTransform;
         public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
+        public Transform ActorSoulTransform => _playerActor.SoulTransform;
 
         public bool IsLocal => _settings._isLocal;
 

@@ -41,6 +41,7 @@ namespace Battle.Scripts.Battle.Players
         public int ActorNumber => _photonView.Owner.ActorNumber;
         public Transform ActorShieldTransform => _playerActor.ShieldTransform;
         public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
+        public Transform ActorSoulTransform => _playerActor.SoulTransform;
 
         public bool IsLocal => _photonView.Owner.IsLocal;
         public int PeerCount => _peerCount;

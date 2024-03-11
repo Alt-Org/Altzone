@@ -25,8 +25,8 @@ namespace Battle.Scripts.Test
 
         public Transform ShieldTransform => _transform;
         public float BounceAngle => _bounceAngle;
+        public float ImpactForce => _playerActor.ImpactForce;
         public float AttackMultiplier => _attackMultiplier;
-    
 
 
         private void Awake()
