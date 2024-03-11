@@ -23,6 +23,7 @@ public class HahmonValinta : MonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
+    [SerializeField] private TextMeshProUGUI characterNameText; // Reference to the Text component for character name
 
     private int selectedCharacterIndex = -1;
 
@@ -49,6 +50,9 @@ public class HahmonValinta : MonoBehaviour
 
         // Activate the pop-up window
         popupWindow.SetActive(true);
+
+        // Update the character name text
+        characterNameText.text = characterData[characterIndex].characterName;
 
         // Log the selected character's name
         Debug.Log("Selected character: " + characterData[characterIndex].characterName);
