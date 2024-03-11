@@ -188,7 +188,12 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     if (hit2.collider.gameObject.CompareTag("FurnitureTrayItem"))
                     {
-                        if(_selectedFurnitureTray == null && click is ClickState.Start) _selectedFurnitureTray = hit2.collider.transform.GetChild(0).gameObject;
+                        if (_selectedFurnitureTray == null && click is ClickState.Start)
+                        {
+                            _selectedFurnitureTray = hit2.collider.transform.GetChild(0).gameObject;
+                            transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
+                            transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
+                        }
                     }
                 }
             }
@@ -199,6 +204,7 @@ namespace MenuUI.Scripts.SoulHome
                     if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
                     _selectedFurnitureTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                     _selectedFurnitureTray = null;
+                    transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
                 }
 
                 if (secondCamera.SelectedFurniture != null)
