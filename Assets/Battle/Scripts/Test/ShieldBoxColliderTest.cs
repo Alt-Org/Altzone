@@ -13,6 +13,17 @@ namespace Battle.Scripts.Test
         // Serialized Fields
         [SerializeField] private float _bounceAngle;
 
+        public Transform ShieldTransform => _transform;
+        public bool SpecialAbilityOverridesBallBounce => _playerActor.SpecialAbilityOverridesBallBounce;
+        public float BounceAngle => _bounceAngle;
+        public float ImpactForce => _playerActor.ImpactForce;
+        public float AttackMultiplier => _attackMultiplier;
+
+        public void ActivateSpecialAbility()
+        {
+            _playerActor.ActivateSpecialAbility();
+        }
+
         private GridManager _gridManager;
         private PlayerActor _playerActor;
         private Transform _transform;
@@ -22,11 +33,6 @@ namespace Battle.Scripts.Test
         // Debug
         private const string DEBUG_LOG_BALL_COLLISION = "[{0:000000}] [BATTLE] [SHIELD BOX COLLIDER] Ball collision: ";
         private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
-
-        public Transform ShieldTransform => _transform;
-        public float BounceAngle => _bounceAngle;
-        public float ImpactForce => _playerActor.ImpactForce;
-        public float AttackMultiplier => _attackMultiplier;
 
 
         private void Awake()
@@ -46,10 +52,12 @@ namespace Battle.Scripts.Test
             var otherGameObject = collider.gameObject;
             if (otherGameObject.CompareTag(Tags.Ball))
             {
+                /*
                 if (_playerActor != null)
                 {
                     _playerActor.ShieldHit(1);
                 }
+                */
                 _collider.enabled = false;
                 yield return new WaitForSeconds(.1f);
                 _collider.enabled = true;

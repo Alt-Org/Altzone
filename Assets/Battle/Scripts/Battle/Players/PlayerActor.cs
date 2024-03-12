@@ -41,11 +41,8 @@ namespace Battle.Scripts.Battle.Players
         public Transform ShieldTransform => _playerShield.Transform;
         public Transform CharacterTransform => _playerCharacter.Transform;
         public Transform SoulTransform => _playerSoul.Transform;
-           public float ImpactForce
-        {
-            get { return _impactForce; }
-            set { _impactForce = value; }
-        }
+        public bool SpecialAbilityOverridesBallBounce => _playerClass.SpecialAbilityOverridesBallBounce;
+        public float ImpactForce => _impactForce;
 
         #region Public Methods
 
@@ -187,6 +184,7 @@ namespace Battle.Scripts.Battle.Players
             });
         }
 
+        /* OLD
         public void ShieldHit(int damage)
         {
             if (!_allowShieldHit)
@@ -203,15 +201,15 @@ namespace Battle.Scripts.Battle.Players
                 StartCoroutine(ShieldHitDelay(damage));
             }
         }
+        */
 
-        public void SetImpactForce(float newImpactForce)
+        public void ActivateSpecialAbility()
         {
-            _impactForce = newImpactForce;
+            _playerClass.ActivateSpecialAbility();
         }
 
-
         #endregion Public Methods
-        
+
 
         // Config
         private int _shieldResistance;
@@ -230,6 +228,8 @@ namespace Battle.Scripts.Battle.Players
         private bool _allowShieldHit;
         private int _shieldHitPoints;
         private int _currentPoseIndex;
+
+        private IPlayerClass _playerClass;
 
         private class PlayerShield
         {
@@ -365,6 +365,7 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
             _shieldHitPoints = _shieldResistance;
 
+            _playerClass = _geometryRoot.GetComponentInChildren<IPlayerClass>();
             _playerShield = new(_geometryRoot.Find("BoxShield"));
             _playerCharacter = new(_geometryRoot.Find("PLayerCharacter"));
             _playerSoul = new(_geometryRoot.Find("PLayerSoul"));

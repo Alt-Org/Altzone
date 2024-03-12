@@ -16,6 +16,28 @@ public class BallHandlerTest : MonoBehaviour
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _hotFixMax;
 
+    #region Public Methods
+
+    public void Launch(Vector3 position, Vector3 direction, float speed)
+    {
+        _rb.position = position;
+        SetVelocity(NewRotation(direction) * Vector2.up * speed);
+        _sprite.enabled = true;
+
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
+    }
+
+    public void Stop()
+    {
+        _rb.position = Vector2.zero;
+        _rb.velocity = Vector2.zero;
+        _sprite.enabled = false;
+
+        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
+    }
+
+    #endregion Public Methods
+
     private float _arenaScaleFactor;
 
     // Important Objects
@@ -56,30 +78,10 @@ public class BallHandlerTest : MonoBehaviour
         _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
     }
 
-    public void Launch(Vector3 position, Vector3 direction, float speed)
-    {
-        _rb.position = position;
-        SetVelocity(NewRotation(direction) * Vector2.up * speed);
-        _sprite.enabled = true;
-
-        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
-    }
-
-    public void Stop()
-    {
-        _rb.position = Vector2.zero;
-        _rb.velocity = Vector2.zero;
-        _sprite.enabled = false;
-
-        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         GridPos gridPos = null;
         var otherGameObject = collision.gameObject;
-
-        Debug.Log(otherGameObject.tag);
 
         if (!otherGameObject.CompareTag("ShieldBoxCollider"))
         {
@@ -95,25 +97,34 @@ public class BallHandlerTest : MonoBehaviour
             var shield = otherGameObject.GetComponent<ShieldBoxColliderTest>(); 
             if (shield != null)
             {
-                var shieldTransform = shield.ShieldTransform; 
-                var bounceAngle = shield.BounceAngle;
-                var attackMultiplier = shield.AttackMultiplier;
-                var incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
-                var shieldDirection = shieldTransform.up; 
-                var isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0; 
+                if (!shield.SpecialAbilityOverridesBallBounce)
+                {
+                    Transform shieldTransform = shield.ShieldTransform;
+                    float bounceAngle = shield.BounceAngle;
+                    float attackMultiplier = shield.AttackMultiplier;
+                    Vector2 incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
+                    Vector3 shieldDirection = shieldTransform.up;
+                    bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0;
 
-                if (isCorrectDirection) 
+                    if (isCorrectDirection)
+                    {
+                        gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
+                        _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
+                        float angle = shieldTransform.rotation.eulerAngles.z + bounceAngle; // Käytä kilven kulmaa
+                        Quaternion rotation = Quaternion.Euler(0, 0, angle);
+                        Vector2 newVelocity = rotation * Vector2.up * (_rb.velocity.magnitude + attackMultiplier);
+
+                        SetVelocity(newVelocity);
+
+                        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (bounce), position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                    }
+                }
+                else
                 {
                     gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
-                    _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
-                    var angle = shieldTransform.rotation.eulerAngles.z + bounceAngle; // Käytä kilven kulmaa
-                    var rotation = Quaternion.Euler(0, 0, angle);
-                    var newVelocity = rotation * Vector2.up * (_rb.velocity.magnitude + attackMultiplier); 
-            
-                    SetVelocity(newVelocity);
-
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (no bounce), position: {1}, grid position: ({2}))", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos));
                 }
+                shield.ActivateSpecialAbility();
             }
         }
 
