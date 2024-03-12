@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2408126438067777819}
   - component: {fileID: 741712023779475989}
   - component: {fileID: 6012083698605400320}
-  - component: {fileID: 2399442900426409574}
   m_Layer: 0
   m_Name: BoxCollider6
   m_TagString: ShieldBoxCollider
@@ -92,23 +91,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 247.5
---- !u!114 &2399442900426409574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341509031451491991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &446607386872344925
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +102,6 @@ GameObject:
   - component: {fileID: 314436014494900825}
   - component: {fileID: 4677942062219598326}
   - component: {fileID: 7789517488125019078}
-  - component: {fileID: 5043834900276820478}
   m_Layer: 0
   m_Name: BoxCollider2
   m_TagString: ShieldBoxCollider
@@ -201,23 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 202.5
---- !u!114 &5043834900276820478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446607386872344925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &478594815964907735
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,7 +228,6 @@ GameObject:
   - component: {fileID: 8279625804795149621}
   - component: {fileID: 4483743048640274909}
   - component: {fileID: 8253440876257295153}
-  - component: {fileID: 5546308902320949927}
   m_Layer: 0
   m_Name: BoxCollider4
   m_TagString: ShieldBoxCollider
@@ -345,23 +308,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 225
---- !u!114 &5546308902320949927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018389929811312675}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &1246828051414477210
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +319,6 @@ GameObject:
   - component: {fileID: 7246318315949550805}
   - component: {fileID: 1568490388425210243}
   - component: {fileID: 822874573233844812}
-  - component: {fileID: 6205779625289681682}
   m_Layer: 0
   m_Name: BoxCollider7
   m_TagString: ShieldBoxCollider
@@ -454,23 +399,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 112.5
---- !u!114 &6205779625289681682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246828051414477210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &1407664613055000461
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,7 +645,6 @@ GameObject:
   - component: {fileID: 5221482027672820923}
   - component: {fileID: 5702252456111156190}
   - component: {fileID: 889994112348881226}
-  - component: {fileID: 6898516400058399690}
   m_Layer: 0
   m_Name: BoxCollider5
   m_TagString: ShieldBoxCollider
@@ -798,23 +725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 135
---- !u!114 &6898516400058399690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5198453643065724941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &6445645060191955456
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,7 +769,6 @@ GameObject:
   - component: {fileID: 6518627819562999275}
   - component: {fileID: 4883500791783747882}
   - component: {fileID: 5405863866438031335}
-  - component: {fileID: 3530946192750564633}
   m_Layer: 0
   m_Name: BoxCollider1
   m_TagString: ShieldBoxCollider
@@ -940,23 +849,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 180
---- !u!114 &3530946192750564633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6499081449297379649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &7550685050336156810
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,7 +944,6 @@ GameObject:
   - component: {fileID: 2426723891286037557}
   - component: {fileID: 5047363166875704817}
   - component: {fileID: 1513045124228818683}
-  - component: {fileID: 7098681893898442310}
   m_Layer: 0
   m_Name: BoxCollider3
   m_TagString: ShieldBoxCollider
@@ -1133,23 +1024,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bounceAngle: 157.5
---- !u!114 &7098681893898442310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7744459258705781583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95705bbafcfa47341983063c4ca6a77b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pickup: {fileID: 0}
-  PickupDiamondsBall: {fileID: 0}
-  Attack: 0
-  NewBallSpeed: 0
-  BallHandlerTest: {fileID: 0}
 --- !u!1 &8169727696733222672
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,6 +1325,7 @@ MonoBehaviour:
   _geometryRoot: {fileID: 4593924629702427175}
   _movementSpeed: 2
   _shieldActivationDistance: 2
+  _impactForce: 0
   _useNewRotationSysten: 0
   _playerCharacterSpriteSheet:
   - {fileID: 705883896, guid: b2e24b9ecfaffc0418614a53736ad690, type: 3}
