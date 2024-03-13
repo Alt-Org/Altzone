@@ -47,9 +47,9 @@ namespace Battle.Scripts.Test
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
-        private IEnumerator OnTriggerEnter2D(Collider2D collider)
+        private IEnumerator OnCollisionEnter2D(Collision2D collision)
         {
-            var otherGameObject = collider.gameObject;
+            var otherGameObject = collision.gameObject;
             if (otherGameObject.CompareTag(Tags.Ball))
             {
                 /*
