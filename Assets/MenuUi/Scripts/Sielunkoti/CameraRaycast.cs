@@ -18,6 +18,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private float scrollSpeed = 2f;
         [SerializeField]
+        private float scrollSpeedMouse = 2f;
+        [SerializeField]
         private SpriteRenderer backgroundSprite;
         [SerializeField]
         private bool isometric = false;
@@ -29,6 +31,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _selectedFurniture;
         private GameObject _tempSelectedFurniture;
         private float _startFurnitureTime;
+        private float _tempRoomHitStart;
 
         private Bounds cameraBounds;
         private float cameraMinX;
@@ -57,23 +60,28 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-
+            if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator) Camera.fieldOfView = 100;
+            else if (AppPlatform.IsEditor) Camera.fieldOfView = 45;
+            transform.localPosition = new(0, 0, transform.position.z);
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
             Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
             float currentX = transform.position.x;
             float currentY = transform.position.y;
             float offsetX = Mathf.Abs(currentX - bl.x);
-            float offsetY = Mathf.Abs(currentX - bl.y);
+            float offsetY = Mathf.Abs(currentY - bl.y);
+
+            Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
+            Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
 
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             transform.position = new(x, y, transform.position.z);
         }
-
-        // Update is called once per frame
-        void Update()
+            // Update is called once per frame
+            void Update()
         {
-            Touch touch = Input.GetTouch(0);
+            Touch touch = new();
+            if(Input.touchCount > 0) touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
             if ((Input.GetMouseButton(0) || Input.touchCount == 1) && cameraMove)
             {
@@ -96,17 +104,33 @@ namespace MenuUI.Scripts.SoulHome
                     else
                     {
                         float moveAmountY = Input.GetAxis("Mouse Y");
-                        targetY = currentY - moveAmountY * scrollSpeed;
+                        targetY = currentY - moveAmountY * scrollSpeedMouse;
                     }
-
-                    float y = Mathf.Clamp(targetY, cameraMinY+offsetY, cameraMaxY - offsetY);
+                    float y;
+                    if (cameraMinY + offsetY < cameraMaxY - offsetY)
+                    {
+                        y = Mathf.Clamp(targetY, cameraMinY + offsetY, cameraMaxY - offsetY);
+                    }
+                    else
+                    {
+                        y = (cameraMinY+ cameraMaxY) /2;
+                    }
 
                     float currentX = transform.position.x;
                     float offsetX = Mathf.Abs(currentX - bl.x);
-                    float moveAmountX = Input.GetAxis("Mouse X");
-                    float targetX = currentX - moveAmountX * scrollSpeed;
+                    //float moveAmountX = Input.GetAxis("Mouse X");
+                    float moveAmountX = 0;
+                    float targetX = currentX - moveAmountX * scrollSpeedMouse;
 
-                    float x = Mathf.Clamp(targetX, cameraMinX + offsetX, cameraMaxX - offsetX);
+                    float x;
+                    if (cameraMinX + offsetX < cameraMaxX - offsetX)
+                    {
+                        x = Mathf.Clamp(targetX, cameraMinX + offsetX, cameraMaxX - offsetX);
+                    }
+                    else
+                    {
+                        x = (cameraMinX + cameraMaxX) / 2;
+                    }
                     transform.position = new(x, y, transform.position.z);
                 }
                 else if(_selectedFurniture == null)
@@ -133,10 +157,17 @@ namespace MenuUI.Scripts.SoulHome
                     else
                     {
                         float moveAmountY = Input.GetAxis("Mouse X");
-                        targetX = currentX - moveAmountY * scrollSpeed;
+                        targetX = currentX - moveAmountY * scrollSpeedMouse;
                     }
-
-                    float x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
+                    float x;
+                    if (roomCameraMinX + offsetX < roomCameraMaxX - offsetX)
+                    {
+                        x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
+                    }
+                    else
+                    {
+                        x = (roomCameraMinX + roomCameraMaxX) / 2;
+                    }
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }
                 cameraMove = false;
@@ -219,6 +250,7 @@ namespace MenuUI.Scripts.SoulHome
                         if (click == ClickState.Start)
                         {
                             tempSelectedRoom = roomObject;
+                            _tempRoomHitStart = transform.position.y;
                         }
                         else if (click is ClickState.Move or ClickState.Hold && tempSelectedRoom != null)
                         {
@@ -227,7 +259,7 @@ namespace MenuUI.Scripts.SoulHome
 
                         else if (click == ClickState.End)
                         {
-                            if (selectedRoom == null && tempSelectedRoom != null)
+                            if (selectedRoom == null && tempSelectedRoom != null && _tempRoomHitStart > transform.position.y - 3f && _tempRoomHitStart < transform.position.y + 3f)
                             {
                                 selectedRoom = tempSelectedRoom;
                                 ZoomIn(selectedRoom);
@@ -243,10 +275,10 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if ((Input.GetMouseButton(0) || Input.touchCount == 1) && (furnitureObject != null || _selectedFurniture != null))
+            if ((Input.GetMouseButton(0) || Input.GetMouseButtonUp(0) || Input.touchCount == 1) && (furnitureObject != null || _selectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
-                Touch touch = Input.GetTouch(0);
+                //Touch touch = Input.GetTouch(0);
                 if (click == ClickState.Start)
                 {
                     if (_tempSelectedFurniture == null)
@@ -321,7 +353,8 @@ namespace MenuUI.Scripts.SoulHome
                 prevWideCameraPos = Camera.transform.position;
                 prevWideCameraFoV = Camera.fieldOfView;
                 Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10f, -27.5f);
-                Camera.fieldOfView = 60;
+                if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator) Camera.fieldOfView = 60;
+                else if (AppPlatform.IsEditor) Camera.fieldOfView = 60;
                 outDelay = Time.time;
                 mainScreen.EnableTray(true);
 

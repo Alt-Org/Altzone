@@ -151,7 +151,7 @@ namespace MenuUI.Scripts.SoulHome
             int furnitureRowSize;
             int furnitureColumnSize;
             Transform points = transform.Find("FurniturePoints");
-            if (!hover) { 
+            if (!hover) {
                 if (size == FurnitureSize.OneXOne)
                 {
                     furnitureRowSize = 1;
