@@ -131,7 +131,7 @@ namespace Battle.Scripts.Battle.Players
         private PlayerManager _playerManager;
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER DRIVER PHOTON] ";

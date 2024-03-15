@@ -337,7 +337,7 @@ namespace Battle.Scripts.Battle.Players
         //private ShieldPoseManager _shieldPoseManager;
         private AudioSource _audioSource;
 
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER ACTOR] ";

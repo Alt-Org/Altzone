@@ -12,7 +12,7 @@ public class SyncedFixedUpdateClockStarted
 { }
 #endregion Message Classes
 
-public class SyncedFixedUpdateClockTest : MonoBehaviour
+public class SyncedFixedUpdateClock : MonoBehaviour
 {
     // Serialized Fields
     [SerializeField] private bool _offlineMode;

@@ -51,7 +51,6 @@ namespace MenuUI.Scripts.SoulHome
                 moving = true;
             }
             else moving = false;
-
             Touch touch =new();
             if (Input.touchCount > 0) touch = Input.GetTouch(0);
 
@@ -82,29 +81,15 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (((moving && Input.GetMouseButton(0)) || touch.phase == UnityEngine.TouchPhase.Moved) )
             {
-                Vector2 endPosition;
-                if (Input.touchCount >= 1) endPosition = touch.position;
+                if (Input.touchCount >= 1) currentPosition = touch.position;
                 else currentPosition = Mouse.current.position.ReadValue();
-                float endTime = Time.time;
-
-                //Debug.Log(endPosition);
-                //Debug.Log(endTime);
-
-                //if (endTime - startTime > 0.2f || Mathf.Abs(startPosition.x - currentPosition.x) + Mathf.Abs(startPosition.y - currentPosition.y) > 1) return;
 
                 RayPoint(ClickState.Move);
             }
             else if (((!moving && Input.GetMouseButton(0)) || touch.phase == UnityEngine.TouchPhase.Stationary) )
             {
-                Vector2 endPosition;
-                if (Input.touchCount >= 1) endPosition = touch.position;
-                else endPosition = Mouse.current.position.ReadValue();
-                float endTime = Time.time;
-
-                //Debug.Log(endPosition);
-                //Debug.Log(endTime);
-
-                //if (endTime - startTime > 0.2f || Mathf.Abs(startPosition.x - endPosition.x) + Mathf.Abs(startPosition.y - endPosition.y) > 1) return;
+                if (Input.touchCount >= 1) currentPosition = touch.position;
+                else currentPosition = Mouse.current.position.ReadValue();
 
                 RayPoint(ClickState.Hold);
             }

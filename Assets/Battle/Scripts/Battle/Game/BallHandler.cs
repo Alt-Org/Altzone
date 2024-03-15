@@ -1,4 +1,5 @@
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Test;
 using Battle.Scripts.Battle.Game;
@@ -7,7 +8,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 
-public class BallHandlerTest : MonoBehaviour
+public class BallHandler : MonoBehaviour
 {
     // Serialized Fields
     [SerializeField] private int _damage;
@@ -54,7 +55,7 @@ public class BallHandlerTest : MonoBehaviour
     // Debug
     private const string DEBUG_LOG_NAME = "[BATTLE] [BALL HANDLER] ";
     private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+    private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
     private void Start()
     {
@@ -67,7 +68,7 @@ public class BallHandlerTest : MonoBehaviour
         _gridManager = Context.GetGridManager;
 
         // Get game config variables
-        var variables = GameConfig.Get().Variables;
+        GameVariables variables = GameConfig.Get().Variables;
         _angleLimit = variables._angleLimit;
 
         _sprite.enabled = false;
@@ -81,7 +82,7 @@ public class BallHandlerTest : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         GridPos gridPos = null;
-        var otherGameObject = collision.gameObject;
+        GameObject otherGameObject = collision.gameObject;
 
         if (!otherGameObject.CompareTag("ShieldBoxCollider"))
         {
@@ -94,7 +95,7 @@ public class BallHandlerTest : MonoBehaviour
         }
         else
         {
-            var shield = otherGameObject.GetComponent<ShieldBoxColliderTest>(); 
+            ShieldBoxCollider shield = otherGameObject.GetComponent<ShieldBoxCollider>(); 
             if (shield != null)
             {
                 if (!shield.SpecialAbilityOverridesBallBounce)

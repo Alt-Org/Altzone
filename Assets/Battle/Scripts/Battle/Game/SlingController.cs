@@ -37,7 +37,7 @@ public class SlingController : MonoBehaviour
     [SerializeField] private float _wingMinAngleDegrees;
     [SerializeField] private float _wingMaxAngleDegrees;
     [Header("Game Objects")]
-    [SerializeField] private BallHandlerTest _ball;
+    [SerializeField] private BallHandler _ball;
     [SerializeField] private SlingIndicator _slingIndicator;
 
     // Public Properties
@@ -168,7 +168,7 @@ public class SlingController : MonoBehaviour
     // Components
     private AudioSource _audioSource;
 
-    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+    private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
     // Degbug
     private const string DEBUG_LOG_NAME = "[BATTLE] [SLING CONTROLLER] ";

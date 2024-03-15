@@ -80,7 +80,7 @@ namespace Battle.Scripts.Test
         private PlayerManager _playerManager;
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         private void Awake()
         {
