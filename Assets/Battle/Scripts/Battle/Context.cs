@@ -20,7 +20,7 @@ namespace Battle.Scripts.Battle
         internal static GridManager GetGridManager => Object.FindObjectOfType<GridManager>();
         internal static PlayerManager GetPlayerManager => Object.FindObjectOfType<PlayerManager>();
         internal static PlayerPlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
-        internal static SyncedFixedUpdateClockTest GetSyncedFixedUpdateClock => Object.FindObjectOfType<SyncedFixedUpdateClockTest>();
+        internal static SyncedFixedUpdateClock GetSyncedFixedUpdateClock => Object.FindObjectOfType<SyncedFixedUpdateClock>();
         internal static SlingController GetSlingController => Object.FindObjectOfType<SlingController>();
     }
 }

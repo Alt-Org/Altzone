@@ -13,7 +13,7 @@ public class GameStarted
 { }
 #endregion Message Classes
 
-public class GameControllerTest : MonoBehaviour
+public class GameController : MonoBehaviour
 {
     // Game Startup
     private const double GAME_START_DELAY = 1.0;
@@ -29,7 +29,7 @@ public class GameControllerTest : MonoBehaviour
     private PhotonView _photonView;
 
     // Other Control Objects
-    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+    private SyncedFixedUpdateClock _syncedFixedUpdateClock;
     private PlayerManager _playerManager;
     private SlingController _slingController;
 

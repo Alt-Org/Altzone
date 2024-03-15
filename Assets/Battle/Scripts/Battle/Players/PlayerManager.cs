@@ -203,7 +203,7 @@ internal class PlayerManager : MonoBehaviour
     // Debug
     private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER MANAGER] ";
     private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-    private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+    private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
     // debug
     private void Start()
