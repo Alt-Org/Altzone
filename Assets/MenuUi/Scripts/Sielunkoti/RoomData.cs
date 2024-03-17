@@ -42,7 +42,7 @@ namespace MenuUI.Scripts.SoulHome
                 col = 0;
                 foreach (Transform point in pointRow)
                 {
-                    point.GetComponent<FurnitureSlot>().InitializeSlot(row, col);
+                    point.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id);
                     col++;
                 }
                 row++;
@@ -87,8 +87,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 for (int j = column; j <= endColumn; j++)
                 {
-                    if (points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture != null
-                        && points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture != furniture) return false;
+                    if (points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
+                        && points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != furniture) return false;
                 }
             }
             return true;
@@ -130,21 +130,7 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(column, row);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
-            if (row == 0)
-            {
-                furnitureObject.GetComponent<SpriteRenderer>().sortingOrder = 3;
-                furnitureObject.transform.localScale *= 1.0f;
-            }
-            else if (row == 1)
-            {
-                furnitureObject.GetComponent<SpriteRenderer>().sortingOrder = 4;
-                furnitureObject.transform.localScale *= 1.1f;
-            }
-            else if (row == 2)
-            {
-                furnitureObject.GetComponent<SpriteRenderer>().sortingOrder = 5;
-                furnitureObject.transform.localScale *= 1.2f;
-            }
+            furnitureObject.GetComponent<FurnitureHandling>().SetScale(row);
         }
         public void MoveFurniture(int row, int column, FurnitureSize size, GameObject furniture, bool hover)
         {
@@ -175,13 +161,13 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     for (int j = column; j <= endColumn; j++)
                     {
-                        points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furniture.GetComponent<FurnitureHandling>().Furniture;
+                        points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = furniture.GetComponent<FurnitureHandling>().Furniture;
                     }
                 }
-                if (furniture.GetComponent<FurnitureHandling>().Slot != null)
+                if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
                 {
-                    int prevRow = furniture.GetComponent<FurnitureHandling>().Slot.row;
-                    int prevColumn = furniture.GetComponent<FurnitureHandling>().Slot.column;
+                    int prevRow = furniture.GetComponent<FurnitureHandling>().TempSlot.row;
+                    int prevColumn = furniture.GetComponent<FurnitureHandling>().TempSlot.column;
 
                     startRow = prevRow - (furnitureColumnSize - 1);
                     endColumn = prevColumn + (furnitureRowSize - 1);
@@ -190,46 +176,22 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         for (int j = prevColumn; j <= endColumn; j++)
                         {
-                            points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = null;
+                            points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture = null;
                         }
                     }
                 }
-                furniture.GetComponent<FurnitureHandling>().Slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
+                furniture.GetComponent<FurnitureHandling>().TempSlot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
             }
             furniture.transform.SetParent(points.GetChild(row).GetChild(column));
             furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-            if (furniture.GetComponent<SpriteRenderer>().sortingOrder == 4) furniture.transform.localScale /= 1.1f;
-            else if (furniture.GetComponent<SpriteRenderer>().sortingOrder == 5) furniture.transform.localScale /= 1.2f;
-
-            if (row == 0)
-            {
-                furniture.GetComponent<SpriteRenderer>().sortingOrder = 3;
-                furniture.transform.localScale *= 1.0f;
-            }
-            else if (row == 1)
-            {
-                furniture.GetComponent<SpriteRenderer>().sortingOrder = 4;
-                furniture.transform.localScale *= 1.1f;
-            }
-            else if (row == 2)
-            {
-                furniture.GetComponent<SpriteRenderer>().sortingOrder = 5;
-                furniture.transform.localScale *= 1.2f;
-            }
+            furniture.GetComponent<FurnitureHandling>().SetScale(row);
         }
 
-        public bool HandleFurniturePosition(Vector2 point, Camera camera, GameObject furniture, bool hover)
+        public bool HandleFurniturePosition(RaycastHit2D[] hitArray, GameObject furniture, bool hover)
         {
             if (furniture.GetComponent<FurnitureHandling>() == null) return false;
 
-            //Debug.Log("Pass.");
-            Ray ray = new(camera.transform.position, (Vector3)point - camera.transform.position);
-            //Ray ray = camera.ScreenPointToRay(point);
-            RaycastHit2D[] hit;
-            hit = Physics2D.GetRayIntersectionAll(ray, 1000);
-            //Debug.Log(point - ray.origin);
-            //Debug.Log(hit);
-            foreach (RaycastHit2D hit2 in hit)
+            foreach (RaycastHit2D hit2 in hitArray)
             {
                 if (hit2.collider != null)
                 {
@@ -256,7 +218,8 @@ namespace MenuUI.Scripts.SoulHome
                     Destroy(furniture);
                     return false;
                 }
-                ResetPosition(furniture);
+                /*else if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                ResetPosition(furniture, true);*/
             }
             return false;
         }
@@ -297,13 +260,64 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
+
         }
 
-        public void ResetPosition(GameObject furniture)
+        public void SetFurnitureSlots(FurnitureSize size, FurnitureSlot slot, Furniture furniture)
         {
-            int prevRow = furniture.GetComponent<FurnitureHandling>().Slot.row;
-            int prevColumn = furniture.GetComponent<FurnitureHandling>().Slot.column;
+            int furnitureRowSize;
+            int furnitureColumnSize;
+            Transform points = transform.Find("FurniturePoints");
+            if (size == FurnitureSize.OneXOne)
+            {
+                furnitureRowSize = 1;
+                furnitureColumnSize = 1;
+            }
+            else if (size == FurnitureSize.OneXTwo)
+            {
+                furnitureRowSize = 2;
+                furnitureColumnSize = 1;
+            }
+            else
+            {
+                Debug.Log("Error: Invalid furniture size");
+                return;
+            }
+
+            if (slot != null)
+            {
+                int prevRow = slot.row;
+                int prevColumn = slot.column;
+
+                int startRow = prevRow - (furnitureColumnSize - 1);
+                int endColumn = prevColumn + (furnitureRowSize - 1);
+
+                for (int i = startRow; i <= prevRow; i++)
+                {
+                    for (int j = prevColumn; j <= endColumn; j++)
+                    {
+                        points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furniture;
+                    }
+                }
+            }
+
+        }
+        public void ResetPosition(GameObject furniture, bool temp)
+        {
+            int prevRow;
+            int prevColumn;
+            if (temp)
+            {
+                prevRow = furniture.GetComponent<FurnitureHandling>().TempSlot.row;
+                prevColumn = furniture.GetComponent<FurnitureHandling>().TempSlot.column;
+            }
+            else
+            {
+                prevRow = furniture.GetComponent<FurnitureHandling>().Slot.row;
+                prevColumn = furniture.GetComponent<FurnitureHandling>().Slot.column;
+            }
             furniture.transform.SetParent(transform.Find("FurniturePoints").GetChild(prevRow).GetChild(prevColumn));
+            furniture.GetComponent<FurnitureHandling>().SetScale();
         }
     }
 }

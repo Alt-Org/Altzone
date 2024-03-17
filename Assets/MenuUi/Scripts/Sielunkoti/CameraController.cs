@@ -22,6 +22,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Camera _camera;
 
+        private bool rotated = false;
         Vector3 startPosition;
         float startTime;
 
@@ -39,13 +40,25 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
+            Screen.autorotateToPortrait = true;
+            Screen.autorotateToPortraitUpsideDown = false;
+            Screen.autorotateToLandscapeRight = false;
+            Screen.autorotateToLandscapeLeft = true;
+            Screen.orientation = ScreenOrientation.AutoRotation;
             EnableTray(false);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(Input.GetMouseButton(0))
+            //if (GetComponent<RectTransform>().rect.width != GetComponent<BoxCollider2D>().size.x || GetComponent<RectTransform>().rect.height != GetComponent<BoxCollider2D>().size.y)
+            if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
+            {
+                rotated = !rotated;
+                StartCoroutine(SetColliderSize());
+            }
+
+            if (Input.GetMouseButton(0))
             if (!Mouse.current.position.ReadValue().Equals(currentPosition))
             {
                 moving = true;
@@ -100,11 +113,26 @@ namespace MenuUI.Scripts.SoulHome
             }
 
         }
+        private void OnEnable()
+        {
+            Screen.autorotateToPortrait = true;
+            Screen.autorotateToPortraitUpsideDown = false;
+            Screen.autorotateToLandscapeRight = false;
+            Screen.autorotateToLandscapeLeft = true;
+            Screen.orientation = ScreenOrientation.AutoRotation;
+            EnableTray(false);
+        }
 
+        private void OnDisable()
+        {
+            Screen.orientation = ScreenOrientation.Portrait;
+            secondCamera.ResetChanges();
+        }
 
         private void RayPoint(ClickState click)
         {
             Debug.Log(click);
+            Debug.Log(Screen.orientation);
             Touch touch = new();
             Ray ray;
             if (Input.touchCount >= 1)
@@ -204,34 +232,58 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        public void ResetChanges()
+        {
+            secondCamera.ResetChanges();
+        }
+
+        public void SaveChanges()
+        {
+            secondCamera.SaveChanges();
+        }
+
         public void ToggleTray()
         {
-            if (secondCamera.SelectedRoom == null) return;
             float width = GetComponent<BoxCollider2D>().size.x;
-            GameObject tray = transform.GetChild(0).gameObject;
+            GameObject tray = transform.Find("Itemtray").gameObject;
             if (!trayOpen)
             {
                 tray.transform.localPosition = new Vector2(tray.transform.localPosition.x -width+100, tray.transform.localPosition.y);
                 trayOpen = true;
+                transform.Find("DiscardChangesButton").gameObject.SetActive(true);
+                transform.Find("SaveChangesButton").gameObject.SetActive(true);
+                if (!secondCamera.EditingMode) secondCamera.ToggleEdit();
             }
             else
             {
                 tray.transform.localPosition = new Vector2(tray.transform.localPosition.x + width - 100, tray.transform.localPosition.y);
                 trayOpen = false;
+                transform.Find("DiscardChangesButton").gameObject.SetActive(false);
+                transform.Find("SaveChangesButton").gameObject.SetActive(false);
+                if (secondCamera.EditingMode) secondCamera.ToggleEdit();
             }
         }
         public void EnableTray(bool enable)
         {
             if (enable)
             {
-                GameObject tray = transform.GetChild(0).gameObject;
+                GameObject tray = transform.Find("Itemtray").gameObject;
                 tray.SetActive(true);
             }
             else
             {
-                GameObject tray = transform.GetChild(0).gameObject;
+                GameObject tray = transform.Find("Itemtray").gameObject;
                 tray.SetActive(false);
             }
+        }
+
+        private IEnumerator SetColliderSize()
+        {
+            yield return new WaitForEndOfFrame();
+            RectTransform rect = GetComponent<RectTransform>();
+            float x = rect.rect.width;
+            float y = rect.rect.height;
+            GetComponent<BoxCollider2D>().size = new(x, y);
         }
 
     }
