@@ -70,8 +70,12 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
-            else if (AppPlatform.IsEditor) Camera.fieldOfView = 45;
+            if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer
+                || (Application.platform == RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow)
+                || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+            else if (AppPlatform.IsEditor
+                || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                || !Application.isMobilePlatform) Camera.fieldOfView = 45;
             transform.localPosition = new(0, 0, transform.position.z);
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
             Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
@@ -90,7 +94,7 @@ namespace MenuUI.Scripts.SoulHome
             // Update is called once per frame
             void Update()
         {
-            if (Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
+            if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
             {
                 Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 if (!selectedRoom) Camera.fieldOfView = 45;
@@ -112,7 +116,7 @@ namespace MenuUI.Scripts.SoulHome
                 transform.position = new(x, y, transform.position.z);
 
             }
-            else if (Screen.orientation == ScreenOrientation.Portrait && rotated)
+            else if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.Portrait && rotated)
             {
                 Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 if (!selectedRoom) Camera.fieldOfView = 90;
@@ -365,7 +369,7 @@ namespace MenuUI.Scripts.SoulHome
                         _tempSelectedFurniture = furnitureObject;
                         _startFurnitureTime = Time.time;
                 }
-                else if ((_startFurnitureTime + 1 <= Time.time || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
+                else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
                 {
                     _selectedFurniture = _tempSelectedFurniture;
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
@@ -456,8 +460,10 @@ namespace MenuUI.Scripts.SoulHome
             Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10f, -27.5f);
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator)
             {
-                if(Application.platform is RuntimePlatform.WebGLPlayer) Camera.fieldOfView = 60;
-                else if (Screen.orientation == ScreenOrientation.LandscapeLeft) Camera.fieldOfView = 55;
+                if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 60;
+                else if (Screen.orientation == ScreenOrientation.LandscapeLeft
+                    || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 55;
                 else Camera.fieldOfView = 60;
             }
             else if (AppPlatform.IsEditor) Camera.fieldOfView = 55;
@@ -476,8 +482,10 @@ namespace MenuUI.Scripts.SoulHome
                 if (mainScreen.TrayOpen) mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
-                if (Application.platform is RuntimePlatform.WebGLPlayer) Camera.fieldOfView = 90;
-                else if (Screen.orientation == ScreenOrientation.LandscapeLeft) Camera.fieldOfView = 45;
+                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                else if (Screen.orientation == ScreenOrientation.LandscapeLeft
+                    || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 45;
                 else Camera.fieldOfView = 90;
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
