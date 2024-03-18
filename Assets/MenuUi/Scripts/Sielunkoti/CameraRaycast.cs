@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -90,6 +92,7 @@ namespace MenuUI.Scripts.SoulHome
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             transform.position = new(x, y, transform.position.z);
+            EnhancedTouchSupport.Enable();
         }
             // Update is called once per frame
             void Update()
@@ -141,9 +144,9 @@ namespace MenuUI.Scripts.SoulHome
 
 
             Touch touch = new();
-            if(Input.touchCount > 0) touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
-            if ((Input.GetMouseButton(0) || Input.touchCount == 1) && cameraMove)
+            if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
+            if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
+            if ((Input.GetMouseButton(0) || Touch.activeFingers.Count == 1) && cameraMove)
             {
                 if (selectedRoom == null && _selectedFurniture == null)
                 {
@@ -151,15 +154,15 @@ namespace MenuUI.Scripts.SoulHome
                     float currentY = transform.position.y;
                     float offsetY = Mathf.Abs(currentY-bl.y);
                     float targetY;
-                    if (Input.touchCount == 1)
+                    if (Touch.activeFingers.Count == 1)
                     {
-                        touch = Input.GetTouch(0);
-                        if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
-                        Vector2 lp = touch.position;
+                        //touch = Input.GetTouch(0);
+                        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero) prevp = touch.screenPosition;
+                        Vector2 lp = touch.screenPosition;
                         targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
-                        prevp = touch.position;
-                        if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
+                        prevp = touch.screenPosition;
+                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled) prevp = Vector2.zero;
                     }
                     else
                     {
@@ -204,15 +207,15 @@ namespace MenuUI.Scripts.SoulHome
                     float currentX = transform.position.x;
                     float offsetX = Mathf.Abs(currentX - bl.x);
                     float targetX;
-                    if (Input.touchCount == 1)
+                    if (Touch.activeFingers.Count == 1)
                     {
-                        touch = Input.GetTouch(0);
-                        if (touch.phase == TouchPhase.Began || prevp == Vector2.zero) prevp = touch.position;
-                        Vector2 lp = touch.position;
+                        //touch = Input.GetTouch(0);
+                        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero) prevp = touch.screenPosition;
+                        Vector2 lp = touch.screenPosition;
                         targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
                         //Debug.Log("Touch: X: " + (prevp.x - lp.x));
-                        prevp = touch.position;
-                        if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
+                        prevp = touch.screenPosition;
+                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled) prevp = Vector2.zero;
                     }
                     else
                     {
@@ -232,7 +235,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 cameraMove = false;
             }
-            if (touch.phase is TouchPhase.Ended or TouchPhase.Canceled) prevp = Vector2.zero;
+            if (Touch.activeFingers.Count > 0 && (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)) prevp = Vector2.zero;
         }
 
         void OnEnable()
@@ -314,10 +317,10 @@ namespace MenuUI.Scripts.SoulHome
                         if (click == ClickState.Start)
                         {
                             tempSelectedRoom = roomObject;
-                            if (Input.touchCount > 0)
+                            if (Touch.activeFingers.Count > 0)
                             {
-                                Touch touch = Input.GetTouch(0);
-                                _tempRoomHitStart = touch.position;
+                                Touch touch = Touch.activeTouches[0];
+                                _tempRoomHitStart = touch.screenPosition;
                             }
                             else
                             _tempRoomHitStart = Input.mousePosition;
@@ -330,10 +333,10 @@ namespace MenuUI.Scripts.SoulHome
                         else if (click == ClickState.End && _selectedFurniture == null)
                         {
                             Vector2 _tempRoomHitEnd;
-                            if (Input.touchCount > 0)
+                            if (Touch.activeFingers.Count > 0)
                             {
-                                Touch touch = Input.GetTouch(0);
-                                _tempRoomHitEnd = touch.position;
+                                Touch touch = Touch.activeTouches[0];
+                                _tempRoomHitEnd = touch.screenPosition;
                             }
                             else
                                 _tempRoomHitEnd = Input.mousePosition;
@@ -360,7 +363,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if ((Input.GetMouseButton(0) || Input.GetMouseButtonUp(0) || Input.touchCount == 1) && (furnitureObject != null || _selectedFurniture != null))
+            if ((Input.GetMouseButton(0) || Input.GetMouseButtonUp(0) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);

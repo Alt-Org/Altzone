@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -49,6 +51,7 @@ namespace MenuUI.Scripts.SoulHome
                 Screen.autorotateToLandscapeLeft = true;
                 Screen.orientation = ScreenOrientation.AutoRotation;
             }
+            EnhancedTouchSupport.Enable();
             EnableTray(false);
         }
 
@@ -68,23 +71,24 @@ namespace MenuUI.Scripts.SoulHome
                 moving = true;
             }
             else moving = false;
+
             Touch touch =new();
-            if (Input.touchCount > 0) touch = Input.GetTouch(0);
+            if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
 
 
-            if (Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && touch.phase == UnityEngine.TouchPhase.Began))
+            if (Input.GetMouseButtonDown(0) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
             {
-                if(Input.touchCount >= 1) startPosition = touch.position;
+                if(Touch.activeFingers.Count >= 1) startPosition = touch.finger.screenPosition;
                 else startPosition = Mouse.current.position.ReadValue();
                 startTime = Time.time;
                 //Debug.Log(startPosition);
                 //Debug.Log(startTime);
                 RayPoint(ClickState.Start);
             }
-            else if ((Input.GetMouseButtonUp(0) || touch.phase is UnityEngine.TouchPhase.Ended or UnityEngine.TouchPhase.Canceled))
+            else if ((Input.GetMouseButtonUp(0) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
             {
                 Vector2 endPosition;
-                if (Input.touchCount >= 1) endPosition = touch.position;
+                if (Touch.activeFingers.Count >= 1) endPosition = touch.finger.screenPosition;
                 else endPosition = Mouse.current.position.ReadValue();
                 float endTime = Time.time;
 
@@ -96,27 +100,27 @@ namespace MenuUI.Scripts.SoulHome
                 RayPoint(ClickState.End);
                 startPosition = Vector3.zero;
             }
-            else if (((moving && Input.GetMouseButton(0)) || touch.phase == UnityEngine.TouchPhase.Moved) )
+            else if (((moving && Input.GetMouseButton(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)) )
             {
-                if (Input.touchCount >= 1) currentPosition = touch.position;
+                if (Touch.activeFingers.Count >= 1) currentPosition = touch.finger.screenPosition;
                 else currentPosition = Mouse.current.position.ReadValue();
 
                 RayPoint(ClickState.Move);
             }
-            else if (((!moving && Input.GetMouseButton(0)) || touch.phase == UnityEngine.TouchPhase.Stationary) )
+            else if ((!moving && Input.GetMouseButton(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary) )
             {
-                if (Input.touchCount >= 1) currentPosition = touch.position;
+                if (Touch.activeFingers.Count >= 1) currentPosition = touch.finger.screenPosition;
                 else currentPosition = Mouse.current.position.ReadValue();
 
                 RayPoint(ClickState.Hold);
             }
             bool doubleTap = false;
-            if(touch.phase is UnityEngine.TouchPhase.Ended)
+            if((Touch.activeFingers.Count > 0 && touch.phase is UnityEngine.InputSystem.TouchPhase.Ended))
             {
-                if(Time.time < prevTapTime+0.8f) doubleTap = true;
+                if(Time.time < prevTapTime+0.4f) doubleTap = true;
                 prevTapTime = Time.time;
             }
-            if ((Input.GetMouseButtonUp(1) || doubleTap) && backDelay + 0.4f < Time.time)
+            if ((Input.GetMouseButtonUp(1) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && backDelay + 0.4f < Time.time)
             {
                 secondCamera.ZoomOut();
                 //inDelay = Time.time;
@@ -148,10 +152,10 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(Screen.orientation);
             Touch touch = new();
             Ray ray;
-            if (Input.touchCount >= 1)
+            if (Touch.activeFingers.Count >= 1)
             {
-                touch = Input.GetTouch(0);
-                ray = _camera.ScreenPointToRay(touch.position);
+                touch = Touch.activeTouches[0];
+                ray = _camera.ScreenPointToRay(touch.screenPosition);
             }
             else ray = _camera.ScreenPointToRay(Input.mousePosition);
 
