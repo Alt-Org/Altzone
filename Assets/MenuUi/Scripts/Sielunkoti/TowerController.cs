@@ -8,7 +8,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public class CameraRaycast : MonoBehaviour
+    public class TowerController : MonoBehaviour
     {
         private Camera Camera;
         private Vector3 prevWideCameraPos = new(0,0);
@@ -16,7 +16,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject selectedRoom = null;
         private GameObject tempSelectedRoom = null;
         [SerializeField]
-        private CameraController mainScreen;
+        private MainScreenController _mainScreen;
         [SerializeField]
         private float scrollSpeed = 2f;
         [SerializeField]
@@ -97,7 +97,7 @@ namespace MenuUI.Scripts.SoulHome
             // Update is called once per frame
             void Update()
         {
-            if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
+            /*if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
             {
                 Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 if (!selectedRoom) Camera.fieldOfView = 45;
@@ -140,13 +140,13 @@ namespace MenuUI.Scripts.SoulHome
                 float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
                 transform.position = new(x, y, transform.position.z);
 
-            }
+            }*/
 
 
             Touch touch = new();
             if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
             if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
-            if ((Input.GetMouseButton(0) || Touch.activeFingers.Count == 1) && cameraMove)
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0)) || Touch.activeFingers.Count == 1) && cameraMove)
             {
                 if (selectedRoom == null && _selectedFurniture == null)
                 {
@@ -243,6 +243,12 @@ namespace MenuUI.Scripts.SoulHome
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
         }
 
+        void OnDisable()
+        {
+            if(selectedRoom != null) ZoomOut();
+            if (editingMode) ToggleEdit();
+        }
+
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
         {
             //if (click == ClickState.Start) cameraMove = true;
@@ -322,7 +328,7 @@ namespace MenuUI.Scripts.SoulHome
                                 Touch touch = Touch.activeTouches[0];
                                 _tempRoomHitStart = touch.screenPosition;
                             }
-                            else
+                            else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
                             _tempRoomHitStart = Input.mousePosition;
                         }
                         else if (click is ClickState.Move or ClickState.Hold && tempSelectedRoom != null)
@@ -332,13 +338,13 @@ namespace MenuUI.Scripts.SoulHome
 
                         else if (click == ClickState.End && _selectedFurniture == null)
                         {
-                            Vector2 _tempRoomHitEnd;
+                            Vector2 _tempRoomHitEnd = new();
                             if (Touch.activeFingers.Count > 0)
                             {
                                 Touch touch = Touch.activeTouches[0];
                                 _tempRoomHitEnd = touch.screenPosition;
                             }
-                            else
+                            else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
                                 _tempRoomHitEnd = Input.mousePosition;
                             if (selectedRoom == null && tempSelectedRoom != null
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
@@ -363,11 +369,11 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if ((Input.GetMouseButton(0) || Input.GetMouseButtonUp(0) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Input.GetMouseButton(0) || Input.GetMouseButtonUp(0))) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
-                if (click == ClickState.Start)
+                if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
                         _tempSelectedFurniture = furnitureObject;
                         _startFurnitureTime = Time.time;
@@ -471,7 +477,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (AppPlatform.IsEditor) Camera.fieldOfView = 55;
             outDelay = Time.time;
-            mainScreen.EnableTray(true);
+            _mainScreen.EnableTray(true);
 
             //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
             //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.6f);
@@ -482,7 +488,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (selectedRoom != null && outDelay + 1f < Time.time)
             {
-                if (mainScreen.TrayOpen) mainScreen.ToggleTray();
+                if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
                 if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
@@ -493,7 +499,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
                 inDelay = Time.time;
-                mainScreen.EnableTray(false);
+                _mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
                 //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.8f);
@@ -591,10 +597,10 @@ namespace MenuUI.Scripts.SoulHome
         public void ToggleEdit()
         {
             editingMode = !editingMode;
-            if (!mainScreen.TrayOpen && editingMode) mainScreen.ToggleTray();
-            else if (mainScreen.TrayOpen && !editingMode) mainScreen.ToggleTray();
-            if(editingMode) mainScreen.EnableTray(true);
-            else if (!editingMode && selectedRoom == null) mainScreen.EnableTray(false);
+            if (!_mainScreen.TrayOpen && editingMode) _mainScreen.ToggleTray();
+            else if (_mainScreen.TrayOpen && !editingMode) _mainScreen.ToggleTray();
+            if(editingMode) _mainScreen.EnableTray(true);
+            else if (!editingMode && selectedRoom == null) _mainScreen.EnableTray(false);
             if(!editingMode) ResetChanges();
         }
     }

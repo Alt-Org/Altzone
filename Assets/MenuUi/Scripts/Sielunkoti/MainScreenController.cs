@@ -17,28 +17,28 @@ namespace MenuUI.Scripts.SoulHome
     }
 
 
-    public class CameraController : MonoBehaviour
+    public class MainScreenController : MonoBehaviour
     {
         [SerializeField]
-        private CameraRaycast secondCamera;
+        private TowerController _soulHomeTower;
         [SerializeField]
         private Camera _camera;
 
-        private bool rotated = false;
+        private bool _rotated = false;
         Vector3 startPosition;
         float startTime;
 
-        Vector3 currentPosition;
-        private bool moving;
+        Vector3 _currentPosition;
+        private bool _moving;
 
-        float prevTapTime = 0;
+        float _prevTapTime = 0;
         float backDelay = 0;
         float inDelay = 0;
 
-        private bool trayOpen = false;
+        private bool _trayOpen = false;
         private GameObject _selectedFurnitureTray = null;
 
-        public bool TrayOpen { get => trayOpen; set => trayOpen = value; }
+        public bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
 
         // Start is called before the first frame update
         void Start()
@@ -58,25 +58,25 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            //if (GetComponent<RectTransform>().rect.width != GetComponent<BoxCollider2D>().size.x || GetComponent<RectTransform>().rect.height != GetComponent<BoxCollider2D>().size.y)
-            if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
+            if (GetComponent<RectTransform>().rect.width != GetComponent<BoxCollider2D>().size.x || GetComponent<RectTransform>().rect.height != GetComponent<BoxCollider2D>().size.y)
+            //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
             {
-                rotated = !rotated;
+                _rotated = !_rotated;
                 StartCoroutine(SetColliderSize());
             }
 
-            if (Input.GetMouseButton(0))
-            if (!Mouse.current.position.ReadValue().Equals(currentPosition))
+            if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0))
+            if (!Mouse.current.position.ReadValue().Equals(_currentPosition))
             {
-                moving = true;
+                _moving = true;
             }
-            else moving = false;
+            else _moving = false;
 
             Touch touch =new();
             if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
 
 
-            if (Input.GetMouseButtonDown(0) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
+            if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonDown(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
             {
                 if(Touch.activeFingers.Count >= 1) startPosition = touch.finger.screenPosition;
                 else startPosition = Mouse.current.position.ReadValue();
@@ -85,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
                 //Debug.Log(startTime);
                 RayPoint(ClickState.Start);
             }
-            else if ((Input.GetMouseButtonUp(0) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
+            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
             {
                 Vector2 endPosition;
                 if (Touch.activeFingers.Count >= 1) endPosition = touch.finger.screenPosition;
@@ -100,29 +100,29 @@ namespace MenuUI.Scripts.SoulHome
                 RayPoint(ClickState.End);
                 startPosition = Vector3.zero;
             }
-            else if (((moving && Input.GetMouseButton(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)) )
+            else if ((((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && _moving && Input.GetMouseButton(0))) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)) )
             {
-                if (Touch.activeFingers.Count >= 1) currentPosition = touch.finger.screenPosition;
-                else currentPosition = Mouse.current.position.ReadValue();
+                if (Touch.activeFingers.Count >= 1) _currentPosition = touch.finger.screenPosition;
+                else _currentPosition = Mouse.current.position.ReadValue();
 
                 RayPoint(ClickState.Move);
             }
-            else if ((!moving && Input.GetMouseButton(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary) )
+            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && !_moving && Input.GetMouseButton(0))) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary) )
             {
-                if (Touch.activeFingers.Count >= 1) currentPosition = touch.finger.screenPosition;
-                else currentPosition = Mouse.current.position.ReadValue();
+                if (Touch.activeFingers.Count >= 1) _currentPosition = touch.finger.screenPosition;
+                else _currentPosition = Mouse.current.position.ReadValue();
 
                 RayPoint(ClickState.Hold);
             }
             bool doubleTap = false;
             if((Touch.activeFingers.Count > 0 && touch.phase is UnityEngine.InputSystem.TouchPhase.Ended))
             {
-                if(Time.time < prevTapTime+0.4f) doubleTap = true;
-                prevTapTime = Time.time;
+                if(Time.time < _prevTapTime+0.4f) doubleTap = true;
+                _prevTapTime = Time.time;
             }
-            if ((Input.GetMouseButtonUp(1) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && backDelay + 0.4f < Time.time)
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(1)) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && backDelay + 0.4f < Time.time)
             {
-                secondCamera.ZoomOut();
+                _soulHomeTower.ZoomOut();
                 //inDelay = Time.time;
             }
 
@@ -143,7 +143,7 @@ namespace MenuUI.Scripts.SoulHome
         private void OnDisable()
         {
             if (AppPlatform.IsMobile || AppPlatform.IsSimulator) Screen.orientation = ScreenOrientation.Portrait;
-            secondCamera.ResetChanges();
+            _soulHomeTower.ResetChanges();
         }
 
         private void RayPoint(ClickState click)
@@ -168,17 +168,17 @@ namespace MenuUI.Scripts.SoulHome
                     if (_selectedFurnitureTray != null)
                     {
                         if(_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
-                        if(secondCamera.SelectedFurniture == null)
+                        if(_soulHomeTower.SelectedFurniture == null)
                         {
-                            secondCamera.SetFurniture(_selectedFurnitureTray);
+                            _soulHomeTower.SetFurniture(_selectedFurnitureTray);
                         }
                     }
-                    if (secondCamera.SelectedFurniture != null)
+                    if (_soulHomeTower.SelectedFurniture != null)
                     {
-                        if (!secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
+                        if (!_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
                         {
-                            secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
-                            secondCamera.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
+                            _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
+                            _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
                         }
                     }
 
@@ -189,28 +189,36 @@ namespace MenuUI.Scripts.SoulHome
                     float y = hit2.transform.GetComponent<RectTransform>().rect.height;
                     Vector2 relPos = new((x / 2 + hitPoint.x) / x, (y / 2 + hitPoint.y) / y);
                     //Debug.Log(relPos);
-                    bool check = secondCamera.FindRayPoint(relPos, click);
+                    bool check = _soulHomeTower.FindRayPoint(relPos, click);
                     //if(check)backDelay = Time.time;
                 }
                 if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
                 {
-                    if (_selectedFurnitureTray != null)
+                    if (_selectedFurnitureTray == null)
+                    {
+                        if (_soulHomeTower.SelectedFurniture != null)
+                        {
+                            SetFurniture(_soulHomeTower.SelectedFurniture);
+                            _selectedFurnitureTray.transform.position = hit2.point;
+                        }
+                    }
+                    else
                     {
                         if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
                         _selectedFurnitureTray.transform.position = hit2.point;
 
                     }
-                    if (secondCamera.SelectedFurniture != null)
+                    if (_soulHomeTower.SelectedFurniture != null)
                     {
-                        if (secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
+                        if (_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
                         {
-                            secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = false;
-                            secondCamera.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = false;
+                            _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = false;
+                            _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = false;
                         }
 
                         if (click is ClickState.End)
                         {
-                            secondCamera.RemoveFurniture();
+                            _soulHomeTower.RemoveFurniture();
                         }
                     }
                 }
@@ -228,53 +236,61 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (_selectedFurnitureTray != null)
                 {
-                    if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
-                    _selectedFurnitureTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                    _selectedFurnitureTray = null;
+                    if (!_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
+                    {
+                        Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
+                        _selectedFurnitureTray = null;
+                    }
+                    else
+                    {
+                        if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
+                        _selectedFurnitureTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                        _selectedFurnitureTray = null;
+                    }
                     transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
                 }
 
-                if (secondCamera.SelectedFurniture != null)
+                if (_soulHomeTower.SelectedFurniture != null)
                 {
-                    if (!secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
+                    if (!_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
                     {
-                        secondCamera.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
-                        secondCamera.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
+                        _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
+                        _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
                     }
-                    secondCamera.DeselectFurniture();
+                    _soulHomeTower.DeselectFurniture();
                 }
             }
         }
 
         public void ResetChanges()
         {
-            secondCamera.ResetChanges();
+            _soulHomeTower.ResetChanges();
         }
 
         public void SaveChanges()
         {
-            secondCamera.SaveChanges();
+            _soulHomeTower.SaveChanges();
         }
 
         public void ToggleTray()
         {
             float width = GetComponent<BoxCollider2D>().size.x;
             GameObject tray = transform.Find("Itemtray").gameObject;
-            if (!trayOpen)
+            if (!_trayOpen)
             {
                 tray.transform.localPosition = new Vector2(tray.transform.localPosition.x -width+100, tray.transform.localPosition.y);
-                trayOpen = true;
+                _trayOpen = true;
                 transform.Find("DiscardChangesButton").gameObject.SetActive(true);
                 transform.Find("SaveChangesButton").gameObject.SetActive(true);
-                if (!secondCamera.EditingMode) secondCamera.ToggleEdit();
+                if (!_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
             else
             {
                 tray.transform.localPosition = new Vector2(tray.transform.localPosition.x + width - 100, tray.transform.localPosition.y);
-                trayOpen = false;
+                _trayOpen = false;
                 transform.Find("DiscardChangesButton").gameObject.SetActive(false);
                 transform.Find("SaveChangesButton").gameObject.SetActive(false);
-                if (secondCamera.EditingMode) secondCamera.ToggleEdit();
+                if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
         }
         public void EnableTray(bool enable)
@@ -289,6 +305,13 @@ namespace MenuUI.Scripts.SoulHome
                 GameObject tray = transform.Find("Itemtray").gameObject;
                 tray.SetActive(false);
             }
+        }
+
+        public void SetFurniture(GameObject trayFurniture)
+        {
+            var furnitureObject = Instantiate(trayFurniture.GetComponent<FurnitureHandling>().TrayFurnitureObject, transform.Find("Itemtray"));
+            furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
+            _selectedFurnitureTray = furnitureObject;
         }
 
         private IEnumerator SetColliderSize()

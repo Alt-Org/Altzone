@@ -13,7 +13,7 @@ namespace MenuUI.Scripts.SoulHome
         private  int debugValue = 0;
 
         public GameObject FurnitureObject { get => _furnitureObject; set => _furnitureObject = value; }
-        public Furniture Furniture { get => _furniture; private set => _furniture = value; }
+        public Furniture Furniture { get => _furniture; set => _furniture = value; }
 
 
         // Start is called before the first frame update
