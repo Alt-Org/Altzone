@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerClassNone : MonoBehaviour, IPlayerClass
+    public class PlayerClassConfluence : MonoBehaviour, IPlayerClass
     {
         public bool SpecialAbilityOverridesBallBounce => false;
 
