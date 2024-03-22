@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,21 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerClassEgotism : MonoBehaviour, IPlayerClass
+    internal class PlayerClassEgotism : MonoBehaviour, IPlayerClass
     {
+        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
+        public void ClassInit(PlayerActor actor, ShieldPoseManager shieldManager, TeamsAreReadyForGameplay teamsAreReadyForGameplayMsgData)
+        { }
+
+        public bool OnBallShieldCollision()
+        { return true; }
+
+        public void OnBallShieldBounce()
+        { }
+
+        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
         public void ActivateSpecialAbility()
         {
 

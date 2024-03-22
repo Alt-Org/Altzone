@@ -14,22 +14,18 @@ namespace Battle.Scripts.Test
         [SerializeField] private float _bounceAngle;
 
         public Transform ShieldTransform => _transform;
-        public bool SpecialAbilityOverridesBallBounce => _playerActor.SpecialAbilityOverridesBallBounce;
         public float BounceAngle => _bounceAngle;
         public float ImpactForce => _playerActor.ImpactForce;
         public float AttackMultiplier => _attackMultiplier;
 
-        public void ActivateSpecialAbility()
-        {
-            _playerActor.ActivateSpecialAbility();
-        }
+        public bool OnBallShieldCollision() => _playerActor.OnBallShieldCollision();
+        public void OnBallShieldBounce() => _playerActor.OnBallShieldBounce();
 
         //private GridManager _gridManager;
         private PlayerActor _playerActor;
         private Transform _transform;
         private Collider2D _collider;
         private float _attackMultiplier;
-
 
         // Debug
 #pragma warning disable IDE0051 // Remove unused private members

@@ -17,7 +17,8 @@ namespace Battle.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : PlayerActorBase
     {
-        // Serialized Fields
+
+        #region Serialized Fields
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _shieldActivationDistance;
@@ -25,26 +26,31 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private bool _useNewRotationSysten; // unused (old and "new" rotation systems are replaced by newer system)
         [SerializeField] private Sprite[] _playerCharacterSpriteSheet;
         [SerializeField] public string SeePlayerName;
+        #endregion
 
-        // Public Constants
+        #region Public
+
+        #region Public - Constants
         public const int SPRITE_VARIANT_A = 0;
         public const int SPRITE_VARIANT_B = 1;
         public const int SPRITE_VARIANT_COUNT = SPRITE_VARIANT_B + 1;
+        #endregion Public - Constants
 
-        // Public Static Fields
+        #region Public -  Static Fields
         public static string PlayerName;
+        #endregion Public -  Static Fields
 
-        // Public Properties
+        #region Public - Properties
         public bool IsBusy => _isMoving || _hasTarget;
         public float MovementSpeed => _movementSpeed;
         //public bool IsUsingNewRotionSysten => _useNewRotationSysten;
         public Transform ShieldTransform => _playerShield.Transform;
         public Transform CharacterTransform => _playerCharacter.Transform;
         public Transform SoulTransform => _playerSoul.Transform;
-        public bool SpecialAbilityOverridesBallBounce => _playerClass.SpecialAbilityOverridesBallBounce;
         public float ImpactForce => _impactForce;
+        #endregion Public - Properties
 
-        #region Public Methods
+        #region Public - Methods
 
         public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
@@ -82,7 +88,7 @@ namespace Battle.Scripts.Battle.Players
             _playerCharacter.SetSprite(PlayerCharacter.INDE_WITH_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
         }
 
-        #region Public Methods - Setters
+        #region Public - Methods - Setters
 
         public void SetPlayerDriver(PlayerDriverPhoton playerDriver)
         {
@@ -99,7 +105,7 @@ namespace Battle.Scripts.Battle.Players
         public void SetRotation(float angle)
         {
             float multiplier = Mathf.Round(angle / _angleLimit);
-            float newAngle = _angleLimit * multiplier; 
+            float newAngle = _angleLimit * multiplier;
             //_geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
             _playerShield.Transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
             _playerCharacter.Transform.eulerAngles = new Vector3(0, 0, newAngle);
@@ -127,7 +133,7 @@ namespace Battle.Scripts.Battle.Players
             StartCoroutine(ShieldDeformDelay(poseIndex));
         }
 
-        #endregion Public Methods - Setters
+        #endregion Public - Methods - Setters
 
         public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
@@ -203,13 +209,16 @@ namespace Battle.Scripts.Battle.Players
         }
         */
 
-        public void ActivateSpecialAbility()
-        {
-            _playerClass.ActivateSpecialAbility();
-        }
+        public bool OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
+        public void OnBallShieldBounce() => _playerClass.OnBallShieldBounce();
 
-        #endregion Public Methods
+        #endregion Public - Methods
 
+        #endregion Public
+
+        #region Private
+
+        #region Private - Fields
 
         // Config
         private int _shieldResistance;
@@ -339,12 +348,17 @@ namespace Battle.Scripts.Battle.Players
 
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
-        // Debug
+        #endregion Private - Fields
+
+        #region DEBUG
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER ACTOR] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
         private const string DEBUG_LOG_IS_MOVING = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Is moving: {3}";
         private const string DEBUG_LOG_HAS_TARGET = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Has target: {3}";
+        #endregion DEBUG
+
+        #region Private - Methods
 
         private void Awake()
         {
@@ -394,8 +408,8 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"{gameObject.name} {SeePlayerName}");
         }
 
-        #region Message Listeners
-        void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+        #region Private - Methods - Message Listeners
+        private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             foreach (IDriver driver in data.AllDrivers)
             {
@@ -403,9 +417,9 @@ namespace Battle.Scripts.Battle.Players
                 _otherDrivers.Add(driver);
             }
         }
-        #endregion Message Listeners
+        #endregion Private - Methods - Message Listeners
 
-        #region Coroutines
+        #region Private - Methods - Coroutines
 
         private IEnumerator ResetPose()
         {
@@ -473,7 +487,7 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
         }
 
-        #endregion Coroutines
+        #endregion Private - Methods - Coroutines
 
         private void FixedUpdate()
         {
@@ -507,5 +521,9 @@ namespace Battle.Scripts.Battle.Players
             }
 
         }
+
+        #endregion Private - Methods
+
+        #endregion Private
     }
 }
