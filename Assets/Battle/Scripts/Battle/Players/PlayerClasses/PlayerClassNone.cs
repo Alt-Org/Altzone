@@ -8,9 +8,6 @@ namespace Battle.Scripts.Battle.Players
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
-        public void ClassInit(PlayerActor actor, ShieldPoseManager shieldManager, TeamsAreReadyForGameplay teamsAreReadyForGameplayMsgData)
-        {}
-
         public bool OnBallShieldCollision()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
