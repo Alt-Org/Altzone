@@ -25,9 +25,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582272339177793954}
-  m_LocalRotation: {x: 0.0000000037252903, y: -0.0000000018626451, z: -0.39686573,
-    w: 0.9178768}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0073}
+  m_LocalRotation: {x: 0.0000000037252903, y: -0.0000000027939677, z: -0.39686573,
+    w: 0.9178767}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0073020374}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -46.765}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.261, y: -4.9526}
+  m_AnchoredPosition: {x: 5.260971, y: -4.9526215}
   m_SizeDelta: {x: 65.7761, y: 30.2355}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7621246799757358192
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 2996374889975215229}
   - component: {fileID: 3203899541791537594}
   m_Layer: 0
-  m_Name: Huonekkalu
+  m_Name: HuonekkaluKuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a0b6a769f25fb5b4f9ee0405e537c2f7, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 2863601247498627327}
   - component: {fileID: 2339929747012956365}
   - component: {fileID: 8826389163314642481}
+  - component: {fileID: -8499888959644683836}
   m_Layer: 0
   m_Name: KultaRaami
   m_TagString: Untagged
@@ -454,3 +455,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &-8499888959644683836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6476332154412944566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555db4787863c1f4f8d6213b6b6f4750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items: {fileID: 11400000, guid: 6526a5b95f9f1054ca0f8d07f252476c, type: 2}
+  hinta: {fileID: 5901162700942893313}
+  esineenKuva: {fileID: 3203899541791537594}
