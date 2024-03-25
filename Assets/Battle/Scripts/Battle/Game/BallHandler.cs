@@ -98,7 +98,9 @@ public class BallHandler : MonoBehaviour
             ShieldBoxCollider shield = otherGameObject.GetComponent<ShieldBoxCollider>(); 
             if (shield != null)
             {
-                if (!shield.SpecialAbilityOverridesBallBounce)
+                bool doBoucne = shield.OnBallShieldCollision();
+
+                if (doBoucne)
                 {
                     Transform shieldTransform = shield.ShieldTransform;
                     float bounceAngle = shield.BounceAngle;
@@ -119,13 +121,14 @@ public class BallHandler : MonoBehaviour
 
                         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (bounce), position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
                     }
+
+                    shield.OnBallShieldBounce();
                 }
                 else
                 {
                     gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
                     Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (no bounce), position: {1}, grid position: ({2}))", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos));
                 }
-                shield.ActivateSpecialAbility();
             }
         }
 

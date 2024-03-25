@@ -1,11 +1,20 @@
+using System;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerClassNone : MonoBehaviour, IPlayerClass
+    internal class PlayerClassConfluence : MonoBehaviour, IPlayerClass
     {
+        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
+        public bool OnBallShieldCollision()
+        { return true; }
+
+        public void OnBallShieldBounce()
+        { }
+
+        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public void ActivateSpecialAbility()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
