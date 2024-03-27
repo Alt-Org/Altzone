@@ -48,9 +48,14 @@ namespace MenuUI.Scripts.SoulHome
         private float cameraMinY;
         private float cameraMaxX;
         private float cameraMaxY;
+        private float cameraWidth;
+        private float cameraHeight;
 
         private Vector2 prevp;
         private bool cameraMove = false;
+        private Vector2 startScrollSlide = Vector2.zero;
+        private Vector2 currentScrollSlide = Vector2.zero;
+        private Vector2 currentScrollSlideDirection = Vector2.zero;
 
         private float outDelay = 0;
         private float inDelay = 0;
@@ -85,6 +90,11 @@ namespace MenuUI.Scripts.SoulHome
             float currentY = transform.position.y;
             float offsetX = Mathf.Abs(currentX - bl.x);
             float offsetY = Mathf.Abs(currentY - bl.y);
+
+            cameraWidth = Mathf.Abs(tr.x - bl.x);
+            cameraHeight = Mathf.Abs(tr.y - bl.y);
+
+            scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
 
             Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
             Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
@@ -141,8 +151,8 @@ namespace MenuUI.Scripts.SoulHome
                 transform.position = new(x, y, transform.position.z);
 
             }*/
-
-
+            //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
+            //Debug.Log(cameraMove);
             Touch touch = new();
             if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
             if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
@@ -161,13 +171,23 @@ namespace MenuUI.Scripts.SoulHome
                         Vector2 lp = touch.screenPosition;
                         targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
-                        prevp = touch.screenPosition;
-                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled) prevp = Vector2.zero;
+                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
+                        {
+                            startScrollSlide = new Vector2(0, Mathf.Abs((prevp.y - lp.y) / scrollSpeed));
+                            currentScrollSlide = startScrollSlide;
+                            currentScrollSlideDirection = new Vector2(0, prevp.y - lp.y);
+                            currentScrollSlideDirection.Normalize();
+                            prevp = Vector2.zero;
+                        }
+                        else prevp = touch.screenPosition;
                     }
                     else
                     {
                         float moveAmountY = Input.GetAxis("Mouse Y");
                         targetY = currentY - moveAmountY * scrollSpeedMouse;
+                        currentScrollSlide = new Vector2(0, Mathf.Abs(moveAmountY * scrollSpeedMouse));
+                        currentScrollSlideDirection = new Vector2(0,-1 * moveAmountY);
+                        currentScrollSlideDirection.Normalize();
                     }
                     float y;
                     if (cameraMinY + offsetY < cameraMaxY - offsetY)
@@ -214,13 +234,23 @@ namespace MenuUI.Scripts.SoulHome
                         Vector2 lp = touch.screenPosition;
                         targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
                         //Debug.Log("Touch: X: " + (prevp.x - lp.x));
-                        prevp = touch.screenPosition;
-                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled) prevp = Vector2.zero;
+                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
+                        {
+                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0); 
+                            currentScrollSlide = startScrollSlide;
+                            currentScrollSlideDirection = new Vector2(prevp.x - lp.x, 0);
+                            currentScrollSlideDirection.Normalize();
+                            prevp = Vector2.zero;
+                        }
+                        else prevp = touch.screenPosition;
                     }
                     else
                     {
                         float moveAmountY = Input.GetAxis("Mouse X");
                         targetX = currentX - moveAmountY * scrollSpeedMouse;
+                        currentScrollSlide = new Vector2(Mathf.Abs(moveAmountY) * scrollSpeedMouse, 0);
+                        currentScrollSlideDirection = new Vector2(-1*moveAmountY, 0);
+                        currentScrollSlideDirection.Normalize();
                     }
                     float x;
                     if (roomCameraMinX + offsetX < roomCameraMaxX - offsetX)
@@ -233,8 +263,66 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }
-                cameraMove = false;
+                //cameraMove = false;
             }
+            else if(!cameraMove)
+            {
+                if (currentScrollSlideDirection != Vector2.zero)
+                {
+                    Debug.Log(currentScrollSlide);
+                    if (currentScrollSlide.x > 0)
+                        currentScrollSlide.x = Mathf.Max(0, currentScrollSlide.x - startScrollSlide.x/20);
+                    if (currentScrollSlide.y > 0)
+                        currentScrollSlide.y = Mathf.Max(0, currentScrollSlide.y - startScrollSlide.y / 20);
+
+                    if (selectedRoom == null && _selectedFurniture == null)
+                    {
+                        Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                        float currentY = transform.position.y;
+                        float offsetY = Mathf.Abs(currentY - bl.y);
+                        float targetY;
+
+                        targetY = currentY + currentScrollSlideDirection.y * currentScrollSlide.y;
+                        float y;
+                        if (cameraMinY + offsetY < cameraMaxY - offsetY)
+                        {
+                            y = Mathf.Clamp(targetY, cameraMinY + offsetY, cameraMaxY - offsetY);
+                        }
+                        else
+                        {
+                            y = (cameraMinY + cameraMaxY) / 2;
+                        }
+
+
+                        transform.position = new(transform.position.x, y, transform.position.z);
+                    }
+                    if (selectedRoom != null)
+                    {
+                        Bounds roomCameraBounds = selectedRoom.GetComponent<BoxCollider2D>().bounds;
+                        float roomCameraMinX = roomCameraBounds.min.x;
+                        float roomCameraMaxX = roomCameraBounds.max.x;
+                        Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                        float currentX = transform.position.x;
+                        float offsetX = Mathf.Abs(currentX - bl.x);
+                        float targetX;
+
+                        targetX = currentX + currentScrollSlideDirection.x * currentScrollSlide.x;
+
+                        float x;
+                        if (roomCameraMinX + offsetX < roomCameraMaxX - offsetX)
+                        {
+                            x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
+                        }
+                        else
+                        {
+                            x = (roomCameraMinX + roomCameraMaxX) / 2;
+                        }
+                        transform.position = new(x, transform.position.y, transform.position.z);
+                    }
+                    if(currentScrollSlide == Vector2.zero) currentScrollSlideDirection = Vector2.zero;
+                }
+            }
+            cameraMove = false;
             if (Touch.activeFingers.Count > 0 && (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)) prevp = Vector2.zero;
         }
 
@@ -438,11 +526,18 @@ namespace MenuUI.Scripts.SoulHome
 
                         //bool check = selectedRoom.GetComponent<RoomData>().HandleFurniturePosition(checkPoint, Camera, _selectedFurniture, false);
 
-                        if (check) _changedFurnitureList.Add(_selectedFurniture);
+                        if (check)
+                        {
+                            _changedFurnitureList.Add(_selectedFurniture);
+                            if(_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
+                        }
                         else
                         {
-                            int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
-                            _rooms.transform.GetChild(id).GetChild(0).GetComponent<RoomData>().ResetPosition(_selectedFurniture, true);
+                            if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                            {
+                                int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
+                                _rooms.transform.GetChild(id).GetChild(0).GetComponent<RoomData>().ResetPosition(_selectedFurniture, true);
+                            }
                         }
 
                         _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
@@ -477,6 +572,16 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (AppPlatform.IsEditor) Camera.fieldOfView = 55;
             outDelay = Time.time;
+
+            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+            Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
+
+            cameraWidth = Mathf.Abs(tr.x - bl.x);
+            cameraHeight = Mathf.Abs(tr.y - bl.y);
+
+            scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.width / cameraWidth;
+            Debug.Log(_mainScreen.transform.GetComponent<RectTransform>().rect.width + ": " + cameraWidth + ": " + scrollSpeed);
+
             _mainScreen.EnableTray(true);
 
             //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
@@ -499,6 +604,16 @@ namespace MenuUI.Scripts.SoulHome
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
                 inDelay = Time.time;
+
+                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
+
+                cameraWidth = Mathf.Abs(tr.x - bl.x);
+                cameraHeight = Mathf.Abs(tr.y - bl.y);
+
+                scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+                Debug.Log(_mainScreen.transform.GetComponent<RectTransform>().rect.height + ": " + cameraWidth + ": " + scrollSpeed);
+
                 _mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
@@ -521,7 +636,9 @@ namespace MenuUI.Scripts.SoulHome
         {
             if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
                 _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size, _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
-           _selectedFurniture.SetActive(false);
+            else if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size, _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot);
+            _selectedFurniture.SetActive(false);
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             ChangedFurnitureList.Add(_selectedFurniture);
             _selectedFurniture = null;
