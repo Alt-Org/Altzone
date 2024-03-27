@@ -5,6 +5,14 @@ using UnityEngine.Networking;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
 using MenuUI.Scripts.SoulHome;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using System;
+using static ServerManager;
+using Random = UnityEngine.Random;
+using Altzone.Scripts.Config;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Player;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -12,11 +20,15 @@ namespace MenuUI.Scripts.SoulHome {
     {
         private SoulHome _soulHomeRooms;
         [Tooltip("Instead of getting information from the server, generate random information."), SerializeField] private bool _ignoreServer;
+        [Tooltip("Instead of getting furniture from the server, generate random furniture."), SerializeField] private bool _ignoreFurniture;
         [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
 
         [SerializeField] private GameObject _roomPositions;
         [SerializeField] private GameObject _roomPrefab;
+        [SerializeField] private FurnitureTrayHandler _trayHandler;
+
+        private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
         // Start is called before the first frame update
         void Start()
@@ -24,6 +36,7 @@ namespace MenuUI.Scripts.SoulHome {
             StartCoroutine(HomeLoad());
             //TestCode();
             LoadRooms();
+            LoadFurniture();
         }
 
         public IEnumerator HomeLoad()
@@ -31,10 +44,20 @@ namespace MenuUI.Scripts.SoulHome {
             string json;
             // Get info from database. Eli pyydetään serveriltä RESTin yli klaanin huoneiden tiedot.
             if (!_ignoreServer) {
-            CoroutineWithData cd = new CoroutineWithData(this, GetSoulHomeData());
-            yield return cd.coroutine;
-            Debug.Log("result is " + cd.result);
-            json = cd.result.ToString();
+            //CoroutineWithData cd = new CoroutineWithData(this, GetSoulHomeData());
+            //yield return cd.coroutine;
+                yield return StartCoroutine(GetSoulHomeData(ServerManager.Instance.Clan, data => {
+                    Debug.Log("result is " + ServerManager.Instance.Clan._id);
+                    if (data != "fail")
+                    {
+                        Debug.Log("result is " + data);
+                        json = data.ToString();
+                        _soulHomeRooms = JsonUtility.FromJson<SoulHome>(json);
+                    }
+                    else Debug.Log("result is " + data);
+                }));
+            //Debug.Log("result is " + cd.result);
+            //json = cd.result.ToString();
             }
             else //Generate random room info.
             {
@@ -77,9 +100,10 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 json = JsonUtility.ToJson(soulHome);
                 Debug.Log(json);
+                _soulHomeRooms = JsonUtility.FromJson<SoulHome>(json);
             }
 
-            _soulHomeRooms = JsonUtility.FromJson<SoulHome>(json);
+            //_soulHomeRooms = JsonUtility.FromJson<SoulHome>(json);
             
         }
 
@@ -159,17 +183,38 @@ namespace MenuUI.Scripts.SoulHome {
             }
         }
 
-private IEnumerator GetSoulHomeData()
+        private IEnumerator GetSoulHomeData(ServerClan clan, Action<string> callback)
         {
-            UnityWebRequest request = new UnityWebRequest("http://someurl");
-            yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.Success){
-                yield return request.downloadHandler.text;
-            }
-            else
+            Debug.Log(ServerManager.Instance.AccessToken);
+            yield return StartCoroutine(WebRequests.Get(SERVER_ADDRESS+"?search=_id=\"" + clan._id + "\"", ServerManager.Instance.AccessToken, request =>
             {
-                yield return "fail";
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    callback(request.downloadHandler.text);
+                }
+                else
+                {
+                    callback("fail");
+                }
+            }));
+        }
+
+        public void LoadFurniture()
+        {
+            if (_ignoreFurniture)
+            {
+                int i = 0;
+                while (i < 2)
+                {
+                    var test2 = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXOne, 15f);
+                    _trayHandler.AddFurnitureInitial(test2);
+                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, 15f);
+                    _trayHandler.AddFurnitureInitial(test3);
+                    i++;
+                }
             }
         }
+
+        
     }
 }

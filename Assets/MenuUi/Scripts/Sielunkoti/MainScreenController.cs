@@ -39,6 +39,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _selectedFurnitureTray = null;
 
         public bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
+        public GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
 
         // Start is called before the first frame update
         void Start()
@@ -66,11 +67,13 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0))
-            if (!Mouse.current.position.ReadValue().Equals(_currentPosition))
             {
-                _moving = true;
+                if (!Mouse.current.position.ReadValue().Equals(_currentPosition))
+                {
+                    _moving = true;
+                }
+                else _moving = false;
             }
-            else _moving = false;
 
             Touch touch =new();
             if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
@@ -85,7 +88,7 @@ namespace MenuUI.Scripts.SoulHome
                 //Debug.Log(startTime);
                 RayPoint(ClickState.Start);
             }
-            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
+            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended|| touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
             {
                 Vector2 endPosition;
                 if (Touch.activeFingers.Count >= 1) endPosition = touch.finger.screenPosition;
@@ -226,7 +229,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     if (_selectedFurnitureTray == null && click is ClickState.Start)
                     {
-                        _selectedFurnitureTray = hit2.collider.transform.GetChild(0).gameObject;
+                        _selectedFurnitureTray = hit2.collider.transform.GetChild(1).gameObject;
                         transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
                         transform.GetChild(0).Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
                     }
@@ -238,8 +241,8 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     if (!_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
                     {
-                        Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
-                        _selectedFurnitureTray = null;
+                        //Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
+                        AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
                     }
                     else
                     {
@@ -265,11 +268,13 @@ namespace MenuUI.Scripts.SoulHome
         public void ResetChanges()
         {
             _soulHomeTower.ResetChanges();
+            transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().ResetChanges();
         }
 
         public void SaveChanges()
         {
             _soulHomeTower.SaveChanges();
+            transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().SaveChanges();
         }
 
         public void ToggleTray()
@@ -312,6 +317,22 @@ namespace MenuUI.Scripts.SoulHome
             var furnitureObject = Instantiate(trayFurniture.GetComponent<FurnitureHandling>().TrayFurnitureObject, transform.Find("Itemtray"));
             furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
             _selectedFurnitureTray = furnitureObject;
+        }
+
+        public void AddTrayItem(Furniture furniture)
+        {
+            transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().AddFurniture(furniture);
+            if (_selectedFurnitureTray != null)
+            {
+                Destroy(_selectedFurnitureTray);
+                _selectedFurnitureTray = null;
+            }
+        }
+
+        public void RemoveTrayItem(GameObject trayFurniture)
+        {
+            transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().RemoveFurniture(trayFurniture);
+            _selectedFurnitureTray = null;
         }
 
         private IEnumerator SetColliderSize()
