@@ -40,14 +40,18 @@ public class Vote_amount : MonoBehaviour
     void Update()
     {
          newLimit = numberVotesBox.text;
+         int temp = Votes_total;
 
-      if (int.Parse(resultYES.text) > Votes_total || int.Parse(resultNO.text) > Votes_total || int.Parse(resultYES.text) < Votes_total || int.Parse(resultNO.text) < Votes_total || Votes_total == int.Parse(resultNO.text))
+   //   if (int.Parse(resultYES.text) > Votes_total || int.Parse(resultNO.text) > Votes_total || int.Parse(resultYES.text) < Votes_total || int.Parse(resultNO.text) < Votes_total || Votes_total == int.Parse(resultNO.text))
+      if (int.Parse(resultYES.text) != Votes_total || int.Parse(resultNO.text) != Votes_total || Votes_total == int.Parse(resultNO.text))
         {
-           Votes_total = Mathf.Max(int.Parse(resultYES.text) + int.Parse(resultNO.text));           
-           Votes.text = Votes_total.ToString() + "/" + newLimit.ToString();           
-
+      //  Votes_total = Mathf.Max(int.Parse(resultYES.text) + int.Parse(resultNO.text));
+          Votes_total = int.Parse(newLimit);
+          temp = Votes_total -(int.Parse(resultYES.text) + (int.Parse(resultNO.text)));              
+          Votes.text = temp.ToString() + "/" + newLimit.ToString();
+            
+            
           //Debug.Log("Testi: " + script.numberVotesBox);
-
         }
       //Tämä pitää siistiä tämä koodipätkä selkeämmäksi. Nyt se siis vertaa että "Jos result.NO on < kuin Votes_total TAI resultYES < kuin Votes_total TAI resultYES on < Votes_total TAI resultNO < Votes_total TAI Votes_total on sama kuin resultNO... Vähän turhan pitkä IF lause mutta se toimii
         
