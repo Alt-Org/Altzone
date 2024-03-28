@@ -7,6 +7,8 @@ namespace MenuUI.Scripts.SoulHome
     public class FurnitureHandling : MonoBehaviour
     {
         private Furniture furniture;
+        [SerializeField]
+        private GameObject _trayFurnitureObject;
         private BoxCollider2D _collider;
         private Bounds _bounds;
         [SerializeField]
@@ -25,6 +27,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
         public FurnitureSlot TempSlot { get => _tempSlot; set => _tempSlot = value; }
+        public GameObject TrayFurnitureObject { get => _trayFurnitureObject;}
 
         // Start is called before the first frame update
         void Start()

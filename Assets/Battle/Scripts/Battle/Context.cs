@@ -22,5 +22,6 @@ namespace Battle.Scripts.Battle
         internal static PlayerPlayArea GetBattlePlayArea => Object.FindObjectOfType<PlayerPlayArea>();
         internal static SyncedFixedUpdateClock GetSyncedFixedUpdateClock => Object.FindObjectOfType<SyncedFixedUpdateClock>();
         internal static SlingController GetSlingController => Object.FindObjectOfType<SlingController>();
+        internal static BallHandler GetBallHandler => Object.FindObjectOfType<BallHandler>();
     }
 }

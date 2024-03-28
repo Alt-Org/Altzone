@@ -8,8 +8,8 @@ namespace Prg
     /// </summary>
     public static class BuildProperties
     {
-        private const string BundleVersionCodeValue = "99";
-        private const string CompiledOnDateValue = "2024-18-03 19:26";
+        private const string BundleVersionCodeValue = "100";
+        private const string CompiledOnDateValue = "2024-22-03 10:49";
 
         public static string BundleVersionCode => BundleVersionCodeValue;
 
