@@ -37,8 +37,7 @@ public class PrivacyPolicyChecker : MonoBehaviour
         PlayerPrefs.SetInt("PrivacyPolicy", 1);
         var windowManager = WindowManager.Get();
         if (PlayerPrefs.GetInt("hasSelectedCharacter", 0) == 0)
-            if (_introSceneWindow != null) windowManager.ShowWindow(_introSceneWindow);
-            else SceneManager.LoadScene(_introScene);
+            windowManager.ShowWindow(_introSceneWindow);
         else windowManager.ShowWindow(_mainMenuWindow);
     }
 }

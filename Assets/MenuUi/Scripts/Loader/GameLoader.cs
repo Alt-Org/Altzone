@@ -60,8 +60,7 @@ namespace MenuUi.Scripts.Loader
                 if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
                     windowManager.ShowWindow(_privacyPolicyWindow);
                 else if (PlayerPrefs.GetInt("hasSelectedCharacter") == 0 || _playerData == null || int.Parse(_playerData.CurrentCustomCharacterId) < 0)
-                    if (_introSceneWindow != null) windowManager.ShowWindow(_introSceneWindow);
-                    else SceneManager.LoadScene(_introScene);
+                    windowManager.ShowWindow(_introSceneWindow);
                 else
                     windowManager.ShowWindow(_mainWindow);
                 Debug.Log("exit");
