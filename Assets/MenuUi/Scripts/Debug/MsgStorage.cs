@@ -4,26 +4,29 @@ using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
+    public enum messageType
+    {
+        None,
+        Info,
+        Warning,
+        Error
+    }
+
     internal interface IReadOnlyMsgObject
     {
-        internal int Client { get; }
-        internal int Id { get;}
-        internal int Time { get; }
-        internal string Msg { get; }
-        internal messageType Type { get; }
+        public int Client { get; }
+        public int Id { get;}
+        public int Time { get; }
+        public string Msg { get; }
+        public messageType Type { get; }
     }
     internal class MsgObject : IReadOnlyMsgObject
     {
-        int IReadOnlyMsgObject.Client => Client;
-        readonly internal int Client;
-        int IReadOnlyMsgObject.Id => Id;
-        internal int Id { get; private set; }
-        int IReadOnlyMsgObject.Time => Time;
-        readonly internal int Time;
-        string IReadOnlyMsgObject.Msg => Msg;
-        readonly internal string Msg;
-        messageType IReadOnlyMsgObject.Type => Type;
-        readonly internal messageType Type;
+        public int Client { get; }
+        public int Id { get; private set; }
+        public int Time { get; }
+        public string Msg { get; }
+        public messageType Type { get; }
 
         internal MsgObject(int client, int time, string msg, messageType type)
         {
@@ -42,19 +45,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal interface IReadOnlyTimestamp
     {
-        internal int Time { get; }
-        internal messageType Type { get; }
-        internal IReadOnlyList<IReadOnlyMsgObject> List { get; }
+        public int Time { get; }
+        public messageType Type { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> List { get; }
     }
 
     internal class Timestamp : IReadOnlyTimestamp
     {
-        internal readonly int Time;
-        internal IReadOnlyList<IReadOnlyMsgObject> List => _list;
-        internal messageType Type { get; private set;}
-        int IReadOnlyTimestamp.Time => Time;
-        messageType IReadOnlyTimestamp.Type => Type;
-        IReadOnlyList<IReadOnlyMsgObject> IReadOnlyTimestamp.List => _list;
+        public int Time { get; }
+        public messageType Type { get; private set; }
+        public IReadOnlyList<IReadOnlyMsgObject> List { get; }
 
         internal Timestamp(int time)
         {
@@ -74,16 +74,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal interface IReadOnlyMsgStorage
     {
-        internal IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
-        internal IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
-    }
-
-    public enum messageType
-    {
-        None,
-        Info,
-        Warning,
-        Error
+        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
+        public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
     }
 
     internal class MsgStorage : IReadOnlyMsgStorage
@@ -98,13 +90,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        IReadOnlyList<IReadOnlyMsgObject> IReadOnlyMsgStorage.AllMsgs(int client) => AllMsgs(client);
-
-        internal IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client) { return _msgList[client]; }
+        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client) { return _msgList[client]; }
 
         internal void Add(MsgObject msg)
         {
-            //if(msg.Time >= _msgList.FindLast())
             msg.SetId(_msgList.Count);
             _msgList[msg.Client].Add(msg);
 
@@ -113,8 +102,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             if(!_timeStampMapList[msg.Client].ContainsKey(msg.Time))
                 _timeStampMapList[msg.Client][msg.Time] = stamp;
         }
-        IReadOnlyList<IReadOnlyMsgObject> IReadOnlyMsgStorage.GetTime(int client, int time) => GetTime(client, time);
-        internal IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
+        public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
         {
             return _timeStampMapList[client][time].List;
         }
@@ -126,8 +114,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal interface IReadOnlyTimelineStorage
     {
-        internal IReadOnlyTimestamp GetTimestamp(int client, int time);
-        internal IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
+        public IReadOnlyTimestamp GetTimestamp(int client, int time);
+        public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
     }
 
     internal class TimelineStorage : IReadOnlyTimelineStorage
@@ -140,14 +128,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        IReadOnlyTimestamp IReadOnlyTimelineStorage.GetTimestamp(int client, int time) => GetTimestamp(client, time);
-
-        internal IReadOnlyTimestamp GetTimestamp(int client, int time)
+        public IReadOnlyTimestamp GetTimestamp(int client, int time)
         {
             return _timelines[client][time];
         }
-        IReadOnlyList<IReadOnlyTimestamp> IReadOnlyTimelineStorage.GetTimeline(int client) => GetTimeline(client);
-        internal IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
+        public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
         {
             return _timelines[client];
         }
