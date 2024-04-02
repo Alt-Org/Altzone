@@ -6,8 +6,10 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -33,16 +35,27 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
+            EnhancedTouchSupport.Enable();
         }
 
         private void Update()
         {
-            if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded)
+            if ((PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded) || Application.platform is RuntimePlatform.WebGLPlayer)
             {
                 //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-                StartCoroutine(PlayIntroVideo());
+                PlayIntroVideo();
             }
-            else if(PlayerPrefs.GetInt("skipIntroVideo", 0) == 1 || _videoEnded)
+
+            if (_videoPlaying)
+            {
+                Touch touch = new();
+                if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
+                if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
+                    EndIntroVideo();
+                
+            }
+
+            if(PlayerPrefs.GetInt("skipIntroVideo", 0) == 1 || _videoEnded)
             {
                 var windowManager = WindowManager.Get();
                 Debug.Log($"show {_mainWindow}");
@@ -67,15 +80,27 @@ namespace MenuUi.Scripts.Loader
             }
         }
 
-        public IEnumerator PlayIntroVideo()
+        public void PlayIntroVideo()
         {
             _introVideo.SetActive(true);
             Debug.Log($"Play video");
             VideoPlayer player = _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>();
                 player.Play();
             _videoPlaying = true;
-            yield return true;
 
+        }
+
+        public void EndIntroVideo()
+        {
+            if (_videoPlaying)
+            {
+                VideoPlayer player = _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>();
+                player.Stop();
+                _videoEnded = true;
+                _videoPlaying = false;
+                Debug.Log($"Skip video");
+                _introVideo.SetActive(false);
+            }
         }
 
         void CheckOver(VideoPlayer vp)
