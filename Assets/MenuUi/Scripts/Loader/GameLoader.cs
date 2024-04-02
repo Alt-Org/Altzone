@@ -40,9 +40,12 @@ namespace MenuUi.Scripts.Loader
 
         private void Update()
         {
-            if ((PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded) || Application.platform is RuntimePlatform.WebGLPlayer)
+            if ((PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded))
             {
                 //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
+                if(Application.platform is RuntimePlatform.WebGLPlayer)
+                    _videoEnded = true;
+                else
                 PlayIntroVideo();
             }
 
