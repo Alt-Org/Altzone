@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
-    public enum messageType
+
+    #region Enum and Interfaces
+    public enum MessageType
     {
         None,
         Info,
@@ -18,23 +20,42 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int Id { get;}
         public int Time { get; }
         public string Msg { get; }
-        public messageType Type { get; }
+        public MessageType Type { get; }
     }
+    internal interface IReadOnlyTimestamp
+    {
+        public int Time { get; }
+        public MessageType Type { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> List { get; }
+    }
+    internal interface IReadOnlyMsgStorage
+    {
+        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
+        public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
+        public IReadOnlyTimelineStorage GetTimelineStorage();
+    }
+    internal interface IReadOnlyTimelineStorage
+    {
+        public IReadOnlyTimestamp GetTimestamp(int client, int time);
+        public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
+    }
+    #endregion
+
     internal class MsgObject : IReadOnlyMsgObject
     {
         public int Client { get; }
         public int Id { get; private set; }
         public int Time { get; }
         public string Msg { get; }
-        public messageType Type { get; }
+        public MessageType Type { get; }
 
-        internal MsgObject(int client, int time, string msg, messageType type)
+        internal MsgObject(int client, int time, string msg, MessageType type)
         {
             Client = client;
             Id = -1;
             Time = time;
             Msg = msg;
-            Type = type;
+            Type = type == MessageType.None ? MessageType.Info : type;
         }
 
         internal void SetId(int id)
@@ -43,23 +64,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
         }
     }
 
-    internal interface IReadOnlyTimestamp
-    {
-        public int Time { get; }
-        public messageType Type { get; }
-        public IReadOnlyList<IReadOnlyMsgObject> List { get; }
-    }
-
     internal class Timestamp : IReadOnlyTimestamp
     {
         public int Time { get; }
-        public messageType Type { get; private set; }
-        public IReadOnlyList<IReadOnlyMsgObject> List { get; }
+        public MessageType Type { get; private set; }
+        public IReadOnlyList<IReadOnlyMsgObject> List => _list;
 
         internal Timestamp(int time)
         {
             Time = time;
-            Type = messageType.None;
+            Type = MessageType.None;
             _list = new();
         }
 
@@ -72,17 +86,24 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private readonly List<MsgObject> _list;
     }
 
-    internal interface IReadOnlyMsgStorage
-    {
-        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
-        public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
-    }
-
     internal class MsgStorage : IReadOnlyMsgStorage
     {
-        internal MsgStorage(TimelineStorage timelineStorage)
+        public static List<MsgObject> Sort(IReadOnlyList<MsgObject> list, HashSet<MessageType> typeSet)
         {
-            _timelineStorage = timelineStorage;
+            return new List<MsgObject>();
+        }
+
+
+        internal MsgStorage()
+        {
+            /*HashSet<MessageType> set = new()
+            {
+                MessageType.Info,
+                MessageType.Warning,
+                MessageType.Error
+            };
+            Sort(new List<MsgObject>(), set);*/
+
             for (int i = 0; i < 4; i++)
             {
                 _msgList.Add(null);
@@ -107,59 +128,60 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return _timeStampMapList[client][time].List;
         }
 
-        private List<List<MsgObject>> _msgList = new();
-        private List<Dictionary<int, Timestamp>> _timeStampMapList = new();
-        private TimelineStorage _timelineStorage;
-    }
-
-    internal interface IReadOnlyTimelineStorage
-    {
-        public IReadOnlyTimestamp GetTimestamp(int client, int time);
-        public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
-    }
-
-    internal class TimelineStorage : IReadOnlyTimelineStorage
-    {
-        internal TimelineStorage()
+        public IReadOnlyTimelineStorage GetTimelineStorage()
         {
-            for (int i = 0; i < 4; i++)
-            {
-                _timelines.Add(null);
-            }
+            return _timelineStorage;
         }
 
-        public IReadOnlyTimestamp GetTimestamp(int client, int time)
+        private readonly List<List<MsgObject>> _msgList = new();
+        private readonly List<Dictionary<int, Timestamp>> _timeStampMapList = new();
+        private readonly TimelineStorage _timelineStorage = new();
+
+        private class TimelineStorage : IReadOnlyTimelineStorage
         {
-            return _timelines[client][time];
-        }
-        public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
-        {
-            return _timelines[client];
-        }
-        private Timestamp GetOrNew(int client, int time)
-        {
-            if (_timelines[client] == null)
+            internal TimelineStorage()
             {
-                _timelines[client] = new();
-            }
-            int timelineSize = _timelines[client].Count;
-            if (timelineSize <= time)
-            {
-                for (int i = timelineSize; i < time; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    _timelines[client].Add(new(i));
+                    _timelines.Add(null);
                 }
             }
-            return _timelines[client][time];
-        }
-        internal Timestamp AddMessageToTimestamp(MsgObject msg)
-        {
-            Timestamp stamp = GetOrNew(msg.Client, msg.Time);
-            stamp.AddMsg(msg);
-            return stamp;
 
+            public IReadOnlyTimestamp GetTimestamp(int client, int time)
+            {
+                return _timelines[client][time];
+            }
+            public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
+            {
+                return _timelines[client];
+            }
+            private Timestamp GetOrNew(int client, int time)
+            {
+                if (_timelines[client] == null)
+                {
+                    _timelines[client] = new();
+                }
+                int timelineSize = _timelines[client].Count;
+                if (timelineSize <= time)
+                {
+                    for (int i = timelineSize; i < time; i++)
+                    {
+                        _timelines[client].Add(new(i));
+                    }
+                }
+                return _timelines[client][time];
+            }
+            internal Timestamp AddMessageToTimestamp(MsgObject msg)
+            {
+                Timestamp stamp = GetOrNew(msg.Client, msg.Time);
+                stamp.AddMsg(msg);
+                return stamp;
+
+            }
+
+            private List<List<Timestamp>> _timelines = new();
         }
 
-        private List<List<Timestamp>> _timelines = new();
-        }
     }
+
+}

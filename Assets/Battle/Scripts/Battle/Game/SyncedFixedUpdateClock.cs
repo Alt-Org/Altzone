@@ -133,13 +133,15 @@ public class SyncedFixedUpdateClock : MonoBehaviour
                 return;
             }
 
+            int i; // initialize i so we can use it later to place the event to the correct postion in the array (initializing this later causes problems with the array largenings code)
+
             // allocate bigger array if full
             if (s_eventArrayFirst == 0)
             {
                 int newSize = s_eventArraySize * 2;
                 Event[] newEventArray = new Event[newSize];
                 int newI = newSize;
-                for (int i = s_eventArraySize - 1; i >= s_eventArrayFirst; i--)
+                for (i = s_eventArraySize - 1; i >= s_eventArrayFirst; i--)
                 {
                     newI--;
                     newEventArray[newI] = s_eventArray[i];
@@ -149,20 +151,20 @@ public class SyncedFixedUpdateClock : MonoBehaviour
                 s_eventArrayFirst = newI;
             }
 
-            // add new event in front
+            // initially select the position in front of the first element in array
             s_eventArrayFirst--;
-            s_eventArray[s_eventArrayFirst] = @event;
-            // move back until it's in the right place
+            // compare the new event to preexisting events in array to find the correct position for the new event by moving the events that trigger earlier forward
             Event nextEvent;
-            for (int i = s_eventArrayFirst; i < s_eventArraySize - 1; i++)
+            for (i = s_eventArrayFirst; i < s_eventArraySize - 1; i++)
             {
-                @event = s_eventArray[i];
                 nextEvent = s_eventArray[i + 1];
-                // this comparison can probably be done better
-                if (@event.UpdateNumber <= nextEvent.UpdateNumber && (@event.Priority >= nextEvent.Priority || @event.UpdateNumber < nextEvent.UpdateNumber)) break;
-                s_eventArray[i] = nextEvent;
-                s_eventArray[i + 1] = @event;
+                //if (@event.UpdateNumber <= nextEvent.UpdateNumber && (@event.Priority >= nextEvent.Priority || @event.UpdateNumber < nextEvent.UpdateNumber)) break;
+                if (@event.UpdateNumber > nextEvent.UpdateNumber || (@event.UpdateNumber == nextEvent.UpdateNumber && @event.Priority <= nextEvent.Priority))
+                    s_eventArray[i] = nextEvent;
+                else break;
             }
+            // place the event into selected position
+            s_eventArray[i] = @event;
         }
 
         public static void Execute(int updateNumber)
