@@ -35,7 +35,6 @@ namespace Battle.Scripts.Test
 #pragma warning restore IDE0051 // Remove unused private members
 #pragma warning restore IDE0052 // Remove unread private members
 
-
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();

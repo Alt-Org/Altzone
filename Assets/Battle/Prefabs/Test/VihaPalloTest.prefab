@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5195482201151929772}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5395052073425159758}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3154760859790529741
 SpriteRenderer:
@@ -108,13 +108,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6721232698647478095}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5395052073425159758}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &6919469142862574272
 CircleCollider2D:
@@ -126,6 +126,25 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -143,7 +162,6 @@ GameObject:
   - component: {fileID: 5395052073425159758}
   - component: {fileID: 5926193597270322241}
   - component: {fileID: 2211436060130418491}
-  - component: {fileID: 794425541132071188}
   - component: {fileID: 8473052537036719184}
   m_Layer: 9
   m_Name: VihaPalloTest
@@ -159,6 +177,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8473052537036719186}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -167,7 +186,6 @@ Transform:
   - {fileID: 8519714416162228682}
   - {fileID: 6436692113069011925}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &5926193597270322241
 Rigidbody2D:
@@ -186,6 +204,12 @@ Rigidbody2D:
   m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 94596ebae764187499988030f05d4f49, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -213,28 +237,7 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   _maxSpeed: 18
---- !u!114 &794425541132071188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8473052537036719186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ffcc831b95a07f488ea488e348f3b03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AlphaDiamondsText: {fileID: 0}
-  BetaDiamondsText: {fileID: 0}
-  AlphaDiamondsText2: {fileID: 0}
-  BetaDiamondsText2: {fileID: 0}
-  View: {fileID: 8473052537036719184}
-  TeamDiamonds: {fileID: 0}
-  TeamDiamondCount: {fileID: 0}
-  TeamDiamonds2: {fileID: 0}
-  TeamDiamondCount2: {fileID: 0}
-  TeamNumber: 0
+  _hotFixMax: 0
 --- !u!114 &8473052537036719184
 MonoBehaviour:
   m_ObjectHideFlags: 0

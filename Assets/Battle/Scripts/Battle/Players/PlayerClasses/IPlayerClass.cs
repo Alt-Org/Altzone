@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Players
 
         /// <summary>
         /// Called after ball bounces from shield. <br></br>
-        /// (Note that this is not called if OnBallShieldCollision tells ball to not bounce)
+        /// (Note that this is not called if <c>OnBallShieldCollision</c> tells ball to not bounce)
         /// </summary>
         public void OnBallShieldBounce();
 

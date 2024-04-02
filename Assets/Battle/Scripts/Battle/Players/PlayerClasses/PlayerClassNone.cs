@@ -28,8 +28,6 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
-        private ShieldPoseManager _shieldManager;
-
         // debug
         private void Start()
         {

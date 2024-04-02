@@ -45,6 +45,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6767384390939226531}
+  - component: {fileID: 3992237092356930626}
   m_Layer: 0
   m_Name: PLayerrSoul
   m_TagString: Untagged
@@ -70,6 +71,18 @@ Transform:
   - {fileID: 6430032639375743878}
   m_Father: {fileID: 4593924629702427175}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3992237092356930626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027847512073607245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e9a9b9d14aed14ab7cad837f7a3d5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2488163176995447138
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +260,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6849142217903140471}
+  - component: {fileID: 2526866504483454247}
   m_Layer: 0
   m_Name: PLayerCharacter
   m_TagString: Untagged
@@ -271,6 +285,26 @@ Transform:
   - {fileID: 3596985753255103213}
   m_Father: {fileID: 4593924629702427175}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2526866504483454247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6445645060191955456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb0b7137e95eaf44a028f361a0d0363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteSheetA:
+  - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: -1584630499, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: -491030298, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  _spriteSheetB:
+  - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: 1336272110, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
+  - {fileID: -491030298, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
 --- !u!1 &7596497150787851893
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +568,6 @@ MonoBehaviour:
   _movementSpeed: 2
   _shieldActivationDistance: 2
   _impactForce: 0
-  _useNewRotationSysten: 0
   _playerCharacterSpriteSheet:
   - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
   - {fileID: -1584630499, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}

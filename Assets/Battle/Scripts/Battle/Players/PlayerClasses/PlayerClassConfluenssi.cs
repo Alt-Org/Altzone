@@ -14,7 +14,7 @@ namespace Battle.Scripts.Battle.Players
         public void OnBallShieldBounce()
         { }
 
-        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
+        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
         public void ActivateSpecialAbility()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
