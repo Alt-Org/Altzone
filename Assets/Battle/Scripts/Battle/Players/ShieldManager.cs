@@ -2,8 +2,59 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class ShieldPoseManager : MonoBehaviour
+    public class ShieldManager : MonoBehaviour
     {
+        #region Public Variables
+        public int MaxShieldIndex => _maxShieldIndex;
+        #endregion
+
+        #region Public Methods
+        public void SetSpriteVariant(int variant)
+        {
+            foreach (Shield shield in _shields)
+            {
+                shield.ShieldSpriteGameObject.SetActive(false);
+                shield.SpriteVariant = variant;
+                shield.ShieldSpriteGameObject.SetActive(true);
+            }
+            _currentShield.ShieldSpriteRenderer.enabled = _showShield;
+        }
+
+        public void SetShield(GameObject gameObject, int shieldIndex)
+        {
+            if (_currentShield != null)
+            {
+                Destroy(_currentShield.ShieldGameObject); 
+            }
+            _currentShield = Instantiate(_shields[shieldIndex].ShieldGameObject, gameObject.transform);
+            _currentShield.transform.localPosition = Vector3.zero;
+            _currentShield.SetActive(true);
+            _currentShield.GetComponent<Shield>().ShieldHitbox.SetActive(_hitboxActive);
+            _currentShield.GetComponent<Shield>().ShieldSpriteRenderer.enabled = _showShield;
+        }
+
+        public void SetShieldSpriteOpacity(float opacity)
+        {
+            foreach (Shield shield in _shields)
+            {
+                shield.Opacity = opacity;
+            }
+        }
+
+        public void SetHitboxActive(bool active)
+        {
+            _hitboxActive = active;
+            _currentShield.ShieldHitbox.SetActive(active);
+        }
+
+        public void SetShow(bool show)
+        {
+            _showShield = show;
+            _currentShield.ShieldSpriteRenderer.enabled = show;
+        }
+        #endregion
+
+        #region Private Classes and Methods
         private class Shield
         {
             public GameObject ShieldGameObject { get; }
@@ -39,78 +90,24 @@ namespace Battle.Scripts.Battle.Players
         }
 
         private Shield[] _shields;
-        private Shield _currentPose;
-        private int _maxPoseIndex = -1;
+        private Shield _currentShield;
+        private int _maxShieldIndex = -1;
         private bool _hitboxActive;
         private bool _showShield;
 
         private void Awake()
         {
             int childCount = transform.childCount;
-            _maxPoseIndex = childCount - 1;
+            _maxShieldIndex = childCount - 1;
             _shields = new Shield[childCount];
-            for (int i = 0; i <= _maxPoseIndex; i++)
+            for (int i = 0; i <= _maxShieldIndex; i++)
             {
                 _shields[i] = new Shield(transform.GetChild(i).gameObject);
                 _shields[i].ShieldGameObject.SetActive(false);
             }
             _shields[0].ShieldGameObject.SetActive(true);
         }
-
-        public int MaxPoseIndex => _maxPoseIndex;
-
-        public void SetSpriteVariant(int variant)
-        {
-            foreach (Shield shield in _shields)
-            {
-                shield.ShieldSpriteGameObject.SetActive(false);
-                shield.SpriteVariant = variant;
-                shield.ShieldSpriteGameObject.SetActive(true);
-            }
-            _currentPose.ShieldSpriteRenderer.enabled = _showShield;
-        }
-
-        public void SetPose(int poseIndex)
-        {
-            if (_currentPose != null)
-            {
-                _currentPose.ShieldGameObject.SetActive(false);
-            }
-            _currentPose = _shields[poseIndex];
-            _currentPose.ShieldGameObject.transform.localPosition = Vector3.zero;
-            _currentPose.ShieldGameObject.SetActive(true);
-            _currentPose.ShieldHitbox.SetActive(_hitboxActive);
-            _currentPose.ShieldSpriteRenderer.enabled = _showShield;
-        }
-
-        /* old
-        public void SetShieldSpriteRotation(float angle)
-        {
-            foreach (Shield shield in _shields)
-            {
-                shield.ShieldSpriteGameObject.transform.eulerAngles = new Vector3(0, 0, angle);
-            }
-        }
-        */
-
-        public void SetShieldSpriteOpacity(float opacity)
-        {
-            foreach (Shield shield in _shields)
-            {
-                shield.Opacity = opacity;
-            }
-        }
-
-        public void SetHitboxActive(bool active)
-        {
-            _hitboxActive = active;
-            _currentPose.ShieldHitbox.SetActive(active);
-        }
-
-        public void SetShow(bool show)
-        {
-            _showShield = show;
-            _currentPose.ShieldSpriteRenderer.enabled = show;
-        }
+        #endregion
     }
 }
+

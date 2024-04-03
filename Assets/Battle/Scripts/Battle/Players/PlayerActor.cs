@@ -245,13 +245,13 @@ namespace Battle.Scripts.Battle.Players
         private class PlayerShield
         {
             public Transform Transform;
-            public ShieldPoseManager PoseManager;
+            public ShieldManager PoseManager;
             //public SpriteRenderer SpriteRenderer;
 
             public PlayerShield(Transform transform)
             {
                 Transform = transform;
-                PoseManager = Transform.GetComponent<ShieldPoseManager>();
+                PoseManager = Transform.GetComponent<ShieldManager>();
             }
         }
         private PlayerShield _playerShield;
