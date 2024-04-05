@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,18 @@ namespace DebugUi.Scripts.BattleAnalyzer
     #region Enum and Interfaces
     public enum MessageType
     {
-        None,
-        Info,
-        Warning,
-        Error
+        None = 0,
+        Info = 1 << 1,
+        Warning = 1 << 2,
+        Error = 1 << 3
+    }
+    [Flags]
+    public enum MessageTypeOptions
+    {
+        None = 0,
+        Info = MessageType.Info,
+        Warning = MessageType.Warning,
+        Error = MessageType.Error
     }
 
     internal interface IReadOnlyMsgObject
@@ -88,43 +97,59 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal class MsgStorage : IReadOnlyMsgStorage
     {
-        public static List<MsgObject> Sort(IReadOnlyList<MsgObject> list, HashSet<MessageType> typeSet)
+        public static IReadOnlyList<IReadOnlyMsgObject> GetSubList(IReadOnlyList<IReadOnlyMsgObject> list, MessageTypeOptions wantedTypes)
         {
-            return new List<MsgObject>();
+            if (list == null) return null;
+            List<IReadOnlyMsgObject> newList = new();
+            if (list.Count == 0) return newList;
+
+            foreach (IReadOnlyMsgObject msgObject in list)
+            {
+                if (wantedTypes.HasFlag(msgObject.Type))
+                {
+                    newList.Add(msgObject);
+                }
+            }
+            return newList;
         }
 
 
-        internal MsgStorage()
+        internal MsgStorage(int clientCount)
         {
-            /*HashSet<MessageType> set = new()
+            _timelineStorage = new(clientCount);
+            _msgList = new List<MsgObject>[clientCount];
+            _timeStampMapList = new Dictionary<int, IReadOnlyTimestamp>[clientCount];
+            for (int i = 0; i < clientCount; i++)
             {
-                MessageType.Info,
-                MessageType.Warning,
-                MessageType.Error
-            };
-            Sort(new List<MsgObject>(), set);*/
-
-            for (int i = 0; i < 4; i++)
-            {
-                _msgList.Add(null);
-                _timeStampMapList.Add(null);
+                _msgList[i] = new();
+                _timeStampMapList[i] = new();
             }
         }
 
-        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client) { return _msgList[client]; }
+        public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client)
+        {
+            if (!IsValidClient(client)) return null;
+            return _msgList[client];
+        }
 
         internal void Add(MsgObject msg)
         {
-            msg.SetId(_msgList.Count);
-            _msgList[msg.Client].Add(msg);
+            if (IsValidClient(msg.Client))
+            {
+                msg.SetId(_msgList[msg.Client].Count);
+                _msgList[msg.Client].Add(msg);
 
-            Timestamp stamp = _timelineStorage.AddMessageToTimestamp(msg);
+                IReadOnlyTimestamp stamp = _timelineStorage.AddMessageToTimestamp(msg);
 
-            if(!_timeStampMapList[msg.Client].ContainsKey(msg.Time))
-                _timeStampMapList[msg.Client][msg.Time] = stamp;
+                if (!_timeStampMapList[msg.Client].ContainsKey(msg.Time))
+                    _timeStampMapList[msg.Client][msg.Time] = stamp;
+            }
         }
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
         {
+            if (!IsValidClient(client)) return null;
+            if(_timeStampMapList[client] == null) return null;
+            if(!_timeStampMapList[client].ContainsKey(time)) return null;
             return _timeStampMapList[client][time].List;
         }
 
@@ -133,34 +158,37 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return _timelineStorage;
         }
 
-        private readonly List<List<MsgObject>> _msgList = new();
-        private readonly List<Dictionary<int, Timestamp>> _timeStampMapList = new();
-        private readonly TimelineStorage _timelineStorage = new();
+        public bool IsValidClient(int client)
+        {
+            return _msgList.Length > client && client >= 0;
+        }
+
+        private readonly List<MsgObject>[] _msgList;
+        private readonly Dictionary<int, IReadOnlyTimestamp>[] _timeStampMapList;
+        private readonly TimelineStorage _timelineStorage;
 
         private class TimelineStorage : IReadOnlyTimelineStorage
         {
-            internal TimelineStorage()
+            internal TimelineStorage(int clientCount)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < clientCount; i++)
                 {
-                    _timelines.Add(null);
+                    _timelines.Add(new());
                 }
             }
 
             public IReadOnlyTimestamp GetTimestamp(int client, int time)
             {
+                if (!IsValidClient(client)) return null;
                 return _timelines[client][time];
             }
             public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
             {
+                if (!IsValidClient(client)) return null;
                 return _timelines[client];
             }
             private Timestamp GetOrNew(int client, int time)
             {
-                if (_timelines[client] == null)
-                {
-                    _timelines[client] = new();
-                }
                 int timelineSize = _timelines[client].Count;
                 if (timelineSize <= time)
                 {
@@ -171,12 +199,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
                 return _timelines[client][time];
             }
-            internal Timestamp AddMessageToTimestamp(MsgObject msg)
+            internal IReadOnlyTimestamp AddMessageToTimestamp(MsgObject msg)
             {
                 Timestamp stamp = GetOrNew(msg.Client, msg.Time);
                 stamp.AddMsg(msg);
                 return stamp;
 
+            }
+
+            private bool IsValidClient(int client)
+            {
+                return _timelines.Count > client && client >= 0;
             }
 
             private List<List<Timestamp>> _timelines = new();
