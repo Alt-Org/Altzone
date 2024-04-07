@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace MenuUI.Scripts.SoulHome
     public class MainScreenController : MonoBehaviour
     {
         [SerializeField]
+        private SoulHomeController _soulHomeController;
+        [SerializeField]
         private TowerController _soulHomeTower;
         [SerializeField]
         private Camera _camera;
@@ -32,14 +35,14 @@ namespace MenuUI.Scripts.SoulHome
         private bool _moving;
 
         float _prevTapTime = 0;
-        float backDelay = 0;
+        float _backDelay = 0;
         float inDelay = 0;
 
         private bool _trayOpen = false;
         private GameObject _selectedFurnitureTray = null;
 
-        public bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
-        public GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
+        internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
+        internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
 
         // Start is called before the first frame update
         void Start()
@@ -59,6 +62,9 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
+            CheckTrayButtonStatus();
+            if (!CheckInteractableStatus()) return;
+
             if (GetComponent<RectTransform>().rect.width != GetComponent<BoxCollider2D>().size.x || GetComponent<RectTransform>().rect.height != GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
             {
@@ -123,13 +129,14 @@ namespace MenuUI.Scripts.SoulHome
                 if(Time.time < _prevTapTime+0.4f) doubleTap = true;
                 _prevTapTime = Time.time;
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(1)) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && backDelay + 0.4f < Time.time)
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(1)) || doubleTap /*(Touch.activeFingers.Count > 0 && touch.tapCount > 1)*/) && _backDelay + 0.4f < Time.time)
             {
                 _soulHomeTower.ZoomOut();
                 //inDelay = Time.time;
             }
 
         }
+
         private void OnEnable()
         {
             if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
@@ -153,11 +160,10 @@ namespace MenuUI.Scripts.SoulHome
         {
             Debug.Log(click);
             Debug.Log(Screen.orientation);
-            Touch touch = new();
             Ray ray;
             if (Touch.activeFingers.Count >= 1)
             {
-                touch = Touch.activeTouches[0];
+                Touch touch = Touch.activeTouches[0];
                 ray = _camera.ScreenPointToRay(touch.screenPosition);
             }
             else ray = _camera.ScreenPointToRay(Input.mousePosition);
@@ -193,7 +199,7 @@ namespace MenuUI.Scripts.SoulHome
                     Vector2 relPos = new((x / 2 + hitPoint.x) / x, (y / 2 + hitPoint.y) / y);
                     //Debug.Log(relPos);
                     bool check = _soulHomeTower.FindRayPoint(relPos, click);
-                    //if(check)backDelay = Time.time;
+                    if(check)_backDelay = Time.time;
                 }
                 if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
                 {
@@ -269,12 +275,14 @@ namespace MenuUI.Scripts.SoulHome
         {
             _soulHomeTower.ResetChanges();
             transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().ResetChanges();
+            _soulHomeController.ShowInfoPopup("Muutokset palautettu");
         }
 
         public void SaveChanges()
         {
             _soulHomeTower.SaveChanges();
             transform.Find("Itemtray").GetComponent<FurnitureTrayHandler>().SaveChanges();
+            _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
         }
 
         public void ToggleTray()
@@ -314,7 +322,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetFurniture(GameObject trayFurniture)
         {
-            var furnitureObject = Instantiate(trayFurniture.GetComponent<FurnitureHandling>().TrayFurnitureObject, transform.Find("Itemtray"));
+            GameObject furnitureObject = Instantiate(trayFurniture.GetComponent<FurnitureHandling>().TrayFurnitureObject, transform.Find("Itemtray"));
             furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
             _selectedFurnitureTray = furnitureObject;
         }
@@ -343,6 +351,26 @@ namespace MenuUI.Scripts.SoulHome
             float y = rect.rect.height;
             GetComponent<BoxCollider2D>().size = new(x, y);
         }
+        private void CheckTrayButtonStatus()
+        {
+            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && CheckInteractableStatus())
+            {
+                transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
+                transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
+            }
+            else
+            {
+                transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = false;
+                transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
+            }
+        }
 
+        private bool CheckInteractableStatus()
+        {
+            if(_soulHomeController.ExitPending) return false;
+            if (_soulHomeController.ConfirmPopupOpen) return false;
+
+            return true;
+        }
     }
 }

@@ -153,6 +153,8 @@ namespace MenuUI.Scripts.SoulHome
             }*/
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
+            if (!CheckInteractableStatus()) return;
+
             Touch touch = new();
             if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
             if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
@@ -333,7 +335,7 @@ namespace MenuUI.Scripts.SoulHome
 
         void OnDisable()
         {
-            if(selectedRoom != null) ZoomOut();
+            if (selectedRoom != null) ZoomOut();
             if (editingMode) ToggleEdit();
         }
 
@@ -360,13 +362,13 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider != null)
                 {
-                    if (hit2.collider.gameObject.tag == "ScrollRectCanvas")
+                    if (hit2.collider.gameObject.CompareTag("ScrollRectCanvas"))
                     {
                         hitPoint = hit2.point;
                         continue;
                     }
 
-                    if (hit2.collider.gameObject.tag == "Furniture")
+                    if (hit2.collider.gameObject.CompareTag("Furniture"))
                     {
                         Debug.Log("Furniture");
                         //if(selectedRoom == null) continue;
@@ -396,7 +398,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                     } 
 
-                    if (hit2.collider.gameObject.tag == "Room")
+                    if (hit2.collider.gameObject.CompareTag("Room"))
                     {
                         exitRoom = false;
                         //Debug.Log("Camera2: " + hit2.collider.gameObject.name);
@@ -491,7 +493,7 @@ namespace MenuUI.Scripts.SoulHome
                     bool check = false;
                     foreach (RaycastHit2D hit2 in hitArray)
                     {
-                        if (hit2.collider.gameObject.tag == "Room")
+                        if (hit2.collider.gameObject.CompareTag("Room"))
                         {
                             check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, true);
                         }
@@ -518,7 +520,7 @@ namespace MenuUI.Scripts.SoulHome
                         bool check = false;
                         foreach (RaycastHit2D hit2 in hitArray)
                         {
-                            if (hit2.collider.gameObject.tag == "Room")
+                            if (hit2.collider.gameObject.CompareTag("Room"))
                             {
                                 check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, false);
                             }
@@ -624,7 +626,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetFurniture(GameObject furniture)
         {
-            var furnitureObject = Instantiate(furniture.GetComponent<TrayFurniture>().FurnitureObject);
+            GameObject furnitureObject = Instantiate(furniture.GetComponent<TrayFurniture>().FurnitureObject);
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture.GetComponent<TrayFurniture>().Furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
@@ -719,6 +721,14 @@ namespace MenuUI.Scripts.SoulHome
             if(editingMode) _mainScreen.EnableTray(true);
             else if (!editingMode && selectedRoom == null) _mainScreen.EnableTray(false);
             if(!editingMode) ResetChanges();
+        }
+
+        private bool CheckInteractableStatus()
+        {
+            if (_soulHomeController.ExitPending) return false;
+            if (_soulHomeController.ConfirmPopupOpen) return false;
+
+            return true;
         }
     }
 }
