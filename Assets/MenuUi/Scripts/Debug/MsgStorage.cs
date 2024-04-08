@@ -192,7 +192,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 int timelineSize = _timelines[client].Count;
                 if (timelineSize <= time)
                 {
-                    for (int i = timelineSize; i < time; i++)
+                    for (int i = timelineSize; i <= time; i++)
                     {
                         _timelines[client].Add(new(i));
                     }
