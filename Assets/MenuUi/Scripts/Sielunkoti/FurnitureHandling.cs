@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -56,10 +57,26 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
-            if(furniture.Size is FurnitureSize.OneXTwo)
+            float width;
+            if (furniture.Size is FurnitureSize.OneXOne)
             {
-                    position.x = (transform.localScale.x/2)/2;
+                width = _tempSlot.width;
             }
+            else if (furniture.Size is FurnitureSize.OneXTwo)
+            {
+                width = _tempSlot.width * 2;
+            }
+            else if (furniture.Size is FurnitureSize.OneXFour)
+            {
+                width = _tempSlot.width * 4;
+            }
+            else
+            {
+                Debug.LogError("Invalid furniture size.");
+                return;
+            }
+            position.x = (transform.localScale.x / 2) - _tempSlot.width / 2;
+            position.y = -1 * (_tempSlot.height/2);
             transform.localPosition = position;
         }
 
@@ -75,46 +92,20 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetScale()
         {
-            if (GetComponent<SpriteRenderer>().sortingOrder == 4) transform.localScale /= 1.1f;
-            else if (GetComponent<SpriteRenderer>().sortingOrder == 5) transform.localScale /= 1.2f;
+            transform.localScale /= 1.0f + (_tempSlot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : GetComponent<SpriteRenderer>().sortingOrder - 3) / (_tempSlot.maxRow - 1f));
 
-            if (_tempSlot.row == 0)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 3;
-                transform.localScale *= 1.0f;
-            }
-            else if (_tempSlot.row == 1)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 4;
-                transform.localScale *= 1.1f;
-            }
-            else if (_tempSlot.row == 2)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 5;
-                transform.localScale *= 1.2f;
-            }
+            GetComponent<SpriteRenderer>().sortingOrder = 3 + _tempSlot.row;
+            transform.localScale *= 1.0f + (_tempSlot.maxDepthScale/100f) * (((float)_tempSlot.row)/(_tempSlot.maxRow-1f));
+            Debug.Log("Scale 1: " + ((_tempSlot.maxDepthScale / 100f) * (((float)_tempSlot.row) / (_tempSlot.maxRow - 1f))));
         }
 
-        public void SetScale(int row)
+        public void SetScale(int row, FurnitureSlot slot)
         {
-            if (GetComponent<SpriteRenderer>().sortingOrder == 4) transform.localScale /= 1.1f;
-            else if (GetComponent<SpriteRenderer>().sortingOrder == 5) transform.localScale /= 1.2f;
+            transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : GetComponent<SpriteRenderer>().sortingOrder - 3) / (slot.maxRow - 1f));
 
-            if (row == 0)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 3;
-                transform.localScale *= 1.0f;
-            }
-            else if (row == 1)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 4;
-                transform.localScale *= 1.1f;
-            }
-            else if (row == 2)
-            {
-                GetComponent<SpriteRenderer>().sortingOrder = 5;
-                transform.localScale *= 1.2f;
-            }
+            GetComponent<SpriteRenderer>().sortingOrder = 3 + row;
+            transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
         }
 
         public void SetTransparency(float alpha)

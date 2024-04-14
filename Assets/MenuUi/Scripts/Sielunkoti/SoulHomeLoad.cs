@@ -92,9 +92,9 @@ namespace MenuUI.Scripts.SoulHome {
                         else break;
                     }
 
-                    var test2 = new Furniture(1, "Standard", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.OneXOne, 15f);
+                    var test2 = new Furniture(1, "Standard", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.OneXTwo, 15f);
                     room.Furnitures.Add(test2);
-                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXTwo, 15f);
+                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXFour, 15f);
                     room.Furnitures.Add(test3);
                     soulHome.Room.Add(room);
                 }
@@ -206,9 +206,9 @@ namespace MenuUI.Scripts.SoulHome {
                 int i = 0;
                 while (i < 2)
                 {
-                    var test2 = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXOne, 15f);
+                    var test2 = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, 15f);
                     _trayHandler.AddFurnitureInitial(test2);
-                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, 15f);
+                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, 15f);
                     _trayHandler.AddFurnitureInitial(test3);
                     i++;
                 }
