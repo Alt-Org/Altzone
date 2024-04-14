@@ -60,23 +60,35 @@ namespace MenuUI.Scripts.SoulHome
             float width;
             if (furniture.Size is FurnitureSize.OneXOne)
             {
-                width = _tempSlot.width;
+                if(_tempSlot != null)width = _tempSlot.width;
+                else width = transform.parent.GetComponent<FurnitureSlot>().width;
             }
             else if (furniture.Size is FurnitureSize.OneXTwo)
             {
-                width = _tempSlot.width * 2;
+                if (_tempSlot != null) width = _tempSlot.width * 2;
+                else width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
             else if (furniture.Size is FurnitureSize.OneXFour)
             {
-                width = _tempSlot.width * 4;
+                if (_tempSlot != null) width = _tempSlot.width * 4;
+                else width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
             else
             {
                 Debug.LogError("Invalid furniture size.");
                 return;
             }
-            position.x = (transform.localScale.x / 2) - _tempSlot.width / 2;
-            position.y = -1 * (_tempSlot.height/2);
+            if (_tempSlot != null)
+            {
+                position.x = (width / 2) - _tempSlot.width / 2;
+                position.y = -1 * (_tempSlot.height / 2);
+            }
+            else
+            {
+                position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
+                position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
+            }
+
             transform.localPosition = position;
         }
 
