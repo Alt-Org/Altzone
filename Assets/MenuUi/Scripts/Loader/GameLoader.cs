@@ -10,6 +10,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using Prg.Scripts.Common;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -51,9 +52,7 @@ namespace MenuUi.Scripts.Loader
 
             if (_videoPlaying)
             {
-                Touch touch = new();
-                if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
-                if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
+                if (ClickStateHandler.GetClickState() is ClickState.End)
                     EndIntroVideo();
                 
             }

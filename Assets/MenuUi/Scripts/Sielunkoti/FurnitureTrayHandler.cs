@@ -36,7 +36,8 @@ namespace MenuUI.Scripts.SoulHome
             GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
             furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
 
-            Instantiate(furnitureObject, furnitureSlot.transform);
+            GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
+            trayFurniture.GetComponent<TrayFurniture>().Furniture = furniture;
         }
         public void AddFurniture(Furniture furniture)
         {

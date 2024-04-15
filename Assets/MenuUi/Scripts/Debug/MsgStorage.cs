@@ -148,8 +148,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
         {
             if (!IsValidClient(client)) return null;
-            if(_timeStampMapList[client] == null) return null;
-            if(!_timeStampMapList[client].ContainsKey(time)) return null;
+            if (_timeStampMapList[client] == null) return null;
+            if (!_timeStampMapList[client].ContainsKey(time)) return null;
             return _timeStampMapList[client][time].List;
         }
 
@@ -192,7 +192,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 int timelineSize = _timelines[client].Count;
                 if (timelineSize <= time)
                 {
-                    for (int i = timelineSize; i < time; i++)
+                    for (int i = timelineSize; i <= time; i++)
                     {
                         _timelines[client].Add(new(i));
                     }
@@ -215,6 +215,80 @@ namespace DebugUi.Scripts.BattleAnalyzer
             private List<List<Timestamp>> _timelines = new();
         }
 
+
+        /* 
+         * +------------------------------------------------------------+
+         * |                         MsgStorage                         |
+         * +------------------------------------------------------------+
+         * |                                                            |
+         * |  _msgList: List<MsgObject>[]                               |
+         * |    [client0]: List<MsgObject>                              |                                                                     +-----------------------------+
+         * |      [Id0]: MsgObject --------------------------------------------------------------------------------------------+------------->|          MsgObject          |
+         * |      [Id1]: MsgObject --------------------------------------------------------------------------------------------|-+---------+  +-----------------------------+
+         * |      [Id2]: MsgObject --------------------------------------------------------------------------------------------|-|-+-----+ |  |  Client: 0 (int)            |
+         * |      .                                                     |                                                      | | |     | |  |  Id: 0 (int)                |
+         * |      .                                                     |                                                      | | |     | |  |  Time: 1 (int)              |
+         * |    [client1]: List<MsgObject>                              |                                                      | | |     | |  |  Msg: string                |
+         * |      [Id0]: MsgObject --------------------------------------------------------------------------------------------|-|-|--+  | |  |  Type: MessageType.Info     |
+         * |      .                                                     |                                                      | | |  |  | |  +-----------------------------+
+         * |      .                                                     |                                                      | | |  |  | |                                 
+         * |    .                                                       |                     +-----------------------------+  | | |  |  | |  +-----------------------------+
+         * |    .                                                       |  +----------------->|          Timestamp          |  | | |  |  | +->|          MsgObject          |
+         * |                                                            |  | +-------------+  +-----------------------------+  | | |  |  |    +-----------------------------+
+         * |  _timeStampMapList: Dictionary<int, IReadOnlyTimestamp>[]  |  | | +---------+ |  |  Time: 0 (int)              |  | | |  |  |    |  Client: 0 (int)            |
+         * |    [client0]: Dictionary<int, IReadOnlyTimestamp>          |  | | | +-----+ | |  |  Type: MessageType.None     |  | | |  |  |    |  Id: 1 (int)                |
+         * |      [Time1]: IReadOnlyTimestamp -----------------------------|-+ | |     | | |  |                             |  | | |  |  |    |  Time: 1 (int)              |
+         * |      [Time3]: IReadOnlyTimestamp -----------------------------|-|-|-+     | | |  |  _list: List<MsgObject>     |  | | |  |  |    |  Msg: string                |
+         * |      .                                                     |  | | | |     | | |  |    empty                    |  | | |  |  |    |  Type: MessageType.Warning  |
+         * |      .                                                     |  | | | |     | | |  |                             |  | | |  |  |    +-----------------------------+
+         * |    [client1]: Dictionary<int, IReadOnlyTimestamp>          |  | | | |     | | |  +-----------------------------+  | | |  |  |                                   
+         * |      [Time0]: IReadOnlyTimestamp  ----------------------------|-|-|-|--+  | | |                                   | | |  |  |    +-----------------------------+
+         * |      .                                                     |  | | | |  |  | | |  +-----------------------------+  | | |  |  +--->|          MsgObject          |
+         * |      .                                                     |  | | | |  |  | | +->|          Timestamp          |  | | |  |       +-----------------------------+
+         * |    .                                                       |  | | | |  |  | |    +-----------------------------+  | | |  |       |  Client: 0 (int)            |
+         * |    .                                                       |  | | | |  |  | |    |  Time: 1 (int)              |  | | |  |       |  Id: 2 (int)                |
+         * |                                                            |  | | | |  |  | |    |  Type: MessageType.Warning  |  | | |  |       |  Time: 3 (int)              |
+         * |  +-------------------------------------+                   |  | | | |  |  | |    |                             |  | | |  |       |  Msg: string                |
+         * |  |           TimelineStorage           |                   |  | | | |  |  | |    |  _list: List<MsgObject>     |  | | |  |       |  Type: MessageType.Info     |
+         * |  +-------------------------------------+                   |  | | | |  |  | |    |    [0]: MsgObject -------------+ | |  |       +-----------------------------+
+         * |  |                                     |                   |  | | | |  |  | |    |    [1]: MsgObject ---------------+ |  |                                      
+         * |  |  _timelines: List<List<Timestamp>>  |                   |  | | | |  |  | |    |                             |      |  |                                      
+         * |  |   [client0]: <List<Timestamp>       |                   |  | | | |  |  | |    +-----------------------------+      |  |       +-----------------------------+
+         * |  |     [Time0]: Timestamp ------------------------------------+ | | |  |  | |                                         |  +------>|          MsgObject          |
+         * |  |     [Time1]: Timestamp --------------------------------------+ | |  |  | |    +-----------------------------+      |  |       +-----------------------------+
+         * |  |     [Time2]: Timestamp ----------------------------------------+ |  |  | +--->|          Timestamp          |      |  |       |  Client: 1 (int)            |
+         * |  |     [Time3]: Timestamp ------------------------------------------+  |  |      +-----------------------------+      |  |       |  Id: 0 (int)                |
+         * |  |     .                               |                   |           |  |      |  Time: 2 (int)              |      |  |       |  Time: 0 (int)              |
+         * |  |     .                               |                   |           |  |      |  Type: MessageType.None     |      |  |       |  Msg: string                |
+         * |  |   [client1]: <List<Timestamp>       |                   |           |  |      |                             |      |  |       |  Type: MessageType.Info     |
+         * |  |     [Time0]: Timestamp ---------------------------------------------+  |      |  _list: List<MsgObject>     |      |  |       +-----------------------------+
+         * |  |     .                               |                   |           |  |      |    empty                    |      |  |
+         * |  |     .                               |                   |           |  |      |                             |      |  |
+         * |  |   .                                 |                   |           |  |      +-----------------------------+      |  |
+         * |  |   .                                 |                   |           |  |                                           |  |
+         * |  |                                     |                   |           |  |      +-----------------------------+      |  |
+         * |  +-------------------------------------+                   |           |  +----->|          Timestamp          |      |  |
+         * |                                                            |           |         +-----------------------------+      |  |
+         * +------------------------------------------------------------+           |         |  Time: 3 (int)              |      |  |
+         *                                                                          |         |  Type: MessageType.Info     |      |  |
+         *                                                                          |         |                             |      |  |
+         *                                                                          |         |  _list: List<MsgObject>     |      |  |
+         *                                                                          |         |    [0]: MsgObject -----------------+  |
+         *                                                                          |         |                             |         |
+         *                                                                          |         +-----------------------------+         |
+         *                                                                          |                                                 |
+         *                                                                          |                                                 |
+         *                                                                          |         +-----------------------------+         |
+         *                                                                          +-------->|          Timestamp          |         |
+         *                                                                                    +-----------------------------+         |
+         *                                                                                    |  Time: 0 (int)              |         |
+         *                                                                                    |  Type: MessageType.Info     |         |
+         *                                                                                    |                             |         |
+         *                                                                                    |  _list: List<MsgObject>     |         |
+         *                                                                                    |    [0]: MsgObject --------------------+
+         *                                                                                    |                             |          
+         *                                                                                    +-----------------------------+          
+         */
     }
 
 }
