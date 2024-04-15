@@ -40,7 +40,7 @@ public class Reset_voting_stats : MonoBehaviour
         timeScript.currentTime = 0f;
         timeScript.timeText.color = Color.white;
         Time.timeScale = 0f;
-        amountSetButton.enabled = true;
+        amountSetButton.interactable = true;
         winnerScript.winningScore = winnerScript.scoreAmount / 100 * 70;
         voteAmountScript.numberVotesBox.text = "0";
         yesButtonScript.yesAmount = 0;
@@ -48,13 +48,13 @@ public class Reset_voting_stats : MonoBehaviour
         timeScript.voteTimeInfo.text = "Aseta äänestys aika";
         voteAmountScript.resultText.color = Color.white;
         voteAmountScript.resultText.text = "Äänestäjien määrä?"; 
-        startVoting.enabled = false;
-        voteAmountScript.oneMinButton.enabled = true;
-        voteAmountScript.fifteenMinButton.enabled = true;
-        voteAmountScript.oneHourButton.enabled = true;
-        voteAmountScript.oneDayButton.enabled = true;
-        voteAmountScript.oneWeekButton.enabled = true;
-        voteAmountScript.oneMonthButton.enabled = true;
+        startVoting.interactable = false;
+        voteAmountScript.oneMinButton.interactable = true;
+        voteAmountScript.fifteenMinButton.interactable = true;
+        voteAmountScript.oneHourButton.interactable = true;
+        voteAmountScript.oneDayButton.interactable = true;
+        voteAmountScript.oneWeekButton.interactable = true;
+        voteAmountScript.oneMonthButton.interactable = true;
         voteBarGreen.fillAmount = 0.5f;       
 
         Debug.Log("Uudet arvot: ResultYES: " + resultYES.text + " ResultNO: " + resultNO.text + " scoreAmount: " + winnerScript.scoreAmount);
