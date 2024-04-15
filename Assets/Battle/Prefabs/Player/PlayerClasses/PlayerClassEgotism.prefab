@@ -51,8 +51,39 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _maxDistance: 10
-  _maxReflections: 5
+  _maxReflections: 2
   _time: 50
+  _spriteList:
+  - {fileID: -574937647, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1739452884, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1886047313, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1886047313, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -931645996, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1903814102, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1181909119, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1855091702, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1749956690, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 693705817, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1994024088, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -37071627, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1273839694, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1712883530, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1708794283, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 902902803, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 875301073, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 653976798, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 1721840033, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -16131593, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -761526189, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1228725661, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 47304961, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 197123706, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -130292921, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -2131683630, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 84578051, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: 456330847, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  - {fileID: -1047170296, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
+  _pointStep: 5
 --- !u!120 &8129724258873738911
 LineRenderer:
   serializedVersion: 2
@@ -173,7 +204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6720243486287710769
 Transform:
   m_ObjectHideFlags: 0
@@ -230,14 +261,14 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 100
-  m_Sprite: {fileID: 21300000, guid: da2db7bff7d809b4fb580709215a5209, type: 3}
-  m_Color: {r: 0.9622642, g: 0.041758526, b: 0.041758526, a: 1}
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 5.12, y: 5.12}
+  m_Size: {x: 0.95, y: 1.0390625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

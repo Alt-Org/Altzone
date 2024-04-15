@@ -16,7 +16,7 @@ interface IDriver
     public Transform ActorShieldTransform { get; }
     public Transform ActorCharacterTransform { get; }
     public Transform ActorSoulTransform { get; }
-
+    public PlayerActor PlayerActor { get; }
     public bool MovementEnabled { get; set; }
 }
 

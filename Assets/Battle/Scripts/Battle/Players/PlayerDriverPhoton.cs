@@ -37,7 +37,7 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        //public PlayerActor PlayerActor => _playerActor;
+        public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _photonView.Owner.ActorNumber;
         public Transform ActorShieldTransform => _playerActor.ShieldTransform;
         public Transform ActorCharacterTransform => _playerActor.CharacterTransform;

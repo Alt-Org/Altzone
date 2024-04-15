@@ -4,16 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
+using Prg.Scripts.Common.PubSub;
+using System.Security.Cryptography;
+using System.Runtime.Versioning;
+using System.Threading;
 
 namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerClassEgotism : MonoBehaviour, IPlayerClass
     {
+        // Serialized Fields
         [SerializeField] private GameObject _positionSprite;
         [SerializeField] private LayerMask _collisionLayer;
-        [SerializeField] private float _maxDistance = 10f;
-        [SerializeField] private int _maxReflections = 5;
-        [SerializeField] private int _time = 5;
+        [SerializeField] private float _maxDistance;
+        [SerializeField] private int _maxReflections;
+        [SerializeField] private int _time;
+        [SerializeField] private List<Sprite> _spriteList;
+        [SerializeField] int _pointStep;
 
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
@@ -23,7 +30,10 @@ namespace Battle.Scripts.Battle.Players
 
         public void OnBallShieldBounce()
         {
-            _timer = _time;
+            if (_isOnLocalTeam)
+            {
+                _timer = _time;
+            }
         }
 
         [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
@@ -37,6 +47,23 @@ namespace Battle.Scripts.Battle.Players
         private int _timer;
         private LineRenderer _lineRenderer;
         private List<GameObject> _positionSprites;
+        private List<TrailSprite> _trailSprites;
+        private bool _isOnLocalTeam = false;
+        private int _trailSpritesCount;
+        private class TrailSprite
+        {
+            public readonly GameObject GameObject;
+            public int Timer;
+
+            public TrailSprite(GameObject gameObject, Vector3 position, Sprite sprite, int timer)
+            {
+                GameObject = Instantiate(gameObject, position, Quaternion.identity);
+                Debug.Log(DEBUG_LOG_NAME + GameObject);
+                GameObject.SetActive(true);
+                GameObject.GetComponent<SpriteRenderer>().sprite = sprite;
+                Timer = timer;
+            }
+        }
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS EGOTISM] ";
@@ -45,36 +72,42 @@ namespace Battle.Scripts.Battle.Players
  
         private void Start()
         {
+            // Get important objects
             _rb = Context.GetBallHandler.GetComponent<Rigidbody2D>();
-            Debug.Log(_rb);
             _lineRenderer = GetComponent<LineRenderer>();
-
             _gridManager = Context.GetGridManager;
-
             _positionSprites = new();
+            _trailSprites = new();
 
-            // debug
+            // Subscribe to messages
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+           
+            // Debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
-        private void FixedUpdate()
+        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            if (_timer <= 0)
+            PlayerActor actor = transform.parent.GetComponentInParent<PlayerActor>();
+
+            // Check if the playeractor is on the same team as the local player
+            foreach (IDriver driver in data.AllDrivers)
             {
-                for (int i = 0; i < _positionSprites.Count; i++)
+                if(driver.PlayerActor == actor)
                 {
-                    _positionSprites[i].SetActive(false);
+                    _isOnLocalTeam = driver.TeamNumber == data.LocalPlayer.TeamNumber;
+                    break;
                 }
-                return;
             }
+        }
 
-            _timer--;
-
+        private void ProjectilePredictionUpdate()
+        {
             GridPos gridPosition = null;
             Vector2 currentVelocity = GetCurrentVelocity();
             Vector2 currentPosition = GetCurrentPosition();
-            Vector2 direction = currentVelocity.normalized;
             gridPosition = _gridManager.WorldPointToGridPosition(_rb.position);
+
             Vector3 worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
             float distance = _maxDistance;
             int reflections = 0;
@@ -84,15 +117,18 @@ namespace Battle.Scripts.Battle.Players
 
             while (distance > 0 && reflections < _maxReflections)
             {
-                RaycastHit2D hit = Physics2D.Raycast(currentPosition, direction, distance, _collisionLayer);
-
-                Debug.Log(DEBUG_LOG_NAME + hit);
+                RaycastHit2D hit = Physics2D.Raycast(currentPosition, currentVelocity.normalized, distance, _collisionLayer);
+                Debug.Log(DEBUG_LOG_NAME + "reflections " + reflections);
+                Debug.Log(DEBUG_LOG_NAME + "distance " + distance);
 
                 if (hit.collider != null)
                 {
+                    Debug.DrawLine(hit.point, hit.point + hit.normal, Color.green);
+
                     // Calculate the reflection
                     Vector2 hitPosition = hit.point;
                     Vector2 reflectionDirection = Vector2.Reflect(currentVelocity.normalized, hit.normal);
+                    Debug.DrawLine(hit.point, hit.point + reflectionDirection, Color.blue);
                     gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
                     worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
 
@@ -100,7 +136,7 @@ namespace Battle.Scripts.Battle.Players
                     pointVelocity = currentVelocity;
 
                     // Update currentPosition for next raycast
-                    currentPosition = hitPosition + reflectionDirection.normalized * 0.01f;
+                    currentPosition = (Vector2)worldPosition + reflectionDirection.normalized * 0.1f;
                     currentVelocity = reflectionDirection * currentVelocity.magnitude;
 
                     // Reduce distance by the distance traveled
@@ -110,27 +146,40 @@ namespace Battle.Scripts.Battle.Players
                 else
                 {
                     worldPosition = currentPosition + currentVelocity.normalized * distance;
-       
-                    break;
+                    pointPosition = currentPosition;
+                    pointVelocity = currentVelocity;
+                    distance = 0;
                 }
 
-                int pointStep = 10;
+                Debug.DrawLine(worldPosition, pointPosition, Color.red);
 
                 float pointDistance = (worldPosition - pointPosition).magnitude;
 
-                int positionCount = (int)Mathf.Floor(pointDistance / pointVelocity.magnitude / pointStep);
+                pointVelocity /= 50;
+
+                int positionCount = (int)Mathf.Floor(pointDistance / pointVelocity.magnitude / _pointStep);
+
+                Debug.Log(DEBUG_LOG_NAME + "positionCount " + positionCount);
 
                 for (int i = 0; i < positionCount; i++)
                 {
                     // Calculate the next point position based on velocity and step and add to the list of positions
-                    pointPosition = pointVelocity * pointStep;
+                    pointPosition += pointVelocity * _pointStep;
                     positions.Add(pointPosition);
                 }
+
                 positions.Add(worldPosition);
             }
 
             Debug.Log(DEBUG_LOG_NAME + positions.Count);
 
+            UpdatePredictionSprites(positions);
+
+            UpdateTrailSprites();
+        }
+
+        private void UpdatePredictionSprites(List<Vector3> positions)
+        {
             // Check if there are fewer sprite objects than position points
             if (_positionSprites.Count < positions.Count)
             {
@@ -141,20 +190,26 @@ namespace Battle.Scripts.Battle.Players
                 {
                     _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, Quaternion.identity));
                 }
-                Debug.Log(DEBUG_LOG_NAME + _positionSprites.Count);
-                Debug.Log(DEBUG_LOG_NAME +  positions.Count);
+
+                Debug.Log(DEBUG_LOG_NAME + "_positionSprite " + _positionSprites.Count);
+                Debug.Log(DEBUG_LOG_NAME + "positions.Count " + positions.Count);
             }
 
             // Update the position and activation state of each sprite
-            for (int i = 0;i < positions.Count; i++)
+            for (int i = 0; i < positions.Count; i++)
             {
                 _positionSprites[i].transform.position = positions[i];
                 _positionSprites[i].SetActive(true);
+                SpriteRenderer spriteRenderer = _positionSprites[i].GetComponent<SpriteRenderer>();
+
+                // Assign a random sprite from the spritelist
+                spriteRenderer.sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
             }
 
+            // Check if there are more sprites than positions
             if (_positionSprites.Count > positions.Count)
             {
-                int difference = positions.Count - _positionSprites.Count;
+                int difference = _positionSprites.Count - positions.Count;
 
                 // Deactivate excess sprite objects
                 for (int i = 0; i < difference; i++)
@@ -164,16 +219,69 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        private void DrawLine(Vector3 startPoint, Vector3 endPoint)
+        private void UpdateTrailSprites()
         {
-            startPoint.z -= 0.1f;
-            endPoint.z -= 0.1f;
+            if (_timer % _pointStep == 0)
+            {
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)], 50);
+                if (_trailSprites.Count == _trailSpritesCount)
+                {
+                    _trailSprites.Add(newTrailSprite);
+                }
+                else
+                {
+                    _trailSprites[_trailSpritesCount] = newTrailSprite;
+                }
 
-            // Ensure the LineRenderer has 2 points
-            _lineRenderer.positionCount = 2;
+                _trailSpritesCount++;
+            }
 
-            _lineRenderer.SetPosition(0, startPoint);
-            _lineRenderer.SetPosition(1, endPoint);
+            int offset = 0;
+            bool delete;
+
+            for(int i= 0; i < _trailSpritesCount; i++)
+            {
+                delete = _trailSprites[i].Timer <= 0;
+
+                if (delete)
+                {
+                    Destroy(_trailSprites[i].GameObject);
+                }
+                else
+                {
+                    _trailSprites[i].Timer--;
+                    _trailSprites[i - offset] = _trailSprites[i];
+                }
+
+                if (delete)
+                {
+                    offset++;
+                }
+            }
+
+            _trailSpritesCount -= offset;
+        }
+
+        private void FixedUpdate()
+        {
+            if(_timer > 0)
+            {
+                if (GetCurrentVelocity() != Vector2.zero)
+                {
+                    _timer--;
+                    ProjectilePredictionUpdate();
+                    return;
+                }
+                else
+                {
+                    _timer = 0;
+                }
+            }
+
+            for (int i = 0; i < _positionSprites.Count; i++)
+            {
+                _positionSprites[i].SetActive(false);
+            }         
         }
 
         private Vector2 GetCurrentVelocity()

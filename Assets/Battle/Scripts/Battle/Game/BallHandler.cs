@@ -37,16 +37,6 @@ public class BallHandler : MonoBehaviour
         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
     }
 
-    public Vector2 GetCurrentVelocity()
-    {
-        return _rb.velocity;
-    }
-
-    public Vector2 GetCurrentPosition()
-    {
-        return _rb.position;
-    }
-
     #endregion Public Methods
 
     private float _arenaScaleFactor;

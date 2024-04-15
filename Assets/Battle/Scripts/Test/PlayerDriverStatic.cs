@@ -43,7 +43,7 @@ namespace Battle.Scripts.Test
 
         public bool MovementEnabled { get => _state.MovementEnabled; set => _state.MovementEnabled = value; }
 
-        //public PlayerActor PlayerActor => _playerActor;
+        public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _actorNumber;
         public Transform ActorShieldTransform => _playerActor.ShieldTransform;
         public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
