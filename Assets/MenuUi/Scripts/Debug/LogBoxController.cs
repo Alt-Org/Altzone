@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 using DebugUi.Scripts.BattleAnalyzer;
@@ -20,24 +19,66 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Start is called before the first frame update
         void Start()
         {
-            AddMessageToLog("This is a test message.", 0); //i
+            for (int i = 0; i < 10; i++)
+            {
+            AddMessageToLog("This is a test message.", i, 0);
+            AddMessageToLog("This is a test message aswell", i, 1);
+            AddMessageToLog("This may be a test message aswell", i, 2);
+            AddMessageToLog("This might not be a test message", i, 3);
+            }
+            UpdateLogText();
         }
 
         // Add a message to the log box
-        public void AddMessageToLog(string message, int time)
+        public void AddMessageToLog(string message, int time, int client/*, MessageType type*/)
         {
-            msgStorage.Add(new MsgObject(time, time, message, MessageType.Info));
-            UpdateLogText();
+            msgStorage.Add(new MsgObject(client, time, message, MessageType.Info));
+        }
+
+        // Get the corresponding log text box GameObject based on the index
+        private GameObject GetLogTextBox(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return _logTextBox1;
+                case 2:
+                    return _logTextBox2;
+                case 3:
+                    return _logTextBox3;
+                case 4:
+                    return _logTextBox4;
+                default:
+                    return null;
+            }
         }
 
         // Update the log text to display all messages
         private void UpdateLogText()
         {
-            foreach (var msg in msgStorage.AllMsgs(0))
+            // Loop through each log box
+            for (int i = 0; i < 4; i++)
             {
-                    GameObject logMsgBox = Instantiate(_logTextObject, _logTextBox1.transform.GetChild(0).GetChild(0));
-                    string logText = $"[{msg.Client}:{msg.Time}] {msg.Msg}\n"; // Message format
-                    logMsgBox.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = logText;
+                // Get the corresponding log text box GameObject
+                GameObject logTextBox = GetLogTextBox(i + 1);
+
+                // Check if the logTextBox is not null
+                if (logTextBox != null)
+                {
+
+                    // Get all messages for the current log box index
+                    foreach (var msg in msgStorage.AllMsgs(i))
+                    {
+                        // Instantiate a new log message GameObject for each message
+                        GameObject logMsgBox = Instantiate(_logTextObject, logTextBox.transform.GetChild(0).GetChild(0));
+                        string logText = $"[{msg.Client}:{msg.Time}] {msg.Msg}\n"; // Message format
+                        logMsgBox.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = logText;
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Log text box {_logTextBox1.name} not found.");
+                }
             }
         }
     }
