@@ -6,18 +6,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using Prg.Scripts.Common;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public enum ClickState
-    {
-        Start,
-        Hold,
-        Move,
-        End
-    }
-
-
     public class MainScreenController : MonoBehaviour
     {
         [SerializeField]
@@ -28,11 +20,6 @@ namespace MenuUI.Scripts.SoulHome
         private Camera _camera;
 
         private bool _rotated = false;
-        Vector3 startPosition;
-        float startTime;
-
-        Vector3 _currentPosition;
-        private bool _moving;
 
         float _prevTapTime = 0;
         float _backDelay = 0;
@@ -72,59 +59,13 @@ namespace MenuUI.Scripts.SoulHome
                 StartCoroutine(SetColliderSize());
             }
 
-            if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0))
+            ClickState clickState = ClickStateHandler.GetClickState();
+            if (clickState is not ClickState.None)
             {
-                if (!Mouse.current.position.ReadValue().Equals(_currentPosition))
-                {
-                    _moving = true;
-                }
-                else _moving = false;
-            }
-
-            Touch touch =new();
-            if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
-
-
-            if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonDown(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
-            {
-                if(Touch.activeFingers.Count >= 1) startPosition = touch.finger.screenPosition;
-                else startPosition = Mouse.current.position.ReadValue();
-                startTime = Time.time;
-                //Debug.Log(startPosition);
-                //Debug.Log(startTime);
-                RayPoint(ClickState.Start);
-            }
-            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended|| touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
-            {
-                Vector2 endPosition;
-                if (Touch.activeFingers.Count >= 1) endPosition = touch.finger.screenPosition;
-                else endPosition = Mouse.current.position.ReadValue();
-                float endTime = Time.time;
-
-                //Debug.Log(endPosition);
-                //Debug.Log(endTime);
-
-                //if (endTime - startTime > 0.2f || Mathf.Abs(startPosition.x-endPosition.x)+Mathf.Abs(startPosition.y - endPosition.y) > 1) return;
-
-                RayPoint(ClickState.End);
-                startPosition = Vector3.zero;
-            }
-            else if ((((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && _moving && Input.GetMouseButton(0))) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)) )
-            {
-                if (Touch.activeFingers.Count >= 1) _currentPosition = touch.finger.screenPosition;
-                else _currentPosition = Mouse.current.position.ReadValue();
-
-                RayPoint(ClickState.Move);
-            }
-            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && !_moving && Input.GetMouseButton(0))) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary) )
-            {
-                if (Touch.activeFingers.Count >= 1) _currentPosition = touch.finger.screenPosition;
-                else _currentPosition = Mouse.current.position.ReadValue();
-
-                RayPoint(ClickState.Hold);
+                RayPoint(clickState);
             }
             bool doubleTap = false;
-            if((Touch.activeFingers.Count > 0 && touch.phase is UnityEngine.InputSystem.TouchPhase.Ended))
+            if(Touch.activeFingers.Count > 0 && clickState is ClickState.End)
             {
                 if(Time.time < _prevTapTime+0.4f) doubleTap = true;
                 _prevTapTime = Time.time;

@@ -9,6 +9,10 @@ namespace MenuUI.Scripts.SoulHome
         public int row;
         public int column;
         public int roomId;
+        public float maxDepthScale;
+        public float maxRow;
+        public float height;
+        public float width;
         private Furniture furniture;
         private Furniture tempFurniture;
 
@@ -21,11 +25,15 @@ namespace MenuUI.Scripts.SoulHome
         }
         public Furniture TempFurniture { get => tempFurniture; set => tempFurniture = value; }
 
-        public void InitializeSlot(int row, int column, int id)
+        public void InitializeSlot(int row, int column, int id, float scale, float maxRow, float width, float height)
         {
             this.row = row;
             this.column = column;
             roomId = id;
+            maxDepthScale = scale;
+            this.maxRow = maxRow;
+            this.width = width;
+            this.height = height;
             //GetComponent<PolygonCollider2D>().points;
         }
 

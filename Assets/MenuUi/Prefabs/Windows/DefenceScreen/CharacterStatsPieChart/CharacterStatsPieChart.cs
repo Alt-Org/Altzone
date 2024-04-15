@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class CharacterStatsPieChart : MonoBehaviour
 {
+
     // References for Unity
     public Image[] imagesPieChart;
-    public float[] pieChartValues;
+    //public float[] pieChartValues = DemoCharacterStatsStatic.defaultCharacterStats;
 
     // Start is called before the first frame update
     void Start()
     {
-        SetPieChartValues(pieChartValues);
+        SetPieChartValues(DemoCharacterStatsStatic.defaultCharacterStats);
     }
 
     // Update is called once per frame

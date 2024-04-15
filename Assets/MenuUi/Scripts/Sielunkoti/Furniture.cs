@@ -8,7 +8,8 @@ namespace MenuUI.Scripts.SoulHome
     public enum FurnitureSize
     {
         OneXOne,
-        OneXTwo
+        OneXTwo,
+        OneXFour
     }
 
     [Serializable]

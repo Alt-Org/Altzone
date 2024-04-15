@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using Prg.Scripts.Common;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -187,7 +188,8 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         float moveAmountY = Input.GetAxis("Mouse Y");
                         targetY = currentY - moveAmountY * scrollSpeedMouse;
-                        currentScrollSlide = new Vector2(0, Mathf.Abs(moveAmountY * scrollSpeedMouse));
+                        startScrollSlide = new Vector2(0, Mathf.Abs(moveAmountY * scrollSpeedMouse));
+                        currentScrollSlide = startScrollSlide;
                         currentScrollSlideDirection = new Vector2(0,-1 * moveAmountY);
                         currentScrollSlideDirection.Normalize();
                     }
@@ -250,7 +252,8 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         float moveAmountY = Input.GetAxis("Mouse X");
                         targetX = currentX - moveAmountY * scrollSpeedMouse;
-                        currentScrollSlide = new Vector2(Mathf.Abs(moveAmountY) * scrollSpeedMouse, 0);
+                        startScrollSlide = new Vector2(Mathf.Abs(moveAmountY) * scrollSpeedMouse, 0);
+                        currentScrollSlide = startScrollSlide;
                         currentScrollSlideDirection = new Vector2(-1*moveAmountY, 0);
                         currentScrollSlideDirection.Normalize();
                     }
