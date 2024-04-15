@@ -176,13 +176,16 @@ namespace MenuUI.Scripts.SoulHome
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
                         if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
                         {
-                            startScrollSlide = new Vector2(0, Mathf.Abs((prevp.y - lp.y) / scrollSpeed));
+                            startScrollSlide = new Vector2(0, Mathf.Abs(prevp.y - lp.y) / scrollSpeed);
                             currentScrollSlide = startScrollSlide;
                             currentScrollSlideDirection = new Vector2(0, prevp.y - lp.y);
                             currentScrollSlideDirection.Normalize();
                             prevp = Vector2.zero;
                         }
-                        else prevp = touch.screenPosition;
+                        else
+                        {
+                            prevp = touch.screenPosition;
+                        }
                     }
                     else
                     {
@@ -269,6 +272,7 @@ namespace MenuUI.Scripts.SoulHome
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }
                 //cameraMove = false;
+                Debug.Log(currentScrollSlideDirection);
             }
             else if(!cameraMove)
             {
@@ -721,8 +725,16 @@ namespace MenuUI.Scripts.SoulHome
             editingMode = !editingMode;
             if (!_mainScreen.TrayOpen && editingMode) _mainScreen.ToggleTray();
             else if (_mainScreen.TrayOpen && !editingMode) _mainScreen.ToggleTray();
-            if(editingMode) _mainScreen.EnableTray(true);
-            else if (!editingMode && selectedRoom == null) _mainScreen.EnableTray(false);
+            if (editingMode)
+            {
+                _mainScreen.EnableTray(true);
+                _soulHomeController.EditModeTrayHandle(true);
+            }
+            else if (!editingMode && selectedRoom == null)
+            {
+                _mainScreen.EnableTray(false);
+                _soulHomeController.EditModeTrayHandle(false);
+            }
             if(!editingMode) ResetChanges();
         }
 

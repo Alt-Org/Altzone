@@ -20,6 +20,10 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _confirmPopup;
         [SerializeField]
         private PopupController _infoPopup;
+        [SerializeField]
+        private Button _editButton;
+        [SerializeField]
+        private GameObject _editTray;
 
         private bool _confirmPopupOpen = false;
         private bool _exitPending = false;
@@ -107,7 +111,26 @@ namespace MenuUI.Scripts.SoulHome
                     _soulHomeTower.ToggleEdit();
             }
         }
-        public void ConfirmEditClose(bool confirm)
+        public void EditModeTrayHandle(bool open)
+        {
+            if (!open)
+            {
+                _editButton.interactable = true;
+                _editTray.transform.localPosition = new Vector3(
+                    _editTray.transform.localPosition.x - (-1 * _editTray.GetComponent<RectTransform>().rect.width),
+                    _editTray.transform.localPosition.y,
+                    0);
+            }
+            else
+            {
+                _editButton.interactable = false;
+                _editTray.transform.localPosition = new Vector3(
+                    _editTray.transform.localPosition.x + (-1 * _editTray.GetComponent<RectTransform>().rect.width),
+                    _editTray.transform.localPosition.y,
+                    0);
+            }
+        }
+            public void ConfirmEditClose(bool confirm)
         {
             _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmEditClose(false));
             _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmEditClose(true));
