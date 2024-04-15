@@ -43,6 +43,11 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
+        public void OnEnable()
+        {
+            if(_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+        }
+
         public void SetRoomName(GameObject room)
         {
             if (room != null)
@@ -57,30 +62,36 @@ namespace MenuUI.Scripts.SoulHome
         public void ExitSoulHome()
         {
             if (!_exitPending)
-            if(_soulHomeTower.ChangedFurnitureList.Count > 0)
-            {
-                _exitPending = true;
-                _confirmPopup.SetActive(true);
-                _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                + "Poistumalla hylkäät tallentamattomat muutokset. \n\n"
-                + "Haluatko silti poistua? ";
-                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => ConfirmExit(false));
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(() => ConfirmExit(true));
-                _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje sielunkoti";
+                if (_soulHomeTower.ChangedFurnitureList.Count > 0)
+                {
+                    _exitPending = true;
+                    _confirmPopup.SetActive(true);
+                    _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
+                    + "Poistumalla hylkäät tallentamattomat muutokset. \n\n"
+                    + "Haluatko silti poistua? ";
+                    _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmExitFalse);
+                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrue);
+                    _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje sielunkoti";
                 }
-            else
-            WindowManager.Get().GoBack();
+                else
+                {
+                    if(_soulHomeTower.EditingMode)_soulHomeTower.ToggleEdit();
+                    WindowManager.Get().GoBack();
+                }
         }
+        public void ConfirmExitFalse() { ConfirmExit(false); }
+        public void ConfirmExitTrue() { ConfirmExit(true); }
 
         public void ConfirmExit(bool confirm)
         {
-            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmExit(false));
-            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmExit(true));
+            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitFalse);
+            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrue);
             if (confirm)
             {
                 _mainScreen.ResetChanges();
                 _exitPending=false;
                 _confirmPopup.SetActive(false);
+                if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
                 WindowManager.Get().GoBack();
             }
             else
@@ -103,8 +114,8 @@ namespace MenuUI.Scripts.SoulHome
                     _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
                     + "Sulkemalla muokkaustilan hylkäät tallentamattomat muutokset. \n\n"
                     + "Haluatko silti sulkea muokkaustilan? ";
-                    _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(() => ConfirmEditClose(false));
-                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(() => ConfirmEditClose(true));
+                    _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseFalse);
+                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrue);
                     _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje muokkaustila";
                 }
                 else
@@ -130,10 +141,13 @@ namespace MenuUI.Scripts.SoulHome
                     0);
             }
         }
-            public void ConfirmEditClose(bool confirm)
+        public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
+        public void ConfirmEditCloseTrue() { ConfirmEditClose(true); }
+
+        public void ConfirmEditClose(bool confirm)
         {
-            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmEditClose(false));
-            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(() => ConfirmEditClose(true));
+            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseFalse);
+            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrue);
             if (confirm)
             {
                 _mainScreen.ResetChanges();
