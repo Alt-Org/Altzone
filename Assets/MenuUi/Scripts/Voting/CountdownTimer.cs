@@ -32,7 +32,7 @@ public class CountdownTimer : MonoBehaviour
          Time.timeScale = 0f;
 
         //nappi päälle ja aloitus ajan määritys.
-        newButton.enabled = true;
+        newButton.interactable = true;
         currentTime = startingTime;
         
     }
@@ -61,12 +61,12 @@ public class CountdownTimer : MonoBehaviour
 
         if (currentTime <= 0)
         {
-            currentTime = 0;
-            newButton.enabled = false;
+            DisplayTime(currentTime = 0);
+            newButton.interactable = false;
             reset.SetActive(false);
         }
 
-        else if (currentTime > 0)
+        else if (currentTime > 1)
             {
                 DisplayTime(currentTime);
             }
