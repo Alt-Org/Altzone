@@ -33,7 +33,7 @@ public class Winner_calculator : MonoBehaviour
         winnerResult = GameObject.Find("WinnerText").GetComponent<Text>();
        
 
-        voteButton.enabled = false;
+        voteButton.interactable = false;
      //   resetScript.reset.enabled = false;
 
 
@@ -52,30 +52,30 @@ public class Winner_calculator : MonoBehaviour
 
     //Tässä on winnerResult tekstiboxin tekstimäärittelyt. Samalla osaa katsoa kuka voitti. Taisin saada myös toimimaan tuon 70% mutta en oo varma siitä pitää kysyä.  
 
-        if (countdownTimer.text == "0" && int.Parse(resultNO.text) > int.Parse(resultYES.text))
+        if (countdownTimer.text == "0:00:00" && int.Parse(resultNO.text) > int.Parse(resultYES.text))
             {
                 winnerResult.text = "EI voitti " + resultNO.text;
             }
-        else if (countdownTimer.text == "0" && int.Parse(resultNO.text) == int.Parse(resultYES.text) && scoreAmount >= 2)
+        else if (countdownTimer.text == "0:00:00" && int.Parse(resultNO.text) == int.Parse(resultYES.text) && scoreAmount >= 2)
             {
                 winnerResult.text = "Tasapeli, tuotetta ei osteta.";
             }
-        else if (countdownTimer.text == "0" && int.Parse(resultNO.text) < int.Parse(resultYES.text) && Mathf.Round(winningScore) <= int.Parse(resultYES.text) && scoreAmount > 3)
+        else if (countdownTimer.text == "0:00:00" && int.Parse(resultNO.text) < int.Parse(resultYES.text) && Mathf.Round(winningScore) <= int.Parse(resultYES.text) && scoreAmount > 3)
             {
                 //winnerResult.text = "KYLLÄ voitti " + resultYES.text;
                 winnerResult.text = "TESTI KYLLÄ " + winningScore + " " + int.Parse(resultYES.text);
             }
-        else if (countdownTimer.text == "0" && int.Parse(resultNO.text) < int.Parse(resultYES.text) && scoreAmount > 3)
+        else if (countdownTimer.text == "0:00:00" && int.Parse(resultNO.text) < int.Parse(resultYES.text) && scoreAmount > 3)
             {
                 //winnerResult.text = "EI voitti. KYLLÄ ääniä liian vähän";
                 winnerResult.text = "TESTI EI " + winningScore + " " + int.Parse(resultYES.text) + " " + scoreAmount;
             }
             //NÄMÄ KAKSI ALEMPAA ELSE IF ON YRITYS SAADA 3 LIMIT ALASPÄIN ETTÄ ÄÄNIÄ ON VAIN KYLLÄÄ ETTÄ HYVÄKSYY! Update: se taitaa toimia nyt!
-        else if (countdownTimer.text == "0" && voteAmountScript.newLimit == "3" && int.Parse(resultYES.text) == 3 || voteAmountScript.newLimit == "2" && int.Parse(resultYES.text) == 2)
+        else if (countdownTimer.text == "0:00:00" && voteAmountScript.newLimit == "3" && int.Parse(resultYES.text) == 3 || voteAmountScript.newLimit == "2" && int.Parse(resultYES.text) == 2)
         {
             winnerResult.text = "KYLLÄ voitti! kaikki sanoi KYLLÄ";
         }
-        else if (countdownTimer.text == "0" && voteAmountScript.newLimit == "3" && int.Parse(resultYES.text) < 3 && scoreAmount == 3)
+        else if (countdownTimer.text == "0:00:00" && voteAmountScript.newLimit == "3" && int.Parse(resultYES.text) < 3 && scoreAmount == 3)
         {
             winnerResult.text = "EI voitti! Kaikki ei sanonut KYLLÄ";
         }

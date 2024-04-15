@@ -42,7 +42,7 @@ public class Set_vote_amount : MonoBehaviour
         inputButton = GameObject.Find("Input_vote_amount_button").GetComponent<Button>();
         startVoting = GameObject.Find("Start_Voting_Button").GetComponent<Button>();
 
-        startVoting.enabled = false;
+        startVoting.interactable = false;
     }
 
         //Tehdään funktio napin toiminnalle. Asetettiin numero vaatimus 2 - 30. Jos ei ole oikea, kysy uudestaan luku. Tekstikenttään määritetty erikseen, että se voi olla vain luku ja 2 numeron kokoinen luku.
@@ -59,13 +59,13 @@ public class Set_vote_amount : MonoBehaviour
                 resultText.text = "Äänestys määrä asetettu!"; 
                 numberVotesBox.text = numberVotes; 
                 Debug.Log("Äänestäjät: " + numberVotes);
-               startVoting.enabled = true;
+               startVoting.interactable = true;
            }
         else
             {
                 resultText.text = "Luku ei ole sopiva!";
                 resultText.color = Color.red;
-                startVoting.enabled = false;
+                startVoting.interactable = false;
             }
         
         }
@@ -73,7 +73,7 @@ public class Set_vote_amount : MonoBehaviour
             {
                 resultText.text = "Tyhjä ei käy valinnaksi!";
                 resultText.color = Color.red;
-                startVoting.enabled = false;
+                startVoting.interactable = false;
             }    
     }
     public void StartVotingButton()
@@ -81,17 +81,17 @@ public class Set_vote_amount : MonoBehaviour
     {
         if (countdownScript.currentTime > 59f)
             {
-                cancelButton.enabled = true;
-                inputButton.enabled = false;
-                voteButton.enabled = true;
+                cancelButton.interactable = true;
+                inputButton.interactable = false;
+                voteButton.interactable = true;
                 timeScript.Resume();
-                startVoting.enabled = false;
-                oneMinButton.enabled = false;
-                fifteenMinButton.enabled = false;
-                oneHourButton.enabled = false;
-                oneDayButton.enabled = false;
-                oneWeekButton.enabled = false;
-                oneMonthButton.enabled = false;
+                startVoting.interactable = false;
+                oneMinButton.interactable = false;
+                fifteenMinButton.interactable = false;
+                oneHourButton.interactable = false;
+                oneDayButton.interactable = false;
+                oneWeekButton.interactable = false;
+                oneMonthButton.interactable = false;
                 resultText.text = "Äänestys on alkanut!";
                 resultText.color = Color.white;
 
@@ -99,7 +99,7 @@ public class Set_vote_amount : MonoBehaviour
         else
         //Jos aikaa ei ole laitettu, se pyytää sinua laittamaan ajan ennenkuin voit alottaa äänestyksen.
             {
-                startVoting.enabled = true;
+                startVoting.interactable = true;
                 Debug.Log("Ei ollut aikaa määritetty! Aseta aika");
                 countdownScript.voteTimeInfo.text = "Ei ollut aikaa määritetty! Aseta aika";
                 countdownScript.voteTimeInfo.color = Color.red;
