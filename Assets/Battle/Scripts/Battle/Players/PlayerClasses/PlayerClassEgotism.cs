@@ -49,7 +49,7 @@ namespace Battle.Scripts.Battle.Players
         private List<GameObject> _positionSprites;
         private List<TrailSprite> _trailSprites;
         private bool _isOnLocalTeam = false;
-        private int _trailSpritesCount;
+        private int _trailSpritesAmount;
         private class TrailSprite
         {
             public readonly GameObject GameObject;
@@ -221,45 +221,54 @@ namespace Battle.Scripts.Battle.Players
 
         private void UpdateTrailSprites()
         {
+            // Check if the current timer value is a multiple of pointStep
             if (_timer % _pointStep == 0)
             {
                 TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)], 50);
-                if (_trailSprites.Count == _trailSpritesCount)
+
+                // Check if the trail sprite list is already full
+                if (_trailSprites.Count == _trailSpritesAmount)
                 {
                     _trailSprites.Add(newTrailSprite);
                 }
                 else
                 {
-                    _trailSprites[_trailSpritesCount] = newTrailSprite;
+                    // If the list is full, replace the oldest sprite
+                    _trailSprites[_trailSpritesAmount] = newTrailSprite;
                 }
 
-                _trailSpritesCount++;
+                _trailSpritesAmount++;
             }
 
             int offset = 0;
             bool delete;
 
-            for(int i= 0; i < _trailSpritesCount; i++)
+            for(int i= 0; i < _trailSpritesAmount; i++)
             {
+                // Check if the sprite's timer has expired
                 delete = _trailSprites[i].Timer <= 0;
 
                 if (delete)
                 {
+                    // If expired, destroy the sprite's game object
                     Destroy(_trailSprites[i].GameObject);
                 }
                 else
                 {
+                    // If not expired, decrement the timer and shift the sprites position in the list if some were deleted earlier
                     _trailSprites[i].Timer--;
                     _trailSprites[i - offset] = _trailSprites[i];
                 }
 
+                // Increment offset if a sprite was deleted
                 if (delete)
                 {
                     offset++;
                 }
             }
 
-            _trailSpritesCount -= offset;
+            // Adjust the count of trail sprites by the number of deleted sprites
+            _trailSpritesAmount -= offset;
         }
 
         private void FixedUpdate()
