@@ -60,8 +60,8 @@ public class ChatPreviewController : MonoBehaviour
 
         _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
         _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
-        _chatButtonShrinkAnchors[0] = new Vector2(0, 0.6f);
-        _chatButtonShrinkAnchors[1] = new Vector2(0.15f, 1);
+        _chatButtonShrinkAnchors[0] = new Vector2(0.85f, 0.82f);
+        _chatButtonShrinkAnchors[1] = new Vector2(1, 1.3f);
     }
 
     private void OnEnable()
