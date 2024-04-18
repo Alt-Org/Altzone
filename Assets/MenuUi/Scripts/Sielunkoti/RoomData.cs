@@ -81,6 +81,8 @@ namespace MenuUI.Scripts.SoulHome
             int startRow = row - (furnitureSize.y - 1);
             int endColumn = column + (furnitureSize.x - 1);
 
+            if(startRow < 0 || endColumn > _slotColumns) return false;
+
             for (int i = startRow; i <= row; i++)
             {
                 for (int j = column; j <= endColumn; j++)
