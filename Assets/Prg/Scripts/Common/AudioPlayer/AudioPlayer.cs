@@ -7,7 +7,7 @@ namespace Prg.Scripts.Common.AudioPlayer
     /// <summary>
     /// Plays specific or random audio clips from an array.
     /// </summary>
-    [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(requiredComponent: typeof(AudioSource))]
     public class AudioPlayer : MonoBehaviour
     {
         // Serialized Fields
