@@ -41,7 +41,6 @@ public class PlayerPanel : MonoBehaviour
         _playerClanText.text = loggedOutClanText;
         _signInNaviButton.gameObject.SetActive(true);
         _profileNaviButton.gameObject.SetActive(false);
-        _clanButtonGameObject.SetActive(false);
     }
 
     private void OnDisable()
@@ -66,7 +65,6 @@ public class PlayerPanel : MonoBehaviour
 
             _signInNaviButton.gameObject.SetActive(false);
             _profileNaviButton.gameObject.SetActive(true);
-            _clanButtonGameObject.SetActive(true);
         }
         else
         {
