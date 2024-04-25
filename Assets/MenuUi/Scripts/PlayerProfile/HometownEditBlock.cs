@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class HometownEditBlock : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject popUp;
+    public void onClick()
     {
-        
+        popUp.SetActive(true);
+       // Wait();
+       // popUp.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   // IEnumerator Wait()
+  //  {
+   //     yield return new WaitForSeconds(5);
+ //   }
 }
