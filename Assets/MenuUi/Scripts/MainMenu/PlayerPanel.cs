@@ -10,10 +10,12 @@ public class PlayerPanel : MonoBehaviour
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutClanText;
+    [SerializeField] private string loggedOutClanDescription;
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private TextMeshProUGUI _playerClanText;
+    [SerializeField] private TextMeshProUGUI _playerClanDescription;
 
     [Header("Navigation Buttons")]
     [SerializeField] private NaviButton _signInNaviButton;
@@ -39,9 +41,9 @@ public class PlayerPanel : MonoBehaviour
     {
         _playerNameText.text = loggedOutPlayerText;
         _playerClanText.text = loggedOutClanText;
+        _playerClanDescription.text = loggedOutClanDescription;
         _signInNaviButton.gameObject.SetActive(true);
         _profileNaviButton.gameObject.SetActive(false);
-        _clanButtonGameObject.SetActive(false);
     }
 
     private void OnDisable()
@@ -63,10 +65,10 @@ public class PlayerPanel : MonoBehaviour
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
             _playerNameText.text = "Hei " + playerData.Name + "!";
             _playerClanText.text = "Tervetuloa ALT Zoneen!";
+            _playerClanDescription.text = "";
 
             _signInNaviButton.gameObject.SetActive(false);
             _profileNaviButton.gameObject.SetActive(true);
-            _clanButtonGameObject.SetActive(true);
         }
         else
         {

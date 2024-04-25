@@ -11,7 +11,9 @@ namespace MenuUI.Scripts.SoulHome
     public class SoulHomeController : MonoBehaviour
     {
         [SerializeField]
-        private GameObject _roomName;
+        private TextMeshProUGUI _clanName;
+        [SerializeField]
+        private TextMeshProUGUI _roomName;
         [SerializeField]
         private TowerController _soulHomeTower;
         [SerializeField]
@@ -34,7 +36,10 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
-
+            if (ServerManager.Instance.Clan != null)
+            {
+                _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
+            }
         }
 
         // Update is called once per frame
@@ -52,11 +57,11 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (room != null)
             {
-                _roomName.SetActive(true);
+                _roomName.gameObject.SetActive(true);
                 string roomName = room.GetComponent<RoomData>().RoomInfo.Id.ToString();
                 _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
             }
-            else _roomName.SetActive(false);
+            else _roomName.gameObject.SetActive(false);
         }
 
         public void ExitSoulHome()

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DisableVoting : MonoBehaviour
 {
+    //Tämä pitäisi tehdä että se voisi äänestyksessä vain yhden kerran äänestää. En ole vielä sitä saanut toimimaan.
 
     public Button voteButton;
     public Button yesButton;
