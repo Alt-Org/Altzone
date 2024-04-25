@@ -4,6 +4,6 @@ using UnityEngine;
 
 public static class DemoCharacterStatsStatic
 {
-    // unused, defence, attack, reistance, speed
-    public static float[] defaultCharacterStats = { 13f, 2f, 2f, 6f, 3f };
+    // defence, attack, reistance, speed
+    public static float[] defaultCharacterStats = { 2f, 2f, 6f, 3f };
 }

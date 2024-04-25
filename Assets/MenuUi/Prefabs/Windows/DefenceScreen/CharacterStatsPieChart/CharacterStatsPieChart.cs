@@ -8,7 +8,6 @@ public class CharacterStatsPieChart : MonoBehaviour
 
     // References for Unity
     public Image[] imagesPieChart;
-    //public float[] pieChartValues = DemoCharacterStatsStatic.defaultCharacterStats;
 
     // Start is called before the first frame update
     void Start()
