@@ -13,7 +13,7 @@ public class BallHandler : MonoBehaviour
     // Serialized Fields
     [SerializeField] private int _damage;
     [SerializeField] private GameObject _explotion;
-    [SerializeField] private Color[] _colors;
+    [SerializeField] private Sprite[] _sprites;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _hotFixMax;
 
@@ -152,19 +152,21 @@ public class BallHandler : MonoBehaviour
 
     private void SetVelocity(Vector3 velocity)
     {
-        if(velocity.magnitude > _hotFixMax)
+        if (velocity.magnitude > _hotFixMax)
         {
-             velocity = Vector3.ClampMagnitude(velocity, _hotFixMax);
+            velocity = Vector3.ClampMagnitude(velocity, _hotFixMax);
         }
-            _rb.velocity = velocity;
-         int colorIndex = Mathf.Clamp(
-            (int)Mathf.Floor(
-                _rb.velocity.magnitude / _maxSpeed * (_colors.Length - 1)
-                ),
-                0,
-            _colors.Length - 1
-        );
-        _sprite.color = _colors[colorIndex];
+
+        _rb.velocity = velocity;
+        int spriteIndex = Mathf.Clamp(
+           (int)Mathf.Floor(
+               _rb.velocity.magnitude / _maxSpeed * (_sprites.Length - 1)
+               ),
+               0,
+           _sprites.Length - 1
+       );
+
+        _sprite.sprite = _sprites[spriteIndex];
     }
 
     private Quaternion NewRotation(Vector2 direction)

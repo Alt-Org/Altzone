@@ -8,6 +8,8 @@ using Prg.Scripts.Common.PubSub;
 using System.Security.Cryptography;
 using System.Runtime.Versioning;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -58,7 +60,6 @@ namespace Battle.Scripts.Battle.Players
             public TrailSprite(GameObject gameObject, Vector3 position, Sprite sprite, int timer)
             {
                 GameObject = Instantiate(gameObject, position, Quaternion.identity);
-                Debug.Log(DEBUG_LOG_NAME + GameObject);
                 GameObject.SetActive(true);
                 GameObject.GetComponent<SpriteRenderer>().sprite = sprite;
                 Timer = timer;
@@ -224,10 +225,36 @@ namespace Battle.Scripts.Battle.Players
             // Check if the current timer value is a multiple of pointStep
             if (_timer % _pointStep == 0)
             {
-                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)], 50);
+                Sprite sprite;
+
+                // Set the chance of allowing a duplicate
+                bool allowDuplicate = UnityEngine.Random.Range(0, 5) == 0;
+
+                if (_trailSpritesAmount > 0 && allowDuplicate)
+                {
+                    Sprite lastSprite = _trailSprites[_trailSpritesAmount - 1].GameObject.GetComponent<SpriteRenderer>().sprite;
+
+                    if (_trailSpritesAmount > 1 && _trailSprites[_trailSpritesAmount - 2].GameObject.GetComponent<SpriteRenderer>().sprite == lastSprite)
+                    {
+                        // If the last two sprites are the same, use a new sprite
+                        sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
+                    }
+                    else
+                    {
+                        // Use the last sprite again
+                        sprite = lastSprite;
+                    }
+                }
+                else
+                {
+                    // Randomly choose a new sprite
+                    sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
+                }
+
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50);
 
                 // Check if the trail sprite list is already full
-                if (_trailSprites.Count == _trailSpritesAmount)
+                if (_trailSprites.Count <= _trailSpritesAmount)
                 {
                     _trailSprites.Add(newTrailSprite);
                 }
@@ -238,12 +265,21 @@ namespace Battle.Scripts.Battle.Players
                 }
 
                 _trailSpritesAmount++;
-            }
 
-            int offset = 0;
+                foreach (var trailSprite in _trailSprites)
+                {
+                        trailSprite.Timer--;
+                }
+            }
+        }
+
+        private void UpdateTrailLifespan()
+        {
+            Debug.Log("Updating Trail Lifespan ");
+            int i2 = 0;
             bool delete;
 
-            for(int i= 0; i < _trailSpritesAmount; i++)
+            for (int i = 0; i < _trailSpritesAmount; i++)
             {
                 // Check if the sprite's timer has expired
                 delete = _trailSprites[i].Timer <= 0;
@@ -252,23 +288,57 @@ namespace Battle.Scripts.Battle.Players
                 {
                     // If expired, destroy the sprite's game object
                     Destroy(_trailSprites[i].GameObject);
+                    _trailSprites[i] = null;
                 }
                 else
                 {
                     // If not expired, decrement the timer and shift the sprites position in the list if some were deleted earlier
                     _trailSprites[i].Timer--;
-                    _trailSprites[i - offset] = _trailSprites[i];
+                    _trailSprites[i2] = _trailSprites[i];
                 }
 
                 // Increment offset if a sprite was deleted
-                if (delete)
+                if (!delete)
                 {
-                    offset++;
+                    i2++;
                 }
             }
 
             // Adjust the count of trail sprites by the number of deleted sprites
-            _trailSpritesAmount -= offset;
+            _trailSpritesAmount = i2;
+
+#if false
+            string str = "TRAIL SPRITES LIST\n";
+
+            for (int debugI = 0; debugI < _trailSprites.Count; debugI++)
+            {
+                str += string.Format("{0:0000} ", debugI);
+                if (_trailSprites[debugI] != null)
+                {
+                    str += string.Format("sprite {0:00} {1:00000000}", _trailSprites[debugI].Timer, _trailSprites[debugI].GetHashCode());
+                }
+                else
+                {
+                    str += "null  00 ";
+                }
+
+                if (debugI == _trailSpritesAmount)
+                {
+                    str += " <- _trailSpritesAmount";
+                }
+                str += "\n";
+            }
+
+            Debug.Log(str);
+#endif
+        }
+
+        private void ClearPrediction()
+        {
+            for (int i = 0; i < _positionSprites.Count; i++)
+            {
+                _positionSprites[i].SetActive(false);
+            }
         }
 
         private void FixedUpdate()
@@ -284,13 +354,15 @@ namespace Battle.Scripts.Battle.Players
                 else
                 {
                     _timer = 0;
+                    ClearPrediction();
                 }
             }
-
-            for (int i = 0; i < _positionSprites.Count; i++)
+            else
             {
-                _positionSprites[i].SetActive(false);
-            }         
+                ClearPrediction();
+            }
+
+            UpdateTrailLifespan();
         }
 
         private Vector2 GetCurrentVelocity()

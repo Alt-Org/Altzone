@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5395052073425159758}
@@ -229,13 +229,12 @@ MonoBehaviour:
   _damage: 1
   _explotion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
     type: 3}
-  _colors:
-  - {r: 0, g: 0.3137255, b: 1, a: 1}
-  - {r: 0, g: 0.6666665, b: 1, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
-  - {r: 1, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0.5, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
+  _sprites:
+  - {fileID: 21300000, guid: f2b83a7b2c6a52841b77a42cc7d37037, type: 3}
+  - {fileID: 21300000, guid: 5f807db67ddeb034f8bc566b1c40d0f2, type: 3}
+  - {fileID: 21300000, guid: 12b57e5949bfa3d41a2876eb7b3eb60a, type: 3}
+  - {fileID: 21300000, guid: d9e284f3780d8be4fb672179ec2b4da8, type: 3}
+  - {fileID: 21300000, guid: 2f6386a31b226474582e55ec1938f506, type: 3}
   _maxSpeed: 18
   _hotFixMax: 0
 --- !u!114 &8473052537036719184
