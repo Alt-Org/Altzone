@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DebugUi.Scripts.BattleAnalyzer;
 using TMPro;
 using ExitGames.Client.Photon.StructWrapping;
+using System.Collections.Generic;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -23,41 +24,50 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private Scrollbar _verticalScrollbar;
 
         // Start is called before the first frame update
-        void Start()
-        {
-            for (int i = 0; i < 30; i++)
-            {
-                AddMessageToLog("This is a test message.", i, 0);
-                AddMessageToLog("This is a test message aswell", i, 1);
-                AddMessageToLog("This may be a test message aswell", i, 2);
-                AddMessageToLog("This might not be a test message", i, 3);
-            }
-            UpdateLogText();
-        }
+       void Start()
+{
+    // Create a list of messages
+    List<string> messages = new List<string>
+    {
+        "[PLAYER DRIVER PHOTON] (team: 1, pos: 1) Movement requested",
+        "[PLAYER DRIVER STATE] (team: 1, pos: 0) State (movement enabled: True, is waiting to move: False, player actor is busy: False)",
+        "[BALL HANDLER] Ball launched (position: (-2.58, 2.20), velocity: (-1.91, -4.62))"
+    };
 
-        // Add a message to the log box
-        public void AddMessageToLog(string message, int time, int client)
-        {
-            msgStorage.Add(new MsgObject(client, time, message, MessageType.Info));
-            UpdateContentBoxHeight();
-        }
+    // Shuffle the list of messages
+    Shuffle(messages);
 
-        // Update the height of the content box to match the total height of messages
-        private void UpdateContentBoxHeight()
-        {
-            float totalHeight = CalculateTotalHeightOfMessages();
-            _contentBoxRectTransform.sizeDelta = new Vector2(_contentBoxRectTransform.sizeDelta.x, totalHeight);
-        }
+    // Iterate over each message and add it to a random log box
+    for (int i = 0; i < 50; i++)
+    {
+        // Generate a random client index (log box index)
+        int clientIndex = UnityEngine.Random.Range(0, 4);
 
-        // Calculate the total height required to display all messages
-        private float CalculateTotalHeightOfMessages()
-        {
-            // Assuming each message has a fixed height (adjust as needed)
-            float messageHeight = 50f; // Adjust this value based on your UI design
-            int totalMessages = msgStorage.TotalMessages(); // Implement TotalMessages() method in MsgStorage class
+        // Add the message to the randomly selected log box
+        AddMessageToLog(messages[i % messages.Count], i, clientIndex);
+    }
 
-            return totalMessages * messageHeight;
-        }
+    // Update the log text to display all messages
+    UpdateLogText();
+}
+
+// Add a message to the log box
+public void AddMessageToLog(string message, int time, int client)
+{
+    msgStorage.Add(new MsgObject(client, time, message, MessageType.Info));
+}
+
+// Shuffle a list
+private void Shuffle<T>(List<T> list)
+{
+    for (int i = 0; i < list.Count; i++)
+    {
+        int randomIndex = UnityEngine.Random.Range(i, list.Count);
+        T temp = list[randomIndex];
+        list[randomIndex] = list[i];
+        list[i] = temp;
+    }
+}
 
         // Update the log text to display all messages
         private void UpdateLogText()
@@ -86,7 +96,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
             }
 
-            UpdateContentBoxHeight(); // Ensure the content box height is updated after adding messages
+           
         }
 
         // Get the corresponding log text box GameObject based on the index
