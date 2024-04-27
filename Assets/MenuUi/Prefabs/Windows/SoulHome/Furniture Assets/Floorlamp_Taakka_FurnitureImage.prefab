@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6191649460506416279}
   - component: {fileID: 9152013033603904840}
   m_Layer: 0
-  m_Name: Sohva_Taakka_FurnitureImage
+  m_Name: Floorlamp_Taakka_FurnitureImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 52.631, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8562042767461809804
 CanvasRenderer:
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
+  m_Sprite: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -134,6 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8925d8f3be8f3264a86078ed149df40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _furnitureObject: {fileID: 7560384329901659850, guid: e696ad26ec04e3944bb4bffd76155cae,
+  _furnitureObject: {fileID: 7560384329901659850, guid: 3f91368a7ccf0494ebfcc06aded8a7fa,
     type: 3}
   debugValue: 0

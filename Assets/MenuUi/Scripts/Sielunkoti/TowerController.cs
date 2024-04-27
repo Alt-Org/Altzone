@@ -33,6 +33,7 @@ namespace MenuUI.Scripts.SoulHome
         private RawImage _displayScreen;
         [SerializeField]
         private GameObject _rooms;
+        private float _furnitureSlotWidth = 2.5f;
 
         private List<GameObject> _changedFurnitureList = new();
 
@@ -568,9 +569,13 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+            bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position;
 
-                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) * -1 + _selectedFurniture.transform.localScale.x / (2*size.x), 0);
+            if(!isFurniturePlaceHolder)
+                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
+            else
+                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) * -1 + _selectedFurniture.transform.localScale.x / (2 * size.x), 0);
 
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;

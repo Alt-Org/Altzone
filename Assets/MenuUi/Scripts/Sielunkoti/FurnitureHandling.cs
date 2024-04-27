@@ -45,6 +45,8 @@ namespace MenuUI.Scripts.SoulHome
         private Vector2 _position = Vector2.zero;
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
+        [SerializeField]
+        private bool _isPlaceHolder = false;
 
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }
@@ -59,6 +61,7 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject TrayFurnitureObject { get => _trayFurnitureObject;}
         public string Name { get => _name;}
         public bool IsRotated { get => _isRotated;}
+        public bool IsPlaceHolder { get => _isPlaceHolder;}
 
         // Start is called before the first frame update
         void Start()
@@ -109,23 +112,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public Vector2Int GetFurnitureSize()
         {
-            if (Furniture.Size == FurnitureSize.OneXOne)
-            {
-                return new Vector2Int(1, 1);
-            }
-            else if (Furniture.Size == FurnitureSize.OneXTwo)
-            {
-                return new Vector2Int(2, 1);
-            }
-            else if (Furniture.Size == FurnitureSize.OneXFour)
-            {
-                return new Vector2Int(4, 1);
-            }
-            else
-            {
-                Debug.LogError("Error: Invalid furniture size");
-                return new Vector2Int(0, 0);
-            }
+            return Furniture.GetFurnitureSize();
         }
 
         public bool checkTopCollider(float hitY)
@@ -141,18 +128,23 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
+
+            FurnitureSize furnitureSize;
+            if (Furniture.IsRotated) furnitureSize = Furniture.RotatedSize;
+            else furnitureSize = Furniture.Size;
+
             float width;
-            if (_furniture.Size is FurnitureSize.OneXOne)
+            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne)
             {
                 if(_tempSlot != null)width = _tempSlot.width;
                 else width = transform.parent.GetComponent<FurnitureSlot>().width;
             }
-            else if (_furniture.Size is FurnitureSize.OneXTwo)
+            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo)
             {
                 if (_tempSlot != null) width = _tempSlot.width * 2;
                 else width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (_furniture.Size is FurnitureSize.OneXFour)
+            else if (furnitureSize is FurnitureSize.OneXFour)
             {
                 if (_tempSlot != null) width = _tempSlot.width * 4;
                 else width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
@@ -226,7 +218,7 @@ namespace MenuUI.Scripts.SoulHome
                 else if (_furnitureSpriteLeft != null || _spriteCanBeFlipped) _tempSpriteDirection = Direction.Left;
                 else if (_furnitureSpriteFront != null) _tempSpriteDirection = Direction.Front;
             }
-            else if (_spriteDirection == Direction.Back)
+            else if (_tempSpriteDirection == Direction.Back)
             {
                 if (_furnitureSpriteLeft != null || (_spriteCanBeFlipped && _furnitureSpriteRight != null)) _tempSpriteDirection = Direction.Left;
                 else if (_furnitureSpriteFront != null) _tempSpriteDirection = Direction.Front;

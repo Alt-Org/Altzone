@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7c2470a4a5672df4bb80e5250cf54825
+guid: d78e035099366ca4c8d375b0e53d2a42
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 512
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -162,13 +162,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_0
+      name: FurnitureFloorlampTaakka_0
       rect:
         serializedVersion: 2
-        x: 240
-        y: 165
-        width: 1024
-        height: 762
+        x: 0
+        y: 16
+        width: 512
+        height: 969
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,20 +176,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e604782efe6642447936cc66cdfbdde6
-      internalID: -1978675626
+      spriteID: 8518044c6b9ecc34685088cc0cca6f0c
+      internalID: 109053680
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_1
+      name: FurnitureFloorlampTaakka_1
       rect:
         serializedVersion: 2
-        x: 1527
-        y: 148
+        x: 512
+        y: 11
         width: 512
-        height: 684
+        height: 974
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,8 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 612b4cef9e0e9094695689f096c70177
-      internalID: 1816257808
+      spriteID: 7c64c0b4825826040a0995d38400bb89
+      internalID: -597134077
       vertices: []
       indices: 
       edges: []
@@ -214,8 +214,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      FurnitureSofaTaakka_0: -1978675626
-      FurnitureSofaTaakka_1: 1816257808
+      FurnitureFloorlampTaakka_0: 109053680
+      FurnitureFloorlampTaakka_1: -597134077
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
