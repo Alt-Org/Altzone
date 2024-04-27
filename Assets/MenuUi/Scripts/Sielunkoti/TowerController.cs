@@ -6,6 +6,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
+using UnityEngine.InputSystem;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -62,7 +63,12 @@ namespace MenuUI.Scripts.SoulHome
         private float inDelay = 0;
 
         public GameObject SelectedRoom { get => selectedRoom; private set => selectedRoom = value; }
-        public GameObject SelectedFurniture { get => _selectedFurniture; private set => _selectedFurniture = value; }
+        public GameObject SelectedFurniture { get => _selectedFurniture; private set
+            {
+                _selectedFurniture = value;
+                if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
+            }
+        }
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
 
@@ -70,11 +76,8 @@ namespace MenuUI.Scripts.SoulHome
         void Start()
         {
             Camera = GetComponent<Camera>();
-            cameraBounds = backgroundSprite.bounds;
-            cameraMinX = cameraBounds.min.x;
-            cameraMinY = cameraBounds.min.y;
-            cameraMaxX = cameraBounds.max.x;
-            cameraMaxY = cameraBounds.max.y;
+            SetCameraBounds();
+
             Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
@@ -95,7 +98,7 @@ namespace MenuUI.Scripts.SoulHome
             cameraWidth = Mathf.Abs(tr.x - bl.x);
             cameraHeight = Mathf.Abs(tr.y - bl.y);
 
-            scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+            scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
 
             Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
             Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
@@ -106,52 +109,9 @@ namespace MenuUI.Scripts.SoulHome
             EnhancedTouchSupport.Enable();
         }
             // Update is called once per frame
-            void Update()
+        void Update()
         {
-            /*if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
-            {
-                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                if (!selectedRoom) Camera.fieldOfView = 45;
-                else
-                {
-                    Camera.fieldOfView = 55;
-                    prevWideCameraFoV = 45;
-                }
-                rotated = true;
-
-                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-                float currentX = transform.position.x;
-                float currentY = transform.position.y;
-                float offsetX = Mathf.Abs(currentX - bl.x);
-                float offsetY = Mathf.Abs(currentY - bl.y);
-
-                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-                transform.position = new(x, y, transform.position.z);
-
-            }
-            else if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.Portrait && rotated)
-            {
-                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                if (!selectedRoom) Camera.fieldOfView = 90;
-                else
-                {
-                    Camera.fieldOfView = 60;
-                    prevWideCameraFoV = 90;
-                }
-                rotated = false;
-
-                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-                float currentX = transform.position.x;
-                float currentY = transform.position.y;
-                float offsetX = Mathf.Abs(currentX - bl.x);
-                float offsetY = Mathf.Abs(currentY - bl.y);
-
-                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-                transform.position = new(x, y, transform.position.z);
-
-            }*/
+            CheckScreenRotationStatus();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
             if (!CheckInteractableStatus()) return;
@@ -159,9 +119,9 @@ namespace MenuUI.Scripts.SoulHome
             Touch touch = new();
             if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
             if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0)) || Touch.activeFingers.Count == 1) && cameraMove)
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.isPressed) || Touch.activeFingers.Count == 1) && cameraMove)
             {
-                if (selectedRoom == null && _selectedFurniture == null)
+                if (selectedRoom == null && _tempSelectedFurniture == null)
                 {
                     Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
                     float currentY = transform.position.y;
@@ -189,7 +149,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     else
                     {
-                        float moveAmountY = Input.GetAxis("Mouse Y");
+                        float moveAmountY = Mouse.current.position.ReadValue().y - Mouse.current.position.ReadValueFromPreviousFrame().y;
                         targetY = currentY - moveAmountY * scrollSpeedMouse;
                         startScrollSlide = new Vector2(0, Mathf.Abs(moveAmountY * scrollSpeedMouse));
                         currentScrollSlide = startScrollSlide;
@@ -223,7 +183,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     transform.position = new(x, y, transform.position.z);
                 }
-                else if(_selectedFurniture == null)
+                else if(_tempSelectedFurniture == null)
                 {
                     Bounds roomCameraBounds = selectedRoom.GetComponent<BoxCollider2D>().bounds;
                     float roomCameraMinX = roomCameraBounds.min.x;
@@ -253,7 +213,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     else
                     {
-                        float moveAmountY = Input.GetAxis("Mouse X");
+                        float moveAmountY = Mouse.current.position.ReadValue().x - Mouse.current.position.ReadValueFromPreviousFrame().x;
                         targetX = currentX - moveAmountY * scrollSpeedMouse;
                         startScrollSlide = new Vector2(Mathf.Abs(moveAmountY) * scrollSpeedMouse, 0);
                         currentScrollSlide = startScrollSlide;
@@ -337,7 +297,7 @@ namespace MenuUI.Scripts.SoulHome
 
         void OnEnable()
         {
-            Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            if(Camera != null) Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
         }
 
         void OnDisable()
@@ -426,7 +386,7 @@ namespace MenuUI.Scripts.SoulHome
                                 _tempRoomHitStart = touch.screenPosition;
                             }
                             else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
-                            _tempRoomHitStart = Input.mousePosition;
+                            _tempRoomHitStart = Mouse.current.position.ReadValue();
                         }
                         else if (click is ClickState.Move or ClickState.Hold && tempSelectedRoom != null)
                         {
@@ -442,7 +402,7 @@ namespace MenuUI.Scripts.SoulHome
                                 _tempRoomHitEnd = touch.screenPosition;
                             }
                             else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
-                                _tempRoomHitEnd = Input.mousePosition;
+                                _tempRoomHitEnd = Mouse.current.position.ReadValue();
                             if (selectedRoom == null && tempSelectedRoom != null
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
                                 && _tempRoomHitStart.x > _tempRoomHitEnd.x - 3f && _tempRoomHitStart.x < _tempRoomHitEnd.x + 3f)
@@ -466,94 +426,54 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Input.GetMouseButton(0) || Input.GetMouseButtonUp(0))) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
                 if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
+                    if (_selectedFurniture == null) {
                         _tempSelectedFurniture = furnitureObject;
-                        _startFurnitureTime = Time.time;
+                        if (editingMode)
+                        {
+                            _selectedFurniture = _tempSelectedFurniture;
+                            _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                            if (!editingMode) ToggleEdit();
+                            _mainScreen.SetFurniture(_selectedFurniture);
+                        }
+                        else _startFurnitureTime = Time.time;
+                    }
+                    else if(furnitureObject != null && _selectedFurniture != furnitureObject)
+                    {
+                        DeselectFurniture();
+                        _tempSelectedFurniture = furnitureObject;
+                        _selectedFurniture = _tempSelectedFurniture;
+                        _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                        _mainScreen.SetFurniture(_selectedFurniture);
+                    }
+                    else if (_selectedFurniture == furnitureObject)
+                    {
+                        _tempSelectedFurniture = furnitureObject;
+                    }
                 }
                 else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
                 {
                     _selectedFurniture = _tempSelectedFurniture;
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                     if (!editingMode) ToggleEdit();
+                    _mainScreen.SetFurniture(_selectedFurniture);
                 }
-                else if (click is ClickState.Hold or ClickState.Move && _selectedFurniture != null)
+                else if (click is ClickState.Hold or ClickState.Move && _selectedFurniture != null && _tempSelectedFurniture != null)
                 {
-                    Vector2 checkPoint;
-                    FurnitureSize size = _selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size;
-                    if (size is FurnitureSize.OneXOne)
-                        checkPoint = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
-                    else if(size is FurnitureSize.OneXTwo)
-                        checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2)/2 * -1, (_selectedFurniture.transform.localScale.y / 2) * -1);
-                    else checkPoint = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
-
-                    //Debug.Log("HitPoint: "+ hitPoint);
-                    //Debug.Log("CheckPoint: " + checkPoint);
-
-                    Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
-                    RaycastHit2D[] hitArray;
-                    hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
-                    bool check = false;
-                    foreach (RaycastHit2D hit2 in hitArray)
-                    {
-                        if (hit2.collider.gameObject.CompareTag("Room"))
-                        {
-                            check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, true);
-                        }
-                    }
-
-                    if (!check)_selectedFurniture.transform.position = hitPoint + new Vector2(0,(_selectedFurniture.transform.localScale.y/2)*-1);
+                    PlaceFurniture(hitPoint, true);
                 }
                 else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _tempSelectedFurniture)
                 {
                     _tempSelectedFurniture = null;
-                    if (_selectedFurniture != null) {
-
-                        Vector2 checkPoint;
-                        FurnitureSize size = _selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size;
-                        if (size is FurnitureSize.OneXOne)
-                            checkPoint = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
-                        else if (size is FurnitureSize.OneXTwo)
-                            checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) / 2 * -1, (_selectedFurniture.transform.localScale.y / 2) * -1);
-                        else checkPoint = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
-
-                        Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
-                        RaycastHit2D[] hitArray;
-                        hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
-                        bool check = false;
-                        foreach (RaycastHit2D hit2 in hitArray)
-                        {
-                            if (hit2.collider.gameObject.CompareTag("Room"))
-                            {
-                                check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, false);
-                            }
-                        }
-
-                        //bool check = selectedRoom.GetComponent<RoomData>().HandleFurniturePosition(checkPoint, Camera, _selectedFurniture, false);
-
-                        if (check)
-                        {
-                            _changedFurnitureList.Add(_selectedFurniture);
-                            if(_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
-                        }
-                        else
-                        {
-                            if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
-                            {
-                                int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
-                                _rooms.transform.GetChild(id).GetChild(0).GetComponent<RoomData>().ResetPosition(_selectedFurniture, true);
-                            }
-                        }
-
-                        _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                        _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                        _selectedFurniture = null;
-                    }
+                    //if (_selectedFurniture != null) PlaceFurniture();
                 }
+
+                if(_selectedFurniture)_mainScreen.SetHoverButtons(Camera.WorldToViewportPoint(_selectedFurniture.transform.position));
 
             }
 
@@ -588,10 +508,10 @@ namespace MenuUI.Scripts.SoulHome
             cameraWidth = Mathf.Abs(tr.x - bl.x);
             cameraHeight = Mathf.Abs(tr.y - bl.y);
 
-            scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.width / cameraWidth;
+            scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.width / cameraWidth;
             Debug.Log(_mainScreen.transform.GetComponent<RectTransform>().rect.width + ": " + cameraWidth + ": " + scrollSpeed);
-
-            _mainScreen.EnableTray(true);
+            _mainScreen.LeaveRoomButton.SetActive(true);
+            //_mainScreen.EnableTray(true);
 
             //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
             //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.6f);
@@ -602,7 +522,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (selectedRoom != null && outDelay + 1f < Time.time)
             {
-                if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
+                //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
                 if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
@@ -620,14 +540,72 @@ namespace MenuUI.Scripts.SoulHome
                 cameraWidth = Mathf.Abs(tr.x - bl.x);
                 cameraHeight = Mathf.Abs(tr.y - bl.y);
 
-                scrollSpeed = _mainScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+                scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
                 Debug.Log(_mainScreen.transform.GetComponent<RectTransform>().rect.height + ": " + cameraWidth + ": " + scrollSpeed);
+                _mainScreen.LeaveRoomButton.SetActive(false);
 
-                _mainScreen.EnableTray(false);
+
+                float offsetY = Mathf.Abs(transform.position.y - bl.y);
+                float y = Mathf.Clamp(transform.position.y, cameraMinY + offsetY, cameraMaxY - offsetY);
+                float offsetX = Mathf.Abs(transform.position.x - bl.x);
+                float x = Mathf.Clamp(transform.position.x, cameraMinX + offsetX, cameraMaxX - offsetX);
+                transform.position = new(x, y, transform.position.z);
+                //_mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
                 //_displayScreen.GetComponent<RectTransform>().anchorMax = new(_displayScreen.GetComponent<RectTransform>().anchorMax.x, 0.8f);
                 //Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            }
+        }
+
+        public void PlaceFurnitureToCurrent(bool hover)
+        {
+            Vector2 hitPoint = Vector2.negativeInfinity;
+            PlaceFurniture(hitPoint, hover);
+        }
+
+        public void PlaceFurniture(Vector2 hitPoint, bool hover)
+        {
+            Vector2 checkPoint;
+            Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position;
+
+                checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) * -1 + _selectedFurniture.transform.localScale.x / (2*size.x), 0);
+
+            Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
+            RaycastHit2D[] hitArray;
+            hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
+            bool check = false;
+            foreach (RaycastHit2D hit2 in hitArray)
+            {
+                if (hit2.collider.gameObject.CompareTag("Room"))
+                {
+                    check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover);
+                }
+            }
+            if (hover)
+            {
+                if (!check) _selectedFurniture.transform.position = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
+            }
+            else
+            {
+                if (check)
+                {
+                    _changedFurnitureList.Add(_selectedFurniture);
+                    if (_mainScreen.TempSelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.TempSelectedFurnitureTray);
+                }
+                else
+                {
+                    if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                    {
+                        int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
+                        _rooms.transform.GetChild(id).GetChild(0).GetComponent<RoomData>().ResetPosition(_selectedFurniture, true);
+                    }
+                }
+
+                _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
+                _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                SelectedFurniture = null;
             }
         }
 
@@ -637,20 +615,22 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture.GetComponent<TrayFurniture>().Furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
-            _selectedFurniture = furnitureObject;
+            _tempSelectedFurniture = furnitureObject;
+            _selectedFurniture = _tempSelectedFurniture;
             _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
         }
 
         public void RemoveFurniture()
         {
             if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
-                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size, _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
+                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
             else if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
-                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Size, _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot);
+                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot);
             _selectedFurniture.SetActive(false);
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
-            ChangedFurnitureList.Add(_selectedFurniture);
-            _selectedFurniture = null;
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
+            else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
+            SelectedFurniture = null;
         }
 
 
@@ -659,10 +639,14 @@ namespace MenuUI.Scripts.SoulHome
             _tempSelectedFurniture = null;
             if (_selectedFurniture != null)
             {
-                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(SelectedFurniture, true);
-                _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                _selectedFurniture = null;
+                if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) RemoveFurniture();
+                else
+                {
+                    _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(SelectedFurniture, true);
+                    _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    SelectedFurniture = null;
+                }
             }
         }
 
@@ -673,12 +657,10 @@ namespace MenuUI.Scripts.SoulHome
                 if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
                 {
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
-                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(
-                        furniture.GetComponent<FurnitureHandling>().Furniture.Size,
-                        furniture.GetComponent<FurnitureHandling>().TempSlot
-                    );
+                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
+                furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }
             foreach (GameObject furniture in ChangedFurnitureList)
             {
@@ -688,11 +670,7 @@ namespace MenuUI.Scripts.SoulHome
                     continue;
                 }
                 int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
-                _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(
-                    furniture.GetComponent<FurnitureHandling>().Furniture.Size,
-                    furniture.GetComponent<FurnitureHandling>().Slot,
-                    furniture.GetComponent<FurnitureHandling>().Furniture
-                );
+                _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(furniture, false);
                 furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
                 furniture.GetComponent<FurnitureHandling>().SetScale();
@@ -705,12 +683,14 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             ChangedFurnitureList.Clear();
+            SelectedFurniture = null;
         }
 
         public void SaveChanges()
         {
             foreach (GameObject furniture in ChangedFurnitureList)
             {
+                furniture.GetComponent<FurnitureHandling>().SaveDirection();
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
@@ -730,12 +710,66 @@ namespace MenuUI.Scripts.SoulHome
                 _mainScreen.EnableTray(true);
                 _soulHomeController.EditModeTrayHandle(true);
             }
-            else if (!editingMode && selectedRoom == null)
+            else if (!editingMode)
             {
+                DeselectFurniture();
                 _mainScreen.EnableTray(false);
                 _soulHomeController.EditModeTrayHandle(false);
             }
             if(!editingMode) ResetChanges();
+        }
+
+        public void RotateFurniture()
+        {
+            _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
+            PlaceFurnitureToCurrent(true);
+        }
+
+        private void CheckScreenRotationStatus()
+        {
+            if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
+            {
+                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                if (!selectedRoom) Camera.fieldOfView = 45;
+                else
+                {
+                    Camera.fieldOfView = 55;
+                    prevWideCameraFoV = 45;
+                }
+                rotated = true;
+
+                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                float currentX = transform.position.x;
+                float currentY = transform.position.y;
+                float offsetX = Mathf.Abs(currentX - bl.x);
+                float offsetY = Mathf.Abs(currentY - bl.y);
+
+                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
+                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
+                transform.position = new(x, y, transform.position.z);
+
+            }
+            else if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.Portrait && rotated)
+            {
+                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                if (!selectedRoom) Camera.fieldOfView = 90;
+                else
+                {
+                    Camera.fieldOfView = 60;
+                    prevWideCameraFoV = 90;
+                }
+                rotated = false;
+
+                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                float currentX = transform.position.x;
+                float currentY = transform.position.y;
+                float offsetX = Mathf.Abs(currentX - bl.x);
+                float offsetY = Mathf.Abs(currentY - bl.y);
+
+                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
+                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
+                transform.position = new(x, y, transform.position.z);
+            }
         }
 
         private bool CheckInteractableStatus()
@@ -744,6 +778,15 @@ namespace MenuUI.Scripts.SoulHome
             if (_soulHomeController.ConfirmPopupOpen) return false;
 
             return true;
+        }
+
+        public void SetCameraBounds()
+        {
+            cameraBounds = backgroundSprite.bounds;
+            cameraMinX = cameraBounds.min.x;
+            cameraMinY = cameraBounds.min.y;
+            cameraMaxX = cameraBounds.max.x;
+            cameraMaxY = cameraBounds.max.y;
         }
     }
 }

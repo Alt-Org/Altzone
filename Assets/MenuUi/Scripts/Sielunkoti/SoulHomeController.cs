@@ -93,6 +93,7 @@ namespace MenuUI.Scripts.SoulHome
             _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrue);
             if (confirm)
             {
+                _soulHomeTower.DeselectFurniture();
                 _mainScreen.ResetChanges();
                 _exitPending=false;
                 _confirmPopup.SetActive(false);
@@ -155,6 +156,7 @@ namespace MenuUI.Scripts.SoulHome
             _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrue);
             if (confirm)
             {
+                _soulHomeTower.DeselectFurniture();
                 _mainScreen.ResetChanges();
                 _confirmPopupOpen = false;
                 _confirmPopup.SetActive(false);

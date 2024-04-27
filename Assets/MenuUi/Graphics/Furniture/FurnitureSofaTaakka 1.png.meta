@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7c2470a4a5672df4bb80e5250cf54825
+guid: 20ebf6a695d6aba40b2de35cf2b547cf
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -46,9 +46,9 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 7
-  spritePivot: {x: 0.5, y: 0}
-  spritePixelsToUnits: 512
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 646
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -162,13 +162,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_0
+      name: FurnitureSofaTaakka 1_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 646
-        height: 505
+        width: 1292
+        height: 972
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,20 +176,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 77ada7289bc945046800dd11a094ca10
-      internalID: -1734539114
+      spriteID: f597c866f08985f44a5828089d578503
+      internalID: 380423857
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_1
+      name: FurnitureSofaTaakka 1_4
       rect:
         serializedVersion: 2
-        x: 658
+        x: 1316
         y: 0
-        width: 366
-        height: 505
+        width: 732
+        height: 1012
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,8 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0f25ff461bc97d44acc37440f9c744c
-      internalID: 512552605
+      spriteID: 7e4f9d90351022f49ba2c7f41182e485
+      internalID: 659304364
       vertices: []
       indices: 
       edges: []
@@ -214,8 +214,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      FurnitureSofaTaakka_0: -1734539114
-      FurnitureSofaTaakka_1: 512552605
+      FurnitureSofaTaakka 1_0: -1431895134
+      FurnitureSofaTaakka 1_1: 1114723656
+      FurnitureSofaTaakka 1_2: 140324596
+      FurnitureSofaTaakka 1_3: 380423857
+      FurnitureSofaTaakka 1_4: 659304364
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

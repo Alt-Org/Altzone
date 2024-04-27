@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine;
 using Input = UnityEngine.Input;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using UnityEngine.UIElements;
 
 namespace Prg.Scripts.Common
 {
@@ -25,19 +26,19 @@ namespace Prg.Scripts.Common
             if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
 
 
-            if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonDown(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
+            if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.wasPressedThisFrame) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
             {
                 return ClickState.Start;
             }
-            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButtonUp(0)) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
+            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.wasReleasedThisFrame) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))))
             {
                 return ClickState.End;
             }
-            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0) && (!Input.GetAxis("Mouse X").Equals(0) || !Input.GetAxis("Mouse Y").Equals(0))) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)))
+            else if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.isPressed && !Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)))
             {
                 return ClickState.Move;
             }
-            else if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Input.GetMouseButton(0) && Input.GetAxis("Mouse X").Equals(0) && Input.GetAxis("Mouse Y").Equals(0)) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
+            else if ((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.isPressed && Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
             {
                 return ClickState.Hold;
             }
