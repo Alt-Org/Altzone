@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Prefabs.Windows.DefenceScreen;
 
 public class DemoUpdateCharacterStats : MonoBehaviour
 {
+
     public Image CharacterArtWork;
-    public bool Favourite = false;
 
     public int DiamondSpeedAmount = 100;
     public int DiamondResistanceAmount = 100;
     public int DiamondAttackAmount = 100;
     public int DiamondDefenceAmount = 100;
+    public int DiamondHPAmount = 100;
 
     public int SpeedCostAmount = 11;
     public int ResistanceCostAmount = 9;
     public int AttackCostAmount = 7;
     public int DefenceCostAmount = 5;
+    public int HPCostAmount = 5;
     
     public TextMeshProUGUI CharacterName;
 
@@ -26,24 +28,30 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     public TextMeshProUGUI ResistanceNumber;
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
+    public TextMeshProUGUI HPNumber;
 
     public TextMeshProUGUI DiamondSpeedAmountNumber;
     public TextMeshProUGUI DiamondResistanceAmountNumber;
     public TextMeshProUGUI DiamondAttackAmountNumber;
     public TextMeshProUGUI DiamondDefenceAmountNumber;
+    public TextMeshProUGUI DiamondHPAmountNumber;
 
     public TextMeshProUGUI SpeedCostAmountNumber;
     public TextMeshProUGUI ResistanceCostAmountNumber;
     public TextMeshProUGUI AttackCostAmountNumber;
     public TextMeshProUGUI DefenceCostAmountNumber;
+    public TextMeshProUGUI HPCostAmountNumber;
 
 
-    CustomCharacter _customCharacter = new CustomCharacter("id", "classId", "unityKey", "namenamename", 3, 2, 5, 7);
+
+    DemoCharacterWindowCharacter _demoCharacterWindowCharacter = new DemoCharacterWindowCharacter("namenamename", false, 7, 3, 1, 4, 1);
 
 
     // Start is called before the first frame update
     void Start()
     {
+        
+        
         SetCharacterStats();
 
     }
@@ -61,8 +69,9 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         {
             DiamondSpeedAmount -= SpeedCostAmount;
             DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-            _customCharacter.Speed += 1;
-            SpeedNumber.text = _customCharacter.Speed.ToString();
+            _demoCharacterWindowCharacter.CharacterSpeed += 1;
+            SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+            UpdatePieChart();
         }
     }
 
@@ -72,8 +81,9 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         {
             DiamondResistanceAmount -= ResistanceCostAmount;
             DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-            _customCharacter.Resistance += 1;
-            ResistanceNumber.text = _customCharacter.Resistance.ToString();
+            _demoCharacterWindowCharacter.CharacterResistance += 1;
+            ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+            UpdatePieChart();
         }
     }
     public void UpgradeCharacterAttack()
@@ -82,8 +92,9 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         {
             DiamondAttackAmount -= AttackCostAmount;
             DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-            _customCharacter.Attack += 1;
-            AttackNumber.text = _customCharacter.Attack.ToString();
+            _demoCharacterWindowCharacter.CharacterAttack += 1;
+            AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+            UpdatePieChart();
         }
     }
     public void UpgradeCharacterDefence()
@@ -92,50 +103,77 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         {
             DiamondDefenceAmount -= DefenceCostAmount;
             DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-            _customCharacter.Defence += 1;
-            DefenceNumber.text = _customCharacter.Defence.ToString();
+            _demoCharacterWindowCharacter.CharacterDefence += 1;
+            DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+            UpdatePieChart();
+        }
+    }
+    public void UpgradeCharacterHP()
+    {
+        if (DiamondHPAmount >= HPCostAmount)
+        {
+            DiamondHPAmount -= HPCostAmount;
+            DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
+            _demoCharacterWindowCharacter.CharacterHP += 1;
+            HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+            UpdatePieChart();
         }
     }
 
     // degrade
     public void DegradeCharacterSpeed()
     {
-        if (_customCharacter.Speed > 0)
+        if (_demoCharacterWindowCharacter.CharacterSpeed > 0)
         {
             DiamondSpeedAmount += SpeedCostAmount;
             DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-            _customCharacter.Speed -= 1;
-            SpeedNumber.text = _customCharacter.Speed.ToString();
+            _demoCharacterWindowCharacter.CharacterSpeed -= 1;
+            SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+            UpdatePieChart();
         }
     }
     public void DegradeCharacterResistance()
     {
-        if (_customCharacter.Resistance > 0)
+        if (_demoCharacterWindowCharacter.CharacterResistance > 0)
         {
             DiamondResistanceAmount += ResistanceCostAmount;
             DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-            _customCharacter.Resistance -= 1;
-            ResistanceNumber.text = _customCharacter.Resistance.ToString();
+            _demoCharacterWindowCharacter.CharacterResistance -= 1;
+            ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+            UpdatePieChart();
         }
     }
     public void DegradeCharacterAttack()
     {
-        if (_customCharacter.Attack > 0)
+        if (_demoCharacterWindowCharacter.CharacterAttack > 0)
         {
             DiamondAttackAmount += AttackCostAmount;
             DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-            _customCharacter.Attack -= 1;
-            AttackNumber.text = _customCharacter.Attack.ToString();
+            _demoCharacterWindowCharacter.CharacterAttack -= 1;
+            AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+            UpdatePieChart();
         }
     }
     public void DegradeCharacterDefence()
     {
-        if (_customCharacter.Defence > 0)
+        if (_demoCharacterWindowCharacter.CharacterDefence > 0)
         {
             DiamondDefenceAmount += DefenceCostAmount;
             DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-            _customCharacter.Defence -= 1;
-            DefenceNumber.text = _customCharacter.Defence.ToString();
+            _demoCharacterWindowCharacter.CharacterDefence -= 1;
+            DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+            UpdatePieChart();
+        }
+    }
+    public void DegradeCharacterHP()
+    {
+        if (_demoCharacterWindowCharacter.CharacterHP > 0)
+        {
+            DiamondHPAmount += HPCostAmount;
+            DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
+            _demoCharacterWindowCharacter.CharacterHP -= 1;
+            HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+            UpdatePieChart();
         }
     }
 
@@ -144,22 +182,41 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     // set at start
     public void SetCharacterStats()
     {
-        CharacterName.text = _customCharacter.Name;
+        CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
 
-        SpeedNumber.text = _customCharacter.Speed.ToString();
-        ResistanceNumber.text = _customCharacter.Resistance.ToString();
-        AttackNumber.text = _customCharacter.Attack.ToString();
-        DefenceNumber.text = _customCharacter.Defence.ToString();
+        SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+        ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+        AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+        DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+        HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
         DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
         DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
         DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
         DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
+        DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
 
         SpeedCostAmountNumber.text = SpeedCostAmount.ToString();
         ResistanceCostAmountNumber.text = ResistanceCostAmount.ToString();
         AttackCostAmountNumber.text = AttackCostAmount.ToString();
         DefenceCostAmountNumber.text = DefenceCostAmount.ToString();
+        HPCostAmountNumber.text = HPCostAmount.ToString();
+
+        UpdatePieChart();
+    }
+
+
+    // update pie chart
+    public void UpdatePieChart()
+    {
+        FindObjectOfType<CharacterStatsPieChart>().SetPieChartValues(CharacterStatsIntValuesToFloatValues(_demoCharacterWindowCharacter.CharacterSpeed, _demoCharacterWindowCharacter.CharacterResistance, _demoCharacterWindowCharacter.CharacterAttack, _demoCharacterWindowCharacter.CharacterDefence, _demoCharacterWindowCharacter.CharacterHP));
+    }
+
+    public float[] CharacterStatsIntValuesToFloatValues(int characterSpeed, int characterResistance, int characterAttack, int characterDefence, int characterHP)
+    {
+        // stat pie chart works with the stats being in reverse order, atleast for now 
+        float[] characterStatsFloatValues = {characterHP, characterDefence, characterAttack, characterResistance, characterSpeed};
+        return characterStatsFloatValues;
     }
 
 }

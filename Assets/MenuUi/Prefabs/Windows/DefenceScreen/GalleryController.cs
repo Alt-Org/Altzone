@@ -14,8 +14,11 @@ public class GalleryController : MonoBehaviour
         {
             Transform content = transform.Find("Content");
             Instantiate(character,content);
-            character.AddComponent<CharacterGalleryIntComponent>().SetSelectedCharacterGalleryInt(selectedCharacter);
-            selectedCharacter++;
+            if (character.GetComponent("CharacterGalleryIntComponent") == null)
+            {
+                character.AddComponent<CharacterGalleryIntComponent>().SetSelectedCharacterGalleryInt(selectedCharacter);
+                selectedCharacter++;
+            }
         }
 
     }

@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 0}
+  _naviTarget: {fileID: 11400000, guid: d47e6ecceba2f8a46a80909ef0ecdc0e, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!1 &4301691527557924626
 GameObject:
@@ -687,6 +687,7 @@ GameObject:
   - component: {fileID: 3621133491206790111}
   - component: {fileID: 4790515850742499931}
   - component: {fileID: 6462432142557349034}
+  - component: {fileID: 8306052876789778123}
   m_Layer: 5
   m_Name: Egotism_GalleryPanel
   m_TagString: Untagged
@@ -796,6 +797,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8306052876789778123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6712706073602126356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c21af70d5855641a03c1464accef63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedCharacter: 0
 --- !u!1 &8025888501778664568
 GameObject:
   m_ObjectHideFlags: 0
