@@ -44,7 +44,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
 
 
 
-    DemoCharacterWindowCharacter _demoCharacterWindowCharacter = new DemoCharacterWindowCharacter("namenamename", false, 7, 3, 1, 4, 1);
+    DemoCharacterWindowCharacter _demoCharacterWindowCharacter = new DemoCharacterWindowCharacter("Albert Älypää", false, 7, 3, 1, 4, 1);
 
 
     // Start is called before the first frame update
