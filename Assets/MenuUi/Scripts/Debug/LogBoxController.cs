@@ -23,6 +23,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Reference to the vertical scrollbar (if applicable)
         [SerializeField] private Scrollbar _verticalScrollbar;
 
+        // Reference to the panel opener
+        [SerializeField] private MessagePanel _messagePanel;
+
         // Start is called before the first frame update
        void Start()
 {
@@ -76,7 +79,7 @@ private void Shuffle<T>(List<T> list)
             for (int i = 0; i < 4; i++)
             {
                 // Get the corresponding log text box GameObject
-                GameObject logTextBox = GetLogTextBox(i + 1); // Implement GetLogTextBox method
+                GameObject logTextBox = GetLogTextBox(i + 1);
 
                 // Check if the logTextBox is not null
                 if (logTextBox != null)
@@ -87,7 +90,7 @@ private void Shuffle<T>(List<T> list)
                         // Instantiate a new log message GameObject for each message
                         GameObject logMsgBox = Instantiate(_logTextObject, logTextBox.transform.GetChild(0).GetChild(0));
                         string logText = $"[{msg.Client}:{msg.Time}] {msg.Msg}\n"; // Message format
-                        logMsgBox.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = logText;
+                        logMsgBox.GetComponent<LogBoxMessageHandler>().SetMessage(msg);
                     }
                 }
                 else
@@ -95,8 +98,12 @@ private void Shuffle<T>(List<T> list)
                     Debug.LogError($"Log text box {_logTextBox1.name} not found.");
                 }
             }
+        }
 
-           
+        internal void MessageDeliver(IReadOnlyMsgObject msgObject)
+        {
+            string logText = $"[{msgObject.Client}:{msgObject.Time}] {msgObject.Msg}\n";
+            _messagePanel.SetMessage(logText);
         }
 
         // Get the corresponding log text box GameObject based on the index
