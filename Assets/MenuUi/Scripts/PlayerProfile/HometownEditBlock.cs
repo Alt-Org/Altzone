@@ -6,15 +6,18 @@ using UnityEngine.UIElements;
 public class HometownEditBlock : MonoBehaviour
 {
     public GameObject popUp;
+    bool switcher = false;
     public void onClick()
     {
-        popUp.SetActive(true);
-       // Wait();
-       // popUp.SetActive(false);
+        if (switcher == false)
+        {
+            popUp.SetActive(true);
+            switcher = true;
+        }
+        else
+        {
+            popUp.SetActive(false);
+            switcher = false;
+        }
     }
-
-   // IEnumerator Wait()
-  //  {
-   //     yield return new WaitForSeconds(5);
- //   }
 }
