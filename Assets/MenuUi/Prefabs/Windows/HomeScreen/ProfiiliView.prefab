@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 8458954590406715741}
   - component: {fileID: 3343753209106345995}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: Wins/loses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1073,7 +1073,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000049591064}
+  m_AnchoredPosition: {x: 0, y: -0.00005531311}
   m_SizeDelta: {x: 0, y: 28}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1786809095595800878
@@ -2124,6 +2124,7 @@ GameObject:
   - component: {fileID: 8348690936397961292}
   - component: {fileID: 1082962956754531016}
   - component: {fileID: 8347261019365852576}
+  - component: {fileID: 7973739693538527160}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -2211,6 +2212,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUp: {fileID: 940856292678808322}
+--- !u!114 &7973739693538527160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4290643510949373525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cbb9e6463352fe4ab4b5708d860bf0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loggedOutPlayerText: usrnm
+  loggedOutTimeText: Pelitunnit
+  loggedOutLosesWinsText: "Voitot/H\xE4vi\xF6t"
+  loggedOutCarbonText: "Hiilijalanj\xE4lki"
+  _playerNameText: {fileID: 5215165325137679624}
+  _TimePlayedText: {fileID: 6461296434776696389}
+  _LosesWinsText: {fileID: 1188025404754386890}
+  _CarbonText: {fileID: 6354010782697853409}
 --- !u!1 &4519945795544350911
 GameObject:
   m_ObjectHideFlags: 0
@@ -3080,7 +3101,7 @@ GameObject:
   - component: {fileID: 2599893541813745617}
   - component: {fileID: 8762628561534531071}
   m_Layer: 5
-  m_Name: Panel (2)
+  m_Name: CarbonFootprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3509,7 +3530,7 @@ GameObject:
   - component: {fileID: 4815004592173942960}
   - component: {fileID: 6925475181003092302}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
