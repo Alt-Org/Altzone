@@ -131,7 +131,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 51.15
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -273,7 +273,7 @@ MonoBehaviour:
   _playerClanText: {fileID: 6418099758862454539}
   _playerClanDescription: {fileID: 5725124495499325070}
   _signInNaviButton: {fileID: 0}
-  _profileNaviButton: {fileID: 0}
+  _profileNaviButton: {fileID: 1443405801679372250}
   _clanButtonGameObject: {fileID: 5612480394231691680}
 --- !u!1 &2433838883323833841
 GameObject:
@@ -464,7 +464,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 65
+  m_fontSize: 51.15
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -814,7 +814,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
+  m_fontSize: 42.6
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1066,6 +1066,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6e804f96689e85448d077574f239813, type: 3}
+--- !u!114 &1443405801679372250 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 585435966170332290, guid: a6e804f96689e85448d077574f239813,
+    type: 3}
+  m_PrefabInstance: {fileID: 2024336168300561240}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4194234042122992658 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2748051908392435530, guid: a6e804f96689e85448d077574f239813,
