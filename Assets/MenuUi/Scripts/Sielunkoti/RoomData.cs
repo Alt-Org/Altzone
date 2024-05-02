@@ -7,6 +7,12 @@ using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
+    public enum RectPosition
+    {
+        Center,
+        Top,
+        Bottom
+    }
     public class RoomData : MonoBehaviour
     {
         [SerializeField]
@@ -19,6 +25,8 @@ namespace MenuUI.Scripts.SoulHome
         private float _slotColumns = 8;
         [SerializeField]
         private float _slotMaxGrowthPercentage = 20;
+        [SerializeField]
+        private RectPosition _floorAnchorPosition = RectPosition.Top;
         [SerializeField]
         private GameObject _furnitureSlotPrefab;
 
@@ -42,7 +50,10 @@ namespace MenuUI.Scripts.SoulHome
             for(int i = 0; i < _slotRows; i++)
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, points.transform);
-                furnitureRow.transform.localPosition = new Vector3(0, (_floorDepth / 2) + -1*(_floorDepth/_slotRows * (0.5f + i)), 0);
+                if(_floorAnchorPosition is RectPosition.Center)
+                    furnitureRow.transform.localPosition = new Vector3(0, (_floorDepth / 2) + -1*(_floorDepth/_slotRows * (0.5f + i)), 0);
+                else if(_floorAnchorPosition is RectPosition.Top)
+                    furnitureRow.transform.localPosition = new Vector3(0, -1 * (_floorDepth / _slotRows * (0.5f + i)), 0);
                 furnitureRow.name = (1+i).ToString();
                 col = 0;
                 for (int j = 0; j < _slotColumns; j++)
