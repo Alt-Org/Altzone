@@ -67,12 +67,12 @@ namespace Battle.Scripts.Battle.Players
 
         // Projectile simulation variables
         private int _trailSpritesAmount;
-        private Vector2 currentPosition;
-        private Vector2 currentVelocity;
-        private GridPos gridPosition;
-        private Vector3 worldPosition;
-        private Vector3 pointPosition;
-        private Vector3 pointVelocity;
+        private Vector2 _currentPosition;
+        private Vector2 _currentVelocity;
+        private GridPos _gridPosition;
+        private Vector3 _worldPosition;
+        private Vector3 _pointPosition;
+        private Vector3 _pointVelocity;
 
         private class TrailSprite
         {
@@ -126,11 +126,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void ProjectilePredictionUpdate()
         {
-            gridPosition = null;
-            currentVelocity = GetCurrentVelocity();
-            currentPosition = GetCurrentPosition();
-            gridPosition = _gridManager.WorldPointToGridPosition(_rb.position);
-            worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
+            _gridPosition = null;
+            _currentVelocity = GetCurrentVelocity();
+            _currentPosition = GetCurrentPosition();
+            _gridPosition = _gridManager.WorldPointToGridPosition(_rb.position);
+            _worldPosition = _gridManager.GridPositionToWorldPoint(_gridPosition);
 
             float distance = _maxDistance;
             int reflections = 0;
@@ -138,7 +138,7 @@ namespace Battle.Scripts.Battle.Players
 
             while (distance > 0 && reflections < _maxReflections)
             {
-                RaycastHit2D hit = Physics2D.Raycast(currentPosition, currentVelocity.normalized, distance, _collisionLayer);
+                RaycastHit2D hit = Physics2D.Raycast(_currentPosition, _currentVelocity.normalized, distance, _collisionLayer);
                 Debug.Log(DEBUG_LOG_NAME + "reflections " + reflections);
                 Debug.Log(DEBUG_LOG_NAME + "distance " + distance);
 
@@ -154,30 +154,30 @@ namespace Battle.Scripts.Battle.Players
                 }
                 else
                 {
-                    worldPosition = currentPosition + currentVelocity.normalized * distance;
-                    pointPosition = currentPosition;
-                    pointVelocity = currentVelocity;
+                    _worldPosition = _currentPosition + _currentVelocity.normalized * distance;
+                    _pointPosition = _currentPosition;
+                    _pointVelocity = _currentVelocity;
                     distance = 0;
                 }
 
-                Debug.DrawLine(worldPosition, pointPosition, Color.red);
+                Debug.DrawLine(_worldPosition, _pointPosition, Color.red);
 
-                float pointDistance = (worldPosition - pointPosition).magnitude;
+                float pointDistance = (_worldPosition - _pointPosition).magnitude;
 
-                pointVelocity /= 50;
+                _pointVelocity /= 50;
 
-                int positionCount = (int)Mathf.Floor(pointDistance / pointVelocity.magnitude / _pointStep);
+                int positionCount = (int)Mathf.Floor(pointDistance / _pointVelocity.magnitude / _pointStep);
 
                 Debug.Log(DEBUG_LOG_NAME + "positionCount " + positionCount);
 
                 for (int i = 0; i < positionCount; i++)
                 {
                     // Calculate the next point position based on velocity and step and add to the list of positions
-                    pointPosition += pointVelocity * _pointStep;
-                    positions.Add(pointPosition);
+                    _pointPosition += _pointVelocity * _pointStep;
+                    positions.Add(_pointPosition);
                 }
 
-                positions.Add(worldPosition);
+                positions.Add(_worldPosition);
             }
 
             Debug.Log(DEBUG_LOG_NAME + positions.Count);
@@ -190,23 +190,23 @@ namespace Battle.Scripts.Battle.Players
         private void UpdatePositionAndVelocity(RaycastHit2D hit)
         {
             // Calculate the reflection
-            Vector2 reflectionDirection = Vector2.Reflect(currentVelocity.normalized, hit.normal);
+            Vector2 reflectionDirection = Vector2.Reflect(_currentVelocity.normalized, hit.normal);
             Debug.DrawLine(hit.point, hit.point + reflectionDirection, Color.blue);
 
             UpdateGridAndWorldPosition(hit.point);
 
-            pointPosition = currentPosition;
-            pointVelocity = currentVelocity;
+            _pointPosition = _currentPosition;
+            _pointVelocity = _currentVelocity;
 
             // Update currentPosition for next raycast
-            currentPosition = (Vector2)worldPosition + reflectionDirection.normalized * 0.1f;
-            currentVelocity = reflectionDirection * currentVelocity.magnitude;
+            _currentPosition = (Vector2)_worldPosition + reflectionDirection.normalized * 0.1f;
+            _currentVelocity = reflectionDirection * _currentVelocity.magnitude;
         }
 
         private void UpdateGridAndWorldPosition(Vector2 hitPosition)
         {
-            gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
-            worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
+            _gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
+            _worldPosition = _gridManager.GridPositionToWorldPoint(_gridPosition);
         }
 
         private void UpdatePredictionSprites(List<Vector3> positions)
