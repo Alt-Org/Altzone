@@ -173,7 +173,7 @@ public class BallHandler : MonoBehaviour
         _sprite.sprite = _sprites[spriteIndex];
     }
 
-    private void SetSparkle()
+    private void ChangeSparkleScale()
     {
         if (_sparkleSprite != null)
         {
@@ -198,9 +198,10 @@ public class BallHandler : MonoBehaviour
         {
             _sparkleSprite.SetActive(true);
             timeSinceLastUpdate += Time.fixedDeltaTime;
+
             if (timeSinceLastUpdate >= sparkleUpdateInterval)
             {
-                SetSparkle();
+                ChangeSparkleScale();
                 timeSinceLastUpdate = 0f;
             }
         }
