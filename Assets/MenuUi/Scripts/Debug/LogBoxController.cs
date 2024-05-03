@@ -30,6 +30,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
        void Start()
 {
     // Create a list of messages
+    /*
     List<string> messages = new List<string>
     {
         "[PLAYER DRIVER PHOTON] (team: 1, pos: 1) Movement requested",
@@ -39,6 +40,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     // Shuffle the list of messages
     Shuffle(messages);
+    */
 
     // Iterate over each message and add it to a random log box
     for (int i = 0; i < 50; i++)
@@ -47,7 +49,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
         int clientIndex = UnityEngine.Random.Range(0, 4);
 
         // Add the message to the randomly selected log box
-        AddMessageToLog(messages[i % messages.Count], i, clientIndex);
+        AddMessageToLog("Info message", i, clientIndex, MessageType.Info);
+        AddMessageToLog("Warning message", i, clientIndex, MessageType.Warning);
+        AddMessageToLog("Error message", i, clientIndex, MessageType.Error);
     }
 
     // Update the log text to display all messages
@@ -55,9 +59,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
 }
 
 // Add a message to the log box
-public void AddMessageToLog(string message, int time, int client)
+public void AddMessageToLog(string message, int time, int client, MessageType messageType)
 {
-    msgStorage.Add(new MsgObject(client, time, message, MessageType.Info));
+    msgStorage.Add(new MsgObject(client, time, message, messageType));
 }
 
 // Shuffle a list
@@ -85,7 +89,9 @@ private void Shuffle<T>(List<T> list)
                 if (logTextBox != null)
                 {
                     // Get all messages for the current log box index
-                    foreach (var msg in msgStorage.AllMsgs(i))
+                    var messages = msgStorage.AllMsgs(i);
+                    var filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
+                    foreach (var msg in filteredMessages)
                     {
                         // Instantiate a new log message GameObject for each message
                         GameObject logMsgBox = Instantiate(_logTextObject, logTextBox.transform.GetChild(0).GetChild(0));
