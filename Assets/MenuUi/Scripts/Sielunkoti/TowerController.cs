@@ -70,6 +70,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
             }
         }
+        public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
 
@@ -597,7 +598,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (check)
                 {
                     _changedFurnitureList.Add(_selectedFurniture);
-                    if (_mainScreen.TempSelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.TempSelectedFurnitureTray);
+                    if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
                 }
                 else
                 {
@@ -611,6 +612,7 @@ namespace MenuUI.Scripts.SoulHome
                 _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                 _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
                 SelectedFurniture = null;
+                _mainScreen.DeselectTrayFurniture();
             }
         }
 
@@ -627,17 +629,27 @@ namespace MenuUI.Scripts.SoulHome
 
         public void RemoveFurniture()
         {
-            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
-                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
+                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
             else if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                 _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot);
             _selectedFurniture.SetActive(false);
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
             else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
+            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
+            {
+                Destroy(_selectedFurniture);
+                SelectedFurniture = null;
+                return;
+            }
             SelectedFurniture = null;
         }
 
+        public void UnfocusFurniture()
+        {
+            _tempSelectedFurniture = null;
+        }
 
         public void DeselectFurniture()
         {

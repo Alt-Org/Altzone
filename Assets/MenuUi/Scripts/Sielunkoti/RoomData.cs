@@ -140,6 +140,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             Transform points = transform.Find("FurniturePoints");
             if (!hover) {
+                Debug.Log("Set:"+row + ":" + column);
                 Vector2Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
 
                 int startRow;
@@ -218,6 +219,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         public void FreeFurnitureSlots(FurnitureHandling furniture, FurnitureSlot slot)
         {
+            Debug.Log("Free:"+slot.row+":"+slot.column);
             Transform points = transform.Find("FurniturePoints");
             Vector2Int furnitureSize = furniture.GetFurnitureSize();
 
@@ -230,9 +232,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 int startRow;
                 int endColumn;
-
-                if (furnitureSize.x == 0 || furniture != null) return;
-
+                if (furnitureSize.x == 0 || furniture == null) return;
                 startRow = prevRow - (furnitureSize.y - 1);
                 endColumn = prevColumn + (furnitureSize.x - 1);
 
