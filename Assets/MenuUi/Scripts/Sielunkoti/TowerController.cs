@@ -570,7 +570,7 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
-            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position;
+            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, -1 * _selectedFurniture.transform.localPosition.y);
 
             if(!isFurniturePlaceHolder)
                 checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
