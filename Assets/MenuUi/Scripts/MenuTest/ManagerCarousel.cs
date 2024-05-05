@@ -22,7 +22,9 @@ public class ManagerCarousel : MonoBehaviour
     [SerializeField]
     private List<GameObject> mySlide = new List<GameObject>();
 
-
+    // Set the starting slide for the carousel
+    [SerializeField]
+    private int startingSlide = 0; // Index for the starting slide
 
     private int currentSlide = 0; // Index of the current slide
     private bool isSliding; // Flag to prevent multiple slides at the same time
@@ -38,6 +40,8 @@ public class ManagerCarousel : MonoBehaviour
     private void Start()
     {
         SetUpScrollBar(); // Set up the relative positions of each slide in the scrollbar
+        currentSlide = startingSlide; // Ensure currentSlide is the same as starting slide at the beginning
+        CheckSlide();
     }
 
 
