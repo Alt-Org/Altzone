@@ -1,11 +1,14 @@
 using System;
-using System.Collections;
-using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Game;
+
+using UnityEngine;
+
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
+
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.PubSub;
+
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -49,15 +52,6 @@ namespace Battle.Scripts.Battle.Players
         // } Public Properties and Fields
 
         #region Public Methods
-
-        public void SetCharacterPose(int poseIndex)
-        {
-            if (!IsNetworkSynchronize)
-            {
-                return;
-            }
-            _photonView.RPC(nameof(SetPlayerCharacterPoseRpc), RpcTarget.All, poseIndex);
-        }
 
         public void MoveTo(Vector2 targetPosition)
         {
@@ -212,12 +206,6 @@ namespace Battle.Scripts.Battle.Players
         {
             _peerCount += 1;
             _playerManager.UpdatePeerCount();
-        }
-
-        [PunRPC]
-        private void SetPlayerCharacterPoseRpc(int poseIndex)
-        {
-            _playerActor.SetShieldPose(poseIndex);
         }
 
         [PunRPC]

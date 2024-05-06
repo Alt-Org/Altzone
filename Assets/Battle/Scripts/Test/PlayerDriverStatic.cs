@@ -1,13 +1,16 @@
 
 using System;
+
+using Unity.Collections;
+using UnityEngine;
 using Random = UnityEngine.Random;
+
 using Altzone.Scripts.Config;
+using Prg.Scripts.Common.PubSub;
+
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
-using Unity.Collections;
-using UnityEngine;
-using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Test
 {
@@ -60,11 +63,6 @@ namespace Battle.Scripts.Test
             _playerActor.SetRotation(angle);
         }
 
-        public void SetCharacterPose(int poseIndex)
-        {
-            throw new NotImplementedException("only PlayerDriverPhoton can do this");
-        }
-
         #endregion Public Methods
 
         // Config
@@ -96,7 +94,7 @@ namespace Battle.Scripts.Test
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
 
             // subscribe to messages
-            this.Subscribe<BallSlinged>(OnBallslinged);
+            this.Subscribe<BallSlinged>(OnBallSlinged);
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
@@ -123,7 +121,7 @@ namespace Battle.Scripts.Test
             }
 
             // this doesn't do anything
-            // at some point there probably was code afer this that should only execute when _settings._isLocal is true
+            // at some point there probably was code after this that should only execute when _settings._isLocal is true
             // it's probably good idea to know why this is here before removing it
             if (!_settings._isLocal)
             {
@@ -138,10 +136,9 @@ namespace Battle.Scripts.Test
             PickRandomPosition();
         }
 
-        private void OnBallslinged(BallSlinged data)
+        private void OnBallSlinged(BallSlinged data)
         {
             PickRandomPosition();
-
         }
 
         #endregion Message Listeners
@@ -149,7 +146,6 @@ namespace Battle.Scripts.Test
         private void PickRandomPosition()
         {
             OnMoveTo(_gridManager.GridPositionToWorldPoint(new GridPos(5, Random.Range(1, 25))));
-
         }
 
         private void OnMoveTo(Vector2 targetPosition)
