@@ -162,6 +162,8 @@ public class BallHandler : MonoBehaviour
         }
 
         _rb.velocity = velocity;
+
+        // Calculate the index of the sprite to use based on the magnitude of the rigidbodys velocity
         int spriteIndex = Mathf.Clamp(
            (int)Mathf.Floor(
                _rb.velocity.magnitude / _maxSpeed * (_sprites.Length - 1)
@@ -180,6 +182,8 @@ public class BallHandler : MonoBehaviour
             SpriteRenderer spriteRenderer = _sparkleSprite.GetComponent<SpriteRenderer>();
             spriteRenderer.transform.position = _sprite.transform.position;
             float randomScale = UnityEngine.Random.Range(8, 12);
+
+            // Set the scale of the sprite renderer with the random scale value
             spriteRenderer.transform.localScale = new Vector3(randomScale, randomScale, 1);
         }
     }
@@ -199,6 +203,7 @@ public class BallHandler : MonoBehaviour
             _sparkleSprite.SetActive(true);
             timeSinceLastUpdate += Time.fixedDeltaTime;
 
+            // Check if enough time has passed since the last sparkle update
             if (timeSinceLastUpdate >= sparkleUpdateInterval)
             {
                 ChangeSparkleScale();
