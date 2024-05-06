@@ -85,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer
                 || (Application.platform == RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow)
-                || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
             else if (AppPlatform.IsEditor
                 || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
                 || !Application.isMobilePlatform) Camera.fieldOfView = 45;
@@ -492,7 +492,7 @@ namespace MenuUI.Scripts.SoulHome
             _soulHomeController.SetRoomName(selectedRoom);
             prevWideCameraPos = Camera.transform.position;
             prevWideCameraFoV = Camera.fieldOfView;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10f, -27.5f);
+            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 12.5f, -27.5f);
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator)
             {
                 if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 60;
@@ -527,11 +527,11 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
-                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
                 else if (Screen.orientation == ScreenOrientation.LandscapeLeft
                     || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
                     || AppPlatform.IsEditor) Camera.fieldOfView = 45;
-                else Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 72.5f;
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
                 inDelay = Time.time;
