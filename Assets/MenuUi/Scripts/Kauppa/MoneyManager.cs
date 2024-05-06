@@ -8,6 +8,8 @@ public class MoneyManager : MonoBehaviour
     public int moneyAmountToAdd;
     public int moneyAmountToReduce;
 
+
+    //alkurahan m‰‰r‰
     private int currentMoney = 0;
 
     private void Start()
@@ -15,12 +17,14 @@ public class MoneyManager : MonoBehaviour
         UpdateMoneyText();
     }
 
+    //lis‰‰ rahaa kun painaa nappia
     public void AddMoney()
     {
         currentMoney += moneyAmountToAdd;
         UpdateMoneyText();
     }
 
+    //v‰hent‰‰ rahaa kun painaa nappia
     public void ReduceMoney()
     {
         int newMoney = currentMoney - moneyAmountToReduce;
@@ -31,6 +35,7 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
+    //P‰ivitt‰‰ teksti‰ jossa lukee rahan m‰‰r‰
     private void UpdateMoneyText()
     {
         moneyText.text = "" + currentMoney.ToString();
