@@ -65,6 +65,7 @@ public void AddMessageToLog(string message, int time, int client, MessageType me
 }
 
 // Shuffle a list
+/*
 private void Shuffle<T>(List<T> list)
 {
     for (int i = 0; i < list.Count; i++)
@@ -75,7 +76,7 @@ private void Shuffle<T>(List<T> list)
         list[i] = temp;
     }
 }
-
+*/
         // Update the log text to display all messages
         private void UpdateLogText()
         {
