@@ -207,13 +207,13 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (!hover)
             {
-                if (furniture.GetComponent<FurnitureHandling>().Slot == null)
+                /*if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                ResetPosition(furniture, true);
+                else if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
                     Destroy(furniture);
                     return false;
-                }
-                /*else if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
-                ResetPosition(furniture, true);*/
+                }*/
             }
             return false;
         }
