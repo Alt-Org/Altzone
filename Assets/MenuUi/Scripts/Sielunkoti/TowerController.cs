@@ -70,6 +70,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
             }
         }
+        public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
 
@@ -84,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer
                 || (Application.platform == RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow)
-                || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
             else if (AppPlatform.IsEditor
                 || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
                 || !Application.isMobilePlatform) Camera.fieldOfView = 45;
@@ -491,7 +492,7 @@ namespace MenuUI.Scripts.SoulHome
             _soulHomeController.SetRoomName(selectedRoom);
             prevWideCameraPos = Camera.transform.position;
             prevWideCameraFoV = Camera.fieldOfView;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 10f, -27.5f);
+            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 12.5f, -27.5f);
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator)
             {
                 if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 60;
@@ -526,11 +527,11 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
-                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
                 else if (Screen.orientation == ScreenOrientation.LandscapeLeft
                     || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
                     || AppPlatform.IsEditor) Camera.fieldOfView = 45;
-                else Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 72.5f;
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
                 inDelay = Time.time;
@@ -570,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
-            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position;
+            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, -1 * _selectedFurniture.transform.localPosition.y);
 
             if(!isFurniturePlaceHolder)
                 checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
@@ -597,7 +598,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (check)
                 {
                     _changedFurnitureList.Add(_selectedFurniture);
-                    if (_mainScreen.TempSelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.TempSelectedFurnitureTray);
+                    if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
                 }
                 else
                 {
@@ -611,6 +612,7 @@ namespace MenuUI.Scripts.SoulHome
                 _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                 _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
                 SelectedFurniture = null;
+                _mainScreen.DeselectTrayFurniture();
             }
         }
 
@@ -627,17 +629,27 @@ namespace MenuUI.Scripts.SoulHome
 
         public void RemoveFurniture()
         {
-            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
-                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
+                _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
             else if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                 _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot);
             _selectedFurniture.SetActive(false);
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
             else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
+            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
+            {
+                Destroy(_selectedFurniture);
+                SelectedFurniture = null;
+                return;
+            }
             SelectedFurniture = null;
         }
 
+        public void UnfocusFurniture()
+        {
+            _tempSelectedFurniture = null;
+        }
 
         public void DeselectFurniture()
         {

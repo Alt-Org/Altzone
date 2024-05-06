@@ -6,6 +6,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 {
 
     #region Enum and Interfaces
+  
     public enum MessageType
     {
         None = 0,
@@ -64,7 +65,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Id = -1;
             Time = time;
             Msg = msg;
-            Type = type == MessageType.None ? MessageType.Info : type;
+            Type = type;
         }
 
         internal void SetId(int id)
@@ -105,7 +106,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             foreach (IReadOnlyMsgObject msgObject in list)
             {
-                if (wantedTypes.HasFlag(msgObject.Type))
+                if (wantedTypes.HasFlag((MessageTypeOptions)msgObject.Type))
                 {
                     newList.Add(msgObject);
                 }

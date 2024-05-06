@@ -149,7 +149,7 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 else
                 {
-                    GameObject floor = roompositions[i].transform.GetChild(0).Find("Floor").gameObject;
+                    /*GameObject floor = roompositions[i].transform.GetChild(0).Find("Room").Find("Floor").gameObject;
                     floor.GetComponent<SpriteRenderer>().color = room.Floor;
                     foreach (SpriteRenderer floorPiece in floor.transform.GetComponentsInChildren<SpriteRenderer>())
                     {
@@ -163,7 +163,7 @@ namespace MenuUI.Scripts.SoulHome {
                     newColour.b *= 0.8f;
 
                     roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
-                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
+                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
                 }
                 roompositions[i].transform.GetChild(0).GetComponent<RoomData>().InitializeRoom();
                 i++;

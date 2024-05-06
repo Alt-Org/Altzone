@@ -52,26 +52,26 @@ MonoBehaviour:
     m_Bits: 1
   _maxDistance: 10
   _maxReflections: 2
-  _time: 120
+  _time: 155
   _spriteList:
-  - {fileID: -754395100, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 1862148157, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 846423048, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -295898640, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 893161567, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 1295338323, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 1693647816, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -502210468, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -1012859351, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -872869765, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -2031163409, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 220274630, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 1712604575, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 1899533695, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 78202034, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -622115819, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: 399470130, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
-  - {fileID: -1840594478, guid: 4d6f983f754896c41a037acd1f5dfba0, type: 3}
+  - {fileID: -1768241685, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -1762745533, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -1735640998, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -638163497, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: 1377255581, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -1880960291, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: 1266699413, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -47677157, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -821703820, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -198848923, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -827646331, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -1547845869, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: 1302097167, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -303124116, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: 1440348232, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -1950458695, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: -680745233, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
+  - {fileID: 890272964, guid: d085e22e285da4b4d8f6a4f33a5b14a9, type: 3}
   _pointStep: 5
 --- !u!120 &8129724258873738911
 LineRenderer:
@@ -204,7 +204,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 624632885844220919}
@@ -249,7 +249,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 9
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

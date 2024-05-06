@@ -7,6 +7,7 @@ using UnityConstants;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using System;
 
 public class BallHandler : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class BallHandler : MonoBehaviour
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _hotFixMax;
+    [SerializeField] private float sparkleUpdateInterval;
+    [SerializeField] private float timeSinceLastUpdate;
+    [SerializeField] private GameObject _sparkleSprite;
 
     #region Public Methods
 
@@ -169,12 +173,42 @@ public class BallHandler : MonoBehaviour
         _sprite.sprite = _sprites[spriteIndex];
     }
 
+    private void ChangeSparkleScale()
+    {
+        if (_sparkleSprite != null)
+        {
+            SpriteRenderer spriteRenderer = _sparkleSprite.GetComponent<SpriteRenderer>();
+            spriteRenderer.transform.position = _sprite.transform.position;
+            float randomScale = UnityEngine.Random.Range(8, 12);
+            spriteRenderer.transform.localScale = new Vector3(randomScale, randomScale, 1);
+        }
+    }
+
     private Quaternion NewRotation(Vector2 direction)
     {
         var angle = Vector2.SignedAngle(direction, Vector2.up);
         var multiplier = Mathf.Round(angle / _angleLimit);
         var newAngle = -multiplier * _angleLimit;
         return Quaternion.Euler(0, 0, newAngle);
+    }
+
+    private void FixedUpdate()
+    {
+        if (_rb.velocity != Vector2.zero)
+        {
+            _sparkleSprite.SetActive(true);
+            timeSinceLastUpdate += Time.fixedDeltaTime;
+
+            if (timeSinceLastUpdate >= sparkleUpdateInterval)
+            {
+                ChangeSparkleScale();
+                timeSinceLastUpdate = 0f;
+            }
+        }
+        else
+        {
+            _sparkleSprite.SetActive(false);
+        }
     }
 }
 

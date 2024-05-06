@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using DebugUi.Scripts.BattleAnalyzer;
 using UnityEngine;
 using TMPro;
+using DebugUi.Scripts.BattleAnalyzer;
 
 public class LogBoxMessageHandler : MonoBehaviour
 {
@@ -28,5 +26,22 @@ public class LogBoxMessageHandler : MonoBehaviour
         _msgObject = msgObject;
         string logText = $"[{msgObject.Client}:{msgObject.Time}] {msgObject.Msg}\n";
         _textField.text = logText;
+
+        // Set text color based on message type
+        switch (msgObject.Type)
+        {
+            case MessageType.Info:
+                _textField.color = Color.white;
+                break;
+            case MessageType.Warning:
+                _textField.color = Color.yellow;
+                break;
+            case MessageType.Error:
+                _textField.color = Color.red;
+                break;
+            default:
+                _textField.color = Color.gray; // Default color
+                break;
+        }
     }
 }

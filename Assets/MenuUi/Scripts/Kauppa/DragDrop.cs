@@ -5,30 +5,26 @@ using UnityEngine.EventSystems;
 
 
 
-public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class DragDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private Canvas canvas;
-    private RectTransform rectTransform;
+    Transform parentAfterDrag;
 
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("OnBeginDrag");
+        parentAfterDrag = transform.parent;
+        transform.SetParent(transform.root);
+        transform.SetAsLastSibling();
     }
     public void OnDrag(PointerEventData eventData)
     {
         Debug.Log("OnDrag");
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        transform.position = Input.mousePosition;
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("OnEndDrag");
-    }
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        Debug.Log("OnPointerDown");
+        transform.SetParent(parentAfterDrag);
     }
 }

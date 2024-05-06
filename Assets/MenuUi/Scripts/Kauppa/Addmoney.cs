@@ -20,37 +20,37 @@ public class Addmoney : MonoBehaviour
         money.text = moneyAmount.ToString();
     }
 
-    // Method for adding 10 coins
-    public void Add10Coins()
+    // Method for adding 100 coins
+    public void Add100Coins()
     {
-        AddCoins(10);
+        AddCoins(100);
     }
 
-    // Method for adding 20 coins
-    public void Add20Coins()
+    // Method for adding 200 coins
+    public void Add200Coins()
     {
-        AddCoins(20);
+        AddCoins(200);
     }
 
-    // Method for adding 30 coins
-    public void Add30Coins()
+    // Method for adding 300 coins
+    public void Add300Coins()
     {
-        AddCoins(30);
+        AddCoins(300);
     }
-    // Method for adding 40 coins
-    public void Add40Coins()
+    // Method for adding 500 coins
+    public void Add500Coins()
     {
-        AddCoins(40);
+        AddCoins(500);
     }
-    // Method for adding 50 coins
-    public void Add50Coins()
+    // Method for adding 1000 coins
+    public void Add1000Coins()
     {
-        AddCoins(50);
+        AddCoins(1000);
     }
-    // Method for adding 60 coins
-    public void Add60Coins()
+    // Method for adding 2000 coins
+    public void Add2000Coins()
     {
-        AddCoins(60);
+        AddCoins(2000);
     }
 
     // Method for adding a custom amount of coins
