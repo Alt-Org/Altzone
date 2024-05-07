@@ -5,6 +5,9 @@ namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerClassDesensitization : MonoBehaviour, IPlayerClass
     {
+        // Serialized fields
+        [SerializeField] private int _maxCollisions;
+
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
@@ -19,6 +22,8 @@ namespace Battle.Scripts.Battle.Players
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
         }
+
+        private int collisionCount;
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENCE] ";
