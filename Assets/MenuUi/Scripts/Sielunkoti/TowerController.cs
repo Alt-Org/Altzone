@@ -571,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 checkPoint;
             Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             bool isFurniturePlaceHolder = _selectedFurniture.GetComponent<FurnitureHandling>().IsPlaceHolder;
-            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, -1 * _selectedFurniture.transform.localPosition.y);
+            if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             if(!isFurniturePlaceHolder)
                 checkPoint = hitPoint + new Vector2((_selectedFurniture.transform.localScale.x / 2) + ((_selectedFurniture.transform.localScale.x *size.x)/2)*-1, 0);
@@ -607,11 +607,19 @@ namespace MenuUI.Scripts.SoulHome
                         int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                         _rooms.transform.GetChild(id).GetChild(0).GetComponent<RoomData>().ResetPosition(_selectedFurniture, true);
                     }
+                    else if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
+                    {
+                        _changedFurnitureList.Remove(_selectedFurniture);
+                        Destroy(_selectedFurniture);
+                        _mainScreen.RevealTrayItem();
+                        SelectedFurniture = null;
+                    }
                 }
-
-                _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
-                _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                SelectedFurniture = null;
+                if (_selectedFurniture != null) {
+                    _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
+                    _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
+                    SelectedFurniture = null;
+                }
                 _mainScreen.DeselectTrayFurniture();
             }
         }
@@ -654,6 +662,7 @@ namespace MenuUI.Scripts.SoulHome
         public void DeselectFurniture()
         {
             _tempSelectedFurniture = null;
+            _mainScreen.DeselectTrayFurniture();
             if (_selectedFurniture != null)
             {
                 if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) RemoveFurniture();

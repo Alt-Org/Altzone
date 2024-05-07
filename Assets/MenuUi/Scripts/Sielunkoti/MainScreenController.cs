@@ -125,12 +125,12 @@ namespace MenuUI.Scripts.SoulHome
             foreach (RaycastHit2D hit1 in hit)
             {
                 if (hit1.collider.gameObject.CompareTag("Overlay")) overlayHit = true;
-                else if (!hit1.collider.gameObject.CompareTag("SoulHomeScreen"))
+                /*else if (!hit1.collider.gameObject.CompareTag("SoulHomeScreen"))
                 {
                     if (click is ClickState.Start) {
                         if(_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                     }
-                }
+                }*/
             }
             bool trayHit = false;
             if (!overlayHit)
@@ -148,6 +148,7 @@ namespace MenuUI.Scripts.SoulHome
                             {
                                 _selectedFurnitureTray = _tempSelectedFurnitureTray;
                                 _tempSelectedFurnitureTray = null;
+                                //if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                             }
                             if (_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
                             if (_soulHomeTower.SelectedFurniture == null)
@@ -204,7 +205,13 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (_soulHomeTower.SelectedFurniture != null)
                         {
-                            if (_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
+                            if (click is ClickState.Start)
+                            {
+                                _soulHomeTower.DeselectFurniture();
+                                RevealTrayItem();
+
+                            }
+                            else if (_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
                             {
                                 _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = false;
                                 _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = false;
@@ -392,9 +399,9 @@ namespace MenuUI.Scripts.SoulHome
             if (_selectedFurnitureTray != null && !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
             {
                 Destroy(_selectedFurnitureTray);
-                _selectedFurnitureTray = null;
                 _tempSelectedFurnitureTray = null;
             }
+            _selectedFurnitureTray = null;
         }
         public bool CheckAndRevealTrayItem(GameObject trayFurniture)
         {
