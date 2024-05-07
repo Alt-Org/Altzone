@@ -14,6 +14,7 @@ namespace MenuUI.Scripts.SoulHome
         private FurnitureTrayRefrence _furnitureRefrence;
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();
+        private GameObject _hiddenSlot = null;
         // Start is called before the first frame update
         void Awake()
         {
@@ -42,12 +43,14 @@ namespace MenuUI.Scripts.SoulHome
         public void AddFurniture(Furniture furniture)
         {
             if (furniture == null) return;
-
+            Debug.LogWarning("Check");
             GameObject furnitureObject = CheckChangeList(furniture);
 
             if (furnitureObject != null)
             {
                 furnitureObject.SetActive(true);
+                if (!furnitureObject.transform.GetChild(1).GetComponent<Image>().enabled) furnitureObject.transform.GetChild(1).GetComponent<Image>().enabled = true;
+                furnitureObject.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _changedTrayItemList.Remove(furnitureObject);
             }
             else
@@ -68,6 +71,7 @@ namespace MenuUI.Scripts.SoulHome
             if (furniture == null) return;
 
             int trayFurnitureAmount = _trayContent.transform.childCount;
+            Debug.LogWarning("TrayContent: "+ trayFurnitureAmount);
 
             for (int i = 0; i < trayFurnitureAmount; i++)
             {
@@ -83,6 +87,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         itemToRemove.SetActive(false);
                         _changedTrayItemList.Add(itemToRemove);
+                        _hiddenSlot = null;
                     }
                     break;
                 }
@@ -97,7 +102,7 @@ namespace MenuUI.Scripts.SoulHome
 
             for (int i = 0; i < trayFurnitureAmount; i++)
             {
-                if (_trayContent.transform.GetChild(i).GetChild(1).gameObject == trayFurniture)
+                if (Object.ReferenceEquals(_trayContent.transform.GetChild(i).GetChild(1).gameObject, trayFurniture))
                 {
                     GameObject itemToRemove = _trayContent.transform.GetChild(i).gameObject;
                     if (CheckChangeList(itemToRemove))
@@ -109,10 +114,39 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         itemToRemove.SetActive(false);
                         _changedTrayItemList.Add(itemToRemove);
+                        _hiddenSlot = null;
                     }
                     break;
                 }
             }
+        }
+
+        public void HideFurnitureSlot(GameObject trayFurniture)
+        {
+            if (!trayFurniture.transform.parent.CompareTag("FurnitureTrayItem")) return;
+            _hiddenSlot = trayFurniture.transform.parent.gameObject;
+            _hiddenSlot.SetActive(false);
+        }
+
+        public void RevealFurnitureSlot()
+        {
+            if (_hiddenSlot != null)
+            {
+                _hiddenSlot.SetActive(true);
+                if (!_hiddenSlot.transform.GetChild(1).GetComponent<Image>().enabled) _hiddenSlot.transform.GetChild(1).GetComponent<Image>().enabled = true;
+                _hiddenSlot.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
+        }
+
+        public bool CheckAndRevealHiddenSlot(GameObject trayFurniture)
+        {
+            if(_hiddenSlot == null) return false;
+            if (Object.ReferenceEquals(_hiddenSlot.transform.GetChild(1).GetComponent<TrayFurniture>().Furniture, trayFurniture.GetComponent<TrayFurniture>().Furniture))
+            {
+                RevealFurnitureSlot();
+                return true;
+            }
+            return false;
         }
 
         public bool CheckChangeList(GameObject item)
@@ -120,7 +154,7 @@ namespace MenuUI.Scripts.SoulHome
             int amount = _changedTrayItemList.Count;
             for(int i = 0;i < amount; i++)
             {
-                if(_changedTrayItemList[i] == item) return true;
+                if(Object.ReferenceEquals(_changedTrayItemList[i].transform.GetChild(1).gameObject, item)) return true;
             }
             return false;
         }
@@ -131,7 +165,7 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log("amount: "+ amount);
             for (int i = 0; i < amount; i++)
             {
-                if (_changedTrayItemList[i].transform.GetChild(1).GetComponent<TrayFurniture>().Furniture == furniture) return _changedTrayItemList[i];
+                if (Object.ReferenceEquals(_changedTrayItemList[i].transform.GetChild(1).GetComponent<TrayFurniture>().Furniture, furniture)) return _changedTrayItemList[i];
             }
             return null;
         }

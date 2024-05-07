@@ -7,6 +7,12 @@ using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
+    public enum RectPosition
+    {
+        Center,
+        Top,
+        Bottom
+    }
     public class RoomData : MonoBehaviour
     {
         [SerializeField]
@@ -20,11 +26,15 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private float _slotMaxGrowthPercentage = 20;
         [SerializeField]
+        private RectPosition _floorAnchorPosition = RectPosition.Top;
+        [SerializeField]
         private GameObject _furnitureSlotPrefab;
 
         private Room _roomInfo;
 
         public Room RoomInfo { get => _roomInfo; set => _roomInfo = value; }
+        public float SlotRows { get => _slotRows;}
+        public float SlotColumns { get => _slotColumns;}
 
         void Start()
         {
@@ -40,7 +50,10 @@ namespace MenuUI.Scripts.SoulHome
             for(int i = 0; i < _slotRows; i++)
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, points.transform);
-                furnitureRow.transform.localPosition = new Vector3(0, (_floorDepth / 2) + -1*(_floorDepth/_slotRows * (0.5f + i)), 0);
+                if(_floorAnchorPosition is RectPosition.Center)
+                    furnitureRow.transform.localPosition = new Vector3(0, (_floorDepth / 2) + -1*(_floorDepth/_slotRows * (0.5f + i)), 0);
+                else if(_floorAnchorPosition is RectPosition.Top)
+                    furnitureRow.transform.localPosition = new Vector3(0, -1 * (_floorDepth / _slotRows * (0.5f + i)), 0);
                 furnitureRow.name = (1+i).ToString();
                 col = 0;
                 for (int j = 0; j < _slotColumns; j++)
@@ -67,19 +80,25 @@ namespace MenuUI.Scripts.SoulHome
             {
                 int furnitureRow = furniture.Position.y;
                 int furnitureColumn = furniture.Position.x;
-                bool check = CheckFurniturePosition(furnitureRow, furnitureColumn, furniture.Size, furniture);
-                if (check) SetFurniture(furnitureRow, furnitureColumn, furniture.Size, furniture);
+                bool check = CheckFurniturePosition(furnitureRow, furnitureColumn, furniture);
+                if (check) SetFurniture(furnitureRow, furnitureColumn, furniture);
             }
         }
-        private bool CheckFurniturePosition(int row, int column, FurnitureSize size, Furniture furniture)
+        private bool CheckFurniturePosition(int row, int column, Furniture furniture)
         {
             Transform points = transform.Find("FurniturePoints");
-            Vector2Int furnitureSize = CheckFurnitureSize(size);
+
+            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+
+            int startRow;
+            int endColumn;
 
             if (furnitureSize.x == 0) return false;
 
-            int startRow = row - (furnitureSize.y - 1);
-            int endColumn = column + (furnitureSize.x - 1);
+            startRow = row - (furnitureSize.y - 1);
+            endColumn = column + (furnitureSize.x - 1);
+
+            if(startRow < 0 || endColumn >= _slotColumns) return false;
 
             for (int i = startRow; i <= row; i++)
             {
@@ -91,10 +110,10 @@ namespace MenuUI.Scripts.SoulHome
             }
             return true;
         }
-        private void SetFurniture(int row, int column, FurnitureSize size, Furniture furniture)
+        private void SetFurniture(int row, int column, Furniture furniture)
         {
             Transform points = transform.Find("FurniturePoints");
-            Vector2Int furnitureSize = CheckFurnitureSize(size);
+            Vector2Int furnitureSize = furniture.GetFurnitureSize();
 
             if (furnitureSize.x == 0) return;
 
@@ -117,16 +136,20 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<FurnitureHandling>().SetScale(row, points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>());
             furnitureObject.GetComponent<FurnitureHandling>().ResetFurniturePosition();
         }
-        public void MoveFurniture(int row, int column, FurnitureSize size, GameObject furniture, bool hover)
+        public void MoveFurniture(int row, int column, GameObject furniture, bool hover)
         {
             Transform points = transform.Find("FurniturePoints");
             if (!hover) {
-                Vector2Int furnitureSize = CheckFurnitureSize(size);
+                Debug.Log("Set:"+row + ":" + column);
+                Vector2Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+
+                int startRow;
+                int endColumn;
 
                 if (furnitureSize.x == 0) return;
 
-                int startRow = row - (furnitureSize.y - 1);
-                int endColumn = column + (furnitureSize.x - 1);
+                startRow = row - (furnitureSize.y - 1);
+                endColumn = column + (furnitureSize.x - 1);
 
                 for (int i = startRow; i <= row; i++)
                 {
@@ -173,10 +196,10 @@ namespace MenuUI.Scripts.SoulHome
                         //    ", Slot " + hit2.collider.GetComponent<FurnitureSlot>().row +":"+ hit2.collider.GetComponent<FurnitureSlot>().column);
                         GameObject slot = hit2.collider.gameObject;
                         Furniture furnitureInfo = furniture.GetComponent<FurnitureHandling>().Furniture;
-                        bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo.Size, furnitureInfo);
+                        bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo);
                         if (check)
                         {
-                            MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo.Size, furniture, hover);
+                            MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, hover);
                             return true;
                         }
                     }
@@ -184,20 +207,21 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (!hover)
             {
-                if (furniture.GetComponent<FurnitureHandling>().Slot == null)
+                /*if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
+                ResetPosition(furniture, true);
+                else if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
                     Destroy(furniture);
                     return false;
-                }
-                /*else if (furniture.GetComponent<FurnitureHandling>().TempSlot != null)
-                ResetPosition(furniture, true);*/
+                }*/
             }
             return false;
         }
-        public void FreeFurnitureSlots(FurnitureSize size ,FurnitureSlot slot)
+        public void FreeFurnitureSlots(FurnitureHandling furniture, FurnitureSlot slot)
         {
+            Debug.Log("Free:"+slot.row+":"+slot.column);
             Transform points = transform.Find("FurniturePoints");
-            Vector2Int furnitureSize = CheckFurnitureSize(size);
+            Vector2Int furnitureSize = furniture.GetFurnitureSize();
 
             if (furnitureSize.x == 0) return;
 
@@ -206,8 +230,11 @@ namespace MenuUI.Scripts.SoulHome
                 int prevRow = slot.row;
                 int prevColumn = slot.column;
 
-                int startRow = prevRow - (furnitureSize.y - 1);
-                int endColumn = prevColumn + (furnitureSize.x - 1);
+                int startRow;
+                int endColumn;
+                if (furnitureSize.x == 0 || furniture == null) return;
+                startRow = prevRow - (furnitureSize.y - 1);
+                endColumn = prevColumn + (furnitureSize.x - 1);
 
                 for (int i = startRow; i <= prevRow; i++)
                 {
@@ -220,10 +247,14 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
-        public void SetFurnitureSlots(FurnitureSize size, FurnitureSlot slot, Furniture furniture)
+        public void SetFurnitureSlots(FurnitureHandling furniture)
         {
+            FurnitureSlot slot = furniture.Slot;
+            Furniture furnitureObject = furniture.Furniture;
+
+
             Transform points = transform.Find("FurniturePoints");
-            Vector2Int furnitureSize = CheckFurnitureSize(size);
+            Vector2Int furnitureSize = furniture.GetFurnitureSize();
 
             if (furnitureSize.x == 0) return;
 
@@ -232,14 +263,17 @@ namespace MenuUI.Scripts.SoulHome
                 int prevRow = slot.row;
                 int prevColumn = slot.column;
 
-                int startRow = prevRow - (furnitureSize.y - 1);
-                int endColumn = prevColumn + (furnitureSize.x - 1);
+                int startRow;
+                int endColumn;
+
+                startRow = prevRow - (furnitureSize.y - 1);
+                endColumn = prevColumn + (furnitureSize.x - 1);
 
                 for (int i = startRow; i <= prevRow; i++)
                 {
                     for (int j = prevColumn; j <= endColumn; j++)
                     {
-                        points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furniture;
+                        points.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Furniture = furnitureObject;
                     }
                 }
             }

@@ -7,15 +7,19 @@ using UnityConstants;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using System;
 
 public class BallHandler : MonoBehaviour
 {
     // Serialized Fields
     [SerializeField] private int _damage;
     [SerializeField] private GameObject _explotion;
-    [SerializeField] private Color[] _colors;
+    [SerializeField] private Sprite[] _sprites;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _hotFixMax;
+    [SerializeField] private float sparkleUpdateInterval;
+    [SerializeField] private float timeSinceLastUpdate;
+    [SerializeField] private GameObject _sparkleSprite;
 
     #region Public Methods
 
@@ -152,19 +156,32 @@ public class BallHandler : MonoBehaviour
 
     private void SetVelocity(Vector3 velocity)
     {
-        if(velocity.magnitude > _hotFixMax)
+        if (velocity.magnitude > _hotFixMax)
         {
-             velocity = Vector3.ClampMagnitude(velocity, _hotFixMax);
+            velocity = Vector3.ClampMagnitude(velocity, _hotFixMax);
         }
-            _rb.velocity = velocity;
-         int colorIndex = Mathf.Clamp(
-            (int)Mathf.Floor(
-                _rb.velocity.magnitude / _maxSpeed * (_colors.Length - 1)
-                ),
-                0,
-            _colors.Length - 1
-        );
-        _sprite.color = _colors[colorIndex];
+
+        _rb.velocity = velocity;
+        int spriteIndex = Mathf.Clamp(
+           (int)Mathf.Floor(
+               _rb.velocity.magnitude / _maxSpeed * (_sprites.Length - 1)
+               ),
+               0,
+           _sprites.Length - 1
+       );
+
+        _sprite.sprite = _sprites[spriteIndex];
+    }
+
+    private void ChangeSparkleScale()
+    {
+        if (_sparkleSprite != null)
+        {
+            SpriteRenderer spriteRenderer = _sparkleSprite.GetComponent<SpriteRenderer>();
+            spriteRenderer.transform.position = _sprite.transform.position;
+            float randomScale = UnityEngine.Random.Range(8, 12);
+            spriteRenderer.transform.localScale = new Vector3(randomScale, randomScale, 1);
+        }
     }
 
     private Quaternion NewRotation(Vector2 direction)
@@ -173,6 +190,25 @@ public class BallHandler : MonoBehaviour
         var multiplier = Mathf.Round(angle / _angleLimit);
         var newAngle = -multiplier * _angleLimit;
         return Quaternion.Euler(0, 0, newAngle);
+    }
+
+    private void FixedUpdate()
+    {
+        if (_rb.velocity != Vector2.zero)
+        {
+            _sparkleSprite.SetActive(true);
+            timeSinceLastUpdate += Time.fixedDeltaTime;
+
+            if (timeSinceLastUpdate >= sparkleUpdateInterval)
+            {
+                ChangeSparkleScale();
+                timeSinceLastUpdate = 0f;
+            }
+        }
+        else
+        {
+            _sparkleSprite.SetActive(false);
+        }
     }
 }
 

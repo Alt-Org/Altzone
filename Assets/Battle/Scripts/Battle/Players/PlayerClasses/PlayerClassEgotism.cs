@@ -8,6 +8,8 @@ using Prg.Scripts.Common.PubSub;
 using System.Security.Cryptography;
 using System.Runtime.Versioning;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -24,6 +26,8 @@ namespace Battle.Scripts.Battle.Players
 
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
+
+        #region Public Methods
 
         public bool OnBallShieldCollision()
         { return true; }
@@ -42,14 +46,34 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
         }
 
+        #endregion Public Methods
+
+        // Important Objects
         private GridManager _gridManager;
+
+        // Components
         private Rigidbody2D _rb;
-        private int _timer;
         private LineRenderer _lineRenderer;
+
+        // Game state variables
+        private int _timer;
+
+        // Visual representation lists
         private List<GameObject> _positionSprites;
         private List<TrailSprite> _trailSprites;
+
+        // Gameplay related flags
         private bool _isOnLocalTeam = false;
+
+        // Projectile simulation variables
         private int _trailSpritesAmount;
+        private Vector2 _currentPosition;
+        private Vector2 _currentVelocity;
+        private GridPos _gridPosition;
+        private Vector3 _worldPosition;
+        private Vector3 _pointPosition;
+        private Vector3 _pointVelocity;
+
         private class TrailSprite
         {
             public readonly GameObject GameObject;
@@ -58,7 +82,6 @@ namespace Battle.Scripts.Battle.Players
             public TrailSprite(GameObject gameObject, Vector3 position, Sprite sprite, int timer)
             {
                 GameObject = Instantiate(gameObject, position, Quaternion.identity);
-                Debug.Log(DEBUG_LOG_NAME + GameObject);
                 GameObject.SetActive(true);
                 GameObject.GetComponent<SpriteRenderer>().sprite = sprite;
                 Timer = timer;
@@ -103,21 +126,19 @@ namespace Battle.Scripts.Battle.Players
 
         private void ProjectilePredictionUpdate()
         {
-            GridPos gridPosition = null;
-            Vector2 currentVelocity = GetCurrentVelocity();
-            Vector2 currentPosition = GetCurrentPosition();
-            gridPosition = _gridManager.WorldPointToGridPosition(_rb.position);
+            _gridPosition = null;
+            _currentVelocity = GetCurrentVelocity();
+            _currentPosition = GetCurrentPosition();
+            _gridPosition = _gridManager.WorldPointToGridPosition(_rb.position);
+            _worldPosition = _gridManager.GridPositionToWorldPoint(_gridPosition);
 
-            Vector3 worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
             float distance = _maxDistance;
             int reflections = 0;
             List<Vector3> positions = new();
-            Vector3 pointPosition;
-            Vector3 pointVelocity;
 
             while (distance > 0 && reflections < _maxReflections)
             {
-                RaycastHit2D hit = Physics2D.Raycast(currentPosition, currentVelocity.normalized, distance, _collisionLayer);
+                RaycastHit2D hit = Physics2D.Raycast(_currentPosition, _currentVelocity.normalized, distance, _collisionLayer);
                 Debug.Log(DEBUG_LOG_NAME + "reflections " + reflections);
                 Debug.Log(DEBUG_LOG_NAME + "distance " + distance);
 
@@ -125,19 +146,7 @@ namespace Battle.Scripts.Battle.Players
                 {
                     Debug.DrawLine(hit.point, hit.point + hit.normal, Color.green);
 
-                    // Calculate the reflection
-                    Vector2 hitPosition = hit.point;
-                    Vector2 reflectionDirection = Vector2.Reflect(currentVelocity.normalized, hit.normal);
-                    Debug.DrawLine(hit.point, hit.point + reflectionDirection, Color.blue);
-                    gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
-                    worldPosition = _gridManager.GridPositionToWorldPoint(gridPosition);
-
-                    pointPosition = currentPosition;
-                    pointVelocity = currentVelocity;
-
-                    // Update currentPosition for next raycast
-                    currentPosition = (Vector2)worldPosition + reflectionDirection.normalized * 0.1f;
-                    currentVelocity = reflectionDirection * currentVelocity.magnitude;
+                    UpdatePositionAndVelocity(hit);
 
                     // Reduce distance by the distance traveled
                     distance -= hit.distance;
@@ -145,30 +154,30 @@ namespace Battle.Scripts.Battle.Players
                 }
                 else
                 {
-                    worldPosition = currentPosition + currentVelocity.normalized * distance;
-                    pointPosition = currentPosition;
-                    pointVelocity = currentVelocity;
+                    _worldPosition = _currentPosition + _currentVelocity.normalized * distance;
+                    _pointPosition = _currentPosition;
+                    _pointVelocity = _currentVelocity;
                     distance = 0;
                 }
 
-                Debug.DrawLine(worldPosition, pointPosition, Color.red);
+                Debug.DrawLine(_worldPosition, _pointPosition, Color.red);
 
-                float pointDistance = (worldPosition - pointPosition).magnitude;
+                float pointDistance = (_worldPosition - _pointPosition).magnitude;
 
-                pointVelocity /= 50;
+                _pointVelocity /= 50;
 
-                int positionCount = (int)Mathf.Floor(pointDistance / pointVelocity.magnitude / _pointStep);
+                int positionCount = (int)Mathf.Floor(pointDistance / _pointVelocity.magnitude / _pointStep);
 
                 Debug.Log(DEBUG_LOG_NAME + "positionCount " + positionCount);
 
                 for (int i = 0; i < positionCount; i++)
                 {
                     // Calculate the next point position based on velocity and step and add to the list of positions
-                    pointPosition += pointVelocity * _pointStep;
-                    positions.Add(pointPosition);
+                    _pointPosition += _pointVelocity * _pointStep;
+                    positions.Add(_pointPosition);
                 }
 
-                positions.Add(worldPosition);
+                positions.Add(_worldPosition);
             }
 
             Debug.Log(DEBUG_LOG_NAME + positions.Count);
@@ -176,6 +185,28 @@ namespace Battle.Scripts.Battle.Players
             UpdatePredictionSprites(positions);
 
             UpdateTrailSprites();
+        }
+
+        private void UpdatePositionAndVelocity(RaycastHit2D hit)
+        {
+            // Calculate the reflection
+            Vector2 reflectionDirection = Vector2.Reflect(_currentVelocity.normalized, hit.normal);
+            Debug.DrawLine(hit.point, hit.point + reflectionDirection, Color.blue);
+
+            UpdateGridAndWorldPosition(hit.point);
+
+            _pointPosition = _currentPosition;
+            _pointVelocity = _currentVelocity;
+
+            // Update currentPosition for next raycast
+            _currentPosition = (Vector2)_worldPosition + reflectionDirection.normalized * 0.1f;
+            _currentVelocity = reflectionDirection * _currentVelocity.magnitude;
+        }
+
+        private void UpdateGridAndWorldPosition(Vector2 hitPosition)
+        {
+            _gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
+            _worldPosition = _gridManager.GridPositionToWorldPoint(_gridPosition);
         }
 
         private void UpdatePredictionSprites(List<Vector3> positions)
@@ -224,10 +255,36 @@ namespace Battle.Scripts.Battle.Players
             // Check if the current timer value is a multiple of pointStep
             if (_timer % _pointStep == 0)
             {
-                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)], 50);
+                Sprite sprite;
+
+                // Set the chance of allowing a duplicate
+                bool allowDuplicate = UnityEngine.Random.Range(0, 5) == 0;
+
+                if (_trailSpritesAmount > 0 && allowDuplicate)
+                {
+                    Sprite lastSprite = _trailSprites[_trailSpritesAmount - 1].GameObject.GetComponent<SpriteRenderer>().sprite;
+
+                    if (_trailSpritesAmount > 1 && _trailSprites[_trailSpritesAmount - 2].GameObject.GetComponent<SpriteRenderer>().sprite == lastSprite)
+                    {
+                        // If the last two sprites are the same, use a new sprite
+                        sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
+                    }
+                    else
+                    {
+                        // Use the last sprite again
+                        sprite = lastSprite;
+                    }
+                }
+                else
+                {
+                    // Randomly choose a new sprite
+                    sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
+                }
+
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50);
 
                 // Check if the trail sprite list is already full
-                if (_trailSprites.Count == _trailSpritesAmount)
+                if (_trailSprites.Count <= _trailSpritesAmount)
                 {
                     _trailSprites.Add(newTrailSprite);
                 }
@@ -238,12 +295,21 @@ namespace Battle.Scripts.Battle.Players
                 }
 
                 _trailSpritesAmount++;
-            }
 
-            int offset = 0;
+                foreach (var trailSprite in _trailSprites)
+                {
+                        trailSprite.Timer--;
+                }
+            }
+        }
+
+        private void UpdateTrailLifespan()
+        {
+            Debug.Log("Updating Trail Lifespan ");
+            int i2 = 0;
             bool delete;
 
-            for(int i= 0; i < _trailSpritesAmount; i++)
+            for (int i = 0; i < _trailSpritesAmount; i++)
             {
                 // Check if the sprite's timer has expired
                 delete = _trailSprites[i].Timer <= 0;
@@ -252,23 +318,57 @@ namespace Battle.Scripts.Battle.Players
                 {
                     // If expired, destroy the sprite's game object
                     Destroy(_trailSprites[i].GameObject);
+                    _trailSprites[i] = null;
                 }
                 else
                 {
                     // If not expired, decrement the timer and shift the sprites position in the list if some were deleted earlier
                     _trailSprites[i].Timer--;
-                    _trailSprites[i - offset] = _trailSprites[i];
+                    _trailSprites[i2] = _trailSprites[i];
                 }
 
                 // Increment offset if a sprite was deleted
-                if (delete)
+                if (!delete)
                 {
-                    offset++;
+                    i2++;
                 }
             }
 
             // Adjust the count of trail sprites by the number of deleted sprites
-            _trailSpritesAmount -= offset;
+            _trailSpritesAmount = i2;
+
+#if false
+            string str = "TRAIL SPRITES LIST\n";
+
+            for (int debugI = 0; debugI < _trailSprites.Count; debugI++)
+            {
+                str += string.Format("{0:0000} ", debugI);
+                if (_trailSprites[debugI] != null)
+                {
+                    str += string.Format("sprite {0:00} {1:00000000}", _trailSprites[debugI].Timer, _trailSprites[debugI].GetHashCode());
+                }
+                else
+                {
+                    str += "null  00 ";
+                }
+
+                if (debugI == _trailSpritesAmount)
+                {
+                    str += " <- _trailSpritesAmount";
+                }
+                str += "\n";
+            }
+
+            Debug.Log(str);
+#endif
+        }
+
+        private void ClearPrediction()
+        {
+            for (int i = 0; i < _positionSprites.Count; i++)
+            {
+                _positionSprites[i].SetActive(false);
+            }
         }
 
         private void FixedUpdate()
@@ -284,13 +384,15 @@ namespace Battle.Scripts.Battle.Players
                 else
                 {
                     _timer = 0;
+                    ClearPrediction();
                 }
             }
-
-            for (int i = 0; i < _positionSprites.Count; i++)
+            else
             {
-                _positionSprites[i].SetActive(false);
-            }         
+                ClearPrediction();
+            }
+
+            UpdateTrailLifespan();
         }
 
         private Vector2 GetCurrentVelocity()

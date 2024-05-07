@@ -20,6 +20,7 @@ namespace MenuUI.Scripts.SoulHome {
     {
         private SoulHome _soulHomeRooms;
         [Tooltip("Instead of getting information from the server, generate random information."), SerializeField] private bool _ignoreServer;
+        [Tooltip("Amount of rooms for local generation."), SerializeField] private int _roomAmount = 30;
         [Tooltip("Instead of getting furniture from the server, generate random furniture."), SerializeField] private bool _ignoreFurniture;
         [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
@@ -27,6 +28,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private GameObject _roomPositions;
         [SerializeField] private GameObject _roomPrefab;
         [SerializeField] private FurnitureTrayHandler _trayHandler;
+        [SerializeField] private TowerController _towerController;
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -66,7 +68,7 @@ namespace MenuUI.Scripts.SoulHome {
                 soulHome.editPermission = ClanMemberRole.Officer;
                 soulHome.addRemovePermission = ClanMemberRole.Admin;
                 soulHome.Room = new List<Room>();
-                for(int i = 0; i<30; i++)
+                for(int i = 0; i< _roomAmount; i++)
                 {
                     Room room = new Room();
                     room.Id = i;
@@ -80,21 +82,28 @@ namespace MenuUI.Scripts.SoulHome {
                         room.Floor = new Color(0.4f,0,0);
                         room.Walls = new Color(0.7f, 0, 0);
                     }
-                    int furniture1X = Random.Range(0, 8);
-                    int furniture1Y = Random.Range(0, 3);
+                    int slotRows = ((int)_roomPrefab.GetComponent<RoomData>().SlotRows);
+                    int slotColumn = ((int)_roomPrefab.GetComponent<RoomData>().SlotColumns);
+
+                    int furniture1X = Random.Range(0, slotColumn -1);
+                    int furniture1Y = Random.Range(0, slotRows);
                     int furniture2X;
                     int furniture2Y;
                     while (true)
                     {
-                        furniture2X = Random.Range(0, 7);
-                        furniture2Y = Random.Range(0, 3);
-                        if ((furniture2X == furniture1X && furniture2Y == furniture1Y) || (furniture2X == furniture1X - 1 && furniture2Y == furniture1Y)) continue;
+                        furniture2X = Random.Range(0, slotColumn -3);
+                        furniture2Y = Random.Range(0, slotRows);
+                        if ((furniture2X == furniture1X && furniture2Y == furniture1Y)
+                            || (furniture2X == furniture1X - 1 && furniture2Y == furniture1Y)
+                            || (furniture2X == furniture1X - 2 && furniture2Y == furniture1Y)
+                            || (furniture2X == furniture1X - 3 && furniture2Y == furniture1Y)
+                            || (furniture2X == furniture1X + 1 && furniture2Y == furniture1Y)) continue;
                         else break;
                     }
 
-                    var test2 = new Furniture(1, "Standard", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.OneXTwo, 15f);
+                    var test2 = new Furniture(1, "Standard", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
                     room.Furnitures.Add(test2);
-                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXFour, 15f);
+                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
                     room.Furnitures.Add(test3);
                     soulHome.Room.Add(room);
                 }
@@ -107,19 +116,19 @@ namespace MenuUI.Scripts.SoulHome {
             
         }
 
-        public void TestCode()
+        /*public void TestCode()
         {
             Room test = new Room();
             test.Id = 1;
             test.Furnitures = new List<Furniture>();
-            var test2 = new Furniture(1,"Name",new Vector2Int(0,0),FurnitureSize.OneXOne,15f);
+            var test2 = new Furniture(1,"Name",new Vector2Int(0,0),FurnitureSize.OneXOne,15f, false);
             test.Furnitures.Add(test2);
-            var test3 = new Furniture(2, "Name", new Vector2Int(1, 1), FurnitureSize.OneXTwo, 15f);
+            var test3 = new Furniture(2, "Name", new Vector2Int(1, 1), FurnitureSize.OneXTwo, 15f, false);
             test.Furnitures.Add(test3);
             string testTojson = JsonUtility.ToJson(test);
             Debug.Log(testTojson);
             Debug.Log(JsonUtility.FromJson<Room>(testTojson).Furnitures[1].Id);
-        }
+        }*/
         public void LoadRooms()
         {
             List<GameObject> roompositions = new List<GameObject>();
@@ -140,7 +149,7 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 else
                 {
-                    GameObject floor = roompositions[i].transform.GetChild(0).Find("Floor").gameObject;
+                    /*GameObject floor = roompositions[i].transform.GetChild(0).Find("Room").Find("Floor").gameObject;
                     floor.GetComponent<SpriteRenderer>().color = room.Floor;
                     foreach (SpriteRenderer floorPiece in floor.transform.GetComponentsInChildren<SpriteRenderer>())
                     {
@@ -154,11 +163,22 @@ namespace MenuUI.Scripts.SoulHome {
                     newColour.b *= 0.8f;
 
                     roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
-                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
+                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
                 }
                 roompositions[i].transform.GetChild(0).GetComponent<RoomData>().InitializeRoom();
                 i++;
             }
+            SetSoulhomeHeight();
+        }
+
+        public void SetSoulhomeHeight()
+        {
+            int roomNumber = _soulHomeRooms.Room.Count;
+            Transform soulhomeBase = transform.Find("Square").transform;
+            float roomHeight = _roomPrefab.GetComponent<BoxCollider2D>().size.y;
+            soulhomeBase.localScale = new Vector2(150, roomHeight * roomNumber + 20);
+            soulhomeBase.localPosition = new Vector2(0, soulhomeBase.localScale.y/2 -10);
+            _towerController.SetCameraBounds();
         }
 
         public class CoroutineWithData
@@ -206,10 +226,16 @@ namespace MenuUI.Scripts.SoulHome {
                 int i = 0;
                 while (i < 2)
                 {
-                    var test2 = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, 15f);
+                    var test2 = new Furniture(i*5+1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
                     _trayHandler.AddFurnitureInitial(test2);
-                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, 15f);
+                    var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
                     _trayHandler.AddFurnitureInitial(test3);
+                    var test4 = new Furniture(i * 5 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.TwoXTwo, 15f, false);
+                    _trayHandler.AddFurnitureInitial(test4);
+                    var test5 = new Furniture(i * 5 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXTwo, 15f, false);
+                    _trayHandler.AddFurnitureInitial(test5);
+                    var test6 = new Furniture(i * 5 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXTwo, 15f, false);
+                    _trayHandler.AddFurnitureInitial(test6);
                     i++;
                 }
             }

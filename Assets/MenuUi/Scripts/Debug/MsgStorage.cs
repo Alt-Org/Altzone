@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +6,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 {
 
     #region Enum and Interfaces
+  
     public enum MessageType
     {
         None = 0,
@@ -42,6 +42,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
+        public int TotalMessages(); // New method added
     }
     internal interface IReadOnlyTimelineStorage
     {
@@ -64,7 +65,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Id = -1;
             Time = time;
             Msg = msg;
-            Type = type == MessageType.None ? MessageType.Info : type;
+            Type = type;
         }
 
         internal void SetId(int id)
@@ -105,7 +106,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             foreach (IReadOnlyMsgObject msgObject in list)
             {
-                if (wantedTypes.HasFlag(msgObject.Type))
+                if (wantedTypes.HasFlag((MessageTypeOptions)msgObject.Type))
                 {
                     newList.Add(msgObject);
                 }
@@ -161,6 +162,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public bool IsValidClient(int client)
         {
             return _msgList.Length > client && client >= 0;
+        }
+
+        // New method added
+        public int TotalMessages()
+        {
+            int total = 0;
+            foreach (var msgList in _msgList)
+            {
+                total += msgList.Count;
+            }
+            return total;
         }
 
         private readonly List<MsgObject>[] _msgList;

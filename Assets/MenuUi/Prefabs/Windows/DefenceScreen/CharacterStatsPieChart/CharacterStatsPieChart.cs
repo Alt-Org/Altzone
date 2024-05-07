@@ -8,22 +8,9 @@ public class CharacterStatsPieChart : MonoBehaviour
 
     // References for Unity
     public Image[] imagesPieChart;
-    //public float[] pieChartValues = DemoCharacterStatsStatic.defaultCharacterStats;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        SetPieChartValues(DemoCharacterStatsStatic.defaultCharacterStats);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    // Goes through every image representing a stat and gives it a fill amount creating an illusion of a pie chart
-    // We can use these functions when we get stats on the server
+    // Goes through every image representing a stat and gives it a fill amount creating a pie chart
     public void SetPieChartValues(float[] pieChartValuesToSet)
     {
         float totalValues = 0;

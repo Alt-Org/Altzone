@@ -20,9 +20,9 @@ namespace MenuUI.Scripts.SoulHome
         void Start()
         {
             if (debugValue == 1)
-                Furniture = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, 15f);
+                Furniture = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
             else if(debugValue == 2)
-                Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, 15f);
+                Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
         }
 
         // Update is called once per frame

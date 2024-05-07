@@ -8,10 +8,18 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
+    public enum PopupType
+    {
+        Exit,
+        EditClose
+    }
+
     public class SoulHomeController : MonoBehaviour
     {
         [SerializeField]
-        private GameObject _roomName;
+        private TextMeshProUGUI _clanName;
+        [SerializeField]
+        private TextMeshProUGUI _roomName;
         [SerializeField]
         private TowerController _soulHomeTower;
         [SerializeField]
@@ -34,7 +42,10 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
-
+            if (ServerManager.Instance.Clan != null)
+            {
+                _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
+            }
         }
 
         // Update is called once per frame
@@ -52,52 +63,52 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (room != null)
             {
-                _roomName.SetActive(true);
+                _roomName.gameObject.SetActive(true);
                 string roomName = room.GetComponent<RoomData>().RoomInfo.Id.ToString();
                 _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
             }
-            else _roomName.SetActive(false);
+            else _roomName.gameObject.SetActive(false);
         }
 
         public void ExitSoulHome()
         {
-            if (!_exitPending)
-                if (_soulHomeTower.ChangedFurnitureList.Count > 0)
-                {
-                    _exitPending = true;
-                    _confirmPopup.SetActive(true);
-                    _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                    + "Poistumalla hylkäät tallentamattomat muutokset. \n\n"
-                    + "Haluatko silti poistua? ";
-                    _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmExitFalse);
-                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrue);
-                    _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje sielunkoti";
-                }
-                else
-                {
-                    if(_soulHomeTower.EditingMode)_soulHomeTower.ToggleEdit();
-                    WindowManager.Get().GoBack();
-                }
+            if (_exitPending || _confirmPopupOpen) return;
+            if (_soulHomeTower.ChangedFurnitureList.Count > 0)
+            {
+                _exitPending = true;
+                _confirmPopupOpen = true;
+                _confirmPopup.SetActive(true);
+                _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
+                + "Poistumalla hylkäät tallentamattomat muutokset. \n\n"
+                + "Haluatko silti poistua? ";
+                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmExitFalse);
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrue);
+                _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje sielunkoti";
+            }
+            else
+            {
+                if(_soulHomeTower.EditingMode)_soulHomeTower.ToggleEdit();
+                WindowManager.Get().GoBack();
+            }
         }
         public void ConfirmExitFalse() { ConfirmExit(false); }
         public void ConfirmExitTrue() { ConfirmExit(true); }
 
         public void ConfirmExit(bool confirm)
         {
-            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitFalse);
-            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrue);
             if (confirm)
             {
+                _soulHomeTower.DeselectFurniture();
                 _mainScreen.ResetChanges();
-                _exitPending=false;
-                _confirmPopup.SetActive(false);
+                CloseConfirmPopup(PopupType.Exit);
                 if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
+                _exitPending = false;
                 WindowManager.Get().GoBack();
             }
             else
             {
-                _exitPending=false;
-                _confirmPopup.SetActive(false);
+                CloseConfirmPopup(PopupType.Exit);
+                _exitPending = false;
             }
         }
 
@@ -146,20 +157,33 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ConfirmEditClose(bool confirm)
         {
-            _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseFalse);
-            _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrue);
             if (confirm)
             {
+                _soulHomeTower.DeselectFurniture();
                 _mainScreen.ResetChanges();
-                _confirmPopupOpen = false;
-                _confirmPopup.SetActive(false);
+                CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
             }
             else
             {
-                _confirmPopupOpen = false;
-                _confirmPopup.SetActive(false);
+                CloseConfirmPopup(PopupType.EditClose);
             }
+        }
+
+        private void CloseConfirmPopup(PopupType type)
+        {
+            if(type is PopupType.Exit)
+            {
+                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitFalse);
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrue);
+            }
+            else if (type is PopupType.EditClose)
+            {
+                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseFalse);
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrue);
+            }
+            _confirmPopupOpen = false;
+            _confirmPopup.SetActive(false);
         }
 
         public void ShowInfoPopup(string popupText)
