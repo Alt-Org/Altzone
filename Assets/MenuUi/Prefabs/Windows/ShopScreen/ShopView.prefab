@@ -415,38 +415,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &351159812899061373
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5655772365655910271}
-  m_Layer: 0
-  m_Name: Osta1 2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5655772365655910271
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 351159812899061373}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 158705358729998600}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &379062760717202364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,7 +1428,7 @@ GameObject:
   - component: {fileID: 769583324342573073}
   - component: {fileID: 8848931429533296096}
   m_Layer: 5
-  m_Name: Osta1
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1482,8 +1450,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: -31.387451, y: 4.508789}
-  m_SizeDelta: {x: 123.73099, y: -203.87027}
+  m_AnchoredPosition: {x: -31.387451, y: 3.2924957}
+  m_SizeDelta: {x: 123.731, y: -157.6521}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5876493064104724784
 CanvasRenderer:
@@ -1613,39 +1581,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &944120381428876971
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6690024739945317198}
-  m_Layer: 0
-  m_Name: Osta 3 3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6690024739945317198
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944120381428876971}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0006878314, y: -0.00022927712, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8855861524635442026}
-  - {fileID: 7424937808413754081}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &971376222588855744
 GameObject:
   m_ObjectHideFlags: 0
@@ -2014,7 +1949,7 @@ GameObject:
   - component: {fileID: 5308680110875338054}
   - component: {fileID: 1355629400192906393}
   m_Layer: 5
-  m_Name: Osta2
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2028,16 +1963,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1093913914876391570}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1915881386174820214}
+  m_Father: {fileID: 6653274577683514109}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: 1606, y: 543}
-  m_SizeDelta: {x: 153.70691, y: 105.15173}
+  m_AnchoredPosition: {x: -33.428467, y: 17.400879}
+  m_SizeDelta: {x: 121.4247, y: -169.84827}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4719541639374127680
 CanvasRenderer:
@@ -3509,7 +3444,7 @@ GameObject:
   - component: {fileID: 2243927449308246302}
   - component: {fileID: 7027675515829232155}
   m_Layer: 5
-  m_Name: Osta1nappi
+  m_Name: nappi1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3523,18 +3458,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1581329530085269985}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4559770001208181919}
-  - {fileID: 7397726194746813515}
   - {fileID: 8962091012525950470}
-  m_Father: {fileID: 5655772365655910271}
+  - {fileID: 7397726194746813515}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1322, y: 527}
+  m_AnchoredPosition: {x: -301.29773, y: 294.1641}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6263430793145139274
@@ -4599,7 +4534,7 @@ GameObject:
   - component: {fileID: 6879659378350304581}
   - component: {fileID: 2764483568505337168}
   m_Layer: 5
-  m_Name: Osta3
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4613,16 +4548,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2259992737445396240}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6690024739945317198}
+  m_Father: {fileID: 8855861524635442026}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: 1884, y: 535}
-  m_SizeDelta: {x: 153.70691, y: 105.15173}
+  m_AnchoredPosition: {x: -23.50769, y: 13}
+  m_SizeDelta: {x: 121.4247, y: -169.84827}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8263902398040079240
 CanvasRenderer:
@@ -5498,7 +5433,7 @@ GameObject:
   - component: {fileID: 241907495713914598}
   - component: {fileID: 51514964465483109}
   m_Layer: 5
-  m_Name: Ostakasanappi
+  m_Name: nappi4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5512,18 +5447,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2501242591204824647}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4765160639238562431}
   - {fileID: 1873575200680701767}
+  - {fileID: 4765160639238562431}
   - {fileID: 1291137565646563990}
-  m_Father: {fileID: 32899974750674617}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1318, y: 100}
+  m_AnchoredPosition: {x: -305.55554, y: -160.51819}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5775812472548741114
@@ -5758,39 +5693,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &2666847677161174419
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7666095557371573789}
-  m_Layer: 0
-  m_Name: Ostapursuava1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7666095557371573789
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2666847677161174419}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4730556540368764469}
-  - {fileID: 4362938403596962417}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2780946837390584384
 GameObject:
   m_ObjectHideFlags: 0
@@ -5804,7 +5706,7 @@ GameObject:
   - component: {fileID: 3415348906916655008}
   - component: {fileID: 6742971624420792386}
   m_Layer: 5
-  m_Name: Ostakukkarollinen nappi
+  m_Name: nappi5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5818,17 +5720,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2780946837390584384}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3741419220763090690}
+  - {fileID: 5075854445540514178}
   - {fileID: 3079390416668712263}
-  m_Father: {fileID: 2536505386713092227}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1601.1564, y: 99}
+  m_AnchoredPosition: {x: -4.043579, y: -161.58264}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3937533640284121605
@@ -6000,39 +5903,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2823689233547291368
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2536505386713092227}
-  m_Layer: 0
-  m_Name: Ostakukkarollinen1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2536505386713092227
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2823689233547291368}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0009171085, y: -0.00045855425, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 9099017976931779796}
-  - {fileID: 5075854445540514178}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2826362776538895160
 GameObject:
   m_ObjectHideFlags: 0
@@ -6734,7 +6604,7 @@ GameObject:
   - component: {fileID: 4839195813850594292}
   - component: {fileID: 7448283996198807341}
   m_Layer: 5
-  m_Name: Osta kasa
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6756,8 +6626,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: -40.586, y: 11}
-  m_SizeDelta: {x: 123.74901, y: -203.84827}
+  m_AnchoredPosition: {x: -40.586, y: 2.4861}
+  m_SizeDelta: {x: 123.749, y: -162.4951}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1926626237871289430
 CanvasRenderer:
@@ -6825,7 +6695,7 @@ GameObject:
   - component: {fileID: 8823785152803233655}
   - component: {fileID: 5044438972914499922}
   m_Layer: 5
-  m_Name: Osta3nappi
+  m_Name: nappi3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6839,17 +6709,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2973071763384361401}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8254585897987317553}
+  - {fileID: 7424937808413754081}
   - {fileID: 7416263596172714108}
-  m_Father: {fileID: 6690024739945317198}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1874, y: 522}
+  m_AnchoredPosition: {x: 286.48767, y: 288.83978}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6431444049619808241
@@ -6959,7 +6830,7 @@ GameObject:
   - component: {fileID: 3693059471088686926}
   - component: {fileID: 3988657134098537699}
   m_Layer: 5
-  m_Name: Ostapursuavanappi
+  m_Name: nappi6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6973,17 +6844,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3043105920170157958}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3410542389969079670}
+  - {fileID: 4362938403596962417}
   - {fileID: 459094556741098261}
-  m_Father: {fileID: 7666095557371573789}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1877, y: 98}
+  m_AnchoredPosition: {x: 289.68152, y: -162.64691}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5916107210526944443
@@ -8643,9 +8515,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6451125145487110889}
   - {fileID: 2939519118407133826}
   - {fileID: 986789655835538624}
+  - {fileID: 3158253665635338134}
   - {fileID: 4164347502787138284}
   m_Father: {fileID: 3843918641404747607}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8913,38 +8785,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &4346563745385813157
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 32899974750674617}
-  m_Layer: 0
-  m_Name: Ostakasa1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &32899974750674617
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4346563745385813157}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0019488556, y: -0.0009171085, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3951297229713950069}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4393058014844335342
 GameObject:
   m_ObjectHideFlags: 0
@@ -14075,7 +13915,7 @@ GameObject:
   - component: {fileID: 5158372310956597936}
   - component: {fileID: 6598731385181698887}
   m_Layer: 5
-  m_Name: Osta kukkarollinen
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14089,16 +13929,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6929121022566510073}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2536505386713092227}
+  m_Father: {fileID: 9099017976931779796}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: 1601.9994, y: 100.000244}
-  m_SizeDelta: {x: 153.70691, y: 105.15173}
+  m_AnchoredPosition: {x: -32.664917, y: 1.0002594}
+  m_SizeDelta: {x: 121.4247, y: -169.84827}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1112710642254281501
 CanvasRenderer:
@@ -14623,96 +14463,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &7174724872621459650
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6451125145487110889}
-  - component: {fileID: 312052733272665886}
-  m_Layer: 0
-  m_Name: Kauppa raha osto salkku pohja popup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6451125145487110889
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7174724872621459650}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1709, y: -267, z: -0.035755493}
-  m_LocalScale: {x: 1.0648277, y: 1.0648277, z: 1.0648277}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5655772365655910271}
-  - {fileID: 1915881386174820214}
-  - {fileID: 6690024739945317198}
-  - {fileID: 32899974750674617}
-  - {fileID: 2536505386713092227}
-  - {fileID: 7666095557371573789}
-  m_Father: {fileID: 1514952884016316800}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &312052733272665886
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7174724872621459650}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a5e4fdd08709289478c0a610887d102b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 8.333333, y: 8.333333}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &7183775730311526707
 GameObject:
   m_ObjectHideFlags: 0
@@ -15120,7 +14870,7 @@ GameObject:
   - component: {fileID: 2718882395917776386}
   - component: {fileID: 8448802333887859594}
   m_Layer: 5
-  m_Name: Osta2nappi
+  m_Name: nappi2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15134,17 +14884,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7313832089082609573}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.064828, y: 1.064828, z: 1.064828}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2855086367529446990}
+  - {fileID: 8827857637129055344}
   - {fileID: 4899677503403263451}
-  m_Father: {fileID: 1915881386174820214}
+  m_Father: {fileID: 3158253665635338134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1605.9204, y: 525.5991}
+  m_AnchoredPosition: {x: 1.0288086, y: 292.6721}
   m_SizeDelta: {x: 250, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5264664775554802731
@@ -17237,39 +16988,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &8325998799943039689
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1915881386174820214}
-  m_Layer: 0
-  m_Name: Osta 2 2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1915881386174820214
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8325998799943039689}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0006878314, y: -0.00022927712, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6653274577683514109}
-  - {fileID: 8827857637129055344}
-  m_Father: {fileID: 6451125145487110889}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8428460395432174481
 GameObject:
   m_ObjectHideFlags: 0
@@ -17428,7 +17146,7 @@ GameObject:
   - component: {fileID: 5963941839107401898}
   - component: {fileID: 4954118863222377595}
   m_Layer: 5
-  m_Name: Osta ylipursuava
+  m_Name: kuva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17442,16 +17160,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8434790521742706160}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.033578664}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7666095557371573789}
+  m_Father: {fileID: 4730556540368764469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5694663, y: 0}
   m_AnchorMax: {x: 0.69859517, y: 1}
-  m_AnchoredPosition: {x: 1872, y: 100}
-  m_SizeDelta: {x: 153.70691, y: 105.15173}
+  m_AnchoredPosition: {x: -38.50769, y: 1.9998932}
+  m_SizeDelta: {x: 121.4247, y: -169.84827}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4426066910160633855
 CanvasRenderer:
@@ -18337,6 +18055,47 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8729464021807859694
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3158253665635338134}
+  m_Layer: 5
+  m_Name: napit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3158253665635338134
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8729464021807859694}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 158705358729998600}
+  - {fileID: 6653274577683514109}
+  - {fileID: 8855861524635442026}
+  - {fileID: 3951297229713950069}
+  - {fileID: 9099017976931779796}
+  - {fileID: 4730556540368764469}
+  m_Father: {fileID: 1514952884016316800}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8782922451416185890
 GameObject:
   m_ObjectHideFlags: 0
@@ -19129,7 +18888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b380c2cf83ddc4f9fc0be0434c3661, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 3855219591597786251}
 --- !u!1 &9180737919107645611
 GameObject:
   m_ObjectHideFlags: 0
@@ -26678,12 +26436,6 @@ PrefabInstance:
 --- !u!224 &3855219591597786248 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 6866519006697766357}
-  m_PrefabAsset: {fileID: 0}
---- !u!223 &3855219591597786251 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 7695168990374541662, guid: 57890b7dbec8a984abb7d8148eefe9f6,
     type: 3}
   m_PrefabInstance: {fileID: 6866519006697766357}
   m_PrefabAsset: {fileID: 0}
