@@ -28,9 +28,9 @@ public class ProfileMenu : MonoBehaviour
 
     // private Sprite Img;
 
-    private int hourCount;
     private int minuteCount;
     private float secondsCount;
+    private float countToCarbon;
     private float cabrbonCount;
 
     private ServerPlayer _player;
@@ -43,18 +43,14 @@ public class ProfileMenu : MonoBehaviour
     private void updateTime()
     {
         secondsCount += Time.deltaTime;
-        _TimePlayedText.text = hourCount.ToString() + " " + minuteCount.ToString() + " " + secondsCount.ToString("0");
-        _CarbonText.text = cabrbonCount.ToString();
+        countToCarbon += Time.deltaTime;
+        cabrbonCount = countToCarbon * 1.2f;
+        _TimePlayedText.text = "Pelitunnit\n" + minuteCount.ToString();
+        _CarbonText.text = "Hiilijalanjälki\n" + cabrbonCount.ToString("0.0");
         if (secondsCount > 60)
         {
             minuteCount++;
-            cabrbonCount = cabrbonCount + 1.5f;
             secondsCount = 0;
-        }
-        else if (minuteCount > 60)
-        {
-            hourCount++;
-            minuteCount = 0;
         }
 
     }
