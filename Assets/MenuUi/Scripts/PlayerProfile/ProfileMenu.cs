@@ -6,6 +6,8 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using UnityEngine.UIElements;
+using System;
 
 public class ProfileMenu : MonoBehaviour
 {
@@ -21,8 +23,37 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
 
+    //[Header("Images")]
+    // [SerializeField] private GameObject _BattleCharacter = new GameObject();
+
+    // private Sprite Img;
+
+    private int minuteCount;
+    private float secondsCount;
+    private float countToCarbon;
+    private float cabrbonCount;
 
     private ServerPlayer _player;
+
+    private void Update()
+    {
+        updateTime();
+    }
+
+    private void updateTime()
+    {
+        secondsCount += Time.deltaTime;
+        countToCarbon += Time.deltaTime;
+        cabrbonCount = countToCarbon * 1.2f;
+        _TimePlayedText.text = "Pelitunnit\n" + minuteCount.ToString();
+        _CarbonText.text = "Hiilijalanjälki\n" + cabrbonCount.ToString("0.0");
+        if (secondsCount > 60)
+        {
+            minuteCount++;
+            secondsCount = 0;
+        }
+
+    }
 
     private void OnEnable()
     {
@@ -57,9 +88,11 @@ public class ProfileMenu : MonoBehaviour
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
             _playerNameText.text = playerData.Name;
-            //_TimePlayedText.text = ;
+            //_BattleCharacter.AddComponent(typeof(Image));
+            //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
+            //_BattleCharacter.GetComponent<Image>().sprite = Img;
+            updateTime();
             //_LosesWinsText.text = ;
-            //_CarbonText.text = ;
         }
         else
         {

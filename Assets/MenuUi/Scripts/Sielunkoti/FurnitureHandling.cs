@@ -136,34 +136,34 @@ namespace MenuUI.Scripts.SoulHome
             float width;
             if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne)
             {
-                if(_tempSlot != null)width = _tempSlot.width;
-                else width = transform.parent.GetComponent<FurnitureSlot>().width;
+                //if(_tempSlot != null)width = _tempSlot.width;
+                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
             }
             else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo)
             {
-                if (_tempSlot != null) width = _tempSlot.width * 2;
-                else width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
+                //if (_tempSlot != null) width = _tempSlot.width * 2;
+                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
             else if (furnitureSize is FurnitureSize.OneXFour)
             {
-                if (_tempSlot != null) width = _tempSlot.width * 4;
-                else width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
+                //if (_tempSlot != null) width = _tempSlot.width * 4;
+                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
             else
             {
                 Debug.LogError("Invalid furniture size.");
                 return;
             }
-            if (_tempSlot != null)
+            /*if (_tempSlot != null)
             {
                 position.x = (width / 2) - _tempSlot.width / 2;
                 position.y = -1 * (_tempSlot.height / 2);
             }
             else
-            {
+            {*/
                 position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
                 position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
-            }
+            //}
 
             transform.localPosition = position;
         }

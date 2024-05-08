@@ -1,13 +1,11 @@
-using System.Collections;
-using Battle.Scripts.Battle.Game;
 using UnityEngine;
+
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Battle.Players
 {
     public class PlayerDriverState : MonoBehaviour
     {
-        [SerializeField] private bool _autoRotate = true; //old
-
         internal bool MovementEnabled { get => _movementEnabled; set => _movementEnabled = value; }
         internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 

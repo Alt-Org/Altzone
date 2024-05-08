@@ -123,6 +123,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void HideFurnitureSlot(GameObject trayFurniture)
         {
+            if (!trayFurniture.transform.parent.CompareTag("FurnitureTrayItem")) return;
             _hiddenSlot = trayFurniture.transform.parent.gameObject;
             _hiddenSlot.SetActive(false);
         }
