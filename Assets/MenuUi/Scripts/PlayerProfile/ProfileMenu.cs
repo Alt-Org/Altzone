@@ -64,7 +64,7 @@ public class ProfileMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        tempLocalSaveTime
+         //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
 
