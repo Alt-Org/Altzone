@@ -51,6 +51,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             EnhancedTouchSupport.Enable();
             EnableTray(false);
+            //transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x * 0.8f, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
         }
 
         // Update is called once per frame
@@ -59,6 +60,7 @@ namespace MenuUI.Scripts.SoulHome
             CheckTrayButtonStatus();
             //CheckHoverButtons();
             CheckFurnitureButtons();
+            transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f -50, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
             if (!CheckInteractableStatus()) return;
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)

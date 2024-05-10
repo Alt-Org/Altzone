@@ -57,6 +57,27 @@ namespace MenuUI.Scripts.SoulHome
         public void OnEnable()
         {
             if(_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject rootObject in root)
+            {
+                if (rootObject.name == "AudioManager")
+                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
+            }
+            GetComponent<MusicList>().PlayMusic();
+            string name = GetComponent<MusicList>().GetTrackName();
+            if(name != null)
+            _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+        }
+
+        public void OnDisable()
+        {
+            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject rootObject in root)
+            {
+                if (rootObject.name == "AudioManager")
+                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Play();
+            }
+            GetComponent<MusicList>().StopMusic();
         }
 
         public void SetRoomName(GameObject room)
@@ -152,6 +173,21 @@ namespace MenuUI.Scripts.SoulHome
                     0);
             }
         }
+
+        public void NextMusicTrack()
+        {
+            string name =GetComponent<MusicList>().NextTrack();
+            if (name != null)
+                _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+        }
+
+        public void PrevMusicTrack()
+        {
+            string name = GetComponent<MusicList>().PrevTrack();
+            if (name != null)
+                _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+        }
+
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
         public void ConfirmEditCloseTrue() { ConfirmEditClose(true); }
 
