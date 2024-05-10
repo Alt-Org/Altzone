@@ -19,6 +19,7 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
@@ -27,6 +28,12 @@ public class ProfileMenu : MonoBehaviour
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
 
     // private Sprite Img;
+
+    private int tempLocalSaveTime;
+    private float tempLocalSaveSecondsTime;
+    private float tempLocalSaveToCarbon;
+    private float tempLocalSaveCarbon;
+
 
     private int minuteCount;
     private float secondsCount;
@@ -57,6 +64,7 @@ public class ProfileMenu : MonoBehaviour
 
     private void OnEnable()
     {
+         //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
 
