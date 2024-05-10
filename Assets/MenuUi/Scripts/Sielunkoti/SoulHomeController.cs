@@ -65,8 +65,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             GetComponent<MusicList>().PlayMusic();
             string name = GetComponent<MusicList>().GetTrackName();
-            if(name != null)
-            _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+            //if(name != null)
+            _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
         }
 
         public void OnDisable()
@@ -178,14 +178,14 @@ namespace MenuUI.Scripts.SoulHome
         {
             string name =GetComponent<MusicList>().NextTrack();
             if (name != null)
-                _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
         }
 
         public void PrevMusicTrack()
         {
             string name = GetComponent<MusicList>().PrevTrack();
             if (name != null)
-                _editTray.transform.Find("MusicTray").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
         }
 
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }

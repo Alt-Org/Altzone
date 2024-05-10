@@ -53,6 +53,7 @@ namespace MenuUI.Scripts.SoulHome
         public string NextTrack()
         {
             if (_musicList.Count < 2) return null;
+            StopMusic();
             _musicTrack++;
             if (_musicTrack >= _musicList.Count) _musicTrack = 0;
 
@@ -63,6 +64,7 @@ namespace MenuUI.Scripts.SoulHome
         public string PrevTrack()
         {
             if (_musicList.Count < 2) return null;
+            StopMusic();
             _musicTrack--;
             if (_musicTrack < 0) _musicTrack = _musicList.Count - 1;
 
