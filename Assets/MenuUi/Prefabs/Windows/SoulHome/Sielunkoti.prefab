@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 71.25
+  m_fontSize: 72
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54
+  m_fontSize: 72
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4607,7 +4607,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 05159326a43b0174089e3f1feb831221, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -4943,7 +4943,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5039,7 +5039,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa34babe7370224387cd525c1973cff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _musicList: []
+  _musicList:
+  - _musicClip: {fileID: 8300000, guid: f28bf90f2c066b646aac1b2b28d91a33, type: 3}
+    _name: Oletus
+  - _musicClip: {fileID: 8300000, guid: 894d4e0edaf6663438a4313830404f77, type: 3}
+    _name: Sataas
+  - _musicClip: {fileID: 8300000, guid: 6bb7c7092ecb43a43b796fb3fe416669, type: 3}
+    _name: Chills
+  - _musicClip: {fileID: 0}
+    _name: Ei musiikkia
   _defaultMusicTrack: 0
 --- !u!1 &4420273354512300173
 GameObject:
@@ -6583,9 +6591,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: c9c7e007b560e344999cf54981e48e63, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -7184,7 +7192,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 6ecdddc5bc5fe464695742e9c11bbfc2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -8935,7 +8943,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.5
+  m_fontSize: 34.15
   m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 1
