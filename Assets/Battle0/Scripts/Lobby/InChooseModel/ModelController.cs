@@ -28,7 +28,6 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             Debug.Log("Start");
             yield return new WaitUntil(() => _view.IsReady);
             _view.Reset();
-            _view.Title = $"Choose your character\r\nfor {Application.productName} {PhotonLobby.GameVersion}";
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
@@ -36,18 +35,15 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             store.GetPlayerData(playerGuid, playerData =>
             {
                 _playerData = playerData;
-                _view.PlayerName = playerData.Name;
-                _view.ContinueButtonOnClick = ContinueButtonOnClick;
+                _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = playerData.CurrentCustomCharacterId;
                 var characters = playerData.BattleCharacters.ToList();
                 characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
                 _view.SetCharacters(characters, currentCharacterId);
             });
         }
-
-        private void ContinueButtonOnClick()
+        private void HandleCurrentCharacterIdChanged(string newCharacterId)
         {
-            Debug.Log("click");
             if (_view.CurrentCharacterId != _playerData.CurrentCustomCharacterId)
             {
                 _playerData.CurrentCustomCharacterId = _view.CurrentCharacterId;
