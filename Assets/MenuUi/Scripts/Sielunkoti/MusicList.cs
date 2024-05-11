@@ -36,7 +36,7 @@ namespace MenuUI.Scripts.SoulHome
         public void PlayMusic()
         {
             if (_musicList.Count == 0) return;
-            GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
+            if (_musicList[_musicTrack].MusicClip != null) GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
         }
 
         public void StopMusic()
@@ -57,7 +57,7 @@ namespace MenuUI.Scripts.SoulHome
             _musicTrack++;
             if (_musicTrack >= _musicList.Count) _musicTrack = 0;
 
-            GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
+            if (_musicList[_musicTrack].MusicClip != null) GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
             return _musicList[_musicTrack].Name;
         }
 
@@ -68,7 +68,7 @@ namespace MenuUI.Scripts.SoulHome
             _musicTrack--;
             if (_musicTrack < 0) _musicTrack = _musicList.Count - 1;
 
-            GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
+            if(_musicList[_musicTrack].MusicClip != null) GetComponent<AudioSource>().PlayOneShot(_musicList[_musicTrack].MusicClip);
             return _musicList[_musicTrack].Name;
         }
 

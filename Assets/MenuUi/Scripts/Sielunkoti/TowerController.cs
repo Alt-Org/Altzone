@@ -38,6 +38,7 @@ namespace MenuUI.Scripts.SoulHome
         private List<GameObject> _changedFurnitureList = new();
 
         private bool rotated = false;
+        private float _prevPinchDistance = 0;
 
         private GameObject _selectedFurniture;
         private GameObject _tempSelectedFurniture;
@@ -54,8 +55,12 @@ namespace MenuUI.Scripts.SoulHome
         private float cameraWidth;
         private float cameraHeight;
 
+        private float _maxCameraDistance;
+        private float _minCameraDistance;
+
         private Vector2 prevp;
         private bool cameraMove = false;
+        private bool _pinched = false;
         private Vector2 startScrollSlide = Vector2.zero;
         private Vector2 currentScrollSlide = Vector2.zero;
         private Vector2 currentScrollSlideDirection = Vector2.zero;
@@ -83,12 +88,7 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer
-                || (Application.platform == RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow)
-                || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
-            else if (AppPlatform.IsEditor
-                || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
-                || !Application.isMobilePlatform) Camera.fieldOfView = 45;
+            Camera.fieldOfView = 90f;
             transform.localPosition = new(0, 0, transform.position.z);
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
             Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
@@ -109,6 +109,10 @@ namespace MenuUI.Scripts.SoulHome
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             transform.position = new(x, y, transform.position.z);
             EnhancedTouchSupport.Enable();
+            Camera.transform.localPosition = new(Camera.transform.localPosition.x, Camera.transform.localPosition.y, -1 * GetCameraMaxDistance());
+            _maxCameraDistance = GetCameraMaxDistance();
+            _minCameraDistance = GetCameraMinDistance();
+
         }
             // Update is called once per frame
         void Update()
@@ -295,11 +299,17 @@ namespace MenuUI.Scripts.SoulHome
             }
             cameraMove = false;
             if (Touch.activeFingers.Count > 0 && (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)) prevp = Vector2.zero;
+            if(!_pinched && _prevPinchDistance != 0) _prevPinchDistance = 0;
         }
 
         void OnEnable()
         {
-            if(Camera != null) Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            if (Camera != null)
+            {
+                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                HandleScreenRotation();
+            }
+            rotated = false;
         }
 
         void OnDisable()
@@ -487,21 +497,53 @@ namespace MenuUI.Scripts.SoulHome
             return enterRoom;
         }
 
+        public void PinchZoom(float pinchDistance, bool scroll)
+        {
+            _pinched = true;
+            if (scroll)
+            {
+                Debug.Log("Pinch: " + pinchDistance / 100);
+                ClampCameraDistance(pinchDistance / 100);
+            }
+            else
+            {
+                if (_prevPinchDistance == 0) _prevPinchDistance = pinchDistance;
+                else
+                {
+                    float change = pinchDistance - _prevPinchDistance;
+                    float scaledChange = change / Vector2.Distance(_displayScreen.GetComponent<RectTransform>().rect.max, _displayScreen.GetComponent<RectTransform>().rect.min);
+
+                    Debug.Log("Pinch: " + scaledChange);
+
+                    ClampCameraDistance(scaledChange*100);
+
+                    _prevPinchDistance = pinchDistance;
+                }
+            }
+        }
+
+        private void ClampCameraDistance(float change)
+        {
+            float z = Mathf.Clamp(Camera.transform.position.z + change, _minCameraDistance, _maxCameraDistance);
+
+            Camera.transform.position = new(Camera.transform.position.x, Camera.transform.position.y, z);
+        }
+
         public void ZoomIn(GameObject room)
         {
             _soulHomeController.SetRoomName(selectedRoom);
             prevWideCameraPos = Camera.transform.position;
             prevWideCameraFoV = Camera.fieldOfView;
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + 12.5f, -27.5f);
+            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2, -1 * GetCameraYDistance());
             if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator)
             {
-                if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 60;
+                if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
                 else if (Screen.orientation == ScreenOrientation.LandscapeLeft
                     || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
-                    || AppPlatform.IsEditor) Camera.fieldOfView = 55;
-                else Camera.fieldOfView = 60;
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 90;
             }
-            else if (AppPlatform.IsEditor) Camera.fieldOfView = 55;
+            else if (AppPlatform.IsEditor) Camera.fieldOfView = 90;
             outDelay = Time.time;
 
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
@@ -527,13 +569,13 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
-                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 72.5f;
+                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90f;
                 else if (Screen.orientation == ScreenOrientation.LandscapeLeft
                     || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
-                    || AppPlatform.IsEditor) Camera.fieldOfView = 45;
-                else Camera.fieldOfView = 72.5f;
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 90f;
 
-                Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -50f);
+                Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, -1*GetCameraMaxDistance());
                 inDelay = Time.time;
 
                 Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
@@ -542,7 +584,10 @@ namespace MenuUI.Scripts.SoulHome
                 cameraWidth = Mathf.Abs(tr.x - bl.x);
                 cameraHeight = Mathf.Abs(tr.y - bl.y);
 
-                scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+                if(!rotated)
+                    scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+                else
+                    scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraWidth;
                 Debug.Log(_mainScreen.transform.GetComponent<RectTransform>().rect.height + ": " + cameraWidth + ": " + scrollSpeed);
                 _mainScreen.LeaveRoomButton.SetActive(false);
 
@@ -753,49 +798,43 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckScreenRotationStatus()
         {
-            if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
+            if (AppPlatform.IsMobile || AppPlatform.IsEditor && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
             {
-                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                if (!selectedRoom) Camera.fieldOfView = 45;
-                else
-                {
-                    Camera.fieldOfView = 55;
-                    prevWideCameraFoV = 45;
-                }
                 rotated = true;
 
-                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-                float currentX = transform.position.x;
-                float currentY = transform.position.y;
-                float offsetX = Mathf.Abs(currentX - bl.x);
-                float offsetY = Mathf.Abs(currentY - bl.y);
-
-                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-                transform.position = new(x, y, transform.position.z);
+                HandleScreenRotation();
 
             }
-            else if (AppPlatform.IsMobile && Screen.orientation == ScreenOrientation.Portrait && rotated)
+            else if (AppPlatform.IsMobile || AppPlatform.IsEditor && Screen.orientation == ScreenOrientation.Portrait && rotated)
             {
-                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                if (!selectedRoom) Camera.fieldOfView = 90;
-                else
-                {
-                    Camera.fieldOfView = 60;
-                    prevWideCameraFoV = 90;
-                }
                 rotated = false;
 
-                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-                float currentX = transform.position.x;
-                float currentY = transform.position.y;
-                float offsetX = Mathf.Abs(currentX - bl.x);
-                float offsetY = Mathf.Abs(currentY - bl.y);
-
-                float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-                float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-                transform.position = new(x, y, transform.position.z);
+                HandleScreenRotation();
             }
+        }
+
+        private void HandleScreenRotation()
+        {
+            Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            Camera.fieldOfView = 90;
+
+            if (SelectedRoom != null)
+                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraYDistance());
+            else
+                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());
+
+            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+            float currentX = transform.position.x;
+            float currentY = transform.position.y;
+            float offsetX = Mathf.Abs(currentX - bl.x);
+            float offsetY = Mathf.Abs(currentY - bl.y);
+
+            float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
+            float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
+            transform.position = new(x, y, transform.position.z);
+
+            _maxCameraDistance = GetCameraMaxDistance();
+            _minCameraDistance = GetCameraMinDistance();
         }
 
         private bool CheckInteractableStatus()
@@ -813,6 +852,44 @@ namespace MenuUI.Scripts.SoulHome
             cameraMinY = cameraBounds.min.y;
             cameraMaxX = cameraBounds.max.x;
             cameraMaxY = cameraBounds.max.y;
+        }
+
+        public float GetCameraMaxDistance()
+        {
+            float distanceMaxX = GetCameraXDistance();
+
+            float distanceMaxY = GetCameraYDistance();
+
+            if (distanceMaxX < distanceMaxY) return distanceMaxY;
+            else return distanceMaxX;
+        }
+
+        public float GetCameraMinDistance()
+        {
+            float distanceMaxX = GetCameraXDistance();
+
+            float distanceMaxY = GetCameraYDistance();
+
+            if (distanceMaxX > distanceMaxY) return distanceMaxY;
+            else return distanceMaxX;
+        }
+
+        public float GetCameraYDistance()
+        {
+            float heightToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.y / 2 + 2;
+            float cameraAngleVertical = Camera.fieldOfView / 2;
+            float distanceMaxY = heightToEdge / Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180));
+            Debug.Log(heightToEdge + ":" + cameraAngleVertical + ":" + Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180)) + ":" + distanceMaxY);
+            return distanceMaxY;
+        }
+
+        public float GetCameraXDistance()
+        {
+            float widthToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.x / 2;
+            float cameraAngle = Camera.VerticalToHorizontalFieldOfView(Camera.fieldOfView, Camera.aspect) / 2;
+            float distanceMaxX = widthToEdge / Mathf.Tan(cameraAngle * (Mathf.PI / 180));
+            Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);
+            return distanceMaxX;
         }
     }
 }

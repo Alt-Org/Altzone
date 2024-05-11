@@ -73,7 +73,27 @@ namespace MenuUI.Scripts.SoulHome
             ClickState clickState = ClickStateHandler.GetClickState();
             if (clickState is not ClickState.None)
             {
+                Debug.Log(Touch.activeFingers[0].screenPosition);
+                if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero))
                 RayPoint(clickState);
+                else if(Touch.activeTouches.Count == 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))
+                {
+                    float distance;
+                    if (Touch.activeTouches.Count == 2)
+                    {
+                        Vector2 touch1 = Touch.activeFingers[0].screenPosition;
+                        Vector2 touch2 = Touch.activeFingers[1].screenPosition;
+
+                        distance = Vector2.Distance(touch1, touch2);
+                        _soulHomeTower.PinchZoom(distance, false);
+                    }
+                    else
+                    {
+                        distance = Mouse.current.scroll.ReadValue().y;
+                        _soulHomeTower.PinchZoom(distance, true);
+                    }
+                }
+                    
             }
             bool doubleTap = false;
             if(Touch.activeFingers.Count > 0 && clickState is ClickState.End)
