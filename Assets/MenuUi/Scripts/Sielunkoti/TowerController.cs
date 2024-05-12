@@ -300,6 +300,7 @@ namespace MenuUI.Scripts.SoulHome
             cameraMove = false;
             if (Touch.activeFingers.Count > 0 && (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)) prevp = Vector2.zero;
             if(!_pinched && _prevPinchDistance != 0) _prevPinchDistance = 0;
+            _pinched = false;
         }
 
         void OnEnable()
@@ -524,7 +525,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void ClampCameraDistance(float change)
         {
-            float z = Mathf.Clamp(Camera.transform.position.z + change, _minCameraDistance, _maxCameraDistance);
+            float z = -1 * Mathf.Clamp(Mathf.Abs(Camera.transform.position.z) + change, _minCameraDistance, _maxCameraDistance);
 
             Camera.transform.position = new(Camera.transform.position.x, Camera.transform.position.y, z);
         }
@@ -798,14 +799,15 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckScreenRotationStatus()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsEditor && Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated)
+            Debug.Log(Screen.orientation);
+            if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
             {
                 rotated = true;
 
                 HandleScreenRotation();
 
             }
-            else if (AppPlatform.IsMobile || AppPlatform.IsEditor && Screen.orientation == ScreenOrientation.Portrait && rotated)
+            else if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.Portrait /*&& rotated*/)
             {
                 rotated = false;
 
@@ -815,7 +817,10 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleScreenRotation()
         {
-            Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            float newAspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            if (Camera.aspect.Equals(newAspect)) return;
+            Camera.aspect = newAspect;
+
             Camera.fieldOfView = 90;
 
             if (SelectedRoom != null)
@@ -879,7 +884,7 @@ namespace MenuUI.Scripts.SoulHome
             float heightToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.y / 2 + 2;
             float cameraAngleVertical = Camera.fieldOfView / 2;
             float distanceMaxY = heightToEdge / Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180));
-            Debug.Log(heightToEdge + ":" + cameraAngleVertical + ":" + Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180)) + ":" + distanceMaxY);
+            //Debug.Log(heightToEdge + ":" + cameraAngleVertical + ":" + Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180)) + ":" + distanceMaxY);
             return distanceMaxY;
         }
 
@@ -888,7 +893,7 @@ namespace MenuUI.Scripts.SoulHome
             float widthToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.x / 2;
             float cameraAngle = Camera.VerticalToHorizontalFieldOfView(Camera.fieldOfView, Camera.aspect) / 2;
             float distanceMaxX = widthToEdge / Mathf.Tan(cameraAngle * (Mathf.PI / 180));
-            Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);
+            //Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);
             return distanceMaxX;
         }
     }
