@@ -5,13 +5,13 @@ using UnityEngine;
 public class CharacterGalleryIntComponent : MonoBehaviour
 {
     [SerializeField]
-    private int selectedCharacter;
+    private int characterInt;
     public void SetSelectedCharacterGalleryInt(int value)
     {
-        selectedCharacter = value;
+        characterInt = value;
     }
     public int GetSelectedCharacterGalleryInt()
     {
-        return selectedCharacter;
+        return characterInt;
     }
 }
