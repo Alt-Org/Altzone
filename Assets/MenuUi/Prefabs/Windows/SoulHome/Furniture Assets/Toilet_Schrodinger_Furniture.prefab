@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -4477838665465569415}
   - component: {fileID: -724820267442525664}
   m_Layer: 0
-  m_Name: Base_FurniturePrefab
+  m_Name: Toilet_Schrodinger_Furniture
   m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,15 +75,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2, y: 1.5046439}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &-4477838665465569415
@@ -118,18 +118,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: 1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 2, y: 1.5046439}
-    newSize: {x: 2, y: 1.5046439}
+    oldSize: {x: 2, y: 2}
+    newSize: {x: 2, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &-724820267442525664
 MonoBehaviour:
@@ -143,13 +143,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cd1a80efe89f346b8e28df06148614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: 
-  _furnitureSpriteFront: {fileID: 0}
+  _name: Toilet_Schrodinger
+  _furnitureSpriteFront: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239,
+    type: 3}
   _furnitureSpriteRight: {fileID: 0}
-  _furnitureSpriteLeft: {fileID: 0}
+  _furnitureSpriteLeft: {fileID: 21300000, guid: 042cb777955dd5f43b453a21fdadc654,
+    type: 3}
   _furnitureSpriteBack: {fileID: 0}
   _defaultSpriteDirection: 0
   _spriteCanBeFlipped: 1
-  _trayFurnitureObject: {fileID: 0}
+  _trayFurnitureObject: {fileID: 6752174233831251881, guid: 902ef71f419bd2c468d14a61e89d4f1d,
+    type: 3}
   cullCheckAmount: 0.1
   _isPlaceHolder: 0

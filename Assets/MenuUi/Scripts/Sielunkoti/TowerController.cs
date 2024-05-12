@@ -823,10 +823,10 @@ namespace MenuUI.Scripts.SoulHome
 
             Camera.fieldOfView = 90;
 
-            if (SelectedRoom != null)
+            /*if (SelectedRoom != null)
                 transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraYDistance());
             else
-                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());
+                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());*/
 
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
             float currentX = transform.position.x;
@@ -840,6 +840,8 @@ namespace MenuUI.Scripts.SoulHome
 
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
+
+            ClampCameraDistance(0);
         }
 
         private bool CheckInteractableStatus()

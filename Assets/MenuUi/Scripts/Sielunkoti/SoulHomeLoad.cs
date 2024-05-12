@@ -85,8 +85,8 @@ namespace MenuUI.Scripts.SoulHome {
                     int slotRows = ((int)_roomPrefab.GetComponent<RoomData>().SlotRows);
                     int slotColumn = ((int)_roomPrefab.GetComponent<RoomData>().SlotColumns);
 
-                    int furniture1X = Random.Range(0, slotColumn -1);
-                    int furniture1Y = Random.Range(0, slotRows);
+                    int furniture1X = Random.Range(1, slotColumn -1);
+                    int furniture1Y = Random.Range(1, slotRows);
                     int furniture2X;
                     int furniture2Y;
                     while (true)
@@ -101,10 +101,11 @@ namespace MenuUI.Scripts.SoulHome {
                         else break;
                     }
 
-                    var test2 = new Furniture(1, "Standard", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
+                    var test2 = new Furniture(1, "Floorlamp_Taakka", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, 15f, false);
                     room.Furnitures.Add(test2);
-                    var test3 = new Furniture(2, "ShortWide", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
+                    var test3 = new Furniture(2, "Sofa_Taakka", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.OneXFour, FurnitureSize.TwoXTwo, 15f, false);
                     room.Furnitures.Add(test3);
+
                     soulHome.Room.Add(room);
                 }
                 json = JsonUtility.ToJson(soulHome);
@@ -226,16 +227,20 @@ namespace MenuUI.Scripts.SoulHome {
                 int i = 0;
                 while (i < 2)
                 {
-                    var test2 = new Furniture(i*5+1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
-                    _trayHandler.AddFurnitureInitial(test2);
-                    var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
-                    _trayHandler.AddFurnitureInitial(test3);
+                    //var test2 = new Furniture(i*5+1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, 15f, false);
+                    //_trayHandler.AddFurnitureInitial(test2);
+                    //var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
+                    //_trayHandler.AddFurnitureInitial(test3);
                     var test4 = new Furniture(i * 5 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.TwoXTwo, 15f, false);
                     _trayHandler.AddFurnitureInitial(test4);
-                    var test5 = new Furniture(i * 5 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXTwo, 15f, false);
+                    var test5 = new Furniture(i * 5 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, 15f, false);
                     _trayHandler.AddFurnitureInitial(test5);
-                    var test6 = new Furniture(i * 5 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXTwo, 15f, false);
+                    var test6 = new Furniture(i * 5 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, 15f, false);
                     _trayHandler.AddFurnitureInitial(test6);
+                    var test7 = new Furniture(i * 5 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, 15f, false);
+                    _trayHandler.AddFurnitureInitial(test7);
+                    //var test8 = new Furniture(i * 5 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXTwo, 15f, false);
+                    //_trayHandler.AddFurnitureInitial(test8);
                     i++;
                 }
             }

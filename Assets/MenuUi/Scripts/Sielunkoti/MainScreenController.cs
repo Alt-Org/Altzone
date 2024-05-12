@@ -26,6 +26,8 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
+        [SerializeField]
+        private FurnitureTrayHandler _trayHandler;
 
         private bool _rotated = false;
 
@@ -72,7 +74,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _rotated = !_rotated;
                 StartCoroutine(SetColliderSize());
-                SetFurnitureButtons();
+                StartCoroutine(ScreenRotation());
             }
 
             ClickState clickState = ClickStateHandler.GetClickState();
@@ -354,7 +356,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                tray.transform.localPosition = new Vector2(tray.transform.localPosition.x + width * 0.8f - tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
+                tray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _trayOpen = false;
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(false);
                 //if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
@@ -541,6 +543,19 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 localPosition = new(x * relPos.x - x / 2, y * relPos.y - y / 2);
             Vector2 position = transform.Find("Screen").TransformPoint(localPosition);
             _hoverButtons.transform.position = position;
+        }
+
+        public IEnumerator ScreenRotation()
+        {
+            yield return new WaitForEndOfFrame();
+            SetFurnitureButtons();
+            if (_trayOpen)
+            {
+                ToggleTray();
+                ToggleTray();
+            }
+            _trayHandler.GetComponent<ResizeCollider>().Resize();
+            _trayHandler.SetTrayContentSize();
         }
     }
 }
