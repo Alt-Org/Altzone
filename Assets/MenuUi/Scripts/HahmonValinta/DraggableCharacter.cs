@@ -11,7 +11,7 @@ using Prg.Scripts.Common.Photon;
 using UnityEngine.TextCore.Text;
 
 
-namespace Battle0.Scripts.Lobby.InChooseModel
+namespace MenuUi.Scripts.CharacterGallery
 {
     // <summary>
     // Allows Dragging characters and tells modelview script if the character has changed

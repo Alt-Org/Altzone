@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
@@ -13,31 +12,26 @@ namespace Battle0.Scripts.Lobby.InChooseModel
     /// </summary>
     public class ModelView : MonoBehaviour
     {
-        [SerializeField] private Transform VerticalContentPanel;
-        [SerializeField] private Transform HorizontalContentPanel;
+        [SerializeField] private Text titleText;
+        [SerializeField] private InputField playerName;
+        [SerializeField] private Button continueButton;
 
+        [SerializeField] private Transform leftPane;
+        [SerializeField] private Transform rightPane;
+        [SerializeField] private Transform _prefabsRoot;
+        [SerializeField] private MonoBehaviour[] _prefabs;
+        [SerializeField] private MonoBehaviour _curPrefab;
         [SerializeField] private bool _isReady;
 
         private Button[] _buttons;
-        public CharacterSlot[] _CurSelectedCharacterSlot { get; private set; }
-        private CharacterSlot[] CharacterSlot;
+        private Text[] _labels;
 
-
-        public delegate void CurrentCharacterIdChangedHandler(string newCharacterId);
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
-
-        private string _currentCharacterId;
-
-
 
         private void Awake()
         {
-            _buttons = VerticalContentPanel.GetComponentsInChildren<Button>();
-            _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
-            CharacterSlot = VerticalContentPanel.GetComponentsInChildren<CharacterSlot>();
-
-
+            _buttons = leftPane.GetComponentsInChildren<Button>();
+            _labels = rightPane.GetComponentsInChildren<Text>();
             LoadAndCachePrefabs();
         }
 
@@ -46,81 +40,114 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             var gameConfig = GameConfig.Get();
             var playerPrefabs = gameConfig.PlayerPrefabs;
             var prefabs = playerPrefabs._playerPrefabs;
+            _prefabs = new MonoBehaviour[prefabs.Length];
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
                 var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex.ToString());
-
+                var instance = Instantiate(playerPrefab, _prefabsRoot);
+                if (instance == null)
+                {
+                    continue;
+                }
                 Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
-
+                instance.gameObject.SetActive(false);
+                _prefabs[prefabIndex] = instance;
             }
             _isReady = true;
         }
 
-
-
-        public string CurrentCharacterId
+        public string Title
         {
-            get => _currentCharacterId;
-            private set
-            {
-                if (_currentCharacterId != value)
-                {
-                    _currentCharacterId = value;
-                    OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId); 
-                }
-            }
+            get => titleText.text;
+            set => titleText.text = value;
+        }
+
+        public string PlayerName
+        {
+            get => playerName.text;
+            set => playerName.text = value;
+        }
+
+        public string CurrentCharacterId { get; private set; }
+
+        public Action ContinueButtonOnClick
+        {
+            set { continueButton.onClick.AddListener(() => value()); }
         }
 
         public void Reset()
         {
+            Title = string.Empty;
+            PlayerName = string.Empty;
+            foreach (var label in _labels)
+            {
+                label.text = string.Empty;
+            }
+            foreach (var prefab in _prefabs)
+            {
+                if (prefab == null)
+                {
+                    continue;
+                }
+                prefab.gameObject.SetActive(false);
+            }
             foreach (var button in _buttons)
             {
                 button.gameObject.SetActive(false);
             }
-            foreach (var characterSlot in CharacterSlot)
-            {
-                characterSlot.gameObject.SetActive(false);
-            }
-
+            _curPrefab = null;
         }
+
         public void SetCharacters(List<BattleCharacter> characters, string currentCharacterId)
         {
+            Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
-
-            for (var i = 0; i < characters.Count && i < _buttons.Length && i < CharacterSlot.Length; ++i)
+            for (var i = 0; i < characters.Count && i < _buttons.Length; ++i)
             {
                 var character = characters[i];
                 var button = _buttons[i];
-                var characterSlot = CharacterSlot[i];
-
                 button.gameObject.SetActive(true);
                 button.interactable = true;
                 button.SetCaption(character.Name);
-
-                characterSlot.gameObject.SetActive(true);
-
+                button.onClick.AddListener(() =>
+                {
+                    CurrentCharacterId = character.CustomCharacterId;
+                    ShowCharacter(character);
+                });
                 if (currentCharacterId == character.CustomCharacterId)
                 {
-                    if (_CurSelectedCharacterSlot.Length > 0)
-                    {
-                        button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
-                    }
+                    ShowCharacter(character);
                 }
-
-                var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
-                parentChangeMonitor.OnParentChanged += newParent =>
-                {
-                    if (newParent == _CurSelectedCharacterSlot[0].transform)
-                    {
-                        CurrentCharacterId = character.CustomCharacterId;
-                    }
-                };
-
-
-
             }
-
         }
 
+        private void ShowCharacter(BattleCharacter character)
+        {
+            var i = -1;
+            var characterName = character.Name == character.CharacterClassName
+                ? character.Name
+                : $"{character.Name} [{character.CharacterClassName}]";
+            _labels[++i].text = $"{characterName}";
+            _labels[++i].text = $"GestaltCycle:\r\n{character.GestaltCycle}";
+            _labels[++i].text = $"Speed:\r\n{character.Speed}";
+            _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
+            _labels[++i].text = $"Attack:\r\n{character.Attack}";
+            _labels[++i].text = $"Defence:\r\n{character.Defence}";
+            var prefabIndex = PhotonBattle.GetPrefabIndex(character, -1);
+            SetCharacterPrefab(prefabIndex);
+        }
+
+        private void SetCharacterPrefab(int prefabIndex)
+        {
+            if (_curPrefab != null)
+            {
+                _curPrefab.gameObject.SetActive(false);
+            }
+            _curPrefab = prefabIndex >= 0 ? _prefabs[prefabIndex] : null;
+            if (_curPrefab != null)
+            {
+                _curPrefab.gameObject.SetActive(true);
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ using Altzone.Scripts;
 using Prg.Scripts.Common.Photon;
 
 
-namespace Battle0.Scripts.Lobby.InChooseModel
+namespace MenuUi.Scripts.CharacterGallery
 {
     // <summary>
     // Manages slots for draggableitems, DraggableCharacter.cs
