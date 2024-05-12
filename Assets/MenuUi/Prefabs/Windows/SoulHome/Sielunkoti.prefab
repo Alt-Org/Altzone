@@ -2065,6 +2065,8 @@ MonoBehaviour:
   _camera: {fileID: 2055968341869898131}
   _hoverButtons: {fileID: 4685726316003798928}
   _leaveRoomButton: {fileID: 7330158941169189523}
+  _furnitureButtonTray: {fileID: 5709668148168734955}
+  _changeHandleButtonTray: {fileID: 4786222756856371447}
 --- !u!1 &1544293084460920470
 GameObject:
   m_ObjectHideFlags: 0
@@ -4886,6 +4888,7 @@ GameObject:
   - component: {fileID: 7681122712900677425}
   - component: {fileID: 1185748943130668106}
   - component: {fileID: 3224732297081688210}
+  - component: {fileID: 828061697809835663}
   m_Layer: 0
   m_Name: Sielunkoti
   m_TagString: Untagged
@@ -4945,7 +4948,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.8
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -5049,6 +5052,19 @@ MonoBehaviour:
   - _musicClip: {fileID: 0}
     _name: Ei musiikkia
   _defaultMusicTrack: 0
+--- !u!114 &828061697809835663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4326967985889569669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundType: 2
 --- !u!1 &4420273354512300173
 GameObject:
   m_ObjectHideFlags: 0
@@ -6316,7 +6332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0.000091552734}
+  m_AnchoredPosition: {x: -0.00012207031, y: 0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7062685580425788641
@@ -8641,8 +8657,8 @@ RectTransform:
   - {fileID: 3404254186700236923}
   m_Father: {fileID: 4774092094330941624}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.1}
-  m_AnchorMax: {x: 1, y: 0.9}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
