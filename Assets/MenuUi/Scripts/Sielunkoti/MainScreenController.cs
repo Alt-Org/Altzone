@@ -556,6 +556,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             _trayHandler.GetComponent<ResizeCollider>().Resize();
             _trayHandler.SetTrayContentSize();
+            _soulHomeController.EditModeTrayResize();
         }
     }
 }
