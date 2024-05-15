@@ -61,7 +61,7 @@ public class PlayerPanel : MonoBehaviour
             var store = Storefront.Get();
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            _playerNameText.text = "Hei " + playerData.Name + "!";
+            _playerNameText.text = playerData.Name;
             _playerClanText.text = "Tervetuloa ALT Zoneen!";
             _playerClanDescription.text = "";
 

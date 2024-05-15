@@ -273,11 +273,11 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         {
             if (i == CurrentPage)
             {
-                buttonImages[i].color = buttons[i].colors.disabledColor;
+                buttons[i].transform.localScale = Vector3.one * 1.2f;
             }
             else
             {
-                buttonImages[i].color = buttons[i].colors.normalColor;
+                buttons[i].transform.localScale = Vector3.one;
             }
         }
     }

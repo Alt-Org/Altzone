@@ -22,6 +22,12 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _hoverButtons;
         [SerializeField]
         private GameObject _leaveRoomButton;
+        [SerializeField]
+        private GameObject _furnitureButtonTray;
+        [SerializeField]
+        private GameObject _changeHandleButtonTray;
+        [SerializeField]
+        private FurnitureTrayHandler _trayHandler;
 
         private bool _rotated = false;
 
@@ -51,6 +57,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             EnhancedTouchSupport.Enable();
             EnableTray(false);
+            //transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x * 0.8f, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
         }
 
         // Update is called once per frame
@@ -59,6 +66,7 @@ namespace MenuUI.Scripts.SoulHome
             CheckTrayButtonStatus();
             //CheckHoverButtons();
             CheckFurnitureButtons();
+            transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f -50, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
             if (!CheckInteractableStatus()) return;
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
@@ -66,12 +74,33 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _rotated = !_rotated;
                 StartCoroutine(SetColliderSize());
+                StartCoroutine(ScreenRotation());
             }
 
             ClickState clickState = ClickStateHandler.GetClickState();
             if (clickState is not ClickState.None)
             {
+                Debug.Log(Touch.activeFingers[0].screenPosition);
+                if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero))
                 RayPoint(clickState);
+                else if(Touch.activeTouches.Count == 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))
+                {
+                    float distance;
+                    if (Touch.activeTouches.Count == 2)
+                    {
+                        Vector2 touch1 = Touch.activeFingers[0].screenPosition;
+                        Vector2 touch2 = Touch.activeFingers[1].screenPosition;
+
+                        distance = Vector2.Distance(touch1, touch2);
+                        _soulHomeTower.PinchZoom(distance, false);
+                    }
+                    else
+                    {
+                        distance = Mouse.current.scroll.ReadValue().y;
+                        _soulHomeTower.PinchZoom(distance, true);
+                    }
+                }
+                    
             }
             bool doubleTap = false;
             if(Touch.activeFingers.Count > 0 && clickState is ClickState.End)
@@ -327,7 +356,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                tray.transform.localPosition = new Vector2(tray.transform.localPosition.x + width * 0.8f - tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
+                tray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _trayOpen = false;
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(false);
                 //if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
@@ -339,15 +368,58 @@ namespace MenuUI.Scripts.SoulHome
             {
                 GameObject tray = transform.Find("Itemtray").gameObject;
                 tray.SetActive(true);
-                transform.Find("ChangeHandleButtons").gameObject.SetActive(true);
-                transform.Find("FurnitureButtons").gameObject.SetActive(true);
+                _changeHandleButtonTray.SetActive(true);
+                _furnitureButtonTray.SetActive(true);
+                SetFurnitureButtons();
             }
             else
             {
                 GameObject tray = transform.Find("Itemtray").gameObject;
                 tray.SetActive(false);
-                transform.Find("ChangeHandleButtons").gameObject.SetActive(false);
-                transform.Find("FurnitureButtons").gameObject.SetActive(false);
+                _changeHandleButtonTray.SetActive(false);
+                _furnitureButtonTray.SetActive(false);
+            }
+        }
+
+        private void SetFurnitureButtons()
+        {
+            float width = _furnitureButtonTray.GetComponent<RectTransform>().rect.width;
+            float height = _furnitureButtonTray.GetComponent<RectTransform>().rect.height;
+
+            GameObject setButton = _furnitureButtonTray.transform.GetChild(0).gameObject;
+            GameObject rotateButton = _furnitureButtonTray.transform.GetChild(1).gameObject;
+
+            if (width < height)
+            {
+                setButton.GetComponent<RectTransform>().anchorMax = new(0.5f,0.75f);
+                setButton.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.75f);
+                setButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                float buttonSizeHeight = (height/2)*0.9f;
+                float buttonSizeWidth = width * 0.9f;
+                float buttonSize;
+                if (buttonSizeHeight > buttonSizeWidth) buttonSize = buttonSizeWidth;
+                else buttonSize = buttonSizeHeight;
+                setButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
+                rotateButton.GetComponent<RectTransform>().anchorMax = new(0.5f, 0.25f);
+                rotateButton.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.25f);
+                rotateButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                rotateButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
+            }
+            else
+            {
+                setButton.GetComponent<RectTransform>().anchorMax = new(0.25f, 0.5f);
+                setButton.GetComponent<RectTransform>().anchorMin = new(0.25f, 0.5f);
+                setButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                float buttonSizeWidth = (width / 2) * 0.9f;
+                float buttonSizeHeight = height * 0.9f;
+                float buttonSize;
+                if (buttonSizeHeight < buttonSizeWidth) buttonSize = buttonSizeHeight;
+                else buttonSize = buttonSizeWidth;
+                setButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
+                rotateButton.GetComponent<RectTransform>().anchorMax = new(0.75f, 0.5f);
+                rotateButton.GetComponent<RectTransform>().anchorMin = new(0.75f, 0.5f);
+                rotateButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                rotateButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
             }
         }
 
@@ -428,13 +500,13 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_soulHomeTower.ChangedFurnitureList.Count > 0 && CheckInteractableStatus())
             {
-                transform.Find("ChangeHandleButtons/DiscardChangesButton").GetComponent<Button>().interactable = true;
-                transform.Find("ChangeHandleButtons/SaveChangesButton").GetComponent<Button>().interactable = true;
+                _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
+                _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
             }
             else
             {
-                transform.Find("ChangeHandleButtons/DiscardChangesButton").GetComponent<Button>().interactable = false;
-                transform.Find("ChangeHandleButtons/SaveChangesButton").GetComponent<Button>().interactable = false;
+                _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = false;
+                _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
             }
         }
 
@@ -471,6 +543,20 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 localPosition = new(x * relPos.x - x / 2, y * relPos.y - y / 2);
             Vector2 position = transform.Find("Screen").TransformPoint(localPosition);
             _hoverButtons.transform.position = position;
+        }
+
+        public IEnumerator ScreenRotation()
+        {
+            yield return new WaitForEndOfFrame();
+            SetFurnitureButtons();
+            if (_trayOpen)
+            {
+                ToggleTray();
+                ToggleTray();
+            }
+            _trayHandler.GetComponent<ResizeCollider>().Resize();
+            _trayHandler.SetTrayContentSize();
+            _soulHomeController.EditModeTrayResize();
         }
     }
 }

@@ -272,7 +272,6 @@ MonoBehaviour:
   _playerNameText: {fileID: 8814020343608223576}
   _playerClanText: {fileID: 6418099758862454539}
   _playerClanDescription: {fileID: 5725124495499325070}
-  _signInNaviButton: {fileID: 0}
   _profileNaviButton: {fileID: 1443405801679372250}
   _clanButtonGameObject: {fileID: 5612480394231691680}
 --- !u!1 &2433838883323833841
@@ -1092,6 +1091,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 190456095295517285}
     m_Modifications:
+    - target: {fileID: 2261026606916043575, guid: f8344c471eab70640b21c56b49071030,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2472968820478298304, guid: f8344c471eab70640b21c56b49071030,
         type: 3}
       propertyPath: m_Name

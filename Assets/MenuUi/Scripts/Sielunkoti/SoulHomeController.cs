@@ -46,6 +46,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
             }
+            EditModeTrayResize();
         }
 
         // Update is called once per frame
@@ -57,6 +58,28 @@ namespace MenuUI.Scripts.SoulHome
         public void OnEnable()
         {
             if(_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject rootObject in root)
+            {
+                if (rootObject.name == "AudioManager")
+                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
+            }
+            GetComponent<MusicList>().PlayMusic();
+            string name = GetComponent<MusicList>().GetTrackName();
+            //if(name != null)
+            _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+            EditModeTrayResize();
+        }
+
+        public void OnDisable()
+        {
+            GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject rootObject in root)
+            {
+                if (rootObject.name == "AudioManager")
+                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Play();
+            }
+            GetComponent<MusicList>().StopMusic();
         }
 
         public void SetRoomName(GameObject room)
@@ -138,20 +161,39 @@ namespace MenuUI.Scripts.SoulHome
             if (!open)
             {
                 _editButton.interactable = true;
-                _editTray.transform.localPosition = new Vector3(
-                    _editTray.transform.localPosition.x - (-1 * _editTray.GetComponent<RectTransform>().rect.width),
-                    _editTray.transform.localPosition.y,
-                    0);
+                _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
+                _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else
             {
                 _editButton.interactable = false;
-                _editTray.transform.localPosition = new Vector3(
-                    _editTray.transform.localPosition.x + (-1 * _editTray.GetComponent<RectTransform>().rect.width),
-                    _editTray.transform.localPosition.y,
-                    0);
+                _editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
+                _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
         }
+
+        public void EditModeTrayResize()
+        {
+            float width;
+            if (transform.Find("UICanvas").GetComponent<RectTransform>().rect.width / 2 < 1000) width = transform.Find("UICanvas").GetComponent<RectTransform>().rect.width / 2;
+            else width =1000;
+            _editTray.GetComponent<RectTransform>().sizeDelta = new Vector2(width,0);
+        }
+
+        public void NextMusicTrack()
+        {
+            string name =GetComponent<MusicList>().NextTrack();
+            if (name != null)
+                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+        }
+
+        public void PrevMusicTrack()
+        {
+            string name = GetComponent<MusicList>().PrevTrack();
+            if (name != null)
+                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+        }
+
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
         public void ConfirmEditCloseTrue() { ConfirmEditClose(true); }
 

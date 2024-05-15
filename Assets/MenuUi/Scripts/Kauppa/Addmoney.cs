@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Addmoney : MonoBehaviour
 {
-    private Text money;
+    private TMP_Text money;
     private int moneyAmount;
 
     // Start is called before the first frame update
     void Start()
     {
         moneyAmount = 0;
-        money = GetComponent<Text>();
+        money = GetComponent<TMP_Text>();
     }
 
     private void Update()

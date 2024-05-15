@@ -37,6 +37,10 @@ namespace MenuUI.Scripts.SoulHome
             GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
             furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
 
+            float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+            furnitureSlot.GetComponent<ResizeCollider>().Resize();
+
             GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
             trayFurniture.GetComponent<TrayFurniture>().Furniture = furniture;
         }
@@ -60,6 +64,10 @@ namespace MenuUI.Scripts.SoulHome
                 if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
                 GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
                 furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
+
+                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+                furnitureSlot.GetComponent<ResizeCollider>().Resize();
 
                 Instantiate(furnitureObject, furnitureSlot.transform);
                 _changedTrayItemList.Add(furnitureSlot);
@@ -194,6 +202,19 @@ namespace MenuUI.Scripts.SoulHome
                 if (_changedTrayItemList[i].activeSelf == false) Destroy(_changedTrayItemList[i]);
             }
             _changedTrayItemList.Clear();
+        }
+
+        public void SetTrayContentSize()
+        {
+            int childCount = _trayContent.transform.childCount;
+            float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            for (int i = 0; i < childCount; i++)
+            {
+                GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
+                slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+                slotObject.GetComponent<BoxCollider2D>().size = new(slotSize,slotSize);
+                slotObject.GetComponent<ResizeCollider>().Resize();
+            }
         }
     }
 }
