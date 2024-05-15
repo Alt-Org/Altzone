@@ -18,8 +18,21 @@ namespace Prg.Scripts.Common
         None
     }
 
+    /// <summary>
+    /// Wrapper for getting the current state of clicking/touching regardless whether you are using touchscreen or a mouse.
+    /// </summary>
     public static class ClickStateHandler
     {
+        /// <summary>
+        /// <para>Returns a <c>ClickState</c> enum according to the either the current <c>Touch</c> phase or the current <c>Mouse</c> clickstate.</para>
+        /// 
+        /// <para>If you're starting to touch or press down the mouse button on this frame, returns ClickState.Start.<br/>
+        /// If you're end the touch or release the mouse button on this frame, returns ClickState.End.<br/>
+        /// If you're touching the screen or holding down mouse button on this frame, that was already going on before, and the position of the touch/click is same as previous frame, returns ClickState.Hold.<br/>
+        /// If you're touching the screen or holding down mouse button on this frame, that was already going on before, and the position of the touch/click is changed, returns ClickState.Move.<br/>
+        /// If somehow none of these apply, the returns <c>ClickState.None.</c></para>
+        /// </summary>
+        /// <returns> ClickState </returns>
         public static ClickState GetClickState()
         {
             Touch touch = new();
