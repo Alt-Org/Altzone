@@ -48,7 +48,7 @@ public class ManagerCarousel : MonoBehaviour
             GameObject[] rootList = SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject root in rootList)
             {
-                if(root.name == "Camera")
+                if(root.GetComponent<Camera>() != null)
                 {
                     _camera2D = root.GetComponent<Camera>();
                     break;
