@@ -8,23 +8,26 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    /// <summary>
-    /// <c>CharacterModel</c> view - example using furniture prefabs as we do not have proper player prefabs for character selection yet.
-    /// </summary>
     public class ModelView : MonoBehaviour
     {
+        // content panels for the character slots
         [SerializeField] private Transform VerticalContentPanel;
         [SerializeField] private Transform HorizontalContentPanel;
 
         [SerializeField] private bool _isReady;
 
+        // character buttons
         private Button[] _buttons;
+
+        // Array of character slots in horizontalpanel
         public CharacterSlot[] _CurSelectedCharacterSlot { get; private set; }
+        // array of character slots in verticalpanel
         private CharacterSlot[] CharacterSlot;
 
 
         public delegate void CurrentCharacterIdChangedHandler(string newCharacterId);
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
+        // Event triggered when current character ID changes
+        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged; 
         public bool IsReady => _isReady;
 
         private string _currentCharacterId;
@@ -73,10 +76,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
+            // Deactivate all buttons
             foreach (var button in _buttons)
             {
                 button.gameObject.SetActive(false);
             }
+            // Deactivate all character slots
             foreach (var characterSlot in CharacterSlot)
             {
                 characterSlot.gameObject.SetActive(false);
@@ -95,32 +100,40 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 button.gameObject.SetActive(true);
                 button.interactable = true;
-                button.SetCaption(character.Name);
+                button.SetCaption(character.Name); // Set button caption to character name
 
                 characterSlot.gameObject.SetActive(true);
 
+                // Check if the character is currently selected
                 if (currentCharacterId == character.CustomCharacterId)
                 {
+                    //Set the character in the first slot of the horizontal character slot
                     if (_CurSelectedCharacterSlot.Length > 0)
                     {
                         button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
                     }
                 }
-
+                // Deactivate character slot if it's empty
+                if (characterSlot.transform.childCount == 0)
+                {
+                    characterSlot.gameObject.SetActive(false);
+                }
+                // Subscribe to the event of parent change for the button
                 var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                 parentChangeMonitor.OnParentChanged += newParent =>
                 {
+                    // check if the character is in the first slot of the horizontal character slot
                     if (newParent == _CurSelectedCharacterSlot[0].transform)
                     {
+                        //set the id
                         CurrentCharacterId = character.CustomCharacterId;
                     }
+
                 };
 
-
-
             }
+            
 
         }
-
     }
 }

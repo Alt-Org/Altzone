@@ -9,12 +9,9 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    /// <summary>
-    /// UI controller for <c>CharacterModel</c> view.
-    /// </summary>
     public class ModelController : MonoBehaviour
     {
-        [SerializeField] private ModelView _view;
+        [SerializeField] private ModelView _view; //modelview script
 
         private PlayerData _playerData;
 
@@ -39,6 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 var currentCharacterId = playerData.CurrentCustomCharacterId;
                 var characters = playerData.BattleCharacters.ToList();
                 characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+                // Set characters in the ModelView
                 _view.SetCharacters(characters, currentCharacterId);
             });
         }
