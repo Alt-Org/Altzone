@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using MenuUi.Prefabs.Windows.DefenceScreen;
 
+
 public class DemoUpdateCharacterStats : MonoBehaviour
 {
 
@@ -18,9 +19,9 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     public int DiamondHPAmount = 100;
     public int EraserAmount = 100;
 
-    public int SpeedCostAmount = 11;
-    public int ResistanceCostAmount = 9;
-    public int AttackCostAmount = 7;
+    public int SpeedCostAmount = 5;
+    public int ResistanceCostAmount = 5;
+    public int AttackCostAmount = 5;
     public int DefenceCostAmount = 5;
     public int HPCostAmount = 5;
 
@@ -39,15 +40,16 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     public TextMeshProUGUI DiamondHPAmountNumber;
     public TextMeshProUGUI EraserAmountNumber;
 
-    public TextMeshProUGUI SpeedCostAmountNumber;
-    public TextMeshProUGUI ResistanceCostAmountNumber;
-    public TextMeshProUGUI AttackCostAmountNumber;
-    public TextMeshProUGUI DefenceCostAmountNumber;
-    public TextMeshProUGUI HPCostAmountNumber;
 
-    public int CharacterGalleryInt;
     DemoCharacterWindowCharacter _demoCharacterWindowCharacter = new DemoCharacterWindowCharacter("Albert Älypää", false, 7, 3, 1, 4, 1);
 
+
+    private int CurrentlySelectedStat = 0;
+    [SerializeField] public Button[] StatSelectionButton;
+    [SerializeField] public Button StatAddButton;
+    [SerializeField] public Button StatRemoveButton;
+    [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
+    [SerializeField] public Image UpgradeDiamondImage;
 
     // Start is called before the first frame update
     void Start()
@@ -64,8 +66,85 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         
     }
 
-    //  upgrade 
-    public void UpgradeCharacterSpeed()
+    // CurrentlySelectedStat
+    public void UpdateCurrentlySelectedStatToSpeed()
+    {
+        UpgradeButtonsRemoveAllListeners();
+        CurrentlySelectedStat = 0;
+        UpdateUpgradeButtons();
+    }
+    public void UpdateCurrentlySelectedStatToResistance()
+    {
+        UpgradeButtonsRemoveAllListeners();
+        CurrentlySelectedStat = 1;
+        UpdateUpgradeButtons();
+    }
+    public void UpdateCurrentlySelectedStatToAttack()
+    {
+        UpgradeButtonsRemoveAllListeners();
+        CurrentlySelectedStat = 2;
+        UpdateUpgradeButtons();
+    }
+    public void UpdateCurrentlySelectedStatToDefence()
+    {
+        UpgradeButtonsRemoveAllListeners();
+        CurrentlySelectedStat = 3;
+        UpdateUpgradeButtons();
+    }
+    public void UpdateCurrentlySelectedStatToHP()
+    {
+        UpgradeButtonsRemoveAllListeners();
+        CurrentlySelectedStat = 4;
+        UpdateUpgradeButtons();
+    }
+
+    private void UpdateUpgradeButtons()
+    {
+        switch (CurrentlySelectedStat)
+        {
+            case 0:
+                StatAddButton.onClick.AddListener(UpgradeCharacterSpeed);
+                StatRemoveButton.onClick.AddListener(DegradeCharacterSpeed);
+                UpgradeDiamondImage.color = new Color32(240,117,117,255);
+                UpgradeCostAmountNumber.text = SpeedCostAmount.ToString();
+                break;
+            case 1:
+                StatAddButton.onClick.AddListener(UpgradeCharacterResistance);
+                StatRemoveButton.onClick.AddListener(DegradeCharacterResistance);
+                UpgradeDiamondImage.color = new Color32(247,178,59,255);
+                UpgradeCostAmountNumber.text = ResistanceCostAmount.ToString();
+                break;
+            case 2:
+                StatAddButton.onClick.AddListener(UpgradeCharacterAttack);
+                StatRemoveButton.onClick.AddListener(DegradeCharacterAttack);
+                UpgradeDiamondImage.color = new Color32(232,56,215,255);
+                UpgradeCostAmountNumber.text = AttackCostAmount.ToString();
+                break;
+            case 3:
+                StatAddButton.onClick.AddListener(UpgradeCharacterDefence);
+                StatRemoveButton.onClick.AddListener(DegradeCharacterDefence);
+                UpgradeDiamondImage.color = new Color32(118,79,234,255);
+                UpgradeCostAmountNumber.text = DefenceCostAmount.ToString();
+                break;
+            case 4:
+                StatAddButton.onClick.AddListener(UpgradeCharacterHP);
+                StatRemoveButton.onClick.AddListener(DegradeCharacterHP);
+                UpgradeDiamondImage.color = new Color32(228,32,35,255);
+                UpgradeCostAmountNumber.text = HPCostAmount.ToString();
+                break;
+            default:
+                Debug.Log("CurrentlySelecterStat is probably somewhere it shouldn't be :/");
+                break;
+        }
+    }
+
+    private void UpgradeButtonsRemoveAllListeners()
+    {
+        StatAddButton.onClick.RemoveAllListeners();
+        StatRemoveButton.onClick.RemoveAllListeners();
+    }
+    //  upgrade
+    private void UpgradeCharacterSpeed()
     {
         if (CheckMaxLevel() == true)
         {
@@ -80,7 +159,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         }
     }
 
-    public void UpgradeCharacterResistance()
+    private void UpgradeCharacterResistance()
     {
         if (CheckMaxLevel() == true)
         {
@@ -94,7 +173,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             }
         }
     }
-    public void UpgradeCharacterAttack()
+    private void UpgradeCharacterAttack()
     {
         if (CheckMaxLevel() == true)
         {
@@ -109,7 +188,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             }
         }
     }
-    public void UpgradeCharacterDefence()
+    private void UpgradeCharacterDefence()
     {
         if (CheckMaxLevel() == true)
         {
@@ -123,7 +202,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             }
         }
     }
-    public void UpgradeCharacterHP()
+    private void UpgradeCharacterHP()
     {
         if (CheckMaxLevel() == true)
         {
@@ -139,7 +218,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     }
 
     // degrade
-    public void DegradeCharacterSpeed()
+    private void DegradeCharacterSpeed()
     {
         if (EraserAmount >= 1)
         {
@@ -147,15 +226,13 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             {
                 EraserAmount--;
                 EraserAmountNumber.text = EraserAmount.ToString();
-                DiamondSpeedAmount += SpeedCostAmount;
-                DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed -= 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
                 UpdatePieChart();
             }
         }
     }
-    public void DegradeCharacterResistance()
+    private void DegradeCharacterResistance()
     {
         if (EraserAmount >= 1)
         {
@@ -163,15 +240,13 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             {
                 EraserAmount--;
                 EraserAmountNumber.text = EraserAmount.ToString();
-                DiamondResistanceAmount += ResistanceCostAmount;
-                DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance -= 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
                 UpdatePieChart();
             }
         }
     }
-    public void DegradeCharacterAttack()
+    private void DegradeCharacterAttack()
     {
         if (EraserAmount >= 1)
         {
@@ -179,15 +254,13 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             {
                 EraserAmount--;
                 EraserAmountNumber.text = EraserAmount.ToString();
-                DiamondAttackAmount += AttackCostAmount;
-                DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack -= 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
                 UpdatePieChart();
             }
         }
     }
-    public void DegradeCharacterDefence()
+    private void DegradeCharacterDefence()
     {
         if (EraserAmount >= 1)
         {
@@ -195,15 +268,13 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             {
                 EraserAmount--;
                 EraserAmountNumber.text = EraserAmount.ToString();
-                DiamondDefenceAmount += DefenceCostAmount;
-                DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence -= 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
                 UpdatePieChart();
             }
         }
     }
-    public void DegradeCharacterHP()
+    private void DegradeCharacterHP()
     {
         if (EraserAmount >= 1)
         {
@@ -211,8 +282,6 @@ public class DemoUpdateCharacterStats : MonoBehaviour
             {
                 EraserAmount--;
                 EraserAmountNumber.text = EraserAmount.ToString();
-                DiamondHPAmount += HPCostAmount;
-                DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP -= 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
                 UpdatePieChart();
@@ -222,7 +291,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
 
 
     // set at start
-    public void SetCharacterStats()
+    private void SetCharacterStats()
     {
         CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
 
@@ -239,17 +308,11 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
         EraserAmountNumber.text = EraserAmount.ToString();
 
-        SpeedCostAmountNumber.text = SpeedCostAmount.ToString();
-        ResistanceCostAmountNumber.text = ResistanceCostAmount.ToString();
-        AttackCostAmountNumber.text = AttackCostAmount.ToString();
-        DefenceCostAmountNumber.text = DefenceCostAmount.ToString();
-        HPCostAmountNumber.text = HPCostAmount.ToString();
-
         UpdatePieChart();
     }
 
     // Check max level
-    public bool CheckMaxLevel()
+    private bool CheckMaxLevel()
     {
         if (_demoCharacterWindowCharacter.CharacterSpeed + _demoCharacterWindowCharacter.CharacterResistance + _demoCharacterWindowCharacter.CharacterAttack + _demoCharacterWindowCharacter.CharacterDefence + _demoCharacterWindowCharacter.CharacterHP < 100)
         {
@@ -266,16 +329,17 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     }
 
     // update pie chart
-    public void UpdatePieChart()
+    private void UpdatePieChart()
     {
         FindObjectOfType<CharacterStatsPieChart>().SetPieChartValues(CharacterStatsIntValuesToFloatValues(_demoCharacterWindowCharacter.CharacterSpeed, _demoCharacterWindowCharacter.CharacterResistance, _demoCharacterWindowCharacter.CharacterAttack, _demoCharacterWindowCharacter.CharacterDefence, _demoCharacterWindowCharacter.CharacterHP, CheckUnusedStatsAmount()));
     }
 
-    public float[] CharacterStatsIntValuesToFloatValues(int characterSpeed, int characterResistance, int characterAttack, int characterDefence, int characterHP, int unusedStats)
+    private float[] CharacterStatsIntValuesToFloatValues(int characterSpeed, int characterResistance, int characterAttack, int characterDefence, int characterHP, int unusedStats)
     {
         // stat pie chart works with the stats being in reverse order, atleast for now 
         float[] characterStatsFloatValues = { characterHP, characterDefence, characterAttack, characterResistance, characterSpeed, unusedStats };
         return characterStatsFloatValues;
     }
+
 
 }
