@@ -54,9 +54,8 @@ public class OpenFilePanel : MonoBehaviour
             foreach (string line in lines)
             {
                 // For each line in the log file, add it to the log box controller
-                // You may need to adjust the parameters based on your LogBoxController's AddMessageToLog method signature
                 int clientIndex = UnityEngine.Random.Range(0, 4); // Generate random client index
-                MessageType messageType = MessageType.Info; // Assuming MessageType.Info is appropriate
+                MessageType messageType = MessageType.Info;
                 logBoxController.AddMessageToLog(line, (int)Time.time, clientIndex, messageType);
             }
         }

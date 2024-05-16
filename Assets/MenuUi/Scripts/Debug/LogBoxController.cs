@@ -64,7 +64,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 foreach (string line in lines)
                 {
                     // Add the line as a message to the log storage
-                    // For simplicity, let's assume the message type is "Info" for all lines
                     AddMessageToLog(line, 0, 0, MessageType.Info);
                 }
 
