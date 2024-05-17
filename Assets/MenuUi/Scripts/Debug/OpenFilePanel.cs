@@ -89,8 +89,15 @@ public class OpenFilePanel : MonoBehaviour
     {
         public static string OpenFileDialog()
         {
+#if UNITY_EDITOR
+            
             string path = UnityEditor.EditorUtility.OpenFilePanel("Select Log File", "", "txt");
             return path;
+#else
+
+            return null;
+
+#endif
         }
     }
 }
