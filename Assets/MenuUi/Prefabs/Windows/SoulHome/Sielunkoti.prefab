@@ -1199,7 +1199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 793838836b832014fa9bc00127c2fb70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSource: {fileID: 0}
+  _audioSource: {fileID: 7479614114164320079}
   _playOnEnable: 1
 --- !u!114 &9058787687101874178
 MonoBehaviour:
@@ -2364,7 +2364,7 @@ GameObject:
   - component: {fileID: 7266884330926191433}
   - component: {fileID: 8929454208922663643}
   m_Layer: 0
-  m_Name: Pixel Perfect Camera
+  m_Name: Tower Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3144,6 +3144,52 @@ MonoBehaviour:
     type: 3}
   _trayHandler: {fileID: 4788480834664309421}
   _towerController: {fileID: 8929454208922663643}
+  _furnitureList:
+  - Name: Sofa_Taakka
+    Id: -1
+    Position: {x: -1, y: -1}
+    IsRotated: 0
+    Size: 2
+    RotatedSize: 4
+    Place: 0
+    Weight: 15
+    Value: 10
+  - Name: Mirror_Taakka
+    Id: -1
+    Position: {x: -1, y: -1}
+    IsRotated: 0
+    Size: 4
+    RotatedSize: 4
+    Place: 0
+    Weight: 15
+    Value: 10
+  - Name: Floorlamp_Taakka
+    Id: -1
+    Position: {x: -1, y: -1}
+    IsRotated: 0
+    Size: 4
+    RotatedSize: 4
+    Place: 0
+    Weight: 15
+    Value: 10
+  - Name: Toilet_Schrodinger
+    Id: -1
+    Position: {x: -1, y: -1}
+    IsRotated: 0
+    Size: 1
+    RotatedSize: 3
+    Place: 0
+    Weight: 15
+    Value: 10
+  - Name: Sink_Schrodinger
+    Id: -1
+    Position: {x: -1, y: -1}
+    IsRotated: 0
+    Size: 1
+    RotatedSize: 3
+    Place: 0
+    Weight: 15
+    Value: 10
 --- !u!1 &3071626809287817475
 GameObject:
   m_ObjectHideFlags: 0
@@ -3891,7 +3937,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.25
+  m_fontSize: 34.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

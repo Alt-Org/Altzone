@@ -627,12 +627,22 @@ namespace MenuUI.Scripts.SoulHome
             Ray ray2 = new(transform.position, (Vector3)checkPoint - transform.position);
             RaycastHit2D[] hitArray;
             hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
+            bool hitRoom = false;
+            foreach (RaycastHit2D hit2 in hitArray)
+            {
+                if (hit2.collider.gameObject.CompareTag("Room")) { hitRoom = true; break; }
+            }
+            if (!hitRoom)
+            {
+                ray2 = new(transform.position, (Vector3)hitPoint - transform.position);
+                hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
+            }
             bool check = false;
             foreach (RaycastHit2D hit2 in hitArray)
             {
                 if (hit2.collider.gameObject.CompareTag("Room"))
                 {
-                    check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover);
+                    check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
                 }
             }
             if (hover)
