@@ -568,13 +568,6 @@ MonoBehaviour:
   _movementSpeed: 2
   _shieldActivationDistance: 2
   _impactForce: 0
-  _playerCharacterSpriteSheet:
-  - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
-  - {fileID: -1584630499, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
-  - {fileID: -491030298, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
-  - {fileID: -78565320, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
-  - {fileID: 1336272110, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
-  - {fileID: -491030298, guid: 1001533debbb30645ac5d15d56acac2d, type: 3}
   SeePlayerName: 
 --- !u!82 &1553510750850808931
 AudioSource:
@@ -911,7 +904,7 @@ PrefabInstance:
     - target: {fileID: 4185630493785647799, guid: c56c490d25cdf8a47b7cff0c15f4a721,
         type: 3}
       propertyPath: _maxCollisions
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
