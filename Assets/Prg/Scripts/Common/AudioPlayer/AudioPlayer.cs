@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.AudioPlayer
@@ -7,6 +5,18 @@ namespace Prg.Scripts.Common.AudioPlayer
     /// <summary>
     /// Plays specific or random audio clips from an array.
     /// </summary>
+    ///
+    /// @par Unity
+    /// Require Components:
+    ///   - <code><a href="https://docs.unity3d.com/ScriptReference/AudioSource.html">AudioSource</a></code>
+    ///   .
+    /// @n
+    /// Serialized Fields / Inspector:
+    ///   - @c enum StartSetting ( None, PlaySelected, PlayRandom )
+    ///   - @c enum LoopSetting ( False, True, LetAudioSourceDecide )
+    ///   - <code><a href="https://docs.unity3d.com/ScriptReference/AudioClip.html">AudioClip</a>[]</code> AudioList
+    ///   - @c int Selected
+    ///   .
     [RequireComponent(requiredComponent: typeof(AudioSource))]
     public class AudioPlayer : MonoBehaviour
     {

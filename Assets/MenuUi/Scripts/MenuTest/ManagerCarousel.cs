@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using UnityEngine.SceneManagement;
 
 public class ManagerCarousel : MonoBehaviour
 {
     [SerializeField]
-    Camera camere2D; // Reference to the 2D camera in the scene
+    Camera _camera2D; // Reference to the 2D camera in the scene
     [SerializeField]
     Image blackBackground; // Reference to a black background image used to create a fade effect
 
@@ -43,8 +44,22 @@ public class ManagerCarousel : MonoBehaviour
     {
         EnhancedTouchSupport.Enable();
         SetUpScrollBar(); // Set up the relative positions of each slide in the scrollbar
+        if (_camera2D == null) {
+            GameObject[] rootList = SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject root in rootList)
+            {
+                if(root.GetComponent<Camera>() != null)
+                {
+                    _camera2D = root.GetComponent<Camera>();
+                    break;
+                }
+            }
+        }
         currentSlide = startingSlide; // Ensure currentSlide is the same as starting slide at the beginning
         CheckSlide();
+        scrollRect.transform.Find("Viewport").GetComponent<RectTransform>().anchorMin = Vector2.zero;
+        scrollRect.transform.Find("Viewport").GetComponent<RectTransform>().anchorMax = Vector2.one;
+
     }
 
 
@@ -108,11 +123,11 @@ void HandleSwipe()
     {
         Touch touch = Touch.activeTouches[0];
             // Retrieve the position of the finger in the real world coordinates
-            Vector3 realWorldPos = camere2D.ScreenToWorldPoint(touch.screenPosition);
+            Vector3 realWorldPos = _camera2D.ScreenToWorldPoint(touch.screenPosition);
         switch (touch.phase)
         {
             case UnityEngine.InputSystem.TouchPhase.Began:
-                startPos = camere2D.ScreenToWorldPoint(touch.screenPosition);
+                startPos = _camera2D.ScreenToWorldPoint(touch.screenPosition);
                 scrollRect.enabled = false; // Disable the ScrollRect component to prevent scrolling during the slide
                 break;
 

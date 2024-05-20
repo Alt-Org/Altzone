@@ -1785,7 +1785,7 @@ GameObject:
   - component: {fileID: 2719574200425396452}
   - component: {fileID: 5951733805127844740}
   - component: {fileID: 9209962511461654557}
-  - component: {fileID: 443875202346441991}
+  - component: {fileID: 1681037478516728059}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1895,7 +1895,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &443875202346441991
+--- !u!114 &1681037478516728059
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1904,11 +1904,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2616448245092223578}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Script: {fileID: 11500000, guid: 33659b0b1c0242c3b28bc17acb0079e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 7c5dd426e2f575642a6073b5ef19d65d, type: 2}
-  _isCurrentPopOutWindow: 0
 --- !u!1 &2637579159983546412
 GameObject:
   m_ObjectHideFlags: 0

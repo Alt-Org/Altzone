@@ -10,6 +10,7 @@ using System.Runtime.Versioning;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -74,14 +75,16 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _pointPosition;
         private Vector3 _pointVelocity;
 
+        private Quaternion _rotation;
+
         private class TrailSprite
         {
             public readonly GameObject GameObject;
             public int Timer;
 
-            public TrailSprite(GameObject gameObject, Vector3 position, Sprite sprite, int timer)
+            public TrailSprite(GameObject gameObject, Vector3 position, Sprite sprite, int timer, Quaternion rotation)
             {
-                GameObject = Instantiate(gameObject, position, Quaternion.identity);
+                GameObject = Instantiate(gameObject, position, rotation);
                 GameObject.SetActive(true);
                 GameObject.GetComponent<SpriteRenderer>().sprite = sprite;
                 Timer = timer;
@@ -118,7 +121,16 @@ namespace Battle.Scripts.Battle.Players
             {
                 if(driver.PlayerActor == actor)
                 {
-                    _isOnLocalTeam = driver.TeamNumber == data.LocalPlayer.TeamNumber;
+                    if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
+                    {
+                        _isOnLocalTeam = true;
+                        _rotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
+                    }
+                    else
+                    {
+                        _isOnLocalTeam = false;
+                    }
+
                     break;
                 }
             }
@@ -219,7 +231,7 @@ namespace Battle.Scripts.Battle.Players
                 // Create new sprite objects to match the number of position
                 for (int i = 0; i < difference; i++)
                 {
-                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, Quaternion.identity));
+                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, _rotation));
                 }
 
                 Debug.Log(DEBUG_LOG_NAME + "_positionSprite " + _positionSprites.Count);
@@ -281,7 +293,7 @@ namespace Battle.Scripts.Battle.Players
                     sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
                 }
 
-                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50);
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50, _rotation);
 
                 // Check if the trail sprite list is already full
                 if (_trailSprites.Count <= _trailSpritesAmount)

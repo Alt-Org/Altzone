@@ -62,6 +62,7 @@ namespace MenuUI.Scripts.SoulHome
         public string Name { get => _name;}
         public bool IsRotated { get => _isRotated;}
         public bool IsPlaceHolder { get => _isPlaceHolder;}
+        public Direction TempSpriteDirection { get => _tempSpriteDirection;}
 
         // Start is called before the first frame update
         void Start()
@@ -113,6 +114,10 @@ namespace MenuUI.Scripts.SoulHome
         public Vector2Int GetFurnitureSize()
         {
             return Furniture.GetFurnitureSize();
+        }
+        public Vector2Int GetFurnitureSizeRotated()
+        {
+            return Furniture.GetFurnitureSizeRotated();
         }
 
         public bool checkTopCollider(float hitY)
@@ -196,6 +201,10 @@ namespace MenuUI.Scripts.SoulHome
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
         }
 
+        /// <summary>
+        /// Sets the furnitures alpha value to the desired value to produce transparency effect.
+        /// </summary>
+        /// <param name="alpha"></param>
         public void SetTransparency(float alpha)
         {
             alpha = Mathf.Clamp(alpha, 0.0f, 1.0f);
@@ -204,6 +213,9 @@ namespace MenuUI.Scripts.SoulHome
             GetComponent<SpriteRenderer>().color = color;
         }
 
+        /// <summary>
+        /// Rotates the furniture 90 degrees in clockwise direction.
+        /// </summary>
         public void RotateFurniture()
         {
             if(_tempSpriteDirection == Direction.Front)
@@ -239,7 +251,37 @@ namespace MenuUI.Scripts.SoulHome
             SetFurnitureSprite(_tempSpriteDirection);
         }
 
-        private void SetFurnitureSprite(Direction direction)
+        /// <summary>
+        /// Rotates the furniture to the desired direction provided that the direction is valid.
+        /// </summary>
+        public void RotateFurniture(Direction direction)
+        {
+            if (direction == Direction.Front)
+            {
+                if (_furnitureSpriteFront != null) _tempSpriteDirection = direction;
+            }
+            else if (direction == Direction.Right)
+            {
+                if (_furnitureSpriteRight != null || (_spriteCanBeFlipped && _furnitureSpriteLeft != null)) _tempSpriteDirection = direction;
+            }
+            else if (direction == Direction.Back)
+            {
+                if (_furnitureSpriteBack != null) _tempSpriteDirection = direction;
+            }
+            else if (direction == Direction.Left)
+            {
+                if (_furnitureSpriteLeft != null || (_spriteCanBeFlipped && _furnitureSpriteRight != null)) _tempSpriteDirection = direction;
+            }
+
+            if (_tempSpriteDirection is Direction.Front or Direction.Back) _isRotated = false;
+            else _isRotated = true;
+
+            Furniture.IsRotated = _isRotated;
+
+            SetFurnitureSprite(_tempSpriteDirection);
+        }
+
+            private void SetFurnitureSprite(Direction direction)
         {
             GetComponent<SpriteRenderer>().flipX = false;
             if (direction == Direction.Front) GetComponent<SpriteRenderer>().sprite = _furnitureSpriteFront;

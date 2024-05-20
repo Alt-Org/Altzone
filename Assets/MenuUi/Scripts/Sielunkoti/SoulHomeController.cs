@@ -46,6 +46,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
             }
+            EditModeTrayResize();
         }
 
         // Update is called once per frame
@@ -67,6 +68,7 @@ namespace MenuUI.Scripts.SoulHome
             string name = GetComponent<MusicList>().GetTrackName();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+            EditModeTrayResize();
         }
 
         public void OnDisable()

@@ -4,6 +4,7 @@ using DebugUi.Scripts.BattleAnalyzer;
 using TMPro;
 using ExitGames.Client.Photon.StructWrapping;
 using System.Collections.Generic;
+using System.IO; // Lisätty käyttääksemme System.IO -kirjastoa tiedostojen käsittelyyn
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -27,56 +28,55 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private MessagePanel _messagePanel;
 
         // Start is called before the first frame update
-       void Start()
-{
-    // Create a list of messages
-    /*
-    List<string> messages = new List<string>
-    {
-        "[PLAYER DRIVER PHOTON] (team: 1, pos: 1) Movement requested",
-        "[PLAYER DRIVER STATE] (team: 1, pos: 0) State (movement enabled: True, is waiting to move: False, player actor is busy: False)",
-        "[BALL HANDLER] Ball launched (position: (-2.58, 2.20), velocity: (-1.91, -4.62))"
-    };
+        void Start()
+        {
+            // Iterate over each message and add it to a random log box
+            for (int i = 0; i < 50; i++)
+            {
+                // Generate a random client index (log box index)
+                int clientIndex = UnityEngine.Random.Range(0, 4);
 
-    // Shuffle the list of messages
-    Shuffle(messages);
-    */
+                // Add the message to the randomly selected log box
+                AddMessageToLog("Info message", i, clientIndex, MessageType.Info);
+                AddMessageToLog("Warning message", i, clientIndex, MessageType.Warning);
+                AddMessageToLog("Error message", i, clientIndex, MessageType.Error);
+            }
 
-    // Iterate over each message and add it to a random log box
-    for (int i = 0; i < 50; i++)
-    {
-        // Generate a random client index (log box index)
-        int clientIndex = UnityEngine.Random.Range(0, 4);
+            // Update the log text to display all messages
+            UpdateLogText();
+        }
 
-        // Add the message to the randomly selected log box
-        AddMessageToLog("Info message", i, clientIndex, MessageType.Info);
-        AddMessageToLog("Warning message", i, clientIndex, MessageType.Warning);
-        AddMessageToLog("Error message", i, clientIndex, MessageType.Error);
-    }
+        // Add a message to the log box
+        public void AddMessageToLog(string message, int time, int client, MessageType messageType)
+        {
+            msgStorage.Add(new MsgObject(client, time, message, messageType));
+        }
 
-    // Update the log text to display all messages
-    UpdateLogText();
-}
+        // Load log file and display its content
+        public void LoadLogFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                // Read all lines from the file
+                string[] lines = File.ReadAllLines(filePath);
 
-// Add a message to the log box
-public void AddMessageToLog(string message, int time, int client, MessageType messageType)
-{
-    msgStorage.Add(new MsgObject(client, time, message, messageType));
-}
+                // Add each line to the message storage
+                foreach (string line in lines)
+                {
+                    // Add the line as a message to the log storage
+                    AddMessageToLog(line, 0, 0, MessageType.Info);
+                }
 
-// Shuffle a list
-/*
-private void Shuffle<T>(List<T> list)
-{
-    for (int i = 0; i < list.Count; i++)
-    {
-        int randomIndex = UnityEngine.Random.Range(i, list.Count);
-        T temp = list[randomIndex];
-        list[randomIndex] = list[i];
-        list[i] = temp;
-    }
-}
-*/
+                // Update the log text to display all messages
+                UpdateLogText();
+            }
+            else
+            {
+                Debug.LogError("File not found: " + filePath);
+            }
+        }
+
+
         // Update the log text to display all messages
         private void UpdateLogText()
         {

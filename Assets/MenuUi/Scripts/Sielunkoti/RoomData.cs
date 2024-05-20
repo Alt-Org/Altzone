@@ -98,9 +98,33 @@ namespace MenuUI.Scripts.SoulHome
             startRow = row - (furnitureSize.y - 1);
             endColumn = column + (furnitureSize.x - 1);
 
-            if(startRow < 0 || endColumn >= _slotColumns) return false;
+            if (furniture.Place is FurniturePlace.Floor)
+            {
+                if (startRow < 0 || endColumn >= _slotColumns) return false;
+            }
+            else if (furniture.Place is FurniturePlace.FloorByWall)
+            {
+                if (!furniture.IsRotated)
+                {
 
-            for (int i = startRow; i <= row; i++)
+                    if (startRow == 0)
+                    {
+                        if (startRow < 0 || endColumn >= _slotColumns) return false;
+                    }
+                    else return false;
+                }
+                else
+                {
+
+                    if (column == 0 || endColumn == _slotColumns -1)
+                    {
+                        if (startRow < 0 || endColumn >= _slotColumns) return false;
+                    }
+                    else return false;
+                }
+            }
+
+                for (int i = startRow; i <= row; i++)
             {
                 for (int j = column; j <= endColumn; j++)
                 {
@@ -110,6 +134,73 @@ namespace MenuUI.Scripts.SoulHome
             }
             return true;
         }
+
+        private bool CheckFurniturePosition(int row, int column, FurnitureHandling furniture, Vector2 backupHit, bool useBackup)
+        {
+            if (furniture.Furniture.Place is FurniturePlace.FloorByWall)
+            {
+                Vector2Int furnitureSize = furniture.GetFurnitureSizeRotated();
+                Vector2Int furnitureSizeCurrent = furniture.GetFurnitureSize();
+
+                Vector2 checkPoint = backupHit + new Vector2((furniture.transform.localScale.x / 2) + ((furniture.transform.localScale.x * furnitureSize.x) / 2) * -1, 0);
+                Ray ray2 = new(transform.parent.parent.parent.Find("Tower Camera").position, (Vector3)checkPoint - transform.parent.parent.parent.Find("Tower Camera").position);
+                RaycastHit2D[] hitArray;
+                hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
+
+                int rotatedRow = -1;
+                int rotatedColumn = -1;
+                //bool slotHit = false;
+                foreach (RaycastHit2D hit in hitArray)
+                {
+                    if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
+                    {
+                        rotatedRow = hit.collider.gameObject.GetComponent<FurnitureSlot>().row;
+                        rotatedColumn = hit.collider.gameObject.GetComponent<FurnitureSlot>().column;
+                        //slotHit = true;
+                        break;
+                    }
+                }
+
+                int startRow = rotatedRow - (furnitureSize.y - 1);
+                int endColumn = rotatedColumn + (furnitureSize.x - 1);
+
+                if (startRow == 0)
+                {
+                    if (rotatedColumn == 0 || endColumn == _slotColumns - 1) { }
+                    else if (furniture.TempSpriteDirection is not FurnitureHandling.Direction.Front)
+                    {
+                        furniture.RotateFurniture(FurnitureHandling.Direction.Front);
+                        row = rotatedRow;
+                        column = rotatedColumn;
+                    }
+                }
+                else if (rotatedColumn == 0)
+                {
+                    if (rotatedRow == 0) { }
+                    else if (furniture.TempSpriteDirection is not FurnitureHandling.Direction.Left)
+                    {
+                        furniture.RotateFurniture(FurnitureHandling.Direction.Left);
+                        row = rotatedRow;
+                        column = rotatedColumn;
+                    }
+                }
+                else if (endColumn == _slotColumns - 1)
+                {
+                    if (rotatedRow == 0) { }
+                    else if (furniture.TempSpriteDirection is not FurnitureHandling.Direction.Right)
+                    {
+                        furniture.RotateFurniture(FurnitureHandling.Direction.Right);
+                        row = rotatedRow;
+                        column = rotatedColumn;
+                    }
+                }
+            }
+
+            bool check = CheckFurniturePosition(row, column, furniture.Furniture);
+
+            return check;
+        }
+
         private void SetFurniture(int row, int column, Furniture furniture)
         {
             Transform points = transform.Find("FurniturePoints");
@@ -181,7 +272,7 @@ namespace MenuUI.Scripts.SoulHome
             furniture.GetComponent<FurnitureHandling>().SetScale(row, points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>());
         }
 
-        public bool HandleFurniturePosition(RaycastHit2D[] hitArray, GameObject furniture, bool hover)
+        public bool HandleFurniturePosition(RaycastHit2D[] hitArray, GameObject furniture, bool hover, Vector2 backupHit, bool useBackup)
         {
             if (furniture.GetComponent<FurnitureHandling>() == null) return false;
 
@@ -195,8 +286,8 @@ namespace MenuUI.Scripts.SoulHome
                         //Debug.Log(hit2 + ": Slot found, Room "+ hit2.collider.transform.parent.parent.parent.GetComponent<RoomData>().RoomInfo.Id+
                         //    ", Slot " + hit2.collider.GetComponent<FurnitureSlot>().row +":"+ hit2.collider.GetComponent<FurnitureSlot>().column);
                         GameObject slot = hit2.collider.gameObject;
-                        Furniture furnitureInfo = furniture.GetComponent<FurnitureHandling>().Furniture;
-                        bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo);
+                        FurnitureHandling furnitureInfo = furniture.GetComponent<FurnitureHandling>();
+                        bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo, backupHit, useBackup);
                         if (check)
                         {
                             MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, hover);
