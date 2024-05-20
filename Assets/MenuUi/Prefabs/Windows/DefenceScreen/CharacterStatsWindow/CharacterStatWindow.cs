@@ -6,11 +6,12 @@ using TMPro;
 using MenuUi.Prefabs.Windows.DefenceScreen;
 
 
-public class DemoUpdateCharacterStats : MonoBehaviour
+public class CharacterStatWindow : MonoBehaviour
 {
 
     public Image CharacterArtWork;
-    public int UnusedStats;
+
+    private int UnusedStats;
 
     public int DiamondSpeedAmount = 100;
     public int DiamondResistanceAmount = 100;
@@ -26,6 +27,7 @@ public class DemoUpdateCharacterStats : MonoBehaviour
     public int HPCostAmount = 5;
 
     public TextMeshProUGUI CharacterName;
+    public TextMeshProUGUI CustomCharacterName;
 
     public TextMeshProUGUI SpeedNumber;
     public TextMeshProUGUI ResistanceNumber;
@@ -45,7 +47,6 @@ public class DemoUpdateCharacterStats : MonoBehaviour
 
 
     private int CurrentlySelectedStat = 0;
-    [SerializeField] public Button[] StatSelectionButton;
     [SerializeField] public Button StatAddButton;
     [SerializeField] public Button StatRemoveButton;
     [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
@@ -341,5 +342,9 @@ public class DemoUpdateCharacterStats : MonoBehaviour
         return characterStatsFloatValues;
     }
 
-
+    // Character Name
+    public void CharacterNameChange()
+    {
+        _demoCharacterWindowCharacter.CharacterName = CharacterName.text;
+    }
 }
