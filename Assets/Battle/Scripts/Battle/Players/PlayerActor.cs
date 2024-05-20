@@ -152,6 +152,7 @@ namespace Battle.Scripts.Battle.Players
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
             float movementSpeed = targetDistance / movementTimeS;
 
+            _playerMovementIndicator.transform.position = targetPosition;
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
@@ -210,6 +211,7 @@ namespace Battle.Scripts.Battle.Players
         private ShieldManager _playerShieldManager;
         private PlayerCharacter _playerCharacter;
         private PlayerSoul _playerSoul;
+        private GameObject _playerMovementIndicator;
 
         private Vector3 _tempPosition;
 
@@ -254,6 +256,7 @@ namespace Battle.Scripts.Battle.Players
             _playerShieldManager = _geometryRoot.GetComponentInChildren<ShieldManager>();
             _playerCharacter = _geometryRoot.GetComponentInChildren<PlayerCharacter>();
             _playerSoul = _geometryRoot.GetComponentInChildren<PlayerSoul>();
+            _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
 
             // get components
             _audioSource = GetComponent<AudioSource>();
