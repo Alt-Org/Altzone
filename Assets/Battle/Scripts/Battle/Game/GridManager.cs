@@ -8,6 +8,7 @@ namespace Battle.Scripts.Battle.Game
     {
         [SerializeField] private int _row;
         [SerializeField] private int _col;
+
         public int Row => _row;
         public int Col => _col;
 
@@ -28,6 +29,45 @@ namespace Battle.Scripts.Battle.Game
     /// </summary>
     internal class GridManager : MonoBehaviour
     {
+        #region Public Methods
+
+        public Vector2 GridPositionToWorldPoint(GridPos gridPos)
+        {
+            float xPosition = gridPos.Col * _arenaWidth / _gridWidth + _arenaWidth / _gridWidth * 0.5f;
+            float yPosition = gridPos.Row * _arenaHeight / _gridHeight + _arenaHeight / _gridHeight * 0.5f;
+            Vector2 worldPosition = new(xPosition - _arenaWidth / 2, yPosition - _arenaHeight / 2);
+            return worldPosition;
+        }
+
+        public GridPos WorldPointToGridPosition(Vector2 targetPosition)
+        {
+            Vector2 posNew = new(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
+            int col = Math.Min(_gridWidth - 1, (int)(posNew.x / (_arenaWidth / _gridWidth)));
+            int row = Math.Min(_gridHeight - 1, (int)(posNew.y / (_arenaHeight / _gridHeight)));
+            GridPos gridPos = new(row, col);
+            return gridPos;
+        }
+
+        public GridPos ClampGridPosition(GridPos gridPos)
+        {
+            return new GridPos(Math.Clamp(gridPos.Row, 0, _gridHeight), Math.Clamp(gridPos.Col, 0, _gridWidth));
+        }
+
+        public bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
+        {
+            return teamNumber switch
+            {
+                PhotonBattle.TeamAlphaValue => _gridEmptySpacesAlpha[gridPos.Row, gridPos.Col],
+                PhotonBattle.TeamBetaValue => _gridEmptySpacesBeta[gridPos.Row, gridPos.Col],
+                _ => throw new UnityException($"Invalid Team Number {teamNumber}"),
+            };
+        }
+
+        #endregion Public Methods
+
+        #region Private
+
+        #region Private - Fields
         private int _gridWidth;
         private int _gridHeight;
         private PlayerPlayArea _battlePlayArea;
@@ -37,6 +77,9 @@ namespace Battle.Scripts.Battle.Game
         private bool[,] _gridEmptySpacesBeta;
         private Rect _startAreaAlpha;
         private Rect _startAreaBeta;
+        #endregion Private - Fields
+
+        #region Private - Methods
 
         private void Start()
         {
@@ -54,16 +97,16 @@ namespace Battle.Scripts.Battle.Game
             _startAreaAlpha = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamAlphaValue);
             _startAreaBeta = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBetaValue);
 
-            var smallOffset = 0.001f;
-            var alphaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));
-            var betaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMin, _startAreaBeta.yMin + smallOffset));
-            var alphaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMax, _startAreaAlpha.yMax - smallOffset));
-            var betaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMax, _startAreaBeta.yMax - smallOffset));
+            float smallOffset = 0.001f;
+            GridPos alphaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));
+            GridPos betaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMin, _startAreaBeta.yMin + smallOffset));
+            GridPos alphaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMax, _startAreaAlpha.yMax - smallOffset));
+            GridPos betaAreaEnd = WorldPointToGridPosition(new Vector2(_startAreaBeta.xMax, _startAreaBeta.yMax - smallOffset));
 
-            var alphaRowMin = alphaAreaStart.Row;
-            var betaRowMin = betaAreaStart.Row;
-            var alphaRowMax = alphaAreaEnd.Row;
-            var betaRowMax = betaAreaEnd.Row;
+            int alphaRowMin = alphaAreaStart.Row;
+            int betaRowMin = betaAreaStart.Row;
+            int alphaRowMax = alphaAreaEnd.Row;
+            int betaRowMax = betaAreaEnd.Row;
 
             _gridEmptySpacesAlpha = new bool[_gridHeight, _gridWidth];
             _gridEmptySpacesBeta = new bool[_gridHeight, _gridWidth];
@@ -99,39 +142,8 @@ namespace Battle.Scripts.Battle.Game
             }
         }
 
-        internal Vector2 GridPositionToWorldPoint(GridPos gridPos)
-        {
-            var xPosition = gridPos.Col * _arenaWidth / _gridWidth + _arenaWidth / _gridWidth * 0.5f;
-            var yPosition = gridPos.Row * _arenaHeight / _gridHeight + _arenaHeight / _gridHeight * 0.5f;
-            Vector2 worldPosition = new Vector2(xPosition - _arenaWidth / 2, yPosition - _arenaHeight / 2);
-            return worldPosition;
-        }
+        #endregion Private - Methods
 
-        internal GridPos WorldPointToGridPosition(Vector2 targetPosition)
-        {
-            var posNew = new Vector2(targetPosition.x + _arenaWidth / 2, targetPosition.y + _arenaHeight / 2);
-            var col = Math.Min(_gridWidth - 1, (int)(posNew.x / (_arenaWidth / _gridWidth)));
-            var row = Math.Min(_gridHeight - 1, (int)(posNew.y / (_arenaHeight / _gridHeight)));
-            GridPos gridPos = new GridPos(row, col);
-            return gridPos;
-        }
-
-        internal GridPos ClampGridPosition(GridPos gridPos)
-        {
-            return new GridPos(Math.Clamp(gridPos.Row, 0, _gridHeight), Math.Clamp(gridPos.Col, 0, _gridWidth));
-        }
-
-        internal bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
-        {
-            switch (teamNumber)
-            {
-                case PhotonBattle.TeamAlphaValue:
-                    return _gridEmptySpacesAlpha[gridPos.Row, gridPos.Col];
-                case PhotonBattle.TeamBetaValue:
-                    return _gridEmptySpacesBeta[gridPos.Row, gridPos.Col];
-                default:
-                    throw new UnityException($"Invalid Team Number {teamNumber}");
-            }
-        }
+        #endregion Private
     }
 }

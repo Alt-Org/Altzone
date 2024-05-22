@@ -2308,18 +2308,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WinText: {fileID: 0}
-  LoseText: {fileID: 0}
-  LobbyButton: {fileID: 0}
-  RaidButton: {fileID: 0}
-  _WallCollider: {fileID: 560921282802391219}
-  TestLimit: 2
-  GoalNumber: 1
-  CountDownText: {fileID: 0}
-  _AudioSource: {fileID: 0}
-  _AudioClips: []
-  WinGraphics: {fileID: 0}
-  LossGraphics: {fileID: 0}
+  _winText: {fileID: 0}
+  _loseText: {fileID: 0}
+  _lobbyButton: {fileID: 0}
+  _raidButton: {fileID: 0}
+  _wallCollider: {fileID: 560921282802391219}
+  _testLimit: 1
+  _goalNumber: 2
+  _countDownText: {fileID: 0}
+  _audioSource: {fileID: 0}
+  _audioClips: []
+  _winGraphics: {fileID: 0}
+  _lossGraphics: {fileID: 0}
 --- !u!114 &7192120351933927701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4957,18 +4957,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 887e8dbf8840d7f46a6b415e307100dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WinText: {fileID: 0}
-  LoseText: {fileID: 0}
-  LobbyButton: {fileID: 0}
-  RaidButton: {fileID: 0}
-  _WallCollider: {fileID: 4230088012655184481}
-  TestLimit: 2
-  GoalNumber: 2
-  CountDownText: {fileID: 0}
-  _AudioSource: {fileID: 0}
-  _AudioClips: []
-  WinGraphics: {fileID: 0}
-  LossGraphics: {fileID: 0}
+  _winText: {fileID: 0}
+  _loseText: {fileID: 0}
+  _lobbyButton: {fileID: 0}
+  _raidButton: {fileID: 0}
+  _wallCollider: {fileID: 4230088012655184481}
+  _testLimit: 1
+  _goalNumber: 2
+  _countDownText: {fileID: 0}
+  _audioSource: {fileID: 0}
+  _audioClips: []
+  _winGraphics: {fileID: 0}
+  _lossGraphics: {fileID: 0}
 --- !u!114 &7192120351933927700
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using Photon.Pun;
 using System.Linq;
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
+using Battle.Scripts.Battle.Players;
 using Altzone.Scripts.Config;
 
 #region Message Classes
