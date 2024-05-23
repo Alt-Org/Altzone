@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class LogPanel : MonoBehaviour
+namespace DebugUi.Scripts.BattleAnalyzer
 {
-    [SerializeField] private TextMeshProUGUI _textField;
-    public GameObject Panel;
-
-    public void OpenPanel()
+    public class LogPanel : MonoBehaviour
     {
-        if (Panel != null)
+        [SerializeField] private TextMeshProUGUI _textField;
+        public GameObject Panel;
+
+        public void OpenPanel()
         {
-            bool isActive = Panel.activeSelf;
-            Panel.SetActive(!isActive);
+            if (Panel != null)
+            {
+                bool isActive = Panel.activeSelf;
+                Panel.SetActive(!isActive);
+            }
         }
     }
 }
