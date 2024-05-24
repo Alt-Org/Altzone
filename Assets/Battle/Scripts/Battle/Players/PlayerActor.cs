@@ -27,6 +27,8 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private float _shieldActivationDistance;
         [SerializeField] private float _impactForce;
         [SerializeField] public string SeePlayerName;
+        [SerializeField] private float _sparkleUpdateInterval;
+        [SerializeField] private float _timeSinceLastUpdate;
         #endregion
 
         #region Public
@@ -152,6 +154,8 @@ namespace Battle.Scripts.Battle.Players
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
             float movementSpeed = targetDistance / movementTimeS;
 
+            _playerMovementIndicator.transform.position = targetPosition;
+            _sparkleSprite.transform.position = targetPosition;
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
@@ -210,6 +214,8 @@ namespace Battle.Scripts.Battle.Players
         private ShieldManager _playerShieldManager;
         private PlayerCharacter _playerCharacter;
         private PlayerSoul _playerSoul;
+        private GameObject _playerMovementIndicator;
+        private GameObject _sparkleSprite;
 
         private Vector3 _tempPosition;
 
@@ -254,6 +260,8 @@ namespace Battle.Scripts.Battle.Players
             _playerShieldManager = _geometryRoot.GetComponentInChildren<ShieldManager>();
             _playerCharacter = _geometryRoot.GetComponentInChildren<PlayerCharacter>();
             _playerSoul = _geometryRoot.GetComponentInChildren<PlayerSoul>();
+            _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
+            _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
 
             // get components
             _audioSource = GetComponent<AudioSource>();
@@ -319,6 +327,23 @@ namespace Battle.Scripts.Battle.Players
 
         private void FixedUpdate()
         {
+            _timeSinceLastUpdate += Time.fixedDeltaTime;
+
+            // Check if enough time has passed since the last sparkle update
+            if (_timeSinceLastUpdate >= _sparkleUpdateInterval)
+            {
+                if (_sparkleSprite != null)
+                {
+                    SpriteRenderer spriteRenderer = _sparkleSprite.GetComponent<SpriteRenderer>();
+                    float randomScale = UnityEngine.Random.Range(2, 4);
+
+                    // Set the scale of the sprite renderer with the random scale value
+                    spriteRenderer.transform.localScale = new Vector3(randomScale, randomScale, 1);
+                }
+
+                _timeSinceLastUpdate = 0f;
+            }
+
             bool useShield = true;
             foreach (IDriver driver in _otherDrivers)
             {
@@ -347,7 +372,6 @@ namespace Battle.Scripts.Battle.Players
                 _playerShieldManager.SetShow(false);
                 _playerShieldManager.SetHitboxActive(false);
             }
-
         }
 
         #endregion Private - Methods

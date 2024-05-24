@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class MessagePanel : MonoBehaviour
+namespace DebugUi.Scripts.BattleAnalyzer
 {
-    [SerializeField] private TextMeshProUGUI _textField;
-    public GameObject Panel;
-
-    public void OpenPanel()
+    public class MessagePanel : MonoBehaviour
     {
-        if(Panel != null)
+        [SerializeField] private TextMeshProUGUI _textField;
+        public GameObject Panel;
+
+        public void OpenPanel()
         {
-            bool isActive = Panel.activeSelf;
+            if (Panel != null)
+            {
+                bool isActive = Panel.activeSelf;
 
-            Panel.SetActive(!isActive);
+                Panel.SetActive(!isActive);
+            }
         }
-    }
 
-    public void SetMessage(string logText)
-    {
-        _textField.text = logText;
-        OpenPanel();
+        public void SetMessage(string logText)
+        {
+            _textField.text = logText;
+            OpenPanel();
+        }
     }
 }

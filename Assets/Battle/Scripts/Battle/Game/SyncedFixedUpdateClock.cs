@@ -7,6 +7,8 @@ using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using Altzone.Scripts.Config;
 
+using Battle.Scripts.Battle.Players;
+
 #region Message Classes
 public class SyncedFixedUpdateClockStarted
 { }

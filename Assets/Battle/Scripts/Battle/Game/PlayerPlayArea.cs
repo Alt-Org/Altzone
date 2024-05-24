@@ -52,6 +52,7 @@ namespace Battle.Scripts.Battle.Game
 
             var middleAreaHeight = _middleAreaHeight * _arenaHeight / _gridHeight;
             var squareHeight = _arenaHeight / _gridHeight;
+ 
             _playStartAreaAlpha = new Rect(-_arenaWidth / 2, -_arenaHeight / 2 + squareHeight * _brickHeight, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - squareHeight * _brickHeight);
             _playStartAreaBeta = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - squareHeight * _brickHeight);
         }
@@ -72,22 +73,21 @@ namespace Battle.Scripts.Battle.Game
             _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
             _rightWallCollider.transform.position = new Vector2(_arenaWidth, 0);
             _leftWallCollider.transform.position = new Vector2(-_arenaWidth, 0);
-
-
         }
 
         private void SetupBottomBrickWalls()
         {
             _alphaTeamBricks = new GameObject[BricksPerWall];
             _betaTeamBricks = new GameObject[BricksPerWall];
+
             for (int i = 0; i < BricksPerWall; i++)
             {
                 _alphaTeamBricks[i] = _alphaTeamBrickWall.transform.GetChild(i).gameObject;
                 _betaTeamBricks[i] = _betaTeamBrickWall.transform.GetChild(i).gameObject;
                 _alphaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
                 _betaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
-                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeight / 2 + _arenaHeight / (_gridHeight));
-                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeight / 2 - _arenaHeight / (_gridHeight));
+                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeight / 2 + (_arenaHeight / _gridHeight));
+                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeight / 2 - (_arenaHeight / _gridHeight));
                 _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
                 _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
             }
