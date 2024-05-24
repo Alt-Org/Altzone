@@ -129,7 +129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3515336853687259077
 RectTransform:
   m_ObjectHideFlags: 0
@@ -655,6 +655,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: 3416605275109616329, guid: c19396da57fe8484a8ec5ea361b52ed9,
+        type: 3}
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 4505020649455480959, guid: c19396da57fe8484a8ec5ea361b52ed9,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -1423,6 +1428,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579806283929652120, guid: d4424075c37f78841b88e4ab76cc5006,
+        type: 3}
+      propertyPath: m_ActiveFontFeatures.Array.data[0]
+      value: 1801810542
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
