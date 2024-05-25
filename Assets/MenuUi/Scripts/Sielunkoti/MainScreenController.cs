@@ -80,7 +80,7 @@ namespace MenuUI.Scripts.SoulHome
             ClickState clickState = ClickStateHandler.GetClickState();
             if (clickState is not ClickState.None)
             {
-                Debug.Log(Touch.activeFingers[0].screenPosition);
+                //Debug.Log(Touch.activeFingers[0].screenPosition);
                 if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero))
                 RayPoint(clickState);
                 else if(Touch.activeTouches.Count <= 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))

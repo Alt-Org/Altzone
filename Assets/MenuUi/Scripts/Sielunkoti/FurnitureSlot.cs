@@ -14,16 +14,29 @@ namespace MenuUI.Scripts.SoulHome
         public float height;
         public float width;
         private Furniture furniture;
+        private bool _rotated;
         private Furniture tempFurniture;
+        private bool _tempRotated;
 
         public Furniture Furniture { get => furniture;
             set
             {
                 furniture = value;
+                if (value == null) _tempRotated = false;
+                else _rotated = value.IsRotated;
                 TempFurniture = value;
             }
         }
-        public Furniture TempFurniture { get => tempFurniture; set => tempFurniture = value; }
+        public Furniture TempFurniture { get => tempFurniture;
+            set
+            {
+                tempFurniture = value;
+                if(value == null)_tempRotated = false;
+                else _tempRotated = value.IsRotated;
+            }
+        }
+        public bool Rotated { get => _rotated;}
+        public bool TempRotated { get => _tempRotated;}
 
         public void InitializeSlot(int row, int column, int id, float scale, float maxRow, float width, float height)
         {

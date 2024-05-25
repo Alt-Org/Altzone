@@ -233,7 +233,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!hover) {
                 Debug.Log("Set:"+row + ":" + column);
                 Vector2Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-
+                Debug.Log("Set:" + furnitureSize.x + ":" + furnitureSize.y);
                 int startRow;
                 int endColumn;
 
@@ -254,9 +254,13 @@ namespace MenuUI.Scripts.SoulHome
                     int prevRow = furniture.GetComponent<FurnitureHandling>().TempSlot.row;
                     int prevColumn = furniture.GetComponent<FurnitureHandling>().TempSlot.column;
 
+                    if(furniture.GetComponent<FurnitureHandling>().TempSlot.Rotated != furniture.GetComponent<FurnitureHandling>().IsRotated)
+                    furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSizeRotated();
+
+
                     startRow = prevRow - (furnitureSize.y - 1);
                     endColumn = prevColumn + (furnitureSize.x - 1);
-
+                    Debug.Log("StartColumn:" + startRow + ", EndColumn:" + endColumn);
                     for (int i = startRow; i <= prevRow; i++)
                     {
                         for (int j = prevColumn; j <= endColumn; j++)
@@ -312,7 +316,12 @@ namespace MenuUI.Scripts.SoulHome
         {
             Debug.Log("Free:"+slot.row+":"+slot.column);
             Transform points = transform.Find("FurniturePoints");
-            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            Vector2Int furnitureSize;
+
+            if (furniture.Furniture.IsRotated != slot.Rotated)
+                furnitureSize = furniture.GetFurnitureSizeRotated();
+            else
+                furnitureSize = furniture.GetFurnitureSize();
 
             if (furnitureSize.x == 0) return;
 
