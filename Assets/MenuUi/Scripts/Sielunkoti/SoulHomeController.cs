@@ -32,6 +32,9 @@ namespace MenuUI.Scripts.SoulHome
         private Button _editButton;
         [SerializeField]
         private GameObject _editTray;
+        [SerializeField]
+        private GameObject _audioManager;
+
 
         private bool _confirmPopupOpen = false;
         private bool _exitPending = false;
@@ -64,7 +67,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (rootObject.name == "AudioManager")
                     rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
             }
-            GetComponent<MusicList>().PlayMusic();
+            _audioManager.transform.Find("Music").GetComponent<MusicList>().PlayMusic();
             string name = GetComponent<MusicList>().GetTrackName();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
@@ -182,14 +185,14 @@ namespace MenuUI.Scripts.SoulHome
 
         public void NextMusicTrack()
         {
-            string name =GetComponent<MusicList>().NextTrack();
+            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().NextTrack();
             if (name != null)
                 _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
         }
 
         public void PrevMusicTrack()
         {
-            string name = GetComponent<MusicList>().PrevTrack();
+            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().PrevTrack();
             if (name != null)
                 _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
         }
@@ -205,6 +208,7 @@ namespace MenuUI.Scripts.SoulHome
                 _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
+                _audioManager.transform.Find("RevertChanges").GetComponent<AudioSource>().Play();
             }
             else
             {

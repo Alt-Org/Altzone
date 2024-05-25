@@ -83,10 +83,10 @@ namespace MenuUI.Scripts.SoulHome
                 Debug.Log(Touch.activeFingers[0].screenPosition);
                 if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero))
                 RayPoint(clickState);
-                else if(Touch.activeTouches.Count == 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))
+                else if(Touch.activeTouches.Count <= 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))
                 {
                     float distance;
-                    if (Touch.activeTouches.Count == 2)
+                    if (Touch.activeTouches.Count <= 2)
                     {
                         Vector2 touch1 = Touch.activeFingers[0].screenPosition;
                         Vector2 touch2 = Touch.activeFingers[1].screenPosition;

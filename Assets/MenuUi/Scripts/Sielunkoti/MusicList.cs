@@ -8,9 +8,9 @@ namespace MenuUI.Scripts.SoulHome
     public class MusicObject
     {
         [SerializeField]
-        private AudioClip _musicClip;
-        [SerializeField]
         private string _name;
+        [SerializeField]
+        private AudioClip _musicClip;
 
         public AudioClip MusicClip { get => _musicClip;}
         public string Name { get => _name;}
