@@ -838,20 +838,34 @@ namespace MenuUI.Scripts.SoulHome
             else
                 transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());*/
 
+            _maxCameraDistance = GetCameraMaxDistance();
+            _minCameraDistance = GetCameraMinDistance();
+            if(!rotated)
+                transform.position = new(transform.position.x, transform.position.y, GetCameraXDistance());
+            else
+                transform.position = new(transform.position.x, transform.position.y, GetCameraYDistance());
+
+            ClampCameraDistance(0);
+
             Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
             float currentX = transform.position.x;
             float currentY = transform.position.y;
             float offsetX = Mathf.Abs(currentX - bl.x);
             float offsetY = Mathf.Abs(currentY - bl.y);
 
-            float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-            float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
+            float y;
+            if (cameraMinY + offsetY < cameraMaxY - offsetY)
+                y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
+            else
+                y = (cameraMinY + cameraMaxY) / 2;
+            float x;
+            if (cameraMinX + offsetX < cameraMaxX - offsetX)
+                x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
+            else
+                x = (cameraMinX+cameraMaxX)/2;
+            Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
             transform.position = new(x, y, transform.position.z);
 
-            _maxCameraDistance = GetCameraMaxDistance();
-            _minCameraDistance = GetCameraMinDistance();
-
-            ClampCameraDistance(0);
         }
 
         private bool CheckInteractableStatus()
