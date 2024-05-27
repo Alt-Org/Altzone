@@ -18,6 +18,9 @@ dependencyResolutionManagement {
         mavenCentral()
 // Android Resolver Repos Start
         def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("\\", "/")
+        maven {
+            url "https://repo.maven.apache.org/maven2" // Assets/Altzone/Editor/OverRideDependencies.xml:7
+        }
         mavenLocal()
 // Android Resolver Repos End
         flatDir {
