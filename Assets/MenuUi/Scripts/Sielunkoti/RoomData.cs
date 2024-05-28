@@ -20,9 +20,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private float _floorDepth = 6;
         [SerializeField]
-        private float _slotRows = 3;
+        private int _slotRows = 3;
         [SerializeField]
-        private float _slotColumns = 8;
+        private int _slotColumns = 8;
         [SerializeField]
         private float _slotMaxGrowthPercentage = 20;
         [SerializeField]
@@ -33,8 +33,8 @@ namespace MenuUI.Scripts.SoulHome
         private Room _roomInfo;
 
         public Room RoomInfo { get => _roomInfo; set => _roomInfo = value; }
-        public float SlotRows { get => _slotRows;}
-        public float SlotColumns { get => _slotColumns;}
+        public int SlotRows { get => _slotRows;}
+        public int SlotColumns { get => _slotColumns;}
 
         void Start()
         {
@@ -47,26 +47,28 @@ namespace MenuUI.Scripts.SoulHome
             int row = 0;
             int col = 0;
             GameObject furnitureRowObject = new GameObject();
+            float prevBottom = 0;
             for(int i = 0; i < _slotRows; i++)
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, points.transform);
                 if(_floorAnchorPosition is RectPosition.Center)
                     furnitureRow.transform.localPosition = new Vector3(0, (_floorDepth / 2) + -1*(_floorDepth/_slotRows * (0.5f + i)), 0);
                 else if(_floorAnchorPosition is RectPosition.Top)
-                    furnitureRow.transform.localPosition = new Vector3(0, -1 * (_floorDepth / _slotRows * (0.5f + i)), 0);
+                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((_floorDepth / _slotRows + (_floorDepth / _slotRows) * (0.05f * (_slotRows / -2 +0.5f+i)))/2), 0);
                 furnitureRow.name = (1+i).ToString();
                 col = 0;
                 for (int j = 0; j < _slotColumns; j++)
                 {
                     GameObject furnitureSlot = Instantiate(_furnitureSlotPrefab, furnitureRow.transform);
-                    furnitureSlot.transform.localPosition = new Vector3((-1 * (_floorWidth * (1+ (_slotMaxGrowthPercentage * (i / (_slotRows - 1)) / 100))) / 2 ) + _floorWidth * (1 + (_slotMaxGrowthPercentage * (i / (_slotRows - 1)) / 100)) / _slotColumns  * (0.5f + j), 0, 0);
-                    float slotDepth = _floorDepth / _slotRows;
-                    float slotWidth = (_floorWidth / _slotColumns) * (1 + _slotMaxGrowthPercentage * (i / (_slotRows - 1))/100);
+                    furnitureSlot.transform.localPosition = new Vector3((-1 * (_floorWidth * (1+ (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100))) / 2 ) + _floorWidth * (1 + (_slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1)) / 100)) / _slotColumns  * (0.5f + j), 0, 0);
+                    float slotDepth = _floorDepth / _slotRows + (_floorDepth / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
+                    float slotWidth = (_floorWidth / _slotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1))/100);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
                     furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
                     col++;
                 }
+                prevBottom -= _floorDepth / _slotRows + (_floorDepth / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
                 row++;
             }
             Destroy(furnitureRowObject);
@@ -254,7 +256,7 @@ namespace MenuUI.Scripts.SoulHome
                     int prevRow = furniture.GetComponent<FurnitureHandling>().TempSlot.row;
                     int prevColumn = furniture.GetComponent<FurnitureHandling>().TempSlot.column;
 
-                    if(furniture.GetComponent<FurnitureHandling>().TempSlot.Rotated != furniture.GetComponent<FurnitureHandling>().IsRotated)
+                    if(furniture.GetComponent<FurnitureHandling>().TempSlot.TempRotated != furniture.GetComponent<FurnitureHandling>().IsRotated)
                     furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSizeRotated();
 
 

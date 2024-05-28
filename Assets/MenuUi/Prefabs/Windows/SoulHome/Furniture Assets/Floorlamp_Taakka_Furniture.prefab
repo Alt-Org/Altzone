@@ -118,18 +118,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.95}
+  m_Offset: {x: 0, y: 2.3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1, y: 1.8867188}
+    oldSize: {x: 2, y: 4.7890625}
     newSize: {x: 1, y: 1.8867188}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.9}
+  m_Size: {x: 2, y: 4.6}
   m_EdgeRadius: 0
 --- !u!114 &-724820267442525664
 MonoBehaviour:
@@ -155,3 +155,4 @@ MonoBehaviour:
   _trayFurnitureObject: {fileID: 6752174233831251881, guid: 9a69f4ef2d7504345bd286ab4ffdb68c,
     type: 3}
   cullCheckAmount: 0.1
+  _isPlaceHolder: 0
