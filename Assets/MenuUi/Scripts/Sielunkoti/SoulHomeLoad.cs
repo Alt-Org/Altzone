@@ -142,17 +142,18 @@ namespace MenuUI.Scripts.SoulHome {
             }
             foreach (Room room in _soulHomeRooms.Room)
             {
-                Instantiate (_roomPrefab, roompositions[i].transform);
-                Room roomInfo = roompositions[i].transform.GetChild(0).GetComponent<RoomData>().RoomInfo = room;
-                roompositions[i].transform.GetChild(0).GetComponent<RoomData>().RoomInfo.Id = room.Id;
-                if (_isometric) { 
-                roompositions[i].transform.GetChild(0).Find("Floor").gameObject.GetComponent<Image>().color = roomInfo.Floor;
-                roompositions[i].transform.GetChild(0).Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
-                roompositions[i].transform.GetChild(0).Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
+                GameObject roomObject = Instantiate (_roomPrefab, roompositions[i].transform);
+                Room roomInfo = roomObject.GetComponent<RoomData>().RoomInfo = room;
+                roomObject.GetComponent<RoomData>().RoomInfo.Id = room.Id;
+                roompositions[i].transform.localPosition = new(0,i* roomObject.GetComponent<BoxCollider2D>().size.y, 0);
+                if (_isometric) {
+                    roomObject.transform.Find("Floor").gameObject.GetComponent<Image>().color = roomInfo.Floor;
+                    roomObject.transform.Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
+                    roomObject.transform.Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
                 }
                 else
                 {
-                    /*GameObject floor = roompositions[i].transform.GetChild(0).Find("Room").Find("Floor").gameObject;
+                    /*GameObject floor = roomObject.transform.Find("Room").Find("Floor").gameObject;
                     floor.GetComponent<SpriteRenderer>().color = room.Floor;
                     foreach (SpriteRenderer floorPiece in floor.transform.GetComponentsInChildren<SpriteRenderer>())
                     {

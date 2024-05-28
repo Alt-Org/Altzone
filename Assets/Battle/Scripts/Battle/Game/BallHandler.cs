@@ -28,6 +28,7 @@ public class BallHandler : MonoBehaviour
         _rb.position = position;
         SetVelocity(NewRotation(direction) * Vector2.up * speed);
         _sprite.enabled = true;
+        _sparkleSprite.SetActive(true);
 
         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
     }
@@ -37,6 +38,7 @@ public class BallHandler : MonoBehaviour
         _rb.position = Vector2.zero;
         _rb.velocity = Vector2.zero;
         _sprite.enabled = false;
+        _sparkleSprite.SetActive(false);
 
         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
     }
@@ -200,7 +202,6 @@ public class BallHandler : MonoBehaviour
     {
         if (_rb.velocity != Vector2.zero)
         {
-            _sparkleSprite.SetActive(true);
             timeSinceLastUpdate += Time.fixedDeltaTime;
 
             // Check if enough time has passed since the last sparkle update
@@ -209,10 +210,6 @@ public class BallHandler : MonoBehaviour
                 ChangeSparkleScale();
                 timeSinceLastUpdate = 0f;
             }
-        }
-        else
-        {
-            _sparkleSprite.SetActive(false);
         }
     }
 }
