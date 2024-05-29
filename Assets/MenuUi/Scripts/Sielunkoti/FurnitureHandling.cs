@@ -185,7 +185,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetScale()
         {
-            transform.localScale /= 1.0f + (_tempSlot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : GetComponent<SpriteRenderer>().sortingOrder - 3) / (_tempSlot.maxRow - 1f));
+            transform.localScale /= 1.0f + (_tempSlot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 2 ? 2 : (GetComponent<SpriteRenderer>().sortingOrder - 2)/2) / (_tempSlot.maxRow - 1f));
 
             GetComponent<SpriteRenderer>().sortingOrder = 2 + _tempSlot.row*2;
             transform.localScale *= 1.0f + (_tempSlot.maxDepthScale/100f) * (((float)_tempSlot.row)/(_tempSlot.maxRow-1f));
@@ -194,7 +194,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetScale(int row, FurnitureSlot slot)
         {
-            transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : GetComponent<SpriteRenderer>().sortingOrder - 3) / (slot.maxRow - 1f));
+            transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 2 ? 2 : (GetComponent<SpriteRenderer>().sortingOrder - 2) / 2) / (slot.maxRow - 1f));
 
             GetComponent<SpriteRenderer>().sortingOrder = 2 + row*2;
             transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
