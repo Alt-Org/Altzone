@@ -29,8 +29,11 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private GameObject _roomPrefab;
         [SerializeField] private FurnitureTrayHandler _trayHandler;
         [SerializeField] private TowerController _towerController;
+        [SerializeField] private GameObject _avatarPlaceholder;
+
 
         [SerializeField] private List<Furniture> _furnitureList;
+
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -41,6 +44,7 @@ namespace MenuUI.Scripts.SoulHome {
             //TestCode();
             LoadRooms();
             LoadFurniture();
+            SpawnAvatar();
         }
 
         public IEnumerator HomeLoad()
@@ -247,6 +251,11 @@ namespace MenuUI.Scripts.SoulHome {
                     i++;
                 }
             }
+        }
+
+        public void SpawnAvatar()
+        {
+            Instantiate(_avatarPlaceholder,_roomPositions.transform.GetChild(0).GetChild(0));
         }
 
         
