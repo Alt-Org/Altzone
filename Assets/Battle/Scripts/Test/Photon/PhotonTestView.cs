@@ -73,13 +73,19 @@ namespace Battle.Scripts.Test.Photon
             _playerText.text = $"Player: <b>{localPlayer.GetDebugLabel(false)}</b>";
             _masterClientText.text = $"Master: {masterClient.GetDebugLabel(false)}";
             StartCoroutine(PingPoller());
+            var refreshRate = Screen.currentResolution.refreshRateRatio.value;
+            if (double.IsNaN(refreshRate))
+            {
+                // Fix Simulator etc.
+                refreshRate = 0;
+            }
             _gameInfoTextLines.text = "<b>Info</b>" +
                                       $"\r\nDate {DateTime.Now:yyyy-dd-MM HH:mm}" +
                                       $"\r\nPhoton ver {PhotonLobby.GameVersion}" +
                                       $"\r\nPhoton send rate {PhotonNetwork.SendRate} Hz" +
                                       $"\r\nGame phys step {1f / Time.fixedDeltaTime} Hz" +
                                       $"\r\nGame frame rate {Application.targetFrameRate} Hz" +
-                                      $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {Screen.currentResolution.refreshRate} Hz" +
+                                      $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {refreshRate} Hz" +
                                       $"\r\nCompiled {BuildProperties.CompiledOnDate}";
             if (PhotonNetwork.SerializationRate != PhotonNetwork.SendRate)
             {
