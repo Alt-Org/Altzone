@@ -155,8 +155,6 @@ namespace Prg.Editor.BatchBuild
 
         private static BuildReport BuildPLayer(BatchBuildOptions options)
         {
-            SavedWebGlSettings savedWebGlSettings = null;
-
             var scenes = EditorBuildSettings.scenes
                 .Where(x => x.enabled)
                 .Select(x => x.path)
@@ -186,23 +184,25 @@ namespace Prg.Editor.BatchBuild
             {
                 case BuildTarget.Android:
                 {
-                    // Android setting we enforce.
+                    // Android settings we enforce.
                     PlayerSettings.Android.minifyRelease = true;
                     PlayerSettings.Android.useCustomKeystore = true;
                     Debug.Log($"batch_build_ Android.minifyRelease: {PlayerSettings.Android.minifyRelease}");
                     Debug.Log($"batch_build_ Android.useCustomKeystore: {PlayerSettings.Android.useCustomKeystore}");
                     if (PlayerSettings.Android.useCustomKeystore)
                     {
-                        // Build Manager is responsible for these Editor settings and how they are managed in the project.
-                        PlayerSettings.Android.keyaliasName = options.Android.keyaliasName;
+                        // Project keystore:
                         PlayerSettings.Android.keystoreName = options.Android.keystoreName;
                         PlayerSettings.keystorePass = options.Android.keystorePassword;
+                        // Project key:
+                        PlayerSettings.Android.keyaliasName = options.Android.keyaliasName;
                         PlayerSettings.keyaliasPass = options.Android.aliasPassword;
-                        Debug.Log($"batch_build_ Android.keyaliasName: {PlayerSettings.Android.keyaliasName}");
+
                         Debug.Log($"batch_build_ Android.keystoreName: {PlayerSettings.Android.keystoreName} " +
                                   $"Exists={File.Exists(PlayerSettings.Android.keystoreName)}");
                         Debug.Log(
                             $"batch_build_ PlayerSettings.keystorePass: {FormatUtil.PasswordToLog(PlayerSettings.keystorePass)}");
+                        Debug.Log($"batch_build_ Android.keyaliasName: {PlayerSettings.Android.keyaliasName}");
                         Debug.Log(
                             $"batch_build_ PlayerSettings.keyaliasPass: {FormatUtil.PasswordToLog(PlayerSettings.keyaliasPass)}");
                     }
@@ -211,7 +211,6 @@ namespace Prg.Editor.BatchBuild
                 case BuildTarget.WebGL:
                     // Save current Editor settings so they can be restored after build to original values
                     // to prevent unnecessary changes in version control.
-                    savedWebGlSettings = new SavedWebGlSettings();
                     PlayerSettings.WebGL.compressionFormat = options.WebGL.compressionFormat;
                     Debug.Log($"batch_build_ WebGL.compressionFormat: {PlayerSettings.WebGL.compressionFormat}");
                     // No use to show stack trace in browser.
@@ -232,28 +231,7 @@ namespace Prg.Editor.BatchBuild
             }
             Directory.CreateDirectory(options.OutputFolder);
             var buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
-            savedWebGlSettings?.Restore();
             return buildReport;
-        }
-
-        private record SavedWebGlSettings
-        {
-            private readonly WebGLCompressionFormat _compressionFormat = PlayerSettings.WebGL.compressionFormat;
-            private readonly StackTraceLogType _error = PlayerSettings.GetStackTraceLogType(LogType.Error);
-            private readonly StackTraceLogType _assert = PlayerSettings.GetStackTraceLogType(LogType.Assert);
-            private readonly StackTraceLogType _warning = PlayerSettings.GetStackTraceLogType(LogType.Warning);
-            private readonly StackTraceLogType _log = PlayerSettings.GetStackTraceLogType(LogType.Log);
-            private readonly StackTraceLogType _exception = PlayerSettings.GetStackTraceLogType(LogType.Exception);
-
-            public void Restore()
-            {
-                PlayerSettings.WebGL.compressionFormat = _compressionFormat;
-                PlayerSettings.SetStackTraceLogType(LogType.Error, _error);
-                PlayerSettings.SetStackTraceLogType(LogType.Assert, _assert);
-                PlayerSettings.SetStackTraceLogType(LogType.Warning, _warning);
-                PlayerSettings.SetStackTraceLogType(LogType.Log, _log);
-                PlayerSettings.SetStackTraceLogType(LogType.Exception, _exception);
-            }
         }
 
         private static bool VerifyUnityVersionForBuild(string unityVersion, out string editorVersion)
