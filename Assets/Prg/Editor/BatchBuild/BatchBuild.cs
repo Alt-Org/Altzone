@@ -518,6 +518,8 @@ namespace Prg.Editor.BatchBuild
 #if USE_GA
                 GameAnalytics.gameKey = secretKeys[$"{BuildTarget}_{nameof(GameAnalytics.gameKey)}"];
                 GameAnalytics.secretKey = secretKeys[$"{BuildTarget}_{nameof(GameAnalytics.secretKey)}"];
+#else
+                Assert.IsNotNull(GameAnalytics);
 #endif
                 // Set final output path and name.
                 OutputFolder = Path.Combine(ProjectPath, $"build{BuildPipeline.GetBuildTargetName(BuildTarget)}");
