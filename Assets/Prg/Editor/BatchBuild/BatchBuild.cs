@@ -8,6 +8,9 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.Assertions;
+#if USE_GA
+using Prg.Editor.Data;
+#endif
 
 namespace Prg.Editor.BatchBuild
 {

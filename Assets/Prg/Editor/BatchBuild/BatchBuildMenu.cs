@@ -16,14 +16,25 @@ namespace Prg.Editor.BatchBuild
         [MenuItem(MenuItem + "Show Build Report with unused Assets", false, 11)]
         private static void HtmlBuildReportBrowserFull() => Logged(() => BuildReportAnalyzer.HtmlBuildReportFull());
 
-        [MenuItem(MenuItem + "Test Dump Secret Keys Folder", false, 12)]
+        [MenuItem(MenuItem + @"Test .\etc\secretKeys Folder", false, 12)]
         private static void TestDumpSecretKeysFolder() => Logged(() =>
         {
-            Debug.Log($"* BuildTarget {BuildTarget.Android}");
-            var secretKeys = BatchBuild.LoadSecretKeys(@".\etc\secretKeys", BuildTarget.Android);
-            foreach (var pair in secretKeys)
+            foreach (var buildTarget in new[]
+                         { BuildTarget.Android, BuildTarget.WebGL, BuildTarget.StandaloneWindows64 })
             {
-                Debug.Log($"{pair.Key}={pair.Value}");
+                try
+                {
+                    var secretKeys = BatchBuild.LoadSecretKeys(@".\etc\secretKeys", buildTarget);
+                    Debug.Log($"* BuildTarget {buildTarget}: keys {secretKeys.Count}");
+                    foreach (var pair in secretKeys)
+                    {
+                        Debug.Log($"{RichText.White(pair.Key)}={pair.Value}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"* BuildTarget {buildTarget}: {RichText.Red(e.Message)}");
+                }
             }
         });
 
