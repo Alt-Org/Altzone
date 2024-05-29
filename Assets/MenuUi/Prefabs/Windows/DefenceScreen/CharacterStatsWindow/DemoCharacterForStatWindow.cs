@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MenuUi.Prefabs.Windows.DefenceScreen
 {
 
-    public class DemoCharacterWindowCharacter
+    public class DemoCharacterForStatWindow
     {
         public string CharacterName;
         public bool Favourite;
@@ -16,7 +14,7 @@ namespace MenuUi.Prefabs.Windows.DefenceScreen
         public int CharacterDefence;
         public int CharacterHP;
 
-        public DemoCharacterWindowCharacter(string name, bool favourite, int speed, int resistance, int attack, int defence, int hp)
+        public DemoCharacterForStatWindow(string name, bool favourite, int speed, int resistance, int attack, int defence, int hp)
         {
             CharacterName = name;
             Favourite = favourite;
@@ -26,5 +24,6 @@ namespace MenuUi.Prefabs.Windows.DefenceScreen
             CharacterDefence = defence;
             CharacterHP = hp;
         }
+
     }
 }

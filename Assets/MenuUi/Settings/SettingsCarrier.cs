@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 public class SettingsCarrier : MonoBehaviour
 {
     // Script for carrying settings data between scenes
@@ -50,4 +51,21 @@ public class SettingsCarrier : MonoBehaviour
         }
         return 1 * (otherVolume * masterVolume);
     }
+
+    // Determines which character stat window to load/show from character gallery
+    private int _characterGalleryCharacterStatWindowToShow = -1;
+    public int CharacterGalleryCharacterStatWindowToShow
+    {
+        get => _characterGalleryCharacterStatWindowToShow;
+        set
+        {
+            if (_characterGalleryCharacterStatWindowToShow != value)
+            {
+                _characterGalleryCharacterStatWindowToShow = value;
+                OnCharacterGalleryCharacterStatWindowToShowChange?.Invoke(_characterGalleryCharacterStatWindowToShow);
+                Debug.Log("CharacterGallery value changed" + _characterGalleryCharacterStatWindowToShow);
+            }
+        }
+    }
+    public event Action<int> OnCharacterGalleryCharacterStatWindowToShowChange;
 }
