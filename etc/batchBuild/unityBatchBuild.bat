@@ -1,4 +1,8 @@
 @echo off
+rem
+rem LOG_WRITER_LOG must be set here because we need to expand environment variable %USERNAME%
+rem
+set LOG_WRITER_LOG=C:\Users\%USERNAME%\AppData\LocalLow\PRG\altzone\editor_altzone_game.log
 set ENV_FILE=%1
 set REBUILD=%2
 echo.
@@ -16,6 +20,7 @@ FOR /F "eol=# tokens=*" %%i IN (%ENV_FILE%) DO (
 	echo env set %%i
 	SET %%i
 )
+echo LOG_WRITER_LOG=%LOG_WRITER_LOG%
 if not exist "%UNITY_EXE%" (
     echo *
     echo * UNITY executable %UNITY_EXE% not found
