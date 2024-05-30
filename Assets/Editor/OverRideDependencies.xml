@@ -1,0 +1,10 @@
+
+<!-- see https://forum.unity.com/threads/how-to-update-androidx-fragment-fragment-latest.1456870/#post-9136117 -->
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://repo.maven.apache.org/maven2</repository>
+    </repositories>
+    <androidPackage spec="androidx.fragment:fragment:1.1.0" />
+  </androidPackages>
+</dependencies>

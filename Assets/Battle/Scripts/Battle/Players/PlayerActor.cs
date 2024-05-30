@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
-using Altzone.Scripts.Battle;
-using Altzone.Scripts.Config;
-using UnityConstants;
+using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityConstants;
+
+using Altzone.Scripts.Battle;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
 using Prg.Scripts.Common.PubSub;
-using System.Collections.Generic;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -17,30 +21,40 @@ namespace Battle.Scripts.Battle.Players
     /// </remarks>
     internal class PlayerActor : PlayerActorBase
     {
-        // Serialized Fields
+        #region Serialized Fields
         [SerializeField] private Transform _geometryRoot;
         [SerializeField] private float _movementSpeed;
         [SerializeField] private float _shieldActivationDistance;
-        [SerializeField] private bool _useNewRotationSysten; // unused (old and "new" rotation systems are replaced by newer system)
-        [SerializeField] private Sprite[] _playerCharacterSpriteSheet;
+        [SerializeField] private float _impactForce;
         [SerializeField] public string SeePlayerName;
+        [SerializeField] private float _sparkleUpdateInterval;
+        [SerializeField] private float _timeSinceLastUpdate;
+        #endregion
 
-        // Public Constants
-        public const int SPRITE_VARIANT_A = 0;
-        public const int SPRITE_VARIANT_B = 1;
-        public const int SPRITE_VARIANT_COUNT = SPRITE_VARIANT_B + 1;
+        #region Public
 
-        // Public Static Fields
+        #region Public - Constants
+        public const int SPRITE_VARIANT_COUNT = (int)SpriteVariant.B + 1;
+        #endregion Public - Constants
+
+        #region Public - Enums
+        public enum SpriteVariant { A = 0, B = 1 }
+        #endregion Public - Enums
+
+        #region Public -  Static Fields
         public static string PlayerName;
+        #endregion Public -  Static Fields
 
-        // Public Properties
+        #region Public - Properties
         public bool IsBusy => _isMoving || _hasTarget;
         public float MovementSpeed => _movementSpeed;
-        //public bool IsUsingNewRotionSysten => _useNewRotationSysten;
-        public Transform ShieldTransform => _playerShield.Transform;
-        public Transform CharacterTransform => _playerCharacter.Transform;
+        public Transform ShieldTransform => _playerShieldManager.transform;
+        public Transform CharacterTransform => _playerCharacter.transform;
+        public Transform SoulTransform => _playerSoul.transform;
+        public float ImpactForce => _impactForce;
+        #endregion Public - Properties
 
-        #region Public Methods
+        #region Public - Methods
 
         public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
         {
@@ -75,30 +89,31 @@ namespace Battle.Scripts.Battle.Players
 
         public void ResetSprite()
         {
-            _playerCharacter.SetSprite(PlayerCharacter.INDE_WITH_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
+            _playerCharacter.SpritIndex = PlayerCharacter.SpriteIndexEnum.IdleWithShield;
         }
 
-        #region Public Methods - Setters
+        #region Public - Methods - Setters
 
         public void SetPlayerDriver(PlayerDriverPhoton playerDriver)
         {
             _playerDriver = playerDriver;
         }
 
-        public void SetSpriteVariant(int variant)
+        public void SetSpriteVariant(SpriteVariant variant)
         {
-            _playerCharacter.SetSpriteVariant(variant);
-            _playerShield.PoseManager.SetSpriteVariant(variant);
+            _playerCharacter.SpriteVariant = variant;
+            _playerShieldManager.SetSpriteVariant(variant);
         }
 
 
         public void SetRotation(float angle)
         {
             float multiplier = Mathf.Round(angle / _angleLimit);
-            float newAngle = _angleLimit * multiplier; 
+            float newAngle = _angleLimit * multiplier;
             //_geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
-            _playerShield.Transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
-            _playerCharacter.Transform.eulerAngles = new Vector3(0, 0, newAngle);
+            _playerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
+            _playerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
+            _playerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -117,12 +132,7 @@ namespace Battle.Scripts.Battle.Players
         }
         */
 
-        public void SetShieldPose(int poseIndex)
-        {
-            StartCoroutine(ShieldDeformDelay(poseIndex));
-        }
-
-        #endregion Public Methods - Setters
+        #endregion Public - Methods - Setters
 
         public void MoveTo(Vector2 targetPosition, int teleportUpdateNumber)
         {
@@ -131,36 +141,36 @@ namespace Battle.Scripts.Battle.Players
                 _syncedFixedUpdateClock.UpdateCount,
                 _playerDriver.TeamNumber,
                 _playerDriver.PlayerPos,
-                _playerShield.Transform.position,
+                _playerShieldManager.transform.position,
                 targetPosition
             ));
 
             _isMoving = true;
-            //_playerCharacter.SetSprite(PlayerCharacter.MOVING_SPRITE_INDEX, _playerCharacterSpriteSheet);
-            _playerCharacter.Transform.position = _playerShield.Transform.position;
+            _playerCharacter.transform.position = _playerShieldManager.transform.position;
+            _playerSoul.Show = true;
             Debug.Log(string.Format(DEBUG_LOG_IS_MOVING, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _isMoving));
 
-            float targetDistance = (targetPosition - new Vector2(_playerShield.Transform.position.x, _playerShield.Transform.position.y)).magnitude;
+            float targetDistance = (targetPosition - new Vector2(_playerShieldManager.transform.position.x, _playerShieldManager.transform.position.y)).magnitude;
             float movementTimeS = (float)_syncedFixedUpdateClock.ToSeconds(Mathf.Max(teleportUpdateNumber - _syncedFixedUpdateClock.UpdateCount, 1));
-            //float movementSpeed = targetDistance / movementTimeS;
+            float movementSpeed = targetDistance / movementTimeS;
 
-            //Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
-            Coroutine animation = StartCoroutine(TeleportAnimationCoroutine(movementTimeS));
+            _playerMovementIndicator.transform.position = targetPosition;
+            _sparkleSprite.transform.position = targetPosition;
+            Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
-                //StopCoroutine(move);
-                StopCoroutine(animation);
-                //Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Teleport animatio coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
+                StopCoroutine(move);
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine stopped", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
 
                 _hasTarget = false;
 
-                _playerShield.Transform.position = targetPosition;
-                _playerShield.PoseManager.SetShieldSpriteOpacity(1f);
+                _playerShieldManager.transform.position = targetPosition;
+                //_playerShield.PoseManager.SetShieldSpriteOpacity(1f);
 
-                _playerCharacter.Transform.position = targetPosition;
-                _playerCharacter.SetSprite(_isUsingShield ? PlayerCharacter.INDE_WITH_SHIELD_SPRITE_INDEX : PlayerCharacter.INDE_WITHOUT_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
-                _playerCharacter.Opacity = 1f;
+                _playerCharacter.transform.position = targetPosition;
+                _playerCharacter.SpritIndex = _isUsingShield ? PlayerCharacter.SpriteIndexEnum.IdleWithShield : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
+
+                _playerSoul.Show = false;
 
                 _isMoving = false;
 
@@ -171,39 +181,25 @@ namespace Battle.Scripts.Battle.Players
                     _syncedFixedUpdateClock.UpdateCount,
                     _playerDriver.TeamNumber,
                     _playerDriver.PlayerPos,
-                    _playerShield.Transform.position
+                    _playerShieldManager.transform.position
                 ));
             });
         }
 
-        public void ShieldHit(int damage)
-        {
-            if (!_allowShieldHit)
-            {
-                return;
-            }
-            _allowShieldHit = false;
-            if (_playerShield.PoseManager == null)
-            {
-                return;
-            }
-            if (_currentPoseIndex < _maxPoseIndex)
-            {
-                StartCoroutine(ShieldHitDelay(damage));
-            }
-        }
+        public bool OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
+        public void OnBallShieldBounce() => _playerClass.OnBallShieldBounce();
 
-        #endregion Public Methods
-        
+        #endregion Public - Methods
+
+        #endregion Public
+
+        #region Private
+
+        #region Private - Fields
 
         // Config
         private int _shieldResistance;
         private float _angleLimit;
-        private int _maxPoseIndex;
-
-        // Delays
-        private float _shieldDeformDelay;
-        private float _shieldHitDelay;
 
         // State
         private bool _startBool = true;
@@ -212,101 +208,45 @@ namespace Battle.Scripts.Battle.Players
         private bool _isUsingShield;
         private bool _allowShieldHit;
         private int _shieldHitPoints;
-        private int _currentPoseIndex;
 
-        private class PlayerShield
-        {
-            public Transform Transform;
-            public ShieldPoseManager PoseManager;
-            //public SpriteRenderer SpriteRenderer;
-
-            public PlayerShield(Transform transform)
-            {
-                Transform = transform;
-                PoseManager = Transform.GetComponent<ShieldPoseManager>();
-            }
-        }
-        private PlayerShield _playerShield;
-
-        private class PlayerCharacter
-        {
-            public const int INDE_WITHOUT_SHIELD_SPRITE_INDEX = 0;
-            public const int INDE_WITH_SHIELD_SPRITE_INDEX = 1;
-            public const int MOVING_SPRITE_INDEX = 2;
-            public const int SPRITE_COUNT = MOVING_SPRITE_INDEX + 1;
-
-            public Transform Transform;
-            public float Opacity
-            {
-                get => _spriteRenderers[_spriteVariant].color.a;
-                set
-                {
-                    Color color = _spriteRenderers[_spriteVariant].color;
-                    color.a = value;
-                    _spriteRenderers[_spriteVariant].color = color;
-                }
-            }
-
-            public PlayerCharacter(Transform transform)
-            {
-                Transform = transform;
-                _spriteGameObjects = new GameObject[SPRITE_VARIANT_COUNT];
-                _spriteGameObjects[SPRITE_VARIANT_A] = transform.Find("SpriteA").gameObject;
-                _spriteGameObjects[SPRITE_VARIANT_B] = transform.Find("SpriteB").gameObject;
-                _spriteRenderers = new SpriteRenderer[SPRITE_VARIANT_COUNT];
-                _spriteRenderers[SPRITE_VARIANT_A] = _spriteGameObjects[SPRITE_VARIANT_A].GetComponent<SpriteRenderer>();
-                _spriteRenderers[SPRITE_VARIANT_B] = _spriteGameObjects[SPRITE_VARIANT_B].GetComponent<SpriteRenderer>();
-            }
-
-            public void SetSpriteVariant(int variant)
-            {
-                _spriteGameObjects[_spriteVariant].SetActive(false);
-                _spriteVariant = variant;
-                _spriteGameObjects[_spriteVariant].SetActive(true);
-            }
-
-            public void SetSprite(int index, Sprite[] spriteSheet)
-            {
-                _spriteRenderers[_spriteVariant].sprite = spriteSheet[SPRITE_COUNT * _spriteVariant + index];
-            }
-
-            private GameObject[] _spriteGameObjects;
-            private SpriteRenderer[] _spriteRenderers;
-            private int _spriteVariant;
-        }
+        // Player Parts
+        private IPlayerClass _playerClass;
+        private ShieldManager _playerShieldManager;
         private PlayerCharacter _playerCharacter;
+        private PlayerSoul _playerSoul;
+        private GameObject _playerMovementIndicator;
+        private GameObject _sparkleSprite;
 
         private Vector3 _tempPosition;
 
         // Drivers
         private PlayerDriverPhoton _playerDriver;
-        private List<IDriver> _otherDrivers = new();
+        private readonly List<IDriver> _otherDrivers = new();
 
         // Components
-        //private Transform _transform;
-        //private ShieldPoseManager _shieldPoseManager;
         private AudioSource _audioSource;
 
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
-        // Debug
+        #endregion Private - Fields
+
+        #region DEBUG
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER ACTOR] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
         private const string DEBUG_LOG_IS_MOVING = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Is moving: {3}";
         private const string DEBUG_LOG_HAS_TARGET = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Has target: {3}";
+        #endregion DEBUG
+
+        #region Private - Methods
 
         private void Awake()
         {
-            var variables = GameConfig.Get().Variables;
+            GameVariables variables = GameConfig.Get().Variables;
 
             // get config
             _shieldResistance = variables._shieldResistance;
             _angleLimit = variables._angleLimit;
-
-            // get delays
-            _shieldDeformDelay = variables._shieldDeformDelay;
-            _shieldHitDelay = variables._shieldHitDelay;
 
             // set state
             _hasTarget = false;
@@ -315,12 +255,15 @@ namespace Battle.Scripts.Battle.Players
             _allowShieldHit = true;
             _shieldHitPoints = _shieldResistance;
 
-            _playerShield = new(_geometryRoot.Find("BoxShield"));
-            _playerCharacter = new(_geometryRoot.Find("PLayerCharacter"));
+            // get player parts
+            _playerClass = _geometryRoot.GetComponentInChildren<IPlayerClass>();
+            _playerShieldManager = _geometryRoot.GetComponentInChildren<ShieldManager>();
+            _playerCharacter = _geometryRoot.GetComponentInChildren<PlayerCharacter>();
+            _playerSoul = _geometryRoot.GetComponentInChildren<PlayerSoul>();
+            _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
+            _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
 
             // get components
-            //_transform = GetComponent<Transform>();
-            //_shieldPoseManager = GetComponentInChildren<ShieldPoseManager>();
             _audioSource = GetComponent<AudioSource>();
 
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
@@ -329,9 +272,9 @@ namespace Battle.Scripts.Battle.Players
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
 
-            if (_playerShield.PoseManager != null)
+            if (_playerShieldManager != null)
             {
-                StartCoroutine(ResetPose());
+                StartCoroutine(ResetShield());
             }
 
             if (_startBool == true)
@@ -342,27 +285,24 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log($"{gameObject.name} {SeePlayerName}");
         }
 
-        #region Message Listeners
-        void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
+        #region Private - Methods - Message Listeners
+        private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             foreach (IDriver driver in data.AllDrivers)
             {
-                if (driver.ActorShieldTransform == _playerShield.Transform) continue;
+                if (driver.ActorShieldTransform == _playerShieldManager.transform) continue;
                 _otherDrivers.Add(driver);
             }
         }
-        #endregion Message Listeners
+        #endregion Private - Methods - Message Listeners
 
-        #region Coroutines
+        #region Private - Methods - Coroutines
 
-        private IEnumerator ResetPose()
+        private IEnumerator ResetShield()
         {
-            yield return new WaitUntil(() => _playerShield.PoseManager.MaxPoseIndex > -1);
-            _currentPoseIndex = 0;
-            _playerShield.PoseManager.SetPose(_currentPoseIndex);
-            _playerShield.PoseManager.SetHitboxActive(true);
-            _playerShield.PoseManager.SetShow(true);
-            _maxPoseIndex = _playerShield.PoseManager.MaxPoseIndex;
+            yield return new WaitUntil(() => _playerShieldManager.Initialized);
+            _playerShieldManager.SetHitboxActive(true);
+            _playerShieldManager.SetShow(true);
         }
 
         private IEnumerator MoveCoroutine(Vector2 position, float movementSpeed)
@@ -375,58 +315,39 @@ namespace Battle.Scripts.Battle.Players
             {
                 yield return null;
                 float maxDistanceDelta = movementSpeed * Time.deltaTime;
-                _tempPosition = Vector3.MoveTowards(_playerCharacter.Transform.position, targetPosition, maxDistanceDelta);
-                _playerCharacter.Transform.position = _tempPosition;
+                _tempPosition = Vector3.MoveTowards(_playerSoul.transform.position, targetPosition, maxDistanceDelta);
+                _playerSoul.transform.position = _tempPosition;
                 _hasTarget = !(Mathf.Approximately(_tempPosition.x, targetPosition.x) && Mathf.Approximately(_tempPosition.y, targetPosition.y));
             }
             Debug.Log(string.Format(DEBUG_LOG_HAS_TARGET, _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos, _hasTarget));
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Move coroutine finished", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
         }
 
-        private IEnumerator TeleportAnimationCoroutine(float duration)
-        {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Teleport animatio coroutine started", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
-            float time = 0;
-            while (time < duration)
-            {
-                yield return null;
-                time += Time.deltaTime;
-                float opacity = Mathf.Sin((time / duration * 4 + 0.5f) * Mathf.PI) * 0.5f + 0.5f;
-                _playerCharacter.Opacity = opacity;
-                _playerShield.PoseManager.SetShieldSpriteOpacity(opacity);
-            }
-
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Teleport animatio coroutine finished", _syncedFixedUpdateClock.UpdateCount, _playerDriver.TeamNumber, _playerDriver.PlayerPos));
-        }
-
-        private IEnumerator ShieldDeformDelay(int poseIndex)
-        {
-            yield return new WaitForSeconds(_shieldDeformDelay);
-            _playerShield.PoseManager.SetPose(poseIndex);
-            //_audioSource.Play();
-        }
-
-        private IEnumerator ShieldHitDelay(int damage)
-        {
-            yield return new WaitForSeconds(_shieldHitDelay);
-            _shieldHitPoints -= damage;
-            if (_shieldHitPoints <= 0)
-            {
-                _currentPoseIndex++;
-                _playerDriver.SetCharacterPose(_currentPoseIndex);
-                _shieldHitPoints = _shieldResistance;
-            }
-            _allowShieldHit = true;
-        }
-
-        #endregion Coroutines
+        #endregion Private - Methods - Coroutines
 
         private void FixedUpdate()
         {
+            _timeSinceLastUpdate += Time.fixedDeltaTime;
+
+            // Check if enough time has passed since the last sparkle update
+            if (_timeSinceLastUpdate >= _sparkleUpdateInterval)
+            {
+                if (_sparkleSprite != null)
+                {
+                    SpriteRenderer spriteRenderer = _sparkleSprite.GetComponent<SpriteRenderer>();
+                    float randomScale = UnityEngine.Random.Range(2, 4);
+
+                    // Set the scale of the sprite renderer with the random scale value
+                    spriteRenderer.transform.localScale = new Vector3(randomScale, randomScale, 1);
+                }
+
+                _timeSinceLastUpdate = 0f;
+            }
+
             bool useShield = true;
             foreach (IDriver driver in _otherDrivers)
             {
-                if ((_playerShield.Transform.position - driver.ActorShieldTransform.position).sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
+                if ((_playerShieldManager.transform.position - driver.ActorShieldTransform.position).sqrMagnitude < _shieldActivationDistance * _shieldActivationDistance)
                 {
                     useShield = false;
                     break;
@@ -438,20 +359,23 @@ namespace Battle.Scripts.Battle.Players
 
             if (useShield)
             {
-                _playerCharacter.SetSprite(PlayerCharacter.INDE_WITH_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
-                _playerShield.PoseManager.SetHitboxActive(true);
-                _playerShield.PoseManager.SetShow(true);
+                _playerCharacter.SpritIndex = PlayerCharacter.SpriteIndexEnum.IdleWithShield;
+                _playerShieldManager.SetHitboxActive(true);
+                _playerShieldManager.SetShow(true);
             }
             else
             {
                 if (!_isMoving)
                 {
-                    _playerCharacter.SetSprite(PlayerCharacter.INDE_WITHOUT_SHIELD_SPRITE_INDEX, _playerCharacterSpriteSheet);
+                    _playerCharacter.SpritIndex = PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
                 }
-                _playerShield.PoseManager.SetShow(false);
-                _playerShield.PoseManager.SetHitboxActive(false);
+                _playerShieldManager.SetShow(false);
+                _playerShieldManager.SetHitboxActive(false);
             }
-
         }
+
+        #endregion Private - Methods
+
+        #endregion Private
     }
 }

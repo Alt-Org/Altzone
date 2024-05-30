@@ -1,5 +1,20 @@
 {
   "dependencies": {
+    "com.gameanalytics.sdk": {
+      "version": "7.9.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.168"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.google.external-dependency-manager": {
+      "version": "file:../GooglePackages/com.google.external-dependency-manager-1.2.179.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.2d.pixel-perfect": {
       "version": "5.0.3",
       "depth": 0,
@@ -55,7 +70,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.27",
+      "version": "3.0.28",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -89,7 +104,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.mobile.android-logcat": {
-      "version": "1.4.0",
+      "version": "1.4.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

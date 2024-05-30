@@ -1,8 +1,7 @@
-using UnityConstants;
 using UnityEngine;
+
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.AudioPlayer;
-//using Photon.Pun;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -27,12 +26,14 @@ namespace Battle.Scripts.Battle.Game
     [RequireComponent(typeof(SpriteRenderer))]
     internal class BrickRemove : MonoBehaviour
     {
-        // Serialized Fields
+        #region Serialized Fields
         [SerializeField] public PlayerPlayArea PlayerPlayArea;
         [SerializeField] public AudioPlayer _audioPlayer;
-    
-        // Public Properties
+        #endregion Serialized Fields
+
+        #region Public Properties
         public int Health { get; private set; } = 0;
+        #endregion Public Properties
 
         #region Public Methods
         public void BrickHitInit(int damage)
@@ -57,21 +58,30 @@ namespace Battle.Scripts.Battle.Game
         }
         #endregion Public Methods
 
-        // Private Constants
+        #region Private
+
+        #region Private - Constants
         private const int HIT_EFFECT_INDEX = 0;
         private const int BREAK_EFFECT_INDEX = 1;
-        
+        #endregion Private - Constants
+
+        #region Private - Fields
+
         private int _side;
         private float _colorChangeFactor;
 
         // Components
         private SpriteRenderer _spriteRenderer;
 
-        // Degbug
+        #endregion Private - Fields
+
+        #region DEBUG
         private const string DEBUG_LOG_NAME = "[BATTLE] [BRICK REMOVE] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock; // only needed for logging time
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+        #endregion DEBUG
 
+        #region Private - Methods
         private void Start()
         {
             _side = transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
@@ -84,5 +94,8 @@ namespace Battle.Scripts.Battle.Game
             // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
+        #endregion Private - Methods
+
+        #endregion Private
     }
 }

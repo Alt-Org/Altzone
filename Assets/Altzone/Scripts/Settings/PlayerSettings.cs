@@ -15,5 +15,11 @@ namespace Altzone.Scripts.Settings
             get => PlayerPrefs.GetString("PhotonRegion", "");
             set => PlayerPrefs.SetString("PhotonRegion", value);
         }
+        
+        public int SelectedCharacter
+        {
+            get => PlayerPrefs.GetInt("SelectedCharacter", -1);
+            set => PlayerPrefs.SetInt("SelectedCharacter", value);
+        }
     }
 }

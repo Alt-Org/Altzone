@@ -9,6 +9,7 @@ public class SettingEditor : MonoBehaviour
 
     [SerializeField] private Button[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
+    [SerializeField] private Toggle _introSkipToggle;
 
     private void OnEnable()
     {
@@ -21,6 +22,7 @@ public class SettingEditor : MonoBehaviour
         }
 
         SetFPSButtons();
+        SetIntroSkipToggle();
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -63,5 +65,16 @@ public class SettingEditor : MonoBehaviour
     { // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
         float multipliedVal = Mathf.Round(toRound * 100);
         return multipliedVal / 100;
+    }
+
+    public void SetIntroSkipToggle()
+    {
+        _introSkipToggle.isOn = (PlayerPrefs.GetInt("skipIntroVideo", 0) != 0);
+    }
+
+    public void SetIntroSkip()
+    {
+        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("skipIntroVideo", 1);
+        else PlayerPrefs.SetInt("skipIntroVideo", 0);
     }
 }

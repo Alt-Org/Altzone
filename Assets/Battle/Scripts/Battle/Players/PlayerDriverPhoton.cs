@@ -1,11 +1,14 @@
 using System;
-using System.Collections;
-using Altzone.Scripts.Config;
-using Battle.Scripts.Battle.Game;
+
+using UnityEngine;
+
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
+
+using Altzone.Scripts.Config;
 using Prg.Scripts.Common.PubSub;
+
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -37,10 +40,11 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        //public PlayerActor PlayerActor => _playerActor;
+        public PlayerActor PlayerActor => _playerActor;
         public int ActorNumber => _photonView.Owner.ActorNumber;
         public Transform ActorShieldTransform => _playerActor.ShieldTransform;
         public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
+        public Transform ActorSoulTransform => _playerActor.SoulTransform;
 
         public bool IsLocal => _photonView.Owner.IsLocal;
         public int PeerCount => _peerCount;
@@ -48,15 +52,6 @@ namespace Battle.Scripts.Battle.Players
         // } Public Properties and Fields
 
         #region Public Methods
-
-        public void SetCharacterPose(int poseIndex)
-        {
-            if (!IsNetworkSynchronize)
-            {
-                return;
-            }
-            _photonView.RPC(nameof(SetPlayerCharacterPoseRpc), RpcTarget.All, poseIndex);
-        }
 
         public void MoveTo(Vector2 targetPosition)
         {
@@ -130,7 +125,7 @@ namespace Battle.Scripts.Battle.Players
         private PlayerManager _playerManager;
         private GridManager _gridManager;
         private PlayerPlayArea _battlePlayArea;
-        private SyncedFixedUpdateClockTest _syncedFixedUpdateClock;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER DRIVER PHOTON] ";
@@ -178,7 +173,7 @@ namespace Battle.Scripts.Battle.Players
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ?  0 : 180f);
-            _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SPRITE_VARIANT_A : PlayerActor.SPRITE_VARIANT_B);
+            _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SpriteVariant.A : PlayerActor.SpriteVariant.B);
             _playerActor.ResetSprite();
         }
         #endregion Message Listeners
@@ -211,12 +206,6 @@ namespace Battle.Scripts.Battle.Players
         {
             _peerCount += 1;
             _playerManager.UpdatePeerCount();
-        }
-
-        [PunRPC]
-        private void SetPlayerCharacterPoseRpc(int poseIndex)
-        {
-            _playerActor.SetShieldPose(poseIndex);
         }
 
         [PunRPC]

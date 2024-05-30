@@ -3065,7 +3065,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.95
+  m_fontSize: 49.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3789,6 +3789,7 @@ GameObject:
   - component: {fileID: 463770506925683908}
   - component: {fileID: 620413851325496956}
   - component: {fileID: 3372792867789225399}
+  - component: {fileID: 6975784157007724133}
   m_Layer: 5
   m_Name: ClanLeaveButton
   m_TagString: Untagged
@@ -3910,6 +3911,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &6975784157007724133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696413442384887960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 61a4cbe88e24d13439d73a445c64a793, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &3817557535728629705
 GameObject:
   m_ObjectHideFlags: 0
@@ -6690,7 +6705,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.1
+  m_fontSize: 32.6
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7682,7 +7697,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.65
+  m_fontSize: 46.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8236,9 +8251,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loggedOutPlayerText: Uloskirjautunut
   loggedOutClanText: Klikkaa kirjautuaksesi
+  loggedOutClanDescription: 
   _playerNameText: {fileID: 2047188550320902715}
   _playerClanText: {fileID: 1267544872508131549}
-  _signInNaviButton: {fileID: 1773667877529864245}
+  _playerClanDescription: {fileID: 0}
   _profileNaviButton: {fileID: 3378837200702645002}
   _clanButtonGameObject: {fileID: 0}
 --- !u!1 &7544928604502112156
@@ -9828,7 +9844,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.1
+  m_fontSize: 52.1
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1

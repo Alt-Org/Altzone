@@ -1,103 +1,79 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityConstants;
 using UnityEngine;
-using UnityEngine.UI;
+
 using Photon.Pun;
+using Photon.Realtime;
+
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-using NUnit.Framework.Internal;
 using TMPro;
 
 namespace Battle.Scripts.Battle.Game
 {
     internal class Goal : MonoBehaviour
     {
-        [SerializeField] GameObject WinText;
-        [SerializeField] GameObject LoseText;
-        [SerializeField] GameObject LobbyButton;
-        [SerializeField] GameObject RaidButton;
-        [SerializeField] BoxCollider2D _WallCollider;
-        [SerializeField] int TestLimit;
-        [SerializeField] int GoalNumber;
-        [SerializeField] TMP_Text CountDownText;
-        [SerializeField] AudioSource _AudioSource;
-        [SerializeField] AudioClip[] _AudioClips;
+        #region Serialized Fields
+        [SerializeField] private GameObject _winText;
+        [SerializeField] private GameObject _loseText;
+        [SerializeField] private GameObject _lobbyButton;
+        [SerializeField] private GameObject _raidButton;
+        [SerializeField] private BoxCollider2D _wallCollider;
+        [SerializeField] private int _testLimit;
+        [SerializeField] private int _goalNumber;
+        [SerializeField] private TMP_Text _countDownText;
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip[] _audioClips;
+        [Header("End Screen Graphics")]
+        [SerializeField] private GameObject _winGraphics;
+        [SerializeField] private GameObject _lossGraphics;
+        #endregion Serialized Fields
 
-        [SerializeField, Header("End Screen Graphics")] private GameObject WinGraphics;
-        [SerializeField] private GameObject LossGraphics;
-
-        PlayerRole currentRole = PlayerRole.Player;
-        private float timeLeft = 5.5f;
-        private bool countingdown = false;
-        
-
+        #region Public Enums
         public enum PlayerRole
         {
             Player,
             Spectator
         }
+        #endregion Public Enums
+
+        #region Private
+
+        #region Private - Fields
+        private PlayerRole _currentRole = PlayerRole.Player;
+        private float _timeLeft = 5.5f;
+        private bool _countingDown = false;
+        #endregion Private - Fields
+
+        #region Private - Methods
+
         private void Start()
         {
-            if (PhotonNetwork.CurrentRoom.Players.Count > TestLimit)
+            if (PhotonNetwork.CurrentRoom.Players.Count > _testLimit)
             {
-                _WallCollider.isTrigger = true;
+                _wallCollider.isTrigger = true;
             }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var otherGameObject = collision.gameObject;
-            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.CurrentRoom.Players.Count > TestLimit && PhotonNetwork.IsMasterClient)      // && PhotonNetwork.IsMasterClient
+            GameObject otherGameObject = collision.gameObject;
+            if (otherGameObject.CompareTag(Tags.Ball) && PhotonNetwork.CurrentRoom.Players.Count > _testLimit && PhotonNetwork.IsMasterClient)      // && PhotonNetwork.IsMasterClient
             {
-                transform.GetComponent<PhotonView>().RPC("GoalRPC",  RpcTarget.All);
+                GetComponent<PhotonView>().RPC(nameof(GoalRpc),  RpcTarget.All);
             }
         }
-        
-        [PunRPC]
-        private void GoalRPC()
-        {
-            if (PhotonNetwork.InRoom)
-            {
-                //_WallCollider.isTrigger = true;
-                var player = PhotonNetwork.LocalPlayer;
-                var playerPos = PhotonBattle.GetPlayerPos(player);
-                var teamNumber = PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                countingdown = true;
 
-                if (GoalNumber != teamNumber)
-                {
-                    //WinText.SetActive(true);
-                    WinGraphics.SetActive(true);
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
-                        { {"Role", (int)PlayerRole.Player } });
-                        RaidButton.SetActive(true);
-                    }
-                }
-                else
-                {
-                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
-                    { {"Role", (int)PlayerRole.Spectator } });
-                    //PhotonNetwork.LeaveRoom();
-                    LossGraphics.SetActive(true);
-                    //LobbyButton.SetActive(true);
-                }
-            }
-        }
         private void Update()
         {
-            if (countingdown)
+            if (_countingDown)
             {
-                if(timeLeft > 0)
+                if(_timeLeft > 0)
                 {
-                    timeLeft -= Time.deltaTime;
-                    CountDownText.text = timeLeft.ToString("F0");
+                    _timeLeft -= Time.deltaTime;
+                    _countDownText.text = _timeLeft.ToString("F0");
                 }
                 else
                 {
-                    countingdown = false;
+                    _countingDown = false;
                     if (PhotonNetwork.IsMasterClient)
                     {
                         PhotonNetwork.LoadLevel("40-Raid");
@@ -105,11 +81,45 @@ namespace Battle.Scripts.Battle.Game
                 }
             }
         }
-        /*private void Update()
+
+        #region Private - Methods - Photon RPC
+        [PunRPC]
+        private void GoalRpc()
         {
-            if(GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length > TestLimit) {
-                _WallCollider.isTrigger = true;
+            if (PhotonNetwork.InRoom)
+            {
+                //_WallCollider.isTrigger = true;
+                Player player = PhotonNetwork.LocalPlayer;
+                int playerPos = PhotonBattle.GetPlayerPos(player);
+                int teamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
+                _countingDown = true;
+
+                if (_goalNumber != teamNumber)
+                {
+                    //WinText.SetActive(true);
+                    _winGraphics.SetActive(true);
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+                        { {"Role", (int)PlayerRole.Player } });
+                        _raidButton.SetActive(true);
+                    }
+                }
+                else
+                {
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+                    { {"Role", (int)PlayerRole.Spectator } });
+                    //PhotonNetwork.LeaveRoom();
+                    _lossGraphics.SetActive(true);
+                    //LobbyButton.SetActive(true);
+                }
             }
-        }*/
+        }
+        #endregion Private - Methods - Photon RPC
+
+        #endregion Private - Methods
+
+        #endregion Private
     }
 }

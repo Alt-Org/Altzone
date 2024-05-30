@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Config;
+using Altzone.Scripts;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 
 [System.Serializable]
 public class CharacterData
@@ -23,8 +28,11 @@ public class HahmonValinta : MonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
+    [SerializeField] private TextMeshProUGUI characterNameText; // Reference to the Text component for character name
 
     private int selectedCharacterIndex = -1;
+    private PlayerData _playerData;
+    private List<BattleCharacter> characters;
 
     void Start()
     {
@@ -42,6 +50,25 @@ public class HahmonValinta : MonoBehaviour
         lockInButton.onClick.AddListener(LockInCharacter);
     }
 
+    private void OnEnable()
+    {
+        Load();
+    }
+
+    private void Load()
+    {
+        Debug.Log("Start");
+        var gameConfig = GameConfig.Get();
+        var playerSettings = gameConfig.PlayerSettings;
+        var playerGuid = playerSettings.PlayerGuid;
+        var store = Storefront.Get();
+        store.GetPlayerData(playerGuid, playerData =>
+        {
+            _playerData = playerData;
+            characters = playerData.BattleCharacters.ToList();
+        });
+    }
+
     void CharacterSelected(int characterIndex)
     {
         // Update the selected character index
@@ -49,6 +76,9 @@ public class HahmonValinta : MonoBehaviour
 
         // Activate the pop-up window
         popupWindow.SetActive(true);
+
+        // Update the character name text
+        characterNameText.text = characterData[characterIndex].characterName;
 
         // Log the selected character's name
         Debug.Log("Selected character: " + characterData[characterIndex].characterName);
@@ -62,6 +92,12 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
             Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
+            if (characterData[selectedCharacterIndex].uniqueID.ToString() != _playerData.CurrentCustomCharacterId)
+            {
+                _playerData.CurrentCustomCharacterId = characterData[selectedCharacterIndex].uniqueID.ToString();
+                var store = Storefront.Get();
+                store.SavePlayerData(_playerData, null);
+            }
             // Reset the selected character index and disable the lock-in button
             selectedCharacterIndex = -1;
             lockInButton.interactable = false;
