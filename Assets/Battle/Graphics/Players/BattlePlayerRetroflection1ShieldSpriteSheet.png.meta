@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 12c858a07295980468d5687ee2bddae2
+guid: 0a018a24c40510d439afe23d51a5ee2b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -47,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -63,11 +64,12 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 256
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -111,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -123,6 +129,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -135,6 +142,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -147,6 +155,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -158,17 +167,17 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 512
-        width: 512
-        height: 512
+        width: 514
+        height: 363
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c45def4c1324b74bb990654c33df08c
-      internalID: -1963972142
+      spriteID: 5c3951f843bda774cae4a5a1269bbe87
+      internalID: -1332256613
       vertices: []
       indices: 
       edges: []
@@ -177,19 +186,19 @@ TextureImporter:
       name: BattlePlayerRetroflection1ShieldSpriteSheet_1
       rect:
         serializedVersion: 2
-        x: 512
+        x: 516
         y: 512
-        width: 512
-        height: 512
+        width: 508
+        height: 361
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 505855bdda831ab48af9825701fcaf29
-      internalID: -738607148
+      spriteID: 6f6bfae941c452740b59a7f2091938af
+      internalID: 1869391418
       vertices: []
       indices: 
       edges: []
@@ -198,19 +207,19 @@ TextureImporter:
       name: BattlePlayerRetroflection1ShieldSpriteSheet_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 1024
+        y: 512
         width: 512
-        height: 512
+        height: 363
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5c331546b5d51b544baed181a67422f2
-      internalID: 733786372
+      spriteID: fe1f7862bd9e52641bf7389fee5ed3f7
+      internalID: -1912064773
       vertices: []
       indices: 
       edges: []
@@ -219,19 +228,61 @@ TextureImporter:
       name: BattlePlayerRetroflection1ShieldSpriteSheet_3
       rect:
         serializedVersion: 2
-        x: 512
-        y: 0
+        x: 0
+        y: 158
         width: 512
-        height: 512
+        height: 354
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d97b3b8332c2d3419065a2490b6af38
-      internalID: 1720301970
+      spriteID: a02b18e301d6b9d4fb925f7037d92a05
+      internalID: -1542950878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayerRetroflection1ShieldSpriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 158
+        width: 508
+        height: 354
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bdb2acc7c0a6fe488171891438acfa6
+      internalID: -472130435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayerRetroflection1ShieldSpriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 156
+        width: 512
+        height: 356
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2faaf12aef013d4419ad35d84a6b6404
+      internalID: 996098069
       vertices: []
       indices: 
       edges: []
@@ -247,13 +298,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BattlePlayerRetroflection1ShieldSpriteSheet_1: -738607148
-      BattlePlayerRetroflection1ShieldSpriteSheet_0: -1963972142
-      BattlePlayerRetroflection1ShieldSpriteSheet_2: 733786372
-      BattlePlayerRetroflection1ShieldSpriteSheet_3: 1720301970
-  spritePackingTag: 
+      BattlePlayerRetroflection1ShieldSpriteSheet_0: -1332256613
+      BattlePlayerRetroflection1ShieldSpriteSheet_1: 1869391418
+      BattlePlayerRetroflection1ShieldSpriteSheet_2: -1912064773
+      BattlePlayerRetroflection1ShieldSpriteSheet_3: -1542950878
+      BattlePlayerRetroflection1ShieldSpriteSheet_4: -472130435
+      BattlePlayerRetroflection1ShieldSpriteSheet_5: 996098069
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
