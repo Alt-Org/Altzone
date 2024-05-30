@@ -20,8 +20,13 @@ public class GalleryController : MonoBehaviour
             {
                 character.AddComponent<CharacterGalleryIntComponent>().SetSelectedCharacterGalleryInt(characterInt);               
             }
+            /*
+            if (character.GetComponent("CharacterGalleryCharacterStatWindowToShowButton") == null)
+            {
+                character.AddComponent<CharacterGalleryCharacterStatWindowToShowButton>().CharacterStatWindowToShowValue = characterInt;
+            }
             //character.GetComponentInChildren<Button>();
-
+            */
             characterInt++;
             
         }

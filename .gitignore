@@ -117,6 +117,12 @@ m_Build*
 # Local qualified build output folder
 /[Bb]uild*/
 
+# Batch build secretKeys folder
+/etc/secretKeys/
+
+# All Local files for dev config and build tooling
+_[Ll]ocal*
+
 # Local windows desktop shortcuts
 /*.lnk
 

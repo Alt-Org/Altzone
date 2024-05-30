@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -9,7 +7,8 @@ using MenuUi.Prefabs.Windows.DefenceScreen;
 public class CharacterStatWindow : MonoBehaviour
 {
 
-    public Image CharacterArtWork;
+    public Sprite[] CharacterArtWork;
+    public Image CharacterArtWorkToShow;
 
     private int UnusedStats;
 
@@ -42,9 +41,7 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI DiamondHPAmountNumber;
     public TextMeshProUGUI EraserAmountNumber;
 
-
-    DemoCharacterWindowCharacter _demoCharacterWindowCharacter = new DemoCharacterWindowCharacter("Albert Älypää", false, 7, 3, 1, 4, 1);
-
+    private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
 
     private int CurrentlySelectedStat = -1;
     [SerializeField] public Button StatAddButton;
@@ -58,13 +55,24 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Image _statDefenceSelectedBackground;
     [SerializeField] private Image _statHPSelectedBackground;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void OnEnable()
     {
-        
+        SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
+        Debug.Log("CharacterStatWindow enabled");
+        HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
+    }
+    private void OnDisable()
+    {
+        SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange -= HandleCharacterGalleryCharacterStatWindowToShowChange;
+        Debug.Log("CharacterStatWindow disabled");
+    }
+
+    private void HandleCharacterGalleryCharacterStatWindowToShowChange(int newValue)
+    {
+        _decideWhatCharacterToShow(newValue);
         SetCharacterStats();
-
-
+        Debug.Log("handled window change");
     }
 
     // CurrentlySelectedStat
@@ -318,27 +326,76 @@ public class CharacterStatWindow : MonoBehaviour
     }
 
 
-    // set at start
+    // doing this at awake
+    private void _decideWhatCharacterToShow(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false, 7, 3, 1, 4, 1);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+                Debug.Log("loaded albert");
+                break;
+            case 1:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu Hodari", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[1];
+                Debug.Log("loaded hannu");
+                break;
+            case 2:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Huugo Hupaisa", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[2];
+                break;
+            case 3:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Keijo Kelmi", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[3];
+                break;
+            case 4:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Paavali Pappila", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[4];
+                break;
+            case 5:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tarmo Taide", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[5];
+                break;
+            case 6:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiina&Tuula Tyllerö", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[6];
+                break;
+            default:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+                break;
+        }
+
+    }
     private void SetCharacterStats()
     {
-        CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
+        if (_demoCharacterWindowCharacter != null)
+        {
+            CharacterName.text = _demoCharacterWindowCharacter.CharacterName;
 
-        SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-        ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-        AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-        DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-        HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+            SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+            ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+            AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+            DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+            HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
-        DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-        DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-        DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-        DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-        DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
-        EraserAmountNumber.text = EraserAmount.ToString();
+            DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
+            DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
+            DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
+            DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
+            DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
+            EraserAmountNumber.text = EraserAmount.ToString();
 
-        UpdatePieChart();
-        UpdateUpgradeButtons();
-        DisableAllStatSelectedBackground();
+            UpdatePieChart();
+            UpdateUpgradeButtons();
+            DisableAllStatSelectedBackground();
+            Debug.Log("CharacterGallery SetCharacterStats ran");
+        }
+        else
+        {
+            Debug.Log("Demo Character Class empty");
+        }
     }
 
     // Checks if levels combined are less than level cap

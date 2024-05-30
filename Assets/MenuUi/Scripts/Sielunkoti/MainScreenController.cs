@@ -33,7 +33,7 @@ namespace MenuUI.Scripts.SoulHome
 
         float _prevTapTime = 0;
         float _backDelay = 0;
-        float inDelay = 0;
+        float _inDelay = 0;
 
         private bool _trayOpen = false;
         private GameObject _selectedFurnitureTray = null;
