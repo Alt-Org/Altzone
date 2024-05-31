@@ -209,8 +209,6 @@ namespace Prg.Editor.BatchBuild
                     break;
                 }
                 case BuildTarget.WebGL:
-                    // Save current Editor settings so they can be restored after build to original values
-                    // to prevent unnecessary changes in version control.
                     PlayerSettings.WebGL.compressionFormat = options.WebGL.compressionFormat;
                     Debug.Log($"batch_build_ WebGL.compressionFormat: {PlayerSettings.WebGL.compressionFormat}");
                     // No use to show stack trace in browser.
