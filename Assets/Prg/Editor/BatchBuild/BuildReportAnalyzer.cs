@@ -632,6 +632,7 @@ namespace Prg.Editor.BatchBuild
                 // https://htmlcolorcodes.com/color-names/
                 const string htmlStart = @"<!DOCTYPE html>
 <html>
+<!-- @Build_Comment@-->
 <head>
 <style>
 html * {
@@ -701,7 +702,7 @@ td.right {
   color: CadetBlue;
 }
 </style>
-<title>@Build_Report@</title>
+<title>@Build_Title@</title>
 </head>
 <body>";
                 const string htmlEnd = @"</body>
@@ -775,8 +776,10 @@ function sortTable(index) {
 
                 // Actual Build Report.
                 var buildName = BuildPipeline.GetBuildTargetName(summary.platform);
-                var fixedHtmlStart = htmlStart.Replace("@Build_Report@",
-                    $"{Application.productName} {buildName} Build Report");
+                var buildInfo = $"{Application.productName} {buildName} Build Report";
+                var fixedHtmlStart = htmlStart
+                    .Replace("@Build_Comment@", buildInfo)
+                    .Replace("@Build_Title@", buildInfo);
                 var builder = new StringBuilder()
                     .Append(fixedHtmlStart).AppendLine()
                     .Append(@"<table id=""dataTable"">").AppendLine();
