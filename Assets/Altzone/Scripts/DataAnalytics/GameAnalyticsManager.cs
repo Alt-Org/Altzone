@@ -36,10 +36,14 @@ public class GameAnalyticsManager : MonoBehaviour
         GameAnalytics.Initialize();
         OnInitialized?.Invoke(true);
     }
-   
-    public void LogProgressionEvent(GAProgressionStatus status, string biomeName)
+
+    public void BattleLaunch()
     {
-        Debug.Log($"Logging progression event: {status} - {biomeName}");
-        GameAnalytics.NewProgressionEvent(status, biomeName);
+        GameAnalytics.NewDesignEvent("battle:launched");
+    }
+
+    public void OpenSoulHome()
+    {
+        GameAnalytics.NewDesignEvent("location:soulhome:open");
     }
 }
