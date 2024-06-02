@@ -785,8 +785,8 @@ namespace MenuUI.Scripts.SoulHome
         public void ToggleEdit()
         {
             editingMode = !editingMode;
-            if (!_mainScreen.TrayOpen && editingMode) _mainScreen.ToggleTray();
-            else if (_mainScreen.TrayOpen && !editingMode) _mainScreen.ToggleTray();
+            if (!_mainScreen.TrayOpen && editingMode) _mainScreen.ToggleTray(null);
+            else if (_mainScreen.TrayOpen && !editingMode) _mainScreen.ToggleTray(null);
             if (editingMode)
             {
                 _mainScreen.EnableTray(true);
