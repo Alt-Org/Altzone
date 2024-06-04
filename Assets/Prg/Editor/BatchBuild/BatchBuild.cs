@@ -149,6 +149,8 @@ namespace Prg.Editor.BatchBuild
             var jsResult = SafeReplaceFileExtension(options.LogFile, ".log", ".build.result.js");
             BatchBuildResult.SaveBuildResult(buildReportAssets, buildReportLog, projectFiles, jsResult);
 
+            // Create full HTML report.
+            BuildReportAnalyzer.HtmlBuildReportFull();
             timer.Stop();
             Debug.Log($"batch_build_ exit time {timer.ElapsedTime}");
         }
@@ -209,8 +211,6 @@ namespace Prg.Editor.BatchBuild
                     break;
                 }
                 case BuildTarget.WebGL:
-                    // Save current Editor settings so they can be restored after build to original values
-                    // to prevent unnecessary changes in version control.
                     PlayerSettings.WebGL.compressionFormat = options.WebGL.compressionFormat;
                     Debug.Log($"batch_build_ WebGL.compressionFormat: {PlayerSettings.WebGL.compressionFormat}");
                     // No use to show stack trace in browser.

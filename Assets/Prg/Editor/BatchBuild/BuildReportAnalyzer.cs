@@ -22,8 +22,6 @@ namespace Prg.Editor.BatchBuild
     /// </remarks>
     internal static class BuildReportAnalyzer
     {
-        private const string LastBuildReportPath = "Library/LastBuild.buildreport";
-        private const string BuildReportDir = "Assets/BuildReports";
         private const ulong MinPackedSize = 1024;
 
         private const string HtmlReportName = "Assets/BuildReports/BuildReport.html";
@@ -31,29 +29,26 @@ namespace Prg.Editor.BatchBuild
         public static void HtmlBuildReportFast(bool useJavaScriptSort = true)
         {
             Debug.Log("*");
-            BuildReport buildReport = null;
-            Timed("Load Last Build Report", () =>
-                buildReport = GetOrCreateLastBuildReport());
-            if (buildReport == null)
-            {
-                Debug.Log($"{LastBuildReportPath} NOT FOUND");
-                return;
-            }
-            AnalyzeLastBuildReport(buildReport, false, false, useJavaScriptSort);
+            HtmlBuildReport(false, false, useJavaScriptSort);
         }
 
         public static void HtmlBuildReportFull(bool useJavaScriptSort = true)
         {
             Debug.Log("*");
+            HtmlBuildReport(true, false, useJavaScriptSort);
+        }
+
+        private static void HtmlBuildReport(bool includeUnused, bool logDetails, bool useJavaScriptSort)
+        {
+            Debug.Log("*");
             BuildReport buildReport = null;
             Timed("Load Last Build Report", () =>
-                buildReport = GetOrCreateLastBuildReport());
+                buildReport = UnityBuildReport.GetOrCreateLastBuildReport());
             if (buildReport == null)
             {
-                Debug.Log($"{LastBuildReportPath} NOT FOUND");
                 return;
             }
-            AnalyzeLastBuildReport(buildReport, true, false, useJavaScriptSort);
+            AnalyzeLastBuildReport(buildReport, includeUnused, logDetails, useJavaScriptSort);
         }
 
         private static void AnalyzeLastBuildReport(BuildReport buildReport, bool includeUnused, bool logDetails,
@@ -265,46 +260,6 @@ namespace Prg.Editor.BatchBuild
                    path.Contains("/Test/");
         }
 
-        /// <summary>
-        /// Gets last UNITY Build Report from file.
-        /// </summary>
-        /// <remarks>
-        /// This code is based on UNITY Build Report Inspector<br />
-        /// https://docs.unity3d.com/Packages/com.unity.build-report-inspector@0.1/manual/index.html<br />
-        /// https://github.com/Unity-Technologies/BuildReportInspector/blob/master/com.unity.build-report-inspector/Editor/BuildReportInspector.cs
-        /// </remarks>
-        /// <returns>the last <c>BuildReport</c> instance or <c>null</c> if one is not found</returns>
-        private static BuildReport GetOrCreateLastBuildReport()
-        {
-            if (!File.Exists(LastBuildReportPath))
-            {
-                Debug.Log($"Last Build Report NOT FOUND: {LastBuildReportPath}");
-                return null;
-            }
-            if (!Directory.Exists(BuildReportDir))
-            {
-                Directory.CreateDirectory(BuildReportDir);
-            }
-
-            var date = File.GetLastWriteTime(LastBuildReportPath);
-            var name = $"Build_{date:yyyy-MM-dd_HH.mm.ss}";
-            var assetPath = $"{BuildReportDir}/{name}.buildreport";
-
-            // Load last Build Report.
-            var buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
-            if (buildReport != null && buildReport.name == name)
-            {
-                return buildReport;
-            }
-            // Create new last Build Report.
-            File.Copy("Library/LastBuild.buildreport", assetPath, true);
-            AssetDatabase.ImportAsset(assetPath);
-            buildReport = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
-            buildReport.name = name;
-            AssetDatabase.SaveAssets();
-            return buildReport;
-        }
-
         #region Utilities
 
         private static void Timed(string message, Action action, double minTimeToLog = 0.1)
@@ -393,8 +348,10 @@ namespace Prg.Editor.BatchBuild
                 "mat",
                 "md",
                 "mixer",
+                "ParticleSystem",
                 "pdf",
                 "prefab",
+                "Tilemap",
                 "TextAsset",
                 "tsv",
                 "txt",

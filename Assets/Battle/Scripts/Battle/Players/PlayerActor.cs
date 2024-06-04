@@ -271,7 +271,6 @@ namespace Battle.Scripts.Battle.Players
             // subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
-
             if (_playerShieldManager != null)
             {
                 StartCoroutine(ResetShield());
@@ -328,6 +327,12 @@ namespace Battle.Scripts.Battle.Players
         private void FixedUpdate()
         {
             _timeSinceLastUpdate += Time.fixedDeltaTime;
+
+            if (_playerCharacter.SpriteVariant == SpriteVariant.B)
+            {
+                _playerMovementIndicator.SetActive(false);
+                _sparkleSprite.SetActive(false);
+            }
 
             // Check if enough time has passed since the last sparkle update
             if (_timeSinceLastUpdate >= _sparkleUpdateInterval)

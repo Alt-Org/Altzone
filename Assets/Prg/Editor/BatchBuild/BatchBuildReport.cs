@@ -79,29 +79,6 @@ namespace Prg.Editor.BatchBuild
         }
     }
 
-    public static class BuildReportExtensions
-    {
-        public static List<PackedAssetInfo> GetPackedAssets(this BuildReport buildReport)
-        {
-            List<PackedAssetInfo> packedAssets = new List<PackedAssetInfo>();
-            foreach (var packedAsset in buildReport.packedAssets)
-            {
-                var contents = packedAsset.contents;
-                foreach (var assetInfo in contents)
-                {
-                    var sourceAssetGuid = assetInfo.sourceAssetGUID.ToString();
-                    if (sourceAssetGuid == "00000000000000000000000000000000" ||
-                        sourceAssetGuid == "0000000000000000f000000000000000")
-                    {
-                        continue;
-                    }
-                    packedAssets.Add(assetInfo);
-                }
-            }
-            return packedAssets;
-        }
-    }
-
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     public class BuildReportAssets
     {
