@@ -12,14 +12,16 @@ namespace Battle.Scripts.Battle.Players
 
         // Variables
 
-        [SerializeField] GameObject _shieldGumball;
-        [SerializeField] GameObject _shieldPopped;
+        [SerializeField] private GameObject _shieldGumball;
+        [SerializeField] private GameObject _shieldPopped;
+        [SerializeField] private ShieldManager _shieldManager;
+
 
         private int _shieldTurn = 0;
 
 
 
-
+       
 
 
 
@@ -34,28 +36,35 @@ namespace Battle.Scripts.Battle.Players
 
         public void OnBallShieldBounce()
         {
-            if (_shieldTurn == 0)
-            {
-                _shieldTurn++;
-                ShieldFlipper();
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 1", _syncedFixedUpdateClock.UpdateCount));
-            }
-            else
-            {
-                _shieldTurn = 0;
-                ShieldFlipper();
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 0", _syncedFixedUpdateClock.UpdateCount));
-            }
 
+            _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount+5, -10, () =>
+            {
 
+                if (_shieldTurn == 0)
+                {
+                    _shieldTurn++;
+                    ShieldFlipper();
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 1", _syncedFixedUpdateClock.UpdateCount));
+                }
+                else
+                {
+                    _shieldTurn = 0;
+                    ShieldFlipper();
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 0", _syncedFixedUpdateClock.UpdateCount));
+                }
+
+            });
         }
-
 
         [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
         public void ActivateSpecialAbility()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
         }
+
+
+
+
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENCE] ";
@@ -73,12 +82,12 @@ namespace Battle.Scripts.Battle.Players
 
             if (_shieldTurn == 0)
             {
-                _shieldGumball.SetActive(true);
+                _shieldManager.SetShield(_shieldGumball);
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldGumball", _syncedFixedUpdateClock.UpdateCount));
             }
             else
             {
-                _shieldPopped.SetActive(true);
+                _shieldManager.SetShield(_shieldPopped);
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldPopped", _syncedFixedUpdateClock.UpdateCount));
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Config;
 using Battle.Scripts.Battle;
@@ -65,6 +66,3 @@ namespace Battle.Scripts.Test
         }
     }
 }
-
-
-

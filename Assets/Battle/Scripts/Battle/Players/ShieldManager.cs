@@ -24,7 +24,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Destroy(_currentShield.ShieldGameObject);
 
-            _currentShield = new Shield(Instantiate(shieldGameObject, transform));
+            _currentShield = new Shield(Instantiate(shieldGameObject, transform.position, transform.rotation, transform));
             _currentShield.ShieldGameObject.transform.localPosition = Vector3.zero;
             _currentShield.ShieldGameObject.SetActive(true);
             _currentShield.ShieldGameObject.SetActive(_hitboxActive);
