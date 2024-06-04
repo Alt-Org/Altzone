@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class SetVolume : MonoBehaviour
 {
+    [SerializeField] private bool _useAudioSourceBaseVolume = true;
     public SettingsCarrier.SoundType _soundType;
+
+    private float _audioSourceBaseVolume;
     private void Start()
     {
+        if(_useAudioSourceBaseVolume)_audioSourceBaseVolume = gameObject.GetComponent<AudioSource>().volume;
         VolumeSet();
     }
 
     public void VolumeSet()
     {
         // Gets the wanted volume from SettingsCarrier
-        gameObject.GetComponent<AudioSource>().volume = SettingsCarrier.Instance.SentVolume(_soundType);
+        if(_useAudioSourceBaseVolume) gameObject.GetComponent<AudioSource>().volume = _audioSourceBaseVolume * SettingsCarrier.Instance.SentVolume(_soundType);
+        else gameObject.GetComponent<AudioSource>().volume = SettingsCarrier.Instance.SentVolume(_soundType);
     }
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b2e24b9ecfaffc0418614a53736ad690
+guid: 3dc783480613a3048b72730c856bf128
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -111,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -123,6 +129,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -135,6 +142,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -147,6 +155,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -156,10 +165,10 @@ TextureImporter:
       name: BattlePlayerRetroflection1CharacterSpriteSheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 512
-        width: 512
-        height: 512
+        x: 34
+        y: 558
+        width: 442
+        height: 399
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd59f8fc1aa756640a95d206048e7b44
-      internalID: 705883896
+      spriteID: 88ac0a8d05d710647bef302abd77e4b5
+      internalID: -2043709064
       vertices: []
       indices: 
       edges: []
@@ -177,10 +186,10 @@ TextureImporter:
       name: BattlePlayerRetroflection1CharacterSpriteSheet_1
       rect:
         serializedVersion: 2
-        x: 512
-        y: 512
-        width: 512
-        height: 512
+        x: 593
+        y: 631
+        width: 377
+        height: 383
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,8 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9a30e2c440432e44d83b834b53e24f8c
-      internalID: -895151963
+      spriteID: 72787a6631bc532458a67c13eadcfad9
+      internalID: -415533753
       vertices: []
       indices: 
       edges: []
@@ -198,10 +207,10 @@ TextureImporter:
       name: BattlePlayerRetroflection1CharacterSpriteSheet_2
       rect:
         serializedVersion: 2
-        x: 512
-        y: 0
-        width: 512
-        height: 512
+        x: 987
+        y: 681
+        width: 4
+        height: 5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,8 +218,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 43ccc2819b44973459bddca4ab302595
-      internalID: 1197504487
+      spriteID: 11add044868e62e40898e58b12f8a4fa
+      internalID: 1976015452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 557
+        width: 6
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 593a758e927f77f45b07410924b88a70
+      internalID: -829369525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 595
+        y: 1
+        width: 380
+        height: 399
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 645ffc7ccaf7bd748ba463ef6b0ef9bd
+      internalID: -1506035796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattlePlayerRetroflection1CharacterSpriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 0
+        width: 6
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbaaaa362bfd9f34e8ea2762995d1857
+      internalID: -873159407
       vertices: []
       indices: 
       edges: []
@@ -226,12 +298,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BattlePlayerRetroflection1CharacterSpriteSheet_1: -895151963
-      BattlePlayerRetroflection1CharacterSpriteSheet_2: 1197504487
-      BattlePlayerRetroflection1CharacterSpriteSheet_0: 705883896
-  spritePackingTag: 
+      BattlePlayerRetroflection1CharacterSpriteSheet_0: -2043709064
+      BattlePlayerRetroflection1CharacterSpriteSheet_1: -415533753
+      BattlePlayerRetroflection1CharacterSpriteSheet_2: 1976015452
+      BattlePlayerRetroflection1CharacterSpriteSheet_3: -829369525
+      BattlePlayerRetroflection1CharacterSpriteSheet_4: -1506035796
+      BattlePlayerRetroflection1CharacterSpriteSheet_5: -873159407
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -16,12 +16,17 @@ namespace Prg.Editor.BatchBuild
         [MenuItem(MenuItem + "Show Build Report with unused Assets", false, 11)]
         private static void HtmlBuildReportBrowserFull() => Logged(() => BuildReportAnalyzer.HtmlBuildReportFull());
 
-        [MenuItem(MenuItem + @"Test .\etc\secretKeys Folder", false, 12)]
+        [MenuItem(MenuItem + @"Delete Old Build Reports", false, 12)]
+        private static void DeleteOldBuildReports() =>
+            Logged(() => UnityBuildReport.DeleteOldReports(DateTime.Today, true));
+
+        [MenuItem(MenuItem + @"Test .\etc\secretKeys Folder", false, 13)]
         private static void TestDumpSecretKeysFolder() => Logged(() =>
         {
             foreach (var buildTarget in new[]
                          { BuildTarget.Android, BuildTarget.WebGL, BuildTarget.StandaloneWindows64 })
             {
+                Debug.Log("*");
                 try
                 {
                     var secretKeys = BatchBuild.LoadSecretKeys(@".\etc\secretKeys", buildTarget);

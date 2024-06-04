@@ -12,19 +12,39 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _traySlotObject;
         [SerializeField]
         private FurnitureTrayRefrence _furnitureRefrence;
+        [SerializeField]
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();
         private GameObject _hiddenSlot = null;
+
+        [SerializeField]
+        private FurnitureTrayHandler _otherTray;
+        [SerializeField]
+        private bool _vertical = false;
+
+        public GameObject HiddenSlot { get => _hiddenSlot;}
+        public List<GameObject> ChangedTrayItemList { get => _changedTrayItemList;}
+
         // Start is called before the first frame update
         void Awake()
         {
-            _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
+            if(_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
         }
 
         // Update is called once per frame
         void Update()
         {
 
+        }
+
+        private void OnEnable()
+        {
+            SetEditInfo();
+        }
+
+        public GameObject GetTrayContent()
+        {
+            return _trayContent;
         }
 
         public void AddFurnitureInitial(Furniture furniture)
@@ -204,16 +224,38 @@ namespace MenuUI.Scripts.SoulHome
             _changedTrayItemList.Clear();
         }
 
+        private void SetEditInfo()
+        {
+            _hiddenSlot = _otherTray.HiddenSlot;
+            _changedTrayItemList = _otherTray.ChangedTrayItemList;
+        }
+
         public void SetTrayContentSize()
         {
-            int childCount = _trayContent.transform.childCount;
-            float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-            for (int i = 0; i < childCount; i++)
+            if (!_vertical)
             {
-                GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
-                slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                slotObject.GetComponent<BoxCollider2D>().size = new(slotSize,slotSize);
-                slotObject.GetComponent<ResizeCollider>().Resize();
+                int childCount = _trayContent.transform.childCount;
+                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                for (int i = 0; i < childCount; i++)
+                {
+                    GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
+                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize, slotSize);
+                    slotObject.GetComponent<ResizeCollider>().Resize();
+                }
+            }
+            else
+            {
+                int childCount = _trayContent.transform.childCount;
+                float slotSize = (GetComponent<RectTransform>().rect.width * 0.5f) - 50f;
+                for (int i = 0; i < childCount; i++)
+                {
+                    GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
+                    _trayContent.GetComponent<GridLayoutGroup>().cellSize = new(slotSize, slotSize); ;
+                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize, slotSize);
+                    slotObject.GetComponent<ResizeCollider>().Resize();
+                }
             }
         }
     }
