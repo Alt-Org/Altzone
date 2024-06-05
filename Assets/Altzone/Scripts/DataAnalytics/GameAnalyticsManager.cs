@@ -4,39 +4,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameAnalyticsSDK;
 
-public class GameAnalyticsManager
+
+namespace AltZone.Scripts.GA
 {
-    private static bool isInitialized = false;
-
-    public static void Initialize()
+    public class GameAnalyticsManager
     {
-        if (!isInitialized)
+        private static bool isInitialized = false;
+
+        public static void Initialize()
         {
-            var customUserId = PlayerPrefs.GetString("customUserId", null);
-            if (string.IsNullOrEmpty(customUserId))
+            if (!isInitialized)
             {
-                customUserId = Guid.NewGuid().ToString();
-                PlayerPrefs.SetString("customUserId", customUserId);
+                var customUserId = PlayerPrefs.GetString("customUserId", null);
+                if (string.IsNullOrEmpty(customUserId))
+                {
+                    customUserId = Guid.NewGuid().ToString();
+                    PlayerPrefs.SetString("customUserId", customUserId);
+                }
+                Debug.Log($"GA user ID is {customUserId}");
+
+                GameAnalytics.SetCustomId(customUserId);
+                GameAnalytics.Initialize();
+                isInitialized = true;
             }
-            Debug.Log($"GA user ID is {customUserId}");
-
-            GameAnalytics.SetCustomId(customUserId);
-            GameAnalytics.Initialize();
-            isInitialized = true;
         }
-    }
 
-    public static void BattleLaunch()
-    {
-        if (!isInitialized) Initialize();
-        GameAnalytics.NewDesignEvent("battle:launched");
-        Debug.Log("Battle launch event logged");
-    }
+        public static void BattleLaunch()
+        {
+            if (!isInitialized) Initialize();
+            GameAnalytics.NewDesignEvent("battle:launched");
+            Debug.Log("Battle launch event logged");
+        }
 
-    public static void OpenSoulHome()
-    {
-        if (!isInitialized) Initialize();
-        GameAnalytics.NewDesignEvent("location:soulhome:open");
-        Debug.Log("SoulHome opened event logged");
+        public static void OpenSoulHome()
+        {
+            if (!isInitialized) Initialize();
+            GameAnalytics.NewDesignEvent("location:soulhome:open");
+            Debug.Log("SoulHome opened event logged");
+        }
     }
 }

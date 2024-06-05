@@ -2,27 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestEvents : MonoBehaviour
+namespace AltZone.Scripts.GA
 {
-    
-    void Start()
+    public class TestEvents : MonoBehaviour
     {
-        GameAnalyticsManager.Initialize();
 
-        TestBattleLaunch();
-        TestOpenSoulHome();
-    }
+        void Start()
+        {
+            GameAnalyticsManager.Initialize();
 
-    
-    void TestBattleLaunch()
-    {
-        GameAnalyticsManager.BattleLaunch();
-        Debug.Log("test: BattleLaunch called");
-    }
+            TestBattleLaunch();
+            TestOpenSoulHome();
+        }
 
-    void TestOpenSoulHome()
-    {
-        GameAnalyticsManager.OpenSoulHome();
-        Debug.Log("Test: OpenSoulHome called");
+
+        void TestBattleLaunch()
+        {
+            GameAnalyticsManager.BattleLaunch();
+            Debug.Log("test: BattleLaunch called");
+        }
+
+        void TestOpenSoulHome()
+        {
+            GameAnalyticsManager.OpenSoulHome();
+            Debug.Log("Test: OpenSoulHome called");
+        }
     }
 }
