@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.AudioPlayer;
 
@@ -38,6 +38,7 @@ namespace Battle.Scripts.Battle.Game
         #region Public Methods
         public void BrickHitInit(int damage)
         {
+            _spriteIndex = _ballHandler.SpriteIndex();
             var color = _spriteRenderer.color;
             color.g -= _colorChangeFactor;
             color.b -= _colorChangeFactor;
@@ -54,7 +55,8 @@ namespace Battle.Scripts.Battle.Game
             {
                 //_audioPlayer.Play(HIT_EFFECT_INDEX);
             }
-            _audioPlayer.PlayRandom();
+            Debug.Log("spriteIndex: " + _spriteIndex);
+            _audioPlayer.Play(_spriteIndex);
         }
         #endregion Public Methods
 
@@ -69,6 +71,8 @@ namespace Battle.Scripts.Battle.Game
 
         private int _side;
         private float _colorChangeFactor;
+        private int _spriteIndex;
+        private BallHandler _ballHandler;
 
         // Components
         private SpriteRenderer _spriteRenderer;
@@ -91,9 +95,12 @@ namespace Battle.Scripts.Battle.Game
             // get components
             _spriteRenderer = GetComponent<SpriteRenderer>();
 
+            _ballHandler = Context.GetBallHandler;
+
             // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
+
         #endregion Private - Methods
 
         #endregion Private

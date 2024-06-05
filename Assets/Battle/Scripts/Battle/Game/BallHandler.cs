@@ -8,6 +8,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 using System;
+using Prg.Scripts.Common.Unity.Input;
 
 public class BallHandler : MonoBehaviour
 {
@@ -21,8 +22,13 @@ public class BallHandler : MonoBehaviour
     [SerializeField] private float timeSinceLastUpdate;
     [SerializeField] private GameObject _sparkleSprite;
 
+
     #region Public Methods
 
+    public int SpriteIndex()
+    {
+        return _spriteIndex;
+    }
     public void Launch(Vector3 position, Vector3 direction, float speed)
     {
         _rb.position = position;
@@ -53,6 +59,8 @@ public class BallHandler : MonoBehaviour
 
     // Game Config Variables
     private float _angleLimit;
+
+    private int _spriteIndex;
 
     // Components
     private Rigidbody2D _rb;
@@ -166,7 +174,7 @@ public class BallHandler : MonoBehaviour
         _rb.velocity = velocity;
 
         // Calculate the index of the sprite to use based on the magnitude of the rigidbodys velocity
-        int spriteIndex = Mathf.Clamp(
+        _spriteIndex = Mathf.Clamp(
            (int)Mathf.Floor(
                _rb.velocity.magnitude / _maxSpeed * (_sprites.Length - 1)
                ),
@@ -174,7 +182,7 @@ public class BallHandler : MonoBehaviour
            _sprites.Length - 1
        );
 
-        _sprite.sprite = _sprites[spriteIndex];
+        _sprite.sprite = _sprites[_spriteIndex];
     }
 
     private void ChangeSparkleScale()
