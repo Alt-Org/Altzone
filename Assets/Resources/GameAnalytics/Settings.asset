@@ -25,25 +25,43 @@ MonoBehaviour:
   UserMessagesSubmitted: 0
   UserMessagesFailed: 0
   CustomArea: 
-  gameKey: []
-  secretKey: []
-  Build: []
-  SelectedPlatformOrganization: []
-  SelectedPlatformStudio: []
-  SelectedPlatformGame: []
-  SelectedPlatformGameID: 
-  SelectedOrganization: 
-  SelectedStudio: 
-  SelectedGame: 
+  gameKey:
+  - da5c2e70b0ed3b839555e1c9ccdfaf9e
+  - 512b0fc977966c102833047bcc3689d4
+  - 3fa5606d84e0eb2fd98006cee310b9ab
+  secretKey:
+  - f90e67ad00c2973647daab55cfa9113a9aac5a77
+  - 756727bc186296771a5ec64d38e8356a3f84dcbc
+  - 7f641f4bd8066cdbd29071b2911d0f286321a9d6
+  Build:
+  - 0.1
+  - 0.1
+  - 0.1
+  SelectedPlatformOrganization:
+  - 
+  - 
+  - 
+  SelectedPlatformStudio:
+  - 
+  - 
+  - 
+  SelectedPlatformGame:
+  - 
+  - 
+  - 
+  SelectedPlatformGameID: ffffffffffffffffffffffff
+  SelectedOrganization: 000000000000000000000000
+  SelectedStudio: 000000000000000000000000
+  SelectedGame: 000000000000000000000000
   NewVersion: 
   Changes: 
-  SignUpOpen: 1
-  StudioName: 
-  GameName: 
+  SignUpOpen: 0
+  StudioName: PRG
+  GameName: altzone
   OrganizationName: 
   OrganizationIdentifier: 
-  EmailGA: 
-  IntroScreen: 1
+  EmailGA: proyaleg@gmail.com
+  IntroScreen: 0
   InfoLogEditor: 1
   InfoLogBuild: 1
   VerboseLogBuild: 0
@@ -56,20 +74,20 @@ MonoBehaviour:
   ResourceItemTypes: []
   ResourceCurrencies: []
   LastCreatedGamePlatform: 0
-  Platforms: 
-  CurrentInspectorState: 0
+  Platforms: 0b0000001100000002000000
+  CurrentInspectorState: 1
   ClosedHints: 
   DisplayHints: 0
   DisplayHintsScrollState: {x: 0, y: 0}
-  Logo: {fileID: 0}
-  UpdateIcon: {fileID: 0}
-  InfoIcon: {fileID: 0}
-  DeleteIcon: {fileID: 0}
-  GameIcon: {fileID: 0}
-  HomeIcon: {fileID: 0}
-  InstrumentIcon: {fileID: 0}
-  QuestionIcon: {fileID: 0}
-  UserIcon: {fileID: 0}
+  Logo: {fileID: 2800000, guid: 98df8f9c5678a4e5d964caa1244e8958, type: 3}
+  UpdateIcon: {fileID: 2800000, guid: 810bbb19deed24f3cb7b854f9bafde26, type: 3}
+  InfoIcon: {fileID: 2800000, guid: 1b4dd779aadd54ac88856975af0d3c0a, type: 3}
+  DeleteIcon: {fileID: 2800000, guid: 85a626f1668244d30a4e9f616991a793, type: 3}
+  GameIcon: {fileID: 2800000, guid: a9ac7103fc40b4e00923bf8c2cb5d30f, type: 3}
+  HomeIcon: {fileID: 2800000, guid: fe7e2ecc9b2fe447bafe90f6395d4709, type: 3}
+  InstrumentIcon: {fileID: 2800000, guid: 2ba470b4dffd848c6b267c34770cc63e, type: 3}
+  QuestionIcon: {fileID: 2800000, guid: f8ea67e311b0c4b2ea05718e90fd3b5b, type: 3}
+  UserIcon: {fileID: 2800000, guid: f49ef75333ff247cfb5dad4dab0d4dac, type: 3}
   AmazonIcon: {fileID: 0}
   GooglePlayIcon: {fileID: 0}
   iosIcon: {fileID: 0}
@@ -84,7 +102,7 @@ MonoBehaviour:
   IncludeGooglePlay: 1
   FpsCriticalThreshold: 20
   FpsCirticalSubmitInterval: 1
-  PlatformFoldOut: 
+  PlatformFoldOut: 010101
   CustomDimensions01FoldOut: 0
   CustomDimensions02FoldOut: 0
   CustomDimensions03FoldOut: 0
