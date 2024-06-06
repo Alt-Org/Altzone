@@ -5,6 +5,7 @@ using MenuUI.Scripts.SoulHome;
 using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
+using AltZone.Scripts.GA;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -72,6 +73,7 @@ namespace MenuUI.Scripts.SoulHome
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
+            GameAnalyticsManager.Instance.OpenSoulHome();
         }
 
         public void OnDisable()
