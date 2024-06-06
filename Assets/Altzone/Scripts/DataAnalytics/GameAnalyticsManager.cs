@@ -7,40 +7,63 @@ using GameAnalyticsSDK;
 
 namespace AltZone.Scripts.GA
 {
-    public class GameAnalyticsManager
+    public class GameAnalyticsManager : MonoBehaviour 
     {
-        private static bool isInitialized = false;
+        private static GameAnalyticsManager instance;
 
-        public static void Initialize()
+        public static GameAnalyticsManager Instance
         {
-            if (!isInitialized)
+            get { return instance; }
+        }
+
+
+        private void Awake()
+        {
+            if (instance != null && instance != this)
             {
-                var customUserId = PlayerPrefs.GetString("customUserId", null);
-                if (string.IsNullOrEmpty(customUserId))
-                {
-                    customUserId = Guid.NewGuid().ToString();
-                    PlayerPrefs.SetString("customUserId", customUserId);
-                }
-                Debug.Log($"GA user ID is {customUserId}");
-
-                GameAnalytics.SetCustomId(customUserId);
-                GameAnalytics.Initialize();
-                isInitialized = true;
+                Destroy(gameObject);
+                return;
             }
+            else
+            {
+                instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+
+            Initialize(out string customerUserId, (success) =>
+            {
+                Debug.Log($"GameAnalytics initialization success: {success}");
+            });
         }
 
-        public static void BattleLaunch()
+        public virtual void Initialize(out string customUserId, Action<bool> OnInitialized)
         {
-            if (!isInitialized) Initialize();
+            var playerPrefsKey = $"{nameof(GameAnalyticsManager)}.customUserId";
+
+            customUserId = PlayerPrefs.GetString(playerPrefsKey, null);
+            if (string.IsNullOrEmpty(customUserId))
+            {
+                customUserId = Guid.NewGuid().ToString();
+                PlayerPrefs.SetString(playerPrefsKey, customUserId);
+            }
+            Debug.Log($"GA user ID is {customUserId}");
+
+            GameAnalytics.SetCustomId(customUserId);
+            GameAnalytics.Initialize();
+            OnInitialized?.Invoke(true);
+
+        }
+
+        public void BattleLaunch()
+        {
             GameAnalytics.NewDesignEvent("battle:launched");
-            Debug.Log("Battle launch event logged");
+            Debug.Log("battle launced event");
         }
 
-        public static void OpenSoulHome()
+        public void OpenSoulHome()
         {
-            if (!isInitialized) Initialize();
             GameAnalytics.NewDesignEvent("location:soulhome:open");
-            Debug.Log("SoulHome opened event logged");
+            Debug.Log("SoulHome has been opened");
+        }
         }
     }
-}
