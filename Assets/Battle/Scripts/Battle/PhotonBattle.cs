@@ -1,23 +1,17 @@
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using ExitGames.Client.Photon;
-using Photon.Pun;
+
 using Photon.Realtime;
-using UnityEngine.Assertions;
-using Debug = UnityEngine.Debug;
+
+using Altzone.Scripts.Battle.Photon;
 
 namespace Battle.Scripts.Battle
 {
     /// <summary>
-    /// Custom property names and values and helper methods to create, update and read them.<br />
-    /// Additionally this has methods that supports testing without dependencies to other modules like Lobby.
+    /// Battle wrapper for <see cref="PhotonBattleRoom"/>
     /// </summary>
     internal static class PhotonBattle
     {
-        public const string PlayerPositionKey = "pp";
-        public const string PlayerPrefabIdKey = "mk";
-        public const string BattleWinningTeamKey = "wt";
-
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2
         //  - Player positions 3 and 4
@@ -32,142 +26,39 @@ namespace Battle.Scripts.Battle
         // Player should be positioned so that if camera is rotated 180 degrees,
         // player with smaller number is always at the bottom of the left corner of the gameplay area.
 
-        public const int PlayerPositionGuest = 0;
-        public const int PlayerPosition1 = 1;
-        public const int PlayerPosition2 = 2;
-        public const int PlayerPosition3 = 3;
-        public const int PlayerPosition4 = 4;
-        public const int PlayerPositionSpectator = 10;
+        public const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
+        public const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
+        public const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
+        public const int PlayerPosition3 = PhotonBattleRoom.PlayerPosition3;
+        public const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
+        public const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        public const int NoTeamValue = 0;
-        public const int TeamAlphaValue = 1;
-        public const int TeamBetaValue = 2;
+        public const int NoTeamValue = PhotonBattleRoom.NoTeamValue;
+        public const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
+        public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
-        private const string NoPlayerName = "noname";
-
-        public static int GetPlayerPos(Player player)
-        {
-            return player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-        }
-
-        public static string GetPlayerPrefabId(Player player)
-        {
-            return player.GetCustomProperty(PlayerPrefabIdKey, -1).ToString();
-        }
-
-        public static int GetTeamNumber(int playerPos)
-        {
-            switch (playerPos)
-            {
-                case PlayerPosition1:
-                case PlayerPosition2:
-                    return TeamAlphaValue;
-
-                case PlayerPosition3:
-                case PlayerPosition4:
-                    return TeamBetaValue;
-
-                default:
-                    return NoTeamValue;
-            }
-        }
-
-        public static bool IsPlayerPosAvailable(Player player)
-        {
-            if (!PhotonNetwork.InRoom)
-            {
-                return false;
-            }
-            var playerPos = GetPlayerPos(player);
-            if (!IsValidPlayerPos(playerPos))
-            {
-                return false;
-            }
-            foreach (var otherPlayer in PhotonNetwork.PlayerListOthers)
-            {
-                var otherPlayerPos = GetPlayerPos(otherPlayer);
-                if (IsValidPlayerPos(otherPlayerPos) && otherPlayerPos == playerPos)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool IsRealPlayer(Player player)
-        {
-            var playerPos = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            return IsValidPlayerPos(playerPos);
-        }
-
-        public static bool IsValidPlayerPos(int playerPos)
-        {
-            return playerPos >= PlayerPosition1 && playerPos <= PlayerPosition4;
-        }
-
-        public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PlayerPosition1)
-        {
-            var usedPlayerPositions = new HashSet<int>();
-            foreach (var otherPlayer in PhotonNetwork.PlayerList)
-            {
-                if (otherPlayer.Equals(player))
-                {
-                    continue;
-                }
-                var otherPlayerPos = GetPlayerPos(otherPlayer);
-                if (IsValidPlayerPos(otherPlayerPos))
-                {
-                    usedPlayerPositions.Add(otherPlayerPos);
-                }
-            }
-            if (usedPlayerPositions.Contains(wantedPlayerPos))
-            {
-                var playerPositions = new[] { PlayerPosition1, PlayerPosition2, PlayerPosition3, PlayerPosition4 };
-
-                foreach (var playerPos in playerPositions)
-                {
-                    if (!usedPlayerPositions.Contains(playerPos))
-                    {
-                        wantedPlayerPos = playerPos;
-                        break;
-                    }
-                }
-            }
-            if (!IsValidPlayerPos(wantedPlayerPos))
-            {
-                wantedPlayerPos = PlayerPositionSpectator;
-            }
-            return wantedPlayerPos;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(Player player) => s_photonBattleRoom.IsPlayerPosAvailable(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => s_photonBattleRoom.GetPlayerPrefabId(player);
 
         #region Debug and test utilities
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId)
-        {
-            wantedPlayerPos = GetFirstFreePlayerPos(player, wantedPlayerPos);
-            SetDebugPlayerProps(player, wantedPlayerPos, playerPrefabId);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player, wantedPlayerPos, playerPrefabId);
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-        private static void SetDebugPlayerProps(Player player, int playerPos, int playerPrefabId)
-        {
-            Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
-            var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
-            var curPlayerPrefabId = player.GetCustomProperty(PlayerPrefabIdKey, -1);
-            if (curPlayerPos == playerPos && curPlayerPrefabId == playerPrefabId)
-            {
-                // Prevent setting same values because it is hard for client to keep track of asynchronous changes over network.
-                return;
-            }
-            player.SetCustomProperties(new Hashtable
-            {
-                { PlayerPositionKey, playerPos },
-                { PlayerPrefabIdKey, playerPrefabId }
-            });
-            Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} prefabId {playerPrefabId}");
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void SetDebugPlayerProps(Player player, int playerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayerProps(player, playerPos, playerPrefabId);
 
-        #endregion
+        #endregion Debug and test utilities
+
+        private static readonly PhotonBattleRoom s_photonBattleRoom = new();
     }
 }

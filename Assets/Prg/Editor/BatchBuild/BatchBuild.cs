@@ -149,6 +149,8 @@ namespace Prg.Editor.BatchBuild
             var jsResult = SafeReplaceFileExtension(options.LogFile, ".log", ".build.result.js");
             BatchBuildResult.SaveBuildResult(buildReportAssets, buildReportLog, projectFiles, jsResult);
 
+            // Create full HTML report.
+            BuildReportAnalyzer.HtmlBuildReportFull();
             timer.Stop();
             Debug.Log($"batch_build_ exit time {timer.ElapsedTime}");
         }

@@ -142,9 +142,8 @@ namespace Battle.Scripts.Battle.Players
 
         public void UpdatePeerCount()
         {
-            var roomPlayers = PhotonNetwork.CurrentRoom.Players.Values;
-            int roomPlayerCount = roomPlayers.Count();
-            int realPlayerCount = roomPlayers.Sum(x => PhotonBattle.IsRealPlayer(x) ? 1 : 0);
+            int roomPlayerCount = PhotonBattle.GetPlayerCountForRoom();
+            int realPlayerCount = PhotonBattle.CountRealPlayers();
             Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount));
             if (realPlayerCount < roomPlayerCount) return;
             int readyPeers = 0;
