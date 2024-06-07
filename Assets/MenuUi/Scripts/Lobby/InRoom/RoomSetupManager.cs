@@ -7,8 +7,9 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
-namespace Battle0.Scripts.Lobby.InRoom
+namespace MenuUI.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.
@@ -16,7 +17,7 @@ namespace Battle0.Scripts.Lobby.InRoom
     public class RoomSetupManager : MonoBehaviour, IInRoomCallbacks
     {
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-        private const string PlayerMainSkillKey = PhotonBattle.PlayerMainSkillKey;
+        private const string PlayerMainSkillKey = PhotonBattle.PlayerPrefabIdKey;
 
         private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
         private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;
@@ -25,10 +26,10 @@ namespace Battle0.Scripts.Lobby.InRoom
         private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattle.TeamBlueNameKey;
-        private const string TeamRedNameKey = PhotonBattle.TeamRedNameKey;
-        private const int TeamBlueValue = PhotonBattle.TeamBlueValue;
-        private const int TeamRedValue = PhotonBattle.TeamRedValue;
+        private const string TeamBlueNameKey = PhotonBattle.TeamAlphaNameKey;
+        private const string TeamRedNameKey = PhotonBattle.TeamBetaNameKey;
+        private const int TeamBlueValue = PhotonBattle.TeamAlphaValue;
+        private const int TeamRedValue = PhotonBattle.TeamBetaValue;
 
         [Header("Settings"), SerializeField] private Text _upperTeamText;
         [SerializeField] private Text _lowerTeamText;
