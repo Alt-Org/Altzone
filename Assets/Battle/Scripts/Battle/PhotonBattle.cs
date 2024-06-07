@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -15,6 +16,7 @@ namespace Battle.Scripts.Battle
     internal static class PhotonBattle
     {
         public const string PlayerPositionKey = "pp";
+        public const string PlayerCountKey = "pc";
         public const string PlayerPrefabIdKey = "mk";
         public const string BattleWinningTeamKey = "wt";
 
@@ -70,6 +72,18 @@ namespace Battle.Scripts.Battle
                 default:
                     return NoTeamValue;
             }
+        }
+
+        public static int CountRealPlayers()
+        {
+            return PhotonNetwork.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);
+        }
+
+        public static int GetPlayerCountForRoom()
+        {
+            if (!PhotonNetwork.InRoom) return 0;
+            Room room = PhotonNetwork.CurrentRoom;
+            return room.GetCustomProperty(PlayerCountKey, 0);
         }
 
         public static bool IsPlayerPosAvailable(Player player)
