@@ -18,8 +18,8 @@ public class BallHandler : MonoBehaviour
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private float _hotFixMax;
-    [SerializeField] private float sparkleUpdateInterval;
-    [SerializeField] private float timeSinceLastUpdate;
+    [SerializeField] private float _sparkleUpdateInterval;
+    [SerializeField] private float _timeSinceLastUpdate;
     [SerializeField] private GameObject _sparkleSprite;
 
 
@@ -210,13 +210,13 @@ public class BallHandler : MonoBehaviour
     {
         if (_rb.velocity != Vector2.zero)
         {
-            timeSinceLastUpdate += Time.fixedDeltaTime;
+            _timeSinceLastUpdate += Time.fixedDeltaTime;
 
             // Check if enough time has passed since the last sparkle update
-            if (timeSinceLastUpdate >= sparkleUpdateInterval)
+            if (_timeSinceLastUpdate >= _sparkleUpdateInterval)
             {
                 ChangeSparkleScale();
-                timeSinceLastUpdate = 0f;
+                _timeSinceLastUpdate = 0f;
             }
         }
     }
