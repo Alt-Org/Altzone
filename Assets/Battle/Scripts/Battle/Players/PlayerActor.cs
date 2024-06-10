@@ -235,8 +235,6 @@ namespace Battle.Scripts.Battle.Players
 
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
-        private Quaternion _flashSpriteRotation;
-
         #endregion Private - Fields
 
         #region DEBUG
