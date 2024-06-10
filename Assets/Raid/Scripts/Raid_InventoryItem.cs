@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using Photon.Pun;
-using static Battle0.Scripts.Lobby.InRoom.RoomSetupManager;
+using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {

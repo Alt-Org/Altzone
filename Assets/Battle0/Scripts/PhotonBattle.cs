@@ -372,10 +372,7 @@ namespace Battle0.Scripts
         /// </summary>
         public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
         {
-            if (int.TryParse(battleCharacter.UnityKey, out var prefabIndex))
-            {
-                return prefabIndex;
-            }
+            if (battleCharacter.UnityKey != -1) return battleCharacter.UnityKey;
             return defaultValue;
         }
 

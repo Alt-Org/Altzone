@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
     private const string DEBUG_LOG_GAME_STARTUP = DEBUG_LOG_NAME + "GAME STARTUP: ";
     private const string DEBUG_LOG_SLING_SEQUENCE = DEBUG_LOG_NAME_AND_TIME + "Sling sequence: ";
 
-    void Start()
+    private void Start()
     {
         // get components
         _photonView = GetComponent<PhotonView>();

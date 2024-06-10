@@ -15,9 +15,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         [ForeignKey(nameof(CharacterClass)), Mandatory] public string CharacterClassId;
 
         /// <summary>
-        /// This can be used for example to load UNITY assets by name for UI at runtime. 
+        /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
-        [Optional] public string UnityKey;
+        [Optional] public int UnityKey = -1;
 
         [Mandatory] public string Name;
         public int Speed;
@@ -25,15 +25,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int Attack;
         public int Defence;
 
-        public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
+        public CustomCharacter(string id, string characterClassId, int unityKey, string name, int speed, int resistance, int attack, int defence)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(characterClassId.IsMandatory());
-            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(name.IsMandatory());
             Id = id;
             CharacterClassId = characterClassId;
-            UnityKey = unityKey ?? string.Empty;
+            UnityKey = unityKey;
             Name = name;
             Speed = speed;
             Resistance = resistance;

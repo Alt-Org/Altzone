@@ -27,7 +27,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public delegate void CurrentCharacterIdChangedHandler(string newCharacterId);
         // Event triggered when current character ID changes
-        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged; 
+        public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
 
         private string _currentCharacterId;
@@ -51,7 +51,7 @@ namespace MenuUi.Scripts.CharacterGallery
             var prefabs = playerPrefabs._playerPrefabs;
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex.ToString());
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
 
                 Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
 
@@ -69,7 +69,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (_currentCharacterId != value)
                 {
                     _currentCharacterId = value;
-                    OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId); 
+                    OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId);
                 }
             }
         }
@@ -128,12 +128,8 @@ namespace MenuUi.Scripts.CharacterGallery
                         //set the id
                         CurrentCharacterId = character.CustomCharacterId;
                     }
-
                 };
-
             }
-            
-
         }
     }
 }
