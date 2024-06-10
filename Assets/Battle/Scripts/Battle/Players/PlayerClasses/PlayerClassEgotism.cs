@@ -75,7 +75,7 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _pointPosition;
         private Vector3 _pointVelocity;
 
-        private Quaternion _rotation;
+        private Quaternion _spriteRotation;
 
         private class TrailSprite
         {
@@ -124,7 +124,7 @@ namespace Battle.Scripts.Battle.Players
                     if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
                     {
                         _isOnLocalTeam = true;
-                        _rotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
+                        _spriteRotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
                     }
                     else
                     {
@@ -231,7 +231,7 @@ namespace Battle.Scripts.Battle.Players
                 // Create new sprite objects to match the number of position
                 for (int i = 0; i < difference; i++)
                 {
-                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, _rotation));
+                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, _spriteRotation));
                 }
 
                 Debug.Log(DEBUG_LOG_NAME + "_positionSprite " + _positionSprites.Count);
@@ -293,7 +293,7 @@ namespace Battle.Scripts.Battle.Players
                     sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
                 }
 
-                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50, _rotation);
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50, _spriteRotation);
 
                 // Check if the trail sprite list is already full
                 if (_trailSprites.Count <= _trailSpritesAmount)
