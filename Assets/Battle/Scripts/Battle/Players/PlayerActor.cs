@@ -105,6 +105,7 @@ namespace Battle.Scripts.Battle.Players
             _playerShieldManager.SetSpriteVariant(variant);
         }
 
+
         public void SetRotation(float angle)
         {
             float multiplier = Mathf.Round(angle / _angleLimit);
@@ -113,7 +114,6 @@ namespace Battle.Scripts.Battle.Players
             _playerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
             _playerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _playerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
-            _squareFlashSprite.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -156,10 +156,6 @@ namespace Battle.Scripts.Battle.Players
 
             _playerMovementIndicator.transform.position = targetPosition;
             _sparkleSprite.transform.position = targetPosition;
-            Vector2 shieldPosition = new Vector2(targetPosition.x, targetPosition.y + _squareFlashYPosition);
-            _squareFlashSprite.transform.position = shieldPosition;
-            _squareFlashSprite.SetActive(true);
-
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
@@ -175,7 +171,6 @@ namespace Battle.Scripts.Battle.Players
                 _playerCharacter.SpritIndex = _isUsingShield ? PlayerCharacter.SpriteIndexEnum.IdleWithShield : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
 
                 _playerSoul.Show = false;
-                _squareFlashSprite.SetActive(false);
 
                 _isMoving = false;
 
@@ -221,8 +216,6 @@ namespace Battle.Scripts.Battle.Players
         private PlayerSoul _playerSoul;
         private GameObject _playerMovementIndicator;
         private GameObject _sparkleSprite;
-        private GameObject _squareFlashSprite;
-        private float _squareFlashYPosition;
 
         private Vector3 _tempPosition;
 
@@ -234,8 +227,6 @@ namespace Battle.Scripts.Battle.Players
         private AudioSource _audioSource;
 
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
-
-        private Quaternion _flashSpriteRotation;
 
         #endregion Private - Fields
 
@@ -271,9 +262,6 @@ namespace Battle.Scripts.Battle.Players
             _playerSoul = _geometryRoot.GetComponentInChildren<PlayerSoul>();
             _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
             _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
-            _squareFlashSprite = _geometryRoot.transform.Find("SquareFlashSprite").gameObject;
-
-            _squareFlashSprite.SetActive(false);
 
             // get components
             _audioSource = GetComponent<AudioSource>();
@@ -301,11 +289,6 @@ namespace Battle.Scripts.Battle.Players
         {
             foreach (IDriver driver in data.AllDrivers)
             {
-                if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
-                {
-                    _squareFlashYPosition = (driver.TeamNumber == PhotonBattle.TeamBetaValue ? -1.15f : 1.15f);
-                }
-
                 if (driver.ActorShieldTransform == _playerShieldManager.transform) continue;
                 _otherDrivers.Add(driver);
             }
@@ -349,7 +332,6 @@ namespace Battle.Scripts.Battle.Players
             {
                 _playerMovementIndicator.SetActive(false);
                 _sparkleSprite.SetActive(false);
-                _squareFlashSprite.SetActive(false);
             }
 
             // Check if enough time has passed since the last sparkle update

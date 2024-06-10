@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
+using static Battle0.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class GraphicsChanger : MonoBehaviour
 {

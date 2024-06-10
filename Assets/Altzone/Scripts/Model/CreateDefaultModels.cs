@@ -132,13 +132,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new("1", GestaltCycle.Desensitisation.ToString(), 1, "Keijo Kelmi", 0, 0, 0, 0),
-                new("2", GestaltCycle.Deflection.ToString(), 2, "Huugo Hupaisa", 0, 0, 0, 0),
-                new("3", GestaltCycle.Introjection.ToString(), 3, "Paavali Pappila", 0, 0, 0, 0),
-                new("4", GestaltCycle.Projection.ToString(), 4, "Tarmo Taide", 0, 0, 0, 0),
-                new("5", GestaltCycle.Retroflection.ToString(), 5, "Hannu Hodari", 0, 0, 0, 0),
-                new("6", GestaltCycle.Egotism.ToString(), 6, "Albert Älypää", 0, 0, 0, 0),
-                new("7", GestaltCycle.Confluence.ToString(), 7, "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
+                new("1", GestaltCycle.Desensitisation.ToString(), "1", "Keijo Kelmi", 0, 0, 0, 0),
+                new("2", GestaltCycle.Deflection.ToString(), "2", "Huugo Hupaisa", 0, 0, 0, 0),
+                new("3", GestaltCycle.Introjection.ToString(), "3", "Paavali Pappila", 0, 0, 0, 0),
+                new("4", GestaltCycle.Projection.ToString(), "4", "Tarmo Taide", 0, 0, 0, 0),
+                new("5", GestaltCycle.Retroflection.ToString(), "5", "Hannu Hodari", 0, 0, 0, 0),
+                new("6", GestaltCycle.Egotism.ToString(), "6", "Albert Älypää", 0, 0, 0, 0),
+                new("7", GestaltCycle.Confluence.ToString(), "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
             };
         }
 

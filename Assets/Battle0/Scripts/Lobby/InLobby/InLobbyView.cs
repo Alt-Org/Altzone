@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace Battle0.Scripts.Lobby.InLobby
 {
     public class InLobbyView : MonoBehaviour
     {

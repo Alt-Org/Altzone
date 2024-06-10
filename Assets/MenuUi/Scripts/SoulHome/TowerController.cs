@@ -530,7 +530,15 @@ namespace MenuUI.Scripts.SoulHome
         {
             _soulHomeController.SetRoomName(selectedRoom);
             Camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,Camera.transform.position.z);
-            
+            if (Application.platform is RuntimePlatform.Android or RuntimePlatform.IPhonePlayer or RuntimePlatform.WebGLPlayer || AppPlatform.IsSimulator)
+            {
+                if((Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow) || AppPlatform.IsSimulator) Camera.fieldOfView = 90;
+                else if (Screen.orientation == ScreenOrientation.LandscapeLeft
+                    || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 90;
+            }
+            else if (AppPlatform.IsEditor) Camera.fieldOfView = 90;
             outDelay = Time.time;
 
             _mainScreen.LeaveRoomButton.SetActive(true);
@@ -548,6 +556,11 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
+                if (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode != FullScreenMode.FullScreenWindow || AppPlatform.IsSimulator) Camera.fieldOfView = 90f;
+                else if (Screen.orientation == ScreenOrientation.LandscapeLeft
+                    || (Application.platform is RuntimePlatform.WebGLPlayer && Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+                    || AppPlatform.IsEditor) Camera.fieldOfView = 90;
+                else Camera.fieldOfView = 90f;
 
                 Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, Camera.transform.position.z);
                 inDelay = Time.time;

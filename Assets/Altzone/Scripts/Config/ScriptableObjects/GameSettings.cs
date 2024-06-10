@@ -67,8 +67,9 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         [Header("Battle Player Prefabs")] public PlayerActorBase[] _playerPrefabs;
 
-        public PlayerActorBase GetPlayerPrefab(int prefabId)
+        public PlayerActorBase GetPlayerPrefab(string prefabKey)
         {
+            var prefabId = int.Parse(prefabKey);
             if (prefabId < 0 || prefabId >= _playerPrefabs.Length)
             {
                 return null;
@@ -79,7 +80,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
 
     ///<summary>
     /// Character model attribute editing for Unity Editor
-    /// </summary>
+    /// </summary>  
     [Serializable]
     public class Characters
     {

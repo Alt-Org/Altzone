@@ -8,7 +8,7 @@ using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace Battle0.Scripts.Lobby.InLobby
 {
     public class InLobbyController : MonoBehaviourPunCallbacks
     {

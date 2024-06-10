@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -8,46 +9,6 @@ using UnityEngine.SceneManagement;
 
 namespace Prg.Scripts.Common.Photon
 {
-    /// <summary>
-    /// Imaginary interface for Photon Lobby (for comprehension of current implementation).
-    /// </summary>
-    public interface IPhotonLobby
-    {
-        /// <summary>
-        /// Photon version management (client peer-to-peer connectivity).
-        /// </summary>
-        string GameVersion { get; }
-
-        /// <summary>
-        /// Connection management.
-        /// </summary>
-        void Connect(string playerName, string regionCodeOverride = null);
-        void Disconnect();
-
-        /// <summary>
-        /// Lobby, required to join or create room.
-        /// </summary>
-        void JoinLobby();
-
-        void LeaveLobby();
-
-        /// <summary>
-        /// Room, required to play with others.
-        /// </summary>
-        void CreateRoom(string roomName, RoomOptions roomOptions = null, bool isAutomaticallySyncScene = true);
-        void JoinRoom(RoomInfo roomInfo, bool isAutomaticallySyncScene = true);
-        void JoinOrCreateRoom(string roomName,
-            Hashtable customRoomProperties = null, string[] lobbyPropertyNames = null,
-            bool isAutomaticallySyncScene = true);
-        void CloseRoom(bool keepVisible = false);
-        void LeaveRoom();
-
-        /// <summary>
-        /// Photon game server region (for your information).
-        /// </summary>
-        string GetRegion();
-    }
-
     /// <summary>
     /// Static helper class to handle basic <c>PhotonNetwork</c> operations in convenient and consistent way.<br />
     /// https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html
@@ -148,8 +109,7 @@ namespace Prg.Scripts.Common.Photon
             PhotonNetwork.LeaveLobby();
         }
 
-        public static void CreateRoom(string roomName, RoomOptions roomOptions = null,
-            bool isAutomaticallySyncScene = true)
+        public static void CreateRoom(string roomName, RoomOptions roomOptions = null, bool isAutomaticallySyncScene = true)
         {
             if (_isApplicationQuitting)
             {
@@ -188,8 +148,7 @@ namespace Prg.Scripts.Common.Photon
         }
 
         public static void JoinOrCreateRoom(string roomName,
-            Hashtable customRoomProperties = null, string[] lobbyPropertyNames = null,
-            bool isAutomaticallySyncScene = true)
+            Hashtable customRoomProperties = null, string[] lobbyPropertyNames = null, bool isAutomaticallySyncScene = true)
         {
             if (_isApplicationQuitting)
             {
@@ -286,8 +245,7 @@ namespace Prg.Scripts.Common.Photon
             var started = PhotonNetwork.ConnectUsingSettings(appSettings);
             if (!started)
             {
-                Debug.LogError(
-                    $"Failed to ConnectUsingSettings: state={PhotonNetwork.NetworkClientState} appSettings={appSettings.ToStringFull()}");
+                Debug.LogError($"Failed to ConnectUsingSettings: state={PhotonNetwork.NetworkClientState} appSettings={appSettings.ToStringFull()}");
                 return;
             }
             // Set the GameVersion right after calling ConnectUsingSettings!
