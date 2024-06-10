@@ -172,7 +172,7 @@ namespace Battle.Scripts.Battle.Players
         #region Message Listeners
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ?  0 : 180f);
+            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ? 0 : 180f);
             _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SpriteVariant.A : PlayerActor.SpriteVariant.B);
             _playerActor.ResetSprite();
         }
@@ -192,7 +192,7 @@ namespace Battle.Scripts.Battle.Players
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             if (_isTesting)
             {
-                playerPrefabId = _playerPrefabID.ToString();
+                playerPrefabId = _playerPrefabID;
             }
             var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
             var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);

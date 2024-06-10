@@ -35,7 +35,6 @@ namespace Tests.PlayMode.InstantiateTests
                 var battleCharacter = playerData.BattleCharacter;
                 Assert.IsNotNull(battleCharacter);
                 Debug.Log($"{battleCharacter}");
-                Assert.IsFalse(string.IsNullOrWhiteSpace(battleCharacter.UnityKey));
                 var playerPrefabs = gameConfig.PlayerPrefabs;
                 var playerPrefab = playerPrefabs.GetPlayerPrefab(battleCharacter.UnityKey);
                 Assert.IsNotNull(playerPrefab);

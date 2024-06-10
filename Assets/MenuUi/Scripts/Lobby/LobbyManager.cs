@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Battle0.Scripts.Lobby
+namespace MenuUI.Scripts.Lobby
 {
     /// <summary>
     /// Manages local player position and setup in a room.
@@ -26,8 +26,8 @@ namespace Battle0.Scripts.Lobby
 
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattle.TeamBlueNameKey;
-        private const string TeamRedNameKey = PhotonBattle.TeamRedNameKey;
+        private const string TeamBlueNameKey = PhotonBattle.TeamAlphaNameKey;
+        private const string TeamRedNameKey = PhotonBattle.TeamBetaNameKey;
 
         [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
@@ -89,7 +89,7 @@ namespace Battle0.Scripts.Lobby
             StartCoroutine(StartTheRaidTestRoom(_raidScene));
         }
 
-        private static IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
+        private IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonNetwork.IsMasterClient)
@@ -157,7 +157,7 @@ namespace Battle0.Scripts.Lobby
             PhotonNetwork.LoadLevel(raidScene.SceneName);
         }
         
-        private static void SetPlayer(Player player, int playerPosition)
+        private void SetPlayer(Player player, int playerPosition)
         {
             Assert.IsTrue(PhotonBattle.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))

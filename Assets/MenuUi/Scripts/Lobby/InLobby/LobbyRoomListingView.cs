@@ -4,8 +4,9 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
-namespace Battle0.Scripts.Lobby.InLobby
+namespace MenuUI.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingView : MonoBehaviour
     {

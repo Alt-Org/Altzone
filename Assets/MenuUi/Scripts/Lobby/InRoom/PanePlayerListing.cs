@@ -4,8 +4,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
+using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
-namespace Battle0.Scripts.Lobby.InRoom
+namespace MenuUI.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Lowest pane in lobby while in room to show current players list that have joined this room.
@@ -13,7 +14,7 @@ namespace Battle0.Scripts.Lobby.InRoom
     public class PanePlayerListing : MonoBehaviour, IInRoomCallbacks
     {
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-        private const string PlayerMainSkillKey = PhotonBattle.PlayerMainSkillKey;
+        private const string PlayerMainSkillKey = PhotonBattle.PlayerPrefabIdKey;
         private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
 
         private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;
