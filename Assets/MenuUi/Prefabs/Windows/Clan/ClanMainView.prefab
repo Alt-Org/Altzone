@@ -1138,6 +1138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &8182931573165440169
 MonoBehaviour:
@@ -3065,7 +3066,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49.8
+  m_fontSize: 47.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4543,6 +4544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &1240012532379481389
 MonoBehaviour:
@@ -4633,7 +4635,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "POISTU KLAANISTA\n(ei viel\xE4 k\xE4yt\xF6ss\xE4)"
+  m_text: 'POISTU KLAANISTA
+
+    (vie klaaniin liittymisen sivulle)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4660,7 +4664,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.35
+  m_fontSize: 33.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4995,7 +4999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 72ba547f869a3eb488af75ab537dd429, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 61a4cbe88e24d13439d73a445c64a793, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!1 &4215548447579987065
 GameObject:
@@ -6705,7 +6709,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.6
+  m_fontSize: 31.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7230,7 +7234,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -7697,7 +7701,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 46.2
+  m_fontSize: 44.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8522,7 +8526,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -9058,6 +9062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &601689930032699582
 MonoBehaviour:
@@ -9367,6 +9372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &3592358798677789460
 MonoBehaviour:
@@ -9844,7 +9850,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.1
+  m_fontSize: 49.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10209,6 +10215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &1806886636017963965
 MonoBehaviour:
