@@ -2,7 +2,8 @@
 rem
 rem LOG_WRITER_LOG must be set here because we need to expand environment variable %USERNAME%
 rem
-set LOG_WRITER_LOG=C:\Users\%USERNAME%\AppData\LocalLow\PRG\altzone\editor_altzone_game.log
+set LOG_WRITER_LOG=C:\Users\%USERNAME%\AppData\LocalLow\zoomierush\Zoomie Rush\editor_zoomie_rush_game.log
+echo LOG_WRITER_LOG=%LOG_WRITER_LOG%
 set ENV_FILE=%1
 set REBUILD=%2
 echo.
@@ -20,7 +21,12 @@ FOR /F "eol=# tokens=*" %%i IN (%ENV_FILE%) DO (
 	echo env set %%i
 	SET %%i
 )
-echo LOG_WRITER_LOG=%LOG_WRITER_LOG%
+rem --- all variable for build are collected now ---
+if not "%UNITY_EXE_OVERRIDE%" == "" (
+    rem set latest UNITY executable (like if .env file is outdated)
+    echo env set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+    set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+)
 if not exist "%UNITY_EXE%" (
     echo *
     echo * UNITY executable %UNITY_EXE% not found
@@ -35,6 +41,7 @@ if exist "%LOG_WRITER_LOG%" (
 )
 echo.
 echo ~~~~~ BUILD execute %TIME% with %ENV_FILE% %REBUILD% ~~~~~
+echo.
 set BUILD_PARAMS1=-executeMethod %BUILD_METHOD% -quit -batchmode
 set BUILD_PARAMS2=-projectPath .\ -buildTarget %BUILD_TARGET% -logFile "%LOG_FILE%"
 set BUILD_PARAMS3=-envFile "%ENV_FILE%" %REBUILD%
@@ -75,7 +82,7 @@ if not "%RESULT%" == "0" (
 )
 if exist "build%BUILD_TARGET%" (
     echo *
-    echo * Build output folder build%BUILD_TARGET% created, build done :-^)
+    echo * Build output folder build%BUILD_TARGET% created, build done SUCCESSFULLY :-^)
     echo *
 )
 if not "%POST_PROCESS%" == "1" (
@@ -111,7 +118,7 @@ if exist "%LOG_WRITER_LOG%" (
 
 if "%RESULT%" == "0" (
 	echo *
-	echo * BUILD log file %LOG_FILE_POST% post processing done :-^)
+	echo * BUILD log file %LOG_FILE_POST% post processing done SUCCESSFULLY :-^)
 	echo *
     goto :done
 )
