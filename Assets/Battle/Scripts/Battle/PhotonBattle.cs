@@ -38,6 +38,7 @@ namespace Battle.Scripts.Battle
         public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
         internal static class EventCodes
+        {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
