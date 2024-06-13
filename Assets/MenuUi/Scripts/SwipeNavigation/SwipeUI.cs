@@ -1,7 +1,11 @@
 using System.Collections;
+using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 /// <summary>
 /// SwipeUI handles swiping that snaps to windows between different main menu windows.
@@ -25,8 +29,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     private float valueDistance = 0;
     public int currentPage = 0;
     private int maxPage = 0;
-    public float startTouchX;
-    public float endTouchX;
+    public Vector2 _startTouch;
+    public Vector2 _endTouch;
     private bool isSwipeMode = false;
 
     public bool isEnabled;
@@ -42,8 +46,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 
             if (!IsEnabled)
             {
-                startTouchX = 0;
-                endTouchX = 0;
+                _startTouch = Vector2.zero;
+                _endTouch = Vector2.zero;
             }
         }
     }
@@ -90,12 +94,13 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 
         IsEnabled = true;
         StartCoroutine(SetScrollBarValue(CurrentPage));
+        EnhancedTouchSupport.Enable();
     }
 
     private void OnEnable()
     {
-        startTouchX = 0;
-        endTouchX = 0;
+        _startTouch = Vector2.zero;
+        _endTouch = Vector2.zero;
         CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
         StartCoroutine(SetScrollBarValue(CurrentPage));
     }
@@ -151,54 +156,31 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
 
         //Checks mouse input first and then touch input
         //Since WebGL can be run on PC or mobile we need to check both
-        if (Input.GetMouseButtonDown(0))
+        if (ClickStateHandler.GetClickState() is ClickState.Start)
         {
             // Return if input is outside of scroll area
-            if (!swipeRect.Contains(Input.mousePosition))
+            if (Touch.activeTouches.Count == 1 && !swipeRect.Contains(Touch.activeFingers[0].screenPosition)
+                ||(Application.platform is RuntimePlatform.WebGLPlayer && Mouse.current != null && !swipeRect.Contains(Mouse.current.position.ReadValue())))
             {
                 IsEnabled = false;
                 return;
             }
 
             IsEnabled = true;
-            startTouchX = Input.mousePosition.x;
+            if (Touch.activeTouches.Count == 1) _startTouch = Touch.activeFingers[0].screenPosition;
+            else if (Mouse.current != null) _startTouch = Mouse.current.position.ReadValue();
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (ClickStateHandler.GetClickState() is ClickState.End)
         {
             // Update swipe when mouse is released
-            if (startTouchX != 0)
+            if (_startTouch != Vector2.zero)
             {
-                endTouchX = Input.mousePosition.x;
+                if (Touch.activeTouches.Count == 1) _endTouch = Touch.activeFingers[0].screenPosition;
+                else if (Mouse.current != null) _endTouch = Mouse.current.position.ReadValue();
                 UpdateSwipe();
             }
 
             IsEnabled = true;
-        }
-        else if (Input.touchCount == 1)
-        {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began && swipeRect.Contains(touch.position))
-            {
-                if (!swipeRect.Contains(touch.position))
-                {
-                    IsEnabled = false;
-                    return;
-                }
-
-                IsEnabled = true;
-                startTouchX = touch.position.x;
-            }
-            else if (touch.phase == TouchPhase.Ended)
-            {
-                if (startTouchX != 0)
-                {
-                    endTouchX = touch.position.x;
-                    UpdateSwipe();
-                }
-
-                IsEnabled = true;
-            }
         }
     }
 
@@ -209,16 +191,15 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     {
         if (isSwipeMode)
             return;
-
         // Checks that the swipe was long enough
-        if (Mathf.Abs(startTouchX - endTouchX) < swipeDistance)
+        if ((Mathf.Abs(_startTouch.x - _endTouch.x) < swipeDistance || Mathf.Abs(_startTouch.y - _endTouch.y) > swipeDistance) && _startTouch.x - _endTouch.x < Screen.height * 20/100)
         {
             // Swipe back to the previous window
             StartCoroutine(OnSwipeOneStep(CurrentPage));
             return;
         }
 
-        bool isLeft = startTouchX < endTouchX ? true : false;
+        bool isLeft = _startTouch.x < _endTouch.x ? true : false;
 
         if (isLeft == true)
         {
@@ -258,8 +239,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
 
         isSwipeMode = false;
-        startTouchX = 0;
-        endTouchX = 0;
+        _startTouch = Vector2.zero;
+        _endTouch = Vector2.zero;
     }
 
     /// <summary>
@@ -297,7 +278,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
         else
         {
-            if (startTouchX != 0)
+            if (_startTouch.x != 0)
                 IsEnabled = true;
         }
     }
@@ -312,7 +293,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         }
         else
         {
-            if (startTouchX != 0)
+            if (_startTouch.x != 0)
                 IsEnabled = true;
         }
 
