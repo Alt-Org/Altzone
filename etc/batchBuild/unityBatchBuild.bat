@@ -74,6 +74,7 @@ echo.
 echo ~~~~~ Revert build system changes to settings back to original state ~~~~~
 @echo on
 git checkout -f -- ProjectSettings\ProjectSettings.asset
+git checkout -f -- ProjectSettings\GvhProjectSettings.xml
 git checkout -f -- Assets\Resources\GameAnalytics\Settings.asset
 @echo off
 echo.
