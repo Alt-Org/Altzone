@@ -59,6 +59,7 @@ if not "%IS_TEST_RUN%" == "0" (
     echo *
     goto :done
 )
+echo - Start Build
 @echo on
 "%UNITY_EXE%" %BUILD_PARAMS1% %BUILD_PARAMS2% %BUILD_PARAMS3%
 @set RESULT=%ERRORLEVEL%
@@ -108,6 +109,7 @@ set POST_PARAMS3=%BUILD_PARAMS3%
 echo set1 %POST_PARAMS1%
 echo set2 %POST_PARAMS2%
 echo set3 %POST_PARAMS3%
+echo - Start Post Process
 @echo on
 "%UNITY_EXE%" %POST_PARAMS1% %POST_PARAMS2% %POST_PARAMS3%
 @set RESULT=%ERRORLEVEL%
