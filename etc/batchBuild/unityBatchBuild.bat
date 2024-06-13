@@ -23,9 +23,12 @@ FOR /F "eol=# tokens=*" %%i IN (%ENV_FILE%) DO (
 )
 rem --- all variable for build are collected now ---
 if not "%UNITY_EXE_OVERRIDE%" == "" (
-    rem set latest UNITY executable (like if .env file is outdated)
-    echo env set UNITY_EXE=%UNITY_EXE_OVERRIDE%
-    set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+    rem UNITY_EXE_OVERRIDE can only set by the caller using environment variables!
+    if not "%UNITY_EXE_OVERRIDE%" == "%UNITY_EXE%" (
+        rem set latest UNITY executable (like if .env file is outdated)
+        echo env set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+        set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+    )
 )
 if not exist "%UNITY_EXE%" (
     echo *
