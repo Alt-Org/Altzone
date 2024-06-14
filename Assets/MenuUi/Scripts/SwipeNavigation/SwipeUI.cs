@@ -32,6 +32,8 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     public Vector2 _startTouch;
     public Vector2 _endTouch;
     private bool isSwipeMode = false;
+    private float _startScrollvalue;
+    private bool _swipeAllowed = false;
 
     public bool isEnabled;
     private Rect swipeRect;
@@ -169,6 +171,32 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
             IsEnabled = true;
             if (Touch.activeTouches.Count == 1) _startTouch = Touch.activeFingers[0].screenPosition;
             else if (Mouse.current != null) _startTouch = Mouse.current.position.ReadValue();
+            _startScrollvalue = scrollBar.value;
+            _swipeAllowed = false;
+
+        }
+        else if (ClickStateHandler.GetClickState() is ClickState.Move)
+        {
+            if (_startTouch == Vector2.zero) return;
+
+            Vector2 currentTouch;
+            if (Touch.activeTouches.Count >= 1) currentTouch = Touch.activeFingers[0].screenPosition;
+            else currentTouch = Mouse.current.position.ReadValue();
+
+            float minSwipeAllowed = Screen.width * (5f / 100f);
+            Debug.Log(Time.time +", min: "+ minSwipeAllowed+ ", current: "+ (_startTouch.x - currentTouch.x));
+            if (Mathf.Abs(_startTouch.x - currentTouch.x) > minSwipeAllowed)
+            {
+                _swipeAllowed = true;
+            }
+
+
+            if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
+            {
+                scrollRect.StopMovement();
+                IsEnabled = false;
+                StartCoroutine(OnSwipeOneStep(CurrentPage));
+            }
         }
         else if (ClickStateHandler.GetClickState() is ClickState.End)
         {
@@ -181,6 +209,7 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
             }
 
             IsEnabled = true;
+            _swipeAllowed = false;
         }
     }
 
@@ -191,8 +220,9 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
     {
         if (isSwipeMode)
             return;
+        Debug.Log("Value: "+ Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  "+ ((1f / scrollPageValues.Length) * (20f / 100f)));
         // Checks that the swipe was long enough
-        if ((Mathf.Abs(_startTouch.x - _endTouch.x) < swipeDistance || Mathf.Abs(_startTouch.y - _endTouch.y) > swipeDistance) && _startTouch.x - _endTouch.x < Screen.height * 20/100)
+        if ((Mathf.Abs(_startTouch.x - _endTouch.x) < swipeDistance || Mathf.Abs(_startTouch.y - _endTouch.y) > swipeDistance) && Mathf.Abs(_startScrollvalue - scrollBar.value) < ((1f/scrollPageValues.Length) * (20f/100f)))
         {
             // Swipe back to the previous window
             StartCoroutine(OnSwipeOneStep(CurrentPage));
@@ -227,16 +257,27 @@ public class SwipeUI : MonoBehaviour, IBeginDragHandler
         float percent = 0;
 
         isSwipeMode = true;
+        if(scrollRect.enabled)
+            while (percent < 1)
+            {
+                current += Time.deltaTime;
+                percent = current / swipeTime;
 
-        while (percent < 1)
-        {
-            current += Time.deltaTime;
-            percent = current / swipeTime;
+                scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
 
-            scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
+                yield return null;
+            }
+        else
+            while (percent < 1)
+            {
+                current += Time.deltaTime;
+                percent = current / swipeTime;
+                scrollRect.enabled = true;
+                scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
+                scrollRect.enabled = false;
 
-            yield return null;
-        }
+                yield return null;
+            }
 
         isSwipeMode = false;
         _startTouch = Vector2.zero;
