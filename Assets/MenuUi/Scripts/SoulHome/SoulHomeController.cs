@@ -73,7 +73,7 @@ namespace MenuUI.Scripts.SoulHome
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
-            GameAnalyticsManager.Instance.OpenSoulHome();
+            if(GameAnalyticsManager.Instance !=null) GameAnalyticsManager.Instance.OpenSoulHome();
         }
 
         public void OnDisable()
