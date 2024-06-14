@@ -9,9 +9,14 @@ namespace MenuUI.Scripts.SoulHome
     {
         OneXOne,
         OneXTwo,
+        OneXThree,
         OneXFour,
+        OneXSix,
         TwoXOne,
-        TwoXTwo
+        TwoXTwo,
+        TwoXThree,
+        TwoXFour,
+        ThreeXThree
     }
 
     public enum FurniturePlace
@@ -107,9 +112,17 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(2, 1);
             }
+            else if (furnitureSize == FurnitureSize.OneXThree)
+            {
+                return new Vector2Int(3, 1);
+            }
             else if (furnitureSize == FurnitureSize.OneXFour)
             {
                 return new Vector2Int(4, 1);
+            }
+            else if (furnitureSize == FurnitureSize.OneXSix)
+            {
+                return new Vector2Int(6, 1);
             }
             else if (furnitureSize == FurnitureSize.TwoXOne)
             {
@@ -118,6 +131,18 @@ namespace MenuUI.Scripts.SoulHome
             else if (furnitureSize == FurnitureSize.TwoXTwo)
             {
                 return new Vector2Int(2, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXThree)
+            {
+                return new Vector2Int(3, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXFour)
+            {
+                return new Vector2Int(4, 2);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXThree)
+            {
+                return new Vector2Int(3, 3);
             }
             else
             {

@@ -149,7 +149,13 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 2;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (furnitureSize is FurnitureSize.OneXFour)
+            else if (furnitureSize is FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree)
+            {
+                //if (_tempSlot != null) width = _tempSlot.width * 3;
+                /*else*/
+                width = transform.parent.GetComponent<FurnitureSlot>().width * 3;
+            }
+            else if (furnitureSize is FurnitureSize.OneXFour or FurnitureSize.TwoXFour)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
