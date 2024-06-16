@@ -178,7 +178,9 @@ namespace MenuUI.Scripts.SoulHome
             //if (Mathf.Abs(path.normalized.y) == 0) return true;
             Vector2 endPosition = GetEndPosition();
             Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (endPosition));
-            RaycastHit2D[] hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
+            RaycastHit2D[] hits;
+            if (path.y == 0) hits = Physics2D.RaycastAll(_currentCalculatedPosition + new Vector2(0, 0.01f) + path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f * path.normalized).magnitude);
+            else hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
             foreach(RaycastHit2D hit in hits)
             {
                 FurnitureSlot slot = hit.collider.GetComponent<FurnitureSlot>();
@@ -190,6 +192,13 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         prevFurniture = hit.collider.GetComponent<FurnitureSlot>().Furniture;
                         Debug.Log(Time.time + " Furniture: " +hit.collider.GetComponent<FurnitureSlot>().Furniture);
+
+                        if(Mathf.Approximately(path.y, 0))
+                        {
+                            FurnitureSlot underSlot = _points.GetChild(slot.row + 1).GetChild(slot.column).GetComponent<FurnitureSlot>();
+                            if (!slot.Furniture.Equals(underSlot.Furniture)) continue;
+                        }
+
                         Vector2 position = CheckCollision(hit, path.normalized);
                         if (position.Equals(Vector2.negativeInfinity)) return false;
                         _currentCalculatedPosition = position;
@@ -455,9 +464,9 @@ namespace MenuUI.Scripts.SoulHome
                 destination.x -= width / 2;
             else if (normal == Vector2.right || ((normal == Vector2.down || normal == Vector2.up) && ((direction.x < 0 && reverse) || (direction.x >= 0 && !reverse))))
                 destination.x += width / 2;
-            if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y < 0 && !reverse) || (direction.y >= 0 && reverse))))
+            if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && !reverse) || (direction.y > 0 && reverse))))
                 destination.y -= (newSlot.height / 2);
-            else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y < 0 && reverse) || (direction.y >= 0 && !reverse))))
+            else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && reverse) || (direction.y > 0 && !reverse))))
                 destination.y += (newSlot.height / 2);
 
             CheckNewPosition(destination, hit);
