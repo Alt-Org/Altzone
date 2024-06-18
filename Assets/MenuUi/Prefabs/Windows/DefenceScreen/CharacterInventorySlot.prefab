@@ -300,6 +300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 3146477122434043581}
   parentAfterDrag: {fileID: 0}
+  allowedSlot: {fileID: 0}
   _modelView: {fileID: 0}
 --- !u!114 &1478170272633564247
 MonoBehaviour:
@@ -328,6 +329,7 @@ GameObject:
   - component: {fileID: 2053534294522563814}
   - component: {fileID: 3246893131697576346}
   - component: {fileID: 4381437622224976902}
+  - component: {fileID: 8080636042891636112}
   m_Layer: 5
   m_Name: CharacterInventorySlot
   m_TagString: Untagged
@@ -430,3 +432,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc6815991ec267d439cf4d921e094dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _character: {fileID: 2672664813005901158}
+--- !u!114 &8080636042891636112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4297384447084397024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9132f07f6a08db94dbda72176dd12539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 0}
+  parentAfterDrag: {fileID: 0}
+  allowedSlot: {fileID: 0}
+  _modelView: {fileID: 0}
