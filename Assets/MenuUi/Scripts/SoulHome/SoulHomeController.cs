@@ -107,11 +107,13 @@ namespace MenuUI.Scripts.SoulHome
                 _confirmPopupOpen = true;
                 _confirmPopup.SetActive(true);
                 _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                + "Poistumalla hylkäät tallentamattomat muutokset. \n\n"
+                + "Poistuaksesi muutokset pitää tallentaa tai hylätä. \n\n"
                 + "Haluatko silti poistua? ";
                 _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmExitFalse);
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrue);
-                _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje sielunkoti";
+                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrueWithRevert);
+                _confirmPopup.transform.Find("SecondaryAcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Palauta Muutokset";
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrueWithSave);
+                _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Tallenna Muutokset";
             }
             else
             {
@@ -120,14 +122,16 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
         public void ConfirmExitFalse() { ConfirmExit(false); }
-        public void ConfirmExitTrue() { ConfirmExit(true); }
+        public void ConfirmExitTrueWithSave() { ConfirmExit(true, true); }
+        public void ConfirmExitTrueWithRevert() { ConfirmExit(true, false); }
 
-        public void ConfirmExit(bool confirm)
+        public void ConfirmExit(bool confirm, bool save = false)
         {
             if (confirm)
             {
                 _soulHomeTower.DeselectFurniture();
-                _mainScreen.ResetChanges();
+                if(save)_mainScreen.SaveChanges();
+                else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.Exit);
                 if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
                 _exitPending = false;
@@ -151,11 +155,13 @@ namespace MenuUI.Scripts.SoulHome
                     _confirmPopupOpen = true;
                     _confirmPopup.SetActive(true);
                     _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                    + "Sulkemalla muokkaustilan hylkäät tallentamattomat muutokset. \n\n"
-                    + "Haluatko silti sulkea muokkaustilan? ";
+                    + "Sulkeaksesi muokkaustilan tallentamattomat muutokset pitää tallentaa tai hylätä. \n\n"
+                    + "Mitä haluat tehdä? ";
                     _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseFalse);
-                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrue);
-                    _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Sulje muokkaustila";
+                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrueWithSave);
+                    _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Tallenna Muutokset";
+                    _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrueWithRevert);
+                    _confirmPopup.transform.Find("SecondaryAcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Palauta Muutokset";
                 }
                 else
                     _soulHomeTower.ToggleEdit();
@@ -200,17 +206,20 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
-        public void ConfirmEditCloseTrue() { ConfirmEditClose(true); }
+        public void ConfirmEditCloseTrueWithRevert() { ConfirmEditClose(true, false); }
+        public void ConfirmEditCloseTrueWithSave() { ConfirmEditClose(true, true); }
 
-        public void ConfirmEditClose(bool confirm)
+        public void ConfirmEditClose(bool confirm, bool save = false)
         {
             if (confirm)
             {
                 _soulHomeTower.DeselectFurniture();
-                _mainScreen.ResetChanges();
+                if (save) _mainScreen.SaveChanges();
+                else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                _audioManager.transform.Find("RevertChanges").GetComponent<AudioSource>().Play();
+                if(save) _audioManager.transform.Find("SaveChanges").GetComponent<AudioSource>().Play();
+                else _audioManager.transform.Find("RevertChanges").GetComponent<AudioSource>().Play();
             }
             else
             {
@@ -223,12 +232,14 @@ namespace MenuUI.Scripts.SoulHome
             if(type is PopupType.Exit)
             {
                 _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitFalse);
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrue);
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrueWithSave);
+                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrueWithRevert);
             }
             else if (type is PopupType.EditClose)
             {
                 _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseFalse);
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrue);
+                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrueWithSave);
+                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrueWithRevert);
             }
             _confirmPopupOpen = false;
             _confirmPopup.SetActive(false);

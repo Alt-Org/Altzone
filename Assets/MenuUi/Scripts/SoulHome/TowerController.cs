@@ -745,11 +745,16 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject furniture in ChangedFurnitureList)
             {
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
+                FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
+                int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
+                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
+                    continue;
                 }
+                _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
             }
             ChangedFurnitureList.Clear();
         }
