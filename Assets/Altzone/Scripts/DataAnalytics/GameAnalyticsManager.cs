@@ -7,7 +7,7 @@ using GameAnalyticsSDK;
 
 namespace AltZone.Scripts.GA
 {
-    public class GameAnalyticsManager : MonoBehaviour 
+    public class GameAnalyticsManager : MonoBehaviour
     {
         private static GameAnalyticsManager instance;
 
@@ -16,6 +16,7 @@ namespace AltZone.Scripts.GA
             get { return instance; }
         }
 
+        private int battlesStartedThisSession = 0;
 
         private void Awake()
         {
@@ -54,16 +55,42 @@ namespace AltZone.Scripts.GA
 
         }
 
-        public void BattleLaunch()
+        public void BattleLaunch() //Milloin battle k‰ynnistet‰‰n
         {
+            battlesStartedThisSession++;
             GameAnalytics.NewDesignEvent("battle:launched");
             Debug.Log("battle launced event");
         }
 
-        public void OpenSoulHome()
+        public void OpenSoulHome() //Milloin sielunkotiin menn‰‰n
         {
             GameAnalytics.NewDesignEvent("location:soulhome:open");
             Debug.Log("SoulHome has been opened");
         }
+
+        public void CharacterSelection(string characterName) //Mik‰ hahmo valitaan
+        {
+            GameAnalytics.NewDesignEvent("character:selected:" + characterName);
+            Debug.Log($"Character selected: {characterName}");
         }
+
+        public void CharacterWin(string characterName) //Mik‰ hahmo voittaa
+        {
+            GameAnalytics.NewDesignEvent("character:win:" + characterName);
+            Debug.Log($"{characterName} won");
+        }
+
+        public void CharacterLoss(string characterName) //Mik‰ hahmo h‰vi‰‰
+        {
+            GameAnalytics.NewDesignEvent("character:loss:" + characterName);
+            Debug.Log($"{characterName} lost");
+        }
+
+        private void OnApplicationQuit() //Montako battlea on aloitettu yhdell‰ sessiolla 
+        {
+            GameAnalytics.NewDesignEvent("session:battles_started", (float)battlesStartedThisSession);
+            Debug.Log($"Battles started this session: {(float)battlesStartedThisSession}");
+        }
+
     }
+}
