@@ -1,0 +1,76 @@
+# demo www server
+http://localhost:8080 {
+
+    root * ../../buildWebGL
+
+	header * {
+		Cache-Control "no-cache, no-store, must-revalidate"
+    }
+			
+    file_server {
+		precompressed br gzip
+    }
+    
+    encode {
+        gzip
+    }
+
+	# Caddy options UNITY gzip or brotli compression (.js .data .wasm extensions)
+
+	# https://docs.unity3d.com/Manual/webgl-deploying.html
+	# https://caddy.community/t/correct-way-to-set-expires-on-caddy-2/7914/7
+
+	# -- GZip Headers ---
+	@code_gz {
+	  path_regexp \.js\.gz$
+	}
+	header @code_gz {
+		Content-Encoding gzip
+		Content-Type application/javascript
+	}
+	@wasm_gz {
+	  path_regexp \.wasm\.gz$
+	}
+	header @wasm_gz {
+		Content-Encoding gzip
+		Content-Type application/wasm
+	}
+	@data_gz {
+	  path_regexp \.data\.gz$
+	}
+	header @data_gz {
+		Content-Encoding gzip
+		Content-Type application/octet-stream
+	}
+
+	# -- Brotli Headers ---
+	@code_br {
+	  path_regexp \.js\.br$
+	}
+	header @code_br {
+		Content-Encoding br
+		Content-Type application/javascript
+	}
+	@wasm_br {
+	  path_regexp \.wasm\.br$
+	}
+	header @wasm_br {
+		Content-Encoding br
+		Content-Type application/wasm
+	}
+	@data_br {
+	  path_regexp \.data\.br$
+	}
+	header @data_br {
+		Content-Encoding br
+		Content-Type application/octet-stream
+	}
+
+	# -- Log options
+    log {
+		format console
+        output file ./logs/access.log {
+            roll_size 2MiB
+        }
+    }
+}
