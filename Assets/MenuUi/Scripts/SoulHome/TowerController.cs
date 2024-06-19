@@ -68,8 +68,10 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject SelectedRoom { get => selectedRoom; private set => selectedRoom = value; }
         public GameObject SelectedFurniture { get => _selectedFurniture; private set
             {
+                _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
                 if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
+                if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
             }
         }
         public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
@@ -445,7 +447,7 @@ namespace MenuUI.Scripts.SoulHome
                         _tempSelectedFurniture = furnitureObject;
                         if (editingMode)
                         {
-                            _selectedFurniture = _tempSelectedFurniture;
+                            SelectedFurniture = _tempSelectedFurniture;
                             _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                             if (!editingMode) ToggleEdit();
                             _mainScreen.SetFurniture(_selectedFurniture);
@@ -456,7 +458,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         DeselectFurniture();
                         _tempSelectedFurniture = furnitureObject;
-                        _selectedFurniture = _tempSelectedFurniture;
+                        SelectedFurniture = _tempSelectedFurniture;
                         _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                         _mainScreen.SetFurniture(_selectedFurniture);
                     }
@@ -467,7 +469,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
                 {
-                    _selectedFurniture = _tempSelectedFurniture;
+                    SelectedFurniture = _tempSelectedFurniture;
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                     if (!editingMode) ToggleEdit();
                     _mainScreen.SetFurniture(_selectedFurniture);
@@ -659,7 +661,7 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
             _tempSelectedFurniture = furnitureObject;
-            _selectedFurniture = _tempSelectedFurniture;
+            SelectedFurniture = _tempSelectedFurniture;
             _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
         }
 

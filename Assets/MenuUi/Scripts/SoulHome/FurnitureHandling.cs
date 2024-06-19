@@ -337,5 +337,14 @@ namespace MenuUI.Scripts.SoulHome
             _spriteDirection = _tempSpriteDirection;
         }
 
+        public void SetOutline(bool outline)
+        {
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+            spriteRenderer.GetPropertyBlock(mpb);
+            mpb.SetFloat("_Outline", outline ? 10f : 0);
+            mpb.SetColor("_OutlineColor", Color.red);
+            spriteRenderer.SetPropertyBlock(mpb);
+        }
     }
 }
