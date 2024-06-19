@@ -10,14 +10,14 @@ public class TestEvents : MonoBehaviour
     {
         //GameAnalyticsManager.Initialize();
 
-        testCharacterSelection();
+        /* testCharacterSelection();
         testCharacterOutcomes();
-        TestBattleLaunch();
+        TestBattleLaunch(); */
         
     }
 
     // Update is called once per frame
-    void testCharacterSelection()
+    /* void testCharacterSelection()
     {
         GameAnalyticsManager.Instance.CharacterSelection("Rauta-rami");
         GameAnalyticsManager.Instance.CharacterSelection("Vitsi-ville");
@@ -38,7 +38,7 @@ public class TestEvents : MonoBehaviour
     void TestBattleLaunch()
     {
         GameAnalyticsManager.Instance.BattleLaunch();
-    }
+    } */
 
 
 }
