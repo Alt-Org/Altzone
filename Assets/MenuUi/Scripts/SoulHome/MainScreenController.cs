@@ -546,7 +546,7 @@ namespace MenuUI.Scripts.SoulHome
         public void RemoveTrayItem(GameObject trayFurniture)
         {
             GetTrayHandler().RemoveFurniture(trayFurniture);
-            _selectedFurnitureTray = null;
+            //_selectedFurnitureTray = null;
             if(_tempSelectedFurnitureTray != null && !_tempSelectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))Destroy(_tempSelectedFurnitureTray);
             _tempSelectedFurnitureTray = null;
         }

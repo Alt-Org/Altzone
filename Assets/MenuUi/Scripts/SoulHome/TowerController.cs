@@ -437,7 +437,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _tempSelectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
@@ -480,12 +480,16 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _tempSelectedFurniture)
                 {
+                    if (_tempSelectedFurniture != null) PlaceFurniture(hitPoint, false);
                     _tempSelectedFurniture = null;
-                    //if (_selectedFurniture != null) PlaceFurniture();
                 }
 
                 if(_selectedFurniture)_mainScreen.SetHoverButtons(Camera.WorldToViewportPoint(_selectedFurniture.transform.position));
 
+            }
+            else if (click is ClickState.End && furnitureObject == null)
+            {
+                DeselectFurniture();
             }
 
 
@@ -648,9 +652,9 @@ namespace MenuUI.Scripts.SoulHome
                 if (_selectedFurniture != null) {
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                     _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                    SelectedFurniture = null;
+                    //SelectedFurniture = null;
                 }
-                _mainScreen.DeselectTrayFurniture();
+                //_mainScreen.DeselectTrayFurniture();
             }
         }
 

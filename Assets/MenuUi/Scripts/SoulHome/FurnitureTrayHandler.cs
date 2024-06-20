@@ -122,9 +122,9 @@ namespace MenuUI.Scripts.SoulHome
             }
 
         }
-        public void RemoveFurniture(GameObject trayFurniture)
+        public bool RemoveFurniture(GameObject trayFurniture)
         {
-            if(trayFurniture == null) return;
+            if(trayFurniture == null) return false;
 
             int trayFurnitureAmount = _trayContent.transform.childCount;
 
@@ -144,9 +144,10 @@ namespace MenuUI.Scripts.SoulHome
                         _changedTrayItemList.Add(itemToRemove);
                         _hiddenSlot = null;
                     }
-                    break;
+                    return true;
                 }
             }
+            return false;
         }
 
         public void HideFurnitureSlot(GameObject trayFurniture)
