@@ -208,7 +208,6 @@ namespace Prg.Editor.BatchBuild
                         Debug.Log(
                             $"batch_build_ PlayerSettings.keyaliasPass: {FormatUtil.PasswordToLog(PlayerSettings.keyaliasPass)}");
                     }
-                    SetStackTraceLogType(StackTraceLogType.Full);
                     break;
                 }
                 case BuildTarget.WebGL:
@@ -228,7 +227,7 @@ namespace Prg.Editor.BatchBuild
             Directory.CreateDirectory(options.OutputFolder);
             var buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
             // Reset StackTraceLogType after build.
-            SetStackTraceLogType(StackTraceLogType.Full);
+            SetStackTraceLogType(StackTraceLogType.ScriptOnly);
             return buildReport;
         }
 
@@ -241,6 +240,7 @@ namespace Prg.Editor.BatchBuild
             PlayerSettings.SetStackTraceLogType(LogType.Log, logType);
             PlayerSettings.SetStackTraceLogType(LogType.Exception, logType);
         }
+
         private static bool VerifyUnityVersionForBuild(string unityVersion, out string editorVersion)
         {
             editorVersion = File
