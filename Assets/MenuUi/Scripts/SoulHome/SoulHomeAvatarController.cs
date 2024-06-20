@@ -176,18 +176,29 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 path = GetDirection(_currentCalculatedPosition);
             //if (Mathf.Abs(path.normalized.y) == 0) return true;
-            Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (_currentCalculatedPosition+path));
-            RaycastHit2D[] hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
+            Vector2 endPosition = GetEndPosition();
+            Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (endPosition));
+            RaycastHit2D[] hits;
+            if (path.y == 0) hits = Physics2D.RaycastAll(_currentCalculatedPosition + new Vector2(0, 0.01f) + path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f * path.normalized).magnitude);
+            else hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
             foreach(RaycastHit2D hit in hits)
             {
                 FurnitureSlot slot = hit.collider.GetComponent<FurnitureSlot>();
                 if (slot != null)
                 {
+                    if ((Mathf.Approximately(endPosition.x, hit.point.x) && !Mathf.Approximately(path.y, 0)) || (Mathf.Approximately(endPosition.y, hit.point.y) && !Mathf.Approximately(path.x, 0))) continue;
                     Debug.Log("Collider Hit:"+ Time.time+" Row: "+ slot.row+" Column: "+ slot.column+" Furniture: "+slot.Furniture?.Name);
                     if(slot.Furniture != null && !slot.Furniture.Equals(prevFurniture))
                     {
                         prevFurniture = hit.collider.GetComponent<FurnitureSlot>().Furniture;
                         Debug.Log(Time.time + " Furniture: " +hit.collider.GetComponent<FurnitureSlot>().Furniture);
+
+                        if(Mathf.Approximately(path.y, 0))
+                        {
+                            FurnitureSlot underSlot = _points.GetChild(slot.row + 1).GetChild(slot.column).GetComponent<FurnitureSlot>();
+                            if (!slot.Furniture.Equals(underSlot.Furniture)) continue;
+                        }
+
                         Vector2 position = CheckCollision(hit, path.normalized);
                         if (position.Equals(Vector2.negativeInfinity)) return false;
                         _currentCalculatedPosition = position;
@@ -449,13 +460,13 @@ namespace MenuUI.Scripts.SoulHome
             FurnitureSlot newSlot = _points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
             Vector2 destination = newSlot.transform.position;
             float width = newSlot.width;
-            if (normal == Vector2.left || ((normal == Vector2.down|| normal == Vector2.up) && ((direction.x < 0 && reverse)|| (direction.x >= 0 && !reverse))))
+            if (normal == Vector2.left || ((normal == Vector2.down|| normal == Vector2.up) && ((direction.x < 0 && !reverse)|| (direction.x >= 0 && reverse))))
                 destination.x -= width / 2;
-            else if (normal == Vector2.right || ((normal == Vector2.down || normal == Vector2.up) && ((direction.x < 0 && !reverse) || (direction.x >= 0 && reverse))))
+            else if (normal == Vector2.right || ((normal == Vector2.down || normal == Vector2.up) && ((direction.x < 0 && reverse) || (direction.x >= 0 && !reverse))))
                 destination.x += width / 2;
-            if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y < 0 && !reverse) || (direction.y >= 0 && reverse))))
+            if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && !reverse) || (direction.y > 0 && reverse))))
                 destination.y -= (newSlot.height / 2);
-            else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y < 0 && reverse) || (direction.y >= 0 && !reverse))))
+            else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && reverse) || (direction.y > 0 && !reverse))))
                 destination.y += (newSlot.height / 2);
 
             CheckNewPosition(destination, hit);
@@ -471,7 +482,9 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.GetComponent<FurnitureSlot>() != null)
                 {
-                    if (hit2.collider.GetComponent<FurnitureSlot>().Furniture != null)
+                    if ((Mathf.Approximately(hit2.point.x, hit.point.x) && !Mathf.Approximately(path.y, 0)) || (Mathf.Approximately(hit2.point.y, hit.point.y) && !Mathf.Approximately(path.x, 0))) continue;
+                    if (hit2.collider.GetComponent<FurnitureSlot>().Furniture != null
+                        && !hit2.collider.GetComponent<FurnitureSlot>().Furniture.Equals(hit.collider.GetComponent<FurnitureSlot>().Furniture))
                     {
 
                         hitFound = true;
@@ -525,7 +538,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     Vector2Int size = hit.collider.GetComponent<FurnitureSlot>().Furniture.GetFurnitureSize();
                     FurnitureSlot newSlot;
-                    int slotOffset = (int)(hit.point.y - _currentCalculatedPosition.y / hit.collider.GetComponent<FurnitureSlot>().height);
+                    int slotOffset = (int)((hit.point.y - _currentCalculatedPosition.y) / hit.collider.GetComponent<FurnitureSlot>().height);
                     if (hit.normal == Vector2.left)
                         newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column - (size.x - 1)).GetComponent<FurnitureSlot>();
                     else newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + (size.x - 1)).GetComponent<FurnitureSlot>();

@@ -13,9 +13,9 @@ namespace Altzone.Scripts
     /// <remarks>Patch value is reset to zero when BundleVersionCode is incremented.</remarks>
     internal static class BuildInfo
     {
-        private const string BundleVersionCodeValue = "115";
-        private const string PatchValue = "0";
-        private const string CompiledOnDateValue = "2024-05-06 12:11";
+        private const string BundleVersionCodeValue = "118";
+        private const string PatchValue = "1";
+        private const string CompiledOnDateValue = "2024-19-06 14:56";
         private const string BuildTagOrLabelValue = "test/build";
         private const bool IsMuteOtherAudioSourcesValue = false;
 

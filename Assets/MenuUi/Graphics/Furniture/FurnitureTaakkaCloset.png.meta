@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7c2470a4a5672df4bb80e5250cf54825
+guid: 4b7d24540118a534993dcd36ff455c4e
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 512
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -162,13 +162,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_0
+      name: FurnitureTaakkaCloset_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
-        width: 2048
-        height: 1334
+        y: 0
+        width: 1024
+        height: 1658
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,20 +176,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e604782efe6642447936cc66cdfbdde6
-      internalID: -1978675626
+      spriteID: 950ef0079543993419b5481144de9836
+      internalID: 2099301597
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FurnitureSofaTaakka_1
+      name: FurnitureTaakkaCloset_1
       rect:
         serializedVersion: 2
-        x: 2048
-        y: 76
-        width: 1024
-        height: 1328
+        x: 1135
+        y: 0
+        width: 871
+        height: 1679
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,8 +197,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 612b4cef9e0e9094695689f096c70177
-      internalID: 1816257808
+      spriteID: 731e0e74b3fdc3f4fa8357c6200e8f17
+      internalID: -320186863
       vertices: []
       indices: 
       edges: []
@@ -214,8 +214,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      FurnitureSofaTaakka_0: -1978675626
-      FurnitureSofaTaakka_1: 1816257808
+      FurnitureTaakkaCloset_0: 2099301597
+      FurnitureTaakkaCloset_1: -320186863
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

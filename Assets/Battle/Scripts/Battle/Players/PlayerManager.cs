@@ -13,6 +13,7 @@ namespace Battle.Scripts.Battle.Players
     // also maybe more properties/methods that are in all drivers should be added
     interface IDriver
     {
+        public int PlayerPos { get; }
         public int TeamNumber { get; }
 
         public Transform ActorShieldTransform { get; }
