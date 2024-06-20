@@ -208,18 +208,14 @@ namespace Prg.Editor.BatchBuild
                         Debug.Log(
                             $"batch_build_ PlayerSettings.keyaliasPass: {FormatUtil.PasswordToLog(PlayerSettings.keyaliasPass)}");
                     }
+                    SetStackTraceLogType(StackTraceLogType.Full);
                     break;
                 }
                 case BuildTarget.WebGL:
                     PlayerSettings.WebGL.compressionFormat = options.WebGL.compressionFormat;
                     Debug.Log($"batch_build_ WebGL.compressionFormat: {PlayerSettings.WebGL.compressionFormat}");
                     // No use to show stack trace in browser.
-                    Debug.Log($"batch_build_ SetStackTraceLogType: {StackTraceLogType.None}");
-                    PlayerSettings.SetStackTraceLogType(LogType.Error, StackTraceLogType.None);
-                    PlayerSettings.SetStackTraceLogType(LogType.Assert, StackTraceLogType.None);
-                    PlayerSettings.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
-                    PlayerSettings.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
-                    PlayerSettings.SetStackTraceLogType(LogType.Exception, StackTraceLogType.None);
+                    SetStackTraceLogType(StackTraceLogType.None);
                     break;
             }
             // This produces multi-line output!
@@ -231,9 +227,20 @@ namespace Prg.Editor.BatchBuild
             }
             Directory.CreateDirectory(options.OutputFolder);
             var buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // Reset StackTraceLogType after build.
+            SetStackTraceLogType(StackTraceLogType.Full);
             return buildReport;
         }
 
+        private static void SetStackTraceLogType(StackTraceLogType logType)
+        {
+            Debug.Log($"batch_build_ SetStackTraceLogType: {logType}");
+            PlayerSettings.SetStackTraceLogType(LogType.Error, logType);
+            PlayerSettings.SetStackTraceLogType(LogType.Assert, logType);
+            PlayerSettings.SetStackTraceLogType(LogType.Warning, logType);
+            PlayerSettings.SetStackTraceLogType(LogType.Log, logType);
+            PlayerSettings.SetStackTraceLogType(LogType.Exception, logType);
+        }
         private static bool VerifyUnityVersionForBuild(string unityVersion, out string editorVersion)
         {
             editorVersion = File
