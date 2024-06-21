@@ -22,6 +22,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private TextMeshProUGUI _roomName;
         [SerializeField]
+        private TextMeshProUGUI _furnitureName;
+        [SerializeField]
         private TowerController _soulHomeTower;
         [SerializeField]
         private MainScreenController _mainScreen;
@@ -42,6 +44,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public bool ExitPending { get => _exitPending;}
         public bool ConfirmPopupOpen { get => _confirmPopupOpen;}
+        public TextMeshProUGUI FurnitureName { get => _furnitureName;}
 
         // Start is called before the first frame update
         void Start()
@@ -96,6 +99,17 @@ namespace MenuUI.Scripts.SoulHome
                 _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
             }
             else _roomName.gameObject.SetActive(false);
+        }
+
+        public void SetFurniture(Furniture furniture)
+        {
+            if (furniture != null)
+            {
+                if(!_soulHomeTower.EditingMode || _soulHomeTower.Rotated)FurnitureName.gameObject.SetActive(true);
+                string furnitureName = furniture.Name;
+                FurnitureName.GetComponent<TextMeshProUGUI>().text = furnitureName;
+            }
+            else FurnitureName.gameObject.SetActive(false);
         }
 
         public void ExitSoulHome()

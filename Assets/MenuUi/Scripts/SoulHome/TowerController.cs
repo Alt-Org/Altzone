@@ -34,7 +34,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private List<GameObject> _changedFurnitureList = new();
 
-        private bool rotated = false;
+        private bool _rotated = false;
         private float _prevPinchDistance = 0;
 
         private GameObject _selectedFurniture;
@@ -73,11 +73,13 @@ namespace MenuUI.Scripts.SoulHome
                 _selectedFurniture = value;
                 //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
                 if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
+                _soulHomeController.SetFurniture(_selectedFurniture?.GetComponent<FurnitureHandling>().Furniture);
             }
         }
         public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
+        public bool Rotated { get => _rotated;}
 
         // Start is called before the first frame update
         void Start()
@@ -307,7 +309,7 @@ namespace MenuUI.Scripts.SoulHome
                 Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 HandleScreenRotation();
             }
-            rotated = false;
+            _rotated = false;
         }
 
         void OnDisable()
@@ -786,11 +788,11 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (!editingMode)
             {
-                DeselectFurniture();
+                //DeselectFurniture();
                 _mainScreen.EnableTray(false);
                 _soulHomeController.EditModeTrayHandle(false);
             }
-            if(!editingMode) ResetChanges();
+            //if(!editingMode) ResetChanges();
         }
 
         public void RotateFurniture()
@@ -804,14 +806,14 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(Screen.orientation);
             if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
             {
-                rotated = true;
+                _rotated = true;
 
                 HandleScreenRotation();
 
             }
             else if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.Portrait /*&& rotated*/)
             {
-                rotated = false;
+                _rotated = false;
 
                 HandleScreenRotation();
             }
@@ -832,7 +834,7 @@ namespace MenuUI.Scripts.SoulHome
 
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
-            if(!rotated)
+            if(!_rotated)
                 transform.position = new(transform.position.x, transform.position.y, GetCameraXDistance());
             else
                 transform.position = new(transform.position.x, transform.position.y, GetCameraYDistance());

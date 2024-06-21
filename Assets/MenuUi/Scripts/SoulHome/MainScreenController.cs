@@ -375,9 +375,9 @@ namespace MenuUI.Scripts.SoulHome
         }
         public void EnableTray(bool enable)
         {
+            GameObject tray = GetTray();
             if (enable)
             {
-                GameObject tray = GetTray();
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 _furnitureButtonTray.SetActive(true);
@@ -385,10 +385,28 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                GameObject tray = GetTray();
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
                 _furnitureButtonTray.SetActive(false);
+            }
+            CheckEditMode();
+        }
+
+        public void CheckEditMode()
+        {
+            if (_soulHomeTower.EditingMode)
+            {
+                if(!_rotated) _soulHomeController.FurnitureName.gameObject.SetActive(false);
+                else
+                {
+                    if (_soulHomeTower.SelectedFurniture != null) _soulHomeController.FurnitureName.gameObject.SetActive(true);
+                    else _soulHomeController.FurnitureName.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (_soulHomeTower.SelectedFurniture != null) _soulHomeController.FurnitureName.gameObject.SetActive(true);
+                else _soulHomeController.FurnitureName.gameObject.SetActive(false);
             }
         }
 
@@ -510,6 +528,23 @@ namespace MenuUI.Scripts.SoulHome
                 screen.GetComponent<RectTransform>().anchorMin = new(0.2f, 0f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
+            }
+        }
+
+        public void SetFurnitureInfo()
+        {
+            GameObject furnitureInfo = _soulHomeController.FurnitureName.gameObject;
+            if (!_rotated)
+            {
+                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(1f, 0.4f);
+                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.3f);
+                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
+            else
+            {
+                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(0.2f, 0.95f);
+                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.85f);
+                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
         }
 
@@ -653,6 +688,7 @@ namespace MenuUI.Scripts.SoulHome
             SetFurnitureButtons();
             SetBottomButtons();
             SetScreenSize();
+            SetFurnitureInfo();
             if (_trayOpen)
             {
                 if (_rotated)
