@@ -40,6 +40,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _selectedFurniture;
         private GameObject _tempSelectedFurniture;
         private float _startFurnitureTime;
+        private bool _grabbingFurniture = false;
         private Vector2 _tempRoomHitStart;
         private bool exitRoom = false;
         private bool editingMode = false;
@@ -70,7 +71,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
-                if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
+                //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
                 if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
             }
         }
@@ -444,32 +445,39 @@ namespace MenuUI.Scripts.SoulHome
                 if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
                     if (_selectedFurniture == null) {
-                        _tempSelectedFurniture = furnitureObject;
+                        SelectedFurniture = furnitureObject;
+                        _mainScreen.SetFurniture(_selectedFurniture);
                         if (editingMode)
                         {
-                            SelectedFurniture = _tempSelectedFurniture;
-                            _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
-                            if (!editingMode) ToggleEdit();
-                            _mainScreen.SetFurniture(_selectedFurniture);
+                            _tempSelectedFurniture = SelectedFurniture;
+                            _tempSelectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                            //if (!editingMode) ToggleEdit();
                         }
-                        else _startFurnitureTime = Time.time;
+                        else
+                        {
+                            _startFurnitureTime = Time.time;
+                            _grabbingFurniture = true;
+                        }
                     }
                     else if(furnitureObject != null && _selectedFurniture != furnitureObject)
                     {
                         DeselectFurniture();
-                        _tempSelectedFurniture = furnitureObject;
-                        SelectedFurniture = _tempSelectedFurniture;
-                        _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                        SelectedFurniture = furnitureObject;
                         _mainScreen.SetFurniture(_selectedFurniture);
+                        if (EditingMode)
+                        {
+                            _tempSelectedFurniture = SelectedFurniture;
+                            _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                        }
                     }
-                    else if (_selectedFurniture == furnitureObject)
+                    else if (_selectedFurniture == furnitureObject && EditingMode)
                     {
                         _tempSelectedFurniture = furnitureObject;
                     }
                 }
-                else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
+                else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture == null && _selectedFurniture != null && _grabbingFurniture)
                 {
-                    SelectedFurniture = _tempSelectedFurniture;
+                    _tempSelectedFurniture = SelectedFurniture;
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                     if (!editingMode) ToggleEdit();
                     _mainScreen.SetFurniture(_selectedFurniture);
@@ -478,10 +486,11 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     PlaceFurniture(hitPoint, true);
                 }
-                else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _tempSelectedFurniture)
+                else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _selectedFurniture)
                 {
                     if (_tempSelectedFurniture != null) PlaceFurniture(hitPoint, false);
                     _tempSelectedFurniture = null;
+                    _grabbingFurniture = false;
                 }
 
                 if(_selectedFurniture)_mainScreen.SetHoverButtons(Camera.WorldToViewportPoint(_selectedFurniture.transform.position));
