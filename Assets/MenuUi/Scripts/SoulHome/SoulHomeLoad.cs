@@ -40,6 +40,7 @@ namespace MenuUI.Scripts.SoulHome {
         // Start is called before the first frame update
         void Start()
         {
+            _roomAmount = ServerManager.Instance.Clan.playerCount;
             StartCoroutine(HomeLoad());
             //TestCode();
             LoadRooms();
@@ -255,7 +256,10 @@ namespace MenuUI.Scripts.SoulHome {
 
         public void SpawnAvatar()
         {
-            Instantiate(_avatarPlaceholder,_roomPositions.transform.GetChild(0).GetChild(0));
+            for (int i = 0; i < _roomAmount; i++)
+            {
+                Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+            }
         }
 
         

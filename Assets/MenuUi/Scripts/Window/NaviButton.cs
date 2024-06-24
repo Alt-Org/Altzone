@@ -15,8 +15,8 @@ namespace MenuUi.Scripts.Window
     {
         private const string Tooltip = "Pop out and hide current window before showing target window";
 
-        [Header("Settings"), SerializeField] private WindowDef _naviTarget;
-        [Tooltip(Tooltip), SerializeField] private bool _isCurrentPopOutWindow;
+        [Header("Settings"), SerializeField] protected WindowDef _naviTarget;
+        [Tooltip(Tooltip), SerializeField] protected bool _isCurrentPopOutWindow;
 
         private void Start()
         {
@@ -37,7 +37,7 @@ namespace MenuUi.Scripts.Window
             button.onClick.AddListener(OnNaviButtonClick);
         }
 
-        private void OnNaviButtonClick()
+        protected virtual void OnNaviButtonClick()
         {
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", _naviTarget);
             var windowManager = WindowManager.Get();
