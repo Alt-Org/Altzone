@@ -1,16 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using Prg.Scripts.Common.PubSub;
-using System.Security.Cryptography;
-using System.Runtime.Versioning;
-using System.Threading;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.Collections.Specialized;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -54,7 +46,6 @@ namespace Battle.Scripts.Battle.Players
 
         // Components
         private Rigidbody2D _rb;
-        private LineRenderer _lineRenderer;
 
         // Game state variables
         private int _timer;
@@ -95,19 +86,18 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS EGOTISM] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
- 
+
         private void Start()
         {
             // Get important objects
             _rb = Context.GetBallHandler.GetComponent<Rigidbody2D>();
-            _lineRenderer = GetComponent<LineRenderer>();
             _gridManager = Context.GetGridManager;
             _positionSprites = new();
             _trailSprites = new();
 
             // Subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-           
+
             // Debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
