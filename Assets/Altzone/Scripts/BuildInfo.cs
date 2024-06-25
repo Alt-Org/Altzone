@@ -1,35 +1,35 @@
-using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace Altzone.Scripts
 {
     /// <summary>
-    /// Machine generated code below!<br />
-    /// Current Android BundleVersionCode, Patch (number as in Sem Ver) and CompiledOnDate.<br />
-    /// BuildTagOrLabel can be used in development/debug builds to show this info.
-    /// IsMuteOtherAudioSources is copied from <c>PlayerSettings.muteOtherAudioSources</c> on mobile platforms.<br />
-    /// See: https://docs.unity3d.com/ScriptReference/PlayerSettings-muteOtherAudioSources.html
+    /// Runtime compilation of some product version info.<br />
+    /// <b>Version</b> should contain comprehensible version string for end users to see inside application.<br />
+    /// <b>BundleVersionCode</b> is AndroidBundleVersionCode copied here because is can not be access otherwise at runtime.<br />
+    /// <b>Patch</b> is for non-semantic versioning schemes to have an optional patch value.<br />
+    /// <b>IsMuteOtherAudioSources</b> is relevant only on mobile platforms (optionally).
     /// </summary>
-    /// <remarks>Patch value is reset to zero when BundleVersionCode is incremented.</remarks>
+    /// <remarks>
+    /// IsMuteOtherAudioSources is copied from <c>PlayerSettings.muteOtherAudioSources</c> on all platforms.<br />
+    /// See: https://docs.unity3d.com/ScriptReference/PlayerSettings-muteOtherAudioSources.html
+    /// </remarks>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     internal static class BuildInfo
     {
-        private const string BundleVersionCodeValue = "118";
-        private const string PatchValue = "1";
-        private const string CompiledOnDateValue = "2024-19-06 14:56";
-        private const string BuildTagOrLabelValue = "test/build";
-        private const bool IsMuteOtherAudioSourcesValue = false;
-
-        public static string Version => $"{Application.version}.{BundleVersionCodeValue}.{PatchValue}";
-
-        public static int BundleVersionCode => int.Parse(BundleVersionCodeValue);
-        public static int Patch => int.Parse(PatchValue);
+        public const string CompiledOnDate =
 #if UNITY_EDITOR
-        public static string CompiledOnDate => DateTime.Now.FormatMinutes();
-        public static string BuildTagOrLabel => string.Empty;
+                "today"
 #else
-        public static string CompiledOnDate => CompiledOnDateValue;
-        public static string BuildTagOrLabel => BuildTagOrLabelValue;
+                MachineGeneratedBuildInfo.CompiledOnDateValue
 #endif
-        public static bool IsMuteOtherAudioSources => IsMuteOtherAudioSourcesValue;
+            ;
+
+        public static readonly string Version =
+            $"{Application.version}.{MachineGeneratedBuildInfo.BundleVersionCodeValue}";
+
+        public const int BundleVersionCode = MachineGeneratedBuildInfo.BundleVersionCodeValue;
+        public const int Patch = MachineGeneratedBuildInfo.PatchValue;
+        public const bool IsMuteOtherAudioSources = MachineGeneratedBuildInfo.IsMuteOtherAudioSourcesValue;
     }
 }
