@@ -104,6 +104,7 @@ namespace Battle.Scripts.Battle.Players
 
                 int choiceIndex = Random.Range(0, _shieldBounceRandomizers.Length);
 
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Deflection shield set to " + choiceIndex, _syncedFixedUpdateClock.UpdateCount));
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sending network message", _syncedFixedUpdateClock.UpdateCount));
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
