@@ -39,6 +39,11 @@ namespace Battle.Scripts.Battle
 
         internal static class EventCodes
         {
+            public const byte PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE = 11; // picked randomly
+            public const byte PLAYER_CLASS_DEFLECTION_POS1_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + 0;
+            public const byte PLAYER_CLASS_DEFLECTION_POS2_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + 1;
+            public const byte PLAYER_CLASS_DEFLECTION_POS3_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + 2;
+            public const byte PLAYER_CLASS_DEFLECTION_POS4_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + 3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
