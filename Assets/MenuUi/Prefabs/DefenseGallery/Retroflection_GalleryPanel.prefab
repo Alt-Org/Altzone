@@ -839,8 +839,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 0}
   parentAfterDrag: {fileID: 0}
-  allowedSlotTag: slot3
+  allowedSlot: {fileID: 0}
+  initialSlot: {fileID: 0}
   _modelView: {fileID: 0}
+  DraggableCharacterGallery: {fileID: 0}
 --- !u!1 &8025888501778664568
 GameObject:
   m_ObjectHideFlags: 0

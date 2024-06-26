@@ -8,26 +8,24 @@ namespace MenuUi.Scripts.CharacterGallery
 {
     public class DraggableCharacter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        // Image to be dragged
         [SerializeField] private Image image;
-        // Parent tranform after drag
+
+        private Button button;
+        private ColorBlock originalColors;
+
         [HideInInspector] public Transform parentAfterDrag;
-        // Previous parent transform
         private Transform previousParent;
 
         public Transform allowedSlot;
-        // Starting slot
-        public Transform initialSlot; 
+        public Transform initialSlot;
 
         [SerializeField] ModelView _modelView;
 
         public delegate void ParentChangedEventHandler(Transform newParent);
-        // Event triggered when parent changes
         public event ParentChangedEventHandler OnParentChanged;
 
         private void Start()
         {
-            // Set starting slot if null
             if (initialSlot == null)
             {
                 initialSlot = transform.parent;
@@ -37,16 +35,22 @@ namespace MenuUi.Scripts.CharacterGallery
         public void OnBeginDrag(PointerEventData eventData)
         {
             parentAfterDrag = transform.parent;
-            transform.SetParent(transform.parent.parent.parent);
+            previousParent = transform.parent.parent.parent;
+            transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
             image.raycastTarget = false;
-            previousParent = transform.parent;
+
+            button = GetComponent<Button>();
+
+            button.interactable = false;
+
+            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
-            GetComponent<Button>().enabled = false;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -64,39 +68,42 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (droppedSlot == null || (droppedSlot != allowedSlot && droppedSlot.tag != "Topslot"))
             {
-                // If no slot is allowed, return to the original slot
                 transform.SetParent(initialSlot);
                 transform.position = initialSlot.position;
+                //initialSlot.gameObject.SetActive(true); // alaslotti katoaa kun hahmon siirt‰‰ yl‰slottiin
             }
             else
             {
-                // If slot is allowed, move here
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
+                //initialSlot.gameObject.SetActive(false); // alaslotti katoaa kun hahmon siirt‰‰ yl‰slottiin
             }
 
             image.raycastTarget = true;
+
+            button.interactable = true;
 
             if (transform.parent != previousParent)
             {
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-
-            GetComponent<Button>().enabled = true;
         }
 
         private void HandleParentChange(Transform newParent)
         {
-            // Check if the new parent is the first slot of the horizontal character slot
             if (newParent == _modelView._CurSelectedCharacterSlot[0].transform)
             {
-                // Change parent
                 OnParentChanged?.Invoke(newParent);
             }
         }
     }
 }
+
+
+
+
+
 
 
 
