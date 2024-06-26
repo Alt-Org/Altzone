@@ -405,7 +405,7 @@ namespace MenuUI.Scripts.SoulHome
                             if (tempSelectedRoom != roomObject) tempSelectedRoom = null;
                         }
 
-                        else if (click == ClickState.End && _selectedFurniture == null)
+                        else if (click == ClickState.End /*&& _selectedFurniture == null*/)
                         {
                             Vector2 _tempRoomHitEnd = new();
                             if (Touch.activeFingers.Count > 0)
@@ -475,6 +475,7 @@ namespace MenuUI.Scripts.SoulHome
                     else if (_selectedFurniture == furnitureObject && EditingMode)
                     {
                         _tempSelectedFurniture = furnitureObject;
+                        _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                     }
                 }
                 else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture == null && _selectedFurniture != null && _grabbingFurniture)
@@ -551,6 +552,14 @@ namespace MenuUI.Scripts.SoulHome
             outDelay = Time.time;
 
             _mainScreen.LeaveRoomButton.SetActive(true);
+
+            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+
+            float offsetY = Mathf.Abs(transform.position.y - bl.y);
+            float y = Mathf.Clamp(transform.position.y, cameraMinY + offsetY, cameraMaxY - offsetY);
+            float offsetX = Mathf.Abs(transform.position.x - bl.x);
+            float x = Mathf.Clamp(transform.position.x, cameraMinX + offsetX, cameraMaxX - offsetX);
+            Camera.transform.position = new(x, y, transform.position.z);
             //_mainScreen.EnableTray(true);
 
             //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
@@ -576,7 +585,7 @@ namespace MenuUI.Scripts.SoulHome
                 float y = Mathf.Clamp(transform.position.y, cameraMinY + offsetY, cameraMaxY - offsetY);
                 float offsetX = Mathf.Abs(transform.position.x - bl.x);
                 float x = Mathf.Clamp(transform.position.x, cameraMinX + offsetX, cameraMaxX - offsetX);
-                transform.position = new(x, y, transform.position.z);
+                Camera.transform.position = new(x, y, transform.position.z);
                 //_mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
@@ -703,14 +712,16 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_changedFurnitureList.Contains(selectedFurniture))
             {
-                if(!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                if(selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
+                    || (!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
                     _changedFurnitureList.Add(selectedFurniture);
             }
             else
             {
-                if (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                if (selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
+                    || (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
                     _changedFurnitureList.Remove(selectedFurniture);
             }
         }

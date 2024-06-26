@@ -239,16 +239,18 @@ namespace MenuUI.Scripts.SoulHome {
                     //_trayHandler.AddFurnitureInitial(test2);
                     //var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test3);
-                    var test4 = new Furniture(i * 7 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.ThreeXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test4 = new Furniture(i * 8 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.ThreeXThree, FurniturePlace.Floor, 10f, 15f, false);
                     _trayHandler.AddFurnitureInitial(test4);
-                    var test5 = new Furniture(i * 7 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    var test5 = new Furniture(i * 8 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
                     _trayHandler.AddFurnitureInitial(test5);
-                    var test6 = new Furniture(i * 7 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    var test6 = new Furniture(i * 8 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
                     _trayHandler.AddFurnitureInitial(test6);
-                    var test7 = new Furniture(i * 7 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.Floor, 10f, 15f, false);
+                    var test7 = new Furniture(i * 8 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.Floor, 10f, 15f, false);
                     _trayHandler.AddFurnitureInitial(test7);
-                    var test8 = new Furniture(i * 7 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.FloorByWall, 10f, 15f, false);
+                    var test8 = new Furniture(i * 8 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.FloorByWall, 10f, 15f, false);
                     _trayHandler.AddFurnitureInitial(test8);
+                    var test9 = new Furniture(i * 8 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    _trayHandler.AddFurnitureInitial(test9);
                     i++;
                 }
             }
