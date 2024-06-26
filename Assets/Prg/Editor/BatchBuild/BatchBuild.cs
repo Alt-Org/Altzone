@@ -72,17 +72,11 @@ namespace Prg.Editor.BatchBuild
             var timer = new Timer();
 #if USE_GA
             var dataAnalytics = options.GameAnalytics;
+            Debug.Log($"batch_build_ SET dataAnalytics.gameKey: {FormatUtil.PasswordToLog(dataAnalytics.gameKey)}");
+            Debug.Log($"batch_build_ SET dataAnalytics.secretKey: {FormatUtil.PasswordToLog(dataAnalytics.secretKey)}");
             var changed = AnalyticsSettings.CreateForPlatform(
                 options.BuildTarget, new Tuple<string, string>(dataAnalytics.gameKey, dataAnalytics.secretKey));
-            if (changed)
-            {
-                Debug.Log($"batch_build_ dataAnalytics.gameKey: {FormatUtil.PasswordToLog(dataAnalytics.gameKey)}");
-                Debug.Log($"batch_build_ dataAnalytics.secretKey: {FormatUtil.PasswordToLog(dataAnalytics.secretKey)}");
-            }
-            else
-            {
-                Debug.Log($"batch_build_ dataAnalytics using default settings for: {options.BuildTarget}");
-            }
+            Debug.Log($"batch_build_ dataAnalytics settings changed: {changed}");
 #endif
             if (options.IsTestRun)
             {

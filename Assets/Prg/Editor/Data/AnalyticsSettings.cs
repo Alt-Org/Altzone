@@ -51,12 +51,14 @@ namespace Prg.Editor.Data
             var value1 = field1?.GetValue(settings);
             if (value1 is not List<string> gameKeys)
             {
+                Debug.Log($"{nameof(gameKey)} not found in {settings}");
                 return false;
             }
             var field2 = type.GetField(nameof(secretKey), BindingFlags.Instance | BindingFlags.NonPublic);
             var value2 = field2?.GetValue(settings);
             if (value2 is not List<string> secretKeys)
             {
+                Debug.Log($"{nameof(secretKey)} not found in {settings}");
                 return false;
             }
             var isDirty = false;
@@ -66,11 +68,13 @@ namespace Prg.Editor.Data
             {
                 gameKeys[index] = tuple.Item1;
                 isDirty = true;
+                Debug.Log($"update {gameKeyValue} in {settings}");
             }
             if (secretKeyValue != tuple.Item2)
             {
                 secretKeys[index] = tuple.Item2;
                 isDirty = true;
+                Debug.Log($"update {secretKeyValue} in {settings}");
             }
             if (!isDirty)
             {
