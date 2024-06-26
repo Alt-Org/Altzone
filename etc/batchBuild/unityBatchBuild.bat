@@ -23,9 +23,12 @@ FOR /F "eol=# tokens=*" %%i IN (%ENV_FILE%) DO (
 )
 rem --- all variable for build are collected now ---
 if not "%UNITY_EXE_OVERRIDE%" == "" (
-    rem set latest UNITY executable (like if .env file is outdated)
-    echo env set UNITY_EXE=%UNITY_EXE_OVERRIDE%
-    set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+    rem UNITY_EXE_OVERRIDE can only set by the caller using environment variables!
+    if not "%UNITY_EXE_OVERRIDE%" == "%UNITY_EXE%" (
+        rem set latest UNITY executable (like if .env file is outdated)
+        echo env set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+        set UNITY_EXE=%UNITY_EXE_OVERRIDE%
+    )
 )
 if not exist "%UNITY_EXE%" (
     echo *
@@ -56,6 +59,7 @@ if not "%IS_TEST_RUN%" == "0" (
     echo *
     goto :done
 )
+echo - Start Build
 @echo on
 "%UNITY_EXE%" %BUILD_PARAMS1% %BUILD_PARAMS2% %BUILD_PARAMS3%
 @set RESULT=%ERRORLEVEL%
@@ -70,6 +74,7 @@ echo.
 echo ~~~~~ Revert build system changes to settings back to original state ~~~~~
 @echo on
 git checkout -f -- ProjectSettings\ProjectSettings.asset
+git checkout -f -- ProjectSettings\GvhProjectSettings.xml
 git checkout -f -- Assets\Resources\GameAnalytics\Settings.asset
 @echo off
 echo.
@@ -105,6 +110,7 @@ set POST_PARAMS3=%BUILD_PARAMS3%
 echo set1 %POST_PARAMS1%
 echo set2 %POST_PARAMS2%
 echo set3 %POST_PARAMS3%
+echo - Start Post Process
 @echo on
 "%UNITY_EXE%" %POST_PARAMS1% %POST_PARAMS2% %POST_PARAMS3%
 @set RESULT=%ERRORLEVEL%

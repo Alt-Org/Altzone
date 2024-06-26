@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 
 /// <summary>

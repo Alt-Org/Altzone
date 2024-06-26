@@ -34,12 +34,13 @@ namespace MenuUI.Scripts.SoulHome
 
         private List<GameObject> _changedFurnitureList = new();
 
-        private bool rotated = false;
+        private bool _rotated = false;
         private float _prevPinchDistance = 0;
 
         private GameObject _selectedFurniture;
         private GameObject _tempSelectedFurniture;
         private float _startFurnitureTime;
+        private bool _grabbingFurniture = false;
         private Vector2 _tempRoomHitStart;
         private bool exitRoom = false;
         private bool editingMode = false;
@@ -68,13 +69,17 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject SelectedRoom { get => selectedRoom; private set => selectedRoom = value; }
         public GameObject SelectedFurniture { get => _selectedFurniture; private set
             {
+                _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
-                if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
+                //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
+                if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
+                _soulHomeController.SetFurniture(_selectedFurniture?.GetComponent<FurnitureHandling>().Furniture);
             }
         }
         public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
+        public bool Rotated { get => _rotated;}
 
         // Start is called before the first frame update
         void Start()
@@ -304,7 +309,7 @@ namespace MenuUI.Scripts.SoulHome
                 Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 HandleScreenRotation();
             }
-            rotated = false;
+            _rotated = false;
         }
 
         void OnDisable()
@@ -435,39 +440,46 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _selectedFurniture != null))
+            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _tempSelectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
                 if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
                     if (_selectedFurniture == null) {
-                        _tempSelectedFurniture = furnitureObject;
+                        SelectedFurniture = furnitureObject;
+                        _mainScreen.SetFurniture(_selectedFurniture);
                         if (editingMode)
                         {
-                            _selectedFurniture = _tempSelectedFurniture;
-                            _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
-                            if (!editingMode) ToggleEdit();
-                            _mainScreen.SetFurniture(_selectedFurniture);
+                            _tempSelectedFurniture = SelectedFurniture;
+                            _tempSelectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                            //if (!editingMode) ToggleEdit();
                         }
-                        else _startFurnitureTime = Time.time;
+                        else
+                        {
+                            _startFurnitureTime = Time.time;
+                            _grabbingFurniture = true;
+                        }
                     }
                     else if(furnitureObject != null && _selectedFurniture != furnitureObject)
                     {
                         DeselectFurniture();
-                        _tempSelectedFurniture = furnitureObject;
-                        _selectedFurniture = _tempSelectedFurniture;
-                        _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                        SelectedFurniture = furnitureObject;
                         _mainScreen.SetFurniture(_selectedFurniture);
+                        if (EditingMode)
+                        {
+                            _tempSelectedFurniture = SelectedFurniture;
+                            _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
+                        }
                     }
-                    else if (_selectedFurniture == furnitureObject)
+                    else if (_selectedFurniture == furnitureObject && EditingMode)
                     {
                         _tempSelectedFurniture = furnitureObject;
                     }
                 }
-                else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture != null && _selectedFurniture == null)
+                else if (((_startFurnitureTime + 1 <= Time.time && selectedRoom != null) || editingMode) && _tempSelectedFurniture == null && _selectedFurniture != null && _grabbingFurniture)
                 {
-                    _selectedFurniture = _tempSelectedFurniture;
+                    _tempSelectedFurniture = SelectedFurniture;
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
                     if (!editingMode) ToggleEdit();
                     _mainScreen.SetFurniture(_selectedFurniture);
@@ -476,14 +488,19 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     PlaceFurniture(hitPoint, true);
                 }
-                else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _tempSelectedFurniture)
+                else if (click is ClickState.End /*or ClickState.Move*/ || furnitureObject != _selectedFurniture)
                 {
+                    if (_tempSelectedFurniture != null) PlaceFurniture(hitPoint, false);
                     _tempSelectedFurniture = null;
-                    //if (_selectedFurniture != null) PlaceFurniture();
+                    _grabbingFurniture = false;
                 }
 
                 if(_selectedFurniture)_mainScreen.SetHoverButtons(Camera.WorldToViewportPoint(_selectedFurniture.transform.position));
 
+            }
+            else if (click is ClickState.End && furnitureObject == null)
+            {
+                DeselectFurniture();
             }
 
 
@@ -625,7 +642,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (check)
                 {
-                    _changedFurnitureList.Add(_selectedFurniture);
+                    CheckFurnitureList(_selectedFurniture);
                     if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
                 }
                 else
@@ -646,9 +663,9 @@ namespace MenuUI.Scripts.SoulHome
                 if (_selectedFurniture != null) {
                     _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                     _selectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
-                    SelectedFurniture = null;
+                    //SelectedFurniture = null;
                 }
-                _mainScreen.DeselectTrayFurniture();
+                //_mainScreen.DeselectTrayFurniture();
             }
         }
 
@@ -659,7 +676,7 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
             _tempSelectedFurniture = furnitureObject;
-            _selectedFurniture = _tempSelectedFurniture;
+            SelectedFurniture = _tempSelectedFurniture;
             _selectedFurniture.GetComponent<FurnitureHandling>().SetTransparency(0.5f);
         }
 
@@ -680,6 +697,22 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
             SelectedFurniture = null;
+        }
+
+        public void CheckFurnitureList(GameObject selectedFurniture)
+        {
+            if (!_changedFurnitureList.Contains(selectedFurniture))
+            {
+                if(!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    _changedFurnitureList.Add(selectedFurniture);
+            }
+            else
+            {
+                if (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    _changedFurnitureList.Remove(selectedFurniture);
+            }
         }
 
         public void UnfocusFurniture()
@@ -745,11 +778,16 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject furniture in ChangedFurnitureList)
             {
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
+                FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
+                int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
+                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
+                    continue;
                 }
+                _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
             }
             ChangedFurnitureList.Clear();
         }
@@ -766,17 +804,17 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (!editingMode)
             {
-                DeselectFurniture();
+                //DeselectFurniture();
                 _mainScreen.EnableTray(false);
                 _soulHomeController.EditModeTrayHandle(false);
             }
-            if(!editingMode) ResetChanges();
+            //if(!editingMode) ResetChanges();
         }
 
         public void RotateFurniture()
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
-            PlaceFurnitureToCurrent(true);
+            PlaceFurnitureToCurrent(false);
         }
 
         private void CheckScreenRotationStatus()
@@ -784,14 +822,14 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log(Screen.orientation);
             if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
             {
-                rotated = true;
+                _rotated = true;
 
                 HandleScreenRotation();
 
             }
             else if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.Portrait /*&& rotated*/)
             {
-                rotated = false;
+                _rotated = false;
 
                 HandleScreenRotation();
             }
@@ -812,7 +850,7 @@ namespace MenuUI.Scripts.SoulHome
 
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
-            if(!rotated)
+            if(!_rotated)
                 transform.position = new(transform.position.x, transform.position.y, GetCameraXDistance());
             else
                 transform.position = new(transform.position.x, transform.position.y, GetCameraYDistance());

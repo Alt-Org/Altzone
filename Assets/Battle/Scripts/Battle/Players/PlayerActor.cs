@@ -301,7 +301,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
                 {
-                    _squareFlashYPosition = (driver.TeamNumber == PhotonBattle.TeamBetaValue ? -1.15f : 1.15f);
+                    _squareFlashYPosition = (driver.TeamNumber == PhotonBattle.TeamBetaValue ? -0.95f : 0.95f);
                 }
 
                 if (driver.ActorShieldTransform == _playerShieldManager.transform) continue;

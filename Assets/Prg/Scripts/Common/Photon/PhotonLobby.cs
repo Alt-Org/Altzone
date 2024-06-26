@@ -22,6 +22,7 @@ namespace Prg.Scripts.Common.Photon
         /// Connection management.
         /// </summary>
         void Connect(string playerName, string regionCodeOverride = null);
+
         void Disconnect();
 
         /// <summary>
@@ -35,10 +36,13 @@ namespace Prg.Scripts.Common.Photon
         /// Room, required to play with others.
         /// </summary>
         void CreateRoom(string roomName, RoomOptions roomOptions = null, bool isAutomaticallySyncScene = true);
+
         void JoinRoom(RoomInfo roomInfo, bool isAutomaticallySyncScene = true);
+
         void JoinOrCreateRoom(string roomName,
             Hashtable customRoomProperties = null, string[] lobbyPropertyNames = null,
             bool isAutomaticallySyncScene = true);
+
         void CloseRoom(bool keepVisible = false);
         void LeaveRoom();
 
@@ -77,16 +81,22 @@ namespace Prg.Scripts.Common.Photon
         }
 
         /// <summary>
-        /// Official game version for Photon (with Android bundle version code).
+        /// Official game version used for Photon Connect (PhotonNetwork.GameVersion).
         /// </summary>
-        public static string GameVersion => $"{GetGameVersion()}.{BuildProperties.BundleVersionCode}";
+        public static string GameVersion => GetGameVersion();
 
         /// <summary>
-        /// To override default <c>PhotonNetwork.GameVersion</c> (that is alias for <c>Application.version</c>).
+        /// Sets actual bundle version from game compile time to be used in PhotonNetwork.GameVersion.
+        /// </summary>
+        public static void SetBundleVersion(int bundleVersion) => _bundleVersion = bundleVersion;
+
+        /// <summary>
+        /// To override default 'GameVersion' totally for development etc.
         /// </summary>
         public static Func<string> GetGameVersion = () => DefaultGameVersion;
 
-        private static string DefaultGameVersion => Application.version;
+        private static string DefaultGameVersion => $"{Application.version}.{_bundleVersion}";
+        private static int _bundleVersion = 0;
 
         public static void Connect(string playerName, string regionCodeOverride = null)
         {

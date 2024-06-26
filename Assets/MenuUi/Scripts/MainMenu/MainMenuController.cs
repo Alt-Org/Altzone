@@ -2,6 +2,7 @@
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
