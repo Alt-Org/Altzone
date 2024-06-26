@@ -12,7 +12,8 @@ public class TestEvents : MonoBehaviour
 
         /* testCharacterSelection();
         testCharacterOutcomes();
-        TestBattleLaunch(); */
+        TestBattleLaunch();
+        TestBattlesStarted(); */
         
     }
 
@@ -38,7 +39,10 @@ public class TestEvents : MonoBehaviour
     void TestBattleLaunch()
     {
         GameAnalyticsManager.Instance.BattleLaunch();
+    }
+
+    void TestBattlesStarted()
+    {
+        GameAnalyticsManager.Instance.BattlesStarted();
     } */
-
-
 }

@@ -642,7 +642,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (check)
                 {
-                    _changedFurnitureList.Add(_selectedFurniture);
+                    CheckFurnitureList(_selectedFurniture);
                     if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
                 }
                 else
@@ -697,6 +697,22 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
             SelectedFurniture = null;
+        }
+
+        public void CheckFurnitureList(GameObject selectedFurniture)
+        {
+            if (!_changedFurnitureList.Contains(selectedFurniture))
+            {
+                if(!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    _changedFurnitureList.Add(selectedFurniture);
+            }
+            else
+            {
+                if (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    _changedFurnitureList.Remove(selectedFurniture);
+            }
         }
 
         public void UnfocusFurniture()
@@ -798,7 +814,7 @@ namespace MenuUI.Scripts.SoulHome
         public void RotateFurniture()
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
-            PlaceFurnitureToCurrent(true);
+            PlaceFurnitureToCurrent(false);
         }
 
         private void CheckScreenRotationStatus()

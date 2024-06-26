@@ -11,6 +11,8 @@ namespace AltZone.Scripts.GA
     {
         private static GameAnalyticsManager instance;
 
+
+
         public static GameAnalyticsManager Instance
         {
             get { return instance; }
@@ -50,6 +52,8 @@ namespace AltZone.Scripts.GA
             Debug.Log($"GA user ID is {customUserId}");
 
             GameAnalytics.SetCustomId(customUserId);
+            GameAnalytics.SetEnabledManualSessionHandling(true);
+
             GameAnalytics.Initialize();
             OnInitialized?.Invoke(true);
 
@@ -59,7 +63,7 @@ namespace AltZone.Scripts.GA
         {
             battlesStartedThisSession++;
             GameAnalytics.NewDesignEvent("battle:launched");
-            Debug.Log("battle launced event");
+            Debug.Log("battle launched event");
         }
 
         public void OpenSoulHome() //Milloin sielunkotiin menn‰‰n
@@ -86,10 +90,11 @@ namespace AltZone.Scripts.GA
             Debug.Log($"{characterName} lost");
         }
 
-        private void OnApplicationQuit() //Montako battlea on aloitettu yhdell‰ sessiolla 
+
+        public void BattlesStarted() //Montako battlea on aloitettu yhdell‰ sessiolla 
         {
-            GameAnalytics.NewDesignEvent("session:battles_started", (float)battlesStartedThisSession);
-            Debug.Log($"Battles started this session: {(float)battlesStartedThisSession}");
+            GameAnalytics.NewDesignEvent("session:battles_started", battlesStartedThisSession);
+            Debug.Log($"Battles started this session: {battlesStartedThisSession}");
         }
 
     }
