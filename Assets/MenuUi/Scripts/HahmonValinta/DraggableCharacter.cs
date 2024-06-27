@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using ExitGames.Client.Photon;
+using MenuUi.Scripts.SwipeNavigation;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -25,11 +26,18 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void ParentChangedEventHandler(Transform newParent);
         public event ParentChangedEventHandler OnParentChanged;
 
+        [SerializeField]
+        private SwipeBlockType _blockType = SwipeBlockType.All;
+        [SerializeField]
+        private SwipeUI _swipe;
+
         private void Start()
         {
             button = GetComponent<Button>();
             originalColors = button.colors;
 
+            _swipe = transform.root.Find("MainMenuViewSwipe").Find("Scroll View").GetComponent<SwipeUI>();
+            // Set starting slot if null
             if (initialSlot == null)
             {
                 initialSlot = transform.parent;
@@ -50,6 +58,8 @@ namespace MenuUi.Scripts.CharacterGallery
             ColorBlock transparentColors = originalColors;
             transparentColors.disabledColor = new Color(0, 0, 0, 0); 
             button.colors = transparentColors;
+            //previousParent = transform.parent;
+            _swipe.DragWithBlock(eventData, _blockType);
 
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
