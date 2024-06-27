@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using ExitGames.Client.Photon;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -26,6 +27,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Start()
         {
+            button = GetComponent<Button>();
+            originalColors = button.colors;
+
             if (initialSlot == null)
             {
                 initialSlot = transform.parent;
@@ -40,12 +44,14 @@ namespace MenuUi.Scripts.CharacterGallery
             transform.SetAsLastSibling();
             image.raycastTarget = false;
 
-            button = GetComponent<Button>();
-
             button.interactable = false;
 
-            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
+            // Set the button colors to make the background transparent during dragging
+            ColorBlock transparentColors = originalColors;
+            transparentColors.disabledColor = new Color(0, 0, 0, 0); 
+            button.colors = transparentColors;
 
+            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -70,18 +76,18 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 transform.SetParent(initialSlot);
                 transform.position = initialSlot.position;
-                //initialSlot.gameObject.SetActive(true); // alaslotti katoaa kun hahmon siirt‰‰ yl‰slottiin
             }
             else
             {
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
-                //initialSlot.gameObject.SetActive(false); // alaslotti katoaa kun hahmon siirt‰‰ yl‰slottiin
             }
 
             image.raycastTarget = true;
-
             button.interactable = true;
+
+            // Reset the button colors to the original colors
+            button.colors = originalColors;
 
             if (transform.parent != previousParent)
             {
@@ -99,6 +105,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
+
 
 
 

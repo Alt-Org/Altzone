@@ -4286,6 +4286,11 @@ PrefabInstance:
       objectReference: {fileID: 1657837458230196602}
     - target: {fileID: 3146477122434043581, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
         type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3146477122434043581, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
+        type: 3}
       propertyPath: m_RaycastTarget
       value: 1
       objectReference: {fileID: 0}
@@ -4443,6 +4448,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_NormalColor.a
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7964728494801943263, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7964728494801943263, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7964728494801943263, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
