@@ -12,20 +12,20 @@ public class TestEvents : MonoBehaviour
 
         /* testCharacterSelection();
         testCharacterOutcomes();
-        TestBattleLaunch();
-        TestBattlesStarted(); */
-        
+        TestBattleLaunch(); 
+        TestBattlesStarted(); 
+        StartCoroutine(TestSectionEnteredExited()); */
     }
 
     // Update is called once per frame
     /* void testCharacterSelection()
     {
-        GameAnalyticsManager.Instance.CharacterSelection("Rauta-rami");
-        GameAnalyticsManager.Instance.CharacterSelection("Vitsi-ville");
-        GameAnalyticsManager.Instance.CharacterSelection("Lasse liukas");
-        GameAnalyticsManager.Instance.CharacterSelection("Sami saarnaaja");
-        GameAnalyticsManager.Instance.CharacterSelection("Graffiti-Gaya");
-        GameAnalyticsManager.Instance.CharacterSelection("Hannu-Hodari");
+        GameAnalyticsManager.Instance.CharacterSelection("rauta-rami");
+        GameAnalyticsManager.Instance.CharacterSelection("vitsi-ville");
+        GameAnalyticsManager.Instance.CharacterSelection("lasse_liukas");
+        GameAnalyticsManager.Instance.CharacterSelection("sami_saarnaaja");
+        GameAnalyticsManager.Instance.CharacterSelection("graffiti-gaya");
+        GameAnalyticsManager.Instance.CharacterSelection("hannu-hodari");
         Debug.Log("character selected");
     }
 
@@ -44,5 +44,22 @@ public class TestEvents : MonoBehaviour
     void TestBattlesStarted()
     {
         GameAnalyticsManager.Instance.BattlesStarted();
+    }
+
+    private IEnumerator TestSectionEnteredExited()
+    {
+        Debug.Log("TestSectionEnteredExited started");
+
+        GameAnalyticsManager.Instance.EnterSection("TestingRoom_A");
+        yield return new WaitForSeconds(20f); // 20s
+
+        GameAnalyticsManager.Instance.ExitSection("TestingRoom_A");
+        GameAnalyticsManager.Instance.OpenSoulHome();
+        yield return new WaitForSeconds(15f); // 15s
+
+        GameAnalyticsManager.Instance.ExitSection("TestingRoom_B");
+        GameAnalyticsManager.Instance.EnterSection("TestingRoom_A");
+
+        Debug.Log("TestSectionEnteredExited completed");
     } */
 }

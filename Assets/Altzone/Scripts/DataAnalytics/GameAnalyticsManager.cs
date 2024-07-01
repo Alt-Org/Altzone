@@ -11,14 +11,14 @@ namespace AltZone.Scripts.GA
     {
         private static GameAnalyticsManager instance;
 
-
-
         public static GameAnalyticsManager Instance
         {
             get { return instance; }
         }
 
         private int battlesStartedThisSession = 0;
+
+        private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
 
         private void Awake()
         {
@@ -97,5 +97,37 @@ namespace AltZone.Scripts.GA
             Debug.Log($"Battles started this session: {battlesStartedThisSession}");
         }
 
+        public void EnterSection(string sectionName) //Aloittaa ajan kun pelin osaan menn‰‰n
+        {
+            float currentTime = Time.time;
+            if (!sectionStartTimes.ContainsKey(sectionName))
+            {
+                sectionStartTimes.Add(sectionName, currentTime);
+            }
+            else
+            {
+                sectionStartTimes[sectionName] = currentTime;
+            }
+        }
+
+        public void ExitSection(string sectionName) //paljonko pelin osissa vietet‰‰n aikaa
+        {
+            if (sectionStartTimes.ContainsKey(sectionName))
+            {
+                float startTime = sectionStartTimes[sectionName];
+                float currentTime = Time.time;
+                float timeSpent = currentTime - startTime;
+
+                Dictionary<string, object> eventData = new Dictionary<string, object>();
+                eventData["section"] = sectionName;
+                eventData["event"] = "exit";
+                eventData["Time_spent"] = timeSpent;
+
+                GameAnalytics.NewDesignEvent($"section_event:{sectionName}:exit", eventData);
+                Debug.Log($"Time spend: {timeSpent} seconds.");
+
+                sectionStartTimes.Remove(sectionName);
+            }
+        }
     }
 }
