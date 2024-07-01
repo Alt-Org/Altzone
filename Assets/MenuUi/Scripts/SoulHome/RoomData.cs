@@ -31,14 +31,17 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureSlotPrefab;
 
         private Room _roomInfo;
+        private SoulHomeController _controller;
 
         public Room RoomInfo { get => _roomInfo; set => _roomInfo = value; }
         public int SlotRows { get => _slotRows;}
         public int SlotColumns { get => _slotColumns;}
+        public SoulHomeController Controller { get => _controller; set => _controller = value; }
 
         void Start()
         {
             //roomInfo = new Room();
+            //_controller = GetComponentInParent<SoulHomeController>();
         }
         public void InitializeRoom()
         {
@@ -207,8 +210,23 @@ namespace MenuUI.Scripts.SoulHome
         {
             Transform points = transform.Find("FurniturePoints");
             Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            FurnitureList list = _controller.FurnitureList;
+            foreach (FurnitureListObject listObject in list.List)
+            {
+                if (listObject.Name.Equals(furniture.Name))
+                {
+                    foreach (Furniture furnitureInList in listObject.List)
+                    {
+                        if (furnitureInList.Id == furniture.Id)
+                        {
+                            furniture = furnitureInList;
+                        }
+                    }
+                }
+            }
 
-            if (furnitureSize.x == 0) return;
+
+                if (furnitureSize.x == 0) return;
 
             int startRow = row - (furnitureSize.y - 1);
             int endColumn = column + (furnitureSize.x - 1);

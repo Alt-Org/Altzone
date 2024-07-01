@@ -540,8 +540,8 @@ namespace MenuUI.Scripts.SoulHome
                     FurnitureSlot newSlot;
                     int slotOffset = (int)((hit.point.y - _currentCalculatedPosition.y) / hit.collider.GetComponent<FurnitureSlot>().height);
                     if (hit.normal == Vector2.left)
-                        newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column - (size.x - 1)).GetComponent<FurnitureSlot>();
-                    else newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + (size.x - 1)).GetComponent<FurnitureSlot>();
+                        newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + (size.x - 1)).GetComponent<FurnitureSlot>();
+                    else newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column - (size.x - 1)).GetComponent<FurnitureSlot>();
                     Vector2 destination = newSlot.transform.position;
                     if (hit.normal == Vector2.left)
                         destination.x -= newSlot.width / 2;
