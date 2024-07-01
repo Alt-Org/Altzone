@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.CharacterGallery
         // Called when an object is dropped onto the character slot
         public void OnDrop(PointerEventData eventData)
         {
-            // Check that dropped object is DraggableCharacter 
+            // Check that dropped object is DraggableCharacter
             GameObject dropped = eventData.pointerDrag;
             DraggableCharacter draggableItem = dropped.GetComponent<DraggableCharacter>();
 
@@ -21,14 +21,14 @@ namespace MenuUi.Scripts.CharacterGallery
                 return;
             }
 
-            // Check if this slot is an allowed slot
+            // Check if this slot is allowed slot
             if (draggableItem.allowedSlot != transform && transform.tag != "Topslot")
             {
                 // If not, let OnEndDrag handle the return
                 return;
             }
 
-            // If this slot is allowed slot
+            // If this slot is allowed
             if (transform.childCount == 0)
             {
                 // If the slot is empty, set the dropped object as a child of this slot
@@ -46,6 +46,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
+
 
 
 

@@ -24,7 +24,6 @@ namespace MenuUi.Scripts.CharacterGallery
         // array of character slots in verticalpanel
         private CharacterSlot[] CharacterSlot;
 
-
         public delegate void CurrentCharacterIdChangedHandler(string newCharacterId);
         // Event triggered when current character ID changes
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
@@ -32,14 +31,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private string _currentCharacterId;
 
-
-
         private void Awake()
         {
             _buttons = VerticalContentPanel.GetComponentsInChildren<Button>();
             _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
             CharacterSlot = VerticalContentPanel.GetComponentsInChildren<CharacterSlot>();
-
 
             LoadAndCachePrefabs();
         }
@@ -52,14 +48,10 @@ namespace MenuUi.Scripts.CharacterGallery
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
                 var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
-
                 Debug.Log($"prefabIndex {prefabIndex} playerPrefab {playerPrefab.name}");
-
             }
             _isReady = true;
         }
-
-
 
         public string CurrentCharacterId
         {
@@ -86,50 +78,56 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 characterSlot.gameObject.SetActive(false);
             }
-
         }
+
         public void SetCharacters(List<BattleCharacter> characters, string currentCharacterId)
         {
             CurrentCharacterId = currentCharacterId;
 
-            for (var i = 0; i < characters.Count && i < _buttons.Length && i < CharacterSlot.Length; ++i)
+            for (var i = 0; i < _buttons.Length && i < CharacterSlot.Length; ++i)
             {
-                var character = characters[i];
                 var button = _buttons[i];
                 var characterSlot = CharacterSlot[i];
 
-                button.gameObject.SetActive(true);
-                button.interactable = true;
-                button.SetCaption(character.Name); // Set button caption to character name
-
-                characterSlot.gameObject.SetActive(true);
-
-                // Check if the character is currently selected
-                if (currentCharacterId == character.CustomCharacterId)
+                if (i < characters.Count)
                 {
-                    //Set the character in the first slot of the horizontal character slot
-                    if (_CurSelectedCharacterSlot.Length > 0)
+                    var character = characters[i];
+                    button.gameObject.SetActive(true);
+                    button.interactable = true;
+                    button.SetCaption(character.Name); // Set button caption to character name
+
+                    characterSlot.gameObject.SetActive(true);
+
+                    // Check if the character is currently selected
+                    if (currentCharacterId == character.CustomCharacterId)
                     {
-                        button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
+                        // Set the character in the first slot of the horizontal character slot
+                        if (_CurSelectedCharacterSlot.Length > 0)
+                        {
+                            button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
+                        }
                     }
+
+                    // Subscribe to the event of parent change for the button
+                    var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
+                    parentChangeMonitor.OnParentChanged += newParent =>
+                    {
+                        // Check if the character is in the first slot of the horizontal character slot
+                        if (newParent == _CurSelectedCharacterSlot[0].transform)
+                        {
+                            // Set the id
+                            CurrentCharacterId = character.CustomCharacterId;
+                        }
+                    };
                 }
-                // Deactivate character slot if it's empty
-                if (characterSlot.transform.childCount == 0)
+                else
                 {
+                    // Hide unused buttons and slots
+                    button.gameObject.SetActive(false);
                     characterSlot.gameObject.SetActive(false);
                 }
-                // Subscribe to the event of parent change for the button
-                var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
-                parentChangeMonitor.OnParentChanged += newParent =>
-                {
-                    // check if the character is in the first slot of the horizontal character slot
-                    if (newParent == _CurSelectedCharacterSlot[0].transform)
-                    {
-                        //set the id
-                        CurrentCharacterId = character.CustomCharacterId;
-                    }
-                };
             }
         }
     }
 }
+
