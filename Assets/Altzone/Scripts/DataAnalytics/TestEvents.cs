@@ -14,7 +14,8 @@ public class TestEvents : MonoBehaviour
         testCharacterOutcomes();
         TestBattleLaunch(); 
         TestBattlesStarted(); 
-        StartCoroutine(TestSectionEnteredExited()); */
+        StartCoroutine(TestSectionEnteredExited()); 
+        TestShieldHits(); */
     }
 
     // Update is called once per frame
@@ -61,5 +62,17 @@ public class TestEvents : MonoBehaviour
         GameAnalyticsManager.Instance.EnterSection("TestingRoom_A");
 
         Debug.Log("TestSectionEnteredExited completed");
+    } 
+    void TestShieldHits()
+    {
+        GameAnalyticsManager.Instance.OnShieldHit();
+        GameAnalyticsManager.Instance.OnShieldHit();
+        GameAnalyticsManager.Instance.OnShieldHit();
+        GameAnalyticsManager.Instance.OnWallHit();
+        GameAnalyticsManager.Instance.OnShieldHit();
+        GameAnalyticsManager.Instance.OnShieldHit();
+        GameAnalyticsManager.Instance.OnWallHit();
+        GameAnalyticsManager.Instance.OnSessionEnd();
+        Debug.Log("TestShieldHits completed");
     } */
 }
