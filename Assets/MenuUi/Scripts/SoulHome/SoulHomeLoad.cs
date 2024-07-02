@@ -261,6 +261,9 @@ namespace MenuUI.Scripts.SoulHome {
                     var test9 = new Furniture(i * 1000 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlace.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test9);
                     _soulHomeController.AddFurniture(test9);
+                    var test10 = new Furniture(i * 1000 + 9, "CoffeeTable_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    //_trayHandler.AddFurnitureInitial(test9);
+                    _soulHomeController.AddFurniture(test10);
                     i++;
                 }
             }
