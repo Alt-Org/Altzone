@@ -89,6 +89,27 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             else
             {
+                // Check if the droppedSlot is a Topslot
+                if (droppedSlot.tag == "Topslot")
+                {
+                    // Find the first empty topslot
+                    Transform targetSlot = null;
+                    foreach (var slot in _modelView._CurSelectedCharacterSlot)
+                    {
+                        if (slot.transform.childCount == 0)
+                        {
+                            targetSlot = slot.transform;
+                            break;
+                        }
+                    }
+
+                    // If an empty topslot is found, use it as the parent
+                    if (targetSlot != null)
+                    {
+                        droppedSlot = targetSlot;
+                    }
+                }
+
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
             }
