@@ -2579,7 +2579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f147c74fba287cf4d8590ec7690fdb54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popup: {fileID: 1357142023799753318}
+  _popup: {fileID: 1357142023799753318}
   popupWaitDelay: 2
 --- !u!114 &8834556059031332447
 MonoBehaviour:
@@ -4062,6 +4062,7 @@ MonoBehaviour:
   _roomPrefab: {fileID: 1338959919280691323, guid: e01f609e4aacb7f49872b557a3566712,
     type: 3}
   _trayHandler: {fileID: 4788480834664309421}
+  _soulHomeController: {fileID: 7681122712900677425}
   _towerController: {fileID: 8929454208922663643}
   _avatarPlaceholder: {fileID: 3432757863211272488, guid: 6ddb6826c23ed50478e4afbf8cfcfa78,
     type: 3}
@@ -4069,6 +4070,7 @@ MonoBehaviour:
   - Name: Sofa_Taakka
     Id: -1
     Position: {x: -1, y: -1}
+    Room: 0
     IsRotated: 0
     Size: 2
     RotatedSize: 4
@@ -4078,6 +4080,7 @@ MonoBehaviour:
   - Name: Mirror_Taakka
     Id: -1
     Position: {x: -1, y: -1}
+    Room: 0
     IsRotated: 0
     Size: 4
     RotatedSize: 4
@@ -4087,6 +4090,7 @@ MonoBehaviour:
   - Name: Floorlamp_Taakka
     Id: -1
     Position: {x: -1, y: -1}
+    Room: 0
     IsRotated: 0
     Size: 4
     RotatedSize: 4
@@ -4096,6 +4100,7 @@ MonoBehaviour:
   - Name: Toilet_Schrodinger
     Id: -1
     Position: {x: -1, y: -1}
+    Room: 0
     IsRotated: 0
     Size: 1
     RotatedSize: 3
@@ -4105,6 +4110,7 @@ MonoBehaviour:
   - Name: Sink_Schrodinger
     Id: -1
     Position: {x: -1, y: -1}
+    Room: 0
     IsRotated: 0
     Size: 1
     RotatedSize: 3
@@ -9663,6 +9669,7 @@ MonoBehaviour:
     type: 3}
   _furnitureRefrence: {fileID: 1492192673347438473}
   _trayContent: {fileID: 2586729538618393534}
+  _controller: {fileID: 7681122712900677425}
   _otherTray: {fileID: 3510545286632961050}
   _vertical: 0
 --- !u!114 &1967409196646239748
@@ -10533,6 +10540,7 @@ MonoBehaviour:
     type: 3}
   _furnitureRefrence: {fileID: 2219930961996365028}
   _trayContent: {fileID: 5088891860708781392}
+  _controller: {fileID: 7681122712900677425}
   _otherTray: {fileID: 4788480834664309421}
   _vertical: 1
 --- !u!114 &4697328121706057684

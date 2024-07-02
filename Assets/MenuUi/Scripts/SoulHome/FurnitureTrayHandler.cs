@@ -16,6 +16,10 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();
         private GameObject _hiddenSlot = null;
+        [SerializeField]
+        private SoulHomeController _controller;
+
+        private List<Furniture> _furnitureList = new();
 
         [SerializeField]
         private FurnitureTrayHandler _otherTray;
@@ -47,12 +51,41 @@ namespace MenuUI.Scripts.SoulHome
             return _trayContent;
         }
 
+        public void InitializeTray()
+        {
+            FurnitureList list = _controller.FurnitureList;
+            Debug.Log("Count: "+list.Count);
+            if (list == null && list.Count < 1) return;
+
+            foreach (FurnitureListObject listObject in list.Get())
+            {
+                GameObject furnitureObject = _furnitureRefrence.GetFurniture(listObject.Name);
+                if (furnitureObject == null) return;
+
+                if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
+                GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
+                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().Name.text = listObject.Name;
+
+                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
+                furnitureSlot.GetComponent<ResizeCollider>().Resize();
+
+                GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
+                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList = listObject;
+                if(listObject.Count - listObject.GetInRoomCount() <= 0) furnitureSlot.SetActive(false);
+            }
+
+        }
+
         public void AddFurnitureInitial(Furniture furniture)
         {
             if (furniture == null) return;
 
             GameObject furnitureObject = _furnitureRefrence.GetFurniture(furniture.Name);
             if (furnitureObject == null) return;
+
+            _furnitureList.Add(furniture);
+
             if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
             GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
             furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
@@ -64,84 +97,93 @@ namespace MenuUI.Scripts.SoulHome
             GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
             trayFurniture.GetComponent<TrayFurniture>().Furniture = furniture;
         }
-        public void AddFurniture(Furniture furniture)
+        public void AddFurnitureToTray(Furniture furniture)
         {
             if (furniture == null) return;
             Debug.LogWarning("Check");
-            GameObject furnitureObject = CheckChangeList(furniture);
+            if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
 
-            if (furnitureObject != null)
+            //furniture.ResetPosition();
+
+            Debug.LogWarning("Name: " + furniture.Name);
+            Debug.LogWarning("Name: " + furniture.Position);
+            foreach (Transform furnitureSlot in _trayContent.transform)
             {
-                furnitureObject.SetActive(true);
-                if (!furnitureObject.transform.GetChild(1).GetComponent<Image>().enabled) furnitureObject.transform.GetChild(1).GetComponent<Image>().enabled = true;
-                furnitureObject.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                _changedTrayItemList.Remove(furnitureObject);
-            }
-            else
-            {
-                furnitureObject = _furnitureRefrence.GetFurniture(furniture.Name);
-                if (furnitureObject == null) return;
-                if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-                GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
-                furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
-
-                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-                furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                furnitureSlot.GetComponent<ResizeCollider>().Resize();
-
-                Instantiate(furnitureObject, furnitureSlot.transform);
-                _changedTrayItemList.Add(furnitureSlot);
-            }
-        }
-
-        public void RemoveFurniture(Furniture furniture)
-        {
-            if (furniture == null) return;
-
-            int trayFurnitureAmount = _trayContent.transform.childCount;
-            Debug.LogWarning("TrayContent: "+ trayFurnitureAmount);
-
-            for (int i = 0; i < trayFurnitureAmount; i++)
-            {
-                if (_trayContent.transform.GetChild(i).GetChild(1).GetComponent<TrayFurniture>().Furniture.Id == furniture.Id)
+                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
+                if (list.Name.Equals(furniture.Name))
                 {
-                    GameObject itemToRemove = _trayContent.transform.GetChild(i).gameObject;
-                    if (CheckChangeList(itemToRemove))
+                    foreach (Furniture furnitureInList in list.List)
                     {
-                        _changedTrayItemList.Remove(itemToRemove);
-                        Destroy(itemToRemove);
+                        if(furnitureInList.Id == furniture.Id) furnitureInList.ResetPosition();
+                    }
+
+                    int count = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
+                    Debug.LogWarning("Total Count: " + furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Count);
+                    Debug.LogWarning("Count: " + count);
+                    GameObject furnitureObject = CheckChangeList(furniture);
+                    if (furnitureObject != null)
+                    {
+                        if (count == furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Remove(furnitureSlot.gameObject);
                     }
                     else
                     {
-                        itemToRemove.SetActive(false);
-                        _changedTrayItemList.Add(itemToRemove);
-                        _hiddenSlot = null;
+                        if (count != furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Add(furnitureSlot.gameObject);
                     }
-                    break;
+                    return;
                 }
             }
-
         }
-        public bool RemoveFurniture(GameObject trayFurniture)
+
+        public GameObject TakeFurnitureFromTray(string furnitureName)
+        {
+            if (string.IsNullOrWhiteSpace(furnitureName)) return null;
+
+            if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
+
+            foreach (Transform furnitureSlot in _trayContent.transform)
+            {
+                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
+                if (list.Name.Equals(furnitureName))
+                {
+                    foreach (Furniture furnitureInList in list.List)
+                    {
+                        if (furnitureInList.Position.Equals(new(-1, -1)))
+                        {
+                            GameObject furnitureObject = _furnitureRefrence.GetFurniture(furnitureInList.Name);
+                            if (furnitureObject == null) return null;
+                            GameObject newObject = Instantiate(furnitureObject, furnitureSlot.transform);
+                            newObject.GetComponent<TrayFurniture>().Furniture = furnitureInList;
+                            return newObject;
+                        }
+                    }
+                    Debug.LogWarning("No free furniture available. Something went wrong.");
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public bool RemoveFurnitureObject(GameObject trayFurniture)
         {
             if(trayFurniture == null) return false;
 
+            //return RemoveFurniture(trayFurniture.GetComponent<TrayFurniture>().Furniture);
+
             int trayFurnitureAmount = _trayContent.transform.childCount;
 
-            for (int i = 0; i < trayFurnitureAmount; i++)
+            foreach (Transform furnitureSlot in _trayContent.transform)
             {
-                if (Object.ReferenceEquals(_trayContent.transform.GetChild(i).GetChild(1).gameObject, trayFurniture))
+                if (furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Name.Equals(trayFurniture.GetComponent<TrayFurniture>().Furniture.Name))
                 {
-                    GameObject itemToRemove = _trayContent.transform.GetChild(i).gameObject;
-                    if (CheckChangeList(itemToRemove))
+                    int count = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
+                    if (CheckChangeList(furnitureSlot.gameObject))
                     {
-                        _changedTrayItemList.Remove(itemToRemove);
-                        Destroy(itemToRemove);
+                        if (count == furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Remove(furnitureSlot.gameObject);
                     }
                     else
                     {
-                        itemToRemove.SetActive(false);
-                        _changedTrayItemList.Add(itemToRemove);
+                        //itemToRemove.SetActive(false);
+                        if (count != furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Add(furnitureSlot.gameObject);
                         _hiddenSlot = null;
                     }
                     return true;
@@ -181,20 +223,23 @@ namespace MenuUI.Scripts.SoulHome
         public bool CheckChangeList(GameObject item)
         {
             int amount = _changedTrayItemList.Count;
-            for(int i = 0;i < amount; i++)
+            foreach (GameObject furnitureSlot in _changedTrayItemList)
             {
-                if(Object.ReferenceEquals(_changedTrayItemList[i].transform.GetChild(1).gameObject, item)) return true;
+                if (Object.ReferenceEquals(furnitureSlot, item)) return true;
             }
             return false;
         }
 
         public GameObject CheckChangeList(Furniture furniture)
         {
-            int amount = _changedTrayItemList.Count;
-            Debug.Log("amount: "+ amount);
-            for (int i = 0; i < amount; i++)
+            foreach (GameObject furnitureSlot in _changedTrayItemList)
             {
-                if (Object.ReferenceEquals(_changedTrayItemList[i].transform.GetChild(1).GetComponent<TrayFurniture>().Furniture, furniture)) return _changedTrayItemList[i];
+                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
+
+                foreach (Furniture furnitureInList in list.List)
+                {
+                    if (Object.ReferenceEquals(furnitureInList, furniture)) return furnitureSlot;
+                }
             }
             return null;
         }
@@ -204,13 +249,7 @@ namespace MenuUI.Scripts.SoulHome
             int amount = _changedTrayItemList.Count;
             for (int i = 0; i < amount; i++)
             {
-                if (_changedTrayItemList[i].activeSelf == false)
-                {
-                    _changedTrayItemList[i].SetActive(true);
-                    if (!_changedTrayItemList[i].transform.GetChild(1).GetComponent<Image>().enabled) _changedTrayItemList[i].transform.GetChild(1).GetComponent<Image>().enabled = true;
-                    _changedTrayItemList[i].transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                }
-                else Destroy(_changedTrayItemList[i]);
+                _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
             }
             _changedTrayItemList.Clear();
         }
@@ -220,7 +259,7 @@ namespace MenuUI.Scripts.SoulHome
             int amount = _changedTrayItemList.Count;
             for (int i = 0; i < amount; i++)
             {
-                if (_changedTrayItemList[i].activeSelf == false) Destroy(_changedTrayItemList[i]);
+                _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().SaveCount();
             }
             _changedTrayItemList.Clear();
         }

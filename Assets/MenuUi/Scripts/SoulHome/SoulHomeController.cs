@@ -38,17 +38,20 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _audioManager;
 
+        private FurnitureList _furnitureList = new();
 
         private bool _confirmPopupOpen = false;
         private bool _exitPending = false;
 
-        public bool ExitPending { get => _exitPending;}
-        public bool ConfirmPopupOpen { get => _confirmPopupOpen;}
-        public TextMeshProUGUI FurnitureName { get => _furnitureName;}
+        public bool ExitPending { get => _exitPending; }
+        public bool ConfirmPopupOpen { get => _confirmPopupOpen; }
+        public TextMeshProUGUI FurnitureName { get => _furnitureName; }
+        public FurnitureList FurnitureList { get => _furnitureList; }
 
         // Start is called before the first frame update
         void Start()
         {
+            //_furnitureList = new();
             if (ServerManager.Instance.Clan != null)
             {
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
@@ -64,7 +67,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            if(_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
+            if (_infoPopup != null && _infoPopup.gameObject.activeSelf == true) _infoPopup.gameObject.SetActive(false);
             GameObject[] root = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObject in root)
             {
@@ -76,7 +79,7 @@ namespace MenuUI.Scripts.SoulHome
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
-            if(GameAnalyticsManager.Instance !=null) GameAnalyticsManager.Instance.OpenSoulHome();
+            if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
         }
 
         public void OnDisable()
@@ -99,6 +102,18 @@ namespace MenuUI.Scripts.SoulHome
                 _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
             }
             else _roomName.gameObject.SetActive(false);
+        }
+
+        public void AddFurniture(Furniture furniture)
+        {
+            if (furniture == null) return;
+            else
+            {
+                if (furniture.Id < 0) return;
+                if (string.IsNullOrWhiteSpace(furniture.Name)) return;
+            }
+
+            _furnitureList.Add(furniture);
         }
 
         public void SetFurniture(Furniture furniture)

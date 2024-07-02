@@ -9,11 +9,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _furnitureObject;
         private Furniture _furniture;
+        private FurnitureListObject _furnitureList;
         [SerializeField]
         private  int debugValue = 0;
 
         public GameObject FurnitureObject { get => _furnitureObject; set => _furnitureObject = value; }
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
+        public FurnitureListObject FurnitureList { get => _furnitureList; set => _furnitureList = value; }
 
 
         // Start is called before the first frame update

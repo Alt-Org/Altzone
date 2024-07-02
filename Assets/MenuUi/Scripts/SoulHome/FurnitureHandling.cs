@@ -57,7 +57,21 @@ namespace MenuUI.Scripts.SoulHome
                 TempSlot = value;
             }
         }
-        public FurnitureSlot TempSlot { get => _tempSlot; set => _tempSlot = value; }
+        public FurnitureSlot TempSlot { get => _tempSlot; set
+            {
+                _tempSlot = value;
+                if (_tempSlot != null)
+                {
+                    Furniture.Position = new(value.column, value.row);
+                    Furniture.Room = value.roomId;
+                }
+                else
+                {
+                    Furniture.Position = new(-1, -1);
+                    Furniture.Room = -1;
+                }
+            }
+        }
         public GameObject TrayFurnitureObject { get => _trayFurnitureObject;}
         public string Name { get => _name;}
         public bool IsRotated { get => _isRotated;}
@@ -186,7 +200,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ResetSlot()
         {
-            _tempSlot = _slot;
+            TempSlot = _slot;
         }
 
         public void SetScale()

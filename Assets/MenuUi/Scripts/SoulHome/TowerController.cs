@@ -764,6 +764,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
+                    furniture.GetComponent<FurnitureHandling>().TempSlot = null;
                     Destroy(furniture);
                     continue;
                 }
@@ -773,6 +774,7 @@ namespace MenuUI.Scripts.SoulHome
                 furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition();
                 furniture.GetComponent<FurnitureHandling>().SetScale();
                 furniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
+                furniture.GetComponent<FurnitureHandling>().TempSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 if (!furniture.activeInHierarchy)
                 {
                     furniture.SetActive(true);
@@ -791,13 +793,15 @@ namespace MenuUI.Scripts.SoulHome
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
                 FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
-                int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
+                int roomId;
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
+                    roomId = oldSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
                     continue;
                 }
+                roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
             }
             ChangedFurnitureList.Clear();

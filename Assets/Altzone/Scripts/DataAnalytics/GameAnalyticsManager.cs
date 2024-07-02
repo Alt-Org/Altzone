@@ -17,6 +17,8 @@ namespace AltZone.Scripts.GA
         }
 
         private int battlesStartedThisSession = 0;
+        private int shieldHits = 0;
+        private int wallHits = 0;
 
         private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
 
@@ -90,6 +92,18 @@ namespace AltZone.Scripts.GA
             Debug.Log($"{characterName} lost");
         }
 
+        public void SessionShieldHitsBetweenWallHits()
+        {
+            GameAnalytics.NewDesignEvent("session:shield_hits_between_wall_hits", shieldHits);
+            Debug.Log($"Event sent: session:shield_hits_between_wall_hits with value {shieldHits}");
+        }
+
+        public void SessionWallHits()
+        {
+            GameAnalytics.NewDesignEvent("session:wall_hits", wallHits);
+            Debug.Log($"Event sent: session:wall_hits with value {wallHits}");
+        }
+
 
         public void BattlesStarted() //Montako battlea on aloitettu yhdellä sessiolla 
         {
@@ -128,6 +142,30 @@ namespace AltZone.Scripts.GA
 
                 sectionStartTimes.Remove(sectionName);
             }
+        }
+
+        public void OnShieldHit() //laskee kilpiosumat
+        {
+            shieldHits++;
+            Debug.Log($"Shield hit count: {shieldHits}");
+        }
+
+        public void OnWallHit() //laskee muuriosumat
+        {
+            wallHits++;
+            Debug.Log($"Wall hit count: {wallHits}");
+            SessionShieldHitsBetweenWallHits();
+
+            shieldHits = 0;
+        }
+
+        public void OnSessionEnd() //kutsutaan sovelluksen sulkemisessa
+        {
+            // sending battles_started
+            BattlesStarted();
+
+            // sending wall_hits
+            SessionWallHits();
         }
     }
 }
