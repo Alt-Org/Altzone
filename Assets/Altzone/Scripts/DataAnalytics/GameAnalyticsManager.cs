@@ -92,25 +92,6 @@ namespace AltZone.Scripts.GA
             Debug.Log($"{characterName} lost");
         }
 
-        public void SessionShieldHitsBetweenWallHits()
-        {
-            GameAnalytics.NewDesignEvent("session:shield_hits_between_wall_hits", shieldHits);
-            Debug.Log($"Event sent: session:shield_hits_between_wall_hits with value {shieldHits}");
-        }
-
-        public void SessionWallHits()
-        {
-            GameAnalytics.NewDesignEvent("session:wall_hits", wallHits);
-            Debug.Log($"Event sent: session:wall_hits with value {wallHits}");
-        }
-
-
-        public void BattlesStarted() //Montako battlea on aloitettu yhdell‰ sessiolla 
-        {
-            GameAnalytics.NewDesignEvent("session:battles_started", battlesStartedThisSession);
-            Debug.Log($"Battles started this session: {battlesStartedThisSession}");
-        }
-
         public void EnterSection(string sectionName) //Aloittaa ajan kun pelin osaan menn‰‰n
         {
             float currentTime = Time.time;
@@ -166,6 +147,27 @@ namespace AltZone.Scripts.GA
 
             // sending wall_hits
             SessionWallHits();
+        }
+
+        
+        // privaatti funktiot joka GameAnalyticsManager k‰sittelee
+
+        private void SessionShieldHitsBetweenWallHits()
+        {
+            GameAnalytics.NewDesignEvent("session:shield_hits_between_wall_hits", shieldHits);
+            Debug.Log($"Event sent: session:shield_hits_between_wall_hits with value {shieldHits}");
+        }
+
+        private void SessionWallHits()
+        {
+            GameAnalytics.NewDesignEvent("session:wall_hits", wallHits);
+            Debug.Log($"Event sent: session:wall_hits with value {wallHits}");
+        }
+
+        private void BattlesStarted()
+        {
+            GameAnalytics.NewDesignEvent("session:battles_started", battlesStartedThisSession);
+            Debug.Log($"Battles started this session: {battlesStartedThisSession}");
         }
     }
 }
