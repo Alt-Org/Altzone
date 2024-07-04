@@ -19,6 +19,7 @@ namespace AltZone.Scripts.GA
         private int battlesStartedThisSession = 0;
         private int shieldHits = 0;
         private int wallHits = 0;
+        private int moveCommandsCount = 0;
 
         private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
 
@@ -135,33 +136,52 @@ namespace AltZone.Scripts.GA
         {
             wallHits++;
             Debug.Log($"Wall hit count: {wallHits}");
-            SessionShieldHitsBetweenWallHits();
+            BattleShieldHitsBetweenWallHits();
 
             shieldHits = 0;
+        }
+        public void MoveCommand(Vector3 targetPosition) //Seuraa missä hahmo liikkuu ja laskee liikkumiskäskyt
+        {
+            moveCommandsCount++;
+            var eventParams = new Dictionary<string, object>
+            {
+                { "x", targetPosition.x },
+                { "y", targetPosition.y },
+                { "z", targetPosition.z }
+            };
+            GameAnalytics.NewDesignEvent("move:command", eventParams);
+            Debug.Log($"Move command to position {targetPosition}. total moves: {moveCommandsCount}");
         }
 
         public void OnSessionEnd() //kutsutaan sovelluksen sulkemisessa
         {
             // sending battles_started
             BattlesStarted();
+        }
+
+        public void OnBattleEnd() //kutsutaan battlen lopetuksessa
+        {
+            MoveCommandSummary();
 
             // sending wall_hits
-            SessionWallHits();
+            BattleWallHits();
         }
 
         
         // privaatti funktiot joka GameAnalyticsManager käsittelee
 
-        private void SessionShieldHitsBetweenWallHits()
+        private void BattleShieldHitsBetweenWallHits()
         {
-            GameAnalytics.NewDesignEvent("session:shield_hits_between_wall_hits", shieldHits);
-            Debug.Log($"Event sent: session:shield_hits_between_wall_hits with value {shieldHits}");
+            GameAnalytics.NewDesignEvent("battle:shield_hits_between_wall_hits", shieldHits);
+            Debug.Log($"Event sent: battle:shield_hits_between_wall_hits with value {shieldHits}");
         }
 
-        private void SessionWallHits()
+        private void BattleWallHits()
         {
-            GameAnalytics.NewDesignEvent("session:wall_hits", wallHits);
-            Debug.Log($"Event sent: session:wall_hits with value {wallHits}");
+            GameAnalytics.NewDesignEvent("battle:wall_hits", wallHits);
+            Debug.Log($"Event sent: battle:wall_hits with value {wallHits}");
+
+            wallHits = 0;
         }
 
         private void BattlesStarted()
@@ -169,5 +189,14 @@ namespace AltZone.Scripts.GA
             GameAnalytics.NewDesignEvent("session:battles_started", battlesStartedThisSession);
             Debug.Log($"Battles started this session: {battlesStartedThisSession}");
         }
+
+        private void MoveCommandSummary()
+        {
+            GameAnalytics.NewDesignEvent("battle:command:count", moveCommandsCount);
+            Debug.Log($"Total move commands: {moveCommandsCount}");
+
+            moveCommandsCount = 0;
+        }
+
     }
 }

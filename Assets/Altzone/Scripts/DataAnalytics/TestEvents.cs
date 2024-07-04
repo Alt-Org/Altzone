@@ -15,7 +15,8 @@ public class TestEvents : MonoBehaviour
         TestBattleLaunch(); 
         TestBattlesStarted(); 
         StartCoroutine(TestSectionEnteredExited()); 
-        TestShieldHits(); */
+        TestShieldHits(); 
+        TestMoveCommands(); */
     }
 
     // Update is called once per frame
@@ -74,5 +75,15 @@ public class TestEvents : MonoBehaviour
         GameAnalyticsManager.Instance.OnWallHit();
         GameAnalyticsManager.Instance.OnSessionEnd();
         Debug.Log("TestShieldHits completed");
+    } 
+
+    void TestMoveCommands()
+    {
+        GameAnalyticsManager.Instance.MoveCommand(new Vector3(1, 0, 1));
+        GameAnalyticsManager.Instance.MoveCommand(new Vector3(2, 0, 2));
+        GameAnalyticsManager.Instance.MoveCommand(new Vector3(3, 0, 3));
+        GameAnalyticsManager.Instance.MoveCommand(new Vector3(4, 0, 4));
+        GameAnalyticsManager.Instance.OnBattleEnd();
+        Debug.Log("MoveCommands");
     } */
 }
