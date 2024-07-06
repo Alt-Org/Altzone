@@ -11651,6 +11651,7 @@ GameObject:
   - component: {fileID: 3999813593351278550}
   - component: {fileID: 834813652095646694}
   - component: {fileID: 7038871414058317978}
+  - component: {fileID: 3167356347347486838}
   m_Layer: 5
   m_Name: ClanCreator
   m_TagString: Untagged
@@ -11727,6 +11728,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3167356347347486838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7338198641453437245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e747bbef4305bb47a4cc7c2f7e45f36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clanNameInputField: {fileID: 441569792401301870}
+  _openClanButton: {fileID: 8444835284964560111}
+  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
 --- !u!1 &7360480282731232330
 GameObject:
   m_ObjectHideFlags: 0
@@ -14133,7 +14149,6 @@ GameObject:
   - component: {fileID: 6831273719539772579}
   - component: {fileID: 2577869739738893685}
   - component: {fileID: 5014486994110506936}
-  - component: {fileID: 8449202187407416634}
   m_Layer: 5
   m_Name: ButtonOK
   m_TagString: Untagged
@@ -14241,21 +14256,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2577869739738893685}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &8449202187407416634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8547530150921208277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
-  _isCurrentPopOutWindow: 0
+      m_Calls:
+      - m_Target: {fileID: 3167356347347486838}
+        m_TargetAssemblyTypeName: ClanCreateNew, Assembly-CSharp
+        m_MethodName: PostClanToServer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8637887109702329693
 GameObject:
   m_ObjectHideFlags: 0
