@@ -1,16 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using Prg.Scripts.Common.PubSub;
-using System.Security.Cryptography;
-using System.Runtime.Versioning;
-using System.Threading;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.Collections.Specialized;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -54,7 +46,6 @@ namespace Battle.Scripts.Battle.Players
 
         // Components
         private Rigidbody2D _rb;
-        private LineRenderer _lineRenderer;
 
         // Game state variables
         private int _timer;
@@ -75,7 +66,7 @@ namespace Battle.Scripts.Battle.Players
         private Vector3 _pointPosition;
         private Vector3 _pointVelocity;
 
-        private Quaternion _rotation;
+        private Quaternion _spriteRotation;
 
         private class TrailSprite
         {
@@ -95,19 +86,18 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS EGOTISM] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
- 
+
         private void Start()
         {
             // Get important objects
             _rb = Context.GetBallHandler.GetComponent<Rigidbody2D>();
-            _lineRenderer = GetComponent<LineRenderer>();
             _gridManager = Context.GetGridManager;
             _positionSprites = new();
             _trailSprites = new();
 
             // Subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-           
+
             // Debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
@@ -124,7 +114,7 @@ namespace Battle.Scripts.Battle.Players
                     if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
                     {
                         _isOnLocalTeam = true;
-                        _rotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
+                        _spriteRotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
                     }
                     else
                     {
@@ -231,7 +221,7 @@ namespace Battle.Scripts.Battle.Players
                 // Create new sprite objects to match the number of position
                 for (int i = 0; i < difference; i++)
                 {
-                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, _rotation));
+                    _positionSprites.Add(Instantiate(_positionSprite, Vector3.zero, _spriteRotation));
                 }
 
                 Debug.Log(DEBUG_LOG_NAME + "_positionSprite " + _positionSprites.Count);
@@ -293,7 +283,7 @@ namespace Battle.Scripts.Battle.Players
                     sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
                 }
 
-                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50, _rotation);
+                TrailSprite newTrailSprite = new TrailSprite(_positionSprite, GetCurrentPosition(), sprite, 50, _spriteRotation);
 
                 // Check if the trail sprite list is already full
                 if (_trailSprites.Count <= _trailSpritesAmount)

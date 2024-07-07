@@ -9,9 +9,14 @@ namespace MenuUI.Scripts.SoulHome
     {
         OneXOne,
         OneXTwo,
+        OneXThree,
         OneXFour,
+        OneXSix,
         TwoXOne,
-        TwoXTwo
+        TwoXTwo,
+        TwoXThree,
+        TwoXFour,
+        ThreeXThree
     }
 
     public enum FurniturePlace
@@ -46,6 +51,7 @@ namespace MenuUI.Scripts.SoulHome
         public string Name;
         public int Id = -1;
         public Vector2Int Position = new(-1,-1);
+        public int Room = -1;
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
@@ -53,11 +59,12 @@ namespace MenuUI.Scripts.SoulHome
         public float Weight;
         public float Value;
 
-        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlace Place, float Value, float Weight, bool IsRotated)
+        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlace Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
             this.Id = Id;
             this.Name = Name;
             this.Position = Position;
+            this.Room = Room;
             this.Size = Size;
             this.RotatedSize = RotatedSize;
             this.Place = Place;
@@ -107,9 +114,17 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(2, 1);
             }
+            else if (furnitureSize == FurnitureSize.OneXThree)
+            {
+                return new Vector2Int(3, 1);
+            }
             else if (furnitureSize == FurnitureSize.OneXFour)
             {
                 return new Vector2Int(4, 1);
+            }
+            else if (furnitureSize == FurnitureSize.OneXSix)
+            {
+                return new Vector2Int(6, 1);
             }
             else if (furnitureSize == FurnitureSize.TwoXOne)
             {
@@ -119,11 +134,29 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(2, 2);
             }
+            else if (furnitureSize == FurnitureSize.TwoXThree)
+            {
+                return new Vector2Int(3, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXFour)
+            {
+                return new Vector2Int(4, 2);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXThree)
+            {
+                return new Vector2Int(3, 3);
+            }
             else
             {
                 Debug.LogError("Error: Invalid furniture size");
                 return new Vector2Int(0, 0);
             }
+        }
+
+        public void ResetPosition()
+        {
+            Position = new Vector2Int(-1, -1);
+            Room = -1;
         }
     }
 }

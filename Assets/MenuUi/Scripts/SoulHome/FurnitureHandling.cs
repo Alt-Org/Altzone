@@ -57,7 +57,21 @@ namespace MenuUI.Scripts.SoulHome
                 TempSlot = value;
             }
         }
-        public FurnitureSlot TempSlot { get => _tempSlot; set => _tempSlot = value; }
+        public FurnitureSlot TempSlot { get => _tempSlot; set
+            {
+                _tempSlot = value;
+                if (_tempSlot != null)
+                {
+                    Furniture.Position = new(value.column, value.row);
+                    Furniture.Room = value.roomId;
+                }
+                else
+                {
+                    Furniture.Position = new(-1, -1);
+                    Furniture.Room = -1;
+                }
+            }
+        }
         public GameObject TrayFurnitureObject { get => _trayFurnitureObject;}
         public string Name { get => _name;}
         public bool IsRotated { get => _isRotated;}
@@ -149,7 +163,13 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 2;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (furnitureSize is FurnitureSize.OneXFour)
+            else if (furnitureSize is FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree)
+            {
+                //if (_tempSlot != null) width = _tempSlot.width * 3;
+                /*else*/
+                width = transform.parent.GetComponent<FurnitureSlot>().width * 3;
+            }
+            else if (furnitureSize is FurnitureSize.OneXFour or FurnitureSize.TwoXFour)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
@@ -180,7 +200,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ResetSlot()
         {
-            _tempSlot = _slot;
+            TempSlot = _slot;
         }
 
         public void SetScale()
@@ -331,5 +351,14 @@ namespace MenuUI.Scripts.SoulHome
             _spriteDirection = _tempSpriteDirection;
         }
 
+        public void SetOutline(bool outline)
+        {
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+            spriteRenderer.GetPropertyBlock(mpb);
+            mpb.SetFloat("_Outline", outline ? 10f : 0);
+            mpb.SetColor("_OutlineColor", Color.red);
+            spriteRenderer.SetPropertyBlock(mpb);
+        }
     }
 }

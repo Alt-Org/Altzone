@@ -193,7 +193,7 @@ namespace MenuUI.Scripts.SoulHome
                             if (_soulHomeTower.SelectedFurniture == null)
                             {
                                 _soulHomeTower.SetFurniture(_selectedFurnitureTray);
-                                HideTrayItem(_selectedFurnitureTray);
+                                //HideTrayItem(_selectedFurnitureTray);
                             }
                         }
                         if (_soulHomeTower.SelectedFurniture != null)
@@ -244,6 +244,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (_soulHomeTower.SelectedFurniture != null)
                         {
+                            Debug.Log("Check2");
                             if (click is ClickState.Start)
                             {
                                 _soulHomeTower.DeselectFurniture();
@@ -258,11 +259,13 @@ namespace MenuUI.Scripts.SoulHome
 
                             if (click is ClickState.End)
                             {
-                                if (_selectedFurnitureTray != null && !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
+                                Debug.Log("Check3");
+                                if (_selectedFurnitureTray != null /*&& !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem")*/)
                                 {
                                     //Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
                                     Debug.Log("Check1");
                                     if(!CheckAndRevealTrayItem(_selectedFurnitureTray)) AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
+                                    Destroy(_selectedFurnitureTray);
                                 }
                                 _soulHomeTower.RemoveFurniture();
                                 _selectedFurnitureTray = null;
@@ -275,7 +278,9 @@ namespace MenuUI.Scripts.SoulHome
                         {
                             if(_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                             RevealTrayItem();
-                            _tempSelectedFurnitureTray = hit2.collider.transform.GetChild(1).gameObject;
+                            string furnitureName = hit2.collider.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Name;
+                            GameObject furnitureObject = GetTrayHandler().TakeFurnitureFromTray(furnitureName);
+                            if(furnitureObject != null) _tempSelectedFurnitureTray = furnitureObject;
                             //_selectedFurnitureTray = _tempSelectedFurnitureTray;
                             //transform.Find("Itemtray/Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
                             //transform.Find("Itemtray/Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
@@ -315,9 +320,9 @@ namespace MenuUI.Scripts.SoulHome
                     }*/
                     if (_soulHomeTower.SelectedFurniture == null)
                     {
-                        RevealTrayItem();
+                        //RevealTrayItem();
                     }
-                    if (!soulHomeHit && _soulHomeTower.TempSelectedFurniture != null)
+                    if (!soulHomeHit && _soulHomeTower.SelectedFurniture != null)
                     {
                         if (_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                         {
@@ -329,7 +334,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         else
                         {
-                            RevealTrayItem();
+                            //RevealTrayItem();
                             _soulHomeTower.DeselectFurniture();
                             DeselectTrayFurniture();
                         }
@@ -375,9 +380,9 @@ namespace MenuUI.Scripts.SoulHome
         }
         public void EnableTray(bool enable)
         {
+            GameObject tray = GetTray();
             if (enable)
             {
-                GameObject tray = GetTray();
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 _furnitureButtonTray.SetActive(true);
@@ -385,10 +390,28 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                GameObject tray = GetTray();
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
                 _furnitureButtonTray.SetActive(false);
+            }
+            CheckEditMode();
+        }
+
+        public void CheckEditMode()
+        {
+            if (_soulHomeTower.EditingMode)
+            {
+                if(!_rotated) _soulHomeController.FurnitureName.gameObject.SetActive(false);
+                else
+                {
+                    if (_soulHomeTower.SelectedFurniture != null) _soulHomeController.FurnitureName.gameObject.SetActive(true);
+                    else _soulHomeController.FurnitureName.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (_soulHomeTower.SelectedFurniture != null) _soulHomeController.FurnitureName.gameObject.SetActive(true);
+                else _soulHomeController.FurnitureName.gameObject.SetActive(false);
             }
         }
 
@@ -513,6 +536,23 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        public void SetFurnitureInfo()
+        {
+            GameObject furnitureInfo = _soulHomeController.FurnitureName.gameObject;
+            if (!_rotated)
+            {
+                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(1f, 0.4f);
+                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.3f);
+                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
+            else
+            {
+                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(0.2f, 0.95f);
+                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.85f);
+                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
+        }
+
         public void SetFurniture()
         {
             if (_selectedFurnitureTray == null && _tempSelectedFurnitureTray != null) _selectedFurnitureTray = _tempSelectedFurnitureTray;
@@ -534,7 +574,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void AddTrayItem(Furniture furniture)
         {
-            GetTrayHandler().AddFurniture(furniture);
+            GetTrayHandler().AddFurnitureToTray(furniture);
             if (_selectedFurnitureTray != null)
             {
                 Destroy(_selectedFurnitureTray);
@@ -545,8 +585,8 @@ namespace MenuUI.Scripts.SoulHome
 
         public void RemoveTrayItem(GameObject trayFurniture)
         {
-            GetTrayHandler().RemoveFurniture(trayFurniture);
-            _selectedFurnitureTray = null;
+            GetTrayHandler().RemoveFurnitureObject(trayFurniture);
+            //_selectedFurnitureTray = null;
             if(_tempSelectedFurnitureTray != null && !_tempSelectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))Destroy(_tempSelectedFurnitureTray);
             _tempSelectedFurnitureTray = null;
         }
@@ -653,6 +693,7 @@ namespace MenuUI.Scripts.SoulHome
             SetFurnitureButtons();
             SetBottomButtons();
             SetScreenSize();
+            SetFurnitureInfo();
             if (_trayOpen)
             {
                 if (_rotated)

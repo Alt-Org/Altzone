@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg;
 using Prg.Scripts.Common.Photon;
 using TMPro;
 using UnityEngine;
@@ -85,8 +84,7 @@ namespace Battle.Scripts.Test.Photon
                                       $"\r\nPhoton send rate {PhotonNetwork.SendRate} Hz" +
                                       $"\r\nGame phys step {1f / Time.fixedDeltaTime} Hz" +
                                       $"\r\nGame frame rate {Application.targetFrameRate} Hz" +
-                                      $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {refreshRate} Hz" +
-                                      $"\r\nCompiled {BuildProperties.CompiledOnDate}";
+                                      $"\r\nScreen {Screen.currentResolution.width}x{Screen.currentResolution.height} {refreshRate} Hz";
             if (PhotonNetwork.SerializationRate != PhotonNetwork.SendRate)
             {
                 _gameInfoTextLines.text += $"\r\nSerialization rate {PhotonNetwork.SerializationRate} Hz";
@@ -109,7 +107,8 @@ namespace Battle.Scripts.Test.Photon
                 {
                     _maxPing = currentPing;
                 }
-                _pingText.text = $"{_currentRegion} {currentPing} [{_minPing}-{_maxPing}] ms (~{peer.RoundTripTimeVariance} ms)";
+                _pingText.text =
+                    $"{_currentRegion} {currentPing} [{_minPing}-{_maxPing}] ms (~{peer.RoundTripTimeVariance} ms)";
                 if (_currentPlayers != PhotonNetwork.CurrentRoom.PlayerCount)
                 {
                     _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;

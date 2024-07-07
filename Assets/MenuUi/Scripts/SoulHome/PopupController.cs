@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class PopupController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject popup;
+    private GameObject _popup;
     [SerializeField]
     private float popupWaitDelay = 3f;
 
@@ -17,7 +17,7 @@ public class PopupController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (_popup == null) _popup = gameObject;
     }
 
     // Update is called once per frame
@@ -26,19 +26,24 @@ public class PopupController : MonoBehaviour
         
     }
 
+    void OnDisable()
+    {
+        _popup.SetActive(false);
+    } 
+
     public void ActivatePopUp(string popupText)
     {
-        popup.SetActive(true);
+        _popup.SetActive(true);
 
-        Color tempColour = popup.GetComponent<Image>().color;
+        Color tempColour = _popup.GetComponent<Image>().color;
         tempColour.a = 0.5f;
-        popup.GetComponent<Image>().color = tempColour;
+        _popup.GetComponent<Image>().color = tempColour;
 
-        popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = popupText;
+        _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = popupText;
 
-        Color tempTextColour = popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
+        Color tempTextColour = _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
         tempTextColour.a = 1f;
-        popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
+        _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
 
 
 
@@ -63,8 +68,8 @@ public class PopupController : MonoBehaviour
     {
         yield return new WaitForSeconds(popupWaitDelay); ;
         callback(false);
-        Color tempColour = popup.GetComponent<Image>().color;
-        Color tempTextColour = popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
+        Color tempColour = _popup.GetComponent<Image>().color;
+        Color tempTextColour = _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
         float startAlpha = tempColour.a;
         float startTextAlpha = tempTextColour.a;
         float startTime = 1f;
@@ -72,13 +77,13 @@ public class PopupController : MonoBehaviour
         for (float time = startTime; time >= 0; time -= Time.deltaTime)
         {
             tempColour.a = startAlpha *(time / startTime);
-            popup.GetComponent<Image>().color = tempColour;
+            _popup.GetComponent<Image>().color = tempColour;
             tempTextColour.a = startTextAlpha * (time / startTime);
-            popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
+            _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
             yield return null;
             callback(false);
         }
-        popup.SetActive(false);
+        _popup.SetActive(false);
         yield return null;
         callback(true);
     }

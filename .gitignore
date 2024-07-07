@@ -120,6 +120,10 @@ m_Build*
 # Batch build secretKeys folder
 /etc/secretKeys/
 
+# Caddy dev server (local WebGL test)
+/etc/caddy/*.exe
+/etc/caddy/logs/
+
 # All Local files for dev config and build tooling
 _[Ll]ocal*
 

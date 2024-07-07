@@ -9,7 +9,6 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerClassConfluence : MonoBehaviour, IPlayerClass
     {
 
-
         // Variables
 
         [SerializeField] private GameObject _shieldGumball;
