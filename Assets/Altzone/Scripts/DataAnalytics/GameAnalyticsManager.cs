@@ -167,6 +167,18 @@ namespace AltZone.Scripts.GA
             BattleWallHits();
         }
 
+        public void DistanceToPlayer(Vector3 playerPosition, Vector3 otherPlayerPosition) //etäisyys kanssapelaajaan
+        {
+            float distance = Vector3.Distance(playerPosition, otherPlayerPosition);
+
+            var eventParams = new Dictionary<string, object>
+            {
+                {"distance", distance}
+            };
+
+            GameAnalytics.NewDesignEvent("battle:distance:player", eventParams);
+            Debug.Log($"Distance to other player: {distance}");
+        }
         
         // privaatti funktiot joka GameAnalyticsManager käsittelee
 

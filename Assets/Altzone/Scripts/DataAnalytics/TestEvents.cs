@@ -16,7 +16,8 @@ public class TestEvents : MonoBehaviour
         TestBattlesStarted(); 
         StartCoroutine(TestSectionEnteredExited()); 
         TestShieldHits(); 
-        TestMoveCommands(); */
+        TestMoveCommands(); 
+        TestDistanceToPlayer(); */
     }
 
     // Update is called once per frame
@@ -85,5 +86,12 @@ public class TestEvents : MonoBehaviour
         GameAnalyticsManager.Instance.MoveCommand(new Vector3(4, 0, 4));
         GameAnalyticsManager.Instance.OnBattleEnd();
         Debug.Log("MoveCommands");
+    } 
+
+    void TestDistanceToPlayer()
+    {
+        Vector3 playerPosition = new Vector3(0, 0, 0);
+        Vector3 otherPlayerPosition = new Vector3(3, 0, 4);
+        GameAnalyticsManager.Instance.DistanceToPlayer(playerPosition, otherPlayerPosition);    
     } */
 }
