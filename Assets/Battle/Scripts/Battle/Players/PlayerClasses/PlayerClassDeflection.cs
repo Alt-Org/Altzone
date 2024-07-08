@@ -19,41 +19,22 @@ namespace Battle.Scripts.Battle.Players
 
     public class PlayerClassDeflection : MonoBehaviour, IPlayerClass
     {
-
-        //Variables
-
-        private PhotonView _photonView;
-
-        private PhotonEventDispatcher _photonEventDispatcher;
-
+        // Serialized fields
         [SerializeField] private ShieldManager _shieldManager;
-
         [SerializeField] private GameObject[] _shieldBounceRandomizers;
 
-
-
-        //private int _shieldChoice = 0;
-
-
-
-
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
-
-
-
-
-
         public bool SpecialAbilityOverridesBallBounce => false;
 
         public bool OnBallShieldCollision()
         {
-            //Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
+            // Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
+            // Käytännössä kilpi vaihtuu joka osuman jälkeen
 
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
 
             ShieldRandomizer();
 
-
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
             return true;
         }
 
@@ -62,13 +43,14 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
         }
 
-
-
-
-
         [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
+
         public void ActivateSpecialAbility()
         { }
+
+        // Variables
+        private PhotonView _photonView;
+        private PhotonEventDispatcher _photonEventDispatcher;
 
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS DEFLECTION] ";
@@ -78,26 +60,18 @@ namespace Battle.Scripts.Battle.Players
         // debug
         private void Start()
         {
-
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _photonView = GetComponent<PhotonView>();
 
             _photonEventDispatcher = Context.GetPhotonEventDispatcher;
 
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-
-
         }
-
-
 
         private void ShieldRandomizer()
         {
-
             if (PhotonNetwork.IsMasterClient)
-
             {
-
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is master client", _syncedFixedUpdateClock.UpdateCount));
 
                 int ShieldChangeUpdateNumber = _syncedFixedUpdateClock.UpdateCount + Math.Max(5, _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._networkDelay));
@@ -109,23 +83,17 @@ namespace Battle.Scripts.Battle.Players
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
 
-
-   
-
-
             }
 
             else
             {
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is pleb client", _syncedFixedUpdateClock.UpdateCount));
             }
-
         }
 
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-
             byte playerPos = 0;
 
             PlayerActor actor = transform.parent.GetComponent<PlayerActor>();
@@ -138,45 +106,28 @@ namespace Battle.Scripts.Battle.Players
 
                     playerPos = (byte)(driver.PlayerPos - PhotonBattle.PlayerPosition1);
                     break;
-
                 }
             }
-
 
             byte eventCode = (byte)(PhotonBattle.EventCodes.PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + playerPos);
 
             _photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);
 
-
-
             if (PhotonNetwork.IsMasterClient)
             {
-
                 this.ExecuteOnNextFrame(() => {
                     PhotonNetwork.AllocateViewID(_photonView);
 
                     _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);
 
-
-
                 });
-
-
-
-
-
             }
-
         }
-
 
         private void OnPhotonViewIdReceived(EventData data)
         {
-
             _photonView.ViewID = (int) data.CustomData;
-
         }
-
 
         [PunRPC]
         private void ShieldRandomizerRpc(int ShieldChangeUpdateNumber, int choiceIndex)
@@ -184,15 +135,12 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Receiving network message", _syncedFixedUpdateClock.UpdateCount));
 
             _syncedFixedUpdateClock.ExecuteOnUpdate(ShieldChangeUpdateNumber, -10, () =>
-
             {
                 GameObject _shieldChoice = _shieldBounceRandomizers[choiceIndex];
 
                 _shieldManager.SetShield(_shieldChoice);
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to choice {1}", _syncedFixedUpdateClock.UpdateCount, choiceIndex));
             });
-
         }
-
     }
 }
