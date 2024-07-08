@@ -24,8 +24,8 @@ namespace Battle.Scripts.Test
 
         //private GridManager _gridManager;
         private PlayerActor _playerActor;
+        private ShieldManager _shieldManager;
         private Transform _transform;
-        private Collider2D _collider;
         private float _attackMultiplier;
 
         // Debug
@@ -38,17 +38,16 @@ namespace Battle.Scripts.Test
 
         private void Awake()
         {
-            _collider = GetComponent<Collider2D>();
             _transform = GetComponent<Transform>();
             _attackMultiplier = GameConfig.Get().Variables._playerAttackMultiplier;
             _playerActor = transform.root.GetComponent<PlayerActor>();
-            //_gridManager = Context.GetGridManager;
+            _shieldManager = _transform.parent.parent.GetComponentInParent<ShieldManager>();
 
             // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
-        private IEnumerator OnCollisionEnter2D(Collision2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
             GameObject otherGameObject = collision.gameObject;
             if (otherGameObject.CompareTag(Tags.Ball))
@@ -59,9 +58,7 @@ namespace Battle.Scripts.Test
                     _playerActor.ShieldHit(1);
                 }
                 */
-                _collider.enabled = false;
-                yield return new WaitForSeconds(.1f);
-                _collider.enabled = true;
+                _shieldManager.OnShieldBoxCollision();
             }
         }
     }

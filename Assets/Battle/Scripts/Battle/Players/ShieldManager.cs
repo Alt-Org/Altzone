@@ -1,3 +1,4 @@
+using Battle.Scripts.Test;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -27,20 +28,26 @@ namespace Battle.Scripts.Battle.Players
             _currentShield = new Shield(Instantiate(shieldGameObject, transform.position, transform.rotation, transform));
             _currentShield.ShieldGameObject.transform.localPosition = Vector3.zero;
             _currentShield.ShieldGameObject.SetActive(true);
-            _currentShield.ShieldGameObject.SetActive(_hitboxActive);
+            _currentShield.ShieldGameObject.SetActive(_hitboxActive && _timer <= 0);
             _currentShield.ShieldSpriteRenderer.enabled = _showShield;
         }
 
         public void SetHitboxActive(bool active)
         {
             _hitboxActive = active;
-            _currentShield.ShieldHitbox.SetActive(active);
+            if (_timer <= 0) _currentShield.ShieldHitbox.SetActive(active);
         }
 
         public void SetShow(bool show)
         {
             _showShield = show;
             _currentShield.ShieldSpriteRenderer.enabled = show;
+        }
+
+        public void OnShieldBoxCollision()
+        {
+            _currentShield.ShieldHitbox.SetActive(false);
+            _timer = 5;
         }
 
         #endregion Public - Methods
@@ -69,13 +76,6 @@ namespace Battle.Scripts.Battle.Players
                 _spriteRenderers[(int)PlayerActor.SpriteVariant.B] = _spriteGameObjects[(int)PlayerActor.SpriteVariant.B].GetComponent<SpriteRenderer>();
             }
 
-            /*
-            public void test()
-            {
-                _spriteGameObjects = new();
-            }
-            */
-
             private readonly GameObject[] _spriteGameObjects;
             private readonly SpriteRenderer[] _spriteRenderers;
         }
@@ -85,6 +85,7 @@ namespace Battle.Scripts.Battle.Players
         private bool _initialized = false;
         private bool _hitboxActive;
         private bool _showShield;
+        private int _timer = -1;
         #endregion Private - Fields
 
         #region Private - Methods
@@ -93,6 +94,13 @@ namespace Battle.Scripts.Battle.Players
         {
             _currentShield = new Shield(transform.GetChild(0).gameObject);
             _initialized = true;
+        }
+
+        private void FixedUpdate()
+        {
+            if (_timer < 0) return;
+            if (_timer == 0 && _hitboxActive) _currentShield.ShieldHitbox.SetActive(true);
+            _timer--;
         }
 
         #endregion Private - Methods
