@@ -109,22 +109,24 @@ public class BallHandler : MonoBehaviour
         }
         else
         {
-            ShieldBoxCollider shield = otherGameObject.GetComponent<ShieldBoxCollider>(); 
+            ShieldBoxCollider shield = otherGameObject.GetComponent<ShieldBoxCollider>();
             if (shield != null)
             {
-                bool doBoucne = shield.OnBallShieldCollision();
+                Transform shieldTransform = shield.ShieldTransform;
+                Vector2 incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
+                Vector3 shieldDirection = shieldTransform.up;
+                bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0;
 
-                if (doBoucne)
+                if (isCorrectDirection)
                 {
-                    Transform shieldTransform = shield.ShieldTransform;
-                    float bounceAngle = shield.BounceAngle;
-                    float attackMultiplier = shield.AttackMultiplier;
-                    Vector2 incomingDirection = (_rb.position - (Vector2)shieldTransform.position).normalized;
-                    Vector3 shieldDirection = shieldTransform.up;
-                    bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0;
+                    bool doBounce = shield.OnBallShieldCollision();
 
-                    if (isCorrectDirection)
+                    if (doBounce)
                     {
+
+                        float bounceAngle = shield.BounceAngle;
+                        float attackMultiplier = shield.AttackMultiplier;
+
                         gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
                         _rb.position = _gridManager.GridPositionToWorldPoint(gridPos);
                         float angle = shieldTransform.rotation.eulerAngles.z + bounceAngle; // Käytä kilven kulmaa
@@ -134,14 +136,14 @@ public class BallHandler : MonoBehaviour
                         SetVelocity(newVelocity);
 
                         Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (bounce), position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
-                    }
 
-                    shield.OnBallShieldBounce();
-                }
-                else
-                {
-                    gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (no bounce), position: {1}, grid position: ({2}))", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos));
+                        shield.OnBallShieldBounce();
+                    }
+                    else
+                    {
+                        gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
+                        Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (no bounce), position: {1}, grid position: ({2}))", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos));
+                    }
                 }
             }
         }
