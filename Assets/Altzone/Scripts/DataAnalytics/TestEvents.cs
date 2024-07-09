@@ -17,7 +17,8 @@ public class TestEvents : MonoBehaviour
         StartCoroutine(TestSectionEnteredExited()); 
         TestShieldHits(); 
         TestMoveCommands(); 
-        TestDistanceToPlayer(); */
+        TestDistanceToPlayer(); 
+        TestDistanceToWall(); */
     }
 
     // Update is called once per frame
@@ -93,5 +94,12 @@ public class TestEvents : MonoBehaviour
         Vector3 playerPosition = new Vector3(0, 0, 0);
         Vector3 otherPlayerPosition = new Vector3(3, 0, 4);
         GameAnalyticsManager.Instance.DistanceToPlayer(playerPosition, otherPlayerPosition);    
+    } 
+
+    void TestDistanceToWall()
+    {
+        Vector3 playerPosition = new Vector3(0, 0, 0);
+        Vector3 wallPosition = new Vector3(5, 0, 0);
+        GameAnalyticsManager.Instance.DistanceToWall(playerPosition, wallPosition);
     } */
 }
