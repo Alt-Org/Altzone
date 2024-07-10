@@ -11,41 +11,64 @@ namespace Altzone.Scripts.Model.Poco.Game
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CharacterClass
     {
-        [PrimaryKey] public string Id;
-        public GestaltCycle GestaltCycle;
+        [PrimaryKey] public CharacterClassID Id;
         [Unique] public string Name;
+        public int Hp;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CharacterClass(string id, GestaltCycle gestaltCycle, string name, int speed, int resistance, int attack, int defence)
+        public CharacterClass(CharacterClassID id, int hp, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
-            Assert.IsTrue(name.IsMandatory());
+            Assert.AreNotEqual(CharacterClassID.None, id);
+            Assert.IsTrue(hp >= 0);
             Assert.IsTrue(speed >= 0);
             Assert.IsTrue(resistance >= 0);
             Assert.IsTrue(attack >= 0);
             Assert.IsTrue(defence >= 0);
             Id = id;
-            GestaltCycle = gestaltCycle;
-            Name = name;
+            Name = GetClassName(id);
+            Hp = hp;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
             Defence = defence;
         }
 
-        public static CharacterClass CreateDummyFor(string id)
+        public static CharacterClass CreateDummyFor(CharacterClassID id)
         {
-            return new CharacterClass(id, (GestaltCycle)1, "possibly_deleted", 1, 1, 1, 1);
+            return new CharacterClass(id, 1, 1, 1, 1, 1);
         }
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(GestaltCycle)}: {GestaltCycle}, {nameof(Name)}: {Name}" +
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}" +
                    $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
+
+        public static string GetClassName(CharacterClassID id)
+        {
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    return "Desensitizer";
+                case CharacterClassID.Trickster:
+                    return "Trickster";
+                case CharacterClassID.Obedient:
+                    return "Obedient";
+                case CharacterClassID.Projector:
+                    return "Projector";
+                case CharacterClassID.Retroflector:
+                    return "Retroflector";
+                case CharacterClassID.Confluent:
+                    return "Confluent";
+                case CharacterClassID.Intellectualizer:
+                    return "Intellectualizer";
+                default:
+                    return "Error";
+            }
+        }
+
     }
 }

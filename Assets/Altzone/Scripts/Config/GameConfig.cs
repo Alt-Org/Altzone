@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Settings;
 using Prg.Scripts.Common.Util;

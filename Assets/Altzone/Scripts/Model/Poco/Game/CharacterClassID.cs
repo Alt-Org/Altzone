@@ -8,15 +8,15 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// <remarks>
     /// This will be serialized in UNITY scenes and prefabs and sent over network. Do not change these! 
     /// </remarks>
-    public enum GestaltCycle
+    public enum CharacterClassID
     {
         None = 0,
-        Desensitisation = 1,
-        Deflection = 2,
-        Introjection = 3,
-        Projection = 4,
-        Retroflection = 5,
-        Egotism = 6,
-        Confluence = 7,
+        Desensitizer = 1 << 8,
+        Trickster = 2 << 8,
+        Obedient = 3 << 8,
+        Projector = 4 << 8,
+        Retroflector = 5 << 8,
+        Confluent = 6 << 8,
+        Intellectualizer = 7 << 8
     }
 }

@@ -223,7 +223,7 @@ namespace Altzone.Scripts.Model
             callback(_storageData.CustomCharacters);
         }
 
-        internal void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback)
+        internal void GetBattleCharacterTest(CharacterID customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
@@ -243,7 +243,7 @@ namespace Altzone.Scripts.Model
             return battleCharacters;
         }
 
-        private BattleCharacter _GetBattleCharacter(string customCharacterId)
+        private BattleCharacter _GetBattleCharacter(CharacterID customCharacterId)
         {
             var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
             if (customCharacter == null)
@@ -251,11 +251,11 @@ namespace Altzone.Scripts.Model
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
             var characterClass =
-                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
-                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassId);
+                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassID);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
@@ -312,7 +312,7 @@ namespace Altzone.Scripts.Model
             var playerGuid = new PlayerSettings().PlayerGuid;
             var clanGuid = playerGuid;
             var customCharacterId = storageData.CustomCharacters[0].Id;
-            storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, customCharacterId));
+            storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, (int)customCharacterId));
             storageData.ClanData.Add(CreateDefaultModels.CreateClanData(clanGuid, storageData.GameFurniture));
 
             SaveStorage(storageData, storagePath);

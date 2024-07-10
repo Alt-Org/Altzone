@@ -188,7 +188,7 @@ namespace Battle.Scripts.Battle.Players
                 return PlayerActor.InstantiatePrefabFor(this, _playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             }
 
-            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
+            var playerPrefabs = GameConfig.Get().Characters;
             var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
             if (_isTesting)
             {

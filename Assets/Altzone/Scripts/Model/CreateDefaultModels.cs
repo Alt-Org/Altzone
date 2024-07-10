@@ -20,7 +20,7 @@ namespace Altzone.Scripts.Model
             return Guid.NewGuid().ToString();
         }
 
-        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, string currentCustomCharacterId)
+        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
             return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
         }
@@ -113,13 +113,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Tunnoton", 3, 9, 7, 3),
-                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Hämääjä", 9, 3, 3, 4),
-                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Tottelija", 5, 5, 4, 4),
-                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Peilaaja", 4, 2, 9, 5),
-                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Torjuja", 3, 7, 2, 9),
-                new(GestaltCycle.Egotism.ToString(), GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Sulautuja", 5, 6, 2, 6)
+                new(CharacterClassID.Desensitizer,     7, 3, 9, 7, 3),
+                new(CharacterClassID.Trickster,        3, 9, 3, 3, 4),
+                new(CharacterClassID.Obedient,         5, 5, 5, 4, 4),
+                new(CharacterClassID.Projector,        4, 4, 2, 9, 5),
+                new(CharacterClassID.Retroflector,     6, 3, 7, 2, 9),
+                new(CharacterClassID.Confluent,        5, 5, 6, 2, 6),
+                new(CharacterClassID.Intellectualizer, 4, 6, 2, 6, 5)
             };
         }
 
@@ -132,13 +132,14 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new("1", GestaltCycle.Desensitisation.ToString(), 1, "Keijo Kelmi", 0, 0, 0, 0),
-                new("2", GestaltCycle.Deflection.ToString(), 2, "Huugo Hupaisa", 0, 0, 0, 0),
-                new("3", GestaltCycle.Introjection.ToString(), 3, "Paavali Pappila", 0, 0, 0, 0),
-                new("4", GestaltCycle.Projection.ToString(), 4, "Tarmo Taide", 0, 0, 0, 0),
-                new("5", GestaltCycle.Retroflection.ToString(), 5, "Hannu Hodari", 0, 0, 0, 0),
-                new("6", GestaltCycle.Egotism.ToString(), 6, "Albert Älypää", 0, 0, 0, 0),
-                new("7", GestaltCycle.Confluence.ToString(), 7, "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
+                new(CharacterID.DesensitizerBodybuilder, 0, 0, 0, 0, 0),
+                new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
+                new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
+                new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
+                new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
+                new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)
             };
         }
 

@@ -24,12 +24,12 @@ namespace MenuUi.Scripts.CharacterGallery
         // array of character slots in verticalpanel
         private CharacterSlot[] CharacterSlot;
 
-        public delegate void CurrentCharacterIdChangedHandler(string newCharacterId);
+        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         // Event triggered when current character ID changes
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
 
-        private string _currentCharacterId;
+        private CharacterID _currentCharacterId;
 
         private void Awake()
         {
@@ -53,7 +53,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _isReady = true;
         }
 
-        public string CurrentCharacterId
+        public CharacterID CurrentCharacterId
         {
             get => _currentCharacterId;
             private set
@@ -80,7 +80,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        public void SetCharacters(List<BattleCharacter> characters, string currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, CharacterID currentCharacterId)
         {
             CurrentCharacterId = currentCharacterId;
 

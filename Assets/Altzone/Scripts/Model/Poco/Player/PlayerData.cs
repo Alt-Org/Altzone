@@ -6,6 +6,7 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Player
@@ -15,7 +16,8 @@ namespace Altzone.Scripts.Model.Poco.Player
     {
         [PrimaryKey] public string Id;
         [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public string CurrentCustomCharacterId;
+        [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
+        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[5];
         [Unique] public string Name;
         public int BackpackCapacity;
 
@@ -28,20 +30,22 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
-        public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == CurrentCustomCharacterId);
+        public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == (CharacterID)SelectedCharacterIds[0]);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
 
-        public PlayerData(string id, string clanId, string currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
-            Assert.IsTrue(currentCustomCharacterId.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(currentCustomCharacterId >= 0);
             Assert.IsTrue(name.IsMandatory());
             Assert.IsTrue(backpackCapacity >= 0);
             Assert.IsTrue(uniqueIdentifier.IsMandatory());
             Id = id;
             ClanId = clanId ?? string.Empty;
-            CurrentCustomCharacterId = currentCustomCharacterId ?? string.Empty;
+            SelectedCharacterId = currentCustomCharacterId;
+            SelectedCharacterIds[0] = currentCustomCharacterId;
+            Debug.Log("Test: "+SelectedCharacterIds[0]);
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
@@ -56,7 +60,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public override string ToString()
         {
             return
-                $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(CurrentCustomCharacterId)}: {CurrentCustomCharacterId}" +
+                $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}" +
                 $", {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }
     }

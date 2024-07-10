@@ -92,9 +92,9 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
             Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if (characterData[selectedCharacterIndex].uniqueID.ToString() != _playerData.CurrentCustomCharacterId)
+            if (characterData[selectedCharacterIndex].uniqueID != _playerData.SelectedCharacterId)
             {
-                _playerData.CurrentCustomCharacterId = characterData[selectedCharacterIndex].uniqueID.ToString();
+                _playerData.SelectedCharacterId = characterData[selectedCharacterIndex].uniqueID;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
