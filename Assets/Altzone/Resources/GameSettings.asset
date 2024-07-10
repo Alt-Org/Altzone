@@ -36,44 +36,90 @@ MonoBehaviour:
     - {fileID: 8975400094333793158, guid: b6f696e0cf4fb214ab456028786bcf9a, type: 3}
     - {fileID: 8975400094333793158, guid: e8bb5f75a45eac04f88257ba4a0c0d3a, type: 3}
   _characters:
-    _mainDefence1: 0
-    _speed1: 0
-    _resistance1: 0
-    _attack1: 0
-    _defence1: 0
-    _mainDefence2: 0
-    _speed2: 0
-    _resistance2: 0
-    _attack2: 0
-    _defence2: 0
-    _mainDefence3: 0
-    _speed3: 0
-    _resistance3: 0
-    _attack3: 0
-    _defence3: 0
-    _mainDefence4: 0
-    _speed4: 0
-    _resistance4: 0
-    _attack4: 0
-    _defence4: 0
-    _mainDefence5: 0
-    _speed5: 0
-    _resistance5: 0
-    _attack5: 0
-    _defence5: 0
-    _mainDefence6: 0
-    _speed6: 0
-    _resistance6: 0
-    _attack6: 0
-    _defence6: 0
-    _mainDefence7: 0
-    _speed7: 0
-    _resistance7: 0
-    _attack7: 0
-    _defence7: 0
-    _name: []
-    _mainDefence8: 
-    _speed8: 
-    _resistance8: 
-    _attack8: 
-    _defence8: 
+    _characters:
+    - _mainDefence: 256
+      characters:
+      - Name: 
+        _character: 257
+        _battlePrefab: {fileID: 8975400094333793158, guid: f71ca8d92faed714eaaaae378bf48bca,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 512
+      characters:
+      - Name: 
+        _character: 513
+        _battlePrefab: {fileID: 8975400094333793158, guid: b4bb7058dd2d8984394ed76030e19470,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 768
+      characters:
+      - Name: 
+        _character: 769
+        _battlePrefab: {fileID: 8975400094333793158, guid: 497ca6985f4932c4480f13eb212ec9da,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 1024
+      characters:
+      - Name: 
+        _character: 1025
+        _battlePrefab: {fileID: 8975400094333793158, guid: 398e5164e6cf7fa418fb0bc14a469728,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 1280
+      characters:
+      - Name: 
+        _character: 1281
+        _battlePrefab: {fileID: 8975400094333793158, guid: ee7f75cb6207c7045971e3a4b7abe571,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+      - Name: 
+        _character: 1282
+        _battlePrefab: {fileID: 8975400094333793158, guid: b6f696e0cf4fb214ab456028786bcf9a,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 1536
+      characters:
+      - Name: 
+        _character: 1537
+        _battlePrefab: {fileID: 8975400094333793158, guid: b9e9ed6175aa1da4aaf48933d49ee030,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
+    - _mainDefence: 1792
+      characters:
+      - Name: 
+        _character: 1793
+        _battlePrefab: {fileID: 8975400094333793158, guid: 027ea1ad99c97054eac0a2b5ed509fc8,
+          type: 3}
+        _hp: 0
+        _speed: 0
+        _resistance: 0
+        _attack: 0
+        _defence: 0
