@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = (CharacterID)playerData.SelectedCharacterId;
                 var characters = playerData.BattleCharacters.ToList();
-                characters.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+                characters.Sort((a, b) => a.CustomCharacterId.CompareTo(b.CustomCharacterId));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, currentCharacterId);
             });
@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_view.CurrentCharacterId != (CharacterID)_playerData.SelectedCharacterId)
             {
-                _playerData.SelectedCharacterId = (int)_view.CurrentCharacterId;
+                _playerData.SelectedCharacterIds[0] = (int)_view.CurrentCharacterId;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
