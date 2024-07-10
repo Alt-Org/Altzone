@@ -18,7 +18,8 @@ public class TestEvents : MonoBehaviour
         TestShieldHits(); 
         TestMoveCommands(); 
         TestDistanceToPlayer(); 
-        TestDistanceToWall(); */
+        TestDistanceToWall(); 
+        TestOnBattleEnd(); */
     }
 
     // Update is called once per frame
@@ -101,5 +102,15 @@ public class TestEvents : MonoBehaviour
         Vector3 playerPosition = new Vector3(0, 0, 0);
         Vector3 wallPosition = new Vector3(5, 0, 0);
         GameAnalyticsManager.Instance.DistanceToWall(playerPosition, wallPosition);
+    } 
+
+    void TestOnBattleEnd()
+    {
+        GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
+        GameAnalyticsManager.Instance.OnShieldHit("hannu-hodari");
+        GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
+        GameAnalyticsManager.Instance.OnShieldHit("hannu-hodari");
+        GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
+        GameAnalyticsManager.Instance.OnBattleEnd();
     } */
 }

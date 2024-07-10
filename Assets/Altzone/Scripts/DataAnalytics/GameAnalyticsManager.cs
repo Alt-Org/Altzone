@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameAnalyticsSDK;
+using UnityEngine.InputSystem;
 
 
 namespace AltZone.Scripts.GA
@@ -20,7 +21,7 @@ namespace AltZone.Scripts.GA
         private int shieldHits = 0;
         private int wallHits = 0;
         private int moveCommandsCount = 0;
-
+        private Dictionary<string, int> playerShieldHitsPerMatch = new Dictionary<string, int>();
         private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
 
         private void Awake()
@@ -126,9 +127,19 @@ namespace AltZone.Scripts.GA
             }
         }
 
-        public void OnShieldHit() //laskee kilpiosumat
+        public void OnShieldHit(string player) //laskee kilpiosumat
         {
             shieldHits++;
+
+            if (playerShieldHitsPerMatch.ContainsKey(player))
+            {
+                playerShieldHitsPerMatch[player]++;
+            }
+            else
+            {
+                playerShieldHitsPerMatch[player] = 1;
+            }
+
             Debug.Log($"Shield hit count: {shieldHits}");
         }
 
@@ -155,16 +166,14 @@ namespace AltZone.Scripts.GA
 
         public void OnSessionEnd() //kutsutaan sovelluksen sulkemisessa
         {
-            // sending battles_started
             BattlesStarted();
         }
 
         public void OnBattleEnd() //kutsutaan battlen lopetuksessa
         {
             MoveCommandSummary();
-
-            // sending wall_hits
             BattleWallHits();
+            ShieldHitsPerMatchPerPlayer();
         }
 
         public void DistanceToPlayer(Vector3 playerPosition, Vector3 otherPlayerPosition) //etäisyys kanssapelaajaan
@@ -223,5 +232,19 @@ namespace AltZone.Scripts.GA
             moveCommandsCount = 0;
         }
 
+        private void ShieldHitsPerMatchPerPlayer()
+        {
+            foreach (string key in playerShieldHitsPerMatch.Keys)
+            {
+                var eventParams = new Dictionary<string, object>
+                {
+                    { "ShieldHitsPerMatch", playerShieldHitsPerMatch[key] }
+                };
+                GameAnalytics.NewDesignEvent($"battle:shield_hits_per_match:{key}", eventParams);
+                Debug.Log($"Player {key} shield hits this match: {playerShieldHitsPerMatch[key]}");
+            }
+
+            playerShieldHitsPerMatch = new Dictionary<string, int>(); ;
+        }
     }
 }
