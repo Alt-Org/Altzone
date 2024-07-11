@@ -23,6 +23,7 @@ public class ServerManager : MonoBehaviour
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
 
+    [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
     public static string ADDRESS = "https://altzone.fi/api/";
@@ -31,6 +32,9 @@ public class ServerManager : MonoBehaviour
 
     public delegate void LogInStatusChanged(bool isLoggedIn);
     public static event LogInStatusChanged OnLogInStatusChanged;
+
+    public delegate void LogInFailed();
+    public static event LogInFailed OnLogInFailed;
 
     public delegate void ClanChanged(ServerClan clan);
     public static event ClanChanged OnClanChanged;
@@ -74,7 +78,7 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
-        LogIn();
+        if(_automaticallyLogIn) StartCoroutine(LogIn());
     }
 
     public void Reset()
@@ -109,19 +113,21 @@ public class ServerManager : MonoBehaviour
     /// <summary>
     /// Tries to log in player if access token is found.
     /// </summary>
-    private void LogIn()
+    public IEnumerator LogIn()
     {
-        if (AccessToken == string.Empty)
+        if (Player != null || AccessToken == string.Empty)
         {
-            return;
+            OnLogInFailed();
+            yield break;
         }
         else
         {
             // Checks if we can get Player & player Clan from the server
-            StartCoroutine(GetPlayerFromServer(player =>
+            yield return StartCoroutine(GetPlayerFromServer(player =>
             {
                 if (player == null)
                 {
+                    OnLogInFailed();
                     return;
                 }
 
@@ -201,7 +207,7 @@ public class ServerManager : MonoBehaviour
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
-        string currentCustomCharacterId = playerData == null ? "1" : playerData.CurrentCustomCharacterId;
+        int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
 
         PlayerData newPlayerData = null;
         newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, player.name, player.backpackCapacity, player.uniqueIdentifier);
@@ -290,7 +296,7 @@ public class ServerManager : MonoBehaviour
                 ClanInventory inventory = new ClanInventory();
                 List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
 
-                foreach (var item in items)
+                foreach (ServerItem item in items)
                 {
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
                 }
