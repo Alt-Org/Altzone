@@ -5,12 +5,17 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using ExitGames.Client.Photon;
 using MenuUi.Scripts.SwipeNavigation;
+using TMPro;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class DraggableCharacter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image image;
+        [SerializeField] private TextMeshProUGUI _characterNameText;
+
+        private CharacterID _id;
 
         private Button button;
         private ColorBlock originalColors;
@@ -30,6 +35,8 @@ namespace MenuUi.Scripts.CharacterGallery
         private SwipeBlockType _blockType = SwipeBlockType.All;
         [SerializeField]
         private SwipeUI _swipe;
+
+        public CharacterID Id { get => _id; set => _id = value; }
 
         private void Start()
         {

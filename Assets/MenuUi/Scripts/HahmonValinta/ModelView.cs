@@ -14,6 +14,9 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Transform VerticalContentPanel;
         [SerializeField] private Transform HorizontalContentPanel;
 
+        [SerializeField] private GameObject _characterSlotprefab;
+        [SerializeField] private GalleryCharacterReference _referenceSheet;
+
         [SerializeField] private bool _isReady;
 
         // character buttons
@@ -83,6 +86,17 @@ namespace MenuUi.Scripts.CharacterGallery
         public void SetCharacters(List<BattleCharacter> characters, CharacterID currentCharacterId)
         {
             CurrentCharacterId = currentCharacterId;
+            Transform content = transform.Find("Content");
+            foreach (var character in characters)
+            {
+                GameObject slot = Instantiate(_characterSlotprefab, content);
+
+                slot.transform.Find("Button").GetComponent<DraggableCharacter>().Id = character.CustomCharacterId;
+
+                CharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)character.CustomCharacterId);
+
+
+            }
 
             for (var i = 0; i < _buttons.Length && i < CharacterSlot.Length; ++i)
             {
