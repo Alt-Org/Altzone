@@ -21,6 +21,7 @@ public class BallHandler : MonoBehaviour
     [SerializeField] private float _sparkleUpdateInterval;
     [SerializeField] private float _timeSinceLastUpdate;
     [SerializeField] private GameObject _sparkleSprite;
+    [SerializeField] private SpawnDiamonds _diamondSpawner;
 
 
     #region Public Methods
@@ -80,6 +81,7 @@ public class BallHandler : MonoBehaviour
         // Get important objects
         _battlePlayArea = Context.GetBattlePlayArea;
         _gridManager = Context.GetGridManager;
+        _diamondSpawner = FindObjectOfType<SpawnDiamonds>();
 
         // Get game config variables
         GameVariables variables = GameConfig.Get().Variables;
@@ -156,6 +158,8 @@ public class BallHandler : MonoBehaviour
 
             if (BrickHealth - _damage <= 0)
             {
+                Vector3 spawnPoint = transform.position;
+                _diamondSpawner.DiamondSpawner(spawnPoint);
                 Stop();
                 Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
             }
