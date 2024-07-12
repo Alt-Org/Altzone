@@ -18,6 +18,12 @@ namespace Battle.Scripts.Battle.Players
         public GameObject TeamDiamonds2;
         private TMP_Text DiamondText2;
         public TeamDiamondCount TeamDiamondCount2;
+        public GameObject TeamDiamonds3;
+        private TMP_Text DiamondText3;
+        public TeamDiamondCount TeamDiamondCount3;
+        public GameObject TeamDiamonds4;
+        private TMP_Text DiamondText4;
+        public TeamDiamondCount TeamDiamondCount4;
 
         public List<GameObject> PlayerDriverPhotons = new List<GameObject>();
         public PlayerDriverPhoton PlayerDriverPhoton;
@@ -28,7 +34,7 @@ namespace Battle.Scripts.Battle.Players
         public int TeamNumber;
 
         private const byte PickupEvent = 0;
-        public string EventSender; 
+        public string EventSender;
 
         private void Start()
         {
@@ -56,16 +62,24 @@ namespace Battle.Scripts.Battle.Players
             {
                 TeamDiamonds = GameObject.FindGameObjectWithTag("AlphaDiamonds");
                 TeamDiamonds2 = GameObject.FindGameObjectWithTag("AlphaDiamonds2");
+                TeamDiamonds3 = GameObject.FindGameObjectWithTag("AlphaDiamonds3");
+                TeamDiamonds4 = GameObject.FindGameObjectWithTag("AlphaDiamonds4");
             }
             else
             {
                 TeamDiamonds = GameObject.FindGameObjectWithTag("BetaDiamonds");
                 TeamDiamonds2 = GameObject.FindGameObjectWithTag("BetaDiamonds2");
+                TeamDiamonds3 = GameObject.FindGameObjectWithTag("BetaDiamonds3");
+                TeamDiamonds4 = GameObject.FindGameObjectWithTag("BetaDiamonds4");
             }
             DiamondText = TeamDiamonds.GetComponent<TMP_Text>();
             TeamDiamondCount = TeamDiamonds.GetComponent<TeamDiamondCount>();
             DiamondText2 = TeamDiamonds2.GetComponent<TMP_Text>();
             TeamDiamondCount2 = TeamDiamonds2.GetComponent<TeamDiamondCount>();
+            DiamondText3 = TeamDiamonds3.GetComponent<TMP_Text>();
+            TeamDiamondCount3 = TeamDiamonds3.GetComponent<TeamDiamondCount>();
+            DiamondText4 = TeamDiamonds4.GetComponent<TMP_Text>();
+            TeamDiamondCount4 = TeamDiamonds4.GetComponent<TeamDiamondCount>();
         }
 
         private void OnEnable()
@@ -77,7 +91,7 @@ namespace Battle.Scripts.Battle.Players
         {
             PhotonNetwork.RemoveCallbackTarget(this);
         }
-        
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.CompareTag("Diamond"))
@@ -98,6 +112,30 @@ namespace Battle.Scripts.Battle.Players
                 {
                     EventSender = PlayerActor.SeePlayerName;
                     var DiamondType = 2;
+                    object[] content = new object[] { EventSender, DiamondType };
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                    PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
+                }
+                Destroy(collision.gameObject);
+            }
+            if (collision.gameObject.CompareTag("Diamond3"))
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    EventSender = PlayerActor.SeePlayerName;
+                    var DiamondType = 3;
+                    object[] content = new object[] { EventSender, DiamondType };
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                    PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
+                }
+                Destroy(collision.gameObject);
+            }
+            if (collision.gameObject.CompareTag("Diamond4"))
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    EventSender = PlayerActor.SeePlayerName;
+                    var DiamondType = 4;
                     object[] content = new object[] { EventSender, DiamondType };
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                     PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
@@ -126,6 +164,18 @@ namespace Battle.Scripts.Battle.Players
                 {
                     TeamDiamondCount2.TeamDiamondCounter = TeamDiamondCount2.TeamDiamondCounter + 1;
                     DiamondText2.SetText(TeamDiamondCount2.TeamDiamondCounter.ToString());
+                    //collectionSoundEffect.PlayOneShot(collect);
+                }
+                if (EventSender == PlayerActor.SeePlayerName && DiamondType == 3)
+                {
+                    TeamDiamondCount3.TeamDiamondCounter = TeamDiamondCount3.TeamDiamondCounter + 1;
+                    DiamondText3.SetText(TeamDiamondCount3.TeamDiamondCounter.ToString());
+                    //collectionSoundEffect.PlayOneShot(collect);
+                }
+                if (EventSender == PlayerActor.SeePlayerName && DiamondType == 4)
+                {
+                    TeamDiamondCount4.TeamDiamondCounter = TeamDiamondCount4.TeamDiamondCounter + 1;
+                    DiamondText4.SetText(TeamDiamondCount4.TeamDiamondCounter.ToString());
                     //collectionSoundEffect.PlayOneShot(collect);
                 }
             }
