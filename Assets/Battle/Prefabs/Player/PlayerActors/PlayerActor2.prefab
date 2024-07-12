@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8302240892926543392}
   - component: {fileID: 9073397430979747925}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SparkleSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1186,6 +1186,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerClassNone
       objectReference: {fileID: 0}
+    - target: {fileID: 4455143063335240921, guid: 944cac59021586244a31462ded08ec78,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1207,8 +1212,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 128515036542142710, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 128515036542142710, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 677111602644722082, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 677111602644722082, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
@@ -1255,6 +1270,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2004663793114979497, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3069563323245903527, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3089177725996900877, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
@@ -1355,6 +1380,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BoxShield
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462671058047938166, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3462671058047938166, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
@@ -1514,8 +1544,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7143025880390422635, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143025880390422635, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7451012651884410541, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7987686430154631567, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
@@ -1561,6 +1601,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8546297990267489979, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8881603568057090423, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
