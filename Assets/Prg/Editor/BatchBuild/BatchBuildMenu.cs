@@ -8,7 +8,7 @@ namespace Prg.Editor.BatchBuild
     internal static class BatchBuildMenu
     {
         private const string MenuRoot = "Prg/";
-        private const string MenuItem = MenuRoot + "Build/";
+        private const string MenuItem = MenuRoot + "Build/Old/";
 
         [MenuItem(MenuItem + "Show Build Report in browser", false, 10)]
         private static void HtmlBuildReportBrowser() => Logged(() => BuildReportAnalyzer.HtmlBuildReportFast());
