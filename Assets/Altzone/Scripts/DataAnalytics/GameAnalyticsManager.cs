@@ -22,6 +22,7 @@ namespace AltZone.Scripts.GA
         private int shieldHits = 0;
         private int wallHits = 0;
         private int moveCommandsCount = 0;
+        private int clanChanges = 0;
         private Dictionary<string, int> playerShieldHitsPerMatch = new Dictionary<string, int>();
         private Dictionary<string, int> teamWallHitsPerMatch = new Dictionary<string, int>();
         private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
@@ -213,6 +214,19 @@ namespace AltZone.Scripts.GA
 
             GameAnalytics.NewDesignEvent("battle:distance:wall", eventParams);
             Debug.Log($"Distance to wall: {distance}");
+        }
+
+        public void ClanChange(string newClan) //laskee klaanien vaihdot 
+        {
+            clanChanges++;
+            var eventParams = new Dictionary<string, object>
+            {
+                {"clan", newClan},
+                {"totalClanChanges", clanChanges }
+            };
+
+            GameAnalytics.NewDesignEvent("clan:change", eventParams);
+            Debug.Log($"Clan changed to {newClan}. Total clan changes: {clanChanges}");
         }
 
         // privaatti funktiot joka GameAnalyticsManager käsittelee

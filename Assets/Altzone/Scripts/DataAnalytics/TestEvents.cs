@@ -19,7 +19,8 @@ public class TestEvents : MonoBehaviour
         TestMoveCommands(); 
         TestDistanceToPlayer(); 
         TestDistanceToWall(); 
-        TestOnBattleEnd(); */
+        TestOnBattleEnd(); 
+        TestClanChanges(); */
     }
 
     // Update is called once per frame
@@ -115,5 +116,11 @@ public class TestEvents : MonoBehaviour
         GameAnalyticsManager.Instance.OnShieldHit("hannu-hodari");
         GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
         GameAnalyticsManager.Instance.OnBattleEnd(); 
+    } 
+
+    void TestClanChanges()
+    {
+        GameAnalyticsManager.Instance.ClanChange("Clan A");
+        GameAnalyticsManager.Instance.ClanChange("Clan B");
     } */
 }
