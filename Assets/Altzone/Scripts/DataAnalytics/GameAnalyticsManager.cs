@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameAnalyticsSDK;
 using UnityEngine.InputSystem;
+using Photon.Realtime;
 
 
 namespace AltZone.Scripts.GA
@@ -22,6 +23,7 @@ namespace AltZone.Scripts.GA
         private int wallHits = 0;
         private int moveCommandsCount = 0;
         private Dictionary<string, int> playerShieldHitsPerMatch = new Dictionary<string, int>();
+        private Dictionary<string, int> teamWallHitsPerMatch = new Dictionary<string, int>();
         private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
 
         private void Awake()
@@ -143,9 +145,19 @@ namespace AltZone.Scripts.GA
             Debug.Log($"Shield hit count: {shieldHits}");
         }
 
-        public void OnWallHit() //laskee muuriosumat
+        public void OnWallHit(string team) //laskee muuriosumat
         {
             wallHits++;
+
+            if (teamWallHitsPerMatch.ContainsKey(team))
+            {
+                teamWallHitsPerMatch[team]++;
+            }
+            else
+            {
+                teamWallHitsPerMatch[team] = 1;
+            }
+
             Debug.Log($"Wall hit count: {wallHits}");
             BattleShieldHitsBetweenWallHits();
 
@@ -174,6 +186,7 @@ namespace AltZone.Scripts.GA
             MoveCommandSummary();
             BattleWallHits();
             ShieldHitsPerMatchPerPlayer();
+            WallHitsPerMatchPerTeam();
         }
 
         public void DistanceToPlayer(Vector3 playerPosition, Vector3 otherPlayerPosition) //etäisyys kanssapelaajaan
@@ -245,6 +258,21 @@ namespace AltZone.Scripts.GA
             }
 
             playerShieldHitsPerMatch = new Dictionary<string, int>(); ;
+        }
+
+        private void WallHitsPerMatchPerTeam()
+        {
+            foreach (string key in teamWallHitsPerMatch.Keys)
+            {
+                var eventParams = new Dictionary<string, object>
+                {
+                    { "WallHitsPerMatch", teamWallHitsPerMatch[key] }
+                };
+                GameAnalytics.NewDesignEvent($"battle:wall_hits_per_match:{key}", eventParams);
+                Debug.Log($"Team {key} wall hits this match: {teamWallHitsPerMatch[key]}");
+            }
+
+            teamWallHitsPerMatch = new Dictionary<string, int>(); ;
         }
     }
 }

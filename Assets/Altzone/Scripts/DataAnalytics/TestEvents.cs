@@ -107,10 +107,13 @@ public class TestEvents : MonoBehaviour
     void TestOnBattleEnd()
     {
         GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
+        GameAnalyticsManager.Instance.OnWallHit("Team1");
+        GameAnalyticsManager.Instance.OnWallHit("Team1");
+        GameAnalyticsManager.Instance.OnWallHit("Team1");
         GameAnalyticsManager.Instance.OnShieldHit("hannu-hodari");
         GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
         GameAnalyticsManager.Instance.OnShieldHit("hannu-hodari");
         GameAnalyticsManager.Instance.OnShieldHit("rauta-rami");
-        GameAnalyticsManager.Instance.OnBattleEnd();
+        GameAnalyticsManager.Instance.OnBattleEnd(); 
     } */
 }
