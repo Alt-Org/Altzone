@@ -13,7 +13,7 @@ public class DiamondDisappearRPC : MonoBehaviour
     {
         DiamondDisappear = GetComponentInParent<DiamondDisappear>();
         DiamondDisappear.DiamondsArray.Add(gameObject);
-        if (DiamondDisappear.Master == true)       
+        if (DiamondDisappear.Master == true)
         {
             StartCoroutine(Disappear());
         }

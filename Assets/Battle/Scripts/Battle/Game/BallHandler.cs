@@ -159,9 +159,9 @@ public class BallHandler : MonoBehaviour
             if (BrickHealth - _damage <= 0)
             {
                 Vector3 spawnPoint = transform.position;
-                _diamondSpawner.DiamondSpawner(spawnPoint);
                 Stop();
                 Instantiate(_explotion, transform.position, transform.rotation * Quaternion.Euler(0f, 0f, transform.position.y > 0 ? 0f : 180f));
+                _diamondSpawner.DiamondSpawner(spawnPoint);
             }
         }
         else
