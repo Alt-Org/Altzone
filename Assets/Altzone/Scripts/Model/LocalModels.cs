@@ -26,8 +26,12 @@ namespace Altzone.Scripts.Model
     /// <remarks>
     /// WebGl builds have to manually flush changes to browser local storage/database after changes to be on the safe side.
     /// </remarks>
+    ///
+
     internal class LocalModels
     {
+        const int STORAGEVERSION = 1;
+
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
@@ -315,6 +319,8 @@ namespace Altzone.Scripts.Model
             storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, (int)customCharacterId));
             storageData.ClanData.Add(CreateDefaultModels.CreateClanData(clanGuid, storageData.GameFurniture));
 
+            storageData.StorageVersion = STORAGEVERSION;
+
             SaveStorage(storageData, storagePath);
             return storageData;
         }
@@ -323,6 +329,9 @@ namespace Altzone.Scripts.Model
         {
             var jsonText = File.ReadAllText(storagePath, Encoding);
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
+
+            if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+
             return storageData;
         }
 
@@ -337,6 +346,7 @@ namespace Altzone.Scripts.Model
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     internal class StorageData
     {
+        public int StorageVersion = 0;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();
