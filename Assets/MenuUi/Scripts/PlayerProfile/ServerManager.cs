@@ -186,7 +186,7 @@ public class ServerManager : MonoBehaviour
         AccessTokenExpiration = int.Parse(profileJSON["tokenExpires"].ToString());
         PlayerPrefs.SetString("playerId", profileJSON["Player"]["_id"].ToString());
 
-        LogIn();
+        StartCoroutine(LogIn());
     }
 
     /// <summary>
