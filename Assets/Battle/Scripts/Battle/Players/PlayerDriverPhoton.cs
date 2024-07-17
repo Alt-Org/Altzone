@@ -6,6 +6,8 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.Scripts.Battle.Game;
@@ -21,7 +23,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private PlayerActor _playerPrefab;
         [Header("Testing")]
         [SerializeField] private bool _isTesting = false;
-        [SerializeField] private int _playerPrefabID;
+        [SerializeField] private CharacterID _playerCharacterID;
 
         // { Public Properties and Fields
 
@@ -180,7 +182,7 @@ namespace Battle.Scripts.Battle.Players
 
         private PlayerActor InstantiatePlayerPrefab(Player player)
         {
-            var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
+            string playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
             name = name.Replace("Clone", playerTag);
             if (_playerPrefab != null)
@@ -188,14 +190,14 @@ namespace Battle.Scripts.Battle.Players
                 return PlayerActor.InstantiatePrefabFor(this, _playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
             }
 
-            var playerPrefabs = GameConfig.Get().Characters;
-            var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
+            Characters playerPrefabs = GameConfig.Get().Characters;
+            CharacterID playerCharacterId = PhotonBattle.GetPlayerCharacterId(player);
             if (_isTesting)
             {
-                playerPrefabId = _playerPrefabID;
+                playerCharacterId = _playerCharacterID;
             }
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
-            var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
+            PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(playerCharacterId) as PlayerActor;
+            PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
             return playerActor;
         }
 

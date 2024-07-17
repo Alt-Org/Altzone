@@ -12,7 +12,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class CustomCharacter
     {
         [PrimaryKey] public CharacterID Id;
+        public string CharacterName => GetCharacterName(Id);
+        public string CharacterClassAndName => GetCharacterClassAndName(Id);
         public CharacterClassID CharacterClassID => GetClassID(Id);
+        public int InsideCharacterID => GetInsideCharacterID(Id);
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>

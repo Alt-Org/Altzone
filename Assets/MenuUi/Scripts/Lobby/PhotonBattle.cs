@@ -18,7 +18,7 @@ namespace MenuUI.Scripts.Lobby
     {
         public const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         public const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
-        public const string PlayerPrefabIdKey = PhotonBattleRoom.PlayerPrefabIdKey;
+        public const string PlayerPrefabIdKey = PhotonBattleRoom.PlayerCharacterIdKey;
         public const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
         public const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
         public const string TeamWinTypeKey = PhotonBattleRoom.TeamWinTypeKey;
@@ -59,7 +59,7 @@ namespace MenuUI.Scripts.Lobby
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => s_photonBattleRoom.GetPlayerPrefabId(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => s_photonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue) => s_photonBattleRoom.GetPrefabIndex(battleCharacter, defaultValue);
 

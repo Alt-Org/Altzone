@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Photon.Realtime;
 
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Battle.Scripts.Battle
 {
@@ -54,7 +55,7 @@ namespace Battle.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => s_photonBattleRoom.GetPlayerPrefabId(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
 
         #region Debug and test utilities
 

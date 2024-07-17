@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Battle.Photon
 
         public const string PlayerPositionKey = "pp";
         public const string PlayerCountKey = "pc";
-        public const string PlayerPrefabIdKey = "mk";
+        public const string PlayerCharacterIdKey = "mk";
         public const string TeamAlphaNameKey = "tb";
         public const string TeamBetaNameKey = "tr";
         public const string TeamWinTypeKey = "wt";
@@ -247,9 +247,9 @@ namespace Altzone.Scripts.Battle.Photon
             return room.GetCustomProperty(PlayerCountKey, 0);
         }
 
-        public int GetPlayerPrefabId(Player player)
+        public CharacterID GetPlayerCharacterID(Player player)
         {
-            return player.GetCustomProperty(PlayerPrefabIdKey, -1);
+            return (CharacterID)player.GetCustomProperty(PlayerCharacterIdKey, -1);
         }
 
         public int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
@@ -288,7 +288,7 @@ namespace Altzone.Scripts.Battle.Photon
                 playerMainSkill = (int)CharacterClassID.Trickster;
             }
             var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
-            var curPlayerMainSkill = player.GetCustomProperty(PlayerPrefabIdKey, -1);
+            var curPlayerMainSkill = player.GetCustomProperty(PlayerCharacterIdKey, -1);
             if (curPlayerPos == playerPos && curPlayerMainSkill == playerMainSkill)
             {
                 // Prevent setting same values because it is hard for client to keep track of asynchronous changes over network.
@@ -297,7 +297,7 @@ namespace Altzone.Scripts.Battle.Photon
             player.SetCustomProperties(new Hashtable
             {
                 { PlayerPositionKey, playerPos },
-                { PlayerPrefabIdKey, playerMainSkill }
+                { PlayerCharacterIdKey, playerMainSkill }
             });
             Debug.LogWarning($"{player.GetDebugLabel()} playerPos {playerPos} skill {playerMainSkill}");
         }

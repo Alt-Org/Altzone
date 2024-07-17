@@ -69,14 +69,14 @@ namespace Altzone.Scripts.Config.ScriptableObjects
     {
         [Header("Player Characters")] public List<Class> _characters;
 
-        public PlayerActorBase GetPlayerPrefab(int prefabId)
+        public PlayerActorBase GetPlayerPrefab(CharacterID characterID)
         {
-            CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
+            CharacterClassID characterClass = CustomCharacter.GetClassID(characterID);
 
             int classValue = (int)characterClass >> 8;
             classValue--;
 
-            int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
+            int characterValue = CustomCharacter.GetInsideCharacterID(characterID);
             characterValue--;
 
             if (classValue < 0 || classValue >= _characters.Count)
