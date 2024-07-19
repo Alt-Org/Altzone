@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class CharacterSlot : MonoBehaviour, IDropHandler
     {
         [SerializeField] public DraggableCharacter _character;
+
+        [SerializeField] private Image _spriteImage;
+        [SerializeField] private TextMeshProUGUI _nameText;
 
         // Called when an object is dropped onto the character slot
         public void OnDrop(PointerEventData eventData)
@@ -43,6 +47,12 @@ namespace MenuUi.Scripts.CharacterGallery
                 currentDraggable.transform.SetParent(draggableItem.parentAfterDrag);
                 draggableItem.parentAfterDrag = transform;
             }
+        }
+        public void SetInfo(Sprite sprite, string name, ModelView view)
+        {
+            _spriteImage.sprite = sprite;
+            _nameText.text = name;
+            _character.SetInfo(sprite, name, view);
         }
     }
 }

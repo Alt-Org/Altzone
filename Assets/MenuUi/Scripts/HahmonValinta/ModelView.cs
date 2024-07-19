@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,6 @@ namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelView : MonoBehaviour
     {
-        // content panels for the character slots
         [SerializeField] private Transform VerticalContentPanel;
         [SerializeField] private Transform HorizontalContentPanel;
 
@@ -19,16 +18,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private bool _isReady;
 
-        // character buttons
-        private Button[] _buttons;
-
-        // Array of character slots in horizontalpanel
+        private List<Button> _buttons = new();
         public CharacterSlot[] _CurSelectedCharacterSlot { get; private set; }
-        // array of character slots in verticalpanel
-        private CharacterSlot[] CharacterSlot;
+        private List<CharacterSlot> _characterSlot = new();
 
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
-        // Event triggered when current character ID changes
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
 
@@ -36,10 +30,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _buttons = VerticalContentPanel.GetComponentsInChildren<Button>();
             _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
-            CharacterSlot = VerticalContentPanel.GetComponentsInChildren<CharacterSlot>();
-
             LoadAndCachePrefabs();
         }
 
@@ -71,13 +62,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
-            // Deactivate all buttons
             foreach (var button in _buttons)
             {
                 button.gameObject.SetActive(false);
             }
-            // Deactivate all character slots
-            foreach (var characterSlot in CharacterSlot)
+            foreach (var characterSlot in _characterSlot)
             {
                 characterSlot.gameObject.SetActive(false);
             }
@@ -87,6 +76,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             CurrentCharacterId = currentCharacterId;
             Transform content = transform.Find("Content");
+
             foreach (var character in characters)
             {
                 GameObject slot = Instantiate(_characterSlotprefab, content);
@@ -95,34 +85,27 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 CharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)character.CustomCharacterId);
 
+                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, this);
 
+                _characterSlot.Add(slot.GetComponent<CharacterSlot>());
+                _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
             }
 
-            for (var i = 0; i < _buttons.Length && i < CharacterSlot.Length; ++i)
+            for (var i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
             {
                 var button = _buttons[i];
-                var characterSlot = CharacterSlot[i];
+                var characterSlot = _characterSlot[i];
 
                 if (i < characters.Count)
                 {
                     var character = characters[i];
                     button.gameObject.SetActive(true);
                     button.interactable = true;
-                    button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
 
-                    // Check if the character is currently selected
-                    if (currentCharacterId == character.CustomCharacterId)
-                    {
-                        // Set the character in the first slot of the horizontal character slot
-                        if (_CurSelectedCharacterSlot.Length > 0)
-                        {
-                            button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
-                        }
-                    }
 
-                    // Subscribe to the event of parent change for the button
+                    // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>
                     {
@@ -144,4 +127,5 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
+
 

@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.CharacterGallery
 {
     public class DraggableCharacter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        [SerializeField] private Image image;
+        [SerializeField] private Image _spriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public Transform allowedSlot;
         public Transform initialSlot;
 
-        [SerializeField] ModelView _modelView;
+        [SerializeField] private ModelView _modelView;
 
         public delegate void ParentChangedEventHandler(Transform newParent);
         public event ParentChangedEventHandler OnParentChanged;
@@ -57,13 +57,12 @@ namespace MenuUi.Scripts.CharacterGallery
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
-            image.raycastTarget = false;
-
+            _spriteImage.raycastTarget = false;
             button.interactable = false;
 
             // Set the button colors to make the background transparent during dragging
             ColorBlock transparentColors = originalColors;
-            transparentColors.disabledColor = new Color(0, 0, 0, 0); 
+            transparentColors.disabledColor = new Color(0, 0, 0, 0);
             button.colors = transparentColors;
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
@@ -96,7 +95,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             else
             {
-                // Check if the droppedSlot is a Topslot
+                // Jos droppedSlot on Topslot, aseta hahmo siihen
                 if (droppedSlot.tag == "Topslot")
                 {
                     // Find the first empty topslot
@@ -116,15 +115,12 @@ namespace MenuUi.Scripts.CharacterGallery
                         droppedSlot = targetSlot;
                     }
                 }
-
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
             }
 
-            image.raycastTarget = true;
+            _spriteImage.raycastTarget = true;
             button.interactable = true;
-
-            // Reset the button colors to the original colors
             button.colors = originalColors;
 
             if (transform.parent != previousParent)
@@ -134,12 +130,20 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+
         private void HandleParentChange(Transform newParent)
         {
             if (newParent == _modelView._CurSelectedCharacterSlot[0].transform)
             {
-                OnParentChanged?.Invoke(newParent);
+                OnParentChanged?.Invoke(newParent.transform);
             }
+        }
+
+        public void SetInfo(Sprite sprite, string name, ModelView view)
+        {
+            _spriteImage.sprite = sprite;
+            _characterNameText.text = name;           
+            _modelView = view;
         }
     }
 }
