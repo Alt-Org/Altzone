@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Prg.Scripts.Common.PubSub;
-using Photon.Pun;
 using System.Linq;
+using UnityEngine;
+using Photon.Pun;
+
+using Altzone.Scripts.Config;
+using AltZone.Scripts.GA;
+using Prg.Scripts.Common.PubSub;
+
 using Battle.Scripts.Battle;
 using Battle.Scripts.Battle.Game;
 using Battle.Scripts.Battle.Players;
-using Altzone.Scripts.Config;
 
 #region Message Classes
 public class GameStarted
@@ -157,6 +158,7 @@ public class GameController : MonoBehaviour
         {
             int slingingTeam = Random.Range(0, 2) == 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
             _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GAME_START_DELAY), slingingTeam);
+            GameAnalyticsManager.Instance.BattleLaunch();
         }
     }
 
@@ -174,6 +176,7 @@ public class GameController : MonoBehaviour
             Debug.Log(DEBUG_LOG_GAME_STARTUP + "GAME STARTED");
             this.Publish(new GameStarted());
         });
+        _playerManager.AnalyticsReportPlayerCharacterSelection();
     }
 
     #endregion Photon RPC - Game Startup

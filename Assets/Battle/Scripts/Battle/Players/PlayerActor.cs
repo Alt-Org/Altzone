@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,6 +8,7 @@ using UnityConstants;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Battle.Players
@@ -46,6 +46,7 @@ namespace Battle.Scripts.Battle.Players
         #endregion Public -  Static Fields
 
         #region Public - Properties
+        public CharacterID CharacterID => _characterID;
         public bool IsBusy => _isMoving || _hasTarget;
         public float MovementSpeed => _movementSpeed;
         public Transform ShieldTransform => _playerShieldManager.transform;
@@ -56,34 +57,37 @@ namespace Battle.Scripts.Battle.Players
 
         #region Public - Methods
 
-        public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, CharacterID playerCharacterID, string gameObjectName, float scale)
         {
-            PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");
-            var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-            var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
-            instance.name = instance.name.Replace("Clone", gameObjectName);
-            switch (playerPos)
+
+            PlayerName = gameObjectName;
+
+            PlayerActor instance;
             {
-                case PhotonBattle.PlayerPosition1:
-                    instance.gameObject.layer = Layers.Player1;
-                    break;
-                case PhotonBattle.PlayerPosition2:
-                    instance.gameObject.layer = Layers.Player2;
-                    break;
-                case PhotonBattle.PlayerPosition3:
-                    instance.gameObject.layer = Layers.Player3;
-                    break;
-                case PhotonBattle.PlayerPosition4:
-                    instance.gameObject.layer = Layers.Player4;
-                    break;
-                default:
-                    throw new UnityException($"Invalid player position {playerPos}");
+                Characters playerPrefabs = GameConfig.Get().Characters;
+
+                PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(playerCharacterID) as PlayerActor;
+                Game.GridPos instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
+                Vector2 instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
+
+                instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+                Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
             }
+
+            instance._characterID = playerCharacterID;
+            instance.name = instance.name.Replace("Clone", gameObjectName);
+            instance.gameObject.layer = playerPos switch
+            {
+                PhotonBattle.PlayerPosition1 => Layers.Player1,
+                PhotonBattle.PlayerPosition2 => Layers.Player2,
+                PhotonBattle.PlayerPosition3 => Layers.Player3,
+                PhotonBattle.PlayerPosition4 => Layers.Player4,
+                _ => throw new UnityException($"Invalid player position {playerPos}"),
+            };
             instance.transform.localScale = Vector3.one * scale;
-            instance.SetPlayerDriver(playerDriver);
+            instance._playerDriver = playerDriver;
+
             return instance;
         }
 
@@ -93,11 +97,6 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #region Public - Methods - Setters
-
-        public void SetPlayerDriver(PlayerDriverPhoton playerDriver)
-        {
-            _playerDriver = playerDriver;
-        }
 
         public void SetSpriteVariant(SpriteVariant variant)
         {
@@ -213,6 +212,8 @@ namespace Battle.Scripts.Battle.Players
         private bool _isUsingShield;
         private bool _allowShieldHit;
         private int _shieldHitPoints;
+
+        private CharacterID _characterID;
 
         // Player Parts
         private IPlayerClass _playerClass;

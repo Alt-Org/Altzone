@@ -20,7 +20,6 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerDriverPhoton : MonoBehaviour, IDriver
     {
         // Serialized Fields
-        [SerializeField] private PlayerActor _playerPrefab;
         [Header("Testing")]
         [SerializeField] private bool _isTesting = false;
         [SerializeField] private CharacterID _playerCharacterID;
@@ -185,19 +184,14 @@ namespace Battle.Scripts.Battle.Players
             string playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
             name = name.Replace("Clone", playerTag);
-            if (_playerPrefab != null)
-            {
-                return PlayerActor.InstantiatePrefabFor(this, _playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
-            }
 
-            Characters playerPrefabs = GameConfig.Get().Characters;
-            CharacterID playerCharacterId = PhotonBattle.GetPlayerCharacterId(player);
-            if (_isTesting)
-            {
-                playerCharacterId = _playerCharacterID;
-            }
-            PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(playerCharacterId) as PlayerActor;
-            PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
+            CharacterID playerCharacterId;
+
+            playerCharacterId = !_isTesting ?
+                PhotonBattle.GetPlayerCharacterId(player) :
+                _playerCharacterID;
+
+            PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerCharacterId, playerTag, _arenaScaleFactor);
             return playerActor;
         }
 

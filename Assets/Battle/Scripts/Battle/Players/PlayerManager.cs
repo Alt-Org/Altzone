@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
-
 using UnityEngine;
-using Photon.Pun;
 
+using Altzone.Scripts.Model.Poco.Game;
+using AltZone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
+
 using Battle.Scripts.Test;
 
 namespace Battle.Scripts.Battle.Players
@@ -185,6 +185,19 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player movement set to {1}", _syncedFixedUpdateClock.UpdateCount, value));
         }
 
+        public void AnalyticsReportPlayerCharacterSelection()
+        {
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerActor.CharacterID);
+            GameAnalyticsManager.Instance.CharacterSelection(name);
+        }
+
+        public void AnalyticsReportPlayerCharacterWinOrLoss(int winningTeam)
+        {
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerActor.CharacterID);
+            if (_localPlayer.TeamNumber == winningTeam) GameAnalyticsManager.Instance.CharacterWin(name);
+            else GameAnalyticsManager.Instance.CharacterLoss(name);
+        }
+
         #endregion Public - Methods
 
         #endregion Public
@@ -194,13 +207,13 @@ namespace Battle.Scripts.Battle.Players
         #region Private - Fields
 
         // Driver Lists
-        private List<IDriver> _allDrivers = new();
-        private List<PlayerDriverPhoton> _allPlayerDrivers = new();
-        private List<PlayerDriverStatic> _allBotDrivers = new();
+        private readonly List<IDriver> _allDrivers = new();
+        private readonly List<PlayerDriverPhoton> _allPlayerDrivers = new();
+        private readonly List<PlayerDriverStatic> _allBotDrivers = new();
 
         // Teams
-        private BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
-        private BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
+        private readonly BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
+        private readonly BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
 
         private PlayerDriverPhoton _localPlayer;
 

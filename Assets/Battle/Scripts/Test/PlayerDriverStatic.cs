@@ -6,6 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.Scripts.Battle;
@@ -35,7 +36,10 @@ namespace Battle.Scripts.Test
 
         // Serialized Fields
         [Header("Settings"), SerializeField] private Settings _settings;
+        [Obsolete("_playerPrefab is deprecated, please use _playerCharacterID instead")]
+        [Tooltip("Player Prefab is deprecated, please use Player Character ID instead")]
         [SerializeField] private PlayerActor _playerPrefab;
+        [SerializeField] private CharacterID _playerCharacterID;
         [Header("Live Data"), SerializeField, ReadOnly] private int _actorNumber;
 
         // { Public Properties and Fields
@@ -107,7 +111,7 @@ namespace Battle.Scripts.Test
 
             string playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
 
-            _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
+            _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerCharacterID, playerTag, _arenaScaleFactor);
             _state ??= gameObject.AddComponent<PlayerDriverState>();
             _state.ResetState(_playerActor, _settings._playerPos, _settings._teamNumber);
             _state.MovementEnabled = false;
