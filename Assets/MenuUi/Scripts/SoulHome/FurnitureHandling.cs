@@ -174,6 +174,12 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
+            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix)
+            {
+                //if (_tempSlot != null) width = _tempSlot.width * 4;
+                /*else*/
+                width = transform.parent.GetComponent<FurnitureSlot>().width * 6;
+            }
             else
             {
                 Debug.LogError("Invalid furniture size.");

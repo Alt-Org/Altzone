@@ -16,6 +16,7 @@ namespace MenuUI.Scripts.SoulHome
         TwoXTwo,
         TwoXThree,
         TwoXFour,
+        TwoXSix,
         ThreeXThree
     }
 
@@ -141,6 +142,10 @@ namespace MenuUI.Scripts.SoulHome
             else if (furnitureSize == FurnitureSize.TwoXFour)
             {
                 return new Vector2Int(4, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXSix)
+            {
+                return new Vector2Int(6, 2);
             }
             else if (furnitureSize == FurnitureSize.ThreeXThree)
             {
