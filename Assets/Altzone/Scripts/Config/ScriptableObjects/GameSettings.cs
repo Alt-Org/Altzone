@@ -82,7 +82,7 @@ namespace Altzone.Scripts.Config.ScriptableObjects
             }
             Class classObject = _characters[classValue];
 
-            int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
+            int characterValue = CustomCharacter.GetInsideCharacterID(characterID);
             characterValue--;
 
             if (characterValue < 0 || characterValue >= classObject.characters.Count)
