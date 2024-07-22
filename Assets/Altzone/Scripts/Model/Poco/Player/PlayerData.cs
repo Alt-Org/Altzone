@@ -19,6 +19,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
         [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[5];
         [Unique] public string Name;
+
+        public int DiamondSpeed = 100;
+        public int DiamondResistance = 100;
+        public int DiamondAttack = 100;
+        public int DiamondDefence = 100;
+        public int DiamondHP = 100;
+        public int Eraser = 100;
+
         public int BackpackCapacity;
 
         /// <summary>
