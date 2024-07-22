@@ -18,14 +18,19 @@ namespace MenuUi.Scripts.CharacterGallery
             int classValue = (int)characterClass >> 8;
             classValue--;
 
-            int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
-            characterValue--;
-
             if (classValue < 0 || classValue >= _info.Count)
             {
                 return null;
             }
             CharacterClassInfo classObject = _info[classValue];
+
+            int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
+            characterValue--;
+
+            if (characterValue < 0 || characterValue >= classObject.list.Count)
+            {
+                return null;
+            }
             CharacterInfo character = classObject.list[characterValue];
             return character;
         }
