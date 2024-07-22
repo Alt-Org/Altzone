@@ -81,7 +81,7 @@ namespace MenuUi.Scripts.Loader
             if (value)
             {
                 PlayerData playerData = null;
-                Storefront.Get().GetPlayerData(ServerManager.Instance.Player._id, p => playerData = p);
+                Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
 
                 if (playerData.SelectedCharacterId == 0)
                     _introStoryNavigation.Navigate();

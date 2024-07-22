@@ -206,7 +206,7 @@ public class ServerManager : MonoBehaviour
         var storefront = Storefront.Get();
         PlayerData playerData = null;
 
-        storefront.GetPlayerData(player._id, p => playerData = p);
+        storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
         int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
 
@@ -218,7 +218,7 @@ public class ServerManager : MonoBehaviour
         Storefront.Get().SavePlayerData(newPlayerData, null);
         var playerSettings = GameConfig.Get().PlayerSettings;
 
-        playerSettings.PlayerGuid = player._id;
+        playerSettings.PlayerGuid = player.uniqueIdentifier;
 
         isLoggedIn = true;
 

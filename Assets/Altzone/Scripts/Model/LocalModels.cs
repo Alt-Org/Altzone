@@ -148,7 +148,7 @@ namespace Altzone.Scripts.Model
         internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
             new WaitUntil(() => _saving = false);
-            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.Id == uniqueIdentifier);
+            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
@@ -164,7 +164,7 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Getting PlayerData index: "+index);
             if (index >= 0)
             {
-                _storageData.PlayerData[index] = playerData;
+                _storageData.PlayerData[0] = playerData;
             }
             else
             {
