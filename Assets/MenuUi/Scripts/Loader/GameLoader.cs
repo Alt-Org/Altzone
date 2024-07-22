@@ -64,7 +64,7 @@ namespace MenuUi.Scripts.Loader
                 else
                 {
                     _videoPlaying = true;
-                    _introVideo.SetActive(true);
+                    //_introVideo.SetActive(true);
                 }
             }
         }
