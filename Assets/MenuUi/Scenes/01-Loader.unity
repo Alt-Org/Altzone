@@ -203,7 +203,7 @@ MonoBehaviour:
   _mainWindow: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _privacyPolicyWindow: {fileID: 11400000, guid: bd10aa2e959e5864d9e9abb36500990d,
     type: 2}
-  _introVideo: {fileID: 0}
+  _introVideo: {fileID: 501906753}
   _introSceneWindow: {fileID: 11400000, guid: c63e84b209f615742b1ac5aa16d448f7, type: 2}
   _introScene: 7
 --- !u!4 &367799428
@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cdd4492515a4a74bb2cce49a1de7fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _window: {fileID: 11400000, guid: c0994f0fcd393f949941ed4cabe757a3, type: 2}
+  _window: {fileID: 11400000, guid: 22e131911901f0744aaadab6b027a0a9, type: 2}
   _findWindowForEditor: 0
 --- !u!4 &475503777
 Transform:
@@ -422,7 +422,7 @@ GameObject:
   - component: {fileID: 501906754}
   - component: {fileID: 501906753}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: IntroVideoNavigation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

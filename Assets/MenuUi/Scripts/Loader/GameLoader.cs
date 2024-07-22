@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.Loader
 
         [SerializeField, Tooltip(Tooltip1)] private WindowDef _mainWindow;
         [SerializeField] private WindowDef _privacyPolicyWindow;
-        [SerializeField] private GameObject _introVideo;
+        [SerializeField] private WindowNavigation _introVideo;
         [SerializeField] private WindowDef _introSceneWindow;
         [SerializeField] private int _introScene;
 
@@ -64,7 +64,7 @@ namespace MenuUi.Scripts.Loader
                 else
                 {
                     _videoPlaying = true;
-                    //_introVideo.SetActive(true);
+                    _introVideo.Navigate();
                 }
             }
         }
