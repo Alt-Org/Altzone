@@ -9,6 +9,7 @@ using System.Globalization;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
+using AltZone.Scripts.GA;
 using Photon.Realtime;
 
 /// <summary>
@@ -407,7 +408,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 string clanId = result["data"]["Join"]["clan_id"].ToString();
-
+                GameAnalyticsManager.Instance.ClanChange(clanId);
                 StartCoroutine(WebRequests.Get(ADDRESS + "clan/" + clanId, AccessToken, request =>
                 {
                     if (request.result == UnityWebRequest.Result.Success)
