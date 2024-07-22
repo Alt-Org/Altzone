@@ -14,6 +14,16 @@ using Prg.Scripts.Common;
 
 namespace MenuUi.Scripts.Loader
 {
+    public static partial class SignalBus
+    {
+        public delegate void VideoEndHandler();
+        public static event VideoEndHandler OnVideoEnd;
+        public static void OnVideoEndSignal()
+        {
+            OnVideoEnd?.Invoke();
+        }
+    }
+
     /// <summary>
     /// Loader to check that game can be started with all required services running.<br />
     /// Waits until game and services has been loaded and then opens the main window.
@@ -31,12 +41,17 @@ namespace MenuUi.Scripts.Loader
         private bool _videoPlaying = false;
         private bool _videoEnded = false;
 
-
         private void Start()
         {
             Debug.Log("start");
-            _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
+            //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
+            SignalBus.OnVideoEnd += OpenLogIn;
             EnhancedTouchSupport.Enable();
+        }
+
+        private void OnDisable()
+        {
+            SignalBus.OnVideoEnd -= OpenLogIn;
         }
 
         private void Update()
@@ -44,73 +59,41 @@ namespace MenuUi.Scripts.Loader
             if ((PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded))
             {
                 //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-                if(Application.platform is RuntimePlatform.WebGLPlayer)
-                    _videoEnded = true;
+                if (Application.platform is RuntimePlatform.WebGLPlayer)
+                    OpenLogIn();
                 else
-                PlayIntroVideo();
-            }
-
-            if (_videoPlaying)
-            {
-                if (ClickStateHandler.GetClickState() is ClickState.End)
-                    EndIntroVideo();
-                
-            }
-
-            if(PlayerPrefs.GetInt("skipIntroVideo", 0) == 1 || _videoEnded)
-            {
-                var windowManager = WindowManager.Get();
-                Debug.Log($"show {_mainWindow}");
-
-                var gameConfig = GameConfig.Get();
-                var playerSettings = gameConfig.PlayerSettings;
-                var playerGuid = playerSettings.PlayerGuid;
-                var store = Storefront.Get();
-                PlayerData _playerData = null;
-                store.GetPlayerData(playerGuid, playerData =>
                 {
-                    _playerData = playerData;
-                });
-
-                if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
-                    windowManager.ShowWindow(_privacyPolicyWindow);
-                else if (PlayerPrefs.GetInt("hasSelectedCharacter") == 0 || _playerData == null || _playerData.SelectedCharacterId < 0)
-                    windowManager.ShowWindow(_introSceneWindow);
-                else
-                    windowManager.ShowWindow(_mainWindow);
-                Debug.Log("exit");
+                    _videoPlaying = true;
+                    _introVideo.SetActive(true);
+                }
             }
         }
 
-        public void PlayIntroVideo()
-        {
-            _introVideo.SetActive(true);
-            Debug.Log($"Play video");
-            VideoPlayer player = _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>();
-                player.Play();
-            _videoPlaying = true;
-
-        }
-
-        public void EndIntroVideo()
-        {
-            if (_videoPlaying)
-            {
-                VideoPlayer player = _introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>();
-                player.Stop();
-                _videoEnded = true;
-                _videoPlaying = false;
-                Debug.Log($"Skip video");
-                _introVideo.SetActive(false);
-            }
-        }
-
-        void CheckOver(VideoPlayer vp)
+        public void OpenLogIn()
         {
             _videoEnded = true;
             _videoPlaying = false;
-            Debug.Log($"End video");
-            _introVideo.SetActive(false);
+            GetComponent<WindowNavigation>().Navigate();
+            /*var windowManager = WindowManager.Get();
+            Debug.Log($"show {_mainWindow}");
+
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var playerGuid = playerSettings.PlayerGuid;
+            var store = Storefront.Get();
+            PlayerData _playerData = null;
+            store.GetPlayerData(playerGuid, playerData =>
+            {
+                _playerData = playerData;
+            });
+
+            if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
+                windowManager.ShowWindow(_privacyPolicyWindow);
+            else if (PlayerPrefs.GetInt("hasSelectedCharacter") == 0 || _playerData == null || _playerData.SelectedCharacterIds[0] < 0)
+                windowManager.ShowWindow(_introSceneWindow);
+            else
+                windowManager.ShowWindow(_mainWindow);
+            Debug.Log("exit");*/
         }
 
     }

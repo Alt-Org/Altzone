@@ -186,7 +186,7 @@ public class ServerManager : MonoBehaviour
         AccessTokenExpiration = int.Parse(profileJSON["tokenExpires"].ToString());
         PlayerPrefs.SetString("playerId", profileJSON["Player"]["_id"].ToString());
 
-        StartCoroutine(LogIn());
+        //StartCoroutine(LogIn());
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ public class ServerManager : MonoBehaviour
         var storefront = Storefront.Get();
         PlayerData playerData = null;
 
-        storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
+        storefront.GetPlayerData(player._id, p => playerData = p);
 
         int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
 
@@ -217,7 +217,7 @@ public class ServerManager : MonoBehaviour
         Storefront.Get().SavePlayerData(newPlayerData, null);
         var playerSettings = GameConfig.Get().PlayerSettings;
 
-        playerSettings.PlayerGuid = player.uniqueIdentifier;
+        playerSettings.PlayerGuid = player._id;
 
         isLoggedIn = true;
 
@@ -239,7 +239,7 @@ public class ServerManager : MonoBehaviour
         var playerSettings = gameConfig.PlayerSettings;
         var playerGuid = playerSettings.PlayerGuid;
         var store = Storefront.Get();
-
+        //yield return null;
         // Checks that the player is found in DataStorage
         store.GetPlayerData(playerGuid, playerDataFromStorage =>
         {

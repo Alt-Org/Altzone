@@ -38,6 +38,8 @@ namespace Altzone.Scripts.Model
         private readonly string _storagePath;
         private readonly StorageData _storageData;
 
+        private bool _saving = false;
+
         #region WebGL support
 
 #if UNITY_WEBGL
@@ -145,7 +147,8 @@ namespace Altzone.Scripts.Model
 
         internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
-            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
+            new WaitUntil(() => _saving = false);
+            var playerData = _storageData.PlayerData.FirstOrDefault(x => x.Id == uniqueIdentifier);
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
@@ -156,7 +159,9 @@ namespace Altzone.Scripts.Model
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
         {
+            _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
+            Debug.LogWarning("Getting PlayerData index: "+index);
             if (index >= 0)
             {
                 _storageData.PlayerData[index] = playerData;
@@ -171,6 +176,7 @@ namespace Altzone.Scripts.Model
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
+            _saving = false;
             callback?.Invoke(playerData);
         }
         internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
@@ -199,6 +205,7 @@ namespace Altzone.Scripts.Model
 
         internal void SaveClanData(ClanData clanData, Action<ClanData> callback)
         {
+            _saving = true;
             var index = _storageData.ClanData.FindIndex(x => x.Id == clanData.Id);
             if (index >= 0)
             {
@@ -215,6 +222,7 @@ namespace Altzone.Scripts.Model
             }
             Debug.Log($"clanData {clanData}");
             SaveStorage(_storageData, _storagePath);
+            _saving = false;
             callback?.Invoke(clanData);
         }
 
@@ -307,6 +315,7 @@ namespace Altzone.Scripts.Model
 
         private static StorageData CreateDefaultStorage(string storagePath)
         {
+            Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
