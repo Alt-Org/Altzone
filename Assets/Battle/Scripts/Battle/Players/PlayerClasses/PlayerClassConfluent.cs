@@ -19,25 +19,14 @@ namespace Battle.Scripts.Battle.Players
         private int _shieldTurn = 0;
 
 
-
-
-
-
-
-
         public bool BounceOnBallShieldCollision => true;
 
 
-
-
-        public bool OnBallShieldCollision()
+        public void OnBallShieldCollision()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
-            return true;
         }
         
-
-
 
         public void OnBallShieldBounce()
         {
@@ -59,12 +48,6 @@ namespace Battle.Scripts.Battle.Players
                 }
 
             });
-        }
-
-        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
-        public void ActivateSpecialAbility()
-        {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
         }
 
 

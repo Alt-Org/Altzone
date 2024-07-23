@@ -26,7 +26,9 @@ namespace Battle.Scripts.Battle.Players
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
-        public bool OnBallShieldCollision()
+
+
+        public void OnBallShieldCollision()
         {
             // Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
             // Käytännössä kilpi vaihtuu joka osuman jälkeen
@@ -35,7 +37,6 @@ namespace Battle.Scripts.Battle.Players
 
             ShieldRandomizer();
 
-            return true;
         }
 
         public void OnBallShieldBounce()

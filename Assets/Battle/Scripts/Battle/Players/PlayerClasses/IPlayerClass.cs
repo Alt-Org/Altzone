@@ -5,6 +5,8 @@ namespace Battle.Scripts.Battle.Players
     {
         public bool BounceOnBallShieldCollision { get; }
 
+
+
         /// <summary>
         /// Called when ball collides with shield before bounce.
         /// </summary>
