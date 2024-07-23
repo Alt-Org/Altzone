@@ -67,6 +67,10 @@ namespace MenuUi.Scripts.Loader
                     _introVideo.Navigate();
                 }
             }
+            else if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 1 && !_videoEnded)
+            {
+                OpenLogIn();
+            }
         }
 
         public void OpenLogIn()
