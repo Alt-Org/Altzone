@@ -58,7 +58,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void EnableButtons()
         {
-            _characterButton.interactable = true;
+            //_characterButton.interactable = true;
             _roomButton.interactable = true;
             _raidButton.interactable = true;
             _quickGameButton.interactable = true;
