@@ -41,12 +41,13 @@ namespace Battle.Scripts.Battle.Players
         public void OnBallShieldBounce()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
+
         }
 
-        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
+        public bool BounceOnBallShieldCollision => true;
 
-        public void ActivateSpecialAbility()
-        { }
+
+
 
         // Variables
         private PhotonView _photonView;

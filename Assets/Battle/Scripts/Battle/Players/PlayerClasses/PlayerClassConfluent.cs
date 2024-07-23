@@ -20,16 +20,22 @@ namespace Battle.Scripts.Battle.Players
 
 
 
-       
 
 
 
 
-        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
-        public bool SpecialAbilityOverridesBallBounce => false;
+
+        public bool BounceOnBallShieldCollision => true;
+
+
+
 
         public bool OnBallShieldCollision()
-        { return true; }
+        {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
+            return true;
+        }
+        
 
 
 
