@@ -18,8 +18,9 @@ namespace Battle.Scripts.Test
         public float BounceAngle => _bounceAngle;
         public float ImpactForce => _playerActor.ImpactForce;
         public float AttackMultiplier => _attackMultiplier;
+        public bool BounceOnBallShieldCollision => _playerActor.BounceOnBallShieldCollision;
 
-        public bool OnBallShieldCollision() => _playerActor.OnBallShieldCollision();
+        public void OnBallShieldCollision() => _playerActor.OnBallShieldCollision();
         public void OnBallShieldBounce() => _playerActor.OnBallShieldBounce();
 
         //private GridManager _gridManager;

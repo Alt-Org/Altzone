@@ -10,22 +10,14 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private GameObject _shield;
         [SerializeField] private Mesh[] _shieldShapes; // Array of different shield shapes
 
-        public bool SpecialAbilityOverridesBallBounce => false;
+        public bool BounceOnBallShieldCollision => true;
 
-        public bool OnBallShieldCollision()
-        {
-            return true;
-        }
+        public void OnBallShieldCollision()
+        {}
 
         public void OnBallShieldBounce()
         {
             TrackShieldCollisions();
-        }
-
-        public void ActivateSpecialAbility()
-        {
-            // Implement special ability logic here if needed
-            // For example, modify shield behavior or activate a special effect
         }
 
         private int collisionCount;

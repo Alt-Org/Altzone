@@ -53,6 +53,7 @@ namespace Battle.Scripts.Battle.Players
         public Transform CharacterTransform => _playerCharacter.transform;
         public Transform SoulTransform => _playerSoul.transform;
         public float ImpactForce => _impactForce;
+        public bool BounceOnBallShieldCollision => _playerClass.BounceOnBallShieldCollision;
         #endregion Public - Properties
 
         #region Public - Methods

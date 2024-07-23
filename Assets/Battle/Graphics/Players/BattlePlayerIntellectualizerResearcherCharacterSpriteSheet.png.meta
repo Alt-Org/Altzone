@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: df8a2ecab61dc884189d3044739ab8a1
+guid: 371fb4caf8d3e774b8fe3110c9852517
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -20,12 +20,11 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMipmapLimit: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -48,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 120
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -64,12 +63,11 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
-  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -77,7 +75,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -90,7 +87,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -103,7 +99,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -116,7 +111,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -129,7 +123,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -142,7 +135,6 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -155,14 +147,13 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BattlePlayerEgotism1ShieldSpriteSheet_0
+      name: BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_0
       rect:
         serializedVersion: 2
         x: 0
@@ -176,14 +167,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5a314655efb50224c99857fd87fc31d2
-      internalID: -128761157
+      spriteID: 0f802d6ff026132419b8313ee033f17c
+      internalID: 1285055412
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BattlePlayerEgotism1ShieldSpriteSheet_1
+      name: BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_1
       rect:
         serializedVersion: 2
         x: 512
@@ -197,35 +188,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 84037594d54f6044f8a4418ac6c6de39
-      internalID: 1844825866
+      spriteID: 5f639e0405e544e4fb3efaabedb02e08
+      internalID: -978449100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BattlePlayerEgotism1ShieldSpriteSheet_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 512
-        height: 512
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d5a881cf752ee5f47afeace4ced17fac
-      internalID: -1727274735
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BattlePlayerEgotism1ShieldSpriteSheet_3
+      name: BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_2
       rect:
         serializedVersion: 2
         x: 512
@@ -239,8 +209,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d1d8e60987db464f925dbc686b8276a
-      internalID: 179333583
+      spriteID: 2dacebba9fbe2ce47a97bccdd5f9b20c
+      internalID: 1163642509
       vertices: []
       indices: 
       edges: []
@@ -256,12 +226,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BattlePlayerEgotism1ShieldSpriteSheet_0: -128761157
-      BattlePlayerEgotism1ShieldSpriteSheet_1: 1844825866
-      BattlePlayerEgotism1ShieldSpriteSheet_2: -1727274735
-      BattlePlayerEgotism1ShieldSpriteSheet_3: 179333583
-  mipmapLimitGroupName: 
+      BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_1: -978449100
+      BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_2: 1163642509
+      BattlePlayerIntellectualizerResearcherCharacterSpriteSheet_0: 1285055412
+  spritePackingTag: 
   pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

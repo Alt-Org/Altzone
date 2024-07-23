@@ -6,7 +6,7 @@ using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Battle.Players
 {
-    internal class PlayerClassEgotism : MonoBehaviour, IPlayerClass
+    internal class PlayerClassIntellectualizer : MonoBehaviour, IPlayerClass
     {
         // Serialized Fields
         [SerializeField] private GameObject _positionSprite;
@@ -16,14 +16,12 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _time;
         [SerializeField] private List<Sprite> _spriteList;
         [SerializeField] int _pointStep;
-
-        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
-        public bool SpecialAbilityOverridesBallBounce => false;
+        public bool BounceOnBallShieldCollision => true;
 
         #region Public Methods
 
-        public bool OnBallShieldCollision()
-        { return true; }
+        public void OnBallShieldCollision()
+        {}
 
         public void OnBallShieldBounce()
         {
@@ -31,12 +29,6 @@ namespace Battle.Scripts.Battle.Players
             {
                 _timer = _time;
             }
-        }
-
-        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
-        public void ActivateSpecialAbility()
-        {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Special ability activated", _syncedFixedUpdateClock.UpdateCount));
         }
 
         #endregion Public Methods
@@ -83,7 +75,7 @@ namespace Battle.Scripts.Battle.Players
         }
 
         // Debug
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS EGOTISM] ";
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS INTELLECTUALIZER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
