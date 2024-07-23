@@ -121,9 +121,9 @@ public class BallHandler : MonoBehaviour
 
                 if (isCorrectDirection)
                 {
-                    bool doBounce = shield.OnBallShieldCollision();
+                    shield.OnBallShieldCollision();
 
-                    if (doBounce)
+                    if (shield.BounceOnBallShieldCollision)
                     {
 
                         float bounceAngle = shield.BounceAngle;
