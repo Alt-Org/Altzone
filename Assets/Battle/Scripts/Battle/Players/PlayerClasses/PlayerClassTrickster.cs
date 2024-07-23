@@ -53,7 +53,7 @@ namespace Battle.Scripts.Battle.Players
         private PhotonEventDispatcher _photonEventDispatcher;
 
         // Debug
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS DEFLECTION] ";
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS TRICKSTER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
@@ -78,7 +78,7 @@ namespace Battle.Scripts.Battle.Players
 
                 int choiceIndex = Random.Range(0, _shieldBounceRandomizers.Length);
 
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Deflection shield set to " + choiceIndex, _syncedFixedUpdateClock.UpdateCount));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Trickster shield set to " + choiceIndex, _syncedFixedUpdateClock.UpdateCount));
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sending network message", _syncedFixedUpdateClock.UpdateCount));
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
@@ -109,7 +109,7 @@ namespace Battle.Scripts.Battle.Players
                 }
             }
 
-            byte eventCode = (byte)(PhotonBattle.EventCodes.PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE + playerPos);
+            byte eventCode = (byte)(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + playerPos);
 
             _photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);
 
@@ -118,7 +118,7 @@ namespace Battle.Scripts.Battle.Players
                 this.ExecuteOnNextFrame(() => {
                     PhotonNetwork.AllocateViewID(_photonView);
 
-                    _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_DEFLECTION_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);
+                    _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);
 
                 });
             }
