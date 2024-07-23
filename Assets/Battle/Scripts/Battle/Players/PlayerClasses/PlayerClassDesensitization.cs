@@ -30,7 +30,7 @@ namespace Battle.Scripts.Battle.Players
         private int collisionCount;
 
         // Debug
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENCE] ";
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS DESENSITIZER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 

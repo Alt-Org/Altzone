@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
-    internal class PlayerClassConfluence : MonoBehaviour, IPlayerClass
+    internal class PlayerClassConfluent : MonoBehaviour, IPlayerClass
     {
 
         // Variables
@@ -66,7 +66,7 @@ namespace Battle.Scripts.Battle.Players
 
 
         // Debug
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENCE] ";
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENT] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 

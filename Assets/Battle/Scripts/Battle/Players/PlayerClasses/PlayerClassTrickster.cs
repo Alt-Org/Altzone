@@ -17,7 +17,7 @@ using UnityEngine.UIElements;
 namespace Battle.Scripts.Battle.Players
 {
 
-    public class PlayerClassDeflection : MonoBehaviour, IPlayerClass
+    public class PlayerClassTrickster : MonoBehaviour, IPlayerClass
     {
         // Serialized fields
         [SerializeField] private ShieldManager _shieldManager;
