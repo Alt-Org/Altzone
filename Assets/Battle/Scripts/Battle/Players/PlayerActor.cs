@@ -191,7 +191,7 @@ namespace Battle.Scripts.Battle.Players
             });
         }
 
-        public bool OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
+        public void OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
         public void OnBallShieldBounce() => _playerClass.OnBallShieldBounce();
 
         #endregion Public - Methods
