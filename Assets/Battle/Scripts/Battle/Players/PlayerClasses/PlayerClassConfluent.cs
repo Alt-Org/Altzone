@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using Prg.Scripts.Common.PubSub;
 
 
 
@@ -14,6 +14,11 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private GameObject _shieldGumball;
         [SerializeField] private GameObject _shieldPopped;
         [SerializeField] private ShieldManager _shieldManager;
+        [SerializeField] private int _teammateVacuumDuration;
+        [SerializeField] private int _teammateVacuumStrength;
+        [SerializeField] private int _teammateVacuumStrengthIncrement;
+
+
 
 
         private int _shieldTurn = 0;
@@ -25,8 +30,14 @@ namespace Battle.Scripts.Battle.Players
         public void OnBallShieldCollision()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
+
+
+            // Laita timer p‰‰lle
+            // Laita voimaa kovemmalle
+            _teammateVacuumTimer = _teammateVacuumDuration;
+            
         }
-        
+
 
         public void OnBallShieldBounce()
         {
@@ -59,11 +70,62 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
+        private Transform _teammateTransform;
+
+        private int _teammateVacuumTimer;
+
+        
+        
+        
+
+
         // debug
         private void Start()
         {
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+
         }
+
+        private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
+        {
+            PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
+
+            int teamnumber = PhotonBattle.NoTeamValue;
+
+            foreach (IDriver driver in data.AllDrivers)
+            {
+                if (driver.PlayerActor == playerActor) teamnumber = driver.TeamNumber;
+            }
+
+
+
+            foreach (IDriver driver in data.AllDrivers)
+            {
+                if (driver.TeamNumber == teamnumber && driver.PlayerActor != playerActor);
+            }
+
+
+
+        }
+
+
+
+        private void FixedUpdate()
+        {
+
+
+            //Siirr‰ tiimikaveria l‰hemm‰s timerin ajan strengthin perusteella
+
+
+            //transform on oma sijainti
+            
+
+        }
+
+        
+
 
 
         private void ShieldFlipper() {
