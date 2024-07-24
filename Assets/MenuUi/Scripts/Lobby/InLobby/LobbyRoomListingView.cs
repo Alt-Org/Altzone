@@ -10,12 +10,12 @@ namespace MenuUI.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingView : MonoBehaviour
     {
-        [SerializeField] private Button _roomButton;
+        [SerializeField] private GameObject _roomButtonPrefab;
         [SerializeField] private Transform _buttonParent;
 
         public Action RoomButtonOnClick
         {
-            set { _roomButton.onClick.AddListener(() => value()); }
+            set { _roomButtonPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => value()); }
         }
 
         public void Reset()
@@ -26,9 +26,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
         public void UpdateStatus(List<RoomInfo> rooms, Action<string> onJoinRoom)
         {
             // Synchronize button count with room count.
-            while (_buttonParent.childCount < rooms.Count)
+            int roomsCount = rooms.Count;
+            int slotCount = _buttonParent.childCount;
+            for (int i = 0; i < slotCount; ++i)
             {
-                AddButton(_buttonParent, _roomButton);
+                if (roomsCount <= i) break;
+                Transform buttonslot = _buttonParent.GetChild(i);
+                if (_buttonParent.GetChild(i).childCount == 0)
+                {
+                    AddButton(_buttonParent.GetChild(i), _roomButtonPrefab);
+                }
             }
             // Update button captions
             for (var i = 0; i < rooms.Count; ++i)
@@ -47,16 +54,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     var buttonObject = _buttonParent.GetChild(i).gameObject;
                     if (buttonObject.activeSelf)
                     {
-                        buttonObject.SetActive(false);
+                        buttonObject.transform.GetChild(0).gameObject.SetActive(false);
                     }
                 }
             }
         }
 
-        private static void AddButton(Transform parent, Button template)
+        private static void AddButton(Transform parent, GameObject template)
         {
-            var templateParent = template.gameObject;
-            var instance = Instantiate(templateParent, parent);
+            GameObject instance = Instantiate(template, parent);
             instance.SetActive(true);
         }
 
@@ -93,7 +99,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var childCount = parent.childCount;
             for (var i = childCount - 1; i >= 0; --i)
             {
-                var child = parent.GetChild(i).gameObject;
+                var child = parent.GetChild(i).GetChild(0).gameObject;
                 Destroy(child);
             }
         }

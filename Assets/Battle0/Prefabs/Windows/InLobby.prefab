@@ -1119,7 +1119,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select Character
+  m_text: "Select Character \n(Ei en\xE4\xE4 k\xE4yt\xF6ss\xE4, k\xE4yt\xE4 hahmogalleriaa
+    t\xE4m\xE4n sijaan.)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1146,7 +1147,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45
+  m_fontSize: 31.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1307,7 +1308,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 2946997330206311830}
   m_OnClick:
     m_PersistentCalls:
@@ -1412,7 +1413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6020764c4c4afa990739b0de8f04fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomButton: {fileID: 2946997329709451914}
+  _roomButtonPrefab: {fileID: 2946997329709451916}
   _buttonParent: {fileID: 6457417929140552386}
 --- !u!114 &5542946599477177701
 MonoBehaviour:
@@ -3514,6 +3515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2756356112880120380, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 35.6
       objectReference: {fileID: 0}
     - target: {fileID: 6221160951982613882, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
