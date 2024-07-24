@@ -9,7 +9,7 @@ using System.Globalization;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
-using AltZone.Scripts.GA;
+using Altzone.Scripts.GA;
 using Photon.Realtime;
 
 /// <summary>

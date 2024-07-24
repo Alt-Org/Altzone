@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using AltZone.Scripts.GA;
+using Altzone.Scripts.GA;
 using UnityEngine;
 
 public class TestEvents : MonoBehaviour

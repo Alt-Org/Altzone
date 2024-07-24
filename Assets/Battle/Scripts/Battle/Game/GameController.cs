@@ -3,7 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 
 using Altzone.Scripts.Config;
-using AltZone.Scripts.GA;
+using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.Scripts.Battle;

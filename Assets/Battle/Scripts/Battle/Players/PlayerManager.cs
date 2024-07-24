@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Altzone.Scripts.Model.Poco.Game;
-using AltZone.Scripts.GA;
+using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.Scripts.Test;

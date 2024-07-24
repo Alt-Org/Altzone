@@ -7,36 +7,36 @@ using UnityEngine.InputSystem;
 using Photon.Realtime;
 
 
-namespace AltZone.Scripts.GA
+namespace Altzone.Scripts.GA
 {
     public class GameAnalyticsManager : MonoBehaviour
     {
-        private static GameAnalyticsManager instance;
+        private static GameAnalyticsManager s_instance;
 
         public static GameAnalyticsManager Instance
         {
-            get { return instance; }
+            get { return s_instance; }
         }
 
-        private int battlesStartedThisSession = 0;
-        private int shieldHits = 0;
-        private int wallHits = 0;
-        private int moveCommandsCount = 0;
-        private int clanChanges = 0;
-        private Dictionary<string, int> playerShieldHitsPerMatch = new Dictionary<string, int>();
-        private Dictionary<string, int> teamWallHitsPerMatch = new Dictionary<string, int>();
-        private Dictionary<string, float> sectionStartTimes = new Dictionary<string, float>();
+        private int _battlesStartedThisSession = 0;
+        private int _shieldHits = 0;
+        private int _wallHits = 0;
+        private int _moveCommandsCount = 0;
+        private int _clanChanges = 0;
+        private Dictionary<string, int> _playerShieldHitsPerMatch = new Dictionary<string, int>();
+        private Dictionary<string, int> _teamWallHitsPerMatch = new Dictionary<string, int>();
+        private Dictionary<string, float> _sectionStartTimes = new Dictionary<string, float>();
 
         private void Awake()
         {
-            if (instance != null && instance != this)
+            if (s_instance != null && s_instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
             else
             {
-                instance = this;
+                s_instance = this;
                 DontDestroyOnLoad(gameObject);
             }
 
@@ -48,7 +48,7 @@ namespace AltZone.Scripts.GA
 
         public virtual void Initialize(out string customUserId, Action<bool> OnInitialized)
         {
-            var playerPrefsKey = $"{nameof(GameAnalyticsManager)}.customUserId";
+            string playerPrefsKey = $"{nameof(GameAnalyticsManager)}.customUserId";
 
             customUserId = PlayerPrefs.GetString(playerPrefsKey, null);
             if (string.IsNullOrEmpty(customUserId))
@@ -68,7 +68,7 @@ namespace AltZone.Scripts.GA
 
         public void BattleLaunch() //Milloin battle k‰ynnistet‰‰n
         {
-            battlesStartedThisSession++;
+            _battlesStartedThisSession++;
             GameAnalytics.NewDesignEvent("battle:launched");
             Debug.Log("battle launched event");
         }
@@ -100,21 +100,21 @@ namespace AltZone.Scripts.GA
         public void EnterSection(string sectionName) //Aloittaa ajan kun pelin osaan menn‰‰n
         {
             float currentTime = Time.time;
-            if (!sectionStartTimes.ContainsKey(sectionName))
+            if (!_sectionStartTimes.ContainsKey(sectionName))
             {
-                sectionStartTimes.Add(sectionName, currentTime);
+                _sectionStartTimes.Add(sectionName, currentTime);
             }
             else
             {
-                sectionStartTimes[sectionName] = currentTime;
+                _sectionStartTimes[sectionName] = currentTime;
             }
         }
 
         public void ExitSection(string sectionName) //paljonko pelin osissa vietet‰‰n aikaa
         {
-            if (sectionStartTimes.ContainsKey(sectionName))
+            if (_sectionStartTimes.ContainsKey(sectionName))
             {
-                float startTime = sectionStartTimes[sectionName];
+                float startTime = _sectionStartTimes[sectionName];
                 float currentTime = Time.time;
                 float timeSpent = currentTime - startTime;
 
@@ -126,47 +126,47 @@ namespace AltZone.Scripts.GA
                 GameAnalytics.NewDesignEvent($"section_event:{sectionName}:exit", eventData);
                 Debug.Log($"Time spend: {timeSpent} seconds.");
 
-                sectionStartTimes.Remove(sectionName);
+                _sectionStartTimes.Remove(sectionName);
             }
         }
 
         public void OnShieldHit(string player) //laskee kilpiosumat
         {
-            shieldHits++;
+            _shieldHits++;
 
-            if (playerShieldHitsPerMatch.ContainsKey(player))
+            if (_playerShieldHitsPerMatch.ContainsKey(player))
             {
-                playerShieldHitsPerMatch[player]++;
+                _playerShieldHitsPerMatch[player]++;
             }
             else
             {
-                playerShieldHitsPerMatch[player] = 1;
+                _playerShieldHitsPerMatch[player] = 1;
             }
 
-            Debug.Log($"Shield hit count: {shieldHits}");
+            Debug.Log($"Shield hit count: {_shieldHits}");
         }
 
         public void OnWallHit(string team) //laskee muuriosumat
         {
-            wallHits++;
+            _wallHits++;
 
-            if (teamWallHitsPerMatch.ContainsKey(team))
+            if (_teamWallHitsPerMatch.ContainsKey(team))
             {
-                teamWallHitsPerMatch[team]++;
+                _teamWallHitsPerMatch[team]++;
             }
             else
             {
-                teamWallHitsPerMatch[team] = 1;
+                _teamWallHitsPerMatch[team] = 1;
             }
 
-            Debug.Log($"Wall hit count: {wallHits}");
+            Debug.Log($"Wall hit count: {_wallHits}");
             BattleShieldHitsBetweenWallHits();
 
-            shieldHits = 0;
+            _shieldHits = 0;
         }
         public void MoveCommand(Vector3 targetPosition) //Seuraa miss‰ hahmo liikkuu ja laskee liikkumisk‰skyt
         {
-            moveCommandsCount++;
+            _moveCommandsCount++;
             var eventParams = new Dictionary<string, object>
             {
                 { "x", targetPosition.x },
@@ -174,7 +174,7 @@ namespace AltZone.Scripts.GA
                 { "z", targetPosition.z }
             };
             GameAnalytics.NewDesignEvent("move:command", eventParams);
-            Debug.Log($"Move command to position {targetPosition}. total moves: {moveCommandsCount}");
+            Debug.Log($"Move command to position {targetPosition}. total moves: {_moveCommandsCount}");
         }
 
         public void OnSessionEnd() //kutsutaan sovelluksen sulkemisessa
@@ -218,75 +218,75 @@ namespace AltZone.Scripts.GA
 
         public void ClanChange(string newClan) //laskee klaanien vaihdot 
         {
-            clanChanges++;
+            _clanChanges++;
             var eventParams = new Dictionary<string, object>
             {
                 {"clan", newClan},
-                {"totalClanChanges", clanChanges }
+                {"totalClanChanges", _clanChanges }
             };
 
             GameAnalytics.NewDesignEvent("clan:change", eventParams);
-            Debug.Log($"Clan changed to {newClan}. Total clan changes: {clanChanges}");
+            Debug.Log($"Clan changed to {newClan}. Total clan changes: {_clanChanges}");
         }
 
         // privaatti funktiot joka GameAnalyticsManager k‰sittelee
 
         private void BattleShieldHitsBetweenWallHits()
         {
-            GameAnalytics.NewDesignEvent("battle:shield_hits_between_wall_hits", shieldHits);
-            Debug.Log($"Event sent: battle:shield_hits_between_wall_hits with value {shieldHits}");
+            GameAnalytics.NewDesignEvent("battle:shield_hits_between_wall_hits", _shieldHits);
+            Debug.Log($"Event sent: battle:shield_hits_between_wall_hits with value {_shieldHits}");
         }
 
         private void BattleWallHits()
         {
-            GameAnalytics.NewDesignEvent("battle:wall_hits", wallHits);
-            Debug.Log($"Event sent: battle:wall_hits with value {wallHits}");
+            GameAnalytics.NewDesignEvent("battle:wall_hits", _wallHits);
+            Debug.Log($"Event sent: battle:wall_hits with value {_wallHits}");
 
-            wallHits = 0;
+            _wallHits = 0;
         }
 
         private void BattlesStarted()
         {
-            GameAnalytics.NewDesignEvent("session:battles_started", battlesStartedThisSession);
-            Debug.Log($"Battles started this session: {battlesStartedThisSession}");
+            GameAnalytics.NewDesignEvent("session:battles_started", _battlesStartedThisSession);
+            Debug.Log($"Battles started this session: {_battlesStartedThisSession}");
         }
 
         private void MoveCommandSummary()
         {
-            GameAnalytics.NewDesignEvent("battle:command:count", moveCommandsCount);
-            Debug.Log($"Total move commands: {moveCommandsCount}");
+            GameAnalytics.NewDesignEvent("battle:command:count", _moveCommandsCount);
+            Debug.Log($"Total move commands: {_moveCommandsCount}");
 
-            moveCommandsCount = 0;
+            _moveCommandsCount = 0;
         }
 
         private void ShieldHitsPerMatchPerPlayer()
         {
-            foreach (string key in playerShieldHitsPerMatch.Keys)
+            foreach (string key in _playerShieldHitsPerMatch.Keys)
             {
                 var eventParams = new Dictionary<string, object>
                 {
-                    { "ShieldHitsPerMatch", playerShieldHitsPerMatch[key] }
+                    { "ShieldHitsPerMatch", _playerShieldHitsPerMatch[key] }
                 };
                 GameAnalytics.NewDesignEvent($"battle:shield_hits_per_match:{key}", eventParams);
-                Debug.Log($"Player {key} shield hits this match: {playerShieldHitsPerMatch[key]}");
+                Debug.Log($"Player {key} shield hits this match: {_playerShieldHitsPerMatch[key]}");
             }
 
-            playerShieldHitsPerMatch = new Dictionary<string, int>(); ;
+            _playerShieldHitsPerMatch = new Dictionary<string, int>(); ;
         }
 
         private void WallHitsPerMatchPerTeam()
         {
-            foreach (string key in teamWallHitsPerMatch.Keys)
+            foreach (string key in _teamWallHitsPerMatch.Keys)
             {
                 var eventParams = new Dictionary<string, object>
                 {
-                    { "WallHitsPerMatch", teamWallHitsPerMatch[key] }
+                    { "WallHitsPerMatch", _teamWallHitsPerMatch[key] }
                 };
                 GameAnalytics.NewDesignEvent($"battle:wall_hits_per_match:{key}", eventParams);
-                Debug.Log($"Team {key} wall hits this match: {teamWallHitsPerMatch[key]}");
+                Debug.Log($"Team {key} wall hits this match: {_teamWallHitsPerMatch[key]}");
             }
 
-            teamWallHitsPerMatch = new Dictionary<string, int>(); ;
+            _teamWallHitsPerMatch = new Dictionary<string, int>(); ;
         }
     }
 }

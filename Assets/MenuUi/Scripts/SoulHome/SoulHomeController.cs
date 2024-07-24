@@ -5,7 +5,7 @@ using MenuUI.Scripts.SoulHome;
 using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
-using AltZone.Scripts.GA;
+using Altzone.Scripts.GA;
 
 namespace MenuUI.Scripts.SoulHome
 {
