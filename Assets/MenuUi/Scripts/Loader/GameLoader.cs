@@ -56,20 +56,23 @@ namespace MenuUi.Scripts.Loader
 
         private void Update()
         {
-            if ((PlayerPrefs.GetInt("skipIntroVideo", 0) == 0 && !_videoPlaying && !_videoEnded))
+            if (!_videoPlaying && !_videoEnded)
             {
-                //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-                if (Application.platform is RuntimePlatform.WebGLPlayer)
-                    OpenLogIn();
+                if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 0)
+                {
+                    //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
+                    if (Application.platform is RuntimePlatform.WebGLPlayer)
+                        OpenLogIn();
+                    else
+                    {
+                        _videoPlaying = true;
+                        _introVideo.Navigate();
+                    }
+                }
                 else
                 {
-                    _videoPlaying = true;
-                    _introVideo.Navigate();
+                    OpenLogIn();
                 }
-            }
-            else if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 1 && !_videoEnded)
-            {
-                OpenLogIn();
             }
         }
 
