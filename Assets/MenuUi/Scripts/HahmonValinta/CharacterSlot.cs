@@ -38,15 +38,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 // If the slot is empty, set the dropped object as a child of this slot
                 draggableItem.parentAfterDrag = transform;
             }
-            else
-            {
-                // If the slot is not null, switch the characters
-                GameObject current = transform.GetChild(0).gameObject;
-                DraggableCharacter currentDraggable = current.GetComponent<DraggableCharacter>();
-
-                currentDraggable.transform.SetParent(draggableItem.parentAfterDrag);
-                draggableItem.parentAfterDrag = transform;
-            }
         }
         public void SetInfo(Sprite sprite, string name, ModelView view)
         {
