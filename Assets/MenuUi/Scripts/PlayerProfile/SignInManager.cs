@@ -35,15 +35,15 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button returnToMainMenuButton;
         [SerializeField] private Button returnToLogInScreenButton;
 
-        private const string REGISTERING_SUCCESS = "Rekister�inti onnistui!";
+        private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
         private const string ERROR_DEFAULT = "Jotain meni pieleen!";
-        private const string ERROR_EMPTY_FIELD = "Kent�t eiv�t voi olla tyhji�!";
-        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eiv�t t�sm��!";
-        private const string ERROR_USERNAME_TOO_SHORT = "K�ytt�j�nimen t�ytyy olla v�hint��n 3 merkki� pitk�!";
-        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan t�ytyy olla v�hint��n 5 merkki� pitk�!";
+        private const string ERROR_EMPTY_FIELD = "Kentät eivät voi olla tyhjiä!";
+        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
+        private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
+        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
         private const string ERROR400 = "Validointivirhe!";
-        private const string ERROR401 = "Virheellinen k�ytt�j�nimi tai salasana!";
-        private const string ERROR409 = "K�ytt�j�tili on jo olemassa!";
+        private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
+        private const string ERROR409 = "Käyttäjätili on jo olemassa!";
         private const string ERROR500 = "Serverivirhe!";
 
         private void OnEnable()
