@@ -209,9 +209,10 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
         int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
+        int[] currentBattleCharacterIds = playerData == null ? new int[5] : playerData.SelectedCharacterIds;
 
         PlayerData newPlayerData = null;
-        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
 
         PlayerPrefs.SetString("profileId", player.profile_id);
 

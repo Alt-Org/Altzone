@@ -41,7 +41,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == (CharacterID)SelectedCharacterIds[0]);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
 
-        public PlayerData(string id, string clanId, int currentCustomCharacterId, string name, int backpackCapacity, string uniqueIdentifier)
+        public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
@@ -52,8 +52,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            SelectedCharacterIds[0] = currentCustomCharacterId;
-            Debug.Log("Test: "+SelectedCharacterIds[0]);
+            SelectedCharacterIds = currentBattleCharacterIds;
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
