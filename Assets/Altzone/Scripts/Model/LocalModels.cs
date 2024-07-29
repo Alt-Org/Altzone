@@ -161,7 +161,7 @@ namespace Altzone.Scripts.Model
         {
             _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
-            Debug.LogWarning("Getting PlayerData index: "+index);
+            //Debug.LogWarning("Getting PlayerData index: "+index);
             if (index >= 0)
             {
                 _storageData.PlayerData[0] = playerData;
