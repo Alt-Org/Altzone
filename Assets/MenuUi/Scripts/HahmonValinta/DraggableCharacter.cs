@@ -10,7 +10,7 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class DraggableCharacter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class DraggableCharacter : MonoBehaviour, IGalleryCharacterData, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image _spriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField]
         private SwipeUI _swipe;
 
-        public CharacterID Id { get => _id; set => _id = value; }
+        public CharacterID Id { get => _id;}
 
         private void Start()
         {
@@ -139,10 +139,11 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        public void SetInfo(Sprite sprite, string name, ModelView view)
+        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
-            _characterNameText.text = name;           
+            _characterNameText.text = name;
+            _id = id;
             _modelView = view;
         }
     }

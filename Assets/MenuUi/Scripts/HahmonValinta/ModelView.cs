@@ -18,8 +18,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private bool _isReady;
 
+        // character buttons
         private List<Button> _buttons = new();
+
+        // Array of character slots in horizontalpanel
         public CharacterSlot[] _CurSelectedCharacterSlot { get; private set; }
+        // array of character slots in verticalpanel
         private List<CharacterSlot> _characterSlot = new();
 
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
@@ -66,32 +70,35 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 button.gameObject.SetActive(false);
             }
+            // Deactivate all character slots
             foreach (var characterSlot in _characterSlot)
             {
                 characterSlot.gameObject.SetActive(false);
             }
         }
 
-        public void SetCharacters(List<BattleCharacter> characters, CharacterID currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, int[] currentCharacterId)
         {
-            CurrentCharacterId = currentCharacterId;
+            CurrentCharacterId = (CharacterID)currentCharacterId[0];
             Transform content = transform.Find("Content");
-
             foreach (var character in characters)
             {
-                GameObject slot = Instantiate(_characterSlotprefab, content);
 
-                slot.transform.Find("Button").GetComponent<DraggableCharacter>().Id = character.CustomCharacterId;
+
+
+                GameObject slot = Instantiate(_characterSlotprefab, content);
 
                 CharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)character.CustomCharacterId);
 
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, this);
+                if (info == null) continue;
+
+                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.CustomCharacterId, this);
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
             }
 
-            for (var i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
+            for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
             {
                 var button = _buttons[i];
                 var characterSlot = _characterSlot[i];
@@ -101,9 +108,19 @@ namespace MenuUi.Scripts.CharacterGallery
                     var character = characters[i];
                     button.gameObject.SetActive(true);
                     button.interactable = true;
+                    //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
 
+                    // Check if the character is currently selected
+                    if ((CharacterID)currentCharacterId[0] == character.CustomCharacterId)
+                    {
+                        // Set the character in the first slot of the horizontal character slot
+                        if (_CurSelectedCharacterSlot.Length > 0)
+                        {
+                            button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
+                        }
+                    }
 
                     // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
