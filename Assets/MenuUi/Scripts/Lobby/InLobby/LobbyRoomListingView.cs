@@ -110,7 +110,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var childCount = parent.childCount;
             for (var i = childCount - 1; i >= 0; --i)
             {
-                var child = parent.GetChild(i).GetChild(0).gameObject;
+                var child = parent.GetChild(i).gameObject;
+                if (child.GetComponent<Button>() == null) child = child.transform.GetChild(0).gameObject;
                 Destroy(child);
             }
         }
