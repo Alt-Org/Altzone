@@ -12,6 +12,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         [SerializeField] private GameObject _roomButtonPrefab;
         [SerializeField] private Transform _buttonParent;
+        [SerializeField] private bool _oldDesign;
 
         public Action RoomButtonOnClick
         {
@@ -26,15 +27,25 @@ namespace MenuUI.Scripts.Lobby.InLobby
         public void UpdateStatus(List<RoomInfo> rooms, Action<string> onJoinRoom)
         {
             // Synchronize button count with room count.
-            int roomsCount = rooms.Count;
-            int slotCount = _buttonParent.childCount;
-            for (int i = 0; i < slotCount; ++i)
+            if (!_oldDesign)
             {
-                if (roomsCount <= i) break;
-                Transform buttonslot = _buttonParent.GetChild(i);
-                if (_buttonParent.GetChild(i).childCount == 0)
+                int roomsCount = rooms.Count;
+                int slotCount = _buttonParent.childCount;
+                for (int i = 0; i < slotCount; ++i)
                 {
-                    AddButton(_buttonParent.GetChild(i), _roomButtonPrefab);
+                    if (roomsCount <= i) break;
+                    Transform buttonslot = _buttonParent.GetChild(i);
+                    if (_buttonParent.GetChild(i).childCount == 0)
+                    {
+                        AddButton(_buttonParent.GetChild(i), _roomButtonPrefab);
+                    }
+                }
+            }
+            else
+            {
+                while (_buttonParent.childCount < rooms.Count)
+                {
+                    AddButton(_buttonParent, _roomButtonPrefab);
                 }
             }
             // Update button captions
