@@ -22,7 +22,9 @@ namespace Altzone.Scripts.Model
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
+            int[] characters = new int[5];
+            characters[0] = currentCustomCharacterId;
+            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid);
         }
 
         internal static ClanData CreateClanData(string clanId, List<GameFurniture> furniture)
