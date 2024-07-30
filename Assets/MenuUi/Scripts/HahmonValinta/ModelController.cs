@@ -43,9 +43,9 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId)
         {
-            if (_view.CurrentCharacterId != (CharacterID)_playerData.SelectedCharacterId)
+            if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[0])
             {
-                _playerData.SelectedCharacterIds[0] = (int)_view.CurrentCharacterId;
+                _playerData.SelectedCharacterIds[0] = (int)newCharacterId;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
