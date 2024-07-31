@@ -8,7 +8,7 @@ using MenuUI.Scripts.SoulHome;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System;
-using static ServerManager;
+//using static ServerManager;
 using Random = UnityEngine.Random;
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
@@ -108,7 +108,7 @@ namespace MenuUI.Scripts.SoulHome {
                     var test2 = new Furniture(i * 10 + 1, "Floorlamp_Taakka", new Vector2Int(furniture1X, furniture1Y), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
                     room.Furnitures.Add(test2);
                     _soulHomeController.AddFurniture(test2);
-                    var test3 = new Furniture(i * 10 + 2, "Sofa_Taakka", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.TwoXSix, FurnitureSize.ThreeXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test3 = new Furniture(i * 10 + 2, "Sofa_Taakka", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.TwoXEight, FurnitureSize.SevenXThree, FurniturePlace.Floor, 10f, 15f, false);
                     room.Furnitures.Add(test3);
                     _soulHomeController.AddFurniture(test3);
 
@@ -239,7 +239,7 @@ namespace MenuUI.Scripts.SoulHome {
                     //_trayHandler.AddFurnitureInitial(test2);
                     //var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test3);
-                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXSix, FurnitureSize.ThreeXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXEight, FurnitureSize.SevenXThree, FurniturePlace.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test4);
                     _soulHomeController.AddFurniture(test4);
                     var test5 = new Furniture(i * 1000 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);

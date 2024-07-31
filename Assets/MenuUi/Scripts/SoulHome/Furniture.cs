@@ -17,7 +17,9 @@ namespace MenuUI.Scripts.SoulHome
         TwoXThree,
         TwoXFour,
         TwoXSix,
-        ThreeXThree
+        TwoXEight,
+        ThreeXThree,
+        SevenXThree
     }
 
     public enum FurniturePlace
@@ -147,9 +149,17 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(6, 2);
             }
+            else if (furnitureSize == FurnitureSize.TwoXEight)
+            {
+                return new Vector2Int(8, 2);
+            }
             else if (furnitureSize == FurnitureSize.ThreeXThree)
             {
                 return new Vector2Int(3, 3);
+            }
+            else if (furnitureSize == FurnitureSize.SevenXThree)
+            {
+                return new Vector2Int(3, 7);
             }
             else
             {
