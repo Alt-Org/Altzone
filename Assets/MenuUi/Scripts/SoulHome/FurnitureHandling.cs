@@ -180,7 +180,7 @@ namespace MenuUI.Scripts.SoulHome
                 /*else*/
                 width = transform.parent.GetComponent<FurnitureSlot>().width * 6;
             }
-            else if (furnitureSize is FurnitureSize.TwoXEight)
+            else if (furnitureSize is FurnitureSize.TwoXEight or FurnitureSize.ThreeXEight)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
