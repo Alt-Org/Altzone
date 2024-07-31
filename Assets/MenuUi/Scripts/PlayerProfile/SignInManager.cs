@@ -112,9 +112,8 @@ namespace MenuUi.Scripts.Login
                 Debug.Log("Log in successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     Debug.Log(request.downloadHandler.text);
-                    returnToMainMenuButton.onClick.Invoke();
-
                     ServerManager.Instance.SetProfileValues(result);
+                    returnToMainMenuButton.onClick.Invoke();
                 }
 
                 logInButton.interactable = true;
