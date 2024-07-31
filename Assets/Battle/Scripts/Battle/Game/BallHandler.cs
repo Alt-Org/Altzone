@@ -153,8 +153,8 @@ public class BallHandler : MonoBehaviour
         if (otherGameObject.CompareTag("Wall"))
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: soul wall, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
-            int BrickHealth = otherGameObject.GetComponent<BrickRemove>().Health;
-            otherGameObject.GetComponent<BrickRemove>().BrickHitInit(_damage);
+            int BrickHealth = otherGameObject.GetComponent<SoulWallSegmentRemove>().Health;
+            otherGameObject.GetComponent<SoulWallSegmentRemove>().BrickHitInit(_damage);
 
             if (BrickHealth - _damage <= 0)
             {

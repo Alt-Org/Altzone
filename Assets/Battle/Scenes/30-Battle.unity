@@ -6532,77 +6532,17 @@ PrefabInstance:
       value: 3.91
       objectReference: {fileID: 0}
     - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: Diamond2
-      value: 
-      objectReference: {fileID: 548652305}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: PlayerLimit
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject
-      value: 
-      objectReference: {fileID: 1793557228}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject2
-      value: 
-      objectReference: {fileID: 548652305}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObjects.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObjects.Array.data[0]
-      value: 
-      objectReference: {fileID: 1793557228}
-    - target: {fileID: 289940269, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObjects.Array.data[1]
-      value: 
-      objectReference: {fileID: 548652305}
     - target: {fileID: 289940270, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: sceneViewId
       value: 14
       objectReference: {fileID: 0}
-    - target: {fileID: 482608506, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 497942191, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: WinText
-      value: 
-      objectReference: {fileID: 1070883255}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LoseText
-      value: 
-      objectReference: {fileID: 31162645}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: TestLimit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: RaidButton
-      value: 
-      objectReference: {fileID: 1343208591}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LobbyButton
-      value: 
-      objectReference: {fileID: 671105154}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: WinGraphics
-      value: 
-      objectReference: {fileID: 1761139120}
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _raidButton
       value: 
       objectReference: {fileID: 1343208591}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LossGraphics
-      value: 
-      objectReference: {fileID: 1361277913}
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _lobbyButton
       value: 
@@ -6611,10 +6551,6 @@ PrefabInstance:
       propertyPath: _winGraphics
       value: 
       objectReference: {fileID: 1761139120}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: CountDownText
-      value: 
-      objectReference: {fileID: 1328429796}
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _lossGraphics
       value: 
@@ -6626,14 +6562,6 @@ PrefabInstance:
     - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _audioClips.Array.size
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 504247170, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _audioClips.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 33d8a6f205b9cf64bbf049f302ca682b, type: 3}
-    - target: {fileID: 523655092, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 565639873, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6651,34 +6579,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -3.91
       objectReference: {fileID: 0}
-    - target: {fileID: 694362213, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 699993758, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 700284136, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 704006238, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: Diamond2
-      value: 
-      objectReference: {fileID: 548652305}
     - target: {fileID: 704006238, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: PlayerLimit
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 704006238, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject
-      value: 
-      objectReference: {fileID: 1793557228}
-    - target: {fileID: 704006238, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject2
-      value: 
-      objectReference: {fileID: 548652305}
     - target: {fileID: 704006239, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: sceneViewId
       value: 9
@@ -6700,57 +6604,17 @@ PrefabInstance:
       value: 3.91
       objectReference: {fileID: 0}
     - target: {fileID: 876887492, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: Diamond2
-      value: 
-      objectReference: {fileID: 548652305}
-    - target: {fileID: 876887492, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: PlayerLimit
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 876887492, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject
-      value: 
-      objectReference: {fileID: 1793557228}
-    - target: {fileID: 876887492, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject2
-      value: 
-      objectReference: {fileID: 548652305}
     - target: {fileID: 876887493, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: sceneViewId
       value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: WinText
-      value: 
-      objectReference: {fileID: 1070883255}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LoseText
-      value: 
-      objectReference: {fileID: 31162645}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: TestLimit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: RaidButton
-      value: 
-      objectReference: {fileID: 1343208591}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LobbyButton
-      value: 
-      objectReference: {fileID: 671105154}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: WinGraphics
-      value: 
-      objectReference: {fileID: 1761139120}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _raidButton
       value: 
       objectReference: {fileID: 1343208591}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: LossGraphics
-      value: 
-      objectReference: {fileID: 1361277913}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _lobbyButton
       value: 
@@ -6760,10 +6624,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1761139120}
     - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: CountDownText
-      value: 
-      objectReference: {fileID: 1328429796}
-    - target: {fileID: 906938540, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: _lossGraphics
       value: 
       objectReference: {fileID: 1361277913}
@@ -6772,21 +6632,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1328429796}
     - target: {fileID: 930049738, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: Diamond2
-      value: 
-      objectReference: {fileID: 548652305}
-    - target: {fileID: 930049738, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: PlayerLimit
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 930049738, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject
-      value: 
-      objectReference: {fileID: 1793557228}
-    - target: {fileID: 930049738, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: DiamondObject2
-      value: 
-      objectReference: {fileID: 548652305}
     - target: {fileID: 930049739, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: sceneViewId
       value: 13
@@ -6811,82 +6659,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _gridWidth
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _gridHeight
-      value: 34
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _arenaHeight
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _brickHeight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _leftMidWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _leftTopWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _rightMidWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _rightTopWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _leftBottomWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _rightBottomWall
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _middleAreaHeight
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _betaTeamLeftBricks
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _alphaTeamLeftBricks
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _betaTeamRightBricks
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _alphaTeamRightBricks
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _startPositionBeta1._row
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _startPositionBeta2._col
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _startPositionBeta2._row
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 1284705050, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: _startPositionAlpha2._col
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 1308643768, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.91
@@ -6902,10 +6674,6 @@ PrefabInstance:
     - target: {fileID: 1477915992, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1557202980, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1734355755, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_IsActive
@@ -6931,17 +6699,9 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 3.91
       objectReference: {fileID: 0}
-    - target: {fileID: 1852760302, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 1860657042, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 1877317699, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1918226529, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6971,9 +6731,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 3.91
       objectReference: {fileID: 0}
-    - target: {fileID: 2088893034, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}
-      propertyPath: sceneViewId
-      value: 4
+    - target: {fileID: 37722840573782679, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_Name
+      value: ArenaBorderBottom
       objectReference: {fileID: 0}
     - target: {fileID: 37722840573782679, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -6990,40 +6751,15 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
-    - target: {fileID: 428402334129762466, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_Name
-      value: RightTopWall
-      objectReference: {fileID: 0}
-    - target: {fileID: 428402334129762466, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 428402334129762466, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 671832651596286402, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_Name
       value: GameplayArea
       objectReference: {fileID: 0}
-    - target: {fileID: 1239007466319828630, guid: c5c41f82aa33699438e94e6b2118282d,
+    - target: {fileID: 1253440901854599680, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_Name
-      value: LeftTopWall
-      objectReference: {fileID: 0}
-    - target: {fileID: 1239007466319828630, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1239007466319828630, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
+      value: SoulWallTeamAlphaSegment4
       objectReference: {fileID: 0}
     - target: {fileID: 1253440901854599680, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7042,8 +6778,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2651778220217117674, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2651778220217117674, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 2842041399823671083, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment4
       objectReference: {fileID: 0}
     - target: {fileID: 2842041399823671083, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7052,13 +6798,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3268114360173429259, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: ArenaBorderRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268114360173429259, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_Layer
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3531421241317074670, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3531421241317074670, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7110,10 +6856,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3732939097844463752, guid: c5c41f82aa33699438e94e6b2118282d,
+    - target: {fileID: 4508924819385566585, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 2
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment2
       objectReference: {fileID: 0}
     - target: {fileID: 4508924819385566585, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7122,34 +6868,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4620814551009339550, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4620814551009339550, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Wall
       objectReference: {fileID: 0}
-    - target: {fileID: 5195351922483856587, guid: c5c41f82aa33699438e94e6b2118282d,
+    - target: {fileID: 5305971292805262437, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
-      propertyPath: _audioList.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: db084e3787dea794db2fe546d1d6ecc0, type: 3}
-    - target: {fileID: 5195351922483856587, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: _audioList.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: 33d8a6f205b9cf64bbf049f302ca682b, type: 3}
-    - target: {fileID: 5195351922483856587, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: _audioList.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: 339d48471554854478e1053f315f0bf0, type: 3}
-    - target: {fileID: 5195351922483856587, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: _audioList.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: 04e727f0607f0b74597186e1cd05755f, type: 3}
-    - target: {fileID: 5195351922483856587, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: _audioList.Array.data[4]
-      value: 
-      objectReference: {fileID: 8300000, guid: 46db937da2bb4864db05abd64e4c261b, type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment3
+      objectReference: {fileID: 0}
     - target: {fileID: 5305971292805262437, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_TagString
@@ -7162,63 +6893,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5711794897460718039, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711794897460718039, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Wall
       objectReference: {fileID: 0}
-    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: WinText
-      value: 
-      objectReference: {fileID: 1070883255}
-    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: LoseText
-      value: 
-      objectReference: {fileID: 31162645}
-    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: RaidButton
-      value: 
-      objectReference: {fileID: 1343208591}
-    - target: {fileID: 5765051813907257761, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: LobbyButton
-      value: 
-      objectReference: {fileID: 671105154}
-    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: WinText
-      value: 
-      objectReference: {fileID: 1070883255}
-    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: LoseText
-      value: 
-      objectReference: {fileID: 31162645}
-    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: RaidButton
-      value: 
-      objectReference: {fileID: 1343208591}
-    - target: {fileID: 5922802932909908462, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: LobbyButton
-      value: 
-      objectReference: {fileID: 671105154}
     - target: {fileID: 6378013828000908076, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6707511437302172081, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_Name
+      value: ArenaBorderTop
       objectReference: {fileID: 0}
     - target: {fileID: 6707511437302172081, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7242,6 +6933,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6928115954222428759, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: ArenaBorders
+      objectReference: {fileID: 0}
+    - target: {fileID: 6928115954222428759, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
@@ -7257,8 +6953,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7223281528042474564, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7223281528042474564, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426313485098558562, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment5
       objectReference: {fileID: 0}
     - target: {fileID: 7426313485098558562, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
@@ -7267,23 +6973,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8292193658603869593, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
+      propertyPath: m_Name
+      value: SoulWallTeamAlphaSegment5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8292193658603869593, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
       propertyPath: m_TagString
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 8628255448681582580, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_Name
+      value: ArenaBorderLeft
       objectReference: {fileID: 0}
     - target: {fileID: 8628255448681582580, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 8628255448681582580, guid: c5c41f82aa33699438e94e6b2118282d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8840922180365567271, guid: c5c41f82aa33699438e94e6b2118282d,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8912497810383331320, guid: c5c41f82aa33699438e94e6b2118282d,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1359140011649192209, guid: c5c41f82aa33699438e94e6b2118282d, type: 3}

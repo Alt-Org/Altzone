@@ -1,19 +1,19 @@
 using UnityEngine;
-using System.Collections;
+
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.AudioPlayer;
 
 namespace Battle.Scripts.Battle.Game
 {
     #region Message Classes
-    class BrickRemoved
+    internal class SoulWallSegmentRemoved
     {
         /// <summary>
         /// PhotonBattle team number
         /// </summary>
         public int Side;
 
-        public BrickRemoved(int side)
+        public SoulWallSegmentRemoved(int side)
         {
             Side = side;
         }
@@ -24,11 +24,11 @@ namespace Battle.Scripts.Battle.Game
     /// Removes a brick from the wall when hit conditions are met.
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
-    internal class BrickRemove : MonoBehaviour
+    internal class SoulWallSegmentRemove : MonoBehaviour
     {
         #region Serialized Fields
-        [SerializeField] public PlayerPlayArea PlayerPlayArea;
-        [SerializeField] public AudioPlayer _audioPlayer;
+        [SerializeField] private PlayerPlayArea _playerPlayArea;
+        [SerializeField] private AudioPlayer _audioPlayer;
         #endregion Serialized Fields
 
         #region Public Properties
@@ -39,16 +39,16 @@ namespace Battle.Scripts.Battle.Game
         public void BrickHitInit(int damage)
         {
             _spriteIndex = _ballHandler.SpriteIndex();
-            var color = _spriteRenderer.color;
+            Color color = _spriteRenderer.color;
             color.g -= _colorChangeFactor;
             color.b -= _colorChangeFactor;
             _spriteRenderer.color = color;
-            Health = Health - damage;
+            Health -= damage;
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Brick hit (health: {1})", _syncedFixedUpdateClock.UpdateCount, Health));
             if (Health <= 0)
             {
                 Destroy(gameObject);
-                this.Publish(new BrickRemoved(_side));
+                this.Publish(new SoulWallSegmentRemoved(_side));
                 //_audioPlayer.Play(BREAK_EFFECT_INDEX);
             }
             else
@@ -89,7 +89,7 @@ namespace Battle.Scripts.Battle.Game
         private void Start()
         {
             _side = transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
-            Health = PlayerPlayArea.BrickHealth;
+            Health = _playerPlayArea.soulWallSegmentHeahlt;
             _colorChangeFactor = 1f / Health;
 
             // get components
