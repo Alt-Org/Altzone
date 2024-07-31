@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Battle.Scripts.Battle;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Test
 {

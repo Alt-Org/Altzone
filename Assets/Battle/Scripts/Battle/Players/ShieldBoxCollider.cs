@@ -1,33 +1,27 @@
-using System;
-using System.Collections;
-using Altzone.Scripts.Config;
-using Battle.Scripts.Battle;
-using Battle.Scripts.Battle.Game;
-using Battle.Scripts.Battle.Players;
 using UnityConstants;
 using UnityEngine;
 
-namespace Battle.Scripts.Test
+namespace Battle.Scripts.Battle.Players
 {
-    public class ShieldBoxCollider : MonoBehaviour
+    internal class ShieldBoxCollider : MonoBehaviour
     {
         // Serialized Fields
         [SerializeField] private float _bounceAngle;
 
+        // Public Properties
         public Transform ShieldTransform => _transform;
         public float BounceAngle => _bounceAngle;
         public float ImpactForce => _playerActor.ImpactForce;
-        public float AttackMultiplier => _attackMultiplier;
         public bool BounceOnBallShieldCollision => _playerActor.BounceOnBallShieldCollision;
 
+        // Public Methods
         public void OnBallShieldCollision() => _playerActor.OnBallShieldCollision();
         public void OnBallShieldBounce() => _playerActor.OnBallShieldBounce();
 
-        //private GridManager _gridManager;
+        // Private Fields
         private PlayerActor _playerActor;
         private ShieldManager _shieldManager;
         private Transform _transform;
-        private float _attackMultiplier;
 
         // Debug
 #pragma warning disable IDE0051 // Remove unused private members
@@ -37,10 +31,11 @@ namespace Battle.Scripts.Test
 #pragma warning restore IDE0051 // Remove unused private members
 #pragma warning restore IDE0052 // Remove unread private members
 
+        #region Private Methods
+
         private void Awake()
         {
             _transform = GetComponent<Transform>();
-            _attackMultiplier = GameConfig.Get().Variables._playerAttackMultiplier;
             _playerActor = transform.root.GetComponent<PlayerActor>();
             _shieldManager = _transform.parent.parent.GetComponentInParent<ShieldManager>();
 
@@ -62,5 +57,7 @@ namespace Battle.Scripts.Test
                 _shieldManager.OnShieldBoxCollision();
             }
         }
+
+        #endregion Private Methods
     }
 }

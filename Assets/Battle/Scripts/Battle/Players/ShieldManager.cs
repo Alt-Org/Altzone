@@ -1,4 +1,3 @@
-using Battle.Scripts.Test;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
