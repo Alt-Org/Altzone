@@ -300,6 +300,8 @@ public class ServerManager : MonoBehaviour
 
                 foreach (ServerItem item in items)
                 {
+                    Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                    if (item._id == null || item.name == null) continue;
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
                 }
 
