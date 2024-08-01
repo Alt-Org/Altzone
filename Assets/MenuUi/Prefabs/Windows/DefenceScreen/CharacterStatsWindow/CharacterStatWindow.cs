@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using MenuUi.Prefabs.Windows.DefenceScreen;
+using Altzone.Scripts.Model.Poco.Game;
 
 
 public class CharacterStatWindow : MonoBehaviour
@@ -68,7 +69,7 @@ public class CharacterStatWindow : MonoBehaviour
         Debug.Log("CharacterStatWindow disabled");
     }
 
-    private void HandleCharacterGalleryCharacterStatWindowToShowChange(int newValue)
+    private void HandleCharacterGalleryCharacterStatWindowToShowChange(CharacterID newValue)
     {
         _decideWhatCharacterToShow(newValue);
         SetCharacterStats();
@@ -327,37 +328,37 @@ public class CharacterStatWindow : MonoBehaviour
 
 
     // doing this at awake
-    private void _decideWhatCharacterToShow(int index)
+    private void _decideWhatCharacterToShow(CharacterID index)
     {
         switch (index)
         {
-            case 0:
+            case CharacterID.IntellectualizerResearcher:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false, 7, 3, 1, 4, 1);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
                 Debug.Log("loaded albert");
                 break;
-            case 1:
+            case CharacterID.RetroflectorOvereater:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu Hodari", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[1];
                 Debug.Log("loaded hannu");
                 break;
-            case 2:
+            case CharacterID.RetroflectorAlcoholic:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Huugo Hupaisa", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
                 break;
-            case 3:
+            case CharacterID.TricksterComedian:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Keijo Kelmi", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
                 break;
-            case 4:
+            case CharacterID.ObedientPreacher:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Paavali Pappila", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[4];
                 break;
-            case 5:
+            case CharacterID.ProjectorGrafitiartist:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tarmo Taide", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[5];
                 break;
-            case 6:
+            case CharacterID.ConfluentBesties:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiina&Tuula Tyllerö", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[6];
                 break;

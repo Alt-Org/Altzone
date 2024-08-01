@@ -1,22 +1,27 @@
+using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class CharacterGalleryCharacterStatWindowToShowButton : MonoBehaviour
+namespace MenuUi.Scripts.CharacterGallery
 {
-    public int CharacterStatWindowToShowValue;
 
-    private Button _characterGalleryCharacterButton;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    public class CharacterGalleryCharacterStatWindowToShowButton : NaviButton
     {
-        _characterGalleryCharacterButton = GetComponent<Button>();
-        _characterGalleryCharacterButton.onClick.AddListener(_characterGalleryCharacterButtonOnClick);
-    }
+        public CharacterID CharacterStatWindowToShowValue;
 
-    private void _characterGalleryCharacterButtonOnClick()
-    {
-        SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
-        Debug.Log("changed to " + CharacterStatWindowToShowValue);
+        protected override void OnNaviButtonClick()
+        {
+            IGalleryCharacterData data = GetComponent<IGalleryCharacterData>();
+
+            CharacterStatWindowToShowValue = data.Id;
+
+            SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow = CharacterStatWindowToShowValue;
+            base.OnNaviButtonClick();
+            Debug.Log("changed to " + CharacterStatWindowToShowValue);
+        }
     }
 }
+
+

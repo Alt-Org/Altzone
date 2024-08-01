@@ -33,6 +33,12 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// Unique string to identify this player across devices and systems.
         /// </summary>
         [Unique] public string UniqueIdentifier;
+        private string _v1;
+        private string _clanId;
+        private int _currentCustomCharacterId;
+        private string _v2;
+        private int _v3;
+        private string _playerGuid;
 
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
 
@@ -56,6 +62,16 @@ namespace Altzone.Scripts.Model.Poco.Player
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
+        }
+
+        public PlayerData(string v1, string clanId, int currentCustomCharacterId, string v2, int v3, string playerGuid)
+        {
+            _v1 = v1;
+            _clanId = clanId;
+            _currentCustomCharacterId = currentCustomCharacterId;
+            _v2 = v2;
+            _v3 = v3;
+            _playerGuid = playerGuid;
         }
 
         internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)

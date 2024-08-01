@@ -49,11 +49,15 @@ namespace MenuUi.Scripts.CharacterGallery
                 GameObject current = transform.GetChild(0).gameObject;
                 DraggableCharacter currentDraggable = current.GetComponent<DraggableCharacter>();
 
+                // Move the current character to its initial slot
+                currentDraggable.transform.SetParent(currentDraggable.initialSlot);
+                currentDraggable.transform.position = currentDraggable.initialSlot.position;
+
                 //currentDraggable.transform.SetParent(draggableItem.parentAfterDrag);
                 //draggableItem.parentAfterDrag = transform;
+
             }
         }
-        
         public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
