@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField]
         private SwipeUI _swipe;
 
-        public CharacterID Id { get => _id;}
+        public CharacterID Id { get => _id; }
 
         private void Start()
         {
@@ -81,10 +81,18 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (eventData.pointerEnter != null)
             {
-                CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
-                if (characterSlot != null)
+                DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
+                if (targetCharacter != null)
                 {
-                    droppedSlot = characterSlot.transform;
+                    droppedSlot = targetCharacter.transform.parent;
+                }
+                else
+                {
+                    CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
+                    if (characterSlot != null)
+                    {
+                        droppedSlot = characterSlot.transform;
+                    }
                 }
             }
 
@@ -95,9 +103,18 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             else
             {
-                // Jos droppedSlot on Topslot, aseta hahmo siihen
+                // If droppedSlot is Topslot, find empty Topslot
                 if (droppedSlot.tag == "Topslot")
                 {
+                    DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
+                    if (topSlotCharacter != null)
+                    {
+                        // Move topSlotCharacter to it's initialSlot
+                        Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
+                        topSlotCharacter.transform.SetParent(topSlotInitialSlot);
+                        topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                    }
+
                     // Find the first empty topslot
                     Transform targetSlot = null;
                     foreach (var slot in _modelView._CurSelectedCharacterSlot)
@@ -117,6 +134,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
+
             }
 
             _spriteImage.raycastTarget = true;
@@ -129,7 +147,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 HandleParentChange(previousParent);
             }
         }
-
 
         private void HandleParentChange(Transform newParent)
         {
@@ -148,6 +165,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
+
 
 
 
