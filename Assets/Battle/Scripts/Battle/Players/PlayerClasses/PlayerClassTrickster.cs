@@ -13,10 +13,8 @@ using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine.UIElements;
 
-
 namespace Battle.Scripts.Battle.Players
 {
-
     public class PlayerClassTrickster : MonoBehaviour, IPlayerClass
     {
         // Serialized fields
@@ -26,8 +24,6 @@ namespace Battle.Scripts.Battle.Players
         [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
         public bool SpecialAbilityOverridesBallBounce => false;
 
-
-
         public void OnBallShieldCollision()
         {
             // Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
@@ -36,19 +32,14 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
 
             ShieldRandomizer();
-
         }
 
         public void OnBallShieldBounce()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
-
         }
 
         public bool BounceOnBallShieldCollision => true;
-
-
-
 
         // Variables
         private PhotonView _photonView;
@@ -84,28 +75,23 @@ namespace Battle.Scripts.Battle.Players
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sending network message", _syncedFixedUpdateClock.UpdateCount));
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
-
             }
-
             else
             {
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is pleb client", _syncedFixedUpdateClock.UpdateCount));
             }
         }
 
-
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             byte playerPos = 0;
 
-            PlayerActor actor = transform.parent.GetComponent<PlayerActor>();
+            PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
 
             foreach (IDriver driver in data.AllDrivers)
             {
-
-                if (driver.PlayerActor == actor)
+                if (driver.PlayerActor == playerActor)
                 {
-
                     playerPos = (byte)(driver.PlayerPos - PhotonBattle.PlayerPosition1);
                     break;
                 }
@@ -121,7 +107,6 @@ namespace Battle.Scripts.Battle.Players
                     PhotonNetwork.AllocateViewID(_photonView);
 
                     _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);
-
                 });
             }
         }
