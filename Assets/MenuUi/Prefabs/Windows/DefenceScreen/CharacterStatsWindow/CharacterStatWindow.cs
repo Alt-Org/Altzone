@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using MenuUi.Prefabs.Windows.DefenceScreen;
 using Altzone.Scripts.Model.Poco.Game;
-
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts;
 
 public class CharacterStatWindow : MonoBehaviour
 {
@@ -62,6 +63,9 @@ public class CharacterStatWindow : MonoBehaviour
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled");
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
+        //PlayerData playerData = null;
+        //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
+        //DiamondAttackAmount = playerData.DiamondAttack;
     }
     private void OnDisable()
     {
@@ -333,7 +337,7 @@ public class CharacterStatWindow : MonoBehaviour
         switch (index)
         {
             case CharacterID.IntellectualizerResearcher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false, 7, 3, 1, 4, 1);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Ã„lypÃ¤Ã¤", false, 7, 3, 1, 4, 1);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
                 Debug.Log("loaded albert");
                 break;
@@ -342,11 +346,11 @@ public class CharacterStatWindow : MonoBehaviour
                 CharacterArtWorkToShow.sprite = CharacterArtWork[1];
                 Debug.Log("loaded hannu");
                 break;
-            case CharacterID.RetroflectorAlcoholic:
+            case CharacterID.TricksterComedian:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Huugo Hupaisa", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
                 break;
-            case CharacterID.TricksterComedian:
+            case CharacterID.DesensitizerBodybuilder:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Keijo Kelmi", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
                 break;
@@ -359,7 +363,7 @@ public class CharacterStatWindow : MonoBehaviour
                 CharacterArtWorkToShow.sprite = CharacterArtWork[5];
                 break;
             case CharacterID.ConfluentBesties:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiina&Tuula Tyllerö", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiina&Tuula TyllerÃ¶", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[6];
                 break;
             default:
