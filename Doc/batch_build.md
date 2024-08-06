@@ -1,5 +1,11 @@
-## Batch Build system
+## New Batch Build system
 
+New Batch Build system is documented here: [StartUnityBuild](https://github.com/jpetays/StartUnityBuild).  
+_Note that the repo name can be changed in the future but it should still be under same [github account](https://github.com/jpetays)!_
+
+## Old Batch Build system
+
+_(Old Batch Build system is located in `Prg/Editor/BatchBuild folder`)_  
 This document gives overview and list of features for 'automated' UNITY command line batch build system.  
 _Batch build works only on Windows but it can be adapted easily to other platforms._
 
