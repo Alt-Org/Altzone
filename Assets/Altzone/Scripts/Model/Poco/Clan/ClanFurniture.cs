@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -10,14 +11,20 @@ namespace Altzone.Scripts.Model.Poco.Clan
     public class ClanFurniture
     {
         [PrimaryKey] public string Id;
-        [ForeignKey(nameof(GameFurniture)), Mandatory] public string GameFurnitureId;
+        [ForeignKey(nameof(GameFurniture)), Mandatory] public string GameFurnitureName;
+        public Vector2Int Position = new(-1, -1);
+        public int Room = -1;
+        public bool IsRotated;
 
-        public ClanFurniture(string id, string gameFurnitureId)
+        public ClanFurniture(string id, string gameFurnitureId, int column = -1, int row = -1, int room = -1, bool isRotated = false)
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(gameFurnitureId.IsMandatory());
             Id = id;
-            GameFurnitureId = gameFurnitureId;
+            GameFurnitureName = gameFurnitureId;
+            Position = new(column, row);
+            Room = room;
+            IsRotated = isRotated;
         }
     }
 }

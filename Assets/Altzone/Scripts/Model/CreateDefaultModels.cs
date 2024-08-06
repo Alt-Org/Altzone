@@ -46,9 +46,9 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }
-            var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("tuoli")).ToList();
-            var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pöytä")).ToList();
-            var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.EndsWith("y")).ToList();
+            /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
+            var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
+            var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
 
             // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
             var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
@@ -66,12 +66,12 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, 0));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureId, 1, 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureId, 2, 2));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureId, 3, 3));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureName, 1, 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureName, 2, 2));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureName, 3, 3));
             }
             {
                 var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
@@ -79,31 +79,31 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, 0));
 
                 var row = 0;
                 var col = 0;
                 foreach (var item in chairs)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in tables)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in misc)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
                 }
-            }
+            }*/
             return clanData;
         }
 
@@ -157,7 +157,20 @@ namespace Altzone.Scripts.Model
             var cultureInfo = CultureInfo.GetCultureInfo("en-US");
 
             var gameFurniture = new List<GameFurniture>();
-            using var reader = new StringReader(FurnitureTsvData);
+
+            gameFurniture.Add(new GameFurniture(1.ToString(), "Sofa_Taakka", FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(2.ToString(), "Mirror_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(3.ToString(), "Floorlamp_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(4.ToString(), "Toilet_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(5.ToString(), "Sink_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(6.ToString(), "Closet_Taakka", FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(7.ToString(), "CoffeeTable_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(8.ToString(), "ArmChair_Taakka", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+
+            /*using var reader = new StringReader(FurnitureTsvData);
             // Skip header!
             reader.ReadLine();
             for (;;)
@@ -202,7 +215,7 @@ namespace Altzone.Scripts.Model
                     tokens[7]
                 );
                 gameFurniture.Add(furniture);
-            }
+            }*/
             return gameFurniture;
 
             double ParseDouble(string token)

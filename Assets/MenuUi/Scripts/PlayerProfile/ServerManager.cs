@@ -300,9 +300,48 @@ public class ServerManager : MonoBehaviour
 
                 foreach (ServerItem item in items)
                 {
-                    Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
                     if (item._id == null || item.name == null) continue;
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
+                }
+
+                if(clanFurniture.Count == 0)
+                {
+                    int i = 0;
+                    while (i < 2)
+                    {
+                        clanFurniture.Add(new ClanFurniture((10000 + 100 + i).ToString(), "Sofa_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 200 + i).ToString(), "Mirror_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 300 + i).ToString(), "Floorlamp_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 400 + i).ToString(), "Toilet_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 500 + i).ToString(), "Sink_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 600 + i).ToString(), "Closet_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 700 + i).ToString(), "CoffeeTable_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 800 + i).ToString(), "ArmChair_Taakka"));
+                        i++;
+                    }
+
+                    for (i = 0; i < Clan.playerCount; i++)
+                    {
+                        int slotRows = 8;
+                        int slotColumn = 20;
+
+                        int furniture1X = UnityEngine.Random.Range(1, slotColumn - 1);
+                        int furniture1Y = UnityEngine.Random.Range(1, slotRows);
+                        int furniture2X;
+                        int furniture2Y;
+                        while (true)
+                        {
+                            furniture2X = UnityEngine.Random.Range(0, slotColumn - 7);
+                            furniture2Y = UnityEngine.Random.Range(1, slotRows);
+                            if ((furniture2X >= furniture1X - 7 && furniture2X <= furniture1X + 1 && furniture2Y >= furniture1Y - 1 && furniture2Y <= furniture1Y + 2)) continue;
+                            else break;
+                        }
+
+                        clanFurniture.Add(new ClanFurniture((10000 + 300 + 3 + i).ToString(), "Floorlamp_Taakka", furniture1X, furniture1Y, i, false));
+                        clanFurniture.Add(new ClanFurniture((10000 + 100 + 3 + i).ToString(), "Sofa_Taakka", furniture2X, furniture2Y, i, false));
+
+                    }
                 }
 
                 inventory.Furniture = clanFurniture;

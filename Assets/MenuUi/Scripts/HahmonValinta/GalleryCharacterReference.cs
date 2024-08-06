@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/GalleryCharacterReference", fileName = "GalleryCharacterReference")]
+    //[CreateAssetMenu(menuName = "ALT-Zone/GalleryCharacterReference", fileName = "GalleryCharacterReference")]
     public class GalleryCharacterReference : ScriptableObject
     {
         [SerializeField] private List<CharacterClassInfo> _info;
