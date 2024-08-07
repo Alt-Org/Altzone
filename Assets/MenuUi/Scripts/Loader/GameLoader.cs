@@ -45,13 +45,13 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-            SignalBus.OnVideoEnd += OpenLogIn;
+            SignalBus.OnVideoEnd += LoadHandler;
             EnhancedTouchSupport.Enable();
         }
 
         private void OnDisable()
         {
-            SignalBus.OnVideoEnd -= OpenLogIn;
+            SignalBus.OnVideoEnd -= LoadHandler;
         }
 
         private void Update()
@@ -62,7 +62,7 @@ namespace MenuUi.Scripts.Loader
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)
-                        OpenLogIn();
+                        LoadHandler();
                     else
                     {
                         _videoPlaying = true;
@@ -71,15 +71,28 @@ namespace MenuUi.Scripts.Loader
                 }
                 else
                 {
-                    OpenLogIn();
+                    LoadHandler();
                 }
             }
         }
 
-        public void OpenLogIn()
+        private void LoadHandler()
         {
             _videoEnded = true;
             _videoPlaying = false;
+            StartCoroutine(InitializeDataStore());
+            //OpenLogIn();
+        }
+
+        public IEnumerator InitializeDataStore()
+        {
+            yield return new WaitUntil(() => Storefront.Get() != null);
+            Debug.Log("Datastore initialized");
+            OpenLogIn();
+        }
+
+        public void OpenLogIn()
+        {
             GetComponent<WindowNavigation>().Navigate();
             /*var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
