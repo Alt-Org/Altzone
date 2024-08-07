@@ -5,11 +5,10 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-
     [RequireComponent(typeof(Button))]
     public class CharacterGalleryCharacterStatWindowToShowButton : NaviButton
     {
-        public CharacterID CharacterStatWindowToShowValue;
+        private CharacterID CharacterStatWindowToShowValue;
 
         protected override void OnNaviButtonClick()
         {
