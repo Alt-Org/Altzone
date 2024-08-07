@@ -398,7 +398,7 @@ PrefabInstance:
     - target: {fileID: 1698316617930894126, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
       propertyPath: m_RaycastTarget
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1775543799907187927, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
@@ -435,6 +435,11 @@ PrefabInstance:
       propertyPath: _spriteImage
       value: 
       objectReference: {fileID: 1542405097797601817}
+    - target: {fileID: 1813859720648059125, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
+      propertyPath: _backGroundspriteImage
+      value: 
+      objectReference: {fileID: 3146477122434043581}
     - target: {fileID: 2934286175611341252, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
       propertyPath: _isCurrentPopOutWindow
@@ -454,7 +459,7 @@ PrefabInstance:
     - target: {fileID: 2980416419759435658, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
       propertyPath: m_RaycastTarget
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363226798787773503, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
@@ -631,7 +636,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2934286175611341252, guid: 00dd9bde2849f9c498dd00c084457690, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.CharacterGallery
     public class DraggableCharacter : MonoBehaviour, IGalleryCharacterData, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _backGroundspriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
@@ -57,7 +58,7 @@ namespace MenuUi.Scripts.CharacterGallery
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
-            _spriteImage.raycastTarget = false;
+            _backGroundspriteImage.raycastTarget = false;
             button.interactable = false;
 
             // Set the button colors to make the background transparent during dragging
@@ -85,6 +86,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (targetCharacter != null)
                 {
                     droppedSlot = targetCharacter.transform.parent;
+                    droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
                 }
                 else
                 {
@@ -137,7 +139,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             }
 
-            _spriteImage.raycastTarget = true;
+            _backGroundspriteImage.raycastTarget = true;
             button.interactable = true;
             button.colors = originalColors;
 
