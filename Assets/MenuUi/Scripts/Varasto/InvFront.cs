@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
 
-        private List<GameFurniture> _items;
+        private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
 
         bool _startCompleted = false;
@@ -151,7 +151,7 @@ namespace MenuUi.Scripts.Storage
             yield return new WaitUntil(() => clanFurnitureList != null);
 
             // Create furniture list for UI.
-            _items = new List<GameFurniture>();
+            _items = new List<StorageFurniture>();
             if (clanFurnitureList.Count == 0)
             {
                 Debug.Log($"found clan items {_items.Count}");
@@ -170,7 +170,8 @@ namespace MenuUi.Scripts.Storage
                 {
                     continue;
                 }
-                _items.Add(furniture);
+                StorageFurniture storageFurniture = new(clanFurniture,furniture,_furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName));
+                _items.Add(storageFurniture);
             }
             Debug.Log($"found clan items {_items.Count}");
         }
@@ -194,21 +195,21 @@ namespace MenuUi.Scripts.Storage
         private void SetSlots()
         {
             int i = 0;
-            foreach (GameFurniture _furn in _items)
+            foreach (StorageFurniture _furn in _items)
             {
                 Transform toSet = _slotsList[i].transform;
 
                 // Icon
-                toSet.GetChild(0).GetComponent<Image>().sprite = GetIcon(_furn.Name);
+                toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
 
                 // Name
-                toSet.GetChild(1).GetComponent<TMP_Text>().text = (GetVisibleName(_furn.Name) != null? GetVisibleName(_furn.Name) : _furn.Name);
+                toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
 
                 // Weight
                 toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
 
                 // Shape
-                toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon(_furn.Shape);
+                toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
                 i++;
             }
@@ -223,15 +224,15 @@ namespace MenuUi.Scripts.Storage
             {
                 case 0:
                     _sortText.text = "Jarjestetty\nAakkoset";
-                    _items.Sort((GameFurniture a, GameFurniture b) => { return a.Name.CompareTo(b.Name); });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
                     break;
                 case 1:
                     _sortText.text = "Jarjestetty\nPaino";
-                    _items.Sort((GameFurniture a, GameFurniture b) => { return a.Weight.CompareTo(b.Weight); });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
                     break;
                 case 2:
                     _sortText.text = "Jarjestetty\nMateriaali";
-                    _items.Sort((GameFurniture a, GameFurniture b) => { return a.Material.CompareTo(b.Material); });
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
                     break;
             }
             SetSlots();
@@ -240,13 +241,13 @@ namespace MenuUi.Scripts.Storage
         void OnShowInfo(int slotVal)
         {
             Transform parentSlot = _infoSlot.transform;
-            GameFurniture _furn = _items[slotVal];
+            StorageFurniture _furn = _items[slotVal];
 
             // Icon
-            _icon.sprite = GetIcon(_furn.Name);
+            _icon.sprite = _furn.Sprite;
 
             // Name
-            _name.text = GetVisibleName(_furn.Name) != null ? GetVisibleName(_furn.Name) : _furn.Name;
+            _name.text = _furn.VisibleName;
 
             // Weight
             _weight.text = _furn.Weight + " KG";
@@ -255,10 +256,10 @@ namespace MenuUi.Scripts.Storage
             _material.text = _furn.Material;
 
             // Type
-            _type.sprite = GetIcon(_furn.Shape);
+            _type.sprite = GetIcon("");
 
             // Type Text
-            _typeText.text = _furn.Shape;
+            _typeText.text = "";
 
             _infoSlot.SetActive(true);
         }
@@ -271,18 +272,6 @@ namespace MenuUi.Scripts.Storage
             if (returned == null)
             {
                 return _furnImagePlaceholder;
-            }
-            return returned;
-        }
-
-        private string GetVisibleName(string name)
-        {
-            //Sprite returned = _icons.Find(x => x.name == name);
-            FurnitureInfo furnitureInfo = _furnitureReference.GetFurnitureInfo(name);
-            string returned = furnitureInfo?.VisibleName;
-            if (returned == null)
-            {
-                return null;
             }
             return returned;
         }
