@@ -2978,6 +2978,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mainScreen: {fileID: 9193472377066270522}
+  _loadScript: {fileID: 2143069346546630343}
   scrollSpeed: 11
   scrollSpeedMouse: 2
   backgroundSprite: {fileID: 3525070283008676537}
@@ -4055,7 +4056,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ignoreServer: 1
   _roomAmount: 20
-  _ignoreFurniture: 1
+  _ignoreFurniture: 0
   _isometric: 0
   _randomColour: 0
   _roomPositions: {fileID: 2958044221307709069}
@@ -4066,57 +4067,6 @@ MonoBehaviour:
   _towerController: {fileID: 8929454208922663643}
   _avatarPlaceholder: {fileID: 3432757863211272488, guid: 6ddb6826c23ed50478e4afbf8cfcfa78,
     type: 3}
-  _furnitureList:
-  - Name: Sofa_Taakka
-    Id: -1
-    Position: {x: -1, y: -1}
-    Room: 0
-    IsRotated: 0
-    Size: 2
-    RotatedSize: 4
-    Place: 0
-    Weight: 15
-    Value: 10
-  - Name: Mirror_Taakka
-    Id: -1
-    Position: {x: -1, y: -1}
-    Room: 0
-    IsRotated: 0
-    Size: 4
-    RotatedSize: 4
-    Place: 0
-    Weight: 15
-    Value: 10
-  - Name: Floorlamp_Taakka
-    Id: -1
-    Position: {x: -1, y: -1}
-    Room: 0
-    IsRotated: 0
-    Size: 4
-    RotatedSize: 4
-    Place: 0
-    Weight: 15
-    Value: 10
-  - Name: Toilet_Schrodinger
-    Id: -1
-    Position: {x: -1, y: -1}
-    Room: 0
-    IsRotated: 0
-    Size: 1
-    RotatedSize: 3
-    Place: 0
-    Weight: 15
-    Value: 10
-  - Name: Sink_Schrodinger
-    Id: -1
-    Position: {x: -1, y: -1}
-    Room: 0
-    IsRotated: 0
-    Size: 1
-    RotatedSize: 3
-    Place: 0
-    Weight: 15
-    Value: 10
 --- !u!1 &3071626809287817475
 GameObject:
   m_ObjectHideFlags: 0

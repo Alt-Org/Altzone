@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public enum FurnitureSize
+    /*public enum FurnitureSize
     {
         OneXOne,
         OneXTwo,
@@ -30,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         Ceiling,
         Wall
 
-    }
+    }*/
 
     [Serializable]
     public class Furniture
@@ -59,11 +61,11 @@ namespace MenuUI.Scripts.SoulHome
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public FurniturePlace Place;
-        public float Weight;
+        public FurniturePlacement Place;
+        public double Weight;
         public float Value;
 
-        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlace Place, float Value, float Weight, bool IsRotated, int Room = -1)
+        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
             this.Id = Id;
             this.Name = Name;
@@ -75,6 +77,21 @@ namespace MenuUI.Scripts.SoulHome
             this.Value = Value;
             this.Weight = Weight;
             this.IsRotated = IsRotated;
+
+        }
+
+        public Furniture(ClanFurniture clanFurniture, GameFurniture gameFurniture/*, FurnitureInfo info*/)
+        {
+            Id = int.Parse(clanFurniture.Id);
+            Name = clanFurniture.GameFurnitureName;
+            Position = clanFurniture.Position;
+            Room = clanFurniture.Room;
+            Size = gameFurniture.Size;
+            RotatedSize = gameFurniture.RotatedSize;
+            Place = gameFurniture.Placement;
+            Value = gameFurniture.Value;
+            Weight = gameFurniture.Weight;
+            IsRotated = clanFurniture.IsRotated;
 
         }
 

@@ -298,12 +298,12 @@ public class ServerManager : MonoBehaviour
                 ClanInventory inventory = new ClanInventory();
                 List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
 
-                foreach (ServerItem item in items)
+                /*foreach (ServerItem item in items)
                 {
                     //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
                     if (item._id == null || item.name == null) continue;
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
-                }
+                }*/
 
                 if(clanFurniture.Count == 0)
                 {
@@ -368,6 +368,8 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
                 Player = player;
+                Debug.LogWarning(player.clan_id);
+                Debug.LogWarning(player.uniqueIdentifier);
 
                 if (callback != null)
                     callback(player);

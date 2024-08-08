@@ -13,6 +13,8 @@ using Random = UnityEngine.Random;
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Game;
+using System.Collections.ObjectModel;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -33,20 +35,26 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private GameObject _avatarPlaceholder;
 
 
-        [SerializeField] private List<Furniture> _furnitureList;
+        private List<Furniture> _furnitureList = null;
 
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
+        private bool _roomsReady = false;
+        private bool _furnituresSet = false;
+        private bool _loadFinished = false;
+
+        public bool LoadFinished { get => _loadFinished;}
+
         // Start is called before the first frame update
         void Start()
         {
-            _roomAmount = ServerManager.Instance.Clan.playerCount;
+            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
             StartCoroutine(HomeLoad());
             //TestCode();
-            LoadRooms();
-            LoadFurniture();
-            SpawnAvatar();
+            StartCoroutine(LoadRooms());
+            StartCoroutine(LoadFurniture());
+            StartCoroutine(SpawnAvatar());
         }
 
         public IEnumerator HomeLoad()
@@ -90,7 +98,7 @@ namespace MenuUI.Scripts.SoulHome {
                         room.Floor = new Color(0.4f,0,0);
                         room.Walls = new Color(0.7f, 0, 0);
                     }
-                    int slotRows = ((int)_roomPrefab.GetComponent<RoomData>().SlotRows);
+                    /*int slotRows = ((int)_roomPrefab.GetComponent<RoomData>().SlotRows);
                     int slotColumn = ((int)_roomPrefab.GetComponent<RoomData>().SlotColumns);
 
                     int furniture1X = Random.Range(1, slotColumn -1);
@@ -110,10 +118,20 @@ namespace MenuUI.Scripts.SoulHome {
                     _soulHomeController.AddFurniture(test2);
                     var test3 = new Furniture(i * 10 + 2, "Sofa_Taakka", new Vector2Int(furniture2X, furniture2Y), FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlace.Floor, 10f, 15f, false);
                     room.Furnitures.Add(test3);
-                    _soulHomeController.AddFurniture(test3);
+                    _soulHomeController.AddFurniture(test3);*/
 
                     soulHome.Room.Add(room);
                 }
+                StartCoroutine(GetFurniture());
+                yield return new WaitUntil(()=> _furnitureList != null);
+                foreach (Furniture furniture in _furnitureList)
+                {
+                    if(furniture.Room >= 0 && furniture.Position.x >= 0 && furniture.Position.y >= 0)
+                    {
+                        soulHome.Room[furniture.Room].Furnitures.Add(furniture);
+                    }
+                }
+
                 json = JsonUtility.ToJson(soulHome);
                 Debug.Log(json);
                 _soulHomeRooms = JsonUtility.FromJson<SoulHome>(json);
@@ -136,8 +154,9 @@ namespace MenuUI.Scripts.SoulHome {
             Debug.Log(testTojson);
             Debug.Log(JsonUtility.FromJson<Room>(testTojson).Furnitures[1].Id);
         }*/
-        public void LoadRooms()
+        public IEnumerator LoadRooms()
         {
+            yield return new WaitUntil(() => _soulHomeRooms != null);
             List<GameObject> roompositions = new List<GameObject>();
             int i=0;
             foreach (Transform child in _roomPositions.transform)
@@ -178,6 +197,7 @@ namespace MenuUI.Scripts.SoulHome {
                 i++;
             }
             SetSoulhomeHeight();
+            _roomsReady = true;
         }
 
         public void SetSoulhomeHeight()
@@ -228,8 +248,53 @@ namespace MenuUI.Scripts.SoulHome {
             }));
         }
 
-        public void LoadFurniture()
+        private IEnumerator GetFurniture()
         {
+            var store = Storefront.Get();
+            List<ClanFurniture> clanFurnitureList = null;
+            store.GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
+            {
+                if (playerData == null || !playerData.HasClanId)
+                {
+                    clanFurnitureList = new List<ClanFurniture>();
+                    return;
+                }
+                store.GetClanData(playerData.ClanId, clanData =>
+                {
+                    clanFurnitureList = clanData?.Inventory.Furniture ?? new List<ClanFurniture>();
+                });
+            });
+            yield return new WaitUntil(() => clanFurnitureList != null);
+
+            // Create furniture list for UI.
+            List<Furniture> items = new List<Furniture>();
+            if (clanFurnitureList.Count == 0)
+            {
+                Debug.Log($"found clan items {items.Count}");
+                yield break;
+            }
+
+            // Find actual furniture pieces for the UI.
+            ReadOnlyCollection<GameFurniture> allItems = null;
+            yield return store.GetAllGameFurnitureYield(result => allItems = result);
+            Debug.Log($"all items {allItems.Count}");
+            foreach (var clanFurniture in clanFurnitureList)
+            {
+                var gameFurnitureId = clanFurniture.GameFurnitureName;
+                var furniture = allItems.FirstOrDefault(x => x.Name == gameFurnitureId);
+                if (furniture == null)
+                {
+                    continue;
+                }
+                Furniture storageFurniture = new(clanFurniture, furniture/*, _furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName)*/);
+                items.Add(storageFurniture);
+            }
+            _furnitureList = items;
+        }
+
+        public IEnumerator LoadFurniture()
+        {
+            yield return new WaitUntil(() => _roomsReady);
             if (_ignoreFurniture)
             {
                 int i = 0;
@@ -239,42 +304,52 @@ namespace MenuUI.Scripts.SoulHome {
                     //_trayHandler.AddFurnitureInitial(test2);
                     //var test3 = new Furniture(i * 5 + 2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test3);
-                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test4);
                     _soulHomeController.AddFurniture(test4);
-                    var test5 = new Furniture(i * 1000 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    var test5 = new Furniture(i * 1000 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test5);
                     _soulHomeController.AddFurniture(test5);
-                    var test6 = new Furniture(i * 1000 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    var test6 = new Furniture(i * 1000 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test6);
                     _soulHomeController.AddFurniture(test6);
-                    var test7 = new Furniture(i * 1000 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.Floor, 10f, 15f, false);
+                    var test7 = new Furniture(i * 1000 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test7);
                     _soulHomeController.AddFurniture(test7);
-                    var test8 = new Furniture(i * 1000 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlace.FloorByWall, 10f, 15f, false);
+                    var test8 = new Furniture(i * 1000 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test8);
                     _soulHomeController.AddFurniture(test8);
-                    var test9 = new Furniture(i * 1000 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test9 = new Furniture(i * 1000 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test9);
                     _soulHomeController.AddFurniture(test9);
-                    var test10 = new Furniture(i * 1000 + 9, "CoffeeTable_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlace.Floor, 10f, 15f, false);
+                    var test10 = new Furniture(i * 1000 + 9, "CoffeeTable_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test9);
                     _soulHomeController.AddFurniture(test10);
-                    var test11 = new Furniture(i * 1000 + 10, "ArmChair_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlace.Floor, 10f, 15f, false);
+                    var test11 = new Furniture(i * 1000 + 10, "ArmChair_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f, false);
                     //_trayHandler.AddFurnitureInitial(test9);
                     _soulHomeController.AddFurniture(test11);
                     i++;
                 }
             }
-            _trayHandler.InitializeTray();
+            else
+            {
+                foreach (Furniture furniture in _furnitureList)
+                {
+                    _soulHomeController.AddFurniture(furniture);
+                }
+            }
+                _trayHandler.InitializeTray();
+            _furnituresSet = true;
         }
 
-        public void SpawnAvatar()
+        public IEnumerator SpawnAvatar()
         {
+            yield return new WaitUntil(() => _furnituresSet);
             for (int i = 0; i < _roomAmount; i++)
             {
                 Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
             }
+            _loadFinished = true;
         }
 
         

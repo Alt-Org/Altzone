@@ -67,6 +67,7 @@ namespace MenuUi.Scripts.Storage
 
         private IEnumerator Begin()
         {
+            Debug.Log("Starting Storage Load.");
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
@@ -164,6 +165,7 @@ namespace MenuUi.Scripts.Storage
             Debug.Log($"all items {allItems.Count}");
             foreach (var clanFurniture in clanFurnitureList)
             {
+                //Debug.LogWarning(clanFurniture.GameFurnitureName);
                 var gameFurnitureId = clanFurniture.GameFurnitureName;
                 var furniture = allItems.FirstOrDefault(x => x.Name == gameFurnitureId);
                 if (furniture == null)

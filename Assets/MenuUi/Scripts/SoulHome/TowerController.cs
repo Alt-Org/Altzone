@@ -18,6 +18,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private MainScreenController _mainScreen;
         [SerializeField]
+        private SoulHomeLoad _loadScript;
+        [SerializeField]
         private float scrollSpeed = 2f;
         [SerializeField]
         private float scrollSpeedMouse = 2f;
@@ -34,6 +36,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private List<GameObject> _changedFurnitureList = new();
 
+        private bool _startFinished = false;
         private bool _rotated = false;
         private float _prevPinchDistance = 0;
 
@@ -84,10 +87,17 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
+            StartCoroutine(StartActions());
+
+        }
+
+        private IEnumerator StartActions()
+        {
+            yield return new WaitUntil(() => _loadScript.LoadFinished);
             Camera = GetComponent<Camera>();
             SetCameraBounds();
 
-            Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ +" : "+ _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
+            Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             Camera.fieldOfView = 90f;
@@ -110,11 +120,13 @@ namespace MenuUI.Scripts.SoulHome
             EnhancedTouchSupport.Enable();
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
-
+            _startFinished = true;
         }
-            // Update is called once per frame
+
+        // Update is called once per frame
         void Update()
         {
+            if (!_startFinished) return;
             CheckScreenRotationStatus();
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);

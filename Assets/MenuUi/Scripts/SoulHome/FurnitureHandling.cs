@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Debug = Prg.Debug;
 
