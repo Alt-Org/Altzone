@@ -68,6 +68,8 @@ namespace MenuUi.Scripts.CharacterGallery
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
 
+            
+
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
@@ -85,8 +87,12 @@ namespace MenuUi.Scripts.CharacterGallery
                 DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
                 if (targetCharacter != null)
                 {
-                    droppedSlot = targetCharacter.transform.parent;
-                    droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
+                    // Check if targetCharacter's parent is tagged as "Topslot"
+                    if (targetCharacter.transform.parent.CompareTag("Topslot"))
+                    {
+                        droppedSlot = targetCharacter.transform.parent;
+                        droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
+                    }
                 }
                 else
                 {

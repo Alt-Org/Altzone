@@ -342,29 +342,33 @@ public class CharacterStatWindow : MonoBehaviour
                 Debug.Log("loaded albert");
                 break;
             case CharacterID.RetroflectorOvereater:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu Hodari", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu-Hodari", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[1];
                 Debug.Log("loaded hannu");
                 break;
             case CharacterID.TricksterComedian:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Huugo Hupaisa", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
                 break;
             case CharacterID.DesensitizerBodybuilder:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Keijo Kelmi", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
                 break;
             case CharacterID.ObedientPreacher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Paavali Pappila", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Sami Saarnaaja", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[4];
                 break;
             case CharacterID.ProjectorGrafitiartist:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tarmo Taide", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Graffit-Gaya", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[5];
                 break;
             case CharacterID.ConfluentBesties:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiina&Tuula Tyllerö", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiimitytöt", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[6];
+                break;
+            case CharacterID.RetroflectorAlcoholic:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Pullo-Piraatti", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[7];
                 break;
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);

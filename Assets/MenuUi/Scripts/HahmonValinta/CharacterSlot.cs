@@ -47,14 +47,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 // If the slot is not null, switch the characters
                 GameObject current = transform.GetChild(0).gameObject;
-                DraggableCharacter currentDraggable = current.GetComponent<DraggableCharacter>();
-
-                // Move the current character to its initial slot
-                //Transform currentInitialSlot = currentDraggable.initialSlot;
-                //currentDraggable.transform.SetParent(currentInitialSlot);
-                //currentDraggable.transform.position = currentInitialSlot.position;
-
-                //draggableItem.initialSlot = transform;               
+                DraggableCharacter currentDraggable = current.GetComponent<DraggableCharacter>();              
             }
         }
 
