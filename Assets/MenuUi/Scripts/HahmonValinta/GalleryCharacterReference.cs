@@ -9,10 +9,10 @@ namespace MenuUi.Scripts.CharacterGallery
     //[CreateAssetMenu(menuName = "ALT-Zone/GalleryCharacterReference", fileName = "GalleryCharacterReference")]
     public class GalleryCharacterReference : ScriptableObject
     {
-        [SerializeField] private List<CharacterClassInfo> _info;
+        [SerializeField] private List<GalleryCharacterClassInfo> _info;
 
 
-        public CharacterInfo GetCharacterPrefabInfo(int prefabId)
+        public GalleryCharacterInfo GetCharacterPrefabInfo(int prefabId)
         {
             CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
 
@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 return null;
             }
-            CharacterClassInfo classObject = _info[classValue];
+            GalleryCharacterClassInfo classObject = _info[classValue];
 
             int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
             characterValue--;
@@ -32,13 +32,13 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 return null;
             }
-            CharacterInfo character = classObject.list[characterValue];
+            GalleryCharacterInfo character = classObject.list[characterValue];
             return character;
         }
     }
 
     [Serializable]
-    public class CharacterInfo
+    public class GalleryCharacterInfo
     {
         public string Name;
         public CharacterID id;
@@ -46,10 +46,10 @@ namespace MenuUi.Scripts.CharacterGallery
     }
 
     [Serializable]
-    public class CharacterClassInfo
+    public class GalleryCharacterClassInfo
     {
         public string Name;
         public CharacterClassID id;
-        public List<CharacterInfo> list;
+        public List<GalleryCharacterInfo> list;
     }
 }

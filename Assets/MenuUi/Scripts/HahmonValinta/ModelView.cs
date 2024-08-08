@@ -88,7 +88,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 GameObject slot = Instantiate(_characterSlotprefab, content);
 
-                CharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)character.CustomCharacterId);
+                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)character.CustomCharacterId);
 
                 if (info == null) continue;
 
