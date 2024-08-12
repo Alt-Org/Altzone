@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Prg.Scripts.Common.PubSub;
-using Battle.Scripts.Battle;
 using Photon.Pun;
-using Photon.Realtime;
 
+using Prg.Scripts.Common.PubSub;
+using Battle.Scripts.Battle.Game;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -16,10 +13,9 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] PlayerActor _teammatePlayerActor;
         [SerializeField] Transform _fakeBallTransform;
 
-        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
-        public bool SpecialAbilityOverridesBallBounce => false;
+        public bool BounceOnBallShieldCollision => false;
 
-        public bool OnBallShieldCollision()
+        public void OnBallShieldCollision()
         {
             float speed = _ballHandler.GetComponent<Rigidbody2D>().velocity.magnitude;
 
@@ -35,17 +31,12 @@ namespace Battle.Scripts.Battle.Players
             }
 
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
-            return false;
         }
 
         public void OnBallShieldBounce()
         {
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
         }
-
-        [Obsolete("ActivateSpecialAbility is deprecated, please use OnBallShieldCollision and/or OnBallShieldBounce instead.")]
-        public void ActivateSpecialAbility()
-        { }
 
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
         private BallHandler _ballHandler;
