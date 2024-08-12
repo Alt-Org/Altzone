@@ -171,6 +171,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(8, 2);
             }
+            else if (furnitureSize == FurnitureSize.ThreeXTwo)
+            {
+                return new Vector2Int(2, 3);
+            }
             else if (furnitureSize == FurnitureSize.ThreeXThree)
             {
                 return new Vector2Int(3, 3);

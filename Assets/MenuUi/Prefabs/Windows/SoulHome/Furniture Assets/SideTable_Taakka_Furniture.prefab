@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -4477838665465569415}
   - component: {fileID: -724820267442525664}
   m_Layer: 0
-  m_Name: CoffeeTable_Taakka_Furniture
+  m_Name: SideTable_Taakka_Furniture
   m_TagString: Furniture
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,12 +75,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
+  m_Sprite: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3, y: 1.375}
+  m_Size: {x: 1.90625, y: 1.703125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -122,8 +122,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 3, y: 1.375}
-    newSize: {x: 3, y: 1.375}
+    oldSize: {x: 1.90625, y: 1.703125}
+    newSize: {x: 1.90625, y: 1.703125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -143,16 +143,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cd1a80efe89f346b8e28df06148614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: CoffeeTable_Taakka
-  _furnitureSpriteFront: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99,
+  _name: SideTable_Taakka
+  _furnitureSpriteFront: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b,
     type: 3}
-  _furnitureSpriteRight: {fileID: 115827972, guid: b920dbb0579dea643b33800a975ffc99,
+  _furnitureSpriteRight: {fileID: 547424961, guid: 09f23977174f0dd4896fcfe3edc5555b,
     type: 3}
   _furnitureSpriteLeft: {fileID: 0}
   _furnitureSpriteBack: {fileID: 0}
   _defaultSpriteDirection: 0
   _spriteCanBeFlipped: 1
-  _trayFurnitureObject: {fileID: 6752174233831251881, guid: 51a482fa8b9398d41af78f689c11ef7c,
+  _trayFurnitureObject: {fileID: 6752174233831251881, guid: 251b4e0b4357496408f090849a7f8225,
     type: 3}
   cullCheckAmount: 0.1
   _isPlaceHolder: 0
