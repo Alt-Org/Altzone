@@ -154,6 +154,7 @@ namespace Altzone.Scripts.Model
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
+            Debug.Log($"playerData {playerData}");
             callback(playerData);
         }
 
@@ -161,7 +162,7 @@ namespace Altzone.Scripts.Model
         {
             _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
-            //Debug.LogWarning("Getting PlayerData index: "+index);
+            Debug.LogWarning("Getting PlayerData index: "+index);
             if (index >= 0)
             {
                 _storageData.PlayerData[0] = playerData;
@@ -172,7 +173,8 @@ namespace Altzone.Scripts.Model
                 {
                     playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
-                _storageData.PlayerData.Add(playerData);
+                if(_storageData.PlayerData.Count == 0)_storageData.PlayerData.Add(playerData);
+                else _storageData.PlayerData[0] = playerData;
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
