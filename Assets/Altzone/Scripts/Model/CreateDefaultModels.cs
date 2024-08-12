@@ -136,6 +136,7 @@ namespace Altzone.Scripts.Model
             {
                 new(CharacterID.DesensitizerBodybuilder, 0, 0, 0, 0, 0),
                 new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
+                new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
                 new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
                 new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
                 new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
