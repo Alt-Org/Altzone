@@ -158,11 +158,17 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void HandleParentChange(Transform newParent)
         {
-            if (newParent == _modelView._CurSelectedCharacterSlot[0].transform)
+            // Go through each topslot
+            foreach (var slot in _modelView._CurSelectedCharacterSlot)
             {
-                OnParentChanged?.Invoke(newParent.transform);
+                // Check if newParent is one of the topslots
+                if (newParent == slot.transform)
+                {
+                    OnParentChanged?.Invoke(newParent);
+                }
             }
         }
+
 
         public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
         {

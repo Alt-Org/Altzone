@@ -126,11 +126,15 @@ namespace MenuUi.Scripts.CharacterGallery
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>
                     {
-                        // Check if the character is in the first slot of the horizontal character slot
-                        if (newParent == _CurSelectedCharacterSlot[0].transform)
+                        // Go through each topslot
+                        foreach (var curSlot in _CurSelectedCharacterSlot)
                         {
-                            // Set the id
-                            CurrentCharacterId = character.CustomCharacterId;
+                            // Check if newParent is one of the topslots
+                            if (newParent == curSlot.transform)
+                            {
+                                // Set characterID, because it has been moved to the topslot 
+                                CurrentCharacterId = character.CustomCharacterId;
+                            }
                         }
                     };
                 }
