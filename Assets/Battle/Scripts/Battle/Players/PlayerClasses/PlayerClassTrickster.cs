@@ -12,6 +12,8 @@ using ExitGames.Client.Photon;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine.UIElements;
+using Altzone.Scripts.Model.Poco.Game;
+
 
 namespace Battle.Scripts.Battle.Players
 {
