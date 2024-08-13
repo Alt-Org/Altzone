@@ -18,6 +18,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
     {
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
         private const string PlayerMainSkillKey = PhotonBattle.PlayerPrefabIdKey;
+        private const string PlayerCharactersKey = PhotonBattle.PlayerPrefabIdsKey;
+        private const string PlayerStatsKey = PhotonBattle.PlayerStatsKey;
 
         private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
         private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;
@@ -111,14 +113,28 @@ namespace MenuUI.Scripts.Lobby.InRoom
             var store = Storefront.Get();
             store.GetPlayerData(playerGuid, playerData =>
             {
-                var battleCharacter = playerData.BattleCharacter;
+                var battleCharacter = playerData.BattleCharacters;
                 Debug.Log($"{battleCharacter}");
-                var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter, 0);
-                Debug.Log($"playerPos {playerPos} prefabIndex {prefabIndex}");
+                int[] characterIds = new int[5];
+                float[] characterStats = new float[25];
+                for (int i = 0; i < 5; i++)
+                {
+                    characterIds[i] = (int)battleCharacter[i].CustomCharacterId;
+                    characterStats[i * 5] = battleCharacter[i].Hp;
+                    characterStats[i * 5 + 1] = battleCharacter[i].Speed;
+                    characterStats[i * 5 + 2] = battleCharacter[i].Resistance;
+                    characterStats[i * 5 + 3] = battleCharacter[i].Attack;
+                    characterStats[i * 5 + 4] = battleCharacter[i].Defence;
+                }
+
+                var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
+                Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
                 player.SetCustomProperties(new Hashtable
                 {
                     { PlayerPositionKey, playerPos },
                     { PlayerMainSkillKey, prefabIndex },
+                    { PlayerCharactersKey, characterIds },
+                    { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 });
                 Debug.Log($"{PhotonNetwork.NetworkClientState} {enabled}");
