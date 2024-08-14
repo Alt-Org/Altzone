@@ -30,7 +30,7 @@ namespace Altzone.Scripts.Model
 
     internal class LocalModels
     {
-        const int STORAGEVERSION = 2;
+        const int STORAGEVERSION = 3;
 
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
