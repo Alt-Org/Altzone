@@ -95,6 +95,7 @@ public class HahmonValinta : MonoBehaviour
             if ((int)characterData[selectedCharacterIndex].uniqueID != _playerData.SelectedCharacterId)
             {
                 _playerData.SelectedCharacterId = (int)characterData[selectedCharacterIndex].uniqueID;
+                _playerData.SelectedCharacterIds[0] = (int)characterData[selectedCharacterIndex].uniqueID;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
