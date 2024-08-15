@@ -66,7 +66,7 @@ namespace MenuUi.Scripts.Loader
                     else
                     {
                         _videoPlaying = true;
-                        _introVideo.Navigate();
+                        StartCoroutine(_introVideo.Navigate());
                     }
                 }
                 else
@@ -93,7 +93,7 @@ namespace MenuUi.Scripts.Loader
 
         public void OpenLogIn()
         {
-            GetComponent<WindowNavigation>().Navigate();
+            StartCoroutine(GetComponent<WindowNavigation>().Navigate());
             /*var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
 
@@ -104,15 +104,15 @@ namespace MenuUi.Scripts.Loader
             PlayerData _playerData = null;
             store.GetPlayerData(playerGuid, playerData =>
             {
-                _playerData = playerData;
+            _playerData = playerData;
             });
 
             if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
-                windowManager.ShowWindow(_privacyPolicyWindow);
+            windowManager.ShowWindow(_privacyPolicyWindow);
             else if (PlayerPrefs.GetInt("hasSelectedCharacter") == 0 || _playerData == null || _playerData.SelectedCharacterIds[0] < 0)
-                windowManager.ShowWindow(_introSceneWindow);
+            windowManager.ShowWindow(_introSceneWindow);
             else
-                windowManager.ShowWindow(_mainWindow);
+            windowManager.ShowWindow(_mainWindow);
             Debug.Log("exit");*/
         }
 
