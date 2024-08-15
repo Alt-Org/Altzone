@@ -369,8 +369,6 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
                 Player = player;
-                Debug.LogWarning(player.clan_id);
-                Debug.LogWarning(player.uniqueIdentifier);
 
                 if (callback != null)
                     callback(player);

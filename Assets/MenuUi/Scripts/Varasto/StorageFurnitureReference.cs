@@ -14,7 +14,7 @@ namespace MenuUi.Scripts.Storage
 
         public FurnitureInfo GetFurnitureInfo(string name)
         {
-            Debug.LogWarning($"Full name: {name}");
+            //Debug.LogWarning($"Full name: {name}");
             if (string.IsNullOrWhiteSpace(name))
             {
                 return null;
@@ -22,7 +22,7 @@ namespace MenuUi.Scripts.Storage
 
             string[] parts = name.Split("_");
 
-            Debug.LogWarning($"Set name: {parts[1]}");
+            //Debug.LogWarning($"Set name: {parts[1]}");
             if (parts.Length != 2) { return null; }
 
             foreach(FurnitureSetInfo info in _info)
