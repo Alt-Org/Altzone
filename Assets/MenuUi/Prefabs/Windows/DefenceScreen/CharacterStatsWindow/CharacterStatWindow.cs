@@ -350,6 +350,10 @@ public class CharacterStatWindow : MonoBehaviour
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
                 break;
+            case CharacterID.TricksterConman:
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Lasse Liukas", false, 2, 2, 2, 2, 2);
+                CharacterArtWorkToShow.sprite = CharacterArtWork[8];
+                break;
             case CharacterID.DesensitizerBodybuilder:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
