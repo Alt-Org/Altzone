@@ -848,7 +848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5134312126c94a0488beb37e1edfc264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camere2D: {fileID: 0}
+  _camera2D: {fileID: 0}
   blackBackground: {fileID: 8904562920191504236}
   posScrollValue: []
   mySlide:
@@ -885,20 +885,20 @@ MonoBehaviour:
   - {fileID: 2437091642900925076}
   lockInButton: {fileID: 6127495472192573745}
   characterData:
-  - uniqueID: 1
-    characterName: Simo Sotilas
-  - uniqueID: 2
+  - uniqueID: 257
+    characterName: Rauta-Rami
+  - uniqueID: 513
     characterName: Vitsi-Ville
-  - uniqueID: 4
+  - uniqueID: 1025
     characterName: Graffiti-Gaya
-  - uniqueID: 7
+  - uniqueID: 1537
     characterName: "Tiimityt\xF6t"
-  - uniqueID: 5
+  - uniqueID: 1281
     characterName: Hannu Hodari
-  - uniqueID: 3
+  - uniqueID: 769
     characterName: Sami Saarnaaja
-  - uniqueID: 6
-    characterName: "Albert \xE4lyp\xE4\xE4"
+  - uniqueID: 1793
+    characterName: "Albert \xC4lyp\xE4\xE4"
   popupWindow: {fileID: 997590189480381226}
   characterNameText: {fileID: 8420817607893711084}
 --- !u!1 &879335182494944696
