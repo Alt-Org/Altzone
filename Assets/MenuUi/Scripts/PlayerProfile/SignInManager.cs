@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace MenuUi.Scripts.Login
 {
@@ -29,6 +30,7 @@ namespace MenuUi.Scripts.Login
         [Header("Buttons")]
         [SerializeField] private Button logInButton;
         [SerializeField] private Button registerButton;
+        [SerializeField] private Button backButton;
 
 
         [Header("Navigation Buttons")]
@@ -51,6 +53,14 @@ namespace MenuUi.Scripts.Login
             Reset();
             signInWindow.SetActive(true);
             registerWindow.SetActive(false);
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                backButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                backButton.gameObject.SetActive(true);
+            }
         }
 
         public void Reset()
