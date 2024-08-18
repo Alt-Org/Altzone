@@ -79,18 +79,25 @@ namespace MenuUi.Scripts.Login
         /// <summary>
         /// Logs the user in.
         /// </summary>
-        public void LogIn()
+        public void LogIn(bool guest)
         {
-            ClearMessage();
-
-            if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
+            string body = "";
+            if (guest)
             {
-                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                return;
+                body = "{\"username\":\"guest_main\",\"password\":\"T%K@l0Fl_]idy7:twmoDf51_*Qw$)Qkx\"}";
             }
+            else
+            {
+                ClearMessage();
 
-            string body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
+                if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
+                {
+                    ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                    return;
+                }
 
+                body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
+            }
             StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "auth/signIn", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
