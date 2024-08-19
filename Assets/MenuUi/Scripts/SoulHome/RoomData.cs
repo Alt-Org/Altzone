@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MenuUI.Scripts.SoulHome;
 using Debug = Prg.Debug;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -31,14 +32,17 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureSlotPrefab;
 
         private Room _roomInfo;
+        private SoulHomeController _controller;
 
         public Room RoomInfo { get => _roomInfo; set => _roomInfo = value; }
         public int SlotRows { get => _slotRows;}
         public int SlotColumns { get => _slotColumns;}
+        public SoulHomeController Controller { get => _controller; set => _controller = value; }
 
         void Start()
         {
             //roomInfo = new Room();
+            //_controller = GetComponentInParent<SoulHomeController>();
         }
         public void InitializeRoom()
         {
@@ -100,11 +104,11 @@ namespace MenuUI.Scripts.SoulHome
             startRow = row - (furnitureSize.y - 1);
             endColumn = column + (furnitureSize.x - 1);
 
-            if (furniture.Place is FurniturePlace.Floor)
+            if (furniture.Place is FurniturePlacement.Floor)
             {
                 if (startRow < 0 || endColumn >= _slotColumns) return false;
             }
-            else if (furniture.Place is FurniturePlace.FloorByWall)
+            else if (furniture.Place is FurniturePlacement.FloorByWall)
             {
                 if (!furniture.IsRotated)
                 {
@@ -139,7 +143,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private bool CheckFurniturePosition(int row, int column, FurnitureHandling furniture, Vector2 backupHit, bool useBackup)
         {
-            if (furniture.Furniture.Place is FurniturePlace.FloorByWall)
+            if (furniture.Furniture.Place is FurniturePlacement.FloorByWall)
             {
                 Vector2Int furnitureSize = furniture.GetFurnitureSizeRotated();
                 Vector2Int furnitureSizeCurrent = furniture.GetFurnitureSize();
@@ -207,8 +211,23 @@ namespace MenuUI.Scripts.SoulHome
         {
             Transform points = transform.Find("FurniturePoints");
             Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            FurnitureList list = _controller.FurnitureList;
+            foreach (FurnitureListObject listObject in list.List)
+            {
+                if (listObject.Name.Equals(furniture.Name))
+                {
+                    foreach (Furniture furnitureInList in listObject.List)
+                    {
+                        if (furnitureInList.Id == furniture.Id)
+                        {
+                            furniture = furnitureInList;
+                        }
+                    }
+                }
+            }
 
-            if (furnitureSize.x == 0) return;
+
+                if (furnitureSize.x == 0) return;
 
             int startRow = row - (furnitureSize.y - 1);
             int endColumn = column + (furnitureSize.x - 1);

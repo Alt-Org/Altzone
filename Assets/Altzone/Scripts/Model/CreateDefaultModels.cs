@@ -20,9 +20,11 @@ namespace Altzone.Scripts.Model
             return Guid.NewGuid().ToString();
         }
 
-        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, string currentCustomCharacterId)
+        internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, "Player", 0, playerGuid);
+            int[] characters = new int[5];
+            characters[0] = currentCustomCharacterId;
+            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid);
         }
 
         internal static ClanData CreateClanData(string clanId, List<GameFurniture> furniture)
@@ -44,9 +46,9 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }
-            var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("tuoli")).ToList();
-            var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.Contains("pöytä")).ToList();
-            var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureId.EndsWith("y")).ToList();
+            /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
+            var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
+            var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
 
             // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
             var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
@@ -64,12 +66,12 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, 0));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureId, 1, 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureId, 2, 2));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureId, 3, 3));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureName, 1, 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureName, 2, 2));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureName, 3, 3));
             }
             {
                 var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
@@ -77,31 +79,31 @@ namespace Altzone.Scripts.Model
                 clanData.Rooms.Add(raidRoom);
                 var roomFurniture = raidRoom.Furniture;
 
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureId, 0, raidRoom.ColCount - 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureId, raidRoom.RowCount - 1, 0));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, raidRoom.ColCount - 1));
+                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, 0));
 
                 var row = 0;
                 var col = 0;
                 foreach (var item in chairs)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in tables)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
                 }
                 row += 2;
                 col = 0;
                 foreach (var item in misc)
                 {
                     col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureId, row, ++col));
+                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
                 }
-            }
+            }*/
             return clanData;
         }
 
@@ -113,13 +115,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(GestaltCycle.Desensitisation.ToString(), GestaltCycle.Desensitisation, "Tunnoton", 3, 9, 7, 3),
-                new(GestaltCycle.Deflection.ToString(), GestaltCycle.Deflection, "Hämääjä", 9, 3, 3, 4),
-                new(GestaltCycle.Introjection.ToString(), GestaltCycle.Introjection, "Tottelija", 5, 5, 4, 4),
-                new(GestaltCycle.Projection.ToString(), GestaltCycle.Projection, "Peilaaja", 4, 2, 9, 5),
-                new(GestaltCycle.Retroflection.ToString(), GestaltCycle.Retroflection, "Torjuja", 3, 7, 2, 9),
-                new(GestaltCycle.Egotism.ToString(), GestaltCycle.Egotism, "Älykkö", 6, 2, 6, 5),
-                new(GestaltCycle.Confluence.ToString(), GestaltCycle.Confluence, "Sulautuja", 5, 6, 2, 6)
+                new(CharacterClassID.Desensitizer,     7, 3, 9, 7, 3),
+                new(CharacterClassID.Trickster,        3, 9, 3, 3, 4),
+                new(CharacterClassID.Obedient,         5, 5, 5, 4, 4),
+                new(CharacterClassID.Projector,        4, 4, 2, 9, 5),
+                new(CharacterClassID.Retroflector,     6, 3, 7, 2, 9),
+                new(CharacterClassID.Confluent,        5, 5, 6, 2, 6),
+                new(CharacterClassID.Intellectualizer, 4, 6, 2, 6, 5)
             };
         }
 
@@ -132,13 +134,15 @@ namespace Altzone.Scripts.Model
         {
             return new List<CustomCharacter>
             {
-                new("1", GestaltCycle.Desensitisation.ToString(), "1", "Keijo Kelmi", 0, 0, 0, 0),
-                new("2", GestaltCycle.Deflection.ToString(), "2", "Huugo Hupaisa", 0, 0, 0, 0),
-                new("3", GestaltCycle.Introjection.ToString(), "3", "Paavali Pappila", 0, 0, 0, 0),
-                new("4", GestaltCycle.Projection.ToString(), "4", "Tarmo Taide", 0, 0, 0, 0),
-                new("5", GestaltCycle.Retroflection.ToString(), "5", "Hannu Hodari", 0, 0, 0, 0),
-                new("6", GestaltCycle.Egotism.ToString(), "6", "Albert Älypää", 0, 0, 0, 0),
-                new("7", GestaltCycle.Confluence.ToString(), "7", "Tiina & Tuula Tyllerö", 0, 0, 0, 0)
+                new(CharacterID.DesensitizerBodybuilder, 0, 0, 0, 0, 0),
+                new(CharacterID.TricksterComedian,0, 0, 0, 0, 0),
+                new(CharacterID.TricksterConman,0, 0, 0, 0, 0),
+                new(CharacterID.ObedientPreacher,0, 0, 0, 0, 0),
+                new(CharacterID.ProjectorGrafitiartist,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorOvereater,0, 0, 0, 0, 0),
+                new(CharacterID.RetroflectorAlcoholic,0, 0, 0, 0, 0),
+                new(CharacterID.ConfluentBesties,0, 0, 0, 0, 0),
+                new(CharacterID.IntellectualizerResearcher,0, 0, 0, 0, 0)
             };
         }
 
@@ -154,7 +158,21 @@ namespace Altzone.Scripts.Model
             var cultureInfo = CultureInfo.GetCultureInfo("en-US");
 
             var gameFurniture = new List<GameFurniture>();
-            using var reader = new StringReader(FurnitureTsvData);
+
+            gameFurniture.Add(new GameFurniture(1.ToString(), "Sofa_Taakka", FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(2.ToString(), "Mirror_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(3.ToString(), "Floorlamp_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(4.ToString(), "Toilet_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(5.ToString(), "Sink_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(6.ToString(), "Closet_Taakka", FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(7.ToString(), "CoffeeTable_Taakka", FurnitureSize.TwoXThree, FurnitureSize.ThreeXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(8.ToString(), "SideTable_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(9.ToString(), "ArmChair_Taakka", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+            //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
+
+            /*using var reader = new StringReader(FurnitureTsvData);
             // Skip header!
             reader.ReadLine();
             for (;;)
@@ -199,7 +217,7 @@ namespace Altzone.Scripts.Model
                     tokens[7]
                 );
                 gameFurniture.Add(furniture);
-            }
+            }*/
             return gameFurniture;
 
             double ParseDouble(string token)

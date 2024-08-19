@@ -13,9 +13,7 @@ public class PrivacyPolicyChecker : MonoBehaviour
     [SerializeField] string _privacyPolicyAddress;
     [SerializeField] TextMeshProUGUI _privacyPolicyText;
     [SerializeField] TextMeshProUGUI _privacyPolicyAgreementText;
-    [SerializeField] WindowDef _mainMenuWindow;
-    [SerializeField] WindowDef _introSceneWindow;
-    [SerializeField] int _introScene;
+    [SerializeField] WindowDef _logInWindow;
     private int _privacyPolicyIndex = 0;            // 0 if not accepted, 1 if has
 
     private void Start()
@@ -36,8 +34,6 @@ public class PrivacyPolicyChecker : MonoBehaviour
     {
         PlayerPrefs.SetInt("PrivacyPolicy", 1);
         var windowManager = WindowManager.Get();
-        if (PlayerPrefs.GetInt("hasSelectedCharacter", 0) == 0)
-            windowManager.ShowWindow(_introSceneWindow);
-        else windowManager.ShowWindow(_mainMenuWindow);
+        windowManager.ShowWindow(_logInWindow);
     }
 }

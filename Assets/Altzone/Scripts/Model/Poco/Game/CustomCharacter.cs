@@ -11,30 +11,31 @@ namespace Altzone.Scripts.Model.Poco.Game
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class CustomCharacter
     {
-        [PrimaryKey] public string Id;
-        [ForeignKey(nameof(CharacterClass)), Mandatory] public string CharacterClassId;
-
+        [PrimaryKey] public CharacterID Id;
+        public string CharacterName => GetCharacterName(Id);
+        public string CharacterClassAndName => GetCharacterClassAndName(Id);
+        public CharacterClassID CharacterClassID => GetClassID(Id);
+        public int InsideCharacterID => GetInsideCharacterID(Id);
         /// <summary>
-        /// This can be used for example to load UNITY assets by name for UI at runtime. 
+        /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
-        [Optional] public string UnityKey;
+        //[Optional] public int UnityKey = -1;
 
         [Mandatory] public string Name;
+        public int Hp;
         public int Speed;
         public int Resistance;
         public int Attack;
         public int Defence;
 
-        public CustomCharacter(string id, string characterClassId, string unityKey, string name, int speed, int resistance, int attack, int defence)
+        public CustomCharacter(CharacterID id, int hp, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(characterClassId.IsMandatory());
-            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
-            Assert.IsTrue(name.IsMandatory());
+            Assert.AreNotEqual(CharacterID.None, id);
+            //Assert.IsTrue(characterClassId.IsMandatory());
+            //Assert.IsTrue(name.IsMandatory());
             Id = id;
-            CharacterClassId = characterClassId;
-            UnityKey = unityKey ?? string.Empty;
-            Name = name;
+            Name = GetCharacterName(id);
+            Hp = hp;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -43,9 +44,58 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(CharacterClassId)}: {CharacterClassId}" +
-                   $", {nameof(UnityKey)}: {UnityKey}, {nameof(Name)}: {Name}" +
-                   $", {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
+            return $"{nameof(Id)}: {Id}" +
+                   $", {nameof(Name)}: {Name}" +
+                   $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
+
+        private static string GetCharacterName(CharacterID id)
+        {
+            switch (id)
+            {
+                case CharacterID.DesensitizerBodybuilder:
+                    return "Bodybuilder";
+                case CharacterID.TricksterComedian:
+                    return "Comedian";
+                case CharacterID.TricksterConman:
+                    return "Conman";
+                case CharacterID.ObedientPreacher:
+                    return "Preacher";
+                case CharacterID.ProjectorGrafitiartist:
+                    return "Grafitiartist";
+                case CharacterID.RetroflectorOvereater:
+                    return "Overeater";
+                case CharacterID.RetroflectorAlcoholic:
+                    return "Alcoholic";
+                case CharacterID.ConfluentBesties:
+                    return "Besties";
+                case CharacterID.IntellectualizerResearcher:
+                    return "Researcher";
+                default:
+                    return "Error";
+            }
+        }
+
+        public static string GetCharacterClassAndName(CharacterID id)
+        {
+            CharacterClassID classId = GetClassID(id);
+
+            string className = CharacterClass.GetClassName(classId);
+
+            return className+GetCharacterName(id);
+        }
+
+        public static CharacterClassID GetClassID(CharacterID id)
+        {
+            CharacterClassID ClassId = (CharacterClassID)((int)id & 0b1111_1111__0000_0000);
+            return ClassId;
+        }
+
+        public static int GetInsideCharacterID(CharacterID id)
+        {
+            int characterId = (int)id & 0b0000_0000__1111_1111;
+            return characterId;
+        }
+
     }
 }

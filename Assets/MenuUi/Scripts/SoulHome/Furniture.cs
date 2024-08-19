@@ -1,17 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public enum FurnitureSize
+    /*public enum FurnitureSize
     {
         OneXOne,
         OneXTwo,
+        OneXThree,
         OneXFour,
+        OneXSix,
         TwoXOne,
-        TwoXTwo
+        TwoXTwo,
+        TwoXThree,
+        TwoXFour,
+        TwoXSix,
+        TwoXEight,
+        ThreeXThree,
+        ThreeXEight,
+        SevenXThree
     }
 
     public enum FurniturePlace
@@ -21,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         Ceiling,
         Wall
 
-    }
+    }*/
 
     [Serializable]
     public class Furniture
@@ -46,24 +57,41 @@ namespace MenuUI.Scripts.SoulHome
         public string Name;
         public int Id = -1;
         public Vector2Int Position = new(-1,-1);
+        public int Room = -1;
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public FurniturePlace Place;
-        public float Weight;
+        public FurniturePlacement Place;
+        public double Weight;
         public float Value;
 
-        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlace Place, float Value, float Weight, bool IsRotated)
+        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
             this.Id = Id;
             this.Name = Name;
             this.Position = Position;
+            this.Room = Room;
             this.Size = Size;
             this.RotatedSize = RotatedSize;
             this.Place = Place;
             this.Value = Value;
             this.Weight = Weight;
             this.IsRotated = IsRotated;
+
+        }
+
+        public Furniture(ClanFurniture clanFurniture, GameFurniture gameFurniture/*, FurnitureInfo info*/)
+        {
+            Id = int.Parse(clanFurniture.Id);
+            Name = clanFurniture.GameFurnitureName;
+            Position = clanFurniture.Position;
+            Room = clanFurniture.Room;
+            Size = gameFurniture.Size;
+            RotatedSize = gameFurniture.RotatedSize;
+            Place = gameFurniture.Placement;
+            Value = gameFurniture.Value;
+            Weight = gameFurniture.Weight;
+            IsRotated = clanFurniture.IsRotated;
 
         }
 
@@ -107,9 +135,17 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(2, 1);
             }
+            else if (furnitureSize == FurnitureSize.OneXThree)
+            {
+                return new Vector2Int(3, 1);
+            }
             else if (furnitureSize == FurnitureSize.OneXFour)
             {
                 return new Vector2Int(4, 1);
+            }
+            else if (furnitureSize == FurnitureSize.OneXSix)
+            {
+                return new Vector2Int(6, 1);
             }
             else if (furnitureSize == FurnitureSize.TwoXOne)
             {
@@ -119,11 +155,49 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(2, 2);
             }
+            else if (furnitureSize == FurnitureSize.TwoXThree)
+            {
+                return new Vector2Int(3, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXFour)
+            {
+                return new Vector2Int(4, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXSix)
+            {
+                return new Vector2Int(6, 2);
+            }
+            else if (furnitureSize == FurnitureSize.TwoXEight)
+            {
+                return new Vector2Int(8, 2);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXTwo)
+            {
+                return new Vector2Int(2, 3);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXThree)
+            {
+                return new Vector2Int(3, 3);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXEight)
+            {
+                return new Vector2Int(8, 3);
+            }
+            else if (furnitureSize == FurnitureSize.SevenXThree)
+            {
+                return new Vector2Int(3, 7);
+            }
             else
             {
                 Debug.LogError("Error: Invalid furniture size");
                 return new Vector2Int(0, 0);
             }
+        }
+
+        public void ResetPosition()
+        {
+            Position = new Vector2Int(-1, -1);
+            Room = -1;
         }
     }
 }

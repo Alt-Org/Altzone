@@ -3,17 +3,17 @@ using UnityEngine;
 
 using Photon.Pun;
 using Photon.Realtime;
-
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 using TMPro;
+
+using Battle.Scripts.Battle.Players;
 
 namespace Battle.Scripts.Battle.Game
 {
     internal class Goal : MonoBehaviour
     {
         #region Serialized Fields
-        [SerializeField] private GameObject _winText;
-        [SerializeField] private GameObject _loseText;
         [SerializeField] private GameObject _lobbyButton;
         [SerializeField] private GameObject _raidButton;
         [SerializeField] private BoxCollider2D _wallCollider;
@@ -95,9 +95,15 @@ namespace Battle.Scripts.Battle.Game
                 Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
                 _countingDown = true;
 
+                Context.GetPlayerManager.AnalyticsReportPlayerCharacterWinOrLoss(_goalNumber switch
+                {
+                    PhotonBattle.TeamBetaValue => PhotonBattle.TeamAlphaValue,
+                    PhotonBattle.TeamAlphaValue => PhotonBattle.TeamBetaValue,
+                    _ => PhotonBattle.NoTeamValue
+                });
+
                 if (_goalNumber != teamNumber)
                 {
-                    //WinText.SetActive(true);
                     _winGraphics.SetActive(true);
                     if (PhotonNetwork.IsMasterClient)
                     {

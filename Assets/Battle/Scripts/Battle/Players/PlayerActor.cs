@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,6 +8,7 @@ using UnityConstants;
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Battle.Players
@@ -46,44 +46,49 @@ namespace Battle.Scripts.Battle.Players
         #endregion Public -  Static Fields
 
         #region Public - Properties
+        public CharacterID CharacterID => _characterID;
         public bool IsBusy => _isMoving || _hasTarget;
         public float MovementSpeed => _movementSpeed;
         public Transform ShieldTransform => _playerShieldManager.transform;
         public Transform CharacterTransform => _playerCharacter.transform;
         public Transform SoulTransform => _playerSoul.transform;
         public float ImpactForce => _impactForce;
+        public bool BounceOnBallShieldCollision => _playerClass.BounceOnBallShieldCollision;
         #endregion Public - Properties
 
         #region Public - Methods
 
-        public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, PlayerActor playerPrefab, string gameObjectName, float scale)
+        public static PlayerActor InstantiatePrefabFor(PlayerDriverPhoton playerDriver, int playerPos, CharacterID playerCharacterID, string gameObjectName, float scale)
         {
-            PlayerName = gameObjectName;
             Debug.Log($"heoooo{gameObjectName}");
-            var instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
-            var instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
-            var instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
-            Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
-            instance.name = instance.name.Replace("Clone", gameObjectName);
-            switch (playerPos)
+
+            PlayerName = gameObjectName;
+
+            PlayerActor instance;
             {
-                case PhotonBattle.PlayerPosition1:
-                    instance.gameObject.layer = Layers.Player1;
-                    break;
-                case PhotonBattle.PlayerPosition2:
-                    instance.gameObject.layer = Layers.Player2;
-                    break;
-                case PhotonBattle.PlayerPosition3:
-                    instance.gameObject.layer = Layers.Player3;
-                    break;
-                case PhotonBattle.PlayerPosition4:
-                    instance.gameObject.layer = Layers.Player4;
-                    break;
-                default:
-                    throw new UnityException($"Invalid player position {playerPos}");
+                Characters playerPrefabs = GameConfig.Get().Characters;
+
+                PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(playerCharacterID) as PlayerActor;
+                Game.GridPos instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);
+                Vector2 instantiationPosition = Context.GetGridManager.GridPositionToWorldPoint(instantiationGridPosition);
+
+                instance = Instantiate(playerPrefab, instantiationPosition, Quaternion.identity);
+                Assert.IsNotNull(instance, $"bad prefab: {playerPrefab.name}");
             }
+
+            instance._characterID = playerCharacterID;
+            instance.name = instance.name.Replace("Clone", gameObjectName);
+            instance.gameObject.layer = playerPos switch
+            {
+                PhotonBattle.PlayerPosition1 => Layers.Player1,
+                PhotonBattle.PlayerPosition2 => Layers.Player2,
+                PhotonBattle.PlayerPosition3 => Layers.Player3,
+                PhotonBattle.PlayerPosition4 => Layers.Player4,
+                _ => throw new UnityException($"Invalid player position {playerPos}"),
+            };
             instance.transform.localScale = Vector3.one * scale;
-            instance.SetPlayerDriver(playerDriver);
+            instance._playerDriver = playerDriver;
+
             return instance;
         }
 
@@ -94,17 +99,11 @@ namespace Battle.Scripts.Battle.Players
 
         #region Public - Methods - Setters
 
-        public void SetPlayerDriver(PlayerDriverPhoton playerDriver)
-        {
-            _playerDriver = playerDriver;
-        }
-
         public void SetSpriteVariant(SpriteVariant variant)
         {
             _playerCharacter.SpriteVariant = variant;
             _playerShieldManager.SetSpriteVariant(variant);
         }
-
 
         public void SetRotation(float angle)
         {
@@ -114,6 +113,7 @@ namespace Battle.Scripts.Battle.Players
             _playerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
             _playerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _playerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
+            _squareFlashSprite.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -156,6 +156,10 @@ namespace Battle.Scripts.Battle.Players
 
             _playerMovementIndicator.transform.position = targetPosition;
             _sparkleSprite.transform.position = targetPosition;
+            Vector2 shieldPosition = new Vector2(targetPosition.x, targetPosition.y + _squareFlashYPosition);
+            _squareFlashSprite.transform.position = shieldPosition;
+            _squareFlashSprite.SetActive(true);
+
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
             {
@@ -171,6 +175,7 @@ namespace Battle.Scripts.Battle.Players
                 _playerCharacter.SpritIndex = _isUsingShield ? PlayerCharacter.SpriteIndexEnum.IdleWithShield : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
 
                 _playerSoul.Show = false;
+                _squareFlashSprite.SetActive(false);
 
                 _isMoving = false;
 
@@ -186,7 +191,7 @@ namespace Battle.Scripts.Battle.Players
             });
         }
 
-        public bool OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
+        public void OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
         public void OnBallShieldBounce() => _playerClass.OnBallShieldBounce();
 
         #endregion Public - Methods
@@ -209,6 +214,8 @@ namespace Battle.Scripts.Battle.Players
         private bool _allowShieldHit;
         private int _shieldHitPoints;
 
+        private CharacterID _characterID;
+
         // Player Parts
         private IPlayerClass _playerClass;
         private ShieldManager _playerShieldManager;
@@ -216,6 +223,8 @@ namespace Battle.Scripts.Battle.Players
         private PlayerSoul _playerSoul;
         private GameObject _playerMovementIndicator;
         private GameObject _sparkleSprite;
+        private GameObject _squareFlashSprite;
+        private float _squareFlashYPosition;
 
         private Vector3 _tempPosition;
 
@@ -262,6 +271,9 @@ namespace Battle.Scripts.Battle.Players
             _playerSoul = _geometryRoot.GetComponentInChildren<PlayerSoul>();
             _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
             _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
+            _squareFlashSprite = _geometryRoot.transform.Find("SquareFlashSprite").gameObject;
+
+            _squareFlashSprite.SetActive(false);
 
             // get components
             _audioSource = GetComponent<AudioSource>();
@@ -289,6 +301,11 @@ namespace Battle.Scripts.Battle.Players
         {
             foreach (IDriver driver in data.AllDrivers)
             {
+                if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
+                {
+                    _squareFlashYPosition = (driver.TeamNumber == PhotonBattle.TeamBetaValue ? -0.95f : 0.95f);
+                }
+
                 if (driver.ActorShieldTransform == _playerShieldManager.transform) continue;
                 _otherDrivers.Add(driver);
             }
@@ -332,6 +349,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 _playerMovementIndicator.SetActive(false);
                 _sparkleSprite.SetActive(false);
+                _squareFlashSprite.SetActive(false);
             }
 
             // Check if enough time has passed since the last sparkle update

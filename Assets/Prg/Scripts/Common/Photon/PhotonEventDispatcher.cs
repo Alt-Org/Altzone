@@ -63,7 +63,7 @@ namespace Prg.Scripts.Common.Photon
         private static PhotonEventDispatcher _instance;
 
         private bool _isReuseEventInstance;
-        
+
         private void Awake()
         {
             if (_instance == null)
@@ -116,7 +116,7 @@ namespace Prg.Scripts.Common.Photon
 
         void IOnEventCallback.OnEvent(EventData photonEvent)
         {
-            Assert.AreEqual(_isReuseEventInstance, PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance, 
+            Assert.AreEqual(_isReuseEventInstance, PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance,
                 "Internal and external Photon Reuse EventData state mismatch");
             // https://doc.photonengine.com/en-us/pun/current/gameplay/rpcsandraiseevent#raiseevent
             var eventCode = photonEvent.Code;

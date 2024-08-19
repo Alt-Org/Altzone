@@ -6,6 +6,8 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
 using Battle.Scripts.Battle.Game;
@@ -18,10 +20,9 @@ namespace Battle.Scripts.Battle.Players
     internal class PlayerDriverPhoton : MonoBehaviour, IDriver
     {
         // Serialized Fields
-        [SerializeField] private PlayerActor _playerPrefab;
         [Header("Testing")]
         [SerializeField] private bool _isTesting = false;
-        [SerializeField] private int _playerPrefabID;
+        [SerializeField] private CharacterID _playerCharacterID;
 
         // { Public Properties and Fields
 
@@ -172,7 +173,7 @@ namespace Battle.Scripts.Battle.Players
         #region Message Listeners
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ?  0 : 180f);
+            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ? 0 : 180f);
             _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SpriteVariant.A : PlayerActor.SpriteVariant.B);
             _playerActor.ResetSprite();
         }
@@ -180,22 +181,18 @@ namespace Battle.Scripts.Battle.Players
 
         private PlayerActor InstantiatePlayerPrefab(Player player)
         {
-            var playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
+            string playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
             name = name.Replace("Clone", playerTag);
-            if (_playerPrefab != null)
-            {
-                return PlayerActor.InstantiatePrefabFor(this, _playerPos, _playerPrefab, playerTag, _arenaScaleFactor);
-            }
 
-            var playerPrefabs = GameConfig.Get().PlayerPrefabs;
-            var playerPrefabId = PhotonBattle.GetPlayerPrefabId(player);
-            if (_isTesting)
-            {
-                playerPrefabId = _playerPrefabID.ToString();
-            }
-            var playerPrefab = playerPrefabs.GetPlayerPrefab(playerPrefabId) as PlayerActor;
-            var playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerPrefab, playerTag, _arenaScaleFactor);
+            CharacterID playerCharacterId;
+
+            playerCharacterId = !_isTesting ?
+                PhotonBattle.GetPlayerCharacterId(player) :
+                _playerCharacterID;
+
+            Debug.Log(string.Format("Selected player {0}, {1}", playerCharacterId, CustomCharacter.GetCharacterClassAndName(playerCharacterId)));
+            PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerCharacterId, playerTag, _arenaScaleFactor);
             return playerActor;
         }
 

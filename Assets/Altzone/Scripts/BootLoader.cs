@@ -21,6 +21,9 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
+            // Set last compiled bundle version for Photon to keep all clients connected with different platforms.
+            PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
+
             // Setup testing first before proceeding to load the game.
             PrepareLocalTesting();
 

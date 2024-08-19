@@ -115,7 +115,7 @@ public class ClanModifyInventoryView : MonoBehaviour
             ClanFurniture clanFurniture = new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", "."));
 
             // Checks that ServerItem GameFurnitureId is in GameFurniture list
-            var listing = _scrollViewListings.Find(i => i.Furniture.Id == clanFurniture.GameFurnitureId);
+            var listing = _scrollViewListings.Find(i => i.Furniture.Id == clanFurniture.GameFurnitureName);
 
             if (listing)
             {

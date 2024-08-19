@@ -226,46 +226,46 @@ namespace Battle0.Scripts
             PropertyCopier<GamePrefabs, GamePrefabs>.CopyFields(other, this);
         }
 
-        public GameObject GetPlayerPrefab(GestaltCycle gestaltCycle)
+        public GameObject GetPlayerPrefab(CharacterClassID gestaltCycle)
         {
             switch (gestaltCycle)
             {
-                case GestaltCycle.Desensitisation:
+                case CharacterClassID.Desensitizer:
                     return _playerForDes;
-                case GestaltCycle.Deflection:
+                case CharacterClassID.Trickster:
                     return _playerForDef;
-                case GestaltCycle.Introjection:
+                case CharacterClassID.Obedient:
                     return _playerForInt;
-                case GestaltCycle.Projection:
+                case CharacterClassID.Projector:
                     return _playerForPro;
-                case GestaltCycle.Retroflection:
+                case CharacterClassID.Retroflector:
                     return _playerForRet;
-                case GestaltCycle.Egotism:
+                case CharacterClassID.Intellectualizer:
                     return _playerForEgo;
-                case GestaltCycle.Confluence:
+                case CharacterClassID.Confluent:
                     return _playerForCon;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gestaltCycle), gestaltCycle, null);
             }
         }
 
-        public GameObject GetShieldPrefab(GestaltCycle gestaltCycle)
+        public GameObject GetShieldPrefab(CharacterClassID gestaltCycle)
         {
             switch (gestaltCycle)
             {
-                case GestaltCycle.Desensitisation:
+                case CharacterClassID.Desensitizer:
                     return _shieldForDes;
-                case GestaltCycle.Deflection:
+                case CharacterClassID.Trickster:
                     return _shieldForDef;
-                case GestaltCycle.Introjection:
+                case CharacterClassID.Obedient:
                     return _shieldForInt;
-                case GestaltCycle.Projection:
+                case CharacterClassID.Projector:
                     return _shieldForPro;
-                case GestaltCycle.Retroflection:
+                case CharacterClassID.Retroflector:
                     return _shieldForRet;
-                case GestaltCycle.Egotism:
+                case CharacterClassID.Intellectualizer:
                     return _shieldForEgo;
-                case GestaltCycle.Confluence:
+                case CharacterClassID.Confluent:
                     return _shieldForCon;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(gestaltCycle), gestaltCycle, null);
@@ -290,7 +290,7 @@ namespace Battle0.Scripts
     public class Characters
     {
         [Header("Character Model Attributes")] public string _name;
-        public GestaltCycle _mainDefence;
+        public CharacterClassID _mainDefence;
         [Range(0, 10)] public int _speed;
         [Range(0, 10)] public int _resistance;
         [Range(0, 10)] public int _attack;

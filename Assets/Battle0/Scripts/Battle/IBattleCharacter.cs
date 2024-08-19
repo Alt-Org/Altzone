@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Temp
         int CustomCharacterModelId { get; }
         int CharacterClassModelId { get; }
         int PlayerPrefabId { get; }
-        GestaltCycle GestaltCycle { get; }
+        CharacterClassID GestaltCycle { get; }
         int Speed { get; }
         int Resistance { get; }
         int Attack { get; }

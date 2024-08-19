@@ -43,7 +43,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _prefabs = new MonoBehaviour[prefabs.Length];
             for (var prefabIndex = 0; prefabIndex < prefabs.Length; ++prefabIndex)
             {
-                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex.ToString());
+                var playerPrefab = GameConfig.Get().PlayerPrefabs.GetPlayerPrefab(prefabIndex);
                 var instance = Instantiate(playerPrefab, _prefabsRoot);
                 if (instance == null)
                 {
@@ -68,7 +68,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             set => playerName.text = value;
         }
 
-        public string CurrentCharacterId { get; private set; }
+        public CharacterID CurrentCharacterId { get; private set; }
 
         public Action ContinueButtonOnClick
         {
@@ -98,7 +98,7 @@ namespace Battle0.Scripts.Lobby.InChooseModel
             _curPrefab = null;
         }
 
-        public void SetCharacters(List<BattleCharacter> characters, string currentCharacterId)
+        public void SetCharacters(List<BattleCharacter> characters, CharacterID currentCharacterId)
         {
             Debug.Log($"characters {characters.Count} current {currentCharacterId}");
             CurrentCharacterId = currentCharacterId;
@@ -124,11 +124,11 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void ShowCharacter(BattleCharacter character)
         {
             var i = -1;
-            var characterName = character.Name == character.CharacterClassName
+            var characterName = character.Name == character.CharacterClass.Name
                 ? character.Name
-                : $"{character.Name} [{character.CharacterClassName}]";
+                : $"{character.Name} [{character.CharacterClass.Name}]";
             _labels[++i].text = $"{characterName}";
-            _labels[++i].text = $"GestaltCycle:\r\n{character.GestaltCycle}";
+            _labels[++i].text = $"GestaltCycle:\r\n{character.CharacterClass.Name}";
             _labels[++i].text = $"Speed:\r\n{character.Speed}";
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
             _labels[++i].text = $"Attack:\r\n{character.Attack}";

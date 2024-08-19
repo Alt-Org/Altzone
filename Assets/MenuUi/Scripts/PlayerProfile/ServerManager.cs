@@ -9,6 +9,7 @@ using System.Globalization;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.GA;
 using Photon.Realtime;
 
 /// <summary>
@@ -23,6 +24,7 @@ public class ServerManager : MonoBehaviour
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
 
+    [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
     public static string ADDRESS = "https://altzone.fi/api/";
@@ -31,6 +33,9 @@ public class ServerManager : MonoBehaviour
 
     public delegate void LogInStatusChanged(bool isLoggedIn);
     public static event LogInStatusChanged OnLogInStatusChanged;
+
+    public delegate void LogInFailed();
+    public static event LogInFailed OnLogInFailed;
 
     public delegate void ClanChanged(ServerClan clan);
     public static event ClanChanged OnClanChanged;
@@ -74,7 +79,7 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
-        LogIn();
+        if(_automaticallyLogIn) StartCoroutine(LogIn());
     }
 
     public void Reset()
@@ -109,19 +114,21 @@ public class ServerManager : MonoBehaviour
     /// <summary>
     /// Tries to log in player if access token is found.
     /// </summary>
-    private void LogIn()
+    public IEnumerator LogIn()
     {
-        if (AccessToken == string.Empty)
+        if (Player != null || AccessToken == string.Empty)
         {
-            return;
+            OnLogInFailed();
+            yield break;
         }
         else
         {
             // Checks if we can get Player & player Clan from the server
-            StartCoroutine(GetPlayerFromServer(player =>
+            yield return StartCoroutine(GetPlayerFromServer(player =>
             {
                 if (player == null)
                 {
+                    OnLogInFailed();
                     return;
                 }
 
@@ -180,7 +187,7 @@ public class ServerManager : MonoBehaviour
         AccessTokenExpiration = int.Parse(profileJSON["tokenExpires"].ToString());
         PlayerPrefs.SetString("playerId", profileJSON["Player"]["_id"].ToString());
 
-        LogIn();
+        //StartCoroutine(LogIn());
     }
 
     /// <summary>
@@ -201,10 +208,11 @@ public class ServerManager : MonoBehaviour
 
         storefront.GetPlayerData(player.uniqueIdentifier, p => playerData = p);
 
-        string currentCustomCharacterId = playerData == null ? "1" : playerData.CurrentCustomCharacterId;
+        int currentCustomCharacterId = playerData == null ? 1 : playerData.SelectedCharacterId;
+        int[] currentBattleCharacterIds = playerData == null ? new int[5] : playerData.SelectedCharacterIds;
 
         PlayerData newPlayerData = null;
-        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, player.name, player.backpackCapacity, player.uniqueIdentifier);
+        newPlayerData = new PlayerData(player._id, player.clan_id, currentCustomCharacterId, currentBattleCharacterIds, player.name, player.backpackCapacity, player.uniqueIdentifier);
 
         PlayerPrefs.SetString("profileId", player.profile_id);
 
@@ -233,7 +241,7 @@ public class ServerManager : MonoBehaviour
         var playerSettings = gameConfig.PlayerSettings;
         var playerGuid = playerSettings.PlayerGuid;
         var store = Storefront.Get();
-
+        //yield return null;
         // Checks that the player is found in DataStorage
         store.GetPlayerData(playerGuid, playerDataFromStorage =>
         {
@@ -290,9 +298,51 @@ public class ServerManager : MonoBehaviour
                 ClanInventory inventory = new ClanInventory();
                 List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
 
-                foreach (var item in items)
+                /*foreach (ServerItem item in items)
                 {
+                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                    if (item._id == null || item.name == null) continue;
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
+                }*/
+
+                if(clanFurniture.Count == 0)
+                {
+                    int i = 0;
+                    while (i < 2)
+                    {
+                        clanFurniture.Add(new ClanFurniture((10000 + 100 + i).ToString(), "Sofa_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 200 + i).ToString(), "Mirror_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 300 + i).ToString(), "Floorlamp_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 400 + i).ToString(), "Toilet_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 500 + i).ToString(), "Sink_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 600 + i).ToString(), "Closet_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 700 + i).ToString(), "CoffeeTable_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 800 + i).ToString(), "SideTable_Taakka"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 900 + i).ToString(), "ArmChair_Taakka"));
+                        i++;
+                    }
+
+                    for (i = 0; i < Clan.playerCount; i++)
+                    {
+                        int slotRows = 8;
+                        int slotColumn = 20;
+
+                        int furniture1X = UnityEngine.Random.Range(1, slotColumn - 1);
+                        int furniture1Y = UnityEngine.Random.Range(1, slotRows);
+                        int furniture2X;
+                        int furniture2Y;
+                        while (true)
+                        {
+                            furniture2X = UnityEngine.Random.Range(0, slotColumn - 7);
+                            furniture2Y = UnityEngine.Random.Range(1, slotRows);
+                            if ((furniture2X >= furniture1X - 7 && furniture2X <= furniture1X + 1 && furniture2Y >= furniture1Y - 1 && furniture2Y <= furniture1Y + 2)) continue;
+                            else break;
+                        }
+
+                        clanFurniture.Add(new ClanFurniture((10000 + 300 + 3 + i).ToString(), "Floorlamp_Taakka", furniture1X, furniture1Y, i, false));
+                        clanFurniture.Add(new ClanFurniture((10000 + 100 + 3 + i).ToString(), "Sofa_Taakka", furniture2X, furniture2Y, i, false));
+
+                    }
                 }
 
                 inventory.Furniture = clanFurniture;
@@ -401,7 +451,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 string clanId = result["data"]["Join"]["clan_id"].ToString();
-
+                GameAnalyticsManager.Instance.ClanChange(clanId);
                 StartCoroutine(WebRequests.Get(ADDRESS + "clan/" + clanId, AccessToken, request =>
                 {
                     if (request.result == UnityWebRequest.Result.Success)

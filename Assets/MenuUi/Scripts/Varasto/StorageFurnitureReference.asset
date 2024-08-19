@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6d0948ad256204ca4eb84e88818536, type: 3}
+  m_Name: StorageFurnitureReference
+  m_EditorClassIdentifier: 
+  _info:
+  - SetName: Taakka
+    list:
+    - Name: Sofa
+      Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
+      VisibleName: Sohva
+    - Name: ArmChair
+      Image: {fileID: -498378044, guid: 7767254924d389249bccb2b7a765a93a, type: 3}
+      VisibleName: NojaTuoli
+    - Name: Mirror
+      Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
+      VisibleName: Peili
+    - Name: Floorlamp
+      Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
+      VisibleName: Lattialamppu
+    - Name: CoffeeTable
+      Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
+      VisibleName: "KahviP\xF6yt\xE4"
+    - Name: SideTable
+      Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
+      VisibleName: "SivuP\xF6yt\xE4"
+    - Name: Closet
+      Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
+      VisibleName: Kaappi
+  - SetName: Schrodinger
+    list:
+    - Name: Sink
+      Image: {fileID: 21300000, guid: a521397346aa25e4cab9e4a0252a080c, type: 3}
+      VisibleName: Lavuaari
+    - Name: Toilet
+      Image: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
+      VisibleName: "Vessanp\xF6ntt\xF6"

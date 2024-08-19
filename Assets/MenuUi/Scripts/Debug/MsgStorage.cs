@@ -6,7 +6,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 {
 
     #region Enum and Interfaces
-  
+
     public enum MessageType
     {
         None = 0,
@@ -228,7 +228,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         }
 
 
-        /* 
+        /*
          * +------------------------------------------------------------+
          * |                         MsgStorage                         |
          * +------------------------------------------------------------+
@@ -243,7 +243,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
          * |    [client1]: List<MsgObject>                              |                                                      | | |     | |  |  Msg: string                |
          * |      [Id0]: MsgObject --------------------------------------------------------------------------------------------|-|-|--+  | |  |  Type: MessageType.Info     |
          * |      .                                                     |                                                      | | |  |  | |  +-----------------------------+
-         * |      .                                                     |                                                      | | |  |  | |                                 
+         * |      .                                                     |                                                      | | |  |  | |
          * |    .                                                       |                     +-----------------------------+  | | |  |  | |  +-----------------------------+
          * |    .                                                       |  +----------------->|          Timestamp          |  | | |  |  | +->|          MsgObject          |
          * |                                                            |  | +-------------+  +-----------------------------+  | | |  |  |    +-----------------------------+
@@ -253,7 +253,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
          * |      [Time3]: IReadOnlyTimestamp -----------------------------|-|-|-+     | | |  |  _list: List<MsgObject>     |  | | |  |  |    |  Msg: string                |
          * |      .                                                     |  | | | |     | | |  |    empty                    |  | | |  |  |    |  Type: MessageType.Warning  |
          * |      .                                                     |  | | | |     | | |  |                             |  | | |  |  |    +-----------------------------+
-         * |    [client1]: Dictionary<int, IReadOnlyTimestamp>          |  | | | |     | | |  +-----------------------------+  | | |  |  |                                   
+         * |    [client1]: Dictionary<int, IReadOnlyTimestamp>          |  | | | |     | | |  +-----------------------------+  | | |  |  |
          * |      [Time0]: IReadOnlyTimestamp  ----------------------------|-|-|-|--+  | | |                                   | | |  |  |    +-----------------------------+
          * |      .                                                     |  | | | |  |  | | |  +-----------------------------+  | | |  |  +--->|          MsgObject          |
          * |      .                                                     |  | | | |  |  | | +->|          Timestamp          |  | | |  |       +-----------------------------+
@@ -263,8 +263,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
          * |  +-------------------------------------+                   |  | | | |  |  | |    |                             |  | | |  |       |  Msg: string                |
          * |  |           TimelineStorage           |                   |  | | | |  |  | |    |  _list: List<MsgObject>     |  | | |  |       |  Type: MessageType.Info     |
          * |  +-------------------------------------+                   |  | | | |  |  | |    |    [0]: MsgObject -------------+ | |  |       +-----------------------------+
-         * |  |                                     |                   |  | | | |  |  | |    |    [1]: MsgObject ---------------+ |  |                                      
-         * |  |  _timelines: List<List<Timestamp>>  |                   |  | | | |  |  | |    |                             |      |  |                                      
+         * |  |                                     |                   |  | | | |  |  | |    |    [1]: MsgObject ---------------+ |  |
+         * |  |  _timelines: List<List<Timestamp>>  |                   |  | | | |  |  | |    |                             |      |  |
          * |  |   [client0]: <List<Timestamp>       |                   |  | | | |  |  | |    +-----------------------------+      |  |       +-----------------------------+
          * |  |     [Time0]: Timestamp ------------------------------------+ | | |  |  | |                                         |  +------>|          MsgObject          |
          * |  |     [Time1]: Timestamp --------------------------------------+ | |  |  | |    +-----------------------------+      |  |       +-----------------------------+
@@ -298,8 +298,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
          *                                                                                    |                             |         |
          *                                                                                    |  _list: List<MsgObject>     |         |
          *                                                                                    |    [0]: MsgObject --------------------+
-         *                                                                                    |                             |          
-         *                                                                                    +-----------------------------+          
+         *                                                                                    |                             |
+         *                                                                                    +-----------------------------+
          */
     }
 

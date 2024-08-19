@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Altzone.Scripts.Model.Poco.Game;
 public class SettingsCarrier : MonoBehaviour
 {
     // Script for carrying settings data between scenes
@@ -53,8 +54,8 @@ public class SettingsCarrier : MonoBehaviour
     }
 
     // Determines which character stat window to load/show from character gallery
-    private int _characterGalleryCharacterStatWindowToShow = -1;
-    public int CharacterGalleryCharacterStatWindowToShow
+    private CharacterID _characterGalleryCharacterStatWindowToShow = CharacterID.None;
+    public CharacterID CharacterGalleryCharacterStatWindowToShow
     {
         get => _characterGalleryCharacterStatWindowToShow;
         set
@@ -67,5 +68,5 @@ public class SettingsCarrier : MonoBehaviour
             }
         }
     }
-    public event Action<int> OnCharacterGalleryCharacterStatWindowToShowChange;
+    public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
 }

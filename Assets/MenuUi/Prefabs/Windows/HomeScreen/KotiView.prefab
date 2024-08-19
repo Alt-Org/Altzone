@@ -277,7 +277,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 47.05
+  m_fontSize: 72
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -377,7 +377,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2673155402146944570
 RectTransform:
   m_ObjectHideFlags: 0
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.3
+  m_fontSize: 42.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 4569501552176949715}
   - component: {fileID: 2799551885548214987}
   - component: {fileID: 1904895706154019554}
-  - component: {fileID: 5314977988042986616}
+  - component: {fileID: 8931774430590575175}
   m_Layer: 5
   m_Name: SielunkotiButton
   m_TagString: Untagged
@@ -710,7 +710,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5314977988042986616
+--- !u!114 &8931774430590575175
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -719,11 +719,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 9174696609689856735}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Script: {fileID: 11500000, guid: 6bdc2a497f2517d4d8aa3c4e9bdfcc45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 8151caf92238d6644aa92862f28aa15d, type: 2}
   _isCurrentPopOutWindow: 0
+  _popup: {fileID: 0}
+  _ignoreClanStatus: 1
 --- !u!1001 &1695485140809395139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1102,26 +1104,67 @@ PrefabInstance:
       propertyPath: _profileNaviButton
       value: 
       objectReference: {fileID: 5798733499102749756}
+    - target: {fileID: 4112096876817128109, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628797262794463581, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5725124495499325070, guid: 3adab15f1251cb74bad4e53a3d5f9746,
         type: 3}
       propertyPath: m_fontSize
-      value: 51.15
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 6418099758862454539, guid: 3adab15f1251cb74bad4e53a3d5f9746,
         type: 3}
       propertyPath: m_fontSize
-      value: 51.15
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 7003425315457001312, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      propertyPath: _isCurrentPopOutWindow
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8814020343608223576, guid: 3adab15f1251cb74bad4e53a3d5f9746,
         type: 3}
       propertyPath: m_fontSize
-      value: 42.6
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5612480394231691680, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6615565117035528896}
   m_SourcePrefab: {fileID: 100100000, guid: 3adab15f1251cb74bad4e53a3d5f9746, type: 3}
+--- !u!1 &689813424187466310 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5612480394231691680, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+    type: 3}
+  m_PrefabInstance: {fileID: 4931789626642488294}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6615565117035528896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689813424187466310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb4ee34950ea26d4599f5e1a9886dc36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: af7bed882640abb4c883d988f7d81a34, type: 2}
+  _isCurrentPopOutWindow: 0
+  _alternateNaviTarget: {fileID: 11400000, guid: 61a4cbe88e24d13439d73a445c64a793,
+    type: 2}
 --- !u!224 &5104159777850583427 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 190456095295517285, guid: 3adab15f1251cb74bad4e53a3d5f9746,
@@ -1620,6 +1663,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: "BT_\xC4\xC4NESTYS"
       objectReference: {fileID: 0}
+    - target: {fileID: 8972975073786983638, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 827e55f8331900b47aa990c5dcdc1bc6,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

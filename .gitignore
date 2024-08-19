@@ -89,17 +89,11 @@ crashlytics-build.properties
 # https://youtrack.jetbrains.com/issue/RIDER-76195 (Fix scheduled for release with Rider package 3.0.14)
 /ProjectSettings/RiderScriptEditorPersistedState.asset
 
-# Project Auditor (https://github.com/Unity-Technologies/ProjectAuditor)
-# Build Report Inspector (https://docs.unity.cn/es/2019.4/Manual/com.unity.build-report-inspector.html)
+# --- This Project
+
+# --- Build System and Build Report Tool (https://assetstore.unity.com/packages/tools/utilities/build-report-tool-8162)
 /[Aa]ssets/BuildReports/*
 /[Aa]ssets/BuildReports.meta
-
-# --- Build Report Tool (https://assetstore.unity.com/packages/tools/utilities/build-report-tool-8162)
-/[Aa]ssets/BuildReport/*
-/[Aa]ssets/BuildReport.meta
-/ProjectSettings/BuildReportToolOptions.xml
-
-# --- This Project
 
 # Local settings override folder: XxxTest
 **/[Rr]esources/*[Tt]est/
@@ -120,14 +114,15 @@ m_Build*
 # Batch build secretKeys folder
 /etc/secretKeys/
 
+# Caddy dev server (local WebGL test)
+/etc/caddy/*.exe
+/etc/caddy/logs/
+
 # All Local files for dev config and build tooling
 _[Ll]ocal*
 
 # Local windows desktop shortcuts
 /*.lnk
-
-# Include Editor.Build "Namespace"
-!/Editor/Build/
 
 Assets/TextMesh Pro/Resources/Fonts & Materials/Liberation Sans/LiberationSans SDF - Fallback.asset
 Assets/TextMesh Pro/Resources/Fonts & Materials/Liberation Sans/LiberationSans SDF - Fallback.asset

@@ -17,7 +17,7 @@ namespace Battle0.Scripts.Battle.Players
         protected static readonly char[] PlayerPosChars = { '?', 'a', 'b', 'c', 'd' };
         protected static readonly char[] PlayModes = { 'n', 'F', 'g', 'S', 'R', 'o', '-' };
 
-        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, GestaltCycle gestaltCycle, PlayerActorBase playerPrefabTest)
+        public static IPlayerActor InstantiatePrefabFor(IPlayerDriver playerDriver, CharacterClassID gestaltCycle, PlayerActorBase playerPrefabTest)
         {
             var playerPos = playerDriver.PlayerPos;
             var instantiationPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(playerPos);

@@ -26,13 +26,19 @@ namespace Altzone.Scripts.Model
     /// <remarks>
     /// WebGl builds have to manually flush changes to browser local storage/database after changes to be on the safe side.
     /// </remarks>
+    ///
+
     internal class LocalModels
     {
+        const int STORAGEVERSION = 3;
+
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
+
+        private bool _saving = false;
 
         #region WebGL support
 
@@ -141,21 +147,24 @@ namespace Altzone.Scripts.Model
 
         internal void GetPlayerData(string uniqueIdentifier, Action<PlayerData> callback)
         {
+            new WaitUntil(() => _saving = false);
             var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
             if (playerData != null)
             {
                 // This storage is by no means a complete object model we want to serve.
                 playerData.Patch(_GetAllBattleCharacters(), _storageData.CustomCharacters);
             }
+            Debug.Log($"playerData {playerData}");
             callback(playerData);
         }
 
         internal void SavePlayerData(PlayerData playerData, Action<PlayerData> callback)
         {
+            _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
             if (index >= 0)
             {
-                _storageData.PlayerData[index] = playerData;
+                _storageData.PlayerData[0] = playerData;
             }
             else
             {
@@ -163,10 +172,12 @@ namespace Altzone.Scripts.Model
                 {
                     playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
-                _storageData.PlayerData.Add(playerData);
+                if(_storageData.PlayerData.Count == 0)_storageData.PlayerData.Add(playerData);
+                else _storageData.PlayerData[0] = playerData;
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
+            _saving = false;
             callback?.Invoke(playerData);
         }
         internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
@@ -195,6 +206,7 @@ namespace Altzone.Scripts.Model
 
         internal void SaveClanData(ClanData clanData, Action<ClanData> callback)
         {
+            _saving = true;
             var index = _storageData.ClanData.FindIndex(x => x.Id == clanData.Id);
             if (index >= 0)
             {
@@ -211,6 +223,7 @@ namespace Altzone.Scripts.Model
             }
             Debug.Log($"clanData {clanData}");
             SaveStorage(_storageData, _storagePath);
+            _saving = false;
             callback?.Invoke(clanData);
         }
 
@@ -223,7 +236,7 @@ namespace Altzone.Scripts.Model
             callback(_storageData.CustomCharacters);
         }
 
-        internal void GetBattleCharacterTest(string customCharacterId, Action<BattleCharacter> callback)
+        internal void GetBattleCharacterTest(CharacterID customCharacterId, Action<BattleCharacter> callback)
         {
             callback(_GetBattleCharacter(customCharacterId));
         }
@@ -243,7 +256,7 @@ namespace Altzone.Scripts.Model
             return battleCharacters;
         }
 
-        private BattleCharacter _GetBattleCharacter(string customCharacterId)
+        private BattleCharacter _GetBattleCharacter(CharacterID customCharacterId)
         {
             var customCharacter = _storageData.CustomCharacters.FirstOrDefault(x => x.Id == customCharacterId);
             if (customCharacter == null)
@@ -251,11 +264,11 @@ namespace Altzone.Scripts.Model
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
             var characterClass =
-                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassId);
+                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
-                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassId);
+                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassID);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
@@ -303,6 +316,7 @@ namespace Altzone.Scripts.Model
 
         private static StorageData CreateDefaultStorage(string storagePath)
         {
+            Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
             storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
@@ -312,8 +326,10 @@ namespace Altzone.Scripts.Model
             var playerGuid = new PlayerSettings().PlayerGuid;
             var clanGuid = playerGuid;
             var customCharacterId = storageData.CustomCharacters[0].Id;
-            storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, customCharacterId));
+            storageData.PlayerData.Add(CreateDefaultModels.CreatePlayerData(playerGuid, clanGuid, (int)customCharacterId));
             storageData.ClanData.Add(CreateDefaultModels.CreateClanData(clanGuid, storageData.GameFurniture));
+
+            storageData.StorageVersion = STORAGEVERSION;
 
             SaveStorage(storageData, storagePath);
             return storageData;
@@ -323,6 +339,9 @@ namespace Altzone.Scripts.Model
         {
             var jsonText = File.ReadAllText(storagePath, Encoding);
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
+
+            if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+
             return storageData;
         }
 
@@ -337,6 +356,7 @@ namespace Altzone.Scripts.Model
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     internal class StorageData
     {
+        public int StorageVersion = 0;
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();

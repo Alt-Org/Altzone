@@ -129,9 +129,7 @@ MonoBehaviour:
   _privacyPolicyAddress: https://www.freeprivacypolicy.com/live/854c0df9-c25d-45a4-a6a1-022ab415f9f4
   _privacyPolicyText: {fileID: 7663313414276388867}
   _privacyPolicyAgreementText: {fileID: 8534924685948230034}
-  _mainMenuWindow: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
-  _introSceneWindow: {fileID: 11400000, guid: c63e84b209f615742b1ac5aa16d448f7, type: 2}
-  _introScene: 7
+  _logInWindow: {fileID: 11400000, guid: 58e1481b45b1dc44c90a3346a441246b, type: 2}
 --- !u!1 &3227877295522482342
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +302,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.1
+  m_fontSize: 63.6
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -576,7 +574,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.95
+  m_fontSize: 29.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -740,7 +738,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 80.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1102,7 +1100,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.65
+  m_fontSize: 80
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1474,6 +1472,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UIPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6278266666771685668, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4.400009
       objectReference: {fileID: 0}
     - target: {fileID: 7397605467378155027, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

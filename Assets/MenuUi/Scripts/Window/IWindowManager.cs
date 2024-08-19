@@ -43,6 +43,11 @@ namespace MenuUi.Scripts.Window
         [MaybeNull] List<MyWindow> WindowStack { get; }
 
         /// <summary>
+        /// Check if the WindowManager is free.
+        /// </summary>
+        public int ExecutionLevel { get; }
+
+        /// <summary>
         /// Finds given windows index in window stack, top most window has index value 0 and not found window -1.
         /// </summary>
         int FindIndex(WindowDef windowDef);

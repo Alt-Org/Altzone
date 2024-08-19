@@ -372,10 +372,7 @@ namespace Battle0.Scripts
         /// </summary>
         public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
         {
-            if (int.TryParse(battleCharacter.UnityKey, out var prefabIndex))
-            {
-                return prefabIndex;
-            }
+            if ((int)battleCharacter.CustomCharacterId != -1) return (int)battleCharacter.CustomCharacterId;
             return defaultValue;
         }
 
@@ -424,10 +421,10 @@ namespace Battle0.Scripts
         public static void SetDebugPlayerProps(Player player, int playerPos, int playerMainSkill = -1)
         {
             Assert.IsTrue(IsValidPlayerPos(playerPos), "IsValidPlayerPos(playerPos)");
-            if (playerMainSkill < (int)GestaltCycle.Desensitisation || playerMainSkill > (int)GestaltCycle.Confluence)
+            if (playerMainSkill < (int)CharacterClassID.Desensitizer || playerMainSkill > (int)CharacterClassID.Confluent)
             {
                 // Should be fastest movement skill to have for testing.
-                playerMainSkill = (int)GestaltCycle.Deflection;
+                playerMainSkill = (int)CharacterClassID.Trickster;
             }
             var curPlayerPos = player.GetCustomProperty(PlayerPositionKey, -1);
             var curPlayerMainSkill = player.GetCustomProperty(PlayerMainSkillKey, -1);

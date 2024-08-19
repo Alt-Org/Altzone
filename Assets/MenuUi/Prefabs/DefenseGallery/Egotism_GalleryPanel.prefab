@@ -689,6 +689,7 @@ GameObject:
   - component: {fileID: 6462432142557349034}
   - component: {fileID: 8306052876789778123}
   - component: {fileID: 5762324219656217502}
+  - component: {fileID: 4779449826927167988}
   m_Layer: 5
   m_Name: Egotism_GalleryPanel
   m_TagString: Untagged
@@ -824,6 +825,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterStatWindowToShowValue: 0
+--- !u!114 &4779449826927167988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6712706073602126356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9132f07f6a08db94dbda72176dd12539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 0}
+  parentAfterDrag: {fileID: 0}
+  allowedSlot: {fileID: 0}
+  initialSlot: {fileID: 0}
+  _modelView: {fileID: 0}
+  DraggableCharacterGallery: {fileID: 0}
 --- !u!1 &8025888501778664568
 GameObject:
   m_ObjectHideFlags: 0

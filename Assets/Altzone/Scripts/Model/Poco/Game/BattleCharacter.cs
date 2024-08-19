@@ -10,32 +10,24 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// </remarks>
     public class BattleCharacter
     {
-        public readonly string CustomCharacterId;
+        public readonly CharacterID CustomCharacterId;
+        public readonly CharacterClass CharacterClass;
         public readonly string Name;
-        public readonly string CharacterClassId;
-        public readonly string CharacterClassName;
-        public readonly string UnityKey;
-        public readonly GestaltCycle GestaltCycle;
+        public readonly int Hp;
         public readonly int Speed;
         public readonly int Resistance;
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(string customCharacterId, string name, string characterClassId, string characterClassName, string unityKey,
-            GestaltCycle gestaltCycle, int speed, int resistance, int attack, int defence)
+        private BattleCharacter(CharacterID customCharacterId, CharacterClass characterClass, string name,
+            int hp, int speed, int resistance, int attack, int defence)
         {
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(customCharacterId));
+            Assert.AreNotEqual(CharacterID.None, customCharacterId);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassId));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(characterClassName));
-            Assert.IsTrue(!string.IsNullOrWhiteSpace(unityKey));
-            Assert.AreNotEqual(GestaltCycle.None, gestaltCycle);
             CustomCharacterId = customCharacterId;
+            CharacterClass = characterClass;
             Name = name;
-            CharacterClassId = characterClassId;
-            CharacterClassName = characterClassName;
-            UnityKey = unityKey;
-            GestaltCycle = gestaltCycle;
+            Hp = hp;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -44,12 +36,12 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         internal static BattleCharacter Create(CustomCharacter customCharacter, CharacterClass characterClass)
         {
-            Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
+            //Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
             return new BattleCharacter(
-                customCharacter.Id, customCharacter.Name,
-                characterClass.Id, characterClass.Name,
-                customCharacter.UnityKey,
-                characterClass.GestaltCycle,
+                customCharacter.Id,
+                characterClass,
+                customCharacter.Name,
+                customCharacter.Hp + characterClass.Hp,
                 customCharacter.Speed + characterClass.Speed,
                 customCharacter.Resistance + characterClass.Resistance,
                 customCharacter.Attack + characterClass.Attack,
@@ -59,9 +51,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public override string ToString()
         {
             return $"CustomCharacter: {CustomCharacterId} : {Name}" +
-                   $", CharacterClass: {CharacterClassId} : {CharacterClassName}" +
-                   $", UnityKey: {UnityKey}, MainDefence: {GestaltCycle}" +
-                   $", Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
+                   $", Hp: {Hp}, Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }
 }
