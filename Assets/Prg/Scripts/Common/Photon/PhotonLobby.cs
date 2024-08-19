@@ -116,11 +116,8 @@ namespace Prg.Scripts.Common.Photon
             {
                 throw new UnityException("Player name is missing");
             }
-            // We always use explicit settings, either our own or Photon default settings from Editor.
-            var photonAppSettings = Resources.Load<PhotonAppSettings>(nameof(PhotonAppSettings));
-            var appSettings = photonAppSettings != null
-                ? photonAppSettings._appSettings
-                : PhotonNetwork.PhotonServerSettings.AppSettings;
+            // We use explicit settings - there was a bug related to settings get corrupted earlier.
+            var appSettings = PhotonNetwork.PhotonServerSettings.AppSettings;
             ConnectUsingSettings(playerName, appSettings, regionCodeOverride);
         }
 
