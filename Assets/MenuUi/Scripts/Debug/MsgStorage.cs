@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
-
     #region Enum and Interfaces
 
     public enum MessageType
@@ -14,6 +12,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         Warning = 1 << 2,
         Error = 1 << 3
     }
+
     [Flags]
     public enum MessageTypeOptions
     {
@@ -31,24 +30,28 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public string Msg { get; }
         public MessageType Type { get; }
     }
+
     internal interface IReadOnlyTimestamp
     {
         public int Time { get; }
         public MessageType Type { get; }
         public IReadOnlyList<IReadOnlyMsgObject> List { get; }
     }
+
     internal interface IReadOnlyMsgStorage
     {
         public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
-        public int TotalMessages(); // New method added
+        public int TotalMessages();
     }
+
     internal interface IReadOnlyTimelineStorage
     {
         public IReadOnlyTimestamp GetTimestamp(int client, int time);
         public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
     }
+
     #endregion
 
     internal class MsgObject : IReadOnlyMsgObject
@@ -57,14 +60,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int Id { get; private set; }
         public int Time { get; }
         public string Msg { get; }
+        public string Trace { get; }
         public MessageType Type { get; }
 
-        internal MsgObject(int client, int time, string msg, MessageType type)
+        internal MsgObject(int client, int time, string msg, string trace, MessageType type)
         {
             Client = client;
             Id = -1;
             Time = time;
             Msg = msg;
+            Trace = trace;
             Type = type;
         }
 
@@ -114,7 +119,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return newList;
         }
 
-
         internal MsgStorage(int clientCount)
         {
             _timelineStorage = new(clientCount);
@@ -146,6 +150,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     _timeStampMapList[msg.Client][msg.Time] = stamp;
             }
         }
+
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
         {
             if (!IsValidClient(client)) return null;
@@ -164,11 +169,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return _msgList.Length > client && client >= 0;
         }
 
-        // New method added
         public int TotalMessages()
         {
             int total = 0;
-            foreach (var msgList in _msgList)
+            foreach (List<MsgObject> msgList in _msgList)
             {
                 total += msgList.Count;
             }
@@ -183,9 +187,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             internal TimelineStorage(int clientCount)
             {
+                _timelines = new List<Timestamp>[clientCount];
                 for (int i = 0; i < clientCount; i++)
                 {
-                    _timelines.Add(new());
+                    _timelines[i] = new();
                 }
             }
 
@@ -194,11 +199,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (!IsValidClient(client)) return null;
                 return _timelines[client][time];
             }
+
             public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client)
             {
                 if (!IsValidClient(client)) return null;
                 return _timelines[client];
             }
+
             private Timestamp GetOrNew(int client, int time)
             {
                 int timelineSize = _timelines[client].Count;
@@ -211,6 +218,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
                 return _timelines[client][time];
             }
+
             internal IReadOnlyTimestamp AddMessageToTimestamp(MsgObject msg)
             {
                 Timestamp stamp = GetOrNew(msg.Client, msg.Time);
@@ -221,12 +229,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             private bool IsValidClient(int client)
             {
-                return _timelines.Count > client && client >= 0;
+                return _timelines.Length > client && client >= 0;
             }
 
-            private List<List<Timestamp>> _timelines = new();
+            private readonly List<Timestamp>[] _timelines;
         }
-
 
         /*
          * +------------------------------------------------------------+

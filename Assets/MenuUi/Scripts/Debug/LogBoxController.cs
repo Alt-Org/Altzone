@@ -20,7 +20,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         internal void MessageDeliver(IReadOnlyMsgObject msgObject)
         {
-            string logText = $"[{msgObject.Client}:{msgObject.Time}] {msgObject.Msg}\n";
+            string logText = string.Format("[Client {0}] [{1:000000}] {2}", msgObject.Client, msgObject.Time, msgObject.Msg);
             _messagePanel.SetMessage(logText);
         }
 
@@ -51,7 +51,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Add a message to the log box
         private void AddMessageToLog(MsgStorage msgStorage, string message, int time, int client, MessageType messageType)
         {
-            msgStorage.Add(new MsgObject(client, time, message, messageType));
+            msgStorage.Add(new MsgObject(client, time, message, "", messageType));
         }
 
         // Update the log text to display all messages
@@ -73,7 +73,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     {
                         // Instantiate a new log message GameObject for each message
                         GameObject logMsgBox = Instantiate(_logTextObject, logTextBox.transform.GetChild(0).GetChild(0));
-                        string logText = $"[{msg.Client}:{msg.Time}] {msg.Msg}\n"; // Message format
                         logMsgBox.GetComponent<LogBoxMessageHandler>().SetMessage(msg);
                     }
                 }

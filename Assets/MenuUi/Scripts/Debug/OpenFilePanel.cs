@@ -41,8 +41,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     // Load log file contents
                     string[] lines = File.ReadAllLines(_selectedFilePath);
 
-                    //IReadOnlyMsgStorage msgStorage = //[sudo code] parser.parseLog(lines); //
-                    //logBoxController.SetMsgStorage(msgStorage);
+                    IReadOnlyMsgStorage msgStorage = BattleLogParser.ParseLog(lines);
+                    _logBoxController.SetMsgStorage(msgStorage);
                 }
                 else
                 {
