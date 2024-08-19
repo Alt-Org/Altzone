@@ -51,7 +51,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
             var roomOptions = new RoomOptions()
             {
-                IsVisible = true,
+                IsVisible = true, // Pit‰‰ muokata varmaankin //
                 IsOpen = true,
                 MaxPlayers = 4
             };
@@ -86,7 +86,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         
         public override void OnJoinedRoom()
         {
-            var room = PhotonNetwork.CurrentRoom;
+            var room = PhotonNetwork.CurrentRoom; // hakee pelaajan tiedot // 
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonNetwork.NickName}'");

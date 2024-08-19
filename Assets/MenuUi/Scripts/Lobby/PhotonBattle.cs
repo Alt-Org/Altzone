@@ -19,6 +19,8 @@ namespace MenuUI.Scripts.Lobby
         public const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         public const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
         public const string PlayerPrefabIdKey = PhotonBattleRoom.PlayerCharacterIdKey;
+        public const string PlayerPrefabIdsKey = PhotonBattleRoom.PlayerCharacterIdsKey;
+        public const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
         public const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
         public const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
         public const string TeamWinTypeKey = PhotonBattleRoom.TeamWinTypeKey;

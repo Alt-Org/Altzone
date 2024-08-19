@@ -196,6 +196,8 @@ namespace MenuUi.Scripts.Window
 
         [MaybeNull] List<MyWindow> IWindowManager.WindowStack => _currentWindows;
 
+        public int ExecutionLevel { get => _executionLevel;}
+
         int IWindowManager.FindIndex(WindowDef windowDef)
         {
             return _currentWindows.FindIndex(x => x._windowDef == windowDef);
@@ -475,6 +477,8 @@ namespace MenuUi.Scripts.Window
             public int WindowCount => 0;
 
             public List<MyWindow> WindowStack => new();
+
+            public int ExecutionLevel => 0;
 
             public int FindIndex(WindowDef windowDef) => -1;
 

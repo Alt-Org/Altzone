@@ -1,65 +1,48 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.IO;
-using DebugUi.Scripts.BattleAnalyzer;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
-    public class OpenFilePanel : MonoBehaviour
+    internal class OpenFilePanel : MonoBehaviour
     {
-        public LogBoxController logBoxController;
-        public GameObject filePanel;
-        public Button confirmLogsButton;
-        public Button denyLogsButton;
-        public TextMeshProUGUI logText;
-
-        private string selectedFilePath;
-
-        // Instantiate LogBoxController in the Start method
-        void Start()
-        {
-            logBoxController = GetComponentInParent<LogBoxController>();
-            if (logBoxController == null)
-            {
-                Debug.LogError("LogBoxController not found in parent hierarchy.");
-            }
-
-            // Initially hide the buttons
-            confirmLogsButton.gameObject.SetActive(false);
-            denyLogsButton.gameObject.SetActive(false);
-        }
+        [SerializeField] private LogBoxController _logBoxController;
+        [SerializeField] private GameObject _filePanel;
+        [SerializeField] private Button _confirmLogsButton;
+        [SerializeField] private Button _denyLogsButton;
+        [SerializeField] private TMP_InputField _filePathTextField;
 
         public void OnButtonClick()
         {
             // Open file managing window
-            selectedFilePath = PanelOpener.OpenFileDialog();
+            _selectedFilePath = PanelOpener.OpenFileDialog();
 
-            // Show the file's address and location in the LogViewer text box
-            logText.text = selectedFilePath;
+            // Show the file's address and location in the file path text field
+            _filePathTextField.text = _selectedFilePath;
 
-            // Show "BT_CONFIRMLOGS" and "BT_DENYLOGS" buttons
-            confirmLogsButton.gameObject.SetActive(true);
-            denyLogsButton.gameObject.SetActive(true);
+            OnFilePathChange();
+        }
+
+        public void OnTextFieldEndEdit()
+        {
+            // Update selected file path
+            _selectedFilePath = _filePathTextField.text;
+
+            OnFilePathChange();
         }
 
         public void ConfirmLogs()
         {
-            if (!string.IsNullOrEmpty(selectedFilePath))
+            if (!string.IsNullOrEmpty(_selectedFilePath))
             {
-                if (logBoxController != null)
+                if (_logBoxController != null)
                 {
                     // Load log file contents
-                    string[] lines = File.ReadAllLines(selectedFilePath);
+                    string[] lines = File.ReadAllLines(_selectedFilePath);
 
-                    // Pass log file contents to log box controller
-                    foreach (string line in lines)
-                    {
-                        // For each line in the log file, add it to the log box controller
-                        int clientIndex = UnityEngine.Random.Range(0, 4); // Generate random client index
-                        MessageType messageType = MessageType.Info;
-                        logBoxController.AddMessageToLog(line, (int)Time.time, clientIndex, messageType);
-                    }
+                    //IReadOnlyMsgStorage msgStorage = //[sudo code] parser.parseLog(lines); //
+                    //logBoxController.SetMsgStorage(msgStorage);
                 }
                 else
                 {
@@ -72,18 +55,18 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
 
             // Hide the panel after confirming
-            filePanel.SetActive(false);
+            _filePanel.SetActive(false);
         }
 
         public void DenyLogs()
         {
             // Reset the selected file path and clear the text
-            selectedFilePath = "";
-            logText.text = "";
+            _selectedFilePath = "";
+            _filePathTextField.text = "";
 
             // Hide the buttons
-            confirmLogsButton.gameObject.SetActive(false);
-            denyLogsButton.gameObject.SetActive(false);
+            _confirmLogsButton.gameObject.SetActive(false);
+            _denyLogsButton.gameObject.SetActive(false);
         }
 
 
@@ -100,6 +83,38 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return null;
 
 #endif
+            }
+        }
+
+        private string _selectedFilePath;
+
+        // Instantiate LogBoxController in the Start method
+        private void Start()
+        {
+            _logBoxController = GetComponentInParent<LogBoxController>();
+            if (_logBoxController == null)
+            {
+                Debug.LogError("LogBoxController not found in parent hierarchy.");
+            }
+
+            // Initially hide the buttons
+            _confirmLogsButton.gameObject.SetActive(false);
+            _denyLogsButton.gameObject.SetActive(false);
+        }
+
+        private void OnFilePathChange()
+        {
+            if (_selectedFilePath != "" && File.Exists(_selectedFilePath))
+            {
+                // Show "BT_CONFIRMLOGS" and "BT_DENYLOGS" buttons
+                _confirmLogsButton.gameObject.SetActive(true);
+                _denyLogsButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                // Hide the buttons
+                _confirmLogsButton.gameObject.SetActive(false);
+                _denyLogsButton.gameObject.SetActive(false);
             }
         }
     }

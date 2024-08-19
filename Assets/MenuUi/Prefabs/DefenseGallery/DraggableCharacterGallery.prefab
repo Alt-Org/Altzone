@@ -804,7 +804,6 @@ GameObject:
   - component: {fileID: 385449495806321397}
   - component: {fileID: 1657837458230196602}
   - component: {fileID: 8564522138364767957}
-  - component: {fileID: 310954580443618220}
   m_Layer: 5
   m_Name: DraggableVerticalGallery
   m_TagString: Untagged
@@ -929,7 +928,7 @@ MonoBehaviour:
   HorizontalContentPanel: {fileID: 8458840792069638730}
   _characterSlotprefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
     type: 3}
-  _referenceSheet: {fileID: 310954580443618220}
+  _referenceSheet: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964, type: 2}
   _isReady: 0
 --- !u!114 &8564522138364767957
 MonoBehaviour:
@@ -962,64 +961,6 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &310954580443618220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7388681695668014661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c2b986e2c6e35458d2924290b7e1ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _info:
-  - Name: Tunnottomat
-    id: 256
-    list:
-    - Name: Rauta-Rami
-      id: 257
-      Image: {fileID: 21300000, guid: db8247e9b9013614d85bb9fc97c403f9, type: 3}
-  - Name: "H\xE4m\xE4\xE4j\xE4t"
-    id: 512
-    list:
-    - Name: Vitsi-Ville
-      id: 513
-      Image: {fileID: 21300000, guid: 138468eff417d3d4cb5ae233277cfde3, type: 3}
-  - Name: Tottelijat
-    id: 768
-    list:
-    - Name: Sami Saarnaaja
-      id: 769
-      Image: {fileID: 21300000, guid: 89b1840dc0427b04aaa48aefee89947c, type: 3}
-  - Name: Peilaajat
-    id: 1024
-    list:
-    - Name: Graffiti-Gaya
-      id: 1025
-      Image: {fileID: 21300000, guid: c3ccef0c9c6027b46848eb4ad73c7a2d, type: 3}
-  - Name: Torjujat
-    id: 1280
-    list:
-    - Name: Hannu-Hodari
-      id: 1281
-      Image: {fileID: 21300000, guid: dfdefd46f5298ca45bfe06badbfaa956, type: 3}
-    - Name: Pullo-Piraatti
-      id: 1282
-      Image: {fileID: 21300000, guid: b34af0a1932cf9a4e9a24e645473c3cf, type: 3}
-  - Name: Sulautujat
-    id: 1536
-    list:
-    - Name: "Tiimityt\xF6t"
-      id: 1537
-      Image: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
-  - Name: "\xC4lyllist\xE4j\xE4t"
-    id: 768
-    list:
-    - Name: "Albert \xC4lyp\xE4\xE4"
-      id: 1793
-      Image: {fileID: 21300000, guid: 62536513ff41a774b944a9bad03052f0, type: 3}
 --- !u!1 &7674107664300183725
 GameObject:
   m_ObjectHideFlags: 0

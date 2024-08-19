@@ -57,6 +57,8 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return "Bodybuilder";
                 case CharacterID.TricksterComedian:
                     return "Comedian";
+                case CharacterID.TricksterConman:
+                    return "Conman";
                 case CharacterID.ObedientPreacher:
                     return "Preacher";
                 case CharacterID.ProjectorGrafitiartist:

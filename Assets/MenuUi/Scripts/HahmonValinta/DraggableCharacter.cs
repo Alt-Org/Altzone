@@ -10,9 +10,10 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class DraggableCharacter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class DraggableCharacter : MonoBehaviour, IGalleryCharacterData, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
@@ -36,7 +37,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField]
         private SwipeUI _swipe;
 
-        public CharacterID Id { get => _id; set => _id = value; }
+        public CharacterID Id { get => _id; }
 
         private void Start()
         {
@@ -57,7 +58,7 @@ namespace MenuUi.Scripts.CharacterGallery
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
-            _spriteImage.raycastTarget = false;
+            _backgroundSpriteImage.raycastTarget = false;
             button.interactable = false;
 
             // Set the button colors to make the background transparent during dragging
@@ -66,6 +67,8 @@ namespace MenuUi.Scripts.CharacterGallery
             button.colors = transparentColors;
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
+
+            
 
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
@@ -81,10 +84,23 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (eventData.pointerEnter != null)
             {
-                CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
-                if (characterSlot != null)
+                DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
+                if (targetCharacter != null)
                 {
-                    droppedSlot = characterSlot.transform;
+                    // Check if targetCharacter's parent is tagged as "Topslot"
+                    if (targetCharacter.transform.parent.CompareTag("Topslot"))
+                    {
+                        droppedSlot = targetCharacter.transform.parent;
+                        droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
+                    }
+                }
+                else
+                {
+                    CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
+                    if (characterSlot != null)
+                    {
+                        droppedSlot = characterSlot.transform;
+                    }
                 }
             }
 
@@ -95,9 +111,18 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             else
             {
-                // Jos droppedSlot on Topslot, aseta hahmo siihen
+                // If droppedSlot is Topslot, find empty Topslot
                 if (droppedSlot.tag == "Topslot")
                 {
+                    DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
+                    if (topSlotCharacter != null)
+                    {
+                        // Move topSlotCharacter to it's initialSlot
+                        Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
+                        topSlotCharacter.transform.SetParent(topSlotInitialSlot);
+                        topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                    }
+
                     // Find the first empty topslot
                     Transform targetSlot = null;
                     foreach (var slot in _modelView._CurSelectedCharacterSlot)
@@ -117,9 +142,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
+
             }
 
-            _spriteImage.raycastTarget = true;
+            _backgroundSpriteImage.raycastTarget = true;
             button.interactable = true;
             button.colors = originalColors;
 
@@ -130,23 +156,30 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-
         private void HandleParentChange(Transform newParent)
         {
-            if (newParent == _modelView._CurSelectedCharacterSlot[0].transform)
+            // Go through each topslot
+            foreach (var slot in _modelView._CurSelectedCharacterSlot)
             {
-                OnParentChanged?.Invoke(newParent.transform);
+                // Check if newParent is one of the topslots
+                if (newParent == slot.transform)
+                {
+                    OnParentChanged?.Invoke(newParent);
+                }
             }
         }
 
-        public void SetInfo(Sprite sprite, string name, ModelView view)
+
+        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
         {
             _spriteImage.sprite = sprite;
-            _characterNameText.text = name;           
+            _characterNameText.text = name;
+            _id = id;
             _modelView = view;
         }
     }
 }
+
 
 
 

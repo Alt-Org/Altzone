@@ -14,33 +14,33 @@ namespace Battle.Scripts.Battle.Game
         [Tooltip("Middle area height in grid squares"), SerializeField] private int _middleAreaHeight;
         [Tooltip("How many squares is the brick wall height"), SerializeField] private int _brickHeight;
 
-        [Header("Wall Colliders")]
-        [SerializeField] private GameObject _topWall;
-        [SerializeField] private GameObject _bottomWall;
-        [SerializeField] private GameObject _rightWall;
-        [SerializeField] private GameObject _leftWall;
+        [Header("Arena Border")]
+        [SerializeField] private GameObject _arenaBorderTop;
+        [SerializeField] private GameObject _arenaBorderBottom;
+        [SerializeField] private GameObject _arenaBorderRight;
+        [SerializeField] private GameObject _arenaBorderLeft;
 
-        [SerializeField] private GameObject _alphaTeamBrickWall;
-        [SerializeField] private GameObject _betaTeamBrickWall;
+        [Header("Soul Walls")]
+        [SerializeField] private GameObject _soulWallTeamAlpha;
+        [SerializeField] private GameObject _soulWallTeamBeta;
+        public int soulWallSegmentHeahlt;
 
-        public int BrickHealth;
-
-        [Header("Player Start Positions"), SerializeField] private GridPos _startPositionAlpha1;
+        [Header("Player Start Positions")]
+        [SerializeField] private GridPos _startPositionAlpha1;
         [SerializeField] private GridPos _startPositionAlpha2;
         [SerializeField] private GridPos _startPositionBeta1;
         [SerializeField] private GridPos _startPositionBeta2;
 
-        [SerializeField] private GameObject[] _alphaTeamBricks;
-        [SerializeField] private GameObject[] _betaTeamBricks;
+        [SerializeField] private GameObject[] _soulWallTeamAlphaSegments;
+        [SerializeField] private GameObject[] _soulWallTeamBateSegments;
 
-        private BoxCollider2D _bottomWallCollider;
-        private BoxCollider2D _topWallCollider;
-        private BoxCollider2D _rightWallCollider;
-        private BoxCollider2D _leftWallCollider;
+        private BoxCollider2D _arenaBorderBottomCollider;
+        private BoxCollider2D _arenaBorderTopCollider;
+        private BoxCollider2D _arenaBorderRightCollider;
+        private BoxCollider2D _arenaBorderLeftCollider;
 
-
-        private const float BrickSpriteWidth = 2.35f;
-        private const int BricksPerWall = 5;
+        private const float SOUL_WALL_SEGMENT_SPRITE_WIDTH = 2.35f;
+        private const int SEGMENTS_PER_SOUL_WALL = 5;
 
         private Rect _playStartAreaAlpha;
         private Rect _playStartAreaBeta;
@@ -48,48 +48,48 @@ namespace Battle.Scripts.Battle.Game
         private void Awake()
         {
             SetupArenaBorders();
-            SetupBottomBrickWalls();
+            SetupSoulWalls();
 
-            var middleAreaHeight = _middleAreaHeight * _arenaHeight / _gridHeight;
-            var squareHeight = _arenaHeight / _gridHeight;
- 
+            float middleAreaHeight = _middleAreaHeight * _arenaHeight / _gridHeight;
+            float squareHeight = _arenaHeight / _gridHeight;
+
             _playStartAreaAlpha = new Rect(-_arenaWidth / 2, -_arenaHeight / 2 + squareHeight * _brickHeight, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - squareHeight * _brickHeight);
             _playStartAreaBeta = new Rect(-_arenaWidth / 2, middleAreaHeight / 2, _arenaWidth, _arenaHeight / 2 - middleAreaHeight / 2 - squareHeight * _brickHeight);
         }
 
         private void SetupArenaBorders()
         {
-            _topWallCollider = _topWall.GetComponent<BoxCollider2D>();
-            _bottomWallCollider = _bottomWall.GetComponent<BoxCollider2D>();
-            _rightWallCollider = _rightWall.GetComponent<BoxCollider2D>();
-            _leftWallCollider = _leftWall.GetComponent<BoxCollider2D>();
+            _arenaBorderTopCollider = _arenaBorderTop.GetComponent<BoxCollider2D>();
+            _arenaBorderBottomCollider = _arenaBorderBottom.GetComponent<BoxCollider2D>();
+            _arenaBorderRightCollider = _arenaBorderRight.GetComponent<BoxCollider2D>();
+            _arenaBorderLeftCollider = _arenaBorderLeft.GetComponent<BoxCollider2D>();
 
-            _topWallCollider.size = new Vector2(_arenaWidth, _arenaHeight);
-            _bottomWallCollider.size = new Vector2(_arenaWidth, _arenaHeight);
-            _rightWallCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
-            _leftWallCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
+            _arenaBorderTopCollider.size = new Vector2(_arenaWidth, _arenaHeight);
+            _arenaBorderBottomCollider.size = new Vector2(_arenaWidth, _arenaHeight);
+            _arenaBorderRightCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
+            _arenaBorderLeftCollider.size = new Vector2(_arenaWidth, _arenaHeight * 2);
 
-            _topWall.transform.position = new Vector2(0, _arenaHeight);
-            _bottomWall.transform.position = new Vector2(0, -_arenaHeight);
-            _rightWallCollider.transform.position = new Vector2(_arenaWidth, 0);
-            _leftWallCollider.transform.position = new Vector2(-_arenaWidth, 0);
+            _arenaBorderTop.transform.position = new Vector2(0, _arenaHeight);
+            _arenaBorderBottom.transform.position = new Vector2(0, -_arenaHeight);
+            _arenaBorderRightCollider.transform.position = new Vector2(_arenaWidth, 0);
+            _arenaBorderLeftCollider.transform.position = new Vector2(-_arenaWidth, 0);
         }
 
-        private void SetupBottomBrickWalls()
+        private void SetupSoulWalls()
         {
-            _alphaTeamBricks = new GameObject[BricksPerWall];
-            _betaTeamBricks = new GameObject[BricksPerWall];
+            _soulWallTeamAlphaSegments = new GameObject[SEGMENTS_PER_SOUL_WALL];
+            _soulWallTeamBateSegments = new GameObject[SEGMENTS_PER_SOUL_WALL];
 
-            for (int i = 0; i < BricksPerWall; i++)
+            for (int i = 0; i < SEGMENTS_PER_SOUL_WALL; i++)
             {
-                _alphaTeamBricks[i] = _alphaTeamBrickWall.transform.GetChild(i).gameObject;
-                _betaTeamBricks[i] = _betaTeamBrickWall.transform.GetChild(i).gameObject;
-                _alphaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
-                _betaTeamBricks[i].GetComponent<SpriteRenderer>().size = new Vector2(BrickSpriteWidth, _brickHeight * _arenaHeight / _gridHeight);
-                _alphaTeamBricks[i].transform.position = new Vector2(_alphaTeamBricks[i].transform.position.x, -_arenaHeight / 2 + (_arenaHeight / _gridHeight));
-                _betaTeamBricks[i].transform.position = new Vector2(_betaTeamBricks[i].transform.position.x, _arenaHeight / 2 - (_arenaHeight / _gridHeight));
-                _alphaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
-                _betaTeamBricks[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / BricksPerWall, _brickHeight * _arenaHeight / _gridHeight);
+                _soulWallTeamAlphaSegments[i] = _soulWallTeamAlpha.transform.GetChild(i).gameObject;
+                _soulWallTeamBateSegments[i] = _soulWallTeamBeta.transform.GetChild(i).gameObject;
+                _soulWallTeamAlphaSegments[i].GetComponent<SpriteRenderer>().size = new Vector2(SOUL_WALL_SEGMENT_SPRITE_WIDTH, _brickHeight * _arenaHeight / _gridHeight);
+                _soulWallTeamBateSegments[i].GetComponent<SpriteRenderer>().size = new Vector2(SOUL_WALL_SEGMENT_SPRITE_WIDTH, _brickHeight * _arenaHeight / _gridHeight);
+                _soulWallTeamAlphaSegments[i].transform.position = new Vector2(_soulWallTeamAlphaSegments[i].transform.position.x, -_arenaHeight / 2 + (_arenaHeight / _gridHeight));
+                _soulWallTeamBateSegments[i].transform.position = new Vector2(_soulWallTeamBateSegments[i].transform.position.x, _arenaHeight / 2 - (_arenaHeight / _gridHeight));
+                _soulWallTeamAlphaSegments[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / SEGMENTS_PER_SOUL_WALL, _brickHeight * _arenaHeight / _gridHeight);
+                _soulWallTeamBateSegments[i].GetComponent<BoxCollider2D>().size = new Vector2(_arenaWidth / SEGMENTS_PER_SOUL_WALL, _brickHeight * _arenaHeight / _gridHeight);
             }
         }
 
@@ -102,41 +102,25 @@ namespace Battle.Scripts.Battle.Game
 
         internal Rect GetPlayerPlayArea(int teamNumber)
         {
-            Rect playArea;
-            switch (teamNumber)
+            Rect playArea = teamNumber switch
             {
-                case PhotonBattle.TeamAlphaValue:
-                    playArea = _playStartAreaAlpha;
-                    break;
-                case PhotonBattle.TeamBetaValue:
-                    playArea = _playStartAreaBeta;
-                    break;
-                default:
-                    throw new UnityException($"Invalid Team Number {teamNumber}");
-            }
+                PhotonBattle.TeamAlphaValue => _playStartAreaAlpha,
+                PhotonBattle.TeamBetaValue => _playStartAreaBeta,
+                _ => throw new UnityException($"Invalid Team Number {teamNumber}"),
+            };
             return playArea;
         }
 
         internal GridPos GetPlayerStartPosition(int playerPos)
         {
-            GridPos startPosition;
-            switch (playerPos)
+            GridPos startPosition = playerPos switch
             {
-                case PhotonBattle.PlayerPosition1:
-                    startPosition = _startPositionAlpha1;
-                    break;
-                case PhotonBattle.PlayerPosition2:
-                    startPosition = _startPositionAlpha2;
-                    break;
-                case PhotonBattle.PlayerPosition3:
-                    startPosition = _startPositionBeta1;
-                    break;
-                case PhotonBattle.PlayerPosition4:
-                    startPosition = _startPositionBeta2;
-                    break;
-                default:
-                    throw new UnityException($"Invalid player position {playerPos}");
-            }
+                PhotonBattle.PlayerPosition1 => _startPositionAlpha1,
+                PhotonBattle.PlayerPosition2 => _startPositionAlpha2,
+                PhotonBattle.PlayerPosition3 => _startPositionBeta1,
+                PhotonBattle.PlayerPosition4 => _startPositionBeta2,
+                _ => throw new UnityException($"Invalid player position {playerPos}"),
+            };
             return startPosition;
         }
     }

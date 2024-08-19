@@ -1,3 +1,4 @@
+using System.Collections;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
@@ -11,10 +12,11 @@ namespace MenuUi.Scripts.Window
         [Header("Settings"), SerializeField] protected WindowDef _naviTarget;
         [Tooltip(Tooltip), SerializeField] protected bool _isCurrentPopOutWindow;
 
-        public void Navigate()
+        public IEnumerator Navigate()
         {
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", _naviTarget);
             var windowManager = WindowManager.Get();
+            yield return new WaitUntil(() => windowManager.ExecutionLevel == 0);
             if (_isCurrentPopOutWindow)
             {
                 windowManager.PopCurrentWindow();
@@ -27,13 +29,13 @@ namespace MenuUi.Scripts.Window
                 if (targetIndex == 1)
                 {
                     windowManager.GoBack();
-                    return;
+                    yield break;
                 }
                 if (targetIndex > 1)
                 {
                     windowManager.Unwind(_naviTarget);
                     windowManager.GoBack();
-                    return;
+                    yield break;
                 }
             }
             windowManager.ShowWindow(_naviTarget);

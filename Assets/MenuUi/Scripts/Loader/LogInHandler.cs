@@ -21,20 +21,6 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private WindowNavigation _introStoryNavigation;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            /*ServerManager.OnLogInFailed += OpenLogInScreen;
-            ServerManager.OnLogInStatusChanged += MoveToMain;
-            CheckPrivacy();*/
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void OnEnable()
         {
             ServerManager.OnLogInFailed += OpenLogInScreen;
@@ -53,7 +39,7 @@ namespace MenuUi.Scripts.Loader
         private void CheckPrivacy()
         {
             if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
-                _privacyNavigation.Navigate();
+                StartCoroutine(_privacyNavigation.Navigate());
             else
             {
                 AttemptLogIn();
@@ -83,10 +69,10 @@ namespace MenuUi.Scripts.Loader
                 PlayerData playerData = null;
                 Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
 
-                if (playerData.SelectedCharacterId == 0)
-                    _introStoryNavigation.Navigate();
+                if ((playerData.SelectedCharacterId == 0 ) || (playerData.SelectedCharacterId == 1))
+                    StartCoroutine(_introStoryNavigation.Navigate());
                 else
-                    _mainMenuNavigation.Navigate();
+                    StartCoroutine(_mainMenuNavigation.Navigate());
             }
         }
     }

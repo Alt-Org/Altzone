@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 1
-  _explotion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
+  _explosion: {fileID: 7947548274850010165, guid: 2f99c642b5265884491b81a36f54a5f7,
     type: 3}
   _sprites:
   - {fileID: 21300000, guid: f2b83a7b2c6a52841b77a42cc7d37037, type: 3}
@@ -325,6 +325,7 @@ MonoBehaviour:
   _sparkleUpdateInterval: 0.4
   _timeSinceLastUpdate: 0
   _sparkleSprite: {fileID: 4837573095670983739}
+  _diamondSpawner: {fileID: 0}
 --- !u!114 &8473052537036719184
 MonoBehaviour:
   m_ObjectHideFlags: 0

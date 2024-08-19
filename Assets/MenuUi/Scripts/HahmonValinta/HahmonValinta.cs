@@ -12,12 +12,12 @@ using Altzone.Scripts.Model.Poco.Game;
 [System.Serializable]
 public class CharacterData
 {
-    public int uniqueID;
+    public CharacterID uniqueID;
     public string characterName;
 
     public CharacterData(int id, string name)
     {
-        uniqueID = id;
+        uniqueID = (CharacterID)id;
         characterName = name;
     }
 }
@@ -92,9 +92,10 @@ public class HahmonValinta : MonoBehaviour
             // Log the selected character's information
             Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if (characterData[selectedCharacterIndex].uniqueID != _playerData.SelectedCharacterId)
+            if ((int)characterData[selectedCharacterIndex].uniqueID != _playerData.SelectedCharacterId)
             {
-                _playerData.SelectedCharacterId = characterData[selectedCharacterIndex].uniqueID;
+                _playerData.SelectedCharacterId = (int)characterData[selectedCharacterIndex].uniqueID;
+                _playerData.SelectedCharacterIds[0] = (int)characterData[selectedCharacterIndex].uniqueID;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }

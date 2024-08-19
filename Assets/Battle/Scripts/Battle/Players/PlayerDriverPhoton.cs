@@ -191,6 +191,7 @@ namespace Battle.Scripts.Battle.Players
                 PhotonBattle.GetPlayerCharacterId(player) :
                 _playerCharacterID;
 
+            Debug.Log(string.Format("Selected player {0}, {1}", playerCharacterId, CustomCharacter.GetCharacterClassAndName(playerCharacterId)));
             PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerCharacterId, playerTag, _arenaScaleFactor);
             return playerActor;
         }

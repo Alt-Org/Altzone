@@ -79,7 +79,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private const string ERROR_CREATING_CHAT_TO_SERVER = "Chattia ei pystytty luomaan palvelimelle!";
     private const string ERROR_RETRIEVING_CHAT_FROM_SERVER = "Chattia ei pystytty ladata palvelimelta!";
-    private const string ERROR_POSTING_MESSAGE_TO_SERVER = "Viestiä ei pystytty tallentamaan serverille!";
+    private const string ERROR_POSTING_MESSAGE_TO_SERVER = "ViestiÃ¤ ei pystytty tallentamaan serverille!";
 
     private void Awake()
     {
@@ -152,7 +152,10 @@ public class ChatListener : MonoBehaviour, IChatClientListener
         var store = Storefront.Get();
         PlayerData playerData = null;
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+        if (playerData != null)
         _username = playerData.Name;
+        else
+        _username = PlayerPrefs.GetString("ChatUsername", "TestUser-" + UnityEngine.Random.Range(0, 10000));
     }
 
     private void OnClanChanged(ServerClan clan)
@@ -317,7 +320,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
             if (request.result != UnityWebRequest.Result.Success)
             {
                 //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channelName + "\n" + request.error);
-
+                Debug.LogWarning("Failed to get chat from server");
                 if (callbackOnFinish != null)
                     callbackOnFinish(null);
             }

@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.Login
             else if (SceneManager.GetActiveScene().buildIndex == 2)
             {
                 StartCoroutine(ServerManager.Instance.LogIn());
-                _navigation.Navigate();
+                StartCoroutine(_navigation.Navigate());
             }
         }
     }

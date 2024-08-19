@@ -12,6 +12,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         [SerializeField] private GameObject _roomButtonPrefab;
         [SerializeField] private Transform _buttonParent;
+        [SerializeField] private bool _oldDesign;
+        private int _listPos = 0;
 
         public Action RoomButtonOnClick
         {
@@ -25,16 +27,28 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void UpdateStatus(List<RoomInfo> rooms, Action<string> onJoinRoom)
         {
+            int lastPos = CheckListPosition(rooms);
+
             // Synchronize button count with room count.
-            int roomsCount = rooms.Count;
-            int slotCount = _buttonParent.childCount;
-            for (int i = 0; i < slotCount; ++i)
+            if (!_oldDesign)
             {
-                if (roomsCount <= i) break;
-                Transform buttonslot = _buttonParent.GetChild(i);
-                if (_buttonParent.GetChild(i).childCount == 0)
+                int roomsCount = rooms.Count;
+                int slotCount = _buttonParent.childCount;
+                for (int i = _listPos; i <= lastPos; ++i)
                 {
-                    AddButton(_buttonParent.GetChild(i), _roomButtonPrefab);
+                    if (roomsCount <= i) break;
+                    Transform buttonslot = _buttonParent.GetChild(i - _listPos);
+                    if (buttonslot.childCount == 0)
+                    {
+                        AddButton(buttonslot, _roomButtonPrefab);
+                    }
+                }
+            }
+            else
+            {
+                while (_buttonParent.childCount < rooms.Count)
+                {
+                    AddButton(_buttonParent, _roomButtonPrefab);
                 }
             }
             // Update button captions
@@ -43,8 +57,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var room = rooms[i];
                 var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
-                var button = buttonObject.GetComponent<Button>();
-                UpdateButton(button, room, onJoinRoom);
+                //var button = buttonObject.GetComponent<Button>();
+                UpdateButton(buttonObject, room, onJoinRoom);
             }
             // Hide extra lines
             if (_buttonParent.childCount > rooms.Count)
@@ -66,8 +80,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
             instance.SetActive(true);
         }
 
-        private void UpdateButton(Button button, RoomInfo room, Action<string> onJoinRoom)
+        private void UpdateButton(GameObject buttonObject, RoomInfo room, Action<string> onJoinRoom)
         {
+            Button button;
+            if (_oldDesign)
+            button = buttonObject.GetComponent<Button>();
+            else
+            {
+                button = buttonObject.transform.Find("Button").GetComponent<Button>();
+            }
+
             var roomText = $"{room.Name}";
             if (roomText.Length > 21)
             {
@@ -75,12 +97,12 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
             if (room.IsOpen)
             {
-                roomText += $" ({room.PlayerCount} in room)";
+                roomText += $" ({room.PlayerCount}/4 in room)";
                 roomText = $"<color=blue>{roomText}</color>";
             }
             else
             {
-                roomText += $" ({room.PlayerCount} playing)";
+                roomText += $" ({room.PlayerCount}/4 playing)";
                 roomText = $"<color=brown>{roomText}</color>";
             }
             var text = button.GetComponentInChildren<TextMeshProUGUI>();
@@ -99,9 +121,26 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var childCount = parent.childCount;
             for (var i = childCount - 1; i >= 0; --i)
             {
-                var child = parent.GetChild(i).GetChild(0).gameObject;
+                var child = parent.GetChild(i).gameObject;
+                if (child.GetComponent<Button>() == null) child = child.transform.GetChild(0).gameObject;
                 Destroy(child);
             }
+        }
+
+        private int CheckListPosition(List<RoomInfo> rooms)
+        {
+            int lastPos;
+            if (_listPos + 3 <= rooms.Count)
+            {
+                lastPos = _listPos + 2;
+            }
+            else
+            {
+                _listPos = rooms.Count - 3;
+                if (_listPos < 0) _listPos = 0;
+                lastPos = rooms.Count - 1;
+            }
+            return lastPos;
         }
     }
 }

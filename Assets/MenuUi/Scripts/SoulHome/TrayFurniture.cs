@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
@@ -22,9 +23,9 @@ namespace MenuUI.Scripts.SoulHome
         void Start()
         {
             if (debugValue == 1)
-                Furniture = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, FurniturePlace.Floor, 10f, 15f, false);
+                Furniture = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f, false);
             else if(debugValue == 2)
-                Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, FurniturePlace.Floor, 10f, 15f, false);
+                Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f, false);
         }
 
         // Update is called once per frame

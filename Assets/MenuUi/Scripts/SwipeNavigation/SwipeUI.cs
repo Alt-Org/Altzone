@@ -194,7 +194,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 else currentTouch = Mouse.current.position.ReadValue();
 
                 float minSwipeAllowed = Screen.width * (5f / 100f);
-                Debug.Log(Time.time + ", min: " + minSwipeAllowed + ", current: " + (_startTouch.x - currentTouch.x));
+                //Debug.Log(Time.time + ", min: " + minSwipeAllowed + ", current: " + (_startTouch.x - currentTouch.x));
                 if (Mathf.Abs(_startTouch.x - currentTouch.x) > minSwipeAllowed)
                 {
                     _swipeAllowed = true;
@@ -230,7 +230,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             if (isSwipeMode)
                 return;
-            Debug.Log("Value: " + Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  " + ((1f / scrollPageValues.Length) * (20f / 100f)));
+            //Debug.Log("Value: " + Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  " + ((1f / scrollPageValues.Length) * (20f / 100f)));
             // Checks that the swipe was long enough
             if ((Mathf.Abs(_startTouch.x - _endTouch.x) < swipeDistance || Mathf.Abs(_startTouch.y - _endTouch.y) > swipeDistance) && Mathf.Abs(_startScrollvalue - scrollBar.value) < ((1f / scrollPageValues.Length) * (20f / 100f)))
             {

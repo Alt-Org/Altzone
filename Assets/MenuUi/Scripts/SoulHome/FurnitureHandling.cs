@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Debug = Prg.Debug;
 
@@ -158,12 +159,12 @@ namespace MenuUI.Scripts.SoulHome
                 //if(_tempSlot != null)width = _tempSlot.width;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
             }
-            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo)
+            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo or FurnitureSize.ThreeXTwo)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 2;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (furnitureSize is FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree)
+            else if (furnitureSize is FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.SevenXThree)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 3;
                 /*else*/
@@ -179,6 +180,12 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
                 width = transform.parent.GetComponent<FurnitureSlot>().width * 6;
+            }
+            else if (furnitureSize is FurnitureSize.TwoXEight or FurnitureSize.ThreeXEight)
+            {
+                //if (_tempSlot != null) width = _tempSlot.width * 4;
+                /*else*/
+                width = transform.parent.GetComponent<FurnitureSlot>().width * 8;
             }
             else
             {

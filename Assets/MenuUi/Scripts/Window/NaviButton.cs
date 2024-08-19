@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.Window
 
         protected virtual void OnNaviButtonClick()
         {
-            Navigate();
+            StartCoroutine(Navigate());
         }
     }
 }

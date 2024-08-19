@@ -5,6 +5,34 @@ using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    public enum FurnitureSize
+    {
+        OneXOne,
+        OneXTwo,
+        OneXThree,
+        OneXFour,
+        OneXSix,
+        TwoXOne,
+        TwoXTwo,
+        TwoXThree,
+        TwoXFour,
+        TwoXSix,
+        TwoXEight,
+        ThreeXTwo,
+        ThreeXThree,
+        ThreeXEight,
+        SevenXThree
+    }
+
+    public enum FurniturePlacement
+    {
+        Floor,
+        FloorByWall,
+        Ceiling,
+        Wall
+
+    }
+
     /// <summary>
     /// Non-mutable <c>GameFurniture</c> for the game.
     /// </summary>
@@ -18,7 +46,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         [PrimaryKey] public string Id;
         [Unique] public string Name;
         [Mandatory] public string Shape;
+        public FurnitureSize Size;
+        public FurnitureSize RotatedSize;
+        public FurniturePlacement Placement;
         public double Weight;
+        public float Value;
         [Mandatory] public string Material;
         [Mandatory] public string Recycling;
 
@@ -29,20 +61,24 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public string Filename;
 
-        public GameFurniture(string id, string name, string shape, double weight, string material, string recycling, string unityKey, string filename)
+        public GameFurniture(string id, string name, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(name.IsMandatory());
-            Assert.IsTrue(shape.IsMandatory());
+            //Assert.IsTrue(shape.IsMandatory());
             Assert.IsTrue(weight >= 0);
-            Assert.IsTrue(material.IsMandatory());
-            Assert.IsTrue(recycling.IsMandatory());
+            //Assert.IsTrue(material.IsMandatory());
+            //Assert.IsTrue(recycling.IsMandatory());
             Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(filename.IsNullOEmptyOrNonWhiteSpace());
             Id = id;
             Name = name;
             Shape = shape;
+            Size = size;
+            RotatedSize = rotatedSize;
+            Placement = placementType;
             Weight = weight;
+            Value = value;
             Material = material;
             Recycling = recycling;
             UnityKey = unityKey ?? string.Empty;

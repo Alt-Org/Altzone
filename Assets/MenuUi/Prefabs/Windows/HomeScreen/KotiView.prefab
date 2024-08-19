@@ -725,6 +725,7 @@ MonoBehaviour:
   _naviTarget: {fileID: 11400000, guid: 8151caf92238d6644aa92862f28aa15d, type: 2}
   _isCurrentPopOutWindow: 0
   _popup: {fileID: 0}
+  _ignoreClanStatus: 1
 --- !u!1001 &1695485140809395139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1108,6 +1109,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5628797262794463581, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5725124495499325070, guid: 3adab15f1251cb74bad4e53a3d5f9746,
         type: 3}
       propertyPath: m_fontSize
@@ -1117,6 +1123,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 7003425315457001312, guid: 3adab15f1251cb74bad4e53a3d5f9746,
+        type: 3}
+      propertyPath: _isCurrentPopOutWindow
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8814020343608223576, guid: 3adab15f1251cb74bad4e53a3d5f9746,
         type: 3}

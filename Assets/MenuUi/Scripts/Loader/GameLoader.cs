@@ -45,13 +45,13 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-            SignalBus.OnVideoEnd += OpenLogIn;
+            SignalBus.OnVideoEnd += LoadHandler;
             EnhancedTouchSupport.Enable();
         }
 
         private void OnDisable()
         {
-            SignalBus.OnVideoEnd -= OpenLogIn;
+            SignalBus.OnVideoEnd -= LoadHandler;
         }
 
         private void Update()
@@ -62,25 +62,38 @@ namespace MenuUi.Scripts.Loader
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)
-                        OpenLogIn();
+                        LoadHandler();
                     else
                     {
                         _videoPlaying = true;
-                        _introVideo.Navigate();
+                        StartCoroutine(_introVideo.Navigate());
                     }
                 }
                 else
                 {
-                    OpenLogIn();
+                    LoadHandler();
                 }
             }
         }
 
-        public void OpenLogIn()
+        private void LoadHandler()
         {
             _videoEnded = true;
             _videoPlaying = false;
-            GetComponent<WindowNavigation>().Navigate();
+            StartCoroutine(InitializeDataStore());
+            //OpenLogIn();
+        }
+
+        public IEnumerator InitializeDataStore()
+        {
+            yield return new WaitUntil(() => Storefront.Get() != null);
+            Debug.Log("Datastore initialized");
+            OpenLogIn();
+        }
+
+        public void OpenLogIn()
+        {
+            StartCoroutine(GetComponent<WindowNavigation>().Navigate());
             /*var windowManager = WindowManager.Get();
             Debug.Log($"show {_mainWindow}");
 
@@ -91,15 +104,15 @@ namespace MenuUi.Scripts.Loader
             PlayerData _playerData = null;
             store.GetPlayerData(playerGuid, playerData =>
             {
-                _playerData = playerData;
+            _playerData = playerData;
             });
 
             if (PlayerPrefs.GetInt("PrivacyPolicy") == 0)
-                windowManager.ShowWindow(_privacyPolicyWindow);
+            windowManager.ShowWindow(_privacyPolicyWindow);
             else if (PlayerPrefs.GetInt("hasSelectedCharacter") == 0 || _playerData == null || _playerData.SelectedCharacterIds[0] < 0)
-                windowManager.ShowWindow(_introSceneWindow);
+            windowManager.ShowWindow(_introSceneWindow);
             else
-                windowManager.ShowWindow(_mainWindow);
+            windowManager.ShowWindow(_mainWindow);
             Debug.Log("exit");*/
         }
 

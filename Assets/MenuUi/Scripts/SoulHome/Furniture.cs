@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public enum FurnitureSize
+    /*public enum FurnitureSize
     {
         OneXOne,
         OneXTwo,
@@ -17,7 +19,10 @@ namespace MenuUI.Scripts.SoulHome
         TwoXThree,
         TwoXFour,
         TwoXSix,
-        ThreeXThree
+        TwoXEight,
+        ThreeXThree,
+        ThreeXEight,
+        SevenXThree
     }
 
     public enum FurniturePlace
@@ -27,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         Ceiling,
         Wall
 
-    }
+    }*/
 
     [Serializable]
     public class Furniture
@@ -56,11 +61,11 @@ namespace MenuUI.Scripts.SoulHome
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public FurniturePlace Place;
-        public float Weight;
+        public FurniturePlacement Place;
+        public double Weight;
         public float Value;
 
-        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlace Place, float Value, float Weight, bool IsRotated, int Room = -1)
+        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
             this.Id = Id;
             this.Name = Name;
@@ -72,6 +77,21 @@ namespace MenuUI.Scripts.SoulHome
             this.Value = Value;
             this.Weight = Weight;
             this.IsRotated = IsRotated;
+
+        }
+
+        public Furniture(ClanFurniture clanFurniture, GameFurniture gameFurniture/*, FurnitureInfo info*/)
+        {
+            Id = int.Parse(clanFurniture.Id);
+            Name = clanFurniture.GameFurnitureName;
+            Position = clanFurniture.Position;
+            Room = clanFurniture.Room;
+            Size = gameFurniture.Size;
+            RotatedSize = gameFurniture.RotatedSize;
+            Place = gameFurniture.Placement;
+            Value = gameFurniture.Value;
+            Weight = gameFurniture.Weight;
+            IsRotated = clanFurniture.IsRotated;
 
         }
 
@@ -147,9 +167,25 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(6, 2);
             }
+            else if (furnitureSize == FurnitureSize.TwoXEight)
+            {
+                return new Vector2Int(8, 2);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXTwo)
+            {
+                return new Vector2Int(2, 3);
+            }
             else if (furnitureSize == FurnitureSize.ThreeXThree)
             {
                 return new Vector2Int(3, 3);
+            }
+            else if (furnitureSize == FurnitureSize.ThreeXEight)
+            {
+                return new Vector2Int(8, 3);
+            }
+            else if (furnitureSize == FurnitureSize.SevenXThree)
+            {
+                return new Vector2Int(3, 7);
             }
             else
             {

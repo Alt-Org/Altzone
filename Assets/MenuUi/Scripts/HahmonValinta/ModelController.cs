@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _playerData = playerData;
                 _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
-                var currentCharacterId = (CharacterID)playerData.SelectedCharacterIds[0];
+                var currentCharacterId = playerData.SelectedCharacterIds;
                 var characters = playerData.BattleCharacters.ToList();
                 characters.Sort((a, b) => a.CustomCharacterId.CompareTo(b.CustomCharacterId));
                 // Set characters in the ModelView
@@ -43,9 +43,9 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId)
         {
-            if (_view.CurrentCharacterId != (CharacterID)_playerData.SelectedCharacterId)
+            if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[0])
             {
-                _playerData.SelectedCharacterIds[0] = (int)_view.CurrentCharacterId;
+                _playerData.SelectedCharacterIds[0] = (int)newCharacterId;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }

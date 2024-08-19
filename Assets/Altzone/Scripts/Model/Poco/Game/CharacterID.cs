@@ -9,6 +9,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         // Tricksters class characters
         TricksterComedian = CharacterClassID.Trickster | 1,
+        TricksterConman = CharacterClassID.Trickster | 2,
 
         // Obedientes class characters
         ObedientPreacher = CharacterClassID.Obedient | 1,

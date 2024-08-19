@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace MenuUi.Scripts.Login
 {
@@ -29,21 +30,22 @@ namespace MenuUi.Scripts.Login
         [Header("Buttons")]
         [SerializeField] private Button logInButton;
         [SerializeField] private Button registerButton;
+        [SerializeField] private Button backButton;
 
 
         [Header("Navigation Buttons")]
         [SerializeField] private Button returnToMainMenuButton;
         [SerializeField] private Button returnToLogInScreenButton;
 
-        private const string REGISTERING_SUCCESS = "Rekister�inti onnistui!";
+        private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
         private const string ERROR_DEFAULT = "Jotain meni pieleen!";
-        private const string ERROR_EMPTY_FIELD = "Kent�t eiv�t voi olla tyhji�!";
-        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eiv�t t�sm��!";
-        private const string ERROR_USERNAME_TOO_SHORT = "K�ytt�j�nimen t�ytyy olla v�hint��n 3 merkki� pitk�!";
-        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan t�ytyy olla v�hint��n 5 merkki� pitk�!";
+        private const string ERROR_EMPTY_FIELD = "Kentät eivät voi olla tyhjiä!";
+        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
+        private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
+        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
         private const string ERROR400 = "Validointivirhe!";
-        private const string ERROR401 = "Virheellinen k�ytt�j�nimi tai salasana!";
-        private const string ERROR409 = "K�ytt�j�tili on jo olemassa!";
+        private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
+        private const string ERROR409 = "Käyttäjätili on jo olemassa!";
         private const string ERROR500 = "Serverivirhe!";
 
         private void OnEnable()
@@ -51,6 +53,14 @@ namespace MenuUi.Scripts.Login
             Reset();
             signInWindow.SetActive(true);
             registerWindow.SetActive(false);
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                backButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                backButton.gameObject.SetActive(true);
+            }
         }
 
         public void Reset()
@@ -69,18 +79,25 @@ namespace MenuUi.Scripts.Login
         /// <summary>
         /// Logs the user in.
         /// </summary>
-        public void LogIn()
+        public void LogIn(bool guest)
         {
-            ClearMessage();
-
-            if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
+            string body = "";
+            if (guest)
             {
-                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                return;
+                body = "{\"username\":\"guest_main\",\"password\":\"T%K@l0Fl_]idy7:twmoDf51_*Qw$)Qkx\"}";
             }
+            else
+            {
+                ClearMessage();
 
-            string body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
+                if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
+                {
+                    ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                    return;
+                }
 
+                body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
+            }
             StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "auth/signIn", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
@@ -112,9 +129,8 @@ namespace MenuUi.Scripts.Login
                 Debug.Log("Log in successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     Debug.Log(request.downloadHandler.text);
-                    returnToMainMenuButton.onClick.Invoke();
-
                     ServerManager.Instance.SetProfileValues(result);
+                    returnToMainMenuButton.onClick.Invoke();
                 }
 
                 logInButton.interactable = true;
