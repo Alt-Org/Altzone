@@ -3,23 +3,61 @@ using UnityEngine;
 public class PopupWindowScript : MonoBehaviour
 {
     // Muuttuja sen taskin id:n tallentamiseksi, jota tämä popup-ikkuna hallinnoi
-    public int associatedTaskId;
+    public int[] associatedTaskIds;
     public Leaderboard leaderboard;
+    public GameObject popupScreen;
+    public GameObject dailyTaskPrefab;
+
+    private void Start()
+    {
+        CreateTaskFromId();
+    }
+    public void CreateTaskFromId()
+    {
+        Debug.Log("Luodaan tehtäviä id:istä");
+
+        foreach (int taskID in associatedTaskIds)
+        {
+            // Ensure the prefab is assigned
+            if (dailyTaskPrefab == null)
+            {
+                Debug.LogError("daily Prefab Puuttuu!");
+                return;
+            }
+
+            // Instantiate the task object
+            GameObject taskObject = Instantiate(dailyTaskPrefab.gameObject, gameObject.transform);
+
+            // Ensure the DailyQuest component exists on the prefab
+            DailyQuest dailyQuestComponent = taskObject.GetComponent<DailyQuest>();
+            Debug.Log(dailyQuestComponent);
+            if (dailyQuestComponent == null)
+            {
+                Debug.LogError("dailytaskista puuttuu componentti!");
+                return;
+            }
+
+            // Initialize the task with its ID
+            dailyQuestComponent.InitializeTask(taskID);
+            Debug.Log("Task created with ID: " + taskID);
+        }
+    }
+
 
     // Metodi avaa popup-ikkunan
     public void OpenPopupWindow()
     {
         // Tarkista, onko taskin id asetettu
-        if (associatedTaskId <= 0)
-        {
-            Debug.LogWarning("Popup window opening failed: Task id is not set.");
-            return;
-        }
+        //if (associatedTaskIds <= 0)
+        //{
+        //    Debug.LogWarning("Popup window opening failed: Task id is not set.");
+        //    return;
+        //}
 
-        // Tässä voisi olla koodi popup-ikkunan avaamiseksi
-        Debug.Log("Popup window opened for task: " + associatedTaskId);
+        // Tässä on koodi popup-ikkunan avaamiseksi joka on määritetty muuttujissa
+        //Debug.Log("Popup window opened for task: " + associatedTaskId);
+        popupScreen.SetActive(true);
 
-        TaskCompleted();
     }
 
     // Metodi sulkee popup-ikkunan
@@ -27,6 +65,14 @@ public class PopupWindowScript : MonoBehaviour
     {
         // Tössä voisi olla koodi popup-ikkunan sulkemiseksi
         Debug.Log("Popup window closed");
+        popupScreen.SetActive(false);
+    }
+
+    // Metodi kun pelaaja hyväksyy popup ikkunan
+    public void AcceptPopupWindow()
+    {
+        Debug.Log("Daily mission accepted, Popup window now closes");
+        popupScreen.SetActive(false);
     }
 
     // Metodi asettaa sen taskin id:n, jota tämä popup-ikkuna hallinnoi
@@ -40,15 +86,15 @@ public class PopupWindowScript : MonoBehaviour
         }
 
         // Aseta taskin id
-        associatedTaskId = taskId;
-        Debug.Log("Popup window set for task id: " + associatedTaskId);
+        //associatedTaskId = taskId;
+        //Debug.Log("Popup window set for task id: " + associatedTaskId);
     }
 
     // Metodi nollaa sen taskin id:n, jota tämä popup-ikkuna hallinnoi
     public void ResetAssociatedTaskId()
     {
         // Nollaa taskin id
-        associatedTaskId = 0;
+        //associatedTaskId = 0;
         Debug.Log("Popup window task id reset");
     }
 
@@ -56,8 +102,8 @@ public class PopupWindowScript : MonoBehaviour
     {
         if (leaderboard != null)
         {
-            int pointsForTask = CalculatePointsForTask(associatedTaskId);
-            leaderboard.AddScore(pointsForTask);
+            //int pointsForTask = CalculatePointsForTask(associatedTaskId);
+            //leaderboard.AddScore(pointsForTask);
         }
     }
 
