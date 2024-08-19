@@ -115,6 +115,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             _endTouch = Vector2.zero;
             CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
             StartCoroutine(SetScrollBarValue(CurrentPage));
+            isSwipeMode = false;
         }
         private void Update()
         {
