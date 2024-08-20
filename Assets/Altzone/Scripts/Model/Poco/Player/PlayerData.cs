@@ -58,6 +58,39 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = uniqueIdentifier;
         }
 
+        public void UpdateCustomCharacter(CustomCharacter character)
+        {
+            if (character == null) return;
+            if (character.Speed != 0)
+            {
+                Debug.LogError($"Speed has been modified. Setting to 0.");
+                character.Speed = 0;
+            }
+            int statCheck = 0;
+            statCheck += character.Hp;
+            statCheck += character.Attack;
+            statCheck += character.Defence;
+            statCheck += character.Resistance;
+            if(statCheck <= 100)
+            {
+                Debug.LogError($"Invalid total stat increases: {statCheck}, too high.");
+                return;
+            }
+
+            int i = 0;
+            foreach (var item in CustomCharacters)
+            {
+                if (item.Id != character.Id)
+                {
+                    i++;
+                    continue;
+                }
+
+                CustomCharacters[i] = character;
+                break;
+            }
+        }
+
         internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
         {
             BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
