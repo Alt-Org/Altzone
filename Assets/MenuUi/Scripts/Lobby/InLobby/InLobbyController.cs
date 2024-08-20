@@ -18,10 +18,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void Awake()
         {
-            _view.CharacterButtonOnClick = CharacterButtonOnClick;
-            _view.RoomButtonOnClick = RoomButtonOnClick;
-            _view.RaidButtonOnClick = RaidButtonOnClick;
-            _view.QuickGameButtonOnClick = QuickGameButtonOnClick;
+            //_view.CharacterButtonOnClick = CharacterButtonOnClick;
+            //_view.RoomButtonOnClick = RoomButtonOnClick;
+            //_view.RaidButtonOnClick = RaidButtonOnClick;
+            //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
 
         public override void OnEnable()
@@ -94,7 +94,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 return;
             }
             var playerCount = PhotonNetwork.CountOfPlayers;
-            _view.LobbyText = $"Players: {playerCount}, ping {_currentRegion} {PhotonNetwork.GetPing()} ms";
+            _view.LobbyText = $"Alue: {_currentRegion} : {PhotonNetwork.GetPing()} ms";
+            _view.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
         public override void OnDisconnected(DisconnectCause cause)

@@ -11,13 +11,14 @@ namespace MenuUI.Scripts.Lobby.InLobby
     public class LobbyRoomListingView : MonoBehaviour
     {
         [SerializeField] private GameObject _roomButtonPrefab;
+        [SerializeField] private Button _roomCreateButton;
         [SerializeField] private Transform _buttonParent;
         [SerializeField] private bool _oldDesign;
         private int _listPos = 0;
 
         public Action RoomButtonOnClick
         {
-            set { _roomButtonPrefab.GetComponentInChildren<Button>().onClick.AddListener(() => value()); }
+            set { _roomCreateButton.onClick.AddListener(() => value()); }
         }
 
         public void Reset()
@@ -40,7 +41,9 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     Transform buttonslot = _buttonParent.GetChild(i - _listPos);
                     if (buttonslot.childCount == 0)
                     {
-                        AddButton(buttonslot, _roomButtonPrefab);
+                        GameObject button = AddButton(buttonslot, _roomButtonPrefab);
+
+                        UpdateButton(button, rooms[i], onJoinRoom);
                     }
                 }
             }
@@ -74,10 +77,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }
 
-        private static void AddButton(Transform parent, GameObject template)
+        private static GameObject AddButton(Transform parent, GameObject template)
         {
             GameObject instance = Instantiate(template, parent);
             instance.SetActive(true);
+            return instance;
         }
 
         private void UpdateButton(GameObject buttonObject, RoomInfo room, Action<string> onJoinRoom)
@@ -89,25 +93,55 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 button = buttonObject.transform.Find("Button").GetComponent<Button>();
             }
-
-            var roomText = $"{room.Name}";
-            if (roomText.Length > 21)
+            if (_oldDesign)
             {
-                roomText = roomText.Substring(0, 20) + "…";
-            }
-            if (room.IsOpen)
-            {
-                roomText += $" ({room.PlayerCount}/4 in room)";
-                roomText = $"<color=blue>{roomText}</color>";
+                var roomText = $"{room.Name}";
+                if (roomText.Length > 21)
+                {
+                    roomText = roomText.Substring(0, 20) + "…";
+                }
+                if (room.IsOpen)
+                {
+                    roomText += $" ({room.PlayerCount}/4 in room)";
+                    roomText = $"<color=blue>{roomText}</color>";
+                }
+                else
+                {
+                    roomText += $" ({room.PlayerCount}/4 playing)";
+                    roomText = $"<color=brown>{roomText}</color>";
+                }
+                var text = button.GetComponentInChildren<TextMeshProUGUI>();
+                Debug.Log($"update '{text.text}' -> '{roomText}' for {room.GetDebugLabel()}");
+                text.text = roomText;
             }
             else
             {
-                roomText += $" ({room.PlayerCount}/4 playing)";
-                roomText = $"<color=brown>{roomText}</color>";
+                var roomText = $"{room.Name}";
+                string playerCountText;
+                if (roomText.Length > 21)
+                {
+                    roomText = roomText.Substring(0, 20) + "…";
+                }
+                if (room.IsOpen)
+                {
+                    playerCountText = $"Pelaajia {room.PlayerCount}/4";
+                    playerCountText = $"<color=blue>{playerCountText}</color>";
+                    button.GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
+                }
+                else
+                {
+                    playerCountText = $"Pelaajia {room.PlayerCount}/4";
+                    playerCountText = $"<color=brown>{playerCountText}</color>";
+                    button.GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
+                }
+                var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
+                Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");
+                roomNameText.text = roomText;
+                var playerCountLabel = buttonObject.transform.Find("InfoPanel").Find("Player count").GetComponent<TextMeshProUGUI>();
+                Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room.GetDebugLabel()}");
+                playerCountLabel.text = playerCountText;
             }
-            var text = button.GetComponentInChildren<TextMeshProUGUI>();
-            Debug.Log($"update '{text.text}' -> '{roomText}' for {room.GetDebugLabel()}");
-            text.text = roomText;
+
             button.onClick.RemoveAllListeners();
             button.interactable = room.IsOpen;
             if (room.IsOpen)
@@ -121,6 +155,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var childCount = parent.childCount;
             for (var i = childCount - 1; i >= 0; --i)
             {
+                if (parent.GetChild(i).childCount == 0)
+                {
+                    continue;
+                }
                 var child = parent.GetChild(i).gameObject;
                 if (child.GetComponent<Button>() == null) child = child.transform.GetChild(0).gameObject;
                 Destroy(child);
@@ -130,13 +168,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private int CheckListPosition(List<RoomInfo> rooms)
         {
             int lastPos;
-            if (_listPos + 3 <= rooms.Count)
+            if (_listPos + 4 <= rooms.Count)
             {
-                lastPos = _listPos + 2;
+                lastPos = _listPos + 3;
             }
             else
             {
-                _listPos = rooms.Count - 3;
+                _listPos = rooms.Count - 4;
                 if (_listPos < 0) _listPos = 0;
                 lastPos = rooms.Count - 1;
             }

@@ -33,7 +33,6 @@ RectTransform:
   m_Children:
   - {fileID: 2522924569819659775}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -57,7 +56,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -132,7 +133,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2522924569235590198}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -211,7 +211,6 @@ RectTransform:
   - {fileID: 2522924569201874207}
   - {fileID: 7823742888184133824}
   m_Father: {fileID: 2522924569819659775}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -302,7 +301,6 @@ RectTransform:
   m_Children:
   - {fileID: 2522924569235590198}
   m_Father: {fileID: 2522924569819659775}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -427,7 +425,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2522924568213974252}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
@@ -504,7 +501,6 @@ RectTransform:
   m_Children:
   - {fileID: 2522924567850044717}
   m_Father: {fileID: 2522924568871388019}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -546,7 +542,6 @@ RectTransform:
   - {fileID: 2522924568213974252}
   - {fileID: 2522924568871388019}
   m_Father: {fileID: 2522924567779390403}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -633,20 +628,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5017d80d2f08ad44fa43e576bbfa6cd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  horizontalDeadzone: 0
+  verticalDeadzone: 0
   scrollBar: {fileID: 2522924568871388016}
   buttons:
   - {fileID: 2911237465571812804}
   - {fileID: 6836189953017562017}
-  - {fileID: 4111798974595738681}
   - {fileID: 482978765616652146}
   - {fileID: 2154832255052557194}
+  battleButton: {fileID: 4111798974595738681}
   swipeTime: 0.1
   currentPage: 0
+  _startTouch: {x: 0, y: 0}
+  _endTouch: {x: 0, y: 0}
+  isEnabled: 0
 --- !u!1001 &1815098849126993303
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 2522924568213974252}
     m_Modifications:
     - target: {fileID: 1385407860947765791, guid: e41290d0959bdfe47b62024b1a7a3c44,
@@ -790,6 +791,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e41290d0959bdfe47b62024b1a7a3c44, type: 3}
 --- !u!114 &482978765616652146 stripped
 MonoBehaviour:
