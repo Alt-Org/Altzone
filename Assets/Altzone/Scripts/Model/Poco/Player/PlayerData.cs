@@ -63,7 +63,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (character == null) return;
             if (character.Speed != 0)
             {
-                Debug.LogError($"Speed has been modified. Setting to 0.");
+                Debug.LogWarning($"Speed has been modified. Setting to 0.");
                 character.Speed = 0;
             }
             int statCheck = 0;
@@ -78,7 +78,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
             int i = 0;
-            foreach (var item in CustomCharacters)
+            foreach (CustomCharacter item in CustomCharacters)
             {
                 if (item.Id != character.Id)
                 {
