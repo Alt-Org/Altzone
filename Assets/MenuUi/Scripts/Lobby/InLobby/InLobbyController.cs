@@ -44,6 +44,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
+        public override void OnDisable()
+        {
+            CloseWindow();
+        }
+
         private void UpdateTitle()
         {
             // Save region for later use because getting it is not cheap (b ut not very expensive either). 
@@ -106,6 +111,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 OnEnable();
             }
+        }
+
+        public void CloseWindow()
+        {
+            gameObject.SetActive(false);
         }
 
         private void CharacterButtonOnClick()
