@@ -65,10 +65,14 @@ namespace Battle.Scripts.Battle.Players
         private bool _teammateVacuumState = false;
         private int _teammateVacuumTimer;
 
+        //T‰m‰ on ylim‰‰r‰ist‰
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS CONFLUENT] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+
+
+        private BattleDebugLogger _battleDebugLogger;
 
 
         private void Start()
@@ -79,6 +83,12 @@ namespace Battle.Scripts.Battle.Players
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
 
             // debug
+
+            _battleDebugLogger = new BattleDebugLogger(this);
+
+            // debug test
+            _battleDebugLogger.LogInfo("test");
+
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
@@ -111,7 +121,9 @@ namespace Battle.Scripts.Battle.Players
             if (_teammateVacuumState == true && _teammateVacuumDuration > _teammateVacuumTimer)
             {
                 _teammateVacuumTimer++;
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "TeammateVacuumTimer is " + _teammateVacuumTimer, _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("TeammateVacuumTimer is {0}", _teammateVacuumTimer);
+
+                //{n} kertoo muuttujan indeksin
 
                 //_driver.ActorShieldTransform on oma sijainti
                 //_teammateTransform on kaverin sijainti
