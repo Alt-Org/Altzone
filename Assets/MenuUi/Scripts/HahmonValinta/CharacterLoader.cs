@@ -11,8 +11,8 @@ using System.Runtime.CompilerServices;
 public class CharacterLoader : MonoBehaviour
 {
     [SerializeField] private List<AvatarClassInfo> _avatarClassInfoList;
-    private Image _characterImage;
-    private Image _divanImage;
+    [SerializeField] private Image _characterImage;
+    [SerializeField] private Image _divanImage;
     private string _divanObjectName = "divaani";
     PlayerData _playerData = null;
 
