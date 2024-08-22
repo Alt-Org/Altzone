@@ -113,8 +113,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
             var store = Storefront.Get();
             store.GetPlayerData(playerGuid, playerData =>
             {
-                var battleCharacter = playerData.BattleCharacters;
-                Debug.Log($"{battleCharacter}");
+                var battleCharacter = playerData.CurrentBattleCharacters;
+                Debug.Log($"{battleCharacter[0]}");
                 int[] characterIds = new int[5];
                 float[] characterStats = new float[25];
                 for (int i = 0; i < 5; i++)

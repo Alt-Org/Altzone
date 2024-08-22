@@ -20,6 +20,9 @@ namespace Altzone.Scripts.Model.Poco.Player
         [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[5];
         [Unique] public string Name;
 
+        private List<CustomCharacter> _characterList;
+        private List<BattleCharacter> _battleCharacters;
+
         public int DiamondSpeed = 100;
         public int DiamondResistance = 100;
         public int DiamondAttack = 100;
@@ -40,6 +43,25 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == (CharacterID)SelectedCharacterIds[0]);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
+
+        public ReadOnlyCollection<BattleCharacter> CurrentBattleCharacters
+        {
+            get
+            {
+                List<BattleCharacter> list = new();
+                foreach (var id in SelectedCharacterIds)
+                {
+                    if (id == 0) continue;
+                    list.Add(BattleCharacters.FirstOrDefault(x => x.CustomCharacterId == (CharacterID)id));
+                }
+                while(list.Count < 5)
+                {
+                    list.Add(BattleCharacter.CreateEmpty());
+                }
+                return new ReadOnlyCollection<BattleCharacter>(list);
+            }
+
+        }
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
@@ -78,7 +100,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
             int i = 0;
-            foreach (CustomCharacter item in CustomCharacters)
+            foreach (CustomCharacter item in _characterList)
             {
                 if (item.Id != character.Id)
                 {
@@ -86,15 +108,62 @@ namespace Altzone.Scripts.Model.Poco.Player
                     continue;
                 }
 
-                CustomCharacters[i] = character;
+                _characterList[i] = character;
                 break;
             }
+            Patch(); // This possible gets fired too often.
+        }
+
+        internal void BuildCharacterLists(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
+        {
+            _battleCharacters = battleCharacters;
+            _characterList = customCharacters;
+            Patch(_battleCharacters, _characterList);
+        }
+
+        internal void Patch()
+        {
+            Patch(GetAllBattleCharacters(), _characterList);
         }
 
         internal void Patch(List<BattleCharacter> battleCharacters, List<CustomCharacter> customCharacters)
         {
             BattleCharacters = new ReadOnlyCollection<BattleCharacter>(battleCharacters);
             CustomCharacters = new ReadOnlyCollection<CustomCharacter>(customCharacters).ToList();
+        }
+
+        private List<BattleCharacter> GetAllBattleCharacters()
+        {
+            var battleCharacters = new List<BattleCharacter>();
+            foreach (var customCharacter in _characterList)
+            {
+                battleCharacters.Add(GetBattleCharacter(customCharacter.Id));
+            }
+            return battleCharacters;
+        }
+
+        private BattleCharacter GetBattleCharacter(CharacterID customCharacterId)
+        {
+            var customCharacter = _characterList.FirstOrDefault(x => x.Id == customCharacterId);
+            if (customCharacter == null)
+            {
+                throw new UnityException($"CustomCharacter not found for {customCharacterId}");
+            }
+            ReadOnlyCollection<CharacterClass> characterClasses = null;
+            Storefront.Get().GetAllCharacterClassesYield(result => characterClasses = result);
+            if(characterClasses == null)
+            {
+                Debug.LogError($"Unable to fetch characterClasses.");
+                return null;
+            }
+            var characterClass =
+                characterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
+            if (characterClass == null)
+            {
+                Debug.LogError($"Unable to find characterClass.");
+                return null;
+            }
+            return BattleCharacter.Create(customCharacter, characterClass);
         }
 
         public override string ToString()
