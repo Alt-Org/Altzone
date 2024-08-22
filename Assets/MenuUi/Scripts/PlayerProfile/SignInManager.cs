@@ -26,6 +26,7 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField registerUsernameInputField;
         [SerializeField] private TMP_InputField registerPasswordInputField;
         [SerializeField] private TMP_InputField registerPassword2InputField;
+        [SerializeField] private Toggle _registerAgeVerificationToggle;
 
         [Header("Buttons")]
         [SerializeField] private Button logInButton;
@@ -43,6 +44,7 @@ namespace MenuUi.Scripts.Login
         private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
         private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
         private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
         private const string ERROR400 = "Validointivirhe!";
         private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
         private const string ERROR409 = "Käyttäjätili on jo olemassa!";
@@ -166,6 +168,12 @@ namespace MenuUi.Scripts.Login
             if (username.Length < _userNameMinLength)
             {
                 ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
+                return;
+            }
+
+            if (!_registerAgeVerificationToggle.isOn)
+            {
+                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
                 return;
             }
 
