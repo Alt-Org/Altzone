@@ -128,7 +128,8 @@ public class ChatListener : MonoBehaviour, IChatClientListener
     {
         ChatPreviewController = FindObjectOfType<ChatPreviewController>();
         SceneManager.sceneLoaded += OnSceneLoaded;
-        ConnectToPhotonChat();
+        //ConnectToPhotonChat();
+        Debug.LogWarning($"Chat is currently disabled due to confusion about how to implement GDPR.");
     }
 
     private void Update()
