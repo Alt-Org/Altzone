@@ -3,7 +3,7 @@ using UnityEngine;
 public class PopupWindowScript : MonoBehaviour
 {
     // Muuttuja sen taskin id:n tallentamiseksi, jota tämä popup-ikkuna hallinnoi
-    public int[] associatedTaskIds;
+    private int[] associatedTaskIds = new int[] {1,2,3,4,5,6,7,8,9,10,11,12 };
     public Leaderboard leaderboard;
     public GameObject popupScreen;
     public GameObject dailyTaskPrefab;
