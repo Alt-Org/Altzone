@@ -26,6 +26,8 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
+        [SerializeField]
+        private GameObject _overlayBar;
 
         private bool _rotated = false;
 
@@ -383,6 +385,7 @@ namespace MenuUI.Scripts.SoulHome
             GameObject tray = GetTray();
             if (enable)
             {
+                _overlayBar.SetActive(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 _furnitureButtonTray.SetActive(true);
@@ -390,6 +393,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
+                if(!_rotated)
+                _overlayBar.SetActive(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
                 _furnitureButtonTray.SetActive(false);
@@ -714,10 +719,12 @@ namespace MenuUI.Scripts.SoulHome
             GameObject horizontalContent = GetHorizontalTrayHandler().GetTrayContent();
             if (_rotated)
             {
+                _overlayBar.gameObject.SetActive(false);
                 SwitchTray(horizontalContent, verticalContent);
             }
             else
             {
+                if(!_trayOpen)_overlayBar.gameObject.SetActive(true);
                 SwitchTray(verticalContent, horizontalContent);
             }
             GetTrayHandler().GetComponent<ResizeCollider>().Resize();
