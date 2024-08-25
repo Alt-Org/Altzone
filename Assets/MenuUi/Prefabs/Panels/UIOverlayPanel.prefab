@@ -895,6 +895,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: 588215203830690390, guid: 29e964b118145aa4bb83338fcd8b573e,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 588215203830690390, guid: 29e964b118145aa4bb83338fcd8b573e,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 090e48dc1a9cae3478229ff802df6f68, type: 3}
     - target: {fileID: 712389070812600571, guid: 29e964b118145aa4bb83338fcd8b573e,
         type: 3}
       propertyPath: m_Name
@@ -1228,6 +1238,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: 3360112591878282571, guid: c19396da57fe8484a8ec5ea361b52ed9,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3360112591878282571, guid: c19396da57fe8484a8ec5ea361b52ed9,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 0d67e8df0bbb7064da5b34b9642d0f06, type: 3}
     - target: {fileID: 3416605275109616329, guid: c19396da57fe8484a8ec5ea361b52ed9,
         type: 3}
       propertyPath: m_ActiveFontFeatures.Array.data[0]
@@ -1498,6 +1518,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4370858357418415203, guid: 34bf39a5a75442e42a08a18d213c90f7,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4370858357418415203, guid: 34bf39a5a75442e42a08a18d213c90f7,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 37e4efe5132907749a744f123000ac39, type: 3}
     - target: {fileID: 5221321270575300928, guid: 34bf39a5a75442e42a08a18d213c90f7,
         type: 3}
       propertyPath: m_IsActive
@@ -1927,6 +1957,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2650798360939947358, guid: d4424075c37f78841b88e4ab76cc5006,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2650798360939947358, guid: d4424075c37f78841b88e4ab76cc5006,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 3653f01620719e648b1fad13415bd4e4, type: 3}
     - target: {fileID: 2899131563538357159, guid: d4424075c37f78841b88e4ab76cc5006,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -2071,6 +2111,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5007824331407061772}
     m_Modifications:
+    - target: {fileID: -3951848085056434086, guid: f1eb9321867a80347b3e82d95750325c,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3951848085056434086, guid: f1eb9321867a80347b3e82d95750325c,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 641a17d18fe33bb47b95e08b86e700db, type: 3}
     - target: {fileID: 45193984366392516, guid: f1eb9321867a80347b3e82d95750325c,
         type: 3}
       propertyPath: m_Sprite
@@ -2211,6 +2261,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BT_DEFENSSIT
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757632669673988376, guid: f1eb9321867a80347b3e82d95750325c,
+        type: 3}
+      propertyPath: _useAudioSourceBaseVolume
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
