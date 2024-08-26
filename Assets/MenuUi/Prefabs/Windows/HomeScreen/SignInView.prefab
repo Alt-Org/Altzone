@@ -55,7 +55,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4446929726101538054
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2310,7 +2310,7 @@ RectTransform:
   m_AnchorMin: {x: 0.92, y: 0.92}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 14.674713, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7967314005651209414
 CanvasRenderer:
@@ -3652,11 +3652,10 @@ RectTransform:
   m_Children:
   - {fileID: 5500921276925219150}
   - {fileID: 4382752738637125346}
-  - {fileID: 7136813987588914894}
   m_Father: {fileID: 2257718317880411017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.2}
-  m_AnchorMax: {x: 1, y: 0.375}
+  m_AnchorMax: {x: 0.2, y: 0.375}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3741,8 +3740,8 @@ RectTransform:
   - {fileID: 6319846827309716303}
   m_Father: {fileID: 225326682960311949}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.15, y: 0.5}
-  m_AnchorMax: {x: 0.15, y: 0.5}
+  m_AnchorMin: {x: 0.75, y: 0.5}
+  m_AnchorMax: {x: 0.75, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4497,8 +4496,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 225326682960311949}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.15, y: 0.5}
-  m_AnchorMax: {x: 0.15, y: 0.5}
+  m_AnchorMin: {x: 0.75, y: 0.5}
+  m_AnchorMax: {x: 0.75, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5147,7 +5146,7 @@ RectTransform:
   m_AnchorMin: {x: 0.9, y: 0.9}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 15.507698, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7631545646919392310
 CanvasRenderer:
@@ -5411,7 +5410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2257718317880411017
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5430,6 +5429,7 @@ RectTransform:
   - {fileID: 8364334247872311569}
   - {fileID: 6941533763605737246}
   - {fileID: 225326682960311949}
+  - {fileID: 7136813987588914894}
   - {fileID: 6793108182191159168}
   m_Father: {fileID: 789255344612582266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5717,6 +5717,8 @@ GameObject:
   - component: {fileID: 7136813987588914894}
   - component: {fileID: 7625169405899544602}
   - component: {fileID: 4514357861819652996}
+  - component: {fileID: 2860692329061183742}
+  - component: {fileID: 3141219585901709681}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -5736,12 +5738,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 225326682960311949}
+  m_Father: {fileID: 2257718317880411017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.2, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.2, y: 0.2}
+  m_AnchorMax: {x: 1, y: 0.375}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7625169405899544602
 CanvasRenderer:
@@ -5772,8 +5774,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Olen v\xE4hint\xE4\xE4n 13-vuotias \ntai \nMinulla on huoltajan suostumus,
-    ett\xE4 tietojani voidaan ker\xE4t\xE4 ja k\xE4ytt\xE4\xE4 pelin yll\xE4pit\xE4miseen
-    ja hallintaan."
+    ett\xE4 <a href=\\\"https://altzone.fi/en/privacy\\\"> tietojani voidaan ker\xE4t\xE4
+    ja k\xE4ytt\xE4\xE4 pelin yll\xE4pit\xE4miseen ja hallintaan.</a>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -5845,6 +5847,75 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2860692329061183742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100669421970422342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 4514357861819652996}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3141219585901709681}
+        m_TargetAssemblyTypeName: OpenURL, Assembly-CSharp
+        m_MethodName: OpenLink
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3141219585901709681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100669421970422342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02cb2d0cabab6eb4fad67cb55ef7b44f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _url: https://altzone.fi/en/privacy
 --- !u!1 &7137773076991328992
 GameObject:
   m_ObjectHideFlags: 0
