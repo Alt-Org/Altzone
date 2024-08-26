@@ -186,7 +186,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7bc69bad5e9324d5994d4aa310008d6d, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d549ec36d782142c79499c1691fcb864, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.82
   m_Pitch: 1
@@ -284,6 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfc941515091924983eba4f77542200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useAudioSourceBaseVolume: 1
   _soundType: 1
 --- !u!114 &-1980493818626353095
 MonoBehaviour:
