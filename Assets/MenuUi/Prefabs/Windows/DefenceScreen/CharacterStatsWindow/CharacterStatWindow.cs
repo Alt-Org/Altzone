@@ -5,6 +5,8 @@ using MenuUi.Prefabs.Windows.DefenceScreen;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
+using System.Linq;
+
 
 public class CharacterStatWindow : MonoBehaviour
 {
@@ -57,16 +59,44 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Image _statDefenceSelectedBackground;
     [SerializeField] private Image _statHPSelectedBackground;
 
+    private PlayerData _playerData;
+    private CharacterID _characterId;
 
     private void OnEnable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled");
+
+        // Hae CustomCharacter tiedot PlayerDatasta
+        _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
+        Debug.Log($"Searching for character with ID: {_characterId}");
+
+        Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
+        {
+            if (playerData == null)
+            {
+
+                Debug.Log("GetPlayerData is null");
+                return;
+            }
+
+            Debug.Log("PlayerData tiedot haettu onnistuneesti");
+            _playerData = playerData;
+
+            DiamondSpeedAmount = playerData.DiamondSpeed;
+            DiamondResistanceAmount = playerData.DiamondResistance;
+            DiamondAttackAmount = playerData.DiamondAttack;
+            DiamondDefenceAmount = playerData.DiamondDefence;
+            DiamondHPAmount = playerData.DiamondHP;
+            EraserAmount = playerData.Eraser;
+
+            Debug.Log("Timanttiarvot asetettu onnistuneesti");
+        });
+
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
-        //PlayerData playerData = null;
-        //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
-        //DiamondAttackAmount = playerData.DiamondAttack;
     }
+
+
     private void OnDisable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange -= HandleCharacterGalleryCharacterStatWindowToShowChange;
@@ -182,19 +212,36 @@ public class CharacterStatWindow : MonoBehaviour
     //  upgrade
     private void UpgradeCharacterSpeed()
     {
-        if (CheckMaxLevel() == true)
+        if (CheckMaxLevel() == true)            
         {
             if (DiamondSpeedAmount >= SpeedCostAmount)
             {
                 DiamondSpeedAmount -= SpeedCostAmount;
+                _playerData.DiamondSpeed = DiamondSpeedAmount;
                 DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedCostAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed += 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+                    customCharacter.Speed = _demoCharacterWindowCharacter.CharacterSpeed;
+
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
+
+
 
     private void UpgradeCharacterResistance()
     {
@@ -203,11 +250,26 @@ public class CharacterStatWindow : MonoBehaviour
             if (DiamondResistanceAmount >= ResistanceCostAmount)
             {
                 DiamondResistanceAmount -= ResistanceCostAmount;
+                _playerData.DiamondResistance = DiamondResistanceAmount;
                 DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceCostAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance += 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+                    customCharacter.Resistance = _demoCharacterWindowCharacter.CharacterResistance;
+
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -219,11 +281,26 @@ public class CharacterStatWindow : MonoBehaviour
             if (DiamondAttackAmount >= AttackCostAmount)
             {
                 DiamondAttackAmount -= AttackCostAmount;
+                _playerData.DiamondAttack = DiamondAttackAmount;
                 DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackCostAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack += 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+                    customCharacter.Attack = _demoCharacterWindowCharacter.CharacterAttack;
+
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -234,11 +311,26 @@ public class CharacterStatWindow : MonoBehaviour
             if (DiamondDefenceAmount >= DefenceCostAmount)
             {
                 DiamondDefenceAmount -= DefenceCostAmount;
+                _playerData.DiamondDefence = DiamondDefenceAmount;
                 DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceCostAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence += 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+                    customCharacter.Defence = _demoCharacterWindowCharacter.CharacterDefence;
+
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -249,11 +341,26 @@ public class CharacterStatWindow : MonoBehaviour
             if (DiamondHPAmount >= HPCostAmount)
             {
                 DiamondHPAmount -= HPCostAmount;
+                _playerData.DiamondHP = DiamondHPAmount;
                 DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPCostAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP += 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+                    customCharacter.Hp = _demoCharacterWindowCharacter.CharacterHP;
+
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -339,40 +446,47 @@ public class CharacterStatWindow : MonoBehaviour
             case CharacterID.IntellectualizerResearcher:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false, 7, 3, 1, 4, 1);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
-                Debug.Log("loaded albert");
+                Debug.Log("loaded Albert");
                 break;
             case CharacterID.RetroflectorOvereater:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu-Hodari", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[1];
-                Debug.Log("loaded hannu");
+                Debug.Log("loaded Hannu");
                 break;
             case CharacterID.TricksterComedian:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
+                Debug.Log("loaded Ville");
                 break;
             case CharacterID.TricksterConman:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Lasse Liukas", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[8];
+                Debug.Log("loaded Lasse");
                 break;
             case CharacterID.DesensitizerBodybuilder:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
+                Debug.Log("loaded Rami");
                 break;
             case CharacterID.ObedientPreacher:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Sami Saarnaaja", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[4];
+                Debug.Log("loaded Sami");
                 break;
             case CharacterID.ProjectorGrafitiartist:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Graffit-Gaya", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[5];
+                Debug.Log("loaded Gaya");
                 break;
             case CharacterID.ConfluentBesties:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiimitytöt", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[6];
+                Debug.Log("loaded Tytöt");
                 break;
             case CharacterID.RetroflectorAlcoholic:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Pullo-Piraatti", false, 2, 2, 2, 2, 2);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[7];
+                Debug.Log("loaded Piraatti");
                 break;
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
@@ -440,6 +554,7 @@ public class CharacterStatWindow : MonoBehaviour
         float[] characterStatsFloatValues = { characterHP, characterDefence, characterAttack, characterResistance, characterSpeed, unusedStats };
         return characterStatsFloatValues;
     }
+
 
     // Character Name. DISABLED FOR THE SAKE OF TESTERS
     /*

@@ -93,7 +93,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             statCheck += character.Attack;
             statCheck += character.Defence;
             statCheck += character.Resistance;
-            if(statCheck <= 100)
+            if(statCheck >= 100)
             {
                 Debug.LogError($"Invalid total stat increases: {statCheck}, too high.");
                 return;
