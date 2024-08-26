@@ -8,7 +8,12 @@ public class SetVolume : MonoBehaviour
     private float _audioSourceBaseVolume;
     private void Start()
     {
-        if(_useAudioSourceBaseVolume)_audioSourceBaseVolume = gameObject.GetComponent<AudioSource>().volume;
+
+    }
+
+    private void OnEnable()
+    {
+        if (_useAudioSourceBaseVolume) _audioSourceBaseVolume = gameObject.GetComponent<AudioSource>().volume;
         VolumeSet();
     }
 

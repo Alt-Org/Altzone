@@ -203,6 +203,7 @@ namespace MenuUi.Scripts.Storage
 
                 // Icon
                 toSet.GetChild(0).GetComponent<Image>().sprite = _furn.Sprite;
+                ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
 
                 // Name
                 toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
@@ -247,6 +248,7 @@ namespace MenuUi.Scripts.Storage
 
             // Icon
             _icon.sprite = _furn.Sprite;
+            ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
             _name.text = _furn.VisibleName;
@@ -264,6 +266,24 @@ namespace MenuUi.Scripts.Storage
             _typeText.text = "";
 
             _infoSlot.SetActive(true);
+        }
+
+        private void ScaleSprite(StorageFurniture furn, RectTransform rTransform)
+        {
+            rTransform.sizeDelta = new(0, 0);
+            Rect imageRect = rTransform.rect;
+            if (furn.Sprite.bounds.size.x > furn.Sprite.bounds.size.y)
+            {
+                float diff = furn.Sprite.bounds.size.x / furn.Sprite.bounds.size.y;
+                float newHeight = imageRect.height / diff;
+                rTransform.sizeDelta = new(0, (newHeight - imageRect.height));
+            }
+            if (furn.Sprite.bounds.size.x < furn.Sprite.bounds.size.y)
+            {
+                float diff = furn.Sprite.bounds.size.y / furn.Sprite.bounds.size.x;
+                float newWidth = imageRect.width / diff;
+                rTransform.sizeDelta = new((newWidth - imageRect.width), 0);
+            }
         }
 
         private Sprite GetIcon(string name)

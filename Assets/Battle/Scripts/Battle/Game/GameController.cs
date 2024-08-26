@@ -44,6 +44,7 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private Fields
 
         #region DEBUG
+        private BattleDebugLogger _battleDebugLogger;
         private const string DEBUG_LOG_NAME = "[BATTLE] [GAME CONTROLLER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private const string DEBUG_LOG_GAME_STARTUP = DEBUG_LOG_NAME + "GAME STARTUP: ";
@@ -62,12 +63,20 @@ namespace Battle.Scripts.Battle.Game
             _playerManager = Context.GetPlayerManager;
             _slingController = Context.GetSlingController;
 
+            BattleDebugLogger.Init(_syncedFixedUpdateClock);
+
             // subscribe to messages
             this.Subscribe<SyncedFixedUpdateClockStarted>(OnSyncedFixedUpdateClockStarted);
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
             this.Subscribe<SlingControllerReady>(OnSlingControllerReady);
             this.Subscribe<BallSlinged>(OnBallSlinged);
             this.Subscribe<SoulWallSegmentRemoved>(OnSoulWallSegmentRemoved);
+
+            // debug
+            _battleDebugLogger = new(this);
+
+            // debug test
+            _battleDebugLogger.LogInfo("test");
         }
 
         #region Private Methods - Message Listeners

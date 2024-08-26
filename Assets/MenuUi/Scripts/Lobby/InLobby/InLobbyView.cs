@@ -9,6 +9,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private TextMeshProUGUI _lobbyText;
+        [SerializeField] private TextMeshProUGUI _playerCountText;
         [SerializeField] private Button _characterButton;
         [SerializeField] private Button _roomButton;
         [SerializeField] private Button _raidButton;
@@ -40,6 +41,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             set => _lobbyText.text = value;
         }
+        public string PlayerCountText
+        {
+            set => _playerCountText.text = value;
+        }
 
         public void Reset()
         {
@@ -50,18 +55,18 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void DisableButtons()
         {
-            _characterButton.interactable = false;
-            _roomButton.interactable = false;
-            _raidButton.interactable = false;
-            _quickGameButton.interactable = false;
+            //_characterButton.interactable = false;
+            //_roomButton.interactable = false;
+            //_raidButton.interactable = false;
+            //_quickGameButton.interactable = false;
         }
 
         public void EnableButtons()
         {
             //_characterButton.interactable = true;
-            _roomButton.interactable = true;
-            _raidButton.interactable = true;
-            _quickGameButton.interactable = true;
+            //_roomButton.interactable = true;
+            //_raidButton.interactable = true;
+            //_quickGameButton.interactable = true;
         }
     }
 }

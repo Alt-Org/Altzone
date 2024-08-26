@@ -145,7 +145,7 @@ public class ChatPreviewController : MonoBehaviour
             _chatMessageGameobjects[i].GetComponentInChildren<Image>().color = Color.clear;
         }
 
-        noMessagesTextGameobject.SetActive(true);
+        //noMessagesTextGameobject.SetActive(true); 
     }
 
 

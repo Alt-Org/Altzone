@@ -21,7 +21,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public CharacterClass(CharacterClassID id, int hp, int speed, int resistance, int attack, int defence)
         {
-            Assert.AreNotEqual(CharacterClassID.None, id);
+            //Assert.AreNotEqual(CharacterClassID.None, id);
             Assert.IsTrue(hp >= 0);
             Assert.IsTrue(speed >= 0);
             Assert.IsTrue(resistance >= 0);

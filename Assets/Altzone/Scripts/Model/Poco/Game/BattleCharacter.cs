@@ -22,7 +22,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private BattleCharacter(CharacterID customCharacterId, CharacterClass characterClass, string name,
             int hp, int speed, int resistance, int attack, int defence)
         {
-            Assert.AreNotEqual(CharacterID.None, customCharacterId);
+            //Assert.AreNotEqual(CharacterID.None, customCharacterId);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
             CustomCharacterId = customCharacterId;
             CharacterClass = characterClass;
@@ -46,6 +46,20 @@ namespace Altzone.Scripts.Model.Poco.Game
                 customCharacter.Resistance + characterClass.Resistance,
                 customCharacter.Attack + characterClass.Attack,
                 customCharacter.Defence + characterClass.Defence);
+        }
+
+        internal static BattleCharacter CreateEmpty()
+        {
+            //Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
+            return new BattleCharacter(
+                CharacterID.None,
+                CharacterClass.CreateDummyFor(CharacterClassID.None),
+                "Dummy",
+                0,
+                0,
+                0,
+                0,
+                0);
         }
 
         public override string ToString()

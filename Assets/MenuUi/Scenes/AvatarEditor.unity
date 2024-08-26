@@ -123,6 +123,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &149215613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8775545731511141306, guid: 75313ac50a8cd504486c71cf72454b9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4663983122293298706}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &149215618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149215613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912049b16784c814f8bf1f148e04c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarClassInfoList:
+  - Name: KonfluenceGirls
+    id: 1536
+    list:
+    - Name: Girls
+      id: 1537
+      CharacterImage: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
+      DivanImage: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb, type: 3}
+  - Name: EgotismEinstein
+    id: 1792
+    list:
+    - Name: Einstein
+      id: 1793
+      CharacterImage: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc, type: 3}
+      DivanImage: {fileID: 21300000, guid: b473fdb75135d0b4881be82aed1d0365, type: 3}
+  _characterImage: {fileID: 1933211403}
+  _divanImage: {fileID: 149215620}
+--- !u!114 &149215620 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5791310710658964298, guid: 75313ac50a8cd504486c71cf72454b9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4663983122293298706}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149215613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1204608626
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +356,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1933211403 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5181688677249606757, guid: 75313ac50a8cd504486c71cf72454b9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4663983122293298706}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4663983122293298706
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -317,10 +376,166 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _divanImage
+      value: 
+      objectReference: {fileID: 149215620}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _characterImage
+      value: 
+      objectReference: {fileID: 1933211403}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _info.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].id
+      value: 1536
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].id
+      value: 1792
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].Name
+      value: KonfluenceGirls
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].Name
+      value: EgotismEinstein
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[0].id
+      value: 1537
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[1].id
+      value: 1537
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.data[0].id
+      value: 1793
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[0].Name
+      value: Girls
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[1].Name
+      value: Girls
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.data[0].Name
+      value: Einstein
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[0].DivanImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[1].DivanImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.data[0].DivanImage
+      value: 
+      objectReference: {fileID: 21300000, guid: b473fdb75135d0b4881be82aed1d0365,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[0].CharacterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[1].CharacterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.data[0].CharacterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc,
+        type: 3}
+    - target: {fileID: 3594419316348392077, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 3594419316348392077, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3594419316348392077, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3594419316348392077, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4231379166148945069, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
@@ -372,15 +587,115 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5791310710658964298, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb,
+        type: 3}
+    - target: {fileID: 5791310710658964298, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7191410281708104365, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4.0000305
+      objectReference: {fileID: 0}
     - target: {fileID: 7298176311922543583, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_Name
       value: AvatarEditor
       objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8775545731511141306, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 149215618}
   m_SourcePrefab: {fileID: 100100000, guid: 75313ac50a8cd504486c71cf72454b9e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

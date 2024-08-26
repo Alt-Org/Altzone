@@ -32,6 +32,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         private ScrollRect scrollRect;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
+        [SerializeField] private Button battleButton;
         private Image[] buttonImages;
         [SerializeField] private float swipeTime = 0.2f;
         private float swipeDistance = 50.0f;
@@ -77,7 +78,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private void Awake()
         {
-            scrollPageValues = new float[5];
+            scrollPageValues = new float[buttons.Length];
 
             valueDistance = 1f / (scrollPageValues.Length - 1f);
 
@@ -86,7 +87,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 scrollPageValues[i] = valueDistance * i;
             }
 
-            maxPage = 5;
+            maxPage = buttons.Length;
             CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();

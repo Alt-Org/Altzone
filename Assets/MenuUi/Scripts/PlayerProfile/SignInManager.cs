@@ -26,11 +26,21 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField registerUsernameInputField;
         [SerializeField] private TMP_InputField registerPasswordInputField;
         [SerializeField] private TMP_InputField registerPassword2InputField;
+        [SerializeField] private Toggle _registerAgeVerificationToggle;
+
+        [Header("Input Fields Errors")]
+        [SerializeField] private Image logInUsernameInputFieldError;
+        [SerializeField] private Image logInPasswordInputFieldError;
+        [SerializeField] private Image registerUsernameInputFieldError;
+        [SerializeField] private Image registerPasswordInputFieldError;
+        [SerializeField] private Image registerPassword2InputFieldError;
+        [SerializeField] private Image _registerAgeVerificationToggleError;
 
         [Header("Buttons")]
         [SerializeField] private Button logInButton;
         [SerializeField] private Button registerButton;
         [SerializeField] private Button backButton;
+        [SerializeField] private Button backButton2;
 
 
         [Header("Navigation Buttons")]
@@ -43,6 +53,7 @@ namespace MenuUi.Scripts.Login
         private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
         private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
         private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
         private const string ERROR400 = "Validointivirhe!";
         private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
         private const string ERROR409 = "Käyttäjätili on jo olemassa!";
@@ -56,10 +67,12 @@ namespace MenuUi.Scripts.Login
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
                 backButton.gameObject.SetActive(false);
+                backButton2.gameObject.SetActive(false);
             }
             else
             {
                 backButton.gameObject.SetActive(true);
+                backButton2.gameObject.SetActive(true);
             }
         }
 
@@ -67,7 +80,7 @@ namespace MenuUi.Scripts.Login
         {
             Debug.Log("resetting");
 
-            ShowMessage("", Color.white);
+            ClearMessage();
 
             logInUsernameInputField.text = "";
             logInPasswordInputField.text = "";
@@ -93,6 +106,8 @@ namespace MenuUi.Scripts.Login
                 if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
                 {
                     ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                    if(logInUsernameInputField.text == string.Empty) logInUsernameInputFieldError.gameObject.SetActive(true);
+                    else logInPasswordInputFieldError.gameObject.SetActive(true);
                     return;
                 }
 
@@ -111,6 +126,8 @@ namespace MenuUi.Scripts.Login
                             break;
                         case 400:
                             errorString = ERROR400;
+                            logInUsernameInputFieldError.gameObject.SetActive(true);
+                            logInPasswordInputFieldError.gameObject.SetActive(true);
                             break;
                         case 401:
                             errorString = ERROR401;
@@ -148,24 +165,35 @@ namespace MenuUi.Scripts.Login
             if (registerUsernameInputField.text == string.Empty || registerPasswordInputField.text == string.Empty || registerPassword2InputField.text == string.Empty)
             {
                 ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                registerUsernameInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (password1 != password2)
             {
                 ShowMessage(ERROR_PASSWORD_MISMATCH, Color.red);
+                registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (password1.Length < _passwordMinLength)
             {
                 ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
+                registerPasswordInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (username.Length < _userNameMinLength)
             {
                 ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
+                registerUsernameInputFieldError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (!_registerAgeVerificationToggle.isOn)
+            {
+                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
+                _registerAgeVerificationToggleError.gameObject.SetActive(true);
                 return;
             }
 
@@ -184,6 +212,7 @@ namespace MenuUi.Scripts.Login
                             break;
                         case 409:
                             errorString = ERROR409;
+                            registerUsernameInputFieldError.gameObject.SetActive(true);
                             break;
                         case 500:
                             errorString = ERROR500;
@@ -213,6 +242,12 @@ namespace MenuUi.Scripts.Login
         private void ClearMessage()
         {
             GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>().text = "";
+            logInUsernameInputFieldError.gameObject.SetActive(false);
+            logInPasswordInputFieldError.gameObject.SetActive(false);
+            registerUsernameInputFieldError.gameObject.SetActive(false);
+            registerPasswordInputFieldError.gameObject.SetActive(false);
+            registerPassword2InputFieldError.gameObject.SetActive(false);
+            _registerAgeVerificationToggleError.gameObject.SetActive(false);
         }
     }
 }

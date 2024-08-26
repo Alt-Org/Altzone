@@ -12,24 +12,24 @@ namespace MenuUI.Scripts.SoulHome
 {
     public class TowerController : MonoBehaviour
     {
-        private Camera Camera;
+        private Camera _camera;
         private GameObject selectedRoom = null;
         private GameObject tempSelectedRoom = null;
-        [SerializeField]
+        [Tooltip("The Mainscreen Script that handles the inputs to the actual screen that is shown to you."), SerializeField]
         private MainScreenController _mainScreen;
-        [SerializeField]
+        [Tooltip("The script that loads and sets the starting state of Soulhome."),SerializeField]
         private SoulHomeLoad _loadScript;
         [SerializeField]
-        private float scrollSpeed = 2f;
+        private float _scrollSpeed = 2f;
         [SerializeField]
-        private float scrollSpeedMouse = 2f;
+        private float _scrollSpeedMouse = 2f;
         [SerializeField]
-        private SpriteRenderer backgroundSprite;
-        [SerializeField]
-        private bool isometric = false;
-        [SerializeField]
+        private SpriteRenderer _backgroundSprite;
+        //[Tooltip("Not in use, don't activate"),SerializeField]
+        private bool _isometric = false;
+        [Tooltip("The Controller Script for the SoulHome that includes everything not directly related screen inputs or the FurnitureTray."), SerializeField]
         private SoulHomeController _soulHomeController;
-        [SerializeField]
+        [Tooltip("The screen that the output of the TowerCamera is printed onto."),SerializeField]
         private RawImage _displayScreen;
         [SerializeField]
         private GameObject _rooms;
@@ -94,16 +94,16 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            Camera = GetComponent<Camera>();
+            _camera = GetComponent<Camera>();
             SetCameraBounds();
 
             Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
-            Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            Camera.fieldOfView = 90f;
+            _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+            _camera.fieldOfView = 90f;
             transform.localPosition = new(0, 0, transform.position.z);
-            Camera.transform.localPosition = new(Camera.transform.localPosition.x, Camera.transform.localPosition.y, -1 * GetCameraMaxDistance());
-            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+            _camera.transform.localPosition = new(_camera.transform.localPosition.x, _camera.transform.localPosition.y, -1 * GetCameraMaxDistance());
+            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
             float currentX = transform.position.x;
             float currentY = transform.position.y;
             float offsetX = Mathf.Abs(currentX - bl.x);
@@ -140,7 +140,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (_tempSelectedFurniture == null)
                 {
-                    Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                    Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
                     float currentY = transform.position.y;
                     float offsetY = Mathf.Abs(currentY-bl.y);
                     float targetY;
@@ -152,12 +152,12 @@ namespace MenuUI.Scripts.SoulHome
                         //touch = Input.GetTouch(0);
                         if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero) prevp = touch.screenPosition;
                         Vector2 lp = touch.screenPosition;
-                        targetY = currentY + (prevp.y - lp.y) / scrollSpeed;
-                        targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
+                        targetY = currentY + (prevp.y - lp.y) / _scrollSpeed;
+                        targetX = currentX + (prevp.x - lp.x) / _scrollSpeed;
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
                         if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
                         {
-                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, Mathf.Abs(prevp.y - lp.y) / scrollSpeed);
+                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / _scrollSpeed, Mathf.Abs(prevp.y - lp.y) / _scrollSpeed);
                             currentScrollSlide = startScrollSlide;
                             currentScrollSlideDirection = new Vector2(prevp.x - lp.x, prevp.y - lp.y);
                             currentScrollSlideDirection.Normalize();
@@ -171,10 +171,10 @@ namespace MenuUI.Scripts.SoulHome
                     else
                     {
                         float moveAmountY = Mouse.current.position.ReadValue().y - Mouse.current.position.ReadValueFromPreviousFrame().y;
-                        targetY = currentY - moveAmountY * scrollSpeedMouse;
+                        targetY = currentY - moveAmountY * _scrollSpeedMouse;
                         float moveAmountX = Mouse.current.position.ReadValue().x - Mouse.current.position.ReadValueFromPreviousFrame().x;
-                        targetX = currentX - moveAmountX * scrollSpeedMouse;
-                        startScrollSlide = new Vector2(Mathf.Abs(moveAmountX) * scrollSpeedMouse, Mathf.Abs(moveAmountY * scrollSpeedMouse));
+                        targetX = currentX - moveAmountX * _scrollSpeedMouse;
+                        startScrollSlide = new Vector2(Mathf.Abs(moveAmountX) * _scrollSpeedMouse, Mathf.Abs(moveAmountY * _scrollSpeedMouse));
                         currentScrollSlide = startScrollSlide;
                         currentScrollSlideDirection = new Vector2(-1 * moveAmountX, -1 * moveAmountY);
                         currentScrollSlideDirection.Normalize();
@@ -262,7 +262,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (selectedRoom == null && _selectedFurniture == null)
                     {
-                        Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                        Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
                         float currentY = transform.position.y;
                         float offsetY = Mathf.Abs(currentY - bl.y);
                         float targetY;
@@ -286,7 +286,7 @@ namespace MenuUI.Scripts.SoulHome
                         Bounds roomCameraBounds = selectedRoom.GetComponent<BoxCollider2D>().bounds;
                         float roomCameraMinX = roomCameraBounds.min.x;
                         float roomCameraMaxX = roomCameraBounds.max.x;
-                        Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                        Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
                         float currentX = transform.position.x;
                         float offsetX = Mathf.Abs(currentX - bl.x);
                         float targetX;
@@ -316,9 +316,9 @@ namespace MenuUI.Scripts.SoulHome
 
         void OnEnable()
         {
-            if (Camera != null)
+            if (_camera != null)
             {
-                Camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 HandleScreenRotation();
             }
             _rotated = false;
@@ -338,7 +338,7 @@ namespace MenuUI.Scripts.SoulHome
             cameraMove = true;
 
 
-            Ray ray = Camera.ViewportPointToRay(relPoint);
+            Ray ray = _camera.ViewportPointToRay(relPoint);
             RaycastHit2D[] hit;
             //Debug.Log("Camera2: " + ray);
             hit = Physics2D.GetRayIntersectionAll(ray, 1000);
@@ -397,7 +397,7 @@ namespace MenuUI.Scripts.SoulHome
                         //Debug.Log("Camera2: " + hitPoint);
                         //Debug.Log("Camera2: " + click);
                         GameObject roomObject;
-                        if (isometric)
+                        if (_isometric)
                             roomObject = hit2.collider.gameObject.transform.parent.parent.gameObject;
                         else
                             roomObject = hit2.collider.gameObject;
@@ -508,7 +508,7 @@ namespace MenuUI.Scripts.SoulHome
                     _grabbingFurniture = false;
                 }
 
-                if(_selectedFurniture)_mainScreen.SetHoverButtons(Camera.WorldToViewportPoint(_selectedFurniture.transform.position));
+                if(_selectedFurniture)_mainScreen.SetHoverButtons(_camera.WorldToViewportPoint(_selectedFurniture.transform.position));
 
             }
             else if (click is ClickState.End && furnitureObject == null)
@@ -551,27 +551,27 @@ namespace MenuUI.Scripts.SoulHome
 
         private void ClampCameraDistance(float change)
         {
-            float z = -1 * Mathf.Clamp(Mathf.Abs(Camera.transform.position.z) + change, _minCameraDistance, _maxCameraDistance);
+            float z = -1 * Mathf.Clamp(Mathf.Abs(_camera.transform.position.z) + change, _minCameraDistance, _maxCameraDistance);
 
-            Camera.transform.position = new(Camera.transform.position.x, Camera.transform.position.y, z);
+            _camera.transform.position = new(_camera.transform.position.x, _camera.transform.position.y, z);
         }
 
         public void ZoomIn(GameObject room)
         {
             _soulHomeController.SetRoomName(selectedRoom);
-            Camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,Camera.transform.position.z);
+            _camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,_camera.transform.position.z);
             
             outDelay = Time.time;
 
             _mainScreen.LeaveRoomButton.SetActive(true);
 
-            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
             float offsetY = Mathf.Abs(transform.position.y - bl.y);
             float y = Mathf.Clamp(transform.position.y, cameraMinY + offsetY, cameraMaxY - offsetY);
             float offsetX = Mathf.Abs(transform.position.x - bl.x);
             float x = Mathf.Clamp(transform.position.x, cameraMinX + offsetX, cameraMaxX - offsetX);
-            Camera.transform.position = new(x, y, transform.position.z);
+            _camera.transform.position = new(x, y, transform.position.z);
             //_mainScreen.EnableTray(true);
 
             //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.4f);
@@ -587,17 +587,17 @@ namespace MenuUI.Scripts.SoulHome
                 selectedRoom = null;
                 _soulHomeController.SetRoomName(selectedRoom);
 
-                Camera.transform.position = new(Camera.transform.position.x- Camera.transform.localPosition.x, Camera.transform.position.y, Camera.transform.position.z);
+                _camera.transform.position = new(_camera.transform.position.x- _camera.transform.localPosition.x, _camera.transform.position.y, _camera.transform.position.z);
                 inDelay = Time.time;
 
                 _mainScreen.LeaveRoomButton.SetActive(false);
-                Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+                Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
                 float offsetY = Mathf.Abs(transform.position.y - bl.y);
                 float y = Mathf.Clamp(transform.position.y, cameraMinY + offsetY, cameraMaxY - offsetY);
                 float offsetX = Mathf.Abs(transform.position.x - bl.x);
                 float x = Mathf.Clamp(transform.position.x, cameraMinX + offsetX, cameraMaxX - offsetX);
-                Camera.transform.position = new(x, y, transform.position.z);
+                _camera.transform.position = new(x, y, transform.position.z);
                 //_mainScreen.EnableTray(false);
 
                 //_displayScreen.GetComponent<RectTransform>().anchorMin = new(_displayScreen.GetComponent<RectTransform>().anchorMin.x, 0.2f);
@@ -608,12 +608,12 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetScrollSpeed()
         {
-            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-            Vector3 tr = Camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(Camera.transform.position.z)));
+            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
+            Vector3 tr = _camera.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(_camera.transform.position.z)));
 
             cameraHeight = Mathf.Abs(tr.y - bl.y);
 
-            scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
+            _scrollSpeed = _displayScreen.transform.GetComponent<RectTransform>().rect.height / cameraHeight;
         }
 
         public void PlaceFurnitureToCurrent(bool hover)
@@ -865,10 +865,10 @@ namespace MenuUI.Scripts.SoulHome
         private void HandleScreenRotation()
         {
             float newAspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            if (Camera.aspect.Equals(newAspect)) return;
-            Camera.aspect = newAspect;
+            if (_camera.aspect.Equals(newAspect)) return;
+            _camera.aspect = newAspect;
 
-            Camera.fieldOfView = 90;
+            _camera.fieldOfView = 90;
 
             /*if (SelectedRoom != null)
                 transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraYDistance());
@@ -884,7 +884,7 @@ namespace MenuUI.Scripts.SoulHome
 
             ClampCameraDistance(0);
 
-            Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
+            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
             float currentX = transform.position.x;
             float currentY = transform.position.y;
             float offsetX = Mathf.Abs(currentX - bl.x);
@@ -915,7 +915,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetCameraBounds()
         {
-            cameraBounds = backgroundSprite.bounds;
+            cameraBounds = _backgroundSprite.bounds;
             Bounds roomBounds = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().bounds;
             cameraMinX = roomBounds.min.x;
             cameraMinY = cameraBounds.min.y;
@@ -946,7 +946,7 @@ namespace MenuUI.Scripts.SoulHome
         public float GetCameraYDistance()
         {
             float heightToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.y / 2 + 2;
-            float cameraAngleVertical = Camera.fieldOfView / 2;
+            float cameraAngleVertical = _camera.fieldOfView / 2;
             float distanceMaxY = heightToEdge / Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180));
             //Debug.Log(heightToEdge + ":" + cameraAngleVertical + ":" + Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180)) + ":" + distanceMaxY);
             return distanceMaxY;
@@ -955,7 +955,7 @@ namespace MenuUI.Scripts.SoulHome
         public float GetCameraXDistance()
         {
             float widthToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.x / 2;
-            float cameraAngle = Camera.VerticalToHorizontalFieldOfView(Camera.fieldOfView, Camera.aspect) / 2;
+            float cameraAngle = Camera.VerticalToHorizontalFieldOfView(_camera.fieldOfView, _camera.aspect) / 2;
             float distanceMaxX = widthToEdge / Mathf.Tan(cameraAngle * (Mathf.PI / 180));
             //Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);
             return distanceMaxX;

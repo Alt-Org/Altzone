@@ -57,9 +57,8 @@ namespace Altzone.Scripts.GA
                 PlayerPrefs.SetString(playerPrefsKey, customUserId);
             }
             Debug.Log($"GA user ID is {customUserId}");
-
             GameAnalytics.SetCustomId(customUserId);
-            GameAnalytics.SetEnabledManualSessionHandling(true);
+            GameAnalytics.SetExternalUserId(customUserId);
 
             GameAnalytics.Initialize();
             OnInitialized?.Invoke(true);

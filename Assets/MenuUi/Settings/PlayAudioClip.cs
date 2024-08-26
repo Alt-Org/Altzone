@@ -14,6 +14,6 @@ public class PlayAudioClip : MonoBehaviour
     public void PlayAudio()
     {
         if (_audioSource != null)
-            MainMenuAudioManager.Instance.PlaySound(_audioSource.clip, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
+            MainMenuAudioManager.Instance.PlaySound(_audioSource.clip, GetComponent<AudioSource>().volume);
     }
 }

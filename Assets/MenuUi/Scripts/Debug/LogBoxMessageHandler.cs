@@ -26,7 +26,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         internal void SetMessage(IReadOnlyMsgObject msgObject)
         {
             _msgObject = msgObject;
-            string logText = $"[{msgObject.Client}:{msgObject.Time}] {msgObject.Msg}\n";
+            string logText = string.Format("[{0:000000}] {1}", msgObject.Time, msgObject.Msg);
             _textField.text = logText;
 
             // Set text color based on message type
