@@ -6,6 +6,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using System.Linq;
+using MenuUi.Scripts.CharacterGallery;
+using System;
 
 
 public class CharacterStatWindow : MonoBehaviour
@@ -59,8 +61,11 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Image _statDefenceSelectedBackground;
     [SerializeField] private Image _statHPSelectedBackground;
 
+    [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
+
     private PlayerData _playerData;
     private CharacterID _characterId;
+
 
     private void OnEnable()
     {
@@ -94,6 +99,7 @@ public class CharacterStatWindow : MonoBehaviour
         });
 
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
+
     }
 
 
@@ -373,10 +379,24 @@ public class CharacterStatWindow : MonoBehaviour
             if (_demoCharacterWindowCharacter.CharacterSpeed > 0)
             {
                 EraserAmount--;
+                _playerData.Eraser = EraserAmount;
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed -= 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+
+                    customCharacter.Speed = _demoCharacterWindowCharacter.CharacterSpeed;
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -387,13 +407,28 @@ public class CharacterStatWindow : MonoBehaviour
             if (_demoCharacterWindowCharacter.CharacterResistance > 0)
             {
                 EraserAmount--;
+                _playerData.Eraser = EraserAmount;
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance -= 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+
+                    customCharacter.Resistance = _demoCharacterWindowCharacter.CharacterResistance;
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
+
     private void DegradeCharacterAttack()
     {
         if (EraserAmount >= 1)
@@ -401,10 +436,24 @@ public class CharacterStatWindow : MonoBehaviour
             if (_demoCharacterWindowCharacter.CharacterAttack > 0)
             {
                 EraserAmount--;
+                _playerData.Eraser = EraserAmount;
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack -= 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+
+                    customCharacter.Attack = _demoCharacterWindowCharacter.CharacterAttack;
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -415,10 +464,24 @@ public class CharacterStatWindow : MonoBehaviour
             if (_demoCharacterWindowCharacter.CharacterDefence > 0)
             {
                 EraserAmount--;
+                _playerData.Eraser = EraserAmount;
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence -= 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+
+                    customCharacter.Defence = _demoCharacterWindowCharacter.CharacterDefence;
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -429,10 +492,24 @@ public class CharacterStatWindow : MonoBehaviour
             if (_demoCharacterWindowCharacter.CharacterHP > 0)
             {
                 EraserAmount--;
+                _playerData.Eraser = EraserAmount;
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP -= 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
                 UpdatePieChart();
+
+                var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+                if (customCharacter != null)
+                {
+                    Debug.Log($"Character found: {customCharacter.Name} with ID: {customCharacter.Id}");
+
+                    customCharacter.Hp = _demoCharacterWindowCharacter.CharacterHP;
+                    _playerData.UpdateCustomCharacter(customCharacter);
+                }
+                else
+                {
+                    Debug.LogError($"Hahmoa ID:llä {_characterId} ei löytynyt PlayerDatasta.");
+                }
             }
         }
     }
@@ -441,50 +518,69 @@ public class CharacterStatWindow : MonoBehaviour
     // doing this at awake
     private void _decideWhatCharacterToShow(CharacterID index)
     {
+        // Etsi CustomCharacter -tiedot valitulle hahmolle
+        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
+        if (customCharacter == null)
+        {
+            Debug.LogError($"CustomCharacter not found for index {index}");
+            _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
+            CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+            return;
+        }
+
         switch (index)
         {
             case CharacterID.IntellectualizerResearcher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false, 7, 3, 1, 4, 1);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
                 Debug.Log("loaded Albert");
                 break;
             case CharacterID.RetroflectorOvereater:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu-Hodari", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu-Hodari", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[1];
                 Debug.Log("loaded Hannu");
                 break;
             case CharacterID.TricksterComedian:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[2];
                 Debug.Log("loaded Ville");
                 break;
             case CharacterID.TricksterConman:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Lasse Liukas", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Lasse Liukas", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[8];
                 Debug.Log("loaded Lasse");
                 break;
             case CharacterID.DesensitizerBodybuilder:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[3];
                 Debug.Log("loaded Rami");
                 break;
             case CharacterID.ObedientPreacher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Sami Saarnaaja", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Sami Saarnaaja", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[4];
                 Debug.Log("loaded Sami");
                 break;
             case CharacterID.ProjectorGrafitiartist:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Graffit-Gaya", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Graffit-Gaya", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[5];
                 Debug.Log("loaded Gaya");
                 break;
             case CharacterID.ConfluentBesties:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiimitytöt", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiimitytöt", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[6];
                 Debug.Log("loaded Tytöt");
                 break;
             case CharacterID.RetroflectorAlcoholic:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Pullo-Piraatti", false, 2, 2, 2, 2, 2);
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Pullo-Piraatti", false,
+                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[7];
                 Debug.Log("loaded Piraatti");
                 break;
@@ -493,8 +589,8 @@ public class CharacterStatWindow : MonoBehaviour
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
                 break;
         }
-
     }
+
     private void SetCharacterStats()
     {
         if (_demoCharacterWindowCharacter != null)

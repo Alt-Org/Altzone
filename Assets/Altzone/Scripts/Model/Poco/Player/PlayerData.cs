@@ -23,12 +23,12 @@ namespace Altzone.Scripts.Model.Poco.Player
         private List<CustomCharacter> _characterList;
         private List<BattleCharacter> _battleCharacters;
 
-        public int DiamondSpeed = 100;
-        public int DiamondResistance = 100;
-        public int DiamondAttack = 100;
-        public int DiamondDefence = 100;
-        public int DiamondHP = 100;
-        public int Eraser = 100;
+        public int DiamondSpeed = 1000;
+        public int DiamondResistance = 1000;
+        public int DiamondAttack = 1000;
+        public int DiamondDefence = 1000;
+        public int DiamondHP = 1000;
+        public int Eraser = 1000;
 
         public int BackpackCapacity;
 
