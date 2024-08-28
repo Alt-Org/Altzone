@@ -18,6 +18,7 @@ public class ImageRandomiser : MonoBehaviour
         _image = GetComponent<Image>();
         _button = GetComponent<Button>();
         if(_button != null) _button.onClick.AddListener(RandomiseImage);
+        if(_sprites.Count > 0)_image.sprite = _sprites[0];
     }
 
     private void OnEnable()
@@ -28,7 +29,7 @@ public class ImageRandomiser : MonoBehaviour
     public void RandomiseImage()
     {
         if (_image == null) return;
-        if (_sprites.Count <= 0) return;
+        if (_sprites.Count <= 1) return;
         int newValue;
         do
         {
