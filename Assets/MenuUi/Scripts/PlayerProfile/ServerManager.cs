@@ -483,7 +483,9 @@ public class ServerManager : MonoBehaviour
     }
     public IEnumerator LeaveClan(Action<bool> callback)
     {
-        StartCoroutine(WebRequests.Delete(ADDRESS + "clan/join/" + Clan._id, AccessToken, request =>
+        string body = @$"{{""player_id"":""{Player._id}""}}";
+
+        StartCoroutine(WebRequests.Post(ADDRESS + "clan/leave", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -499,6 +501,11 @@ public class ServerManager : MonoBehaviour
                 if(playerData != null)
                 {
                     playerData.ClanId = "12345";                    //Demo-clan for not logged in players
+                    storefront.SavePlayerData(playerData, null);
+                }
+                else
+                {
+                    playerData.ClanId = "0";
                     storefront.SavePlayerData(playerData, null);
                 }
 
