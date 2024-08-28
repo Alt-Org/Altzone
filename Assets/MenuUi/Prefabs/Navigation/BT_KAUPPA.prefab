@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: -7048415094742072512}
   - component: {fileID: 2410016686866483608}
   - component: {fileID: 555329337865817193}
+  - component: {fileID: 5853333958532081131}
   m_Layer: 5
   m_Name: BT_KAUPPA
   m_TagString: Untagged
@@ -447,3 +448,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5853333958532081131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6448420489103042046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 313a12b281b29f24093d8f16d162240c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sprites:
+  - {fileID: 21300000, guid: f988998f590691148a18baf4f43bb1de, type: 3}
+  - {fileID: 21300000, guid: 90f769a0ba45a554bad3b860e8911267, type: 3}
+  - {fileID: 21300000, guid: 87bf920d0a609a44b82cc4b66821b845, type: 3}
+  - {fileID: 21300000, guid: 553c5c7434ded5a419fa0d42b295201e, type: 3}
