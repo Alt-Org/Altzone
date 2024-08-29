@@ -28,6 +28,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int Id { get;}
         public int Time { get; }
         public string Msg { get; }
+        public string Trace { get; }
         public MessageType Type { get; }
     }
 

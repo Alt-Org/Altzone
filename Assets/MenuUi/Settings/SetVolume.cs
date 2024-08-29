@@ -14,13 +14,14 @@ public class SetVolume : MonoBehaviour
     private void OnEnable()
     {
         if (_useAudioSourceBaseVolume) _audioSourceBaseVolume = gameObject.GetComponent<AudioSource>().volume;
-        VolumeSet();
+        if(SettingsCarrier.Instance != null) VolumeSet();
     }
 
     public void VolumeSet()
     {
         // Gets the wanted volume from SettingsCarrier
-        if(_useAudioSourceBaseVolume) gameObject.GetComponent<AudioSource>().volume = _audioSourceBaseVolume * SettingsCarrier.Instance.SentVolume(_soundType);
+        if (_useAudioSourceBaseVolume) {
+            gameObject.GetComponent<AudioSource>().volume = _audioSourceBaseVolume * SettingsCarrier.Instance.SentVolume(_soundType); }
         else gameObject.GetComponent<AudioSource>().volume = SettingsCarrier.Instance.SentVolume(_soundType);
     }
 }
