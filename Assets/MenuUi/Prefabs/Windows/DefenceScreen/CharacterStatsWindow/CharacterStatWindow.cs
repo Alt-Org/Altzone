@@ -528,60 +528,69 @@ public class CharacterStatWindow : MonoBehaviour
             return;
         }
 
+        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfo((int)index);
+        if (galleryCharacter == null) {
+
+            Debug.LogError($"GalleryCharacterReference not found for index {index}");
+            _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
+            CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+            return;
+        }
+
         switch (index)
         {
             case CharacterID.IntellectualizerResearcher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Albert Älypää", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Albert");
                 break;
             case CharacterID.RetroflectorOvereater:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Hannu-Hodari", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[1];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Hannu");
                 break;
             case CharacterID.TricksterComedian:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Vitsi-Ville", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[2];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Ville");
                 break;
             case CharacterID.TricksterConman:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Lasse Liukas", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[8];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Lasse");
                 break;
             case CharacterID.DesensitizerBodybuilder:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Rauta-Rami", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[3];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Rami");
                 break;
             case CharacterID.ObedientPreacher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Sami Saarnaaja", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[4];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Sami");
                 break;
             case CharacterID.ProjectorGrafitiartist:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Graffit-Gaya", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[5];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Gaya");
                 break;
             case CharacterID.ConfluentBesties:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Tiimitytöt", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[6];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Tytöt");
                 break;
             case CharacterID.RetroflectorAlcoholic:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("Pullo-Piraatti", false,
+                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                     customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = CharacterArtWork[7];
+                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
                 Debug.Log("loaded Piraatti");
                 break;
             default:
