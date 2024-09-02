@@ -150,6 +150,7 @@ namespace Battle.Scripts.Battle.Game
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Info (current position: {1}, current velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
             GridPos gridPos = null;
             GameObject otherGameObject = collision.gameObject;
 
