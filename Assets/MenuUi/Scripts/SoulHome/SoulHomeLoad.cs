@@ -40,6 +40,7 @@ namespace MenuUI.Scripts.SoulHome {
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
+        private bool _furnitureFetchFinished = false;
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
@@ -123,7 +124,9 @@ namespace MenuUI.Scripts.SoulHome {
                     soulHome.Room.Add(room);
                 }
                 StartCoroutine(GetFurniture());
-                yield return new WaitUntil(()=> _furnitureList != null);
+                yield return new WaitUntil(()=> _furnitureFetchFinished == true);
+                Debug.LogWarning("Test");
+                if(_furnitureList != null)
                 foreach (Furniture furniture in _furnitureList)
                 {
                     if(furniture.Room >= 0 && furniture.Position.x >= 0 && furniture.Position.y >= 0)
@@ -271,6 +274,7 @@ namespace MenuUI.Scripts.SoulHome {
             if (clanFurnitureList.Count == 0)
             {
                 Debug.Log($"found clan items {items.Count}");
+                _furnitureFetchFinished = true;
                 yield break;
             }
 
@@ -290,6 +294,7 @@ namespace MenuUI.Scripts.SoulHome {
                 items.Add(storageFurniture);
             }
             _furnitureList = items;
+            _furnitureFetchFinished = true;
         }
 
         public IEnumerator LoadFurniture()
@@ -333,6 +338,7 @@ namespace MenuUI.Scripts.SoulHome {
             }
             else
             {
+                if(_furnitureList != null)
                 foreach (Furniture furniture in _furnitureList)
                 {
                     _soulHomeController.AddFurniture(furniture);
