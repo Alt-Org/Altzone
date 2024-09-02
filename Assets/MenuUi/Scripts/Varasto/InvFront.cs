@@ -37,9 +37,10 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _weight;
-        [SerializeField] private TMP_Text _material;
+        [SerializeField] private TMP_Text _value;
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
+        [SerializeField] private GameObject _inSoulHome;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -214,6 +215,17 @@ namespace MenuUi.Scripts.Storage
                 // Shape
                 toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
+                // Name
+                toSet.GetChild(4).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                if (_furn.Position == new Vector2Int(-1, -1))
+                {
+                    toSet.GetChild(4).gameObject.SetActive(false);
+                }
+                else
+                {
+                    toSet.GetChild(4).gameObject.SetActive(true);
+                }
+
                 i++;
             }
         }
@@ -257,7 +269,12 @@ namespace MenuUi.Scripts.Storage
             _weight.text = _furn.Weight + " KG";
 
             // Material text
-            _material.text = _furn.Material;
+            _value.text = $"{_furn.Value}";
+
+            if (_furn.Position == new Vector2Int(-1, -1))
+                _inSoulHome.SetActive(false);
+            else
+                _inSoulHome.SetActive(true);
 
             // Type
             _type.sprite = GetIcon("");
