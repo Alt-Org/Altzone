@@ -354,6 +354,31 @@ public class ServerManager : MonoBehaviour
         store.SaveClanData(clanData, null);
     }
 
+    public IEnumerator GetClanPlayers(Action<List<ServerPlayer>> callback)
+    {
+        if (Clan == null)
+        {
+            Debug.LogWarning("Local Clan data not found. Likely reason is that the person is not a member of a clan.");
+            yield break;
+        }
+        else
+        {
+            yield return StartCoroutine(GetClanMembersFromServer(members =>
+            {
+                if (members != null)
+                {
+                    foreach (ServerPlayer player in members)
+                    {
+                        Debug.LogWarning(player.name);
+                    }
+                    callback(members);
+                }
+                else
+                    callback(null);
+            }));
+        }
+    }
+
     #region Server
 
     #region Player
@@ -439,6 +464,42 @@ public class ServerManager : MonoBehaviour
         }));
 
         yield break;
+    }
+
+    public IEnumerator GetClanMembersFromServer(Action<List<ServerPlayer>> callback)
+    {
+        /*if (Clan != null)
+            Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
+
+        if (Player.clan_id == null)
+            yield break;*/
+
+
+        yield return StartCoroutine(WebRequests.Get(ADDRESS + "clan/" + Player.clan_id + "?with=Player", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                List<ServerPlayer> members = new List<ServerPlayer>();
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                JArray middleresult = result["data"]["Clan"]["Player"] as JArray;
+                foreach (var value in middleresult)
+                {
+                    members.Add(value.ToObject<ServerPlayer>());
+                }
+
+                // Saves clan data to DataStorage
+                //StartCoroutine(SaveClanFromServerToDataStorage(Clan));
+
+                if (callback != null)
+                    callback(members);
+            }
+            else
+            {
+                Debug.LogWarning("Failed to get players from clan.");
+                if (callback != null)
+                    callback(null);
+            }
+        }));
     }
 
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
