@@ -38,6 +38,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _weight;
         [SerializeField] private TMP_Text _value;
+        [SerializeField] private TMP_Text _material;
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
@@ -48,7 +49,7 @@ namespace MenuUi.Scripts.Storage
         bool _startCompleted = false;
         bool _updatingInventory = false;
 
-        private int _maxSortingBy = 2;
+        private int _maxSortingBy = 3;
         private int _sortingBy = -1; // used as a carrier for info on how to sort
 
         private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
@@ -207,11 +208,25 @@ namespace MenuUi.Scripts.Storage
                 ScaleSprite(_furn, toSet.GetChild(0).GetComponent<RectTransform>());
 
                 // Name
-                toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                if(_sortingBy != 0) toSet.GetChild(1).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                else toSet.GetChild(1).GetComponent<TMP_Text>().text = "";
 
                 // Weight
-                toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
-
+                switch (_sortingBy)
+                {
+                    case 0:
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        break;
+                    case 1:
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Value.ToString();
+                        break;
+                    case 2:
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        break;
+                    case 3:
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Material;
+                        break;
+                }
                 // Shape
                 toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
@@ -242,10 +257,14 @@ namespace MenuUi.Scripts.Storage
                     _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.VisibleName.CompareTo(b.VisibleName); });
                     break;
                 case 1:
+                    _sortText.text = "Jarjestetty\nArvo";
+                    _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Value.CompareTo(b.Value); });
+                    break;
+                case 2:
                     _sortText.text = "Jarjestetty\nPaino";
                     _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Weight.CompareTo(b.Weight); });
                     break;
-                case 2:
+                case 3:
                     _sortText.text = "Jarjestetty\nMateriaali";
                     _items.Sort((StorageFurniture a, StorageFurniture b) => { return a.Material.CompareTo(b.Material); });
                     break;
@@ -269,6 +288,9 @@ namespace MenuUi.Scripts.Storage
             _weight.text = _furn.Weight + " KG";
 
             // Material text
+            _material.text = $"{_furn.Material}";
+
+            // VAlue text
             _value.text = $"{_furn.Value}";
 
             if (_furn.Position == new Vector2Int(-1, -1))
