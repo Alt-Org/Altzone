@@ -944,6 +944,7 @@ GameObject:
   - component: {fileID: 7875933035581161408}
   - component: {fileID: 2594127428071818835}
   - component: {fileID: 5074913120874068906}
+  - component: {fileID: 5200045151753547112}
   m_Layer: 5
   m_Name: SelectedCharacters
   m_TagString: Untagged
@@ -1009,6 +1010,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5200045151753547112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758105105165116015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d9f61c2e76b6849bcbb3bf836adff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layout: {fileID: 7110144072024766012}
+  _horizontalContentPanel: {fileID: 995605884803183295}
+  _characterSlotprefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
+    type: 3}
+  _referenceSheet: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964, type: 2}
 --- !u!1 &1845983529563244087
 GameObject:
   m_ObjectHideFlags: 0
