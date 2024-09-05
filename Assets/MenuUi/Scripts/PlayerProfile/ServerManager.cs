@@ -27,7 +27,7 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
-    public static string ADDRESS = "https://altzone.fi/api/";
+    public static string ADDRESS = "https://devapi.altzone.fi/";
 
     #region Delegates & Events
 
