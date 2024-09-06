@@ -69,11 +69,13 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private ChatAppSettings _appSettings;
 
-    private const string SERVER_ADDRESS = "https://altzone.fi/api/chat/";
+    private const string SERVER_ADDRESS = "https://devapi.altzone.fi/chat/";
 
     internal ChatPreviewController ChatPreviewController { get => _chatPreviewController; set => _chatPreviewController = value; }
     internal ChatController ChatController { get => _chatController; set => _chatController = value; }
     internal ChatClient ChatClient { get => _chatClient; set => _chatClient = value; }
+
+    public string AccessToken { get => PlayerPrefs.GetString("accessToken", string.Empty); }
 
     private const string DEFAULT_CLAN_CHAT_NAME = "Klaanittomat";
 
@@ -128,8 +130,8 @@ public class ChatListener : MonoBehaviour, IChatClientListener
     {
         ChatPreviewController = FindObjectOfType<ChatPreviewController>();
         SceneManager.sceneLoaded += OnSceneLoaded;
-        //ConnectToPhotonChat();
-        Debug.LogWarning($"Chat is currently disabled due to confusion about how to implement GDPR.");
+        ConnectToPhotonChat();
+        //Debug.LogWarning($"Chat is currently disabled due to confusion about how to implement GDPR.");
     }
 
     private void Update()
@@ -166,6 +168,7 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     public void ConnectToPhotonChat()
     {
+        if(ServerManager.Instance.Player.above13)
         if (!ChatClient.CanChat)
             ChatClient.ConnectUsingSettings(_appSettings);
     }
@@ -288,52 +291,55 @@ public class ChatListener : MonoBehaviour, IChatClientListener
     private IEnumerator PostChatToServer(string channelName, System.Action<JObject> callbackOnFinish)
     {
         string json = "{\"name\": \"" + channelName + "\"}";
-        var bytes = Encoding.UTF8.GetBytes(json);
+        //var bytes = Encoding.UTF8.GetBytes(json);
 
-        using (UnityWebRequest request = UnityWebRequest.Put(SERVER_ADDRESS, bytes))
-        {
-            request.method = "POST"; // Hack to send POST to server instead of PUT
-            request.SetRequestHeader("Content-Type", "application/json");
+        //using (UnityWebRequest request = UnityWebRequest.Put(SERVER_ADDRESS, bytes))
+        //{
+            //request.method = "POST"; // Hack to send POST to server instead of PUT
+            //request.SetRequestHeader("Content-Type", "application/json");
 
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            yield return StartCoroutine(WebRequests.Post($"{ SERVER_ADDRESS}", json, AccessToken, request =>
             {
-                ChatController?.ShowErrorMessage(ERROR_CREATING_CHAT_TO_SERVER + "\n" + request.error);
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish(null);
-            }
-            else
-            {
-                if (callbackOnFinish != null)
-                    callbackOnFinish(JObject.Parse(request.downloadHandler.text));
-            }
-        }
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    ChatController?.ShowErrorMessage(ERROR_CREATING_CHAT_TO_SERVER + "\n" + request.error);
+
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(null);
+                }
+                else
+                {
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(JObject.Parse(request.downloadHandler.text));
+                }
+            }));
+        //}
     }
 
     private IEnumerator GetChatFromServer(string channelName, System.Action<JObject> callbackOnFinish)
     {
-        using (UnityWebRequest request = UnityWebRequest.Get(SERVER_ADDRESS + @"?search=name=""" + channelName + @""""))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+        //using (UnityWebRequest request = UnityWebRequest.Get(SERVER_ADDRESS + @"?search=name=""" + channelName + @""""))
+        //{
+            yield return StartCoroutine(WebRequests.Get(SERVER_ADDRESS + @"?search=name=""" + channelName + @"""", AccessToken, request =>
             {
-                //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channelName + "\n" + request.error);
-                Debug.LogWarning("Failed to get chat from server");
-                if (callbackOnFinish != null)
-                    callbackOnFinish(null);
-            }
-            else
-            {
-                JObject json = JObject.Parse(request.downloadHandler.text);
-                JArray chats = (JArray)json["data"]["Chat"];
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channelName + "\n" + request.error);
+                    Debug.LogWarning("Failed to get chat from server " + request.error);
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(null);
+                }
+                else
+                {
+                    JObject json = JObject.Parse(request.downloadHandler.text);
+                    JArray chats = (JArray)json["data"]["Chat"];
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish((JObject)chats.Where(name => (string)name["name"] == channelName).FirstOrDefault());
-            }
-        }
+                    if (callbackOnFinish != null)
+                        callbackOnFinish((JObject)chats.Where(name => (string)name["name"] == channelName).FirstOrDefault());
+                }
+            }));
+        //}
     }
 
     private IEnumerator GetChatHistoryFromServerCoroutine(ChatChannel channel, ServerHistoryLoadingCause serverHistoryCause, System.Action<bool> callbackOnFinish)
@@ -354,62 +360,64 @@ public class ChatListener : MonoBehaviour, IChatClientListener
             loadingNewMessages = false;
         }
 
-        using (UnityWebRequest request = UnityWebRequest.Get(query))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+        //using (UnityWebRequest request = UnityWebRequest.Get(query))
+        //{
+            yield return StartCoroutine(WebRequests.Get(query, AccessToken, request =>
             {
-                //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channel._channelName + "\n" + request.error);
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish(false);
-            }
-            else
-            {
-                JObject json = JObject.Parse(request.downloadHandler.text);
-                JArray messages = (JArray)json["data"]["Chat"];
-
-                // Goes through all received messages and instantiates them.
-                // We go through the list in reverse order as the first index is the most recent message and we want the most recent message at the bottom of chat
-                for (int i = messages.Count - 1; i >= 0; i--)
+                if (request.result != UnityWebRequest.Result.Success)
                 {
-                    int id = int.Parse(messages[i]["id"].ToString());
-                    string username = messages[i]["senderUsername"].ToString();
-                    string message = messages[i]["content"].ToString();
-                    Enum.TryParse(messages[i]["feeling"].ToString(), out Mood mood);
+                    //ChatController?.ShowErrorMessage(ERROR_RETRIEVING_CHAT_FROM_SERVER + " - " + channel._channelName + "\n" + request.error);
 
-                    ChatMessage chatMessage = new ChatMessage(id, username, message, channel, mood);
-
-                    // New messages are put at the end of the list, old ones to the front
-                    if (loadingNewMessages)
-                        _chatMessages.Add(chatMessage);
-                    else
-                        _chatMessages.Insert(0, chatMessage);
-
-                    int index = int.Parse(messages[i]["id"].ToString());
-
-                    // Checks if the message id is lower or higher than the current channel lowest/highest index.
-                    if (channel._firstMsgIndex == 0 || index < channel._firstMsgIndex)
-                        channel._firstMsgIndex = index;
-
-                    if (channel._lastMsgIndex == 0 || index > channel._lastMsgIndex)
-                        channel._lastMsgIndex = index;
-
-                    if (channel == _activeChatChannel)
-                        ChatPreviewController?.MessageReceived(_activeChatChannel);
-
-                    // Old messages are instantiated on top, new ones on the bottom
-                    if (serverHistoryCause == ServerHistoryLoadingCause.LoadMoreButtonClicked)
-                        ChatController?.InstantiateChatMessagePrefab(chatMessage, true);
-                    else if (serverHistoryCause == ServerHistoryLoadingCause.FirstTimeLoading || serverHistoryCause == ServerHistoryLoadingCause.TimedOutFromPhotonChat)
-                        ChatController?.InstantiateChatMessagePrefab(chatMessage, false);
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(false);
                 }
+                else
+                {
+                    JObject json = JObject.Parse(request.downloadHandler.text);
+                    JArray messages = (JArray)json["data"]["Chat"];
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish(true);
-            }
-        }
+                    // Goes through all received messages and instantiates them.
+                    // We go through the list in reverse order as the first index is the most recent message and we want the most recent message at the bottom of chat
+                    for (int i = messages.Count - 1; i >= 0; i--)
+                    {
+                        int id = int.Parse(messages[i]["id"].ToString());
+                        string username = messages[i]["senderUsername"].ToString();
+                        string message = messages[i]["content"].ToString();
+                        Enum.TryParse(messages[i]["feeling"].ToString(), out Mood mood);
+
+                        ChatMessage chatMessage = new ChatMessage(id, username, message, channel, mood);
+
+                        // New messages are put at the end of the list, old ones to the front
+                        if (loadingNewMessages)
+                            _chatMessages.Add(chatMessage);
+                        else
+                            _chatMessages.Insert(0, chatMessage);
+
+                        int index = int.Parse(messages[i]["id"].ToString());
+
+                        // Checks if the message id is lower or higher than the current channel lowest/highest index.
+                        if (channel._firstMsgIndex == 0 || index < channel._firstMsgIndex)
+                            channel._firstMsgIndex = index;
+
+                        if (channel._lastMsgIndex == 0 || index > channel._lastMsgIndex)
+                            channel._lastMsgIndex = index;
+
+                        if (channel == _activeChatChannel)
+                            ChatPreviewController?.MessageReceived(_activeChatChannel);
+
+                        // Old messages are instantiated on top, new ones on the bottom
+                        if (serverHistoryCause == ServerHistoryLoadingCause.LoadMoreButtonClicked)
+                            ChatController?.InstantiateChatMessagePrefab(chatMessage, true);
+                        else if (serverHistoryCause == ServerHistoryLoadingCause.FirstTimeLoading || serverHistoryCause == ServerHistoryLoadingCause.TimedOutFromPhotonChat)
+                            ChatController?.InstantiateChatMessagePrefab(chatMessage, false);
+                    }
+
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(true);
+                }
+            }));
+        //}
     }
     private IEnumerator PostMessageToServer(ChatMessage message, ChatMessagePrefab chatMessageInstance)
     {
@@ -418,49 +426,53 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
         int enumIndex = (int)message._mood;
         string json = "{\"id\":" + message._id + ",\"senderUsername\":\"" + message._username + "\",\"content\":\"" + message._message + "\",\"feeling\":" + enumIndex.ToString() + "}";
-        var bytes = Encoding.UTF8.GetBytes(json);
+        //var bytes = Encoding.UTF8.GetBytes(json);
 
-        using(UnityWebRequest request = UnityWebRequest.Put($"{SERVER_ADDRESS}{message._channel._id}/messages", bytes))
-        {
-            request.method = "POST"; // Hack to send POST to server instead of PUT
-            request.SetRequestHeader("Content-Type", "application/json");
+        //using(UnityWebRequest request = UnityWebRequest.Put($"{SERVER_ADDRESS}{message._channel._id}/messages", bytes))
+        //{
+            //request.method = "POST"; // Hack to send POST to server instead of PUT
+            //request.SetRequestHeader("Content-Type", "application/json");
 
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            yield return StartCoroutine(WebRequests.Post($"{ SERVER_ADDRESS}{ message._channel._id}/messages", json, AccessToken, request =>
             {
-                if (chatMessageInstance != null)
+
+                if (request.result != UnityWebRequest.Result.Success)
                 {
-                    chatMessageInstance.SetErrorColor();
+                    if (chatMessageInstance != null)
+                    {
+                        chatMessageInstance.SetErrorColor();
+                    }
+                    ChatController?.ShowErrorMessage(ERROR_POSTING_MESSAGE_TO_SERVER + "\n" + request.error);
                 }
-                ChatController?.ShowErrorMessage(ERROR_POSTING_MESSAGE_TO_SERVER + "\n" + request.error);
-            }
-            else
-                Debug.Log("Message successfully uploaded to server!");
-        }
+                else
+                    Debug.Log("Message successfully uploaded to server!");
+            }));
+        //}
     }
 
     private IEnumerator DeleteChat(string id, Action<bool> callbackOnFinish)
     {
-        using(UnityWebRequest request = UnityWebRequest.Delete(SERVER_ADDRESS + id))
-        {
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+        //using (UnityWebRequest request = UnityWebRequest.Delete(SERVER_ADDRESS + id))
+        //{
+            yield return StartCoroutine(WebRequests.Get(SERVER_ADDRESS + id, AccessToken, request =>
             {
-                Debug.Log(request.error);
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish(false);
-            }
-            else
-            {
-                Debug.Log("Chat Deleted!");
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(request.error);
 
-                if (callbackOnFinish != null)
-                    callbackOnFinish(true);
-            }
-        }
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(false);
+                }
+                else
+                {
+                    Debug.Log("Chat Deleted!");
+
+                    if (callbackOnFinish != null)
+                        callbackOnFinish(true);
+                }
+            }));
+        //}
     }
 
 
