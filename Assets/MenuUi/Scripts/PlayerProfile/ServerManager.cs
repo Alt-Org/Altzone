@@ -504,7 +504,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
     {
-        string body = @$"{{""clan_id"":""{clanToJoin.id}"",""player_id"":""{Player._id}""}}";
+        string body = @$"{{""clan_id"":""{clanToJoin._id}"",""player_id"":""{Player._id}""}}";
 
         StartCoroutine(WebRequests.Post(ADDRESS + "clan/join", body, AccessToken, request =>
         {
