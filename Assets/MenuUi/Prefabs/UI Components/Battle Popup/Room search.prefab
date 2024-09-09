@@ -32,8 +32,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3854994205017265967}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.1, y: 0}
+  m_AnchorMax: {x: 0.9, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Selaa pelihuoneita\n(Ei viel\xE4 k\xE4yt\xF6ss\xE4)"
+  m_text: Selaa pelihuoneita
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 57.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1218,7 +1218,7 @@ GameObject:
   - component: {fileID: 3232295437517049036}
   - component: {fileID: 1113792342497410767}
   m_Layer: 5
-  m_Name: Room Search
+  m_Name: Room search
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
