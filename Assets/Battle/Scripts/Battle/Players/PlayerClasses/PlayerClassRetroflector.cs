@@ -7,7 +7,7 @@ namespace Battle.Scripts.Battle.Players
     {
         // Serialized fields
         [SerializeField] private int _maxReflections;
-        [SerializeField] private GameObject _shield;
+        [SerializeField] private ShieldManager _shieldManager;
         [SerializeField] private GameObject[] _shieldShapes; // Different shield shapes
         [SerializeField] private bool _allowLoveProjectiles = false; // Control for love projectiles
 
@@ -50,8 +50,7 @@ namespace Battle.Scripts.Battle.Players
             // Initialize the shield with the first shape
             if (_shieldShapes.Length > 0)
             {
-                _shield = Instantiate(_shieldShapes[_currentShieldShapeIndex], transform);
-                _shield.SetActive(true);
+                _shieldManager.SetShield(shieldGameObject: _shieldShapes[_currentShieldShapeIndex]);
             }
         }
 
@@ -73,10 +72,7 @@ namespace Battle.Scripts.Battle.Players
         {
             _currentShieldShapeIndex++;
             if (_currentShieldShapeIndex < _shieldShapes.Length)
-            {
-                // Deactivate current shield and activate the next one
-                Destroy(_shield);
-                _shield = Instantiate(_shieldShapes[_currentShieldShapeIndex], transform);
+          
                 
                 _reflectionCount = 0; // Reset the reflection count for the new shape
 
@@ -84,7 +80,6 @@ namespace Battle.Scripts.Battle.Players
             }
         }
     }
-}
 
 
 
