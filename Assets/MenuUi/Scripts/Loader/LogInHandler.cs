@@ -15,6 +15,8 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private LogInPanelSuccessHandler _loginSuccess;
         [SerializeField]
+        private LoadingInfoController _loadInfoController;
+        [SerializeField]
         private WindowNavigation _privacyNavigation;
         [SerializeField]
         private WindowNavigation _mainMenuNavigation;
@@ -48,11 +50,13 @@ namespace MenuUi.Scripts.Loader
 
         private void AttemptLogIn()
         {
+            _loadInfoController.SetInfoText(InfoType.LogIn);
             StartCoroutine(ServerManager.Instance.LogIn());
         }
 
         private void OpenLogInScreen()
         {
+            _loadInfoController.DisableInfo();
             _signInManager.gameObject.SetActive(true);
         }
 
@@ -66,13 +70,17 @@ namespace MenuUi.Scripts.Loader
         {
             if (value)
             {
+                _loadInfoController.SetInfoText(InfoType.FetchPlayerData);
                 PlayerData playerData = null;
                 Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
 
-                if ((playerData.SelectedCharacterId == 0 ) || (playerData.SelectedCharacterId == 1))
+                if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
                     StartCoroutine(_introStoryNavigation.Navigate());
                 else
+                {
+                    _loadInfoController.SetInfoText(InfoType.Finished);
                     StartCoroutine(_mainMenuNavigation.Navigate());
+                }
             }
         }
     }
