@@ -12,6 +12,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
     {
         [SerializeField] private GameObject _slotPrefab;
         [SerializeField] private Transform _content;
+        [SerializeField] private TextMeshProUGUI _noRoomText;
         private List<RoomInfo> _roomsData;
         private Action<string> _onJoinRoom;
 
@@ -48,6 +49,9 @@ namespace MenuUI.Scripts.Lobby.InLobby
             if (_content == null) return;
 
             ResetPanel(_content);
+
+            if(_roomsData.Count == 0) _noRoomText.gameObject.SetActive(true);
+            else _noRoomText.gameObject.SetActive(false);
 
             foreach(RoomInfo roomInfo in _roomsData)
             {
