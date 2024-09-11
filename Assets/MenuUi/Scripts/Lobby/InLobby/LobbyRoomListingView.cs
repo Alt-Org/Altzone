@@ -58,14 +58,14 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 }
             }
             // Update button captions
-            for (var i = 0; i < rooms.Count; ++i)
+            /*for (var i = 0; i < rooms.Count; ++i)
             {
                 var room = rooms[i];
                 var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
                 //var button = buttonObject.GetComponent<Button>();
                 UpdateButton(buttonObject, room, onJoinRoom);
-            }
+            }*/
             _searchPanelController.RoomsData = rooms;
 
             // Hide extra lines
@@ -98,7 +98,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 button = buttonObject.GetComponent<Button>();
 
-                if(button == null) button = buttonObject.transform.Find("Button").GetComponent<Button>();
+                //if(button == null) button = buttonObject.transform.Find("Button")?.GetComponent<Button>();
+                if (button == null) button = buttonObject.transform.Find("Panel")?.GetComponent<Button>();
             }
             if (_oldDesign)
             {

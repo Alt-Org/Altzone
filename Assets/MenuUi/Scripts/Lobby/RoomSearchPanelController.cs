@@ -40,7 +40,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void SetOnJoinRoom(Action<string> onJoinRoom)
         {
-            if(_onJoinRoom != null) _onJoinRoom = onJoinRoom;
+            if(_onJoinRoom == null) _onJoinRoom = onJoinRoom;
         }
 
         private void UpdatePanelContent()
@@ -65,7 +65,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             GameObject buttonObject = slot.transform.GetChild(0).gameObject;
             Button button;
-            button = buttonObject.transform.Find("Button").GetComponent<Button>();
+            button = buttonObject.GetComponent<Button>();
 
             var roomText = $"{room.Name}";
             string playerCountText;
@@ -77,13 +77,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 playerCountText = $"Pelaajia {room.PlayerCount}/4";
                 playerCountText = $"<color=blue>{playerCountText}</color>";
-                button.GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
+                button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
             }
             else
             {
                 playerCountText = $"Pelaajia {room.PlayerCount}/4";
                 playerCountText = $"<color=brown>{playerCountText}</color>";
-                button.GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
+                button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
             }
             var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
             Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");
