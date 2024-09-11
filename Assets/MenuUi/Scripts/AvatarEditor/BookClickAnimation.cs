@@ -5,6 +5,7 @@ using UnityEngine;
 public class BookClickAnimation : MonoBehaviour
 {
     private Animator animator;
+    private bool hasBeenClicked = false;
 
     void Start()
     {
@@ -13,9 +14,10 @@ public class BookClickAnimation : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (animator != null)
+        if (!hasBeenClicked && animator != null)
         {
             animator.Play("PageFlip");
+            hasBeenClicked = true;
         }
     }
 }
