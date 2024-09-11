@@ -61,10 +61,10 @@ public class CharacterLoader : MonoBehaviour
     {
         
         AvatarInfo character = GetCharacterPrefabInfo_bkp(prefabId);
-        Debug.Log("prefab id on: " + prefabId + " it corresponds to character: " +character.Name);
+        // Debug.Log("prefab id on: " + prefabId + " it corresponds to character: " +character.Name);
         if (character != null && character.characterImagePrefab != null)
         {
-            Debug.Log("Instantinating character");
+            // Debug.Log("Instantinating character");
             foreach(Transform child in _characterImageParent){
                 Destroy(child.gameObject);
             }
