@@ -11,7 +11,8 @@ using System.Runtime.CompilerServices;
 public class CharacterLoader : MonoBehaviour
 {
     [SerializeField] private List<AvatarClassInfo> _avatarClassInfoList;
-    [SerializeField] private Image _characterImage;
+    // [SerializeField] private Image _characterImage;
+    [SerializeField] private Transform _characterImageParent;
     [SerializeField] private Image _divanImage;
     private string _divanObjectName = "divaani";
     PlayerData _playerData = null;
@@ -24,11 +25,11 @@ public class CharacterLoader : MonoBehaviour
 
     public void RefreshPlayerCurrentCharacter()
     {
-        _characterImage = GetComponent<Image>();
+        // _characterImage = GetComponent<Image>();
         _divanImage = GameObject.Find(_divanObjectName).GetComponent<Image>();
         Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => _playerData = p);
 
-        int selectedCharacterId = _playerData.SelectedCharacterId;
+        int selectedCharacterId = _playerData.SelectedCharacterIds[0];
         UpdateCharacterImage(selectedCharacterId);
     }
 
@@ -58,10 +59,16 @@ public class CharacterLoader : MonoBehaviour
 
     private void UpdateCharacterImage(int prefabId)
     {
+        
         AvatarInfo character = GetCharacterPrefabInfo_bkp(prefabId);
-        if (character != null && _characterImage != null)
+        Debug.Log("prefab id on: " + prefabId + " it corresponds to character: " +character.Name);
+        if (character != null && character.characterImagePrefab != null)
         {
-            _characterImage.sprite = character.CharacterImage;
+            Debug.Log("Instantinating character");
+            foreach(Transform child in _characterImageParent){
+                Destroy(child.gameObject);
+            }
+            Instantiate(character.characterImagePrefab, _characterImageParent);
             _divanImage.sprite = character.DivanImage;
         }
     }
@@ -72,7 +79,8 @@ public class AvatarInfo
 {
     public string Name;
     public CharacterID id;
-    public Sprite CharacterImage;
+    // public Sprite CharacterImage;
+    public GameObject characterImagePrefab;
     public Sprite DivanImage;
 }
 
