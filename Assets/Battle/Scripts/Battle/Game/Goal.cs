@@ -7,6 +7,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 using TMPro;
 
+using Altzone.Scripts.GA;
+
 using Battle.Scripts.Battle.Players;
 
 namespace Battle.Scripts.Battle.Game
@@ -101,6 +103,8 @@ namespace Battle.Scripts.Battle.Game
                     PhotonBattle.TeamAlphaValue => PhotonBattle.TeamBetaValue,
                     _ => PhotonBattle.NoTeamValue
                 });
+
+                if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnBattleEnd();
 
                 if (_goalNumber != teamNumber)
                 {

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+using Photon.Pun;
+
+using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.AudioPlayer;
 
@@ -57,6 +60,8 @@ namespace Battle.Scripts.Battle.Game
             }
             Debug.Log("spriteIndex: " + _spriteIndex);
             _audioPlayer.Play(_spriteIndex);
+
+            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnWallHit(_side.ToString());
         }
         #endregion Public Methods
 

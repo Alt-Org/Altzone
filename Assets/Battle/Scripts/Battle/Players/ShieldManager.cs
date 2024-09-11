@@ -1,3 +1,5 @@
+using Altzone.Scripts.GA;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
@@ -11,6 +13,11 @@ namespace Battle.Scripts.Battle.Players
         #endregion Public - Properties
 
         #region Public - Setter Methods
+
+        public void SetTempGaInfo(int playerPos)
+        {
+            _tempGaInfoPlayerPos = playerPos;
+        }
 
         public void SetSpriteVariant(PlayerActor.SpriteVariant variant)
         {
@@ -47,6 +54,8 @@ namespace Battle.Scripts.Battle.Players
         {
             _currentShield.ShieldHitbox.SetActive(false);
             _timer = 5;
+
+            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_tempGaInfoPlayerPos.ToString());
         }
 
         #endregion Public - Methods
@@ -80,11 +89,15 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #region Private - Fields
+
         private Shield _currentShield;
         private bool _initialized = false;
         private bool _hitboxActive;
         private bool _showShield;
         private int _timer = -1;
+
+        private int _tempGaInfoPlayerPos;
+
         #endregion Private - Fields
 
         #region Private - Methods

@@ -5,10 +5,13 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityConstants;
 
+using Photon.Pun;
+
 using Altzone.Scripts.Battle;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
 
 namespace Battle.Scripts.Battle.Players
@@ -188,7 +191,32 @@ namespace Battle.Scripts.Battle.Players
                     _playerDriver.PlayerPos,
                     _playerShieldManager.transform.position
                 ));
+
+                //{ GA info
+
+                if (!_playerDriver.IsLocal) return;
+
+                if (_otherDrivers.Count > 0)
+                {
+                    float otherPlayerDistance;
+                    float otherPlayerDistanceMin = float.MaxValue;
+
+                    foreach (IDriver driver in _otherDrivers)
+                    {
+                        otherPlayerDistance = (_playerShieldManager.transform.position - driver.ActorShieldTransform.position).magnitude;
+                        if (otherPlayerDistance < otherPlayerDistanceMin) otherPlayerDistanceMin = otherPlayerDistance;
+                    }
+
+                    GameAnalyticsManager.Instance.DistanceToPlayer(otherPlayerDistanceMin);
+                }
+
+                GameAnalyticsManager.Instance.DistanceToWall(Context.GetBattlePlayArea.ArenaHeight / 2 - Mathf.Abs(_playerShieldManager.transform.position.y));
+
+                //} GA info
             });
+
+            // GA info
+            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.MoveCommand(targetPosition);
         }
 
         public void OnBallShieldCollision() => _playerClass.OnBallShieldCollision();
@@ -272,6 +300,8 @@ namespace Battle.Scripts.Battle.Players
             _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
             _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
             _squareFlashSprite = _geometryRoot.transform.Find("SquareFlashSprite").gameObject;
+
+            this.ExecuteOnNextFrame(() => { _playerShieldManager.SetTempGaInfo(_playerDriver.PlayerPos); });
 
             _squareFlashSprite.SetActive(false);
 

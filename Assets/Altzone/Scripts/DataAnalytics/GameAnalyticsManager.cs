@@ -189,9 +189,9 @@ namespace Altzone.Scripts.GA
             WallHitsPerMatchPerTeam();
         }
 
-        public void DistanceToPlayer(Vector3 playerPosition, Vector3 otherPlayerPosition) //etäisyys kanssapelaajaan
+        public void DistanceToPlayer(float distance) //etäisyys kanssapelaajaan
         {
-            float distance = Vector3.Distance(playerPosition, otherPlayerPosition);
+            //float distance = Vector3.Distance(playerPosition, otherPlayerPosition);
 
             var eventParams = new Dictionary<string, object>
             {
@@ -202,9 +202,9 @@ namespace Altzone.Scripts.GA
             Debug.Log($"Distance to other player: {distance}");
         }
 
-        public void DistanceToWall(Vector3 playerPosition, Vector3 wallPosition) //etäisyys muuriin
+        public void DistanceToWall(float distance) //etäisyys muuriin
         {
-            float distance = Vector3.Distance(playerPosition, wallPosition);
+            //float distance = Vector3.Distance(playerPosition, wallPosition);
 
             var eventParams = new Dictionary<string, object>
             {
@@ -215,7 +215,7 @@ namespace Altzone.Scripts.GA
             Debug.Log($"Distance to wall: {distance}");
         }
 
-        public void ClanChange(string newClan) //laskee klaanien vaihdot 
+        public void ClanChange(string newClan) //laskee klaanien vaihdot
         {
             _clanChanges++;
             var eventParams = new Dictionary<string, object>
