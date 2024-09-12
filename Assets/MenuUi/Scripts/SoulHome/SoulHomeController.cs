@@ -68,7 +68,7 @@ namespace MenuUI.Scripts.SoulHome
                     rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
             }
             _audioManager.transform.Find("Music").GetComponent<MusicList>().PlayMusic();
-            string name = GetComponent<MusicList>().GetTrackName();
+            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().GetTrackName();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
@@ -83,7 +83,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (rootObject.name == "AudioManager")
                     rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Play();
             }
-            GetComponent<MusicList>().StopMusic();
+            _audioManager.transform.Find("Music").GetComponent<MusicList>().StopMusic();
         }
 
         public void SetRoomName(GameObject room)
