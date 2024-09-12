@@ -32,7 +32,7 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
         {
             _curSelectedCharacterSlots[i].GetComponent<GridLayoutGroup>().cellSize = new(size, size);
         }
-
+        ResetCharacters();
         SetCharacters();
     }
 
@@ -68,6 +68,17 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
             }
 
         });
+    }
+
+    private void ResetCharacters()
+    {
+        for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+        {
+            GameObject character = null;
+            if (_curSelectedCharacterSlots[i].transform.childCount > 0)
+            character = _curSelectedCharacterSlots[i].transform.GetChild(0).gameObject;
+            if(character != null) Destroy(character);
+        }
     }
 
 }
