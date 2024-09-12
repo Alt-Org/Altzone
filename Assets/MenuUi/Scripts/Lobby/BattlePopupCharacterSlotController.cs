@@ -53,7 +53,7 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
 
             for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
             {
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfo((int)characters[i]);
+                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast(characters[i]);
 
                 if (info == null) continue;
 

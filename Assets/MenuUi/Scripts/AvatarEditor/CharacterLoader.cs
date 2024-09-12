@@ -37,23 +37,30 @@ public class CharacterLoader : MonoBehaviour
     {
         CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
 
-        int classValue = (int)characterClass >> 8;
-        classValue--;
+        AvatarClassInfo classObject = null;
+        foreach (AvatarClassInfo classInfo in _avatarClassInfoList)
+        {
+            if (classInfo.id == characterClass)
+            {
+                classObject = classInfo;
+                break;
+            }
+        }
 
-        if (classValue < 0 || classValue >= _avatarClassInfoList.Count)
+        if (classObject == null)
         {
             return null;
         }
-        AvatarClassInfo classObject = _avatarClassInfoList[classValue];
 
-        int characterValue = CustomCharacter.GetInsideCharacterID((CharacterID)prefabId);
-        characterValue--;
-
-        if (characterValue < 0 || characterValue >= classObject.list.Count)
+        AvatarInfo character = null;
+        foreach (AvatarInfo CharacterInfo in classObject.list)
         {
-            return null;
+            if (CharacterInfo.id == (CharacterID)prefabId)
+            {
+                character = CharacterInfo;
+                break;
+            }
         }
-        AvatarInfo character = classObject.list[characterValue];
         return character;
     }
 
