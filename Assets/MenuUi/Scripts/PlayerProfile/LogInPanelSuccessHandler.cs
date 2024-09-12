@@ -15,18 +15,6 @@ namespace MenuUi.Scripts.Login
         public delegate void LogInPanelSuccess();
         public event LogInPanelSuccess OnLogInPanelSuccess;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         public void LogInSuccess()
         {
             if (SceneManager.GetActiveScene().buildIndex == 0)

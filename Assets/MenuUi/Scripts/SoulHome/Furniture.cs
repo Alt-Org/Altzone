@@ -7,33 +7,6 @@ using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    /*public enum FurnitureSize
-    {
-        OneXOne,
-        OneXTwo,
-        OneXThree,
-        OneXFour,
-        OneXSix,
-        TwoXOne,
-        TwoXTwo,
-        TwoXThree,
-        TwoXFour,
-        TwoXSix,
-        TwoXEight,
-        ThreeXThree,
-        ThreeXEight,
-        SevenXThree
-    }
-
-    public enum FurniturePlace
-    {
-        Floor,
-        FloorByWall,
-        Ceiling,
-        Wall
-
-    }*/
-
     [Serializable]
     public class Furniture
     {

@@ -35,12 +35,6 @@ namespace MenuUI.Scripts.SoulHome
             if(_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void OnEnable()
         {
             SetEditInfo();
@@ -182,7 +176,6 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     else
                     {
-                        //itemToRemove.SetActive(false);
                         if (count != furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Add(furnitureSlot.gameObject);
                         _hiddenSlot = null;
                     }

@@ -417,27 +417,5 @@ namespace MenuUI.Scripts.SoulHome
             furniture.transform.SetParent(transform.Find("FurniturePoints").GetChild(prevRow).GetChild(prevColumn));
             furniture.GetComponent<FurnitureHandling>().SetScale();
         }
-
-
-        private Vector2Int CheckFurnitureSize(FurnitureSize size)
-        {
-            if (size == FurnitureSize.OneXOne)
-            {
-                return new Vector2Int(1,1);
-            }
-            else if (size == FurnitureSize.OneXTwo)
-            {
-                return new Vector2Int(2, 1);
-            }
-            else if (size == FurnitureSize.OneXFour)
-            {
-                return new Vector2Int(4, 1);
-            }
-            else
-            {
-                Debug.LogError("Error: Invalid furniture size");
-                return new Vector2Int(0, 0);
-            }
-        }
     }
 }

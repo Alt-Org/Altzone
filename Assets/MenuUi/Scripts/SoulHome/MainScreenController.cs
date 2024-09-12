@@ -189,7 +189,6 @@ namespace MenuUI.Scripts.SoulHome
                             {
                                 _selectedFurnitureTray = _tempSelectedFurnitureTray;
                                 _tempSelectedFurnitureTray = null;
-                                //if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                             }
                             if (_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
                             if (_soulHomeTower.SelectedFurniture == null)

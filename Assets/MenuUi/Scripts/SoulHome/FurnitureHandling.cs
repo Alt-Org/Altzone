@@ -116,14 +116,7 @@ namespace MenuUI.Scripts.SoulHome
             _tempSpriteDirection = _spriteDirection;
 
             _collider = GetComponent<BoxCollider2D>();
-            //_collider.size = GetComponent<SpriteRenderer>().;
             _bounds = _collider.bounds;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public Vector2Int GetFurnitureSize()

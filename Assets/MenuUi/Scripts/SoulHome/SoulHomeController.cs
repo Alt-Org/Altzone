@@ -51,18 +51,11 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
-            //_furnitureList = new();
             if (ServerManager.Instance.Clan != null)
             {
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
             }
             EditModeTrayResize();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void OnEnable()
