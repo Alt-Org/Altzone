@@ -16,9 +16,17 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _time;
         [SerializeField] private List<Sprite> _spriteList;
         [SerializeField] int _pointStep;
+
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => true;
 
         #region Public Methods
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {}
@@ -32,6 +40,8 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #endregion Public Methods
+
+        private IReadOnlyBattlePlayer _battlePlayer;
 
         // Important Objects
         private GridManager _gridManager;
@@ -98,8 +108,9 @@ namespace Battle.Scripts.Battle.Players
         {
             PlayerActor actor = transform.parent.GetComponentInParent<PlayerActor>();
 
+            /* broken code pls fix
             // Check if the playeractor is on the same team as the local player
-            foreach (IDriver driver in data.AllDrivers)
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 if(driver.PlayerActor == actor)
                 {
@@ -116,6 +127,7 @@ namespace Battle.Scripts.Battle.Players
                     break;
                 }
             }
+            */
         }
 
         private void ProjectilePredictionUpdate()

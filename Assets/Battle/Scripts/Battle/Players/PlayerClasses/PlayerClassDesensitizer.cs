@@ -9,7 +9,14 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _maxCollisions;
         [SerializeField] GameObject _shield;
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => true;
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {}
@@ -18,6 +25,8 @@ namespace Battle.Scripts.Battle.Players
         {
             TrackShieldCollisions();
         }
+
+        private IReadOnlyBattlePlayer _battlePlayer;
 
         // Shield collision tracking variables
         private int _collisionCount;

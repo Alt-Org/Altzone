@@ -17,14 +17,20 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace Battle.Scripts.Battle.Players
 {
-    public class PlayerClassTrickster : MonoBehaviour, IPlayerClass
+    internal class PlayerClassTrickster : MonoBehaviour, IPlayerClass
     {
         // Serialized fields
         [SerializeField] private ShieldManager _shieldManager;
         [SerializeField] private GameObject[] _shieldBounceRandomizers;
 
-        [Obsolete("SpecialAbilityOverridesBallBounce is deprecated, please use return value of OnBallShieldCollision instead.")]
-        public bool SpecialAbilityOverridesBallBounce => false;
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
+        public bool BounceOnBallShieldCollision => true;
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {
@@ -41,9 +47,8 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
         }
 
-        public bool BounceOnBallShieldCollision => true;
-
         // Variables
+        private IReadOnlyBattlePlayer _battlePlayer;
         private PhotonView _photonView;
         private PhotonEventDispatcher _photonEventDispatcher;
 
@@ -90,7 +95,8 @@ namespace Battle.Scripts.Battle.Players
 
             PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
 
-            foreach (IDriver driver in data.AllDrivers)
+            /* broken code pls fix
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 if (driver.PlayerActor == playerActor)
                 {
@@ -98,6 +104,7 @@ namespace Battle.Scripts.Battle.Players
                     break;
                 }
             }
+            */
 
             byte eventCode = (byte)(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + playerPos);
 
@@ -105,7 +112,8 @@ namespace Battle.Scripts.Battle.Players
 
             if (PhotonNetwork.IsMasterClient)
             {
-                this.ExecuteOnNextFrame(() => {
+                this.ExecuteOnNextFrame(() =>
+                {
                     PhotonNetwork.AllocateViewID(_photonView);
 
                     _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);

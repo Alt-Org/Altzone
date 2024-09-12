@@ -1,11 +1,20 @@
-using System;
 using UnityEngine;
 
 namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerClassNone : MonoBehaviour, IPlayerClass
     {
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => true;
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+
+            // debug
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+        }
 
         public void OnBallShieldCollision()
         {
@@ -17,15 +26,11 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
         }
 
+        private IReadOnlyBattlePlayer _battlePlayer;
+
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS NONE] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
-
-        // debug
-        private void Start()
-        {
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-        }
     }
 }

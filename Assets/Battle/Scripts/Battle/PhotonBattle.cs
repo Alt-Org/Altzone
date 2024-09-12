@@ -8,6 +8,13 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace Battle.Scripts.Battle
 {
+    internal enum BattleTeamNumber
+    {
+        NoTeam = PhotonBattleRoom.NoTeamValue,
+        TeamAlpha = PhotonBattleRoom.TeamAlphaValue,
+        TeamBeta = PhotonBattleRoom.TeamBetaValue,
+    }
+
     /// <summary>
     /// Battle wrapper for <see cref="PhotonBattleRoom"/>
     /// </summary>
@@ -17,9 +24,9 @@ namespace Battle.Scripts.Battle
         //  Beta team number 2
         //  - Player positions 3 and 4
         // | ======= |
-        // |  4 |  3 |      Team number 0
+        // |  4 | 3  |      Team number 0
         // | ======= |      - Guest number is 0
-        // |  1 |  2 |      - Spectator number is 10
+        // |  1 | 2  |      - Spectator number is 10
         // | ======= |
         //  Alpha team number 1
         //  - Player positions 1 and 2
@@ -34,10 +41,6 @@ namespace Battle.Scripts.Battle
         public const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
         public const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        public const int NoTeamValue = PhotonBattleRoom.NoTeamValue;
-        public const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
-        public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
-
         internal static class EventCodes
         {
             public const byte PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE = 11; // picked randomly
@@ -51,8 +54,8 @@ namespace Battle.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(Player player) => s_photonBattleRoom.IsPlayerPosAvailable(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(Player player) => GetTeamNumber(GetPlayerPos(player));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static BattleTeamNumber GetTeamNumber(int playerPos) => (BattleTeamNumber)s_photonBattleRoom.GetTeamNumber(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static BattleTeamNumber GetTeamNumber(Player player) => GetTeamNumber(GetPlayerPos(player));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();

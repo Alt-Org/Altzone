@@ -10,7 +10,18 @@ namespace Battle.Scripts.Battle.Players
     {
         #region Public
 
+        #region Public - Methods
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
+
+        #endregion Public - Methods
+
         #region Public - Properties
+
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
         /// <summary>
         /// Shows or hides <c>PlayerSoul</c> sprite. (true = show, false = hide)
@@ -47,6 +58,7 @@ namespace Battle.Scripts.Battle.Players
         #region Private
 
         #region Private - Fields
+        private IReadOnlyBattlePlayer _battlePlayer;
         private bool _show;
         private SpriteVariant _spriteVariant;
         private GameObject[] _spriteGameObjects;

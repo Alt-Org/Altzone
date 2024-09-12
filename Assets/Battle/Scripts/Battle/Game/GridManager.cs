@@ -53,12 +53,12 @@ namespace Battle.Scripts.Battle.Game
             return new GridPos(Math.Clamp(gridPos.Row, 0, _gridHeight), Math.Clamp(gridPos.Col, 0, _gridWidth));
         }
 
-        public bool IsMovementGridSpaceFree(GridPos gridPos, int teamNumber)
+        public bool IsMovementGridSpaceFree(GridPos gridPos, BattleTeamNumber teamNumber)
         {
             return teamNumber switch
             {
-                PhotonBattle.TeamAlphaValue => _gridEmptySpacesAlpha[gridPos.Row, gridPos.Col],
-                PhotonBattle.TeamBetaValue => _gridEmptySpacesBeta[gridPos.Row, gridPos.Col],
+                BattleTeamNumber.TeamAlpha => _gridEmptySpacesAlpha[gridPos.Row, gridPos.Col],
+                BattleTeamNumber.TeamBeta => _gridEmptySpacesBeta[gridPos.Row, gridPos.Col],
                 _ => throw new UnityException($"Invalid Team Number {teamNumber}"),
             };
         }
@@ -94,8 +94,8 @@ namespace Battle.Scripts.Battle.Game
 
         private void InitializeGridArrays()
         {
-            _startAreaAlpha = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamAlphaValue);
-            _startAreaBeta = _battlePlayArea.GetPlayerPlayArea(PhotonBattle.TeamBetaValue);
+            _startAreaAlpha = _battlePlayArea.GetPlayerPlayArea(BattleTeamNumber.TeamAlpha);
+            _startAreaBeta = _battlePlayArea.GetPlayerPlayArea(BattleTeamNumber.TeamBeta);
 
             float smallOffset = 0.001f;
             GridPos alphaAreaStart = WorldPointToGridPosition(new Vector2(_startAreaAlpha.xMin, _startAreaAlpha.yMin + smallOffset));

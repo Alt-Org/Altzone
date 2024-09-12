@@ -9,15 +9,23 @@ namespace Battle.Scripts.Battle.Players
         #region Public
 
         #region Public - Properties
+
         public bool Initialized => _initialized;
+
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         #endregion Public - Properties
 
-        #region Public - Setter Methods
+        #region Public - Methods
 
-        public void SetTempGaInfo(int playerPos)
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
-            _tempGaInfoPlayerPos = playerPos;
+            _battlePlayer = battlePlayer;
+            _currentShield = new Shield(transform.GetChild(0).gameObject, this, _battlePlayer);
+            _initialized = true;
         }
+
+        #region Public - Methods - Setters
 
         public void SetSpriteVariant(PlayerActor.SpriteVariant variant)
         {
@@ -31,7 +39,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Destroy(_currentShield.ShieldGameObject);
 
-            _currentShield = new Shield(Instantiate(shieldGameObject, transform.position, transform.rotation, transform));
+            _currentShield = new Shield(Instantiate(shieldGameObject, transform.position, transform.rotation, transform), this, BattlePlayer);
             _currentShield.ShieldGameObject.transform.localPosition = Vector3.zero;
             _currentShield.ShieldGameObject.SetActive(true);
             _currentShield.ShieldHitbox.SetActive(_hitboxActive && _timer <= 0);
@@ -50,12 +58,14 @@ namespace Battle.Scripts.Battle.Players
             _currentShield.ShieldSpriteRenderer.enabled = show;
         }
 
+        #endregion Public - Methods - Setters
+
         public void OnShieldBoxCollision()
         {
             _currentShield.ShieldHitbox.SetActive(false);
             _timer = 5;
 
-            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_tempGaInfoPlayerPos.ToString());
+            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_battlePlayer.PlayerPosition.ToString());
         }
 
         #endregion Public - Methods
@@ -72,7 +82,7 @@ namespace Battle.Scripts.Battle.Players
             public SpriteRenderer ShieldSpriteRenderer { get => _spriteRenderers[(int)SpriteVariant]; }
             public PlayerActor.SpriteVariant SpriteVariant;
 
-            public Shield(GameObject shieldGameObject)
+            public Shield(GameObject shieldGameObject, ShieldManager shieldManager, IReadOnlyBattlePlayer battlePlayer)
             {
                 ShieldGameObject = shieldGameObject;
                 ShieldHitbox = shieldGameObject.transform.Find("Colliders").gameObject;
@@ -82,6 +92,11 @@ namespace Battle.Scripts.Battle.Players
                 _spriteRenderers = new SpriteRenderer[PlayerActor.SPRITE_VARIANT_COUNT];
                 _spriteRenderers[(int)PlayerActor.SpriteVariant.A] = _spriteGameObjects[(int)PlayerActor.SpriteVariant.A].GetComponent<SpriteRenderer>();
                 _spriteRenderers[(int)PlayerActor.SpriteVariant.B] = _spriteGameObjects[(int)PlayerActor.SpriteVariant.B].GetComponent<SpriteRenderer>();
+
+                foreach (Transform transform in ShieldHitbox.transform)
+                {
+                    transform.GetComponent<ShieldBoxCollider>().InitInstance(shieldManager, battlePlayer);
+                }
             }
 
             private readonly GameObject[] _spriteGameObjects;
@@ -89,24 +104,15 @@ namespace Battle.Scripts.Battle.Players
         }
 
         #region Private - Fields
-
+        private IReadOnlyBattlePlayer _battlePlayer;
         private Shield _currentShield;
         private bool _initialized = false;
         private bool _hitboxActive;
         private bool _showShield;
         private int _timer = -1;
-
-        private int _tempGaInfoPlayerPos;
-
         #endregion Private - Fields
 
         #region Private - Methods
-
-        private void Awake()
-        {
-            _currentShield = new Shield(transform.GetChild(0).gameObject);
-            _initialized = true;
-        }
 
         private void FixedUpdate()
         {

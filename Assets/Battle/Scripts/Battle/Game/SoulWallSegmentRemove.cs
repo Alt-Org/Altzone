@@ -11,12 +11,9 @@ namespace Battle.Scripts.Battle.Game
     #region Message Classes
     internal class SoulWallSegmentRemoved
     {
-        /// <summary>
-        /// PhotonBattle team number
-        /// </summary>
-        public int Side;
+        public BattleTeamNumber Side;
 
-        public SoulWallSegmentRemoved(int side)
+        public SoulWallSegmentRemoved(BattleTeamNumber side)
         {
             Side = side;
         }
@@ -74,7 +71,7 @@ namespace Battle.Scripts.Battle.Game
 
         #region Private - Fields
 
-        private int _side;
+        private BattleTeamNumber _side;
         private float _colorChangeFactor;
         private int _spriteIndex;
         private BallHandler _ballHandler;
@@ -93,7 +90,7 @@ namespace Battle.Scripts.Battle.Game
         #region Private - Methods
         private void Start()
         {
-            _side = transform.position.y < 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
+            _side = transform.position.y < 0 ? BattleTeamNumber.TeamAlpha : BattleTeamNumber.TeamBeta;
             Health = _playerPlayArea.soulWallSegmentHeahlt;
             _colorChangeFactor = 1f / Health;
 

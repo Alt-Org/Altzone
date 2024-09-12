@@ -22,6 +22,8 @@ namespace Battle.Scripts.Battle.Players
 
         #region Public - Properties
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         /// <summary>
         /// Shows or hides <c>PlayerCharacter</c> sprite. (true = show, false = hide)
         /// </summary>
@@ -78,11 +80,21 @@ namespace Battle.Scripts.Battle.Players
 
         #endregion Public - Properties
 
+        #region Public - Methods
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
+
+        #endregion Public - Methods
+
         #endregion Public
 
         #region Private
 
         #region Private - Fields
+        private IReadOnlyBattlePlayer _battlePlayer;
         private bool _show;
         private SpriteVariant _spriteVariant;
         private SpriteIndexEnum _spriteIndex;
@@ -104,6 +116,6 @@ namespace Battle.Scripts.Battle.Players
             _spriteRenderers[(int)SpriteVariant.B] = _spriteGameObjects[(int)SpriteVariant.B].GetComponent<SpriteRenderer>();
         }
 
-        #endregion
+        #endregion Private
     }
 }

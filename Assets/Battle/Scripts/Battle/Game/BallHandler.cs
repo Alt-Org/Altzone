@@ -65,16 +65,19 @@ namespace Battle.Scripts.Battle.Game
 
         public (bool isCorrectDirection, bool bounce, Vector2 position, GridPos gridPos, Vector2 direction, float speed) CalculateCollision(Vector2 position, float speed, ShieldBoxCollider shieldBoxCollider)
         {
-            Transform shieldTransform = shieldBoxCollider.ShieldTransform;
+            Transform shieldTransform = shieldBoxCollider.transform;
             Vector2 incomingDirection = (position - (Vector2)shieldTransform.position).normalized;
             Vector3 shieldDirection = shieldTransform.up;
             bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0;
 
             if (!isCorrectDirection) return (false, false, Vector2.zero, new GridPos(0, 0), Vector2.zero, 0);
-            if (!shieldBoxCollider.BounceOnBallShieldCollision) return (true, false, Vector2.zero, new GridPos(0, 0), Vector2.zero, 0);
+
+            IReadOnlyBattlePlayer battlePlayer = shieldBoxCollider.shieldManager.BattlePlayer;
+
+            if (!battlePlayer.PlayerClass.BounceOnBallShieldCollision) return (true, false, Vector2.zero, new GridPos(0, 0), Vector2.zero, 0);
 
             float bounceAngle = shieldBoxCollider.BounceAngle;
-            float impactForce = shieldBoxCollider.ImpactForce;
+            float impactForce = battlePlayer.PlayerActor.ImpactForce;
 
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             position = _gridManager.GridPositionToWorldPoint(gridPos);
@@ -138,7 +141,7 @@ namespace Battle.Scripts.Battle.Game
             _attackMultiplier = variables._playerAttackMultiplier;
             _angleLimit = variables._angleLimit;
 
-            if (PhotonBattle.GetTeamNumber(PhotonNetwork.LocalPlayer) == PhotonBattle.TeamBetaValue) transform.eulerAngles = new Vector3(0, 0, 180f);
+            if (PhotonBattle.GetTeamNumber(PhotonNetwork.LocalPlayer) == BattleTeamNumber.TeamBeta) transform.eulerAngles = new Vector3(0, 0, 180f);
 
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
             transform.localScale = Vector3.one * _arenaScaleFactor;
@@ -172,7 +175,9 @@ namespace Battle.Scripts.Battle.Game
 
                     if (isCorrectDirection)
                     {
-                        shield.OnBallShieldCollision();
+                        IPlayerClass playerClass = shield.shieldManager.BattlePlayer.PlayerClass;
+
+                        playerClass.OnBallShieldCollision();
 
                         if (bounce)
                         {
@@ -181,7 +186,7 @@ namespace Battle.Scripts.Battle.Game
 
                             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (bounce), position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
 
-                            shield.OnBallShieldBounce();
+                            playerClass.OnBallShieldBounce();
                         }
                         else
                         {

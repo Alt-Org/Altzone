@@ -18,7 +18,14 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _teammateVacuumDuration;
         [SerializeField] private int _teammateVacuumDurationIncrement;
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => true;
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {
@@ -56,7 +63,9 @@ namespace Battle.Scripts.Battle.Players
             });
         }
 
-        private IDriver _driver;
+        private IReadOnlyBattlePlayer _battlePlayer;
+
+        private IPlayerDriver _driver;
 
         private int _shieldTurn = 0;
 
@@ -68,9 +77,7 @@ namespace Battle.Scripts.Battle.Players
         //Tämä tarvitaan ExecuteOnUpdateen
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
 
-
         private BattleDebugLogger _battleDebugLogger;
-
 
         private void Start()
         {
@@ -91,11 +98,12 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
+            /* broken code pls fix
             PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
 
             int teamnumber = PhotonBattle.NoTeamValue;
 
-            foreach (IDriver driver in data.AllDrivers)
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 if (driver.PlayerActor == playerActor)
                 {
@@ -104,13 +112,14 @@ namespace Battle.Scripts.Battle.Players
                 }
             }
 
-            foreach (IDriver driver in data.AllDrivers)
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 if (driver.TeamNumber == teamnumber && driver.PlayerActor != playerActor)
                 {
                     _teammateTransform = driver.ActorShieldTransform;
                 }
             }
+            */
         }
 
         private void FixedUpdate()
@@ -125,6 +134,7 @@ namespace Battle.Scripts.Battle.Players
                 //_driver.ActorShieldTransform on oma sijainti
                 //_teammateTransform on kaverin sijainti
 
+                /* broken code pls fix
                 _battleDebugLogger.LogInfo("Own position is " + _driver.ActorShieldTransform.position);
                 _battleDebugLogger.LogInfo("Teammate position is " + _teammateTransform.position);
 
@@ -136,6 +146,7 @@ namespace Battle.Scripts.Battle.Players
                 //Siirrä itseä lähemmäs tiimikaveria timerin ajan strengthin perusteella
                 _driver.ActorCharacterTransform.position = newPosition;
                 _driver.ActorShieldTransform.position = newPosition;
+                */
             }
             else {
                 _teammateVacuumState = false;

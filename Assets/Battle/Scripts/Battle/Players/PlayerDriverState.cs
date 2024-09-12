@@ -10,7 +10,7 @@ namespace Battle.Scripts.Battle.Players
         internal bool CanRequestMove => !_isWaitingToMove && !_playerActor.IsBusy;
 
         private int _playerPos;
-        private int _teamNumber;
+        private BattleTeamNumber _teamNumber;
         private bool _movementEnabled;
         private bool _isWaitingToMove;
 
@@ -22,7 +22,7 @@ namespace Battle.Scripts.Battle.Players
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private const string DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO = DEBUG_LOG_NAME_AND_TIME + "(team: {1}, pos: {2}) ";
 
-        internal void ResetState(PlayerActor playerActor, int playerPos, int teamNumber)
+        internal void ResetState(PlayerActor playerActor, int playerPos, BattleTeamNumber teamNumber)
         {
             _playerActor = playerActor;
             _playerPos = playerPos;
@@ -32,7 +32,7 @@ namespace Battle.Scripts.Battle.Players
 
         internal void Move(GridPos gridPos, int teleportUpdateNumber)
         {
-            var targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
+            Vector2 targetPosition = _gridManager.GridPositionToWorldPoint(gridPos);
             _playerActor.MoveTo(targetPosition, teleportUpdateNumber);
             IsWaitingToMove(false);
         }

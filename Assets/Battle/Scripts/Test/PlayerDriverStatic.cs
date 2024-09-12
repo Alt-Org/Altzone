@@ -23,14 +23,14 @@ namespace Battle.Scripts.Test
     /// <para>this (class) was strictly for testing purposes but it was converted to work as bot in tutorial sling scene. (wasn't my idea)</para>
     /// </remarks>
     [DefaultExecutionOrder(100)]
-    internal class PlayerDriverStatic : MonoBehaviour, IDriver
+    internal class PlayerDriverStatic : MonoBehaviour, IPlayerDriver
     {
         [Serializable]
         internal class Settings
         {
             public string _nickName;
             public int _playerPos = PhotonBattle.PlayerPosition1;
-            public int _teamNumber = PhotonBattle.TeamAlphaValue;
+            public int _teamNumber = (int)BattleTeamNumber.TeamAlpha;
             public bool _isLocal;
         }
 
@@ -45,18 +45,12 @@ namespace Battle.Scripts.Test
         // { Public Properties and Fields
 
         public string NickName => _settings._nickName;
-        public int TeamNumber => _settings._teamNumber;
-        public int PlayerPos => _settings._playerPos;
+        public bool IsLocal => _settings._isLocal;
+        public int ActorNumber => _actorNumber;
 
         public bool MovementEnabled { get => _state.MovementEnabled; set => _state.MovementEnabled = value; }
 
-        public PlayerActor PlayerActor => _playerActor;
-        public int ActorNumber => _actorNumber;
-        public Transform ActorShieldTransform => _playerActor.ShieldTransform;
-        public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
-        public Transform ActorSoulTransform => _playerActor.SoulTransform;
-
-        public bool IsLocal => _settings._isLocal;
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
         // } Public Properties and Fields
 
@@ -64,19 +58,19 @@ namespace Battle.Scripts.Test
 
         public void Rotate(float angle)
         {
-            _playerActor.SetRotation(angle);
+            _battlePlayer.PlayerActor.SetRotation(angle);
         }
 
         #endregion Public Methods
 
         // Config
-        private float _playerMoveSpeedMultiplier;
+        private float _playerMovementSpeed;
         private double _movementMinTimeS;
         private float _arenaScaleFactor;
 
         private PlayerDriverState _state;
 
-        private PlayerActor _playerActor;
+        private BattlePlayer _battlePlayer;
 
         // Important Objects
         private PlayerManager _playerManager;
@@ -92,9 +86,12 @@ namespace Battle.Scripts.Test
             _battlePlayArea = Context.GetBattlePlayArea;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
+            // create battle player
+            _battlePlayer = new BattlePlayer(_settings._playerPos, _playerCharacterID, true, this);
+
             // get config
             _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
-            _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
+            _playerMovementSpeed = _battlePlayer.PlayerActor.MovementSpeed * GameConfig.Get().Variables._playerMoveSpeedMultiplier;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
 
             // subscribe to messages
@@ -109,17 +106,17 @@ namespace Battle.Scripts.Test
                 _settings._nickName = name;
             }
 
-            string playerTag = $"{_settings._teamNumber}:{_settings._playerPos}:{_settings._nickName}";
+            string playerTag = $"{_settings._teamNumber}:{_battlePlayer.PlayerPosition}:{_settings._nickName}";
 
-            _playerActor = PlayerActor.InstantiatePrefabFor(null, _settings._playerPos, _playerCharacterID, playerTag, _arenaScaleFactor);
+            PlayerActor.InstantiatePrefabFor(_battlePlayer,playerTag, _arenaScaleFactor);
             _state ??= gameObject.AddComponent<PlayerDriverState>();
-            _state.ResetState(_playerActor, _settings._playerPos, _settings._teamNumber);
+            _state.ResetState(_battlePlayer.PlayerActor, _battlePlayer.PlayerPosition, _battlePlayer.BattleTeam.TeamNumber);
             _state.MovementEnabled = false;
 
-            _playerManager.RegisterBot(this);
+            _playerManager.RegisterPlayer(_battlePlayer, (BattleTeamNumber)_settings._teamNumber);
 
             // this needs to be changed later (see PlayerDriverPhoton.OnTeamsReadyForGameplay)
-            if (_settings._teamNumber == PhotonBattle.TeamBetaValue)
+            if (_battlePlayer.BattleTeam.TeamNumber == BattleTeamNumber.TeamBeta)
             {
                 Rotate(180f);
             }
@@ -157,19 +154,18 @@ namespace Battle.Scripts.Test
             if (!_state.MovementEnabled || !_state.CanRequestMove) return;
             _state.IsWaitingToMove(true);
 
-            Vector2 position = new(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
+            Vector2 position = new(_battlePlayer.PlayerShieldManager.transform.position.x, _battlePlayer.PlayerShieldManager.transform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.ClampGridPosition(_gridManager.WorldPointToGridPosition(targetPosition));
 
-            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _settings._teamNumber))
+            if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _battlePlayer.BattleTeam.TeamNumber))
             {
                 _state.IsWaitingToMove(false);
                 return;
             }
 
-            float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
             float distance = (targetPosition - position).magnitude;
-            double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
+            double movementTimeS = Math.Max(distance / _playerMovementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
 
             _playerManager.ReportMovement(teleportUpdateNumber);

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -54,7 +53,7 @@ internal class SpawnDiamonds : MonoBehaviour
 
     private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
     {
-        _rotateDiamonds = data.LocalPlayer.TeamNumber == PhotonBattle.TeamBetaValue;
+        _rotateDiamonds = data.LocalPlayer.BattleTeam.TeamNumber == BattleTeamNumber.TeamBeta;
     }
 
     /*

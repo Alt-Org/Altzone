@@ -13,7 +13,14 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] PlayerActor _teammatePlayerActor;
         [SerializeField] Transform _fakeBallTransform;
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => false;
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {
@@ -38,6 +45,7 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
         }
 
+        private IReadOnlyBattlePlayer _battlePlayer;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
         private BallHandler _ballHandler;
         private PhotonView _photonView;
@@ -66,10 +74,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void FindTeammate(TeamsAreReadyForGameplay data)
         {
+            /* broken code pls fix
             int teamNumber = PhotonBattle.NoTeamValue;
 
             // Iterate through all drivers to find the teammate
-            foreach (IDriver driver in data.AllDrivers)
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 PlayerActor playerActor = driver.PlayerActor;
                 if (playerActor != null && playerActor == transform.parent.GetComponentInParent<PlayerActor>())
@@ -80,7 +89,7 @@ namespace Battle.Scripts.Battle.Players
                 }
             }
 
-            foreach (IDriver driver in data.AllDrivers)
+            foreach (IPlayerDriver driver in data.AllDrivers)
             {
                 PlayerActor playerActor = driver.PlayerActor;
                 if (playerActor != null && playerActor != transform.parent.GetComponentInParent<PlayerActor>() && driver.TeamNumber == teamNumber)
@@ -89,12 +98,14 @@ namespace Battle.Scripts.Battle.Players
                     return; // Once the teammate is found, exit the loop
                 }
             }
+            */
         }
 
         [PunRPC]
         private void TeleportBallRpc(int ballTeleportUpdateNumber, float ballSpeed)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(ballTeleportUpdateNumber, -5, () => {
+                /* broken code pls fix
                 Vector2 direction = new Vector2(0, _teammatePlayerActor.ShieldTransform.position.y > 0 ? -1f : 1f);
 
                 Vector2 position = new Vector2(
@@ -105,6 +116,7 @@ namespace Battle.Scripts.Battle.Players
                 Debug.DrawLine(position, position + direction, Color.red, 3);
 
                 _ballHandler.Launch(position, direction, ballSpeed);
+                */
             });
         }
     }

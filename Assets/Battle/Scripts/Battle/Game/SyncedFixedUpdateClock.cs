@@ -77,13 +77,13 @@ public class SyncedFixedUpdateClock : MonoBehaviour
          * (this should only happens when Events add new Events (or at least i think so))
          *
          * s_eventTempArray is filled front to back starting at index 0 in the order the Events are added
-         * s_eventTempArrayCapacity stores the size of s_eventTempArray including unsed indices 
-         * s_eventTempArraySize stores the number of elements in s_eventTempArray not including unsed indices
+         * s_eventTempArrayCapacity stores the size of s_eventTempArray including unused indices
+         * s_eventTempArraySize stores the number of elements in s_eventTempArray not including unused indices
          *
          * Events in s_eventArray are executed front to back starting at s_eventArrayFirst
          * after Events are executed Events in s_eventTempArray are added to s_eventArray and executing is repeated in case there is new any Events to be executed
          *
-         * ("executing is repeated in case there is any new Events to be executed" handeles events that are scheduled for the current update and added while events are being executed
+         * ("executing is repeated in case there is any new Events to be executed" is done to handle events that are scheduled for the current update and added while events are being executed
          *  but this means that those Events are executed after all the other events regardless of Priority
          *
          *  scheduling Events for the current update should be fine (or at least i think so)
@@ -135,7 +135,7 @@ public class SyncedFixedUpdateClock : MonoBehaviour
                 return;
             }
 
-            int i; // initialize i so we can use it later to place the event to the correct postion in the array (initializing this later causes problems with the array largenings code)
+            int i; // initialize i so we can use it later to place the event to the correct position in the array (initializing this later causes problems with the array largenings code)
 
             // allocate bigger array if full
             if (s_eventArrayFirst == 0)
@@ -232,7 +232,7 @@ public class SyncedFixedUpdateClock : MonoBehaviour
                 {
                     newEventTempArray[i] = s_eventTempArray[i];
                 }
-                s_eventTempArray = newEventTempArray; 
+                s_eventTempArray = newEventTempArray;
                 s_eventTempArrayCapacity = newEventTempArrayCapacity;
             }
 

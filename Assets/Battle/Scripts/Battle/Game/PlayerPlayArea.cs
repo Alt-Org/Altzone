@@ -100,15 +100,14 @@ namespace Battle.Scripts.Battle.Game
         internal int GridHeight => _gridHeight;
         internal int MiddleAreaHeight => _middleAreaHeight;
 
-        internal Rect GetPlayerPlayArea(int teamNumber)
+        internal Rect GetPlayerPlayArea(BattleTeamNumber teamNumber)
         {
-            Rect playArea = teamNumber switch
+            return teamNumber switch
             {
-                PhotonBattle.TeamAlphaValue => _playStartAreaAlpha,
-                PhotonBattle.TeamBetaValue => _playStartAreaBeta,
+                BattleTeamNumber.TeamAlpha => _playStartAreaAlpha,
+                BattleTeamNumber.TeamBeta => _playStartAreaBeta,
                 _ => throw new UnityException($"Invalid Team Number {teamNumber}"),
             };
-            return playArea;
         }
 
         internal GridPos GetPlayerStartPosition(int playerPos)
