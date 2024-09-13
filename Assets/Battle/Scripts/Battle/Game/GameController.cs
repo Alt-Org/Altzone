@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle.Game
     {
         #region Private Constants
         // Game Startup
-        private const double GAME_START_DELAY = 1.0;
+        private const double GameStartDelay = 1.0;
         #endregion Private Constants
 
         #region Private Fields
@@ -174,7 +174,7 @@ namespace Battle.Scripts.Battle.Game
             if (PhotonNetwork.IsMasterClient)
             {
                 BattleTeamNumber slingingTeam = Random.Range(0, 2) == 0 ? BattleTeamNumber.TeamAlpha : BattleTeamNumber.TeamBeta;
-                _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GAME_START_DELAY), slingingTeam);
+                _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameStartDelay), slingingTeam);
                 GameAnalyticsManager.Instance.BattleLaunch();
             }
         }

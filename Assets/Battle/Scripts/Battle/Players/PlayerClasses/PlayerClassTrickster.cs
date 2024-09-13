@@ -106,7 +106,7 @@ namespace Battle.Scripts.Battle.Players
             }
             */
 
-            byte eventCode = (byte)(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + playerPos);
+            byte eventCode = (byte)(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode + playerPos);
 
             _photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);
 
@@ -116,7 +116,7 @@ namespace Battle.Scripts.Battle.Players
                 {
                     PhotonNetwork.AllocateViewID(_photonView);
 
-                    _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE, _photonView.ViewID);
+                    _photonEventDispatcher.RaiseEvent(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode, _photonView.ViewID);
                 });
             }
         }

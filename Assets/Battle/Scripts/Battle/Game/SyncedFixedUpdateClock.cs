@@ -20,7 +20,7 @@ public class SyncedFixedUpdateClock : MonoBehaviour
     [SerializeField] private bool _offlineMode;
 
     // Public Constants
-    public const int UPDATES_PER_SECOND = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
+    public const int UpdatesPerSecond = 50; // this variable needs to be set to the number of times FixedUpdate is called per second
 
     // Public Properties
     public bool Synced => _synced;
@@ -30,22 +30,22 @@ public class SyncedFixedUpdateClock : MonoBehaviour
 
     public int ToUpdates(int seconds)
     {
-        return seconds * UPDATES_PER_SECOND;
+        return seconds * UpdatesPerSecond;
     }
 
     public int ToUpdates(float seconds)
     {
-        return (int)Mathf.Ceil(seconds * UPDATES_PER_SECOND);
+        return (int)Mathf.Ceil(seconds * UpdatesPerSecond);
     }
 
     public int ToUpdates(double seconds)
     {
-        return (int)Math.Ceiling(seconds * UPDATES_PER_SECOND);
+        return (int)Math.Ceiling(seconds * UpdatesPerSecond);
     }
 
     public double ToSeconds(int updates)
     {
-        return updates / (double)UPDATES_PER_SECOND;
+        return updates / (double)UpdatesPerSecond;
     }
 
     public void ExecuteOnUpdate(int updateNumber, int priority, Action action)

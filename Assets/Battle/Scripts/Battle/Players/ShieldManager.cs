@@ -86,10 +86,10 @@ namespace Battle.Scripts.Battle.Players
             {
                 ShieldGameObject = shieldGameObject;
                 ShieldHitbox = shieldGameObject.transform.Find("Colliders").gameObject;
-                _spriteGameObjects = new GameObject[PlayerActor.SPRITE_VARIANT_COUNT];
+                _spriteGameObjects = new GameObject[PlayerActor.SpriteVariantCount];
                 _spriteGameObjects[(int)PlayerActor.SpriteVariant.A] = shieldGameObject.transform.Find("SpriteA").gameObject;
                 _spriteGameObjects[(int)PlayerActor.SpriteVariant.B] = shieldGameObject.transform.Find("SpriteB").gameObject;
-                _spriteRenderers = new SpriteRenderer[PlayerActor.SPRITE_VARIANT_COUNT];
+                _spriteRenderers = new SpriteRenderer[PlayerActor.SpriteVariantCount];
                 _spriteRenderers[(int)PlayerActor.SpriteVariant.A] = _spriteGameObjects[(int)PlayerActor.SpriteVariant.A].GetComponent<SpriteRenderer>();
                 _spriteRenderers[(int)PlayerActor.SpriteVariant.B] = _spriteGameObjects[(int)PlayerActor.SpriteVariant.B].GetComponent<SpriteRenderer>();
 

@@ -69,10 +69,10 @@ namespace Battle.Scripts.Battle.Players
         {
             _show = true;
             _spriteVariant = SpriteVariant.A;
-            _spriteGameObjects = new GameObject[SPRITE_VARIANT_COUNT];
+            _spriteGameObjects = new GameObject[SpriteVariantCount];
             _spriteGameObjects[(int)SpriteVariant.A] = transform.Find("SpriteA").gameObject;
             _spriteGameObjects[(int)SpriteVariant.B] = transform.Find("SpriteB").gameObject;
-            _spriteRenderers = new SpriteRenderer[SPRITE_VARIANT_COUNT];
+            _spriteRenderers = new SpriteRenderer[SpriteVariantCount];
             _spriteRenderers[(int)SpriteVariant.A] = _spriteGameObjects[(int)SpriteVariant.A].GetComponent<SpriteRenderer>();
             _spriteRenderers[(int)SpriteVariant.B] = _spriteGameObjects[(int)SpriteVariant.B].GetComponent<SpriteRenderer>();
         }

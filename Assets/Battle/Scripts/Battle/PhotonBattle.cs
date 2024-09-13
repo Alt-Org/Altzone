@@ -43,11 +43,11 @@ namespace Battle.Scripts.Battle
 
         internal static class EventCodes
         {
-            public const byte PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE = 11; // picked randomly
-            public const byte PLAYER_CLASS_TRICKSTER_POS1_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + 0;
-            public const byte PLAYER_CLASS_TRICKSTER_POS2_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + 1;
-            public const byte PLAYER_CLASS_TRICKSTER_POS3_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + 2;
-            public const byte PLAYER_CLASS_TRICKSTER_POS4_SET_PHOTON_VIEW_ID_EVENTCODE = PLAYER_CLASS_TRICKSTER_SET_PHOTON_VIEW_ID_EVENTCODE + 3;
+            public const byte PlayerClassTricksterSetPhotonViewIdEventCode = 11; // picked randomly
+            public const byte PlayerClassTricksterPos1SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 0;
+            public const byte PlayerClassTricksterPos2SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 1;
+            public const byte PlayerClassTricksterPos3SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 2;
+            public const byte PlayerClassTricksterPos4SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);

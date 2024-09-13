@@ -36,7 +36,7 @@ namespace Battle.Scripts.Battle.Players
         #region Public
 
         #region Public - Constants
-        public const int SPRITE_VARIANT_COUNT = (int)SpriteVariant.B + 1;
+        public const int SpriteVariantCount = (int)SpriteVariant.B + 1;
         #endregion Public - Constants
 
         #region Public - Enums

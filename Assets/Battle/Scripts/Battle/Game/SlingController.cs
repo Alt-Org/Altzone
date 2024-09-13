@@ -77,12 +77,12 @@ namespace Battle.Scripts.Battle.Game
             switch (teamNumber)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    _currentTeam = _teams[TEAM_ALPHA];
+                    _currentTeam = _teams[TeamAlpha];
                     Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team alpha sling activated", _syncedFixedUpdateClock.UpdateCount));
                     break;
 
                 case BattleTeamNumber.TeamBeta:
-                    _currentTeam = _teams[TEAM_BETA];
+                    _currentTeam = _teams[TeamBeta];
                     Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team beta sling activated", _syncedFixedUpdateClock.UpdateCount));
                     break;
             }
@@ -166,8 +166,8 @@ namespace Battle.Scripts.Battle.Game
         private bool _slingActive = false;
 
         // Teams
-        private const int TEAM_ALPHA = 0;
-        private const int TEAM_BETA  = 1;
+        private const int TeamAlpha = 0;
+        private const int TeamBeta  = 1;
         private class Team
         {
             public BattleTeamNumber TeamNumber;
@@ -214,11 +214,11 @@ namespace Battle.Scripts.Battle.Game
         {
             _teams = new Team[2];
 
-            _teams[TEAM_ALPHA] = new() { TeamNumber = BattleTeamNumber.TeamAlpha };
-            foreach (IReadOnlyBattlePlayer player in data.TeamAlpha.Players) _teams[TEAM_ALPHA].List.Add(player.PlayerShieldManager.transform);
+            _teams[TeamAlpha] = new() { TeamNumber = BattleTeamNumber.TeamAlpha };
+            foreach (IReadOnlyBattlePlayer player in data.TeamAlpha.Players) _teams[TeamAlpha].List.Add(player.PlayerShieldManager.transform);
 
-            _teams[TEAM_BETA] = new() { TeamNumber = BattleTeamNumber.TeamBeta };
-            foreach (IReadOnlyBattlePlayer player in data.TeamBeta.Players) _teams[TEAM_BETA].List.Add(player.PlayerShieldManager.transform);
+            _teams[TeamBeta] = new() { TeamNumber = BattleTeamNumber.TeamBeta };
+            foreach (IReadOnlyBattlePlayer player in data.TeamBeta.Players) _teams[TeamBeta].List.Add(player.PlayerShieldManager.transform);
 
             this.Publish(new SlingControllerReady());
         }

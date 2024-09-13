@@ -65,8 +65,8 @@ namespace Battle.Scripts.Battle.Game
         #region Private
 
         #region Private - Constants
-        private const int HIT_EFFECT_INDEX = 0;
-        private const int BREAK_EFFECT_INDEX = 1;
+        private const int HitEffectIndex = 0;
+        private const int BreakEffectIndex = 1;
         #endregion Private - Constants
 
         #region Private - Fields

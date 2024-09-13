@@ -48,12 +48,14 @@ namespace Battle.Scripts.Battle.Game
         public void SetLength(float length)
         {
             _length = length;
-            _spriteRenderer.size = new Vector2(_length * (1 / SCALE), 5);
+            _spriteRenderer.size = new Vector2(_length * (1 / Scale), 5);
 
+            /*
             const float WING_OFFSET = -1f;
-            float wingX = _length * (0.5f / SCALE) + WING_OFFSET;
+            float wingX = _length * (0.5f / Scale) + WING_OFFSET;
             _wings[WING_LEFT].Transform.localPosition = new Vector3(wingX, 0.6f);
             _wings[WING_RIGHT].Transform.localPosition = new Vector3(wingX, -0.6f);
+            */
 
             UpdatePusherPosition();
         }
@@ -82,7 +84,7 @@ namespace Battle.Scripts.Battle.Game
         #region Private
 
         #region Private - Constants
-        const float SCALE = 0.35f; // this should match transform scale
+        const float Scale = 0.35f; // this should match transform scale
         #endregion Private - Constants
 
         #region Private - Fields
@@ -92,6 +94,7 @@ namespace Battle.Scripts.Battle.Game
 
         private float _length;
 
+        /*
         // Wings
         private const int WING_LEFT  = 0;
         private const int WING_RIGHT = 1;
@@ -107,6 +110,7 @@ namespace Battle.Scripts.Battle.Game
             }
         }
         private readonly Wing[] _wings = new Wing[2];
+        */
 
         // Pusher
         private struct Pusher
@@ -135,9 +139,11 @@ namespace Battle.Scripts.Battle.Game
 
             _length = 0;
 
+            /*
             // setup wings
             _wings[WING_LEFT]  = new(transform.Find("WingLeft"));
             _wings[WING_RIGHT] = new(transform.Find("WingRight"));
+            */
 
             // setup pusher
             _pusher = new(transform.Find("Pusher"));
@@ -145,10 +151,10 @@ namespace Battle.Scripts.Battle.Game
 
         private void UpdatePusherPosition()
         {
-            const float PUSHER_START_OFFSET = 5.4f;
+            const float PusherStartOffset = 5.4f;
             float pusherX =
-                _length * (-0.5f / SCALE) + PUSHER_START_OFFSET
-                + ((_length * (1f / SCALE) - PUSHER_START_OFFSET) * _pusher.Position);
+                _length * (-0.5f / Scale) + PusherStartOffset
+                + ((_length * (1f / Scale) - PusherStartOffset) * _pusher.Position);
             _pusher.Transform.localPosition = new Vector3(pusherX, 0);
         }
 
