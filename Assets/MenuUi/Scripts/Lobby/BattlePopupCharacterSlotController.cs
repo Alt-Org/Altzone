@@ -25,7 +25,7 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
     private void OnEnable()
     {
         float size = GetComponent<RectTransform>().rect.height - 20;
-        Debug.LogWarning(size);
+        //Debug.LogWarning(size);
         _layout.cellSize = new(size, size);
 
         for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
