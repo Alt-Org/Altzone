@@ -12,6 +12,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private Transform _featureButtonsParent;
         [SerializeField]private List<Sprite> _featureSpritesPlaceholder;
         [SerializeField]private GameObject _featureButtonPrefab;
+        [SerializeField]private GameObject _defaultFeatureButtonPrefab;
         [SerializeField]private List<Transform> _featureButtonPositions = new();
         private int _currentPageNumber = 0;
         private int _pageCount = 0;
@@ -19,8 +20,8 @@ namespace MenuUi.Scripts.AvatarEditor
         public void OnEnable()
         {
             _currentPageNumber = 0;
-            _pageCount = _featureSpritesPlaceholder.Count / 8;
-            if(_featureSpritesPlaceholder.Count % 8 != 0){
+            _pageCount = (_featureSpritesPlaceholder.Count+1) / 8;
+            if((_featureSpritesPlaceholder.Count+1) % 8 != 0){
                 _pageCount++;
             }
             DestroyFeatureButtons();
@@ -44,14 +45,21 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             for (int i = 0; i < 8; i++)
             {
-                if (i + (8*_currentPageNumber) < _featureSpritesPlaceholder.Count)
+                if(i == 0 && _currentPageNumber == 0){
+                    FeatureButton featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
+                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
+                    (delegate { SetDefaultFeature(featureButton._slot); });
+                }
+                else if ((i + (8*_currentPageNumber) < _featureSpritesPlaceholder.Count) || 
+                (i + (8*_currentPageNumber) == _featureSpritesPlaceholder.Count && (_currentPageNumber != 0||i!=8)) )
                 {
                     FeatureButton featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
-                    featureButton._sprite = _featureSpritesPlaceholder[i+ (8*_currentPageNumber)];
+                    featureButton._sprite = _featureSpritesPlaceholder[i+ (8*_currentPageNumber)-1];
                     featureButton.gameObject.GetComponent<Image>().sprite = featureButton._sprite;
                     featureButton.gameObject.GetComponent<Button>().onClick.AddListener
                     (delegate { FeatureClicked(featureButton._sprite, featureButton._slot); });
                 }
+               
             }
         }
         private void DestroyFeatureButtons(){
@@ -64,6 +72,12 @@ namespace MenuUi.Scripts.AvatarEditor
         private void FeatureClicked(Sprite featureToChange, FeatureSlot slot){
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = featureToChange;
+            _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,255);
+        }
+        private void SetDefaultFeature(FeatureSlot slot){
+            _characterImage = _characterImageParent.GetChild(0);
+            _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,0);
+            _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = null;
         }
     }
 }

@@ -8,10 +8,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 994699233301994051, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d,
+        type: 3}
     - target: {fileID: 3671576818270862963, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: m_Name
-      value: CharacterImagePrefabTemplate
+      value: ConfluenceGirlsImagePrefab
       objectReference: {fileID: 0}
     - target: {fileID: 5979321243465989676, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
@@ -112,6 +118,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 79.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -78.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -4.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
