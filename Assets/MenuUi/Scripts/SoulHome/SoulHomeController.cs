@@ -36,7 +36,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _editTray;
         [SerializeField]
-        private GameObject _audioManager;
+        private TextMeshProUGUI _musicName;
+        [SerializeField]
+        private SoulHomeAudioManager _audioManager;
 
         private FurnitureList _furnitureList = new();
 
@@ -65,10 +67,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
+                    rootObject.GetComponent<MainMenuAudioManager>().StopMusic();
             }
-            _audioManager.transform.Find("Music").GetComponent<MusicList>().PlayMusic();
-            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().GetTrackName();
+            string name = _audioManager.PlayMusic();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
@@ -81,9 +82,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Play();
+                    rootObject.GetComponent<MainMenuAudioManager>().PlayMusic();
             }
-            _audioManager.transform.Find("Music").GetComponent<MusicList>().StopMusic();
+            _audioManager.StopMusic();
         }
 
         public void SetRoomName(GameObject room)
@@ -215,16 +216,16 @@ namespace MenuUI.Scripts.SoulHome
 
         public void NextMusicTrack()
         {
-            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().NextTrack();
+            string name = _audioManager.NextMusicTrack();
             if (name != null)
-                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _musicName.text = name;
         }
 
         public void PrevMusicTrack()
         {
-            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().PrevTrack();
+            string name = _audioManager.PrevMusicTrack();
             if (name != null)
-                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _musicName.text = name;
         }
 
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
@@ -240,8 +241,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.transform.Find("SaveChanges").GetComponent<AudioSource>().Play();
-                else _audioManager.transform.Find("RevertChanges").GetComponent<AudioSource>().Play();
+                if(save) _audioManager.PlayAudio(AudioType.Save);
+                else _audioManager.PlayAudio(AudioType.Revert);
             }
             else
             {

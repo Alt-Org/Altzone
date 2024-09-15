@@ -33,14 +33,15 @@ namespace MenuUI.Scripts.SoulHome
             _musicTrack = _defaultMusicTrack;
         }
 
-        public void PlayMusic()
+        public string PlayMusic()
         {
-            if (_musicList.Count == 0) return;
+            if (_musicList.Count == 0) return null;
             if (_musicList[_musicTrack].MusicClip != null)
             {
                 GetComponent<AudioSource>().clip =_musicList[_musicTrack].MusicClip;
                 GetComponent<AudioSource>().Play();
             }
+            return GetTrackName();
         }
 
         public void StopMusic()

@@ -6191,7 +6191,8 @@ MonoBehaviour:
   _infoPopup: {fileID: 4686451454399448194}
   _editButton: {fileID: 8347942588262245931}
   _editTray: {fileID: 8269092316237308460}
-  _audioManager: {fileID: 8643528117718883045}
+  _musicName: {fileID: 3458521966804503843}
+  _audioManager: {fileID: 2574490713385301234}
 --- !u!114 &4823144193453443887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10729,6 +10730,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9194402727012929848}
+  - component: {fileID: 2574490713385301234}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -10758,6 +10760,25 @@ Transform:
   - {fileID: 2644640027440522538}
   m_Father: {fileID: 4642123491117268420}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2574490713385301234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8643528117718883045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34cb17279d820884b80958c7d3c30c0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _musicAudio: {fileID: 761044352223056870}
+  _clickAudio: {fileID: 4332360957416663211}
+  _popupErrorAudio: {fileID: 7995652507352014734}
+  _revertAudio: {fileID: 917098357972619686}
+  _saveAudio: {fileID: 9066415271180622627}
+  _rotateAudio: {fileID: 805496776949248354}
+  _setFurnitureAudio: {fileID: 4731439027459316554}
 --- !u!1 &8720325664054354787
 GameObject:
   m_ObjectHideFlags: 0
@@ -12096,7 +12117,7 @@ PrefabInstance:
     - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 9.998962
+      value: 9.9973755
       objectReference: {fileID: 0}
     - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
