@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private GameObject _featureButtonPrefab;
         [SerializeField]private GameObject _defaultFeatureButtonPrefab;
         [SerializeField]private List<Transform> _featureButtonPositions = new();
+        [SerializeField]private Animator animator;
         private int _currentPageNumber = 0;
         private int _pageCount = 0;
         private Transform _characterImage;
@@ -32,6 +33,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 _currentPageNumber++;
                 DestroyFeatureButtons();
                 InstantiateFeatureButtons();
+                animator.Play("PageFlip");
+                
             }
         }
         public void LoadPreviousPage(){
@@ -39,6 +42,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _currentPageNumber--;
                 DestroyFeatureButtons();
                 InstantiateFeatureButtons();
+                animator.Play("BackPageFlip");
             }
         }
         private void InstantiateFeatureButtons()
