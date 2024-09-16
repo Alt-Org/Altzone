@@ -1267,6 +1267,7 @@ GameObject:
   - component: {fileID: 6867298773900683689}
   - component: {fileID: 6674082638956111788}
   - component: {fileID: 7726468740236029619}
+  - component: {fileID: 1796534508067376090}
   m_Layer: 5
   m_Name: ConfirmPopup
   m_TagString: Untagged
@@ -1349,6 +1350,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 7995652507352014734}
   _playOnEnable: 1
+--- !u!114 &1796534508067376090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489332744081735825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f340eed5ade931a40b4e0ddcce7d0805, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _infoText: {fileID: 2603819571283777166}
+  _acceptButton: {fileID: 7522187563198479740}
+  _acceptButtonText: {fileID: 654860225557636126}
+  _secondaryAcceptButton: {fileID: 5831963990540220159}
+  _secondaryAcceptButtonText: {fileID: 3623039136364905311}
+  _cancelButton: {fileID: 1908674270973418680}
+  _cancelButtonText: {fileID: 4972376189164791269}
 --- !u!1 &530637392971083530
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,7 +2547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _popup: {fileID: 1357142023799753318}
-  popupWaitDelay: 2
+  _popupWaitDelay: 3
 --- !u!114 &8834556059031332447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6187,7 +6207,7 @@ MonoBehaviour:
   _furnitureName: {fileID: 2147834020864254818}
   _soulHomeTower: {fileID: 8929454208922663643}
   _mainScreen: {fileID: 9193472377066270522}
-  _confirmPopup: {fileID: 489332744081735825}
+  _confirmPopup: {fileID: 1796534508067376090}
   _infoPopup: {fileID: 4686451454399448194}
   _editButton: {fileID: 8347942588262245931}
   _editTray: {fileID: 8269092316237308460}
@@ -10773,6 +10793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicAudio: {fileID: 761044352223056870}
+  _musicList: {fileID: 5001042525566707841}
   _clickAudio: {fileID: 4332360957416663211}
   _popupErrorAudio: {fileID: 7995652507352014734}
   _revertAudio: {fileID: 917098357972619686}
@@ -12117,7 +12138,7 @@ PrefabInstance:
     - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 9.9973755
+      value: 9.994812
       objectReference: {fileID: 0}
     - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

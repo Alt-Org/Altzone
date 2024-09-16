@@ -1,4 +1,5 @@
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
