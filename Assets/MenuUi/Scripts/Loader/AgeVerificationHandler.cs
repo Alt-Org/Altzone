@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.Loader
         [SerializeField] Button _button;
         private bool _finished = false;
 
-        public bool Finished { get => _finished;}
+        public bool Finished { get => _finished; set => _finished = value; }
 
         public void CheckToggle()
         {

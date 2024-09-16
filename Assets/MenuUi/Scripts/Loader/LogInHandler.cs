@@ -86,8 +86,9 @@ namespace MenuUi.Scripts.Loader
             {
                 _ageVerificationHandler.gameObject.SetActive(true);
             }
+            else { _ageVerificationHandler.Finished = true; }
 
-            yield return new WaitUntil(() => _ageVerificationHandler.Finished);
+            yield return new WaitUntil(() => _ageVerificationHandler.Finished );
 
             if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
                 StartCoroutine(_introStoryNavigation.Navigate());

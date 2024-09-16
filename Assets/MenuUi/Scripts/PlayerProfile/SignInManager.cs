@@ -26,7 +26,11 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField registerUsernameInputField;
         [SerializeField] private TMP_InputField registerPasswordInputField;
         [SerializeField] private TMP_InputField registerPassword2InputField;
+        [SerializeField] private Toggle _registerAgeVerificationCheckToggle;
         [SerializeField] private Toggle _registerAgeVerificationToggle;
+        [SerializeField] private Toggle _registerParentalAuthToggle;
+        [SerializeField] private ToggleGroup _ageAuthToggleGroup;
+
 
         [Header("Input Fields Errors")]
         [SerializeField] private Image logInUsernameInputFieldError;
@@ -41,6 +45,7 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button registerButton;
         [SerializeField] private Button backButton;
         [SerializeField] private Button backButton2;
+        [SerializeField] private Button ageAuthButton;
 
 
         [Header("Navigation Buttons")]
@@ -198,7 +203,9 @@ namespace MenuUi.Scripts.Login
             }
 
 
-            string body = @$"{{""username"":""{registerUsernameInputField.text}"",""password"":""{registerPasswordInputField.text}"",""Player"":{{""name"":""{username}"",""backpackCapacity"":{backpackCapacity},""uniqueIdentifier"":""{username}""}}}}";
+            string body = @$"{{""username"":""{registerUsernameInputField.text}"",""password"":""{registerPasswordInputField.text}"",
+                ""Player"":{{""name"":""{username}"",""backpackCapacity"":{backpackCapacity},""uniqueIdentifier"":""{username}"",
+                    ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
             StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "profile", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
@@ -248,6 +255,21 @@ namespace MenuUi.Scripts.Login
             registerPasswordInputFieldError.gameObject.SetActive(false);
             registerPassword2InputFieldError.gameObject.SetActive(false);
             _registerAgeVerificationToggleError.gameObject.SetActive(false);
+        }
+
+        public void CheckToggle()
+        {
+            if (_ageAuthToggleGroup.AnyTogglesOn())
+            {
+                ageAuthButton.interactable = true;
+                _registerAgeVerificationCheckToggle.isOn = true;
+
+            }
+            else
+            {
+                ageAuthButton.interactable = false;
+                _registerAgeVerificationCheckToggle.isOn = false;
+            }
         }
     }
 }
