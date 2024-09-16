@@ -168,7 +168,8 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     public void ConnectToPhotonChat()
     {
-        if(ServerManager.Instance.Player.above13)
+        if(ServerManager.Instance.Player.above13 != null)
+            if((bool)ServerManager.Instance.Player.above13)
         if (!ChatClient.CanChat)
             ChatClient.ConnectUsingSettings(_appSettings);
     }
