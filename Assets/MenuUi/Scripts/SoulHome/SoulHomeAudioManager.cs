@@ -65,25 +65,25 @@ namespace MenuUI.Scripts.SoulHome
 
         public string PlayMusic()
         {
-            if (_musicList = null) return null;
+            if (_musicList == null) return null;
             return _musicList.PlayMusic();
         }
 
         public string NextMusicTrack()
         {
-            if (_musicList = null) return null;
+            if (_musicList == null) return null;
             return _musicList.NextTrack();
         }
 
         public string PrevMusicTrack()
         {
-            if(_musicList = null) return null;
+            if(_musicList == null) return null;
             return _musicList.PrevTrack();
         }
 
         public void StopMusic()
         {
-            if (_musicList = null) return;
+            if (_musicList == null) return;
             _musicList.StopMusic();
         }
     }
