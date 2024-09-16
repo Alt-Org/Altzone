@@ -11,7 +11,6 @@ namespace Altzone.Scripts.Model.Poco.Game
     public class BattleCharacter
     {
         public readonly CharacterID CustomCharacterId;
-        public readonly CharacterClass CharacterClass;
         public readonly string Name;
         public readonly int Hp;
         public readonly int Speed;
@@ -19,13 +18,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly int Attack;
         public readonly int Defence;
 
-        private BattleCharacter(CharacterID customCharacterId, CharacterClass characterClass, string name,
+        public CharacterClassID CharacterClassID => CustomCharacter.GetClassID(CustomCharacterId);
+
+        public BattleCharacter(CharacterID customCharacterId, string name,
             int hp, int speed, int resistance, int attack, int defence)
         {
             //Assert.AreNotEqual(CharacterID.None, customCharacterId);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
             CustomCharacterId = customCharacterId;
-            CharacterClass = characterClass;
             Name = name;
             Hp = hp;
             Speed = speed;
@@ -39,7 +39,6 @@ namespace Altzone.Scripts.Model.Poco.Game
             //Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
             return new BattleCharacter(
                 customCharacter.Id,
-                characterClass,
                 customCharacter.Name,
                 customCharacter.Hp + characterClass.Hp,
                 customCharacter.Speed + characterClass.Speed,
@@ -53,7 +52,6 @@ namespace Altzone.Scripts.Model.Poco.Game
             //Assert.AreEqual(customCharacter.CharacterClassId, characterClass.Id, "CharacterClassId mismatch");
             return new BattleCharacter(
                 CharacterID.None,
-                CharacterClass.CreateDummyFor(CharacterClassID.None),
                 "Dummy",
                 0,
                 0,

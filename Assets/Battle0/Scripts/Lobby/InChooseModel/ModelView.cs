@@ -124,11 +124,8 @@ namespace Battle0.Scripts.Lobby.InChooseModel
         private void ShowCharacter(BattleCharacter character)
         {
             var i = -1;
-            var characterName = character.Name == character.CharacterClass.Name
-                ? character.Name
-                : $"{character.Name} [{character.CharacterClass.Name}]";
-            _labels[++i].text = $"{characterName}";
-            _labels[++i].text = $"GestaltCycle:\r\n{character.CharacterClass.Name}";
+            _labels[++i].text = $"{character.Name}";
+            //_labels[++i].text = $"GestaltCycle:\r\n{character.CharacterClass.Name}";
             _labels[++i].text = $"Speed:\r\n{character.Speed}";
             _labels[++i].text = $"Resistance:\r\n{character.Resistance}";
             _labels[++i].text = $"Attack:\r\n{character.Attack}";
