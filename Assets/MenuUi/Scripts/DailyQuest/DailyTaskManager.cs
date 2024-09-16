@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using UnityEditor.VersionControl;
+//using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class DailyTaskManager : MonoBehaviour
@@ -21,7 +21,7 @@ public class DailyTaskManager : MonoBehaviour
         QuestGenerator();
     }
 
-    // Generoi 12 tyhj‰‰ quest slottia arreihin dailytask prefabista
+    // Generoi 12 tyhj√§√§ quest slottia arreihin dailytask prefabista
     public void QuestGenerator()
     {
         for (int i = 0; i < _questAmount; i++)
@@ -31,14 +31,14 @@ public class DailyTaskManager : MonoBehaviour
             GameObject taskObject = Instantiate(dailyTaskPrefab.gameObject, gameObject.transform);
             // laittaa kopion arrayhin
             dailyQuestSlots[i] = taskObject;
-            // pyyt‰‰ QuestRandomizerilta teht‰nv‰n ja laittaa local variableihin
+            // pyyt√§√§ QuestRandomizerilta teht√§nv√§n ja laittaa local variableihin
             (string title, int points, int goals) = QuestRandomizer();
-            // l‰hett‰‰ questin tiedot tyhj‰lle kopiolle
+            // l√§hett√§√§ questin tiedot tyhj√§lle kopiolle
             taskObject.GetComponent<DailyQuest>().getMissionData(title, points, goals);
         }
         Debug.Log("Taski slotit tehty!");
     }
-    // Generoi satunnaisen teht‰v‰n pyyt‰ess‰ HUOM v‰liaikainen!
+    // Generoi satunnaisen teht√§v√§n pyyt√§ess√§ HUOM v√§liaikainen!
     public (string _taskTitle, int _taskGoal, int _taskPoints) QuestRandomizer()
     {
         Debug.Log("taskInit Runned");
@@ -57,17 +57,17 @@ public class DailyTaskManager : MonoBehaviour
                 _taskPoints = 500;
                 return (_taskTitle, _taskPoints, _taskgoal);
             case 3:
-                _taskTitle = "Ker‰‰ timantteja Taistelussa";
+                _taskTitle = "Ker√§√§ timantteja Taistelussa";
                 _taskgoal = 50;
                 _taskPoints = 50;
                 return (_taskTitle, _taskPoints, _taskgoal);
             case 4:
-                _taskTitle = "Ker‰‰ timantteja Taistelussa";
+                _taskTitle = "Ker√§√§ timantteja Taistelussa";
                 _taskgoal = 100;
                 _taskPoints = 120;
                 return (_taskTitle, _taskPoints, _taskgoal);
             case 5:
-                _taskTitle = "Kehit‰ pelihahmoa";
+                _taskTitle = "Kehit√§ pelihahmoa";
                 _taskgoal = 2;
                 _taskPoints = 100;
                 return (_taskTitle, _taskPoints, _taskgoal);
@@ -82,7 +82,7 @@ public class DailyTaskManager : MonoBehaviour
                 _taskPoints = 200;
                 return (_taskTitle, _taskPoints, _taskgoal);
             case 8:
-                _taskTitle = "Muokkaa avatarisi ulkon‰kˆ‰";
+                _taskTitle = "Muokkaa avatarisi ulkon√§k√∂√§";
                 _taskgoal = 2;
                 _taskPoints = 500;
                 return (_taskTitle, _taskPoints, _taskgoal);
@@ -105,7 +105,7 @@ public class DailyTaskManager : MonoBehaviour
                 _taskTitle = "Unknown Task";
                 _taskgoal = 100;
                 _taskPoints = 1;
-                Debug.Log("Jokin Meni pieleen DailyTaskiss‰");
+                Debug.Log("Jokin Meni pieleen DailyTaskiss√§");
                 return (_taskTitle, _taskPoints, _taskgoal);
         }
     }
