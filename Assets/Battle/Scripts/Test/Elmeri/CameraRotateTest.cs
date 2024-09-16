@@ -24,7 +24,7 @@ namespace Battle.Scripts.Battle.Game
             {
                 var player = PhotonNetwork.LocalPlayer;
                 var playerPos = PhotonBattle.GetPlayerPos(player);
-                TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                TeamNumber = (int)PhotonBattle.GetTeamNumber(playerPos);
                 Debug.Log($"TeamNumber {TeamNumber} pos {playerPos} {player.GetDebugLabel()}");
                 if (TeamNumber == 2)   //2
                 {

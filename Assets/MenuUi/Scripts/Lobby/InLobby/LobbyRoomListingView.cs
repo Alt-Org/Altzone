@@ -13,6 +13,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private GameObject _roomButtonPrefab;
         [SerializeField] private Button _roomCreateButton;
         [SerializeField] private Transform _buttonParent;
+        [SerializeField] private RoomSearchPanelController _searchPanelController;
         [SerializeField] private bool _oldDesign;
         private int _listPos = 0;
 
@@ -28,6 +29,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void UpdateStatus(List<RoomInfo> rooms, Action<string> onJoinRoom)
         {
+            _searchPanelController.SetOnJoinRoom(onJoinRoom);
             int lastPos = CheckListPosition(rooms);
 
             // Synchronize button count with room count.
@@ -46,6 +48,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                         UpdateButton(button, rooms[i], onJoinRoom);
                     }
                 }
+
             }
             else
             {
@@ -55,21 +58,23 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 }
             }
             // Update button captions
-            for (var i = 0; i < rooms.Count; ++i)
+            /*for (var i = 0; i < rooms.Count; ++i)
             {
                 var room = rooms[i];
                 var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
                 //var button = buttonObject.GetComponent<Button>();
                 UpdateButton(buttonObject, room, onJoinRoom);
-            }
+            }*/
+            _searchPanelController.RoomsData = rooms;
+
             // Hide extra lines
             if (_buttonParent.childCount > rooms.Count)
             {
                 for (var i = rooms.Count; i < _buttonParent.childCount; ++i)
                 {
                     var buttonObject = _buttonParent.GetChild(i).gameObject;
-                    if (buttonObject.activeSelf)
+                    if (buttonObject.transform.childCount > 0)
                     {
                         buttonObject.transform.GetChild(0).gameObject.SetActive(false);
                     }
@@ -91,7 +96,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
             button = buttonObject.GetComponent<Button>();
             else
             {
-                button = buttonObject.transform.Find("Button").GetComponent<Button>();
+                button = buttonObject.GetComponent<Button>();
+
+                //if(button == null) button = buttonObject.transform.Find("Button")?.GetComponent<Button>();
+                if (button == null) button = buttonObject.transform.Find("Panel")?.GetComponent<Button>();
             }
             if (_oldDesign)
             {
@@ -126,13 +134,13 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 {
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=blue>{playerCountText}</color>";
-                    button.GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
+                    button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
                 }
                 else
                 {
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=brown>{playerCountText}</color>";
-                    button.GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
+                    button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
                 }
                 var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
                 Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");

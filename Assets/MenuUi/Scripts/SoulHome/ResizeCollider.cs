@@ -10,12 +10,6 @@ public class ResizeCollider : MonoBehaviour
         Resize();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Resize()
     {
         BoxCollider2D boxCollider2D = GetComponent<BoxCollider2D>();

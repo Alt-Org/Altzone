@@ -22,6 +22,8 @@ namespace Battle.Scripts.Battle.Players
 
         #region Public - Properties
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         /// <summary>
         /// Shows or hides <c>PlayerCharacter</c> sprite. (true = show, false = hide)
         /// </summary>
@@ -78,11 +80,21 @@ namespace Battle.Scripts.Battle.Players
 
         #endregion Public - Properties
 
+        #region Public - Methods
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
+
+        #endregion Public - Methods
+
         #endregion Public
 
         #region Private
 
         #region Private - Fields
+        private IReadOnlyBattlePlayer _battlePlayer;
         private bool _show;
         private SpriteVariant _spriteVariant;
         private SpriteIndexEnum _spriteIndex;
@@ -96,14 +108,14 @@ namespace Battle.Scripts.Battle.Players
             _show = true;
             _spriteVariant = SpriteVariant.A;
             _spriteIndex = SpriteIndexEnum.IdleWithShield;
-            _spriteGameObjects = new GameObject[SPRITE_VARIANT_COUNT];
+            _spriteGameObjects = new GameObject[SpriteVariantCount];
             _spriteGameObjects[(int)SpriteVariant.A] = transform.Find("SpriteA").gameObject;
             _spriteGameObjects[(int)SpriteVariant.B] = transform.Find("SpriteB").gameObject;
-            _spriteRenderers = new SpriteRenderer[SPRITE_VARIANT_COUNT];
+            _spriteRenderers = new SpriteRenderer[SpriteVariantCount];
             _spriteRenderers[(int)SpriteVariant.A] = _spriteGameObjects[(int)SpriteVariant.A].GetComponent<SpriteRenderer>();
             _spriteRenderers[(int)SpriteVariant.B] = _spriteGameObjects[(int)SpriteVariant.B].GetComponent<SpriteRenderer>();
         }
 
-        #endregion
+        #endregion Private
     }
 }

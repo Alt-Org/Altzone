@@ -19,7 +19,7 @@ namespace Battle.Scripts.Battle.Game
     {
         #region Private Constants
         // Game Startup
-        private const double GAME_START_DELAY = 1.0;
+        private const double GameStartDelay = 1.0;
         #endregion Private Constants
 
         #region Private Fields
@@ -136,7 +136,7 @@ namespace Battle.Scripts.Battle.Game
         }
         #endregion Private Methods - Game Startup
 
-        private void Sling(int slingingTeam)
+        private void Sling(BattleTeamNumber slingingTeam)
         {
             Debug.Log(string.Format(DEBUG_LOG_SLING_SEQUENCE + "activating sling", _syncedFixedUpdateClock.UpdateCount));
             _slingController.SlingActivate(slingingTeam);
@@ -173,14 +173,14 @@ namespace Battle.Scripts.Battle.Game
 
             if (PhotonNetwork.IsMasterClient)
             {
-                int slingingTeam = Random.Range(0, 2) == 0 ? PhotonBattle.TeamAlphaValue : PhotonBattle.TeamBetaValue;
-                _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GAME_START_DELAY), slingingTeam);
+                BattleTeamNumber slingingTeam = Random.Range(0, 2) == 0 ? BattleTeamNumber.TeamAlpha : BattleTeamNumber.TeamBeta;
+                _photonView.RPC(nameof(StartGameRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(GameStartDelay), slingingTeam);
                 GameAnalyticsManager.Instance.BattleLaunch();
             }
         }
 
         [PunRPC]
-        private void StartGameRpc(int gameStartUpdateNumber, int slingingTeam)
+        private void StartGameRpc(int gameStartUpdateNumber, BattleTeamNumber slingingTeam)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(gameStartUpdateNumber, 0, () =>
             {
@@ -199,7 +199,7 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private Methods - Photon RPC - Game Startup
 
         [PunRPC]
-        private void SlingReactivate(int activationUpdateNumber, int slingingTeam)
+        private void SlingReactivate(int activationUpdateNumber, BattleTeamNumber slingingTeam)
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(activationUpdateNumber, 0, () =>
             {

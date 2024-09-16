@@ -5,92 +5,45 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
 
-using Battle.Scripts.Test;
-
 namespace Battle.Scripts.Battle.Players
 {
     // this interface probably should be somewhere else
     // also maybe more properties/methods that are in all drivers should be added
-    interface IDriver
+    interface IPlayerDriver
     {
-        public int PlayerPos { get; }
-        public int TeamNumber { get; }
+        public string NickName { get; }
+        public bool IsLocal { get; }
+        public int ActorNumber { get; }
 
-        public Transform ActorShieldTransform { get; }
-        public Transform ActorCharacterTransform { get; }
-        public Transform ActorSoulTransform { get; }
-        public PlayerActor PlayerActor { get; }
         public bool MovementEnabled { get; set; }
+
+        public IReadOnlyBattlePlayer BattlePlayer { get; }
     }
-
-    #region Battle Team
-
-    interface IReadOnlyBattleTeam
-    {
-        public int GetTeamNumber();
-        public IReadOnlyList<IDriver> GetAllDrivers();
-        public IReadOnlyList<PlayerDriverPhoton> GetPlayerDrivers();
-        public IReadOnlyList<PlayerDriverStatic> GetBotDrivers();
-    }
-
-    internal class BattleTeam : IReadOnlyBattleTeam
-    {
-        public int TeamNumber;
-        public List<IDriver> AllDrivers = new();
-        public List<PlayerDriverPhoton> PlayerDrivers = new();
-        public List<PlayerDriverStatic> BotDrivers = new();
-
-        public BattleTeam(int teamNumber)
-        {
-            TeamNumber = teamNumber;
-        }
-
-        public int GetTeamNumber()
-            { return TeamNumber; }
-
-        public IReadOnlyList<IDriver> GetAllDrivers()
-            { return AllDrivers; }
-
-
-        public IReadOnlyList<PlayerDriverPhoton> GetPlayerDrivers()
-            { return PlayerDrivers; }
-
-
-        public IReadOnlyList<PlayerDriverStatic> GetBotDrivers()
-            { return BotDrivers; }
-
-
-        public void AddPlayer(PlayerDriverPhoton player)
-        {
-            PlayerDrivers.Add(player);
-            AllDrivers.Add(player);
-        }
-
-
-        public void AddBot(PlayerDriverStatic bot)
-        {
-            BotDrivers.Add(bot);
-            AllDrivers.Add(bot);
-        }
-
-    }
-
-    #endregion Battle Team
 
     #region Message Classes
     internal class TeamsAreReadyForGameplay
     {
-        public readonly IReadOnlyList<IDriver> AllDrivers;
-        public readonly IReadOnlyBattleTeam TeamAlpha;
-        public readonly IReadOnlyBattleTeam TeamBeta;
-        public readonly PlayerDriverPhoton LocalPlayer;
+        public IReadOnlyList<IReadOnlyBattlePlayer> AllPlayers {  get; }
+        public IReadOnlyList<IReadOnlyBattleTeam> Teams { get; }
+        public IReadOnlyBattleTeam TeamAlpha => Teams[0];
+        public IReadOnlyBattleTeam TeamBeta => Teams[1];
+        public IReadOnlyBattlePlayer LocalPlayer { get; }
 
-        public TeamsAreReadyForGameplay(IReadOnlyList<IDriver> allDrivers, IReadOnlyBattleTeam teamAlphaDrivers, IReadOnlyBattleTeam teamBetaDrivers, PlayerDriverPhoton localPlayer)
+        public TeamsAreReadyForGameplay(IReadOnlyList<IReadOnlyBattlePlayer> allPlayers, IReadOnlyList<IReadOnlyBattleTeam> teams, IReadOnlyBattlePlayer localPlayer)
         {
-            AllDrivers = allDrivers;
-            TeamAlpha = teamAlphaDrivers;
-            TeamBeta = teamBetaDrivers;
+            AllPlayers = allPlayers;
+            Teams = teams;
             LocalPlayer = localPlayer;
+        }
+
+        public IReadOnlyBattleTeam GetTeam(BattleTeamNumber teamNumber)
+        {
+            return teamNumber switch
+            {
+                BattleTeamNumber.TeamAlpha => Teams[0],
+                BattleTeamNumber.TeamBeta  => Teams[1],
+                _ => null
+            };
         }
     }
     #endregion Message Classes
@@ -105,40 +58,12 @@ namespace Battle.Scripts.Battle.Players
 
         #region Public - Methods
 
-        public void RegisterPlayer(PlayerDriverPhoton playerDriver)
+        public void RegisterPlayer(BattlePlayer battlePlayer, BattleTeamNumber teamNumber)
         {
-            _allDrivers.Add(playerDriver);
-            _allPlayerDrivers.Add(playerDriver);
-            switch (playerDriver.TeamNumber)
-            {
-                case PhotonBattle.TeamAlphaValue:
-                    _teamAlpha.AddPlayer(playerDriver);
-                    Debug.Log(DEBUG_LOG_NAME + "Registered player to team alpha");
-                    break;
-
-                case PhotonBattle.TeamBetaValue:
-                    _teamBeta.AddPlayer(playerDriver);
-                    Debug.Log(DEBUG_LOG_NAME + "Registered player to team beta");
-                    break;
-            }
-        }
-
-        public void RegisterBot(PlayerDriverStatic botDriver)
-        {
-            _allDrivers.Add(botDriver);
-            _allBotDrivers.Add(botDriver);
-            switch (botDriver.TeamNumber)
-            {
-                case PhotonBattle.TeamAlphaValue:
-                    _teamAlpha.AddBot(botDriver);
-                    Debug.Log(DEBUG_LOG_NAME + "Registered bot to team alpha");
-                    break;
-
-                case PhotonBattle.TeamBetaValue:
-                    _teamBeta.AddBot(botDriver);
-                    Debug.Log(DEBUG_LOG_NAME + "Registered bot to team beta");
-                    break;
-            }
+            _allPlayers.Add(battlePlayer);
+            BattleTeam battleTeam = GetTeam(teamNumber);
+            battlePlayer.SetBattleTeam(battleTeam);
+            battleTeam.Players.Add(battlePlayer);
         }
 
         public void UpdatePeerCount()
@@ -148,9 +73,9 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount));
             if (realPlayerCount < roomPlayerCount) return;
             int readyPeers = 0;
-            foreach (PlayerDriverPhoton player in _allPlayerDrivers)
+            foreach (BattlePlayer player in _allPlayers)
             {
-                if (player.PeerCount == realPlayerCount)
+                if (!player.IsBot && ((PlayerDriverPhoton)player.PlayerDriver).PeerCount == realPlayerCount)
                 {
                     readyPeers += 1;
                 }
@@ -159,11 +84,12 @@ namespace Battle.Scripts.Battle.Players
 
             if (readyPeers == realPlayerCount)
             {
-                GetLocalDriver(); // Finds the local driver from _allDrivers and sets it in _localPlayer
-                //AttachRangeIndicator(); // Attaches a range indicator to the ally of _localPlayer
+                SetLocalPlayer();
+                SetTeammates();
+
                 this.ExecuteOnNextFrame(() =>
                 {
-                    this.Publish(new TeamsAreReadyForGameplay(_allDrivers, _teamAlpha, _teamBeta, _localPlayer));
+                    this.Publish(new TeamsAreReadyForGameplay(_allPlayers, _battleTeams, _localPlayer));
                 });
             }
         }
@@ -178,23 +104,23 @@ namespace Battle.Scripts.Battle.Players
 
         public void SetPlayerMovementEnabled(bool value)
         {
-            foreach (IDriver driver in _allDrivers)
+            foreach (IReadOnlyBattlePlayer player in _allPlayers)
             {
-                driver.MovementEnabled = value;
+                player.PlayerDriver.MovementEnabled = value;
             }
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player movement set to {1}", _syncedFixedUpdateClock.UpdateCount, value));
         }
 
         public void AnalyticsReportPlayerCharacterSelection()
         {
-            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerActor.CharacterID);
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerCharacterID);
             GameAnalyticsManager.Instance.CharacterSelection(name);
         }
 
-        public void AnalyticsReportPlayerCharacterWinOrLoss(int winningTeam)
+        public void AnalyticsReportPlayerCharacterWinOrLoss(BattleTeamNumber winningTeam)
         {
-            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerActor.CharacterID);
-            if (_localPlayer.TeamNumber == winningTeam) GameAnalyticsManager.Instance.CharacterWin(name);
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerCharacterID);
+            if (_localPlayer.BattleTeam.TeamNumber == winningTeam) GameAnalyticsManager.Instance.CharacterWin(name);
             else GameAnalyticsManager.Instance.CharacterLoss(name);
         }
 
@@ -204,18 +130,23 @@ namespace Battle.Scripts.Battle.Players
 
         #region Private
 
+        #region Private - Constants
+        private const int TeamAlphaIndex = 0;
+        private const int TeamBetaIndex = 1;
+        #endregion Private - Constants
+
         #region Private - Fields
 
-        // Driver Lists
-        private readonly List<IDriver> _allDrivers = new();
-        private readonly List<PlayerDriverPhoton> _allPlayerDrivers = new();
-        private readonly List<PlayerDriverStatic> _allBotDrivers = new();
+        // Players
+        private readonly List<BattlePlayer> _allPlayers = new();
 
         // Teams
-        private readonly BattleTeam _teamAlpha = new(PhotonBattle.TeamAlphaValue);
-        private readonly BattleTeam _teamBeta = new(PhotonBattle.TeamBetaValue);
+        private readonly IReadOnlyList<BattleTeam> _battleTeams = new List<BattleTeam> {
+            new(BattleTeamNumber.TeamAlpha),
+            new (BattleTeamNumber.TeamBeta)
+        };
 
-        private PlayerDriverPhoton _localPlayer;
+        private IReadOnlyBattlePlayer _localPlayer;
 
         private int _lastPlayerTeleportUpdateNumber;
 
@@ -229,46 +160,52 @@ namespace Battle.Scripts.Battle.Players
 
         #region Private - Methods
 
-        // debug
         private void Start()
         {
+            BattleTeam teamAlpha = _battleTeams[TeamAlphaIndex];
+            BattleTeam teamBeta = _battleTeams[TeamBetaIndex];
+            teamAlpha.SetOtherTeam(teamBeta);
+            teamBeta.SetOtherTeam(teamAlpha);
+
+            // debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
         }
 
-        private void GetLocalDriver()
+        private void SetLocalPlayer()
         {
-            foreach (PlayerDriverPhoton driver in _allPlayerDrivers)
+            foreach (BattlePlayer player in _allPlayers)
             {
-                if (driver.IsLocal)
+                if (!player.IsBot && player.PlayerDriver.IsLocal)
                 {
-                    _localPlayer = driver;
+                    _localPlayer = player;
                     break;
                 }
             }
         }
 
-        /*
-        private void AttachRangeIndicator()
+        private void SetTeammates()
         {
-            try { Instantiate(_rangeIndicator, GetAlly(_localPlayer).transform); }
-            catch { Debug.Log("Local player is missing an ally"); }
-        }
-        */
-
-        /*
-        private GameObject GetAlly(PlayerDriverPhoton selfDriver)
-        {
-            // Returns the ally GameObject of the drivers owner
-            foreach (PlayerDriverPhoton driver in _allPlayerDrivers)
+            foreach (BattleTeam battleTeam in _battleTeams)
             {
-                if (driver.TeamNumber == selfDriver.TeamNumber && driver.PlayerActor.gameObject != selfDriver.PlayerActor.gameObject)
+                if (battleTeam.Players.Count >= 2)
                 {
-                    return driver.PlayerActor.gameObject;
+                    BattlePlayer player0 = battleTeam.Players[0];
+                    BattlePlayer player1 = battleTeam.Players[1];
+                    player0.SetTeammate(player1);
+                    player1.SetTeammate(player0);
                 }
             }
-            return null;
         }
-        */
+
+        private BattleTeam GetTeam(BattleTeamNumber teamNumber)
+        {
+            return teamNumber switch
+            {
+                BattleTeamNumber.TeamAlpha => _battleTeams[TeamAlphaIndex],
+                BattleTeamNumber.TeamBeta => _battleTeams[TeamBetaIndex],
+                _ => null,
+            };
+        }
 
         #endregion Private - Methods
 

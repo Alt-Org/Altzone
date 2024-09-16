@@ -7,6 +7,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 using TMPro;
 
+using Altzone.Scripts.GA;
+
 using Battle.Scripts.Battle.Players;
 
 namespace Battle.Scripts.Battle.Game
@@ -91,16 +93,18 @@ namespace Battle.Scripts.Battle.Game
                 //_WallCollider.isTrigger = true;
                 Player player = PhotonNetwork.LocalPlayer;
                 int playerPos = PhotonBattle.GetPlayerPos(player);
-                int teamNumber = PhotonBattle.GetTeamNumber(playerPos);
+                int teamNumber = (int)PhotonBattle.GetTeamNumber(playerPos);
                 Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
                 _countingDown = true;
 
-                Context.GetPlayerManager.AnalyticsReportPlayerCharacterWinOrLoss(_goalNumber switch
+                Context.GetPlayerManager.AnalyticsReportPlayerCharacterWinOrLoss((BattleTeamNumber)_goalNumber switch
                 {
-                    PhotonBattle.TeamBetaValue => PhotonBattle.TeamAlphaValue,
-                    PhotonBattle.TeamAlphaValue => PhotonBattle.TeamBetaValue,
-                    _ => PhotonBattle.NoTeamValue
+                    BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
+                    BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                    _ => BattleTeamNumber.NoTeam
                 });
+
+                if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnBattleEnd();
 
                 if (_goalNumber != teamNumber)
                 {

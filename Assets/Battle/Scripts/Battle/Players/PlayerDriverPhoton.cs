@@ -6,7 +6,6 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
 using Prg.Scripts.Common.PubSub;
 
@@ -17,7 +16,7 @@ namespace Battle.Scripts.Battle.Players
     /// <summary>
     /// Photon <c>PlayerDriver</c> implementation.
     /// </summary>
-    internal class PlayerDriverPhoton : MonoBehaviour, IDriver
+    internal class PlayerDriverPhoton : MonoBehaviour, IPlayerDriver
     {
         // Serialized Fields
         [Header("Testing")]
@@ -28,8 +27,8 @@ namespace Battle.Scripts.Battle.Players
 
         public string PlayerName;
         public string NickName => _photonView.Owner.NickName;
-        public int TeamNumber => _teamNumber;
-        public int PlayerPos => _playerPos;
+        public bool IsLocal => _photonView.Owner.IsLocal;
+        public int ActorNumber => _photonView.Owner.ActorNumber;
 
         public bool MovementEnabled
         {
@@ -41,13 +40,8 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
-        public PlayerActor PlayerActor => _playerActor;
-        public int ActorNumber => _photonView.Owner.ActorNumber;
-        public Transform ActorShieldTransform => _playerActor.ShieldTransform;
-        public Transform ActorCharacterTransform => _playerActor.CharacterTransform;
-        public Transform ActorSoulTransform => _playerActor.SoulTransform;
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
-        public bool IsLocal => _photonView.Owner.IsLocal;
         public int PeerCount => _peerCount;
 
         // } Public Properties and Fields
@@ -69,7 +63,8 @@ namespace Battle.Scripts.Battle.Players
             _state.IsWaitingToMove(true);
             _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
 
-            Vector2 position = new Vector2(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y);
+            Transform shieldTransform = _battlePlayer.PlayerShieldManager.transform;
+            Vector2 position = new(shieldTransform.position.x, shieldTransform.position.y);
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             GridPos targetGridPos = _gridManager.ClampGridPosition(_gridManager.WorldPointToGridPosition(targetPosition));
 
@@ -93,9 +88,8 @@ namespace Battle.Scripts.Battle.Players
                 return;
             }
 
-            float movementSpeed = _playerActor.MovementSpeed * _playerMoveSpeedMultiplier;
             float distance = (targetPosition - position).magnitude;
-            double movementTimeS = Math.Max(distance / movementSpeed, _movementMinTimeS);
+            double movementTimeS = Math.Max(distance / _playerMovementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Sending player movement network message", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
             _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
@@ -104,11 +98,11 @@ namespace Battle.Scripts.Battle.Players
         #endregion Public Methods
 
         // Player Data
-        private int _teamNumber;
+        private BattleTeamNumber _teamNumber;
         private int _playerPos;
 
         // Config
-        private float _playerMoveSpeedMultiplier;
+        private float _playerMovementSpeed;
         private double _movementMinTimeS;
         private float _arenaScaleFactor;
 
@@ -117,7 +111,7 @@ namespace Battle.Scripts.Battle.Players
         private int _peerCount;
         private static bool IsNetworkSynchronize => PhotonNetwork.IsMasterClient;
 
-        private PlayerActor _playerActor;
+        private BattlePlayer _battlePlayer;
 
         // Components
         private PhotonView _photonView;
@@ -147,12 +141,22 @@ namespace Battle.Scripts.Battle.Players
             _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
             _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
 
+            // create battle player
+            {
+                CharacterID playerCharacterId = !_isTesting ? PhotonBattle.GetPlayerCharacterId(_photonView.Owner) : _playerCharacterID;
+
+                _battlePlayer = new BattlePlayer(_playerPos, playerCharacterId, false,  this);
+            }
+
+
             // get config
-            _playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
+            float playerMoveSpeedMultiplier = GameConfig.Get().Variables._playerMoveSpeedMultiplier;
             _movementMinTimeS = GameConfig.Get().Variables._networkDelay;
             _arenaScaleFactor = _battlePlayArea.ArenaScaleFactor;
 
-            _playerActor = InstantiatePlayerPrefab(_photonView.Owner);
+            InstantiatePlayerPrefab(_photonView.Owner);
+
+            _playerMovementSpeed = _battlePlayer.PlayerActor.MovementSpeed * playerMoveSpeedMultiplier;
 
             // subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
@@ -160,12 +164,12 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnEnable()
         {
-            var player = _photonView.Owner;
+            Player player = _photonView.Owner;
             _state ??= gameObject.AddComponent<PlayerDriverState>();
-            _state.ResetState(_playerActor, _playerPos, _teamNumber);
+            _state.ResetState(_battlePlayer.PlayerActor, _playerPos, _teamNumber);
             _state.MovementEnabled = false;
 
-            _playerManager.RegisterPlayer(this);
+            _playerManager.RegisterPlayer(_battlePlayer, _teamNumber);
             _peerCount = 0;
             this.ExecuteOnNextFrame(() => _photonView.RPC(nameof(SendPlayerPeerCountRpc), RpcTarget.All));
         }
@@ -173,27 +177,20 @@ namespace Battle.Scripts.Battle.Players
         #region Message Listeners
         private void OnTeamsReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            _playerActor.SetRotation(_teamNumber == PhotonBattle.TeamAlphaValue ? 0 : 180f);
-            _playerActor.SetSpriteVariant(data.LocalPlayer.TeamNumber == _teamNumber ? PlayerActor.SpriteVariant.A : PlayerActor.SpriteVariant.B);
-            _playerActor.ResetSprite();
+            _battlePlayer.PlayerActor.SetRotation(_teamNumber == BattleTeamNumber.TeamAlpha ? 0 : 180f);
+            _battlePlayer.PlayerActor.SetSpriteVariant(data.LocalPlayer.BattleTeam.TeamNumber == _teamNumber ? PlayerActor.SpriteVariant.A : PlayerActor.SpriteVariant.B);
+            _battlePlayer.PlayerActor.ResetSprite();
         }
         #endregion Message Listeners
 
-        private PlayerActor InstantiatePlayerPrefab(Player player)
+        private void InstantiatePlayerPrefab(Player player)
         {
             string playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
             PlayerName = playerTag;
             name = name.Replace("Clone", playerTag);
 
-            CharacterID playerCharacterId;
-
-            playerCharacterId = !_isTesting ?
-                PhotonBattle.GetPlayerCharacterId(player) :
-                _playerCharacterID;
-
-            Debug.Log(string.Format("Selected player {0}, {1}", playerCharacterId, CustomCharacter.GetCharacterClassAndName(playerCharacterId)));
-            PlayerActor playerActor = PlayerActor.InstantiatePrefabFor(this, _playerPos, playerCharacterId, playerTag, _arenaScaleFactor);
-            return playerActor;
+            Debug.Log(string.Format("Selected player {0}, {1}", _battlePlayer.PlayerCharacterID, CustomCharacter.GetCharacterClassAndName(_battlePlayer.PlayerCharacterID)));
+            PlayerActor.InstantiatePrefabFor(_battlePlayer, playerTag, _arenaScaleFactor);
         }
 
         #region Photon RPC
@@ -211,7 +208,8 @@ namespace Battle.Scripts.Battle.Players
             var gridPos = new GridPos(row, col);
 
             // debug
-            GridPos debugGridPos = _gridManager.WorldPointToGridPosition(new Vector2(_playerActor.ShieldTransform.position.x, _playerActor.ShieldTransform.position.y));
+            Transform shieldTransform = _battlePlayer.PlayerShieldManager.transform;
+            GridPos debugGridPos = _gridManager.WorldPointToGridPosition(new Vector2(shieldTransform.position.x, shieldTransform.position.y));
 
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Received player movement network message (current grid position: ({3}), target grid position: ({4}))",
                 _syncedFixedUpdateClock.UpdateCount,

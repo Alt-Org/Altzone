@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private List<GalleryCharacterClassInfo> _info;
 
 
-        public GalleryCharacterInfo GetCharacterPrefabInfo(int prefabId)
+        public GalleryCharacterInfo GetCharacterPrefabInfoFast(int prefabId)
         {
             CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
 
@@ -33,6 +33,38 @@ namespace MenuUi.Scripts.CharacterGallery
                 return null;
             }
             GalleryCharacterInfo character = classObject.list[characterValue];
+
+            return character;
+        }
+
+        public GalleryCharacterInfo GetCharacterPrefabInfoSafe(int prefabId)
+        {
+            CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
+
+            GalleryCharacterClassInfo classObject = null;
+            foreach (GalleryCharacterClassInfo classInfo in _info)
+            {
+                if (classInfo.id == characterClass)
+                {
+                    classObject = classInfo;
+                    break;
+                }
+            }
+
+            if (classObject == null)
+            {
+                return null;
+            }
+
+            GalleryCharacterInfo character = null;
+            foreach (GalleryCharacterInfo CharacterInfo in classObject.list)
+            {
+                if (CharacterInfo.id == (CharacterID)prefabId)
+                {
+                    character = CharacterInfo;
+                    break;
+                }
+            }
             return character;
         }
     }

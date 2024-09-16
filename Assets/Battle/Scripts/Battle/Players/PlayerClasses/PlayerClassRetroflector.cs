@@ -7,22 +7,20 @@ namespace Battle.Scripts.Battle.Players
     {
         // Serialized fields
         [SerializeField] private int _maxReflections;
-        [SerializeField] private GameObject _shield;
+        [SerializeField] private ShieldManager _shieldManager;
         [SerializeField] private GameObject[] _shieldShapes; // Different shield shapes
         [SerializeField] private bool _allowLoveProjectiles = false; // Control for love projectiles
 
+        public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
+
         public bool BounceOnBallShieldCollision => !_allowLoveProjectiles;
 
-        // Private fields
-        private int _reflectionCount;
-        private int _currentShieldShapeIndex = 0;
-
-        // Debug
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS RETROFLECTION] ";
-        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
-
         // Public methods
+
+        public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
+        {
+            _battlePlayer = battlePlayer;
+        }
 
         public void OnBallShieldCollision()
         {
@@ -37,6 +35,16 @@ namespace Battle.Scripts.Battle.Players
             TrackShieldReflections();
         }
 
+        // Private fields
+        private IReadOnlyBattlePlayer _battlePlayer;
+        private int _reflectionCount;
+        private int _currentShieldShapeIndex = 0;
+
+        // Debug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS RETROFLECTION] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+
         // Private methods
         private void Start()
         {
@@ -50,15 +58,14 @@ namespace Battle.Scripts.Battle.Players
             // Initialize the shield with the first shape
             if (_shieldShapes.Length > 0)
             {
-                _shield = Instantiate(_shieldShapes[_currentShieldShapeIndex], transform);
-                _shield.SetActive(true);
+                _shieldManager.SetShield(shieldGameObject: _shieldShapes[_currentShieldShapeIndex]);
             }
         }
 
         private void TrackShieldReflections()
         {
             _reflectionCount++;
-            
+
             // Check if the number of reflections has reached the maximum
             if (_reflectionCount >= _maxReflections)
             {
@@ -73,18 +80,14 @@ namespace Battle.Scripts.Battle.Players
         {
             _currentShieldShapeIndex++;
             if (_currentShieldShapeIndex < _shieldShapes.Length)
-            {
-                // Deactivate current shield and activate the next one
-                Destroy(_shield);
-                _shield = Instantiate(_shieldShapes[_currentShieldShapeIndex], transform);
-                
+
+
                 _reflectionCount = 0; // Reset the reflection count for the new shape
 
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield shape changed", _syncedFixedUpdateClock.UpdateCount));
             }
         }
     }
-}
 
 
 

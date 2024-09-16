@@ -9,19 +9,24 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private float _bounceAngle;
 
         // Public Properties
-        public Transform ShieldTransform => _transform;
+        public ShieldManager shieldManager => _shieldManager;
         public float BounceAngle => _bounceAngle;
-        public float ImpactForce => _playerActor.ImpactForce;
-        public bool BounceOnBallShieldCollision => _playerActor.BounceOnBallShieldCollision;
+
 
         // Public Methods
-        public void OnBallShieldCollision() => _playerActor.OnBallShieldCollision();
-        public void OnBallShieldBounce() => _playerActor.OnBallShieldBounce();
+        public void InitInstance(ShieldManager shieldManager, IReadOnlyBattlePlayer battlePlayer)
+        {
+            _shieldManager = shieldManager;
+            _playerActor = battlePlayer.PlayerActor;
+
+            // debug
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+        }
+
 
         // Private Fields
         private PlayerActor _playerActor;
         private ShieldManager _shieldManager;
-        private Transform _transform;
 
         // Debug
 #pragma warning disable IDE0051 // Remove unused private members
@@ -32,16 +37,6 @@ namespace Battle.Scripts.Battle.Players
 #pragma warning restore IDE0052 // Remove unread private members
 
         #region Private Methods
-
-        private void Awake()
-        {
-            _transform = GetComponent<Transform>();
-            _playerActor = transform.root.GetComponent<PlayerActor>();
-            _shieldManager = _transform.parent.parent.GetComponentInParent<ShieldManager>();
-
-            // debug
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {

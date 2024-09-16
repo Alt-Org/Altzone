@@ -181,15 +181,14 @@ namespace MenuUI.Scripts.SoulHome
                     if (hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
                     {
                         soulHomeHit = true;
-                        GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
-                        GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
+                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
+                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
                         if (_tempSelectedFurnitureTray != null || _selectedFurnitureTray != null)
                         {
                             if (_tempSelectedFurnitureTray != null)
                             {
                                 _selectedFurnitureTray = _tempSelectedFurnitureTray;
                                 _tempSelectedFurnitureTray = null;
-                                //if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                             }
                             if (_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
                             if (_soulHomeTower.SelectedFurniture == null)
@@ -229,7 +228,7 @@ namespace MenuUI.Scripts.SoulHome
                     if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
                     {
                         trayHit = true;
-                        GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
+                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
                         if (_selectedFurnitureTray == null)
                         {
                             if (_soulHomeTower.SelectedFurniture != null)
@@ -246,7 +245,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (_soulHomeTower.SelectedFurniture != null)
                         {
-                            Debug.Log("Check2");
+                            //Debug.Log("Check2");
                             if (click is ClickState.Start)
                             {
                                 _soulHomeTower.DeselectFurniture();
@@ -261,11 +260,11 @@ namespace MenuUI.Scripts.SoulHome
 
                             if (click is ClickState.End)
                             {
-                                Debug.Log("Check3");
+                                //Debug.Log("Check3");
                                 if (_selectedFurnitureTray != null /*&& !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem")*/)
                                 {
                                     //Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
-                                    Debug.Log("Check1");
+                                    //Debug.Log("Check1");
                                     if(!CheckAndRevealTrayItem(_selectedFurnitureTray)) AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
                                     Destroy(_selectedFurnitureTray);
                                 }
@@ -291,8 +290,8 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 if (!trayHit)
                 {
-                    GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
-                    GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
+                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
+                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
                     if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
 
                 }
@@ -309,7 +308,7 @@ namespace MenuUI.Scripts.SoulHome
                         //else Destroy(_selectedFurnitureTray);
                     }
                     //_selectedFurnitureTray = null;
-                    GetTray().transform.Find("Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
+                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
 
                     /*if (_soulHomeTower.SelectedFurniture != null)
                     {
@@ -366,9 +365,15 @@ namespace MenuUI.Scripts.SoulHome
             if(tray is null) tray = GetTray();
             if (!_trayOpen)
             {
-                if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
+                if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
                 else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
                 _trayOpen = true;
+                RectTransform furnitureRectTransform = tray.transform.Find("FurnitureButton").GetComponent<RectTransform>();
+                furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
+                furnitureRectTransform.gameObject.SetActive(true);
+                RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();
+                trapRectTransform.sizeDelta = new(width * 0.2f, trapRectTransform.sizeDelta.y);
+                trapRectTransform.gameObject.SetActive(true);
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(true);
                 //if (!_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
@@ -376,6 +381,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 tray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _trayOpen = false;
+                tray.transform.Find("FurnitureButton").GetComponent<RectTransform>().gameObject.SetActive(false);
+                tray.transform.Find("TrapButton").GetComponent<RectTransform>().gameObject.SetActive(false);
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(false);
                 //if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }

@@ -57,7 +57,7 @@ namespace Battle.Scripts.Battle.Players
 
             var player = View.Owner;
             var playerPos = PhotonBattle.GetPlayerPos(player);
-            TeamNumber = PhotonBattle.GetTeamNumber(playerPos);
+            TeamNumber = (int)PhotonBattle.GetTeamNumber(playerPos);
             if (TeamNumber == 1)
             {
                 TeamDiamonds = GameObject.FindGameObjectWithTag("AlphaDiamonds");

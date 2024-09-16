@@ -31,11 +31,6 @@ namespace MenuUI.Scripts.SoulHome
                 Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f, false);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
         private void ScaleSprite(Sprite sprite, RectTransform rTransform)
         {
             float parentHeight = transform.parent.GetComponent<RectTransform>().rect.height;

@@ -1990,7 +1990,7 @@ GameObject:
   - component: {fileID: 8347261019365852576}
   - component: {fileID: 7973739693538527160}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: PlayerProfilePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2020,12 +2020,12 @@ RectTransform:
   - {fileID: 1534309839957278643}
   - {fileID: 5458054138303507881}
   - {fileID: 475320271401509366}
-  m_Father: {fileID: 2795076379389791850}
+  m_Father: {fileID: 1963798945391240201}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 250}
-  m_SizeDelta: {x: 810, y: 1300}
+  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8348690936397961292
 CanvasRenderer:
@@ -2095,6 +2095,7 @@ MonoBehaviour:
   loggedOutLosesWinsText: "Voitot/H\xE4vi\xF6t"
   loggedOutCarbonText: "Hiilijalanj\xE4lki"
   _playerNameText: {fileID: 5215165325137679624}
+  _MottoText: {fileID: 0}
   _TimePlayedText: {fileID: 6461296434776696389}
   _LosesWinsText: {fileID: 1188025404754386890}
   _CarbonText: {fileID: 6354010782697853409}
@@ -4074,6 +4075,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1963798945391240201}
     m_Modifications:
+    - target: {fileID: 2756356112880120380, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 32.95
+      objectReference: {fileID: 0}
     - target: {fileID: 6221160951982613882, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Name
@@ -4227,11 +4233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 8476621660179101015, guid: e41290d0959bdfe47b62024b1a7a3c44,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2884727783401671408}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e41290d0959bdfe47b62024b1a7a3c44, type: 3}
 --- !u!224 &2795076379389791850 stripped
@@ -4406,6 +4408,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2884727783401671408}
     - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1

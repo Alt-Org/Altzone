@@ -528,7 +528,7 @@ public class CharacterStatWindow : MonoBehaviour
             return;
         }
 
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfo((int)index);
+        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
         if (galleryCharacter == null) {
 
             Debug.LogError($"GalleryCharacterReference not found for index {index}");

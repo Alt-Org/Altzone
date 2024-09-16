@@ -147,16 +147,16 @@ MonoBehaviour:
     list:
     - Name: Girls
       id: 1537
-      CharacterImage: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
+      characterImagePrefab: {fileID: 0}
       DivanImage: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb, type: 3}
   - Name: EgotismEinstein
     id: 1792
     list:
     - Name: Einstein
       id: 1793
-      CharacterImage: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc, type: 3}
+      characterImagePrefab: {fileID: 0}
       DivanImage: {fileID: 21300000, guid: b473fdb75135d0b4881be82aed1d0365, type: 3}
-  _characterImage: {fileID: 1933211403}
+  _characterImageParent: {fileID: 0}
   _divanImage: {fileID: 149215620}
 --- !u!114 &149215620 stripped
 MonoBehaviour:
@@ -363,7 +363,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 4663983122293298706}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -376,6 +376,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 977862514503100006, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000061035156
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619582327181556341, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000061035156
+      objectReference: {fileID: 0}
     - target: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -395,6 +405,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256794979162059147, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _debug
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
@@ -416,6 +436,11 @@ PrefabInstance:
       propertyPath: _info.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _characterImageParent
+      value: 
+      objectReference: {fileID: 4663983122293298707}
     - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: _avatarClassInfoList.Array.size
@@ -517,6 +542,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc,
         type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[0].list.Array.data[0].characterImagePrefab
+      value: 
+      objectReference: {fileID: 6793654523201779820, guid: d5ab2408ac225be4a90dcbd0d8851196,
+        type: 3}
+    - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: _avatarClassInfoList.Array.data[1].list.Array.data[0].characterImagePrefab
+      value: 
+      objectReference: {fileID: 449202621717433028, guid: a6649153cc424c441aa1b180db100c5d,
+        type: 3}
     - target: {fileID: 3594419316348392077, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -587,6 +624,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5181688677249606757, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5476525029617493457, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -641,12 +683,17 @@ PrefabInstance:
     - target: {fileID: 7191410281708104365, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -4.0000305
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 7298176311922543583, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: m_Name
       value: AvatarEditor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8209209640329964298, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 8944099634186064353, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
@@ -697,6 +744,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 149215618}
   m_SourcePrefab: {fileID: 100100000, guid: 75313ac50a8cd504486c71cf72454b9e, type: 3}
+--- !u!224 &4663983122293298707 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2628682925619732159, guid: 75313ac50a8cd504486c71cf72454b9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4663983122293298706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

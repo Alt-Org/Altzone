@@ -5245,6 +5245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8766549739497368820}
   - component: {fileID: 2435848013500093190}
+  - component: {fileID: 8238024227090610554}
   m_Layer: 0
   m_Name: ClanMainView
   m_TagString: Untagged
@@ -5286,6 +5287,19 @@ MonoBehaviour:
   _clanCoins: {fileID: 2656809411362222333}
   _clanMembers: {fileID: 7761599243841262533}
   _clanNameTextField: {fileID: 4804533779733543893}
+--- !u!114 &8238024227090610554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8766549739497368821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d0c68de4d993b4a861c04f4aa935ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sectionName: 5
 --- !u!1 &8930492403266747187
 GameObject:
   m_ObjectHideFlags: 0

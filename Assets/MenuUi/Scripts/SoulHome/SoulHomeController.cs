@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MenuUI.Scripts.SoulHome;
+using MenuUI.Scripts;
 using TMPro;
 using MenuUi.Scripts.Window;
 using UnityEngine.UI;
@@ -28,7 +28,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private MainScreenController _mainScreen;
         [SerializeField]
-        private GameObject _confirmPopup;
+        private ConfirmPopupController _confirmPopup;
         [SerializeField]
         private PopupController _infoPopup;
         [SerializeField]
@@ -36,7 +36,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _editTray;
         [SerializeField]
-        private GameObject _audioManager;
+        private TextMeshProUGUI _musicName;
+        [SerializeField]
+        private SoulHomeAudioManager _audioManager;
 
         private FurnitureList _furnitureList = new();
 
@@ -51,18 +53,11 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
-            //_furnitureList = new();
             if (ServerManager.Instance.Clan != null)
             {
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
             }
             EditModeTrayResize();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void OnEnable()
@@ -72,10 +67,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Stop();
+                    rootObject.GetComponent<MainMenuAudioManager>().StopMusic();
             }
-            _audioManager.transform.Find("Music").GetComponent<MusicList>().PlayMusic();
-            string name = GetComponent<MusicList>().GetTrackName();
+            string name = _audioManager.PlayMusic();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
@@ -88,9 +82,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.transform.Find("MainMenuMusic").GetComponent<AudioSource>().Play();
+                    rootObject.GetComponent<MainMenuAudioManager>().PlayMusic();
             }
-            GetComponent<MusicList>().StopMusic();
+            _audioManager.StopMusic();
         }
 
         public void SetRoomName(GameObject room)
@@ -134,15 +128,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _exitPending = true;
                 _confirmPopupOpen = true;
-                _confirmPopup.SetActive(true);
-                _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                + "Poistuaksesi muutokset pitää tallentaa tai hylätä. \n\n"
-                + "Haluatko silti poistua? ";
-                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmExitFalse);
-                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrueWithRevert);
-                _confirmPopup.transform.Find("SecondaryAcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Palauta Muutokset";
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmExitTrueWithSave);
-                _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Tallenna Muutokset";
+                _confirmPopup.OpenPopUp(PopupType.Exit, ConfirmExitFalse, ConfirmExitTrueWithSave, ConfirmExitTrueWithRevert);
             }
             else
             {
@@ -182,15 +168,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (_soulHomeTower.ChangedFurnitureList.Count > 0)
                 {
                     _confirmPopupOpen = true;
-                    _confirmPopup.SetActive(true);
-                    _confirmPopup.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                    + "Sulkeaksesi muokkaustilan tallentamattomat muutokset pitää tallentaa tai hylätä. \n\n"
-                    + "Mitä haluat tehdä? ";
-                    _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseFalse);
-                    _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrueWithSave);
-                    _confirmPopup.transform.Find("AcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Tallenna Muutokset";
-                    _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.AddListener(ConfirmEditCloseTrueWithRevert);
-                    _confirmPopup.transform.Find("SecondaryAcceptButton").GetChild(0).GetComponent<TextMeshProUGUI>().text = "Palauta Muutokset";
+                    _confirmPopup.OpenPopUp(PopupType.EditClose, ConfirmEditCloseFalse, ConfirmEditCloseTrueWithSave, ConfirmEditCloseTrueWithRevert);
                 }
                 else
                     _soulHomeTower.ToggleEdit();
@@ -222,16 +200,16 @@ namespace MenuUI.Scripts.SoulHome
 
         public void NextMusicTrack()
         {
-            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().NextTrack();
+            string name = _audioManager.NextMusicTrack();
             if (name != null)
-                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _musicName.text = name;
         }
 
         public void PrevMusicTrack()
         {
-            string name = _audioManager.transform.Find("Music").GetComponent<MusicList>().PrevTrack();
+            string name = _audioManager.PrevMusicTrack();
             if (name != null)
-                _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+                _musicName.text = name;
         }
 
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
@@ -247,8 +225,8 @@ namespace MenuUI.Scripts.SoulHome
                 else _mainScreen.ResetChanges();
                 CloseConfirmPopup(PopupType.EditClose);
                 _soulHomeTower.ToggleEdit();
-                if(save) _audioManager.transform.Find("SaveChanges").GetComponent<AudioSource>().Play();
-                else _audioManager.transform.Find("RevertChanges").GetComponent<AudioSource>().Play();
+                if(save) _audioManager.PlayAudio(AudioType.Save);
+                else _audioManager.PlayAudio(AudioType.Revert);
             }
             else
             {
@@ -258,20 +236,8 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CloseConfirmPopup(PopupType type)
         {
-            if(type is PopupType.Exit)
-            {
-                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitFalse);
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrueWithSave);
-                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmExitTrueWithRevert);
-            }
-            else if (type is PopupType.EditClose)
-            {
-                _confirmPopup.transform.Find("CancelButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseFalse);
-                _confirmPopup.transform.Find("AcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrueWithSave);
-                _confirmPopup.transform.Find("SecondaryAcceptButton").GetComponent<Button>().onClick.RemoveListener(ConfirmEditCloseTrueWithRevert);
-            }
+            _confirmPopup.ClosePopUp();
             _confirmPopupOpen = false;
-            _confirmPopup.SetActive(false);
         }
 
         public void ShowInfoPopup(string popupText)

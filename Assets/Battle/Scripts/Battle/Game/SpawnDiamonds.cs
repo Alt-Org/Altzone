@@ -1,9 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 
 using Photon.Pun;
+using Battle.Scripts.Battle.Players;
+using Prg.Scripts.Common.PubSub;
+using Battle.Scripts.Battle;
 
 internal class SpawnDiamonds : MonoBehaviour
 {
@@ -38,11 +40,20 @@ internal class SpawnDiamonds : MonoBehaviour
         }
     }
 
+    private bool _rotateDiamonds;
+
     private readonly List<DiamondSpawnArgs> _diamondSpawnList = new();
 
     private void Start()
     {
         GenerateDiamondSpawnList();
+
+        this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+    }
+
+    private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
+    {
+        _rotateDiamonds = data.LocalPlayer.BattleTeam.TeamNumber == BattleTeamNumber.TeamBeta;
     }
 
     /*
@@ -122,7 +133,7 @@ internal class SpawnDiamonds : MonoBehaviour
 
             foreach (DiamondSpawnArgs diamondSpawnArgs in _diamondSpawnList)
             {
-                GameObject diamond = Instantiate(_diamondObjects[diamondSpawnArgs.PrefabIndex], spawnPos, Quaternion.Euler(0f, 0f, 90f));
+                GameObject diamond = Instantiate(_diamondObjects[diamondSpawnArgs.PrefabIndex], spawnPos, Quaternion.Euler(0f, 0f, _rotateDiamonds ? 180f : 0f));
                 diamond.transform.parent = transform;
                 diamond.SetActive(true);
 

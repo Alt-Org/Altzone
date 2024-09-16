@@ -17,9 +17,9 @@ namespace Battle.Scripts.Battle.Game
 
     internal class BallSlinged
     {
-        public readonly int SlingingTeamNumber;
+        public BattleTeamNumber SlingingTeamNumber { get; }
 
-        public BallSlinged(int slingingTeamNumber)
+        public BallSlinged(BattleTeamNumber slingingTeamNumber)
         {
             SlingingTeamNumber = slingingTeamNumber;
         }
@@ -66,7 +66,7 @@ namespace Battle.Scripts.Battle.Game
         /// </para>
         /// </summary>
         /// <param name="teamNumber">The PhotonBattle team number of the team which sling is going to be activated</param>
-        public void SlingActivate(int teamNumber)
+        public void SlingActivate(BattleTeamNumber teamNumber)
         {
             if (_slingActive)
             {
@@ -76,13 +76,13 @@ namespace Battle.Scripts.Battle.Game
 
             switch (teamNumber)
             {
-                case PhotonBattle.TeamAlphaValue:
-                    _currentTeam = _teams[TEAM_ALPHA];
+                case BattleTeamNumber.TeamAlpha:
+                    _currentTeam = _teams[TeamAlpha];
                     Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team alpha sling activated", _syncedFixedUpdateClock.UpdateCount));
                     break;
 
-                case PhotonBattle.TeamBetaValue:
-                    _currentTeam = _teams[TEAM_BETA];
+                case BattleTeamNumber.TeamBeta:
+                    _currentTeam = _teams[TeamBeta];
                     Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team beta sling activated", _syncedFixedUpdateClock.UpdateCount));
                     break;
             }
@@ -111,7 +111,7 @@ namespace Battle.Scripts.Battle.Game
                 return;
             }
 
-            int teamNumber = _currentTeam.TeamNumber;
+            BattleTeamNumber teamNumber = _currentTeam.TeamNumber;
             Vector3 launchPosition;
             Vector3 launchDirection;
             float launchSpeed;
@@ -143,7 +143,7 @@ namespace Battle.Scripts.Battle.Game
             {
                 Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "players not in valid sling formation", _syncedFixedUpdateClock.UpdateCount));
 
-                teamNumber = PhotonBattle.NoTeamValue;
+                teamNumber = BattleTeamNumber.NoTeam;
                 launchDirection = new Vector3(0.5f, 0.5f);
                 launchSpeed = _slingDefaultSpeed;
                 launchPosition = Vector3.zero;
@@ -166,11 +166,11 @@ namespace Battle.Scripts.Battle.Game
         private bool _slingActive = false;
 
         // Teams
-        private const int TEAM_ALPHA = 0;
-        private const int TEAM_BETA  = 1;
+        private const int TeamAlpha = 0;
+        private const int TeamBeta  = 1;
         private class Team
         {
-            public int TeamNumber;
+            public BattleTeamNumber TeamNumber;
             public List<Transform> List = new();
             public Transform FrontPlayer;
             public Transform BackPlayer;
@@ -214,13 +214,11 @@ namespace Battle.Scripts.Battle.Game
         {
             _teams = new Team[2];
 
-            _teams[TEAM_ALPHA] = new();
-            _teams[TEAM_ALPHA].TeamNumber = PhotonBattle.TeamAlphaValue;
-            foreach (IDriver driver in data.TeamAlpha.GetAllDrivers()) _teams[TEAM_ALPHA].List.Add(driver.ActorShieldTransform);
+            _teams[TeamAlpha] = new() { TeamNumber = BattleTeamNumber.TeamAlpha };
+            foreach (IReadOnlyBattlePlayer player in data.TeamAlpha.Players) _teams[TeamAlpha].List.Add(player.PlayerShieldManager.transform);
 
-            _teams[TEAM_BETA] = new();
-            _teams[TEAM_BETA].TeamNumber = PhotonBattle.TeamBetaValue;
-            foreach (IDriver driver in data.TeamBeta.GetAllDrivers()) _teams[TEAM_BETA].List.Add(driver.ActorShieldTransform);
+            _teams[TeamBeta] = new() { TeamNumber = BattleTeamNumber.TeamBeta };
+            foreach (IReadOnlyBattlePlayer player in data.TeamBeta.Players) _teams[TeamBeta].List.Add(player.PlayerShieldManager.transform);
 
             this.Publish(new SlingControllerReady());
         }
@@ -281,14 +279,14 @@ namespace Battle.Scripts.Battle.Game
 
         #endregion Private - Methods - Update
 
-        private void SlingLaunchPrivate(int teamNumber, Vector3 position, Vector3 direction, float speed)
+        private void SlingLaunchPrivate(BattleTeamNumber teamNumber, Vector3 position, Vector3 direction, float speed)
         {
             _slingActive = false;
             _slingIndicator.SetShow(false);
 
             Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "launching ball (team: {1}, position: {2}, direction: {3}, speed {4})",
                 _syncedFixedUpdateClock.UpdateCount,
-                teamNumber != PhotonBattle.NoTeamValue ? (teamNumber == PhotonBattle.TeamAlphaValue ? "team alpha" : "team beta") : "no team",
+                teamNumber != BattleTeamNumber.NoTeam ? (teamNumber == BattleTeamNumber.TeamAlpha ? "team alpha" : "team beta") : "no team",
                 position,
                 direction,
                 speed

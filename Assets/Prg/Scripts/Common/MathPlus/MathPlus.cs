@@ -21,7 +21,7 @@ namespace Prg.Scripts.Common.MathPlus
         /// <returns>The value remapped to the destination range.</returns>
         public static float Remap(float value, float min, float max, float newMin, float newMax)
         {
-            return (value - min) * ((max - min) / (newMax - newMin)) + newMin;
+            return (value - min) * ((newMax - newMin) / (max - min)) + newMin;
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Prg.Scripts.Common.MathPlus
         /// <returns>The value remapped to the destination range.</returns>
         public static double Remap(double value, double min, double max, double newMin, double newMax)
         {
-            return (value - min) * ((max - min) / (newMax - newMin)) + newMin;
+            return (value - min) * ((newMax - newMin) / (max - min)) + newMin;
         }
 
         /// <summary>
