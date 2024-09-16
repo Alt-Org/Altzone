@@ -156,7 +156,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -35, y: -124}
-  m_SizeDelta: {x: 481.19, y: 46.0753}
+  m_SizeDelta: {x: 260.6, y: 46.0753}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8865367592655361090
 CanvasRenderer:
@@ -302,8 +302,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PopupWindowScript, MainMenu
-        m_MethodName: AcceptPopupWindow
+        m_TargetAssemblyTypeName: PopupManager, MainMenu
+        m_MethodName: AcceptTask
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1410,12 +1410,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2306215236588704840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5410e6f15533754591329f56de83534, type: 3}
+  m_Script: {fileID: 11500000, guid: 45b56553c3bd66948a926c1b26770ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  associatedTaskIds: 
   leaderboard: {fileID: 0}
-  popupScreen: {fileID: 5336851738323581175}
+  popupScreenPrefab: {fileID: 5336851738323581175}
   dailyTaskPrefab: {fileID: 2735320841348897930, guid: 4318b29b755a8bd44a583f47cb61da1b,
     type: 3}
 --- !u!1 &2456137431992596164
@@ -3681,6 +3680,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 1816700110254165857, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_IsActive
@@ -3694,7 +3698,7 @@ PrefabInstance:
     - target: {fileID: 2484026590023884641, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -3.9999847
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 2664619322532247190, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -3709,7 +3713,7 @@ PrefabInstance:
     - target: {fileID: 3587014077219313802, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5007824331407061772, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -3749,7 +3753,7 @@ PrefabInstance:
     - target: {fileID: 7373803142921773897, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -3.9999847
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 7397605467378155027, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
