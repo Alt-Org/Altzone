@@ -4,39 +4,42 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-[RequireComponent(typeof(Image))]
-public class ImageRandomiser : MonoBehaviour
+namespace MenuUI.Scripts
 {
-    [SerializeField]private List<Sprite> _sprites = new List<Sprite>();
-
-    private int _prevImageValue = -1;
-    private Image _image = null;
-    private Button _button = null;
-
-    private void Awake()
+    [RequireComponent(typeof(Image))]
+    public class ImageRandomiser : MonoBehaviour
     {
-        _image = GetComponent<Image>();
-        _button = GetComponent<Button>();
-        if(_button != null) _button.onClick.AddListener(RandomiseImage);
-        if(_sprites.Count > 0)_image.sprite = _sprites[0];
-    }
+        [SerializeField] private List<Sprite> _sprites = new List<Sprite>();
 
-    private void OnEnable()
-    {
-        if (_image != null) RandomiseImage();
-    }
+        private int _prevImageValue = -1;
+        private Image _image = null;
+        private Button _button = null;
 
-    public void RandomiseImage()
-    {
-        if (_image == null) return;
-        if (_sprites.Count <= 1) return;
-        int newValue;
-        do
+        private void Awake()
         {
-            newValue = Random.Range(0, _sprites.Count);
+            _image = GetComponent<Image>();
+            _button = GetComponent<Button>();
+            if (_button != null) _button.onClick.AddListener(RandomiseImage);
+            if (_sprites.Count > 0) _image.sprite = _sprites[0];
         }
-        while (newValue == _prevImageValue);
-        _image.sprite = _sprites[newValue];
-        _prevImageValue = newValue;
+
+        private void OnEnable()
+        {
+            if (_image != null) RandomiseImage();
+        }
+
+        public void RandomiseImage()
+        {
+            if (_image == null) return;
+            if (_sprites.Count <= 1) return;
+            int newValue;
+            do
+            {
+                newValue = Random.Range(0, _sprites.Count);
+            }
+            while (newValue == _prevImageValue);
+            _image.sprite = _sprites[newValue];
+            _prevImageValue = newValue;
+        }
     }
 }
