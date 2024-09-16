@@ -406,6 +406,38 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator UpdatePlayerToServer(string player, Action<ServerPlayer> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        //JObject body = JObject.FromObject(player);
+
+        //Debug.Log(player);
+
+        yield return StartCoroutine(WebRequests.Put(ADDRESS + "player/", player, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                ServerPlayer playerInfo = Player;
+
+
+                //Player = playerInfo;
+
+                if (callback != null)
+                    callback(playerInfo);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     #endregion
 
     #region Clan

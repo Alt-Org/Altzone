@@ -17,6 +17,8 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private LoadingInfoController _loadInfoController;
         [SerializeField]
+        private AgeVerificationHandler _ageVerificationHandler;
+        [SerializeField]
         private WindowNavigation _privacyNavigation;
         [SerializeField]
         private WindowNavigation _mainMenuNavigation;
@@ -70,17 +72,29 @@ namespace MenuUi.Scripts.Loader
         {
             if (value)
             {
-                _loadInfoController.SetInfoText(InfoType.FetchPlayerData);
-                PlayerData playerData = null;
-                Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
+                StartCoroutine(MoveToMain());
+            }
+        }
 
-                if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
-                    StartCoroutine(_introStoryNavigation.Navigate());
-                else
-                {
-                    _loadInfoController.SetInfoText(InfoType.Finished);
-                    StartCoroutine(_mainMenuNavigation.Navigate());
-                }
+        private IEnumerator MoveToMain()
+        {
+            _loadInfoController.SetInfoText(InfoType.FetchPlayerData);
+            PlayerData playerData = null;
+            Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
+
+            if (ServerManager.Instance.Player.above13 == null)
+            {
+                _ageVerificationHandler.gameObject.SetActive(true);
+            }
+
+            yield return new WaitUntil(() => _ageVerificationHandler.Finished);
+
+            if ((playerData.SelectedCharacterId == 0) || (playerData.SelectedCharacterId == 1))
+                StartCoroutine(_introStoryNavigation.Navigate());
+            else
+            {
+                _loadInfoController.SetInfoText(InfoType.Finished);
+                StartCoroutine(_mainMenuNavigation.Navigate());
             }
         }
     }
