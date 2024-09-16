@@ -91,9 +91,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            byte playerPos = 0;
+            PlayerActor playerActor = _battlePlayer.PlayerActor;
+            int playerPos = _battlePlayer.PlayerPosition;
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player position is " + playerPos));
 
-            PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
+
 
             /* broken code pls fix
             foreach (IPlayerDriver driver in data.AllDrivers)

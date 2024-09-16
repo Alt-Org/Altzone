@@ -20,16 +20,21 @@ namespace Battle.Scripts.Battle.Players
 
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
-        public bool BounceOnBallShieldCollision => true;
-
         public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
             _battlePlayer = battlePlayer;
         }
 
+        public bool BounceOnBallShieldCollision => true;
+
+        // Debug
+        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS TRICKSTER] ";
+        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+
         public void OnBallShieldCollision()
         {
-            _battleDebugLogger.LogInfo("OnBallShieldCollision called");
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
 
             //Increase vacuum strength
             _teammateVacuumStrength += _teammateVacuumStrengthIncrement;
@@ -40,8 +45,8 @@ namespace Battle.Scripts.Battle.Players
             //Timer on
             _teammateVacuumState = true;
 
-            _battleDebugLogger.LogInfo("teammateVacuumStrength is " + _teammateVacuumStrength);
-            _battleDebugLogger.LogInfo("TeammateVacuum on");
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "teammateVacuumStrength is " + _teammateVacuumStrength, _syncedFixedUpdateClock.UpdateCount));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "TeammateVacuum on", _syncedFixedUpdateClock.UpdateCount));
         }
 
         public void OnBallShieldBounce()
@@ -52,13 +57,13 @@ namespace Battle.Scripts.Battle.Players
                 {
                     _shieldTurn++;
                     ShieldFlipper();
-                    _battleDebugLogger.LogInfo("_shieldTurn set to 1");
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME +"_shieldTurn set to 1", _syncedFixedUpdateClock.UpdateCount));
                 }
                 else
                 {
                     _shieldTurn = 0;
                     ShieldFlipper();
-                    _battleDebugLogger.LogInfo("_shieldTurn set to 0");
+                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 0", _syncedFixedUpdateClock.UpdateCount));
                 }
             });
         }
@@ -69,36 +74,41 @@ namespace Battle.Scripts.Battle.Players
 
         private int _shieldTurn = 0;
 
-        private Transform _teammateTransform;
+
+        private Transform _actorShieldTransform;
+        private Transform _actorCharacterTransform;
+        private Transform _teammateShieldTransform;
+        
 
         private bool _teammateVacuumState = false;
         private int _teammateVacuumTimer;
-
-        //Tämä tarvitaan ExecuteOnUpdateen
-        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
-
-        private BattleDebugLogger _battleDebugLogger;
+        
 
         private void Start()
         {
             _teammateVacuumStrength -= _teammateVacuumStrengthIncrement;
             _teammateVacuumDuration -= _teammateVacuumDurationIncrement;
 
-            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-
-            // debug
-
-            _battleDebugLogger = new BattleDebugLogger(this);
-
-            // debug test
-            _battleDebugLogger.LogInfo("Test");
-
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
+
+            PlayerActor playerActor = _battlePlayer.PlayerActor;
+            int teamnumber = _battlePlayer.PlayerPosition;
+
+
+            _actorShieldTransform = _battlePlayer.PlayerShieldManager.transform;
+            _actorCharacterTransform = _battlePlayer.PlayerCharacter.transform;
+            _teammateShieldTransform = _battlePlayer.Teammate.PlayerShieldManager.transform;
+
+
+
             /* broken code pls fix
+                    
             PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
 
             int teamnumber = PhotonBattle.NoTeamValue;
@@ -127,12 +137,25 @@ namespace Battle.Scripts.Battle.Players
             if (_teammateVacuumState == true && _teammateVacuumDuration > _teammateVacuumTimer)
             {
                 _teammateVacuumTimer++;
-                _battleDebugLogger.LogInfo("TeammateVacuumTimer is {0}", _teammateVacuumTimer);
-
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "TeammateVacuumTimer is {0}", _teammateVacuumTimer, _syncedFixedUpdateClock.UpdateCount));
                 //{n} kertoo muuttujan indeksin
 
-                //_driver.ActorShieldTransform on oma sijainti
-                //_teammateTransform on kaverin sijainti
+                //_actorShieldTransform on oma sijainti
+                //_teammateShieldTransform on kaverin sijainti
+
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Own position is " + _actorShieldTransform.position));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Teammate position is " + _teammateShieldTransform.position));
+
+                //Laske tiimikaveri suhteessa positioon eli vektori C eli B-A
+                //Normalisoi C vektori
+                //Kerro C vektori (voimalla / sekunnilla jaettuna frameihin) eli saat siirtymän
+                Vector3 newPosition = _actorShieldTransform.position + (_teammateShieldTransform.position - _actorShieldTransform.position).normalized * (_teammateVacuumStrength / (float)SyncedFixedUpdateClock.UpdatesPerSecond);
+
+                //Siirrä itseä lähemmäs tiimikaveria timerin ajan strengthin perusteella
+                _actorCharacterTransform.position = newPosition;
+                _actorShieldTransform.position = newPosition;
+
+
 
                 /* broken code pls fix
                 _battleDebugLogger.LogInfo("Own position is " + _driver.ActorShieldTransform.position);
@@ -159,12 +182,12 @@ namespace Battle.Scripts.Battle.Players
             if (_shieldTurn == 0)
             {
                 _shieldManager.SetShield(_shieldGumball);
-                _battleDebugLogger.LogInfo("Shield is set to _shieldGumball");
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldGumball", _syncedFixedUpdateClock.UpdateCount));
             }
             else
             {
                 _shieldManager.SetShield(_shieldPopped);
-                _battleDebugLogger.LogInfo("Shield is set to _shieldPopped");
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldPopped", _syncedFixedUpdateClock.UpdateCount));
             }
         }
     }
