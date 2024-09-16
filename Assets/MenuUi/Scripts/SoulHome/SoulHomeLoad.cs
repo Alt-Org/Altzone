@@ -242,7 +242,7 @@ namespace MenuUI.Scripts.SoulHome {
         {
             var store = Storefront.Get();
             List<ClanFurniture> clanFurnitureList = null;
-            store.GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
+            store.GetPlayerData(ServerManager.Instance.Player?.uniqueIdentifier, playerData =>
             {
                 if (playerData == null || !playerData.HasClanId)
                 {
