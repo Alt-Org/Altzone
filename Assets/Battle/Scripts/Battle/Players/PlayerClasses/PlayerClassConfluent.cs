@@ -25,6 +25,10 @@ namespace Battle.Scripts.Battle.Players
         {
             _battlePlayer = battlePlayer;
             _battleDebugLogger = new BattleDebugLogger(this);
+            _teammateVacuumStrength -= _teammateVacuumStrengthIncrement;
+            _teammateVacuumDuration -= _teammateVacuumDurationIncrement;
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
         public bool BounceOnBallShieldCollision => true;
@@ -86,14 +90,7 @@ namespace Battle.Scripts.Battle.Players
         private int _teammateVacuumTimer;
 
         private void Start()
-        {
-            _teammateVacuumStrength -= _teammateVacuumStrengthIncrement;
-            _teammateVacuumDuration -= _teammateVacuumDurationIncrement;
-
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-
-            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-        }
+        {}
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {

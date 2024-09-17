@@ -31,6 +31,10 @@ namespace Battle.Scripts.Battle.Players
         {
             _battlePlayer = battlePlayer;
             _battleDebugLogger = new BattleDebugLogger(this);
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            _photonView = GetComponent<PhotonView>();
+            _photonEventDispatcher = Context.GetPhotonEventDispatcher;
+            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
         }
 
         public void OnBallShieldCollision()
@@ -61,14 +65,7 @@ namespace Battle.Scripts.Battle.Players
 
         // debug
         private void Start()
-        {
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-            _photonView = GetComponent<PhotonView>();
-
-            _photonEventDispatcher = Context.GetPhotonEventDispatcher;
-
-            this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
-        }
+        {}
 
         private void ShieldRandomizer()
         {
