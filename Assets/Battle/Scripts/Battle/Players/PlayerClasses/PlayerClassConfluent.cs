@@ -51,7 +51,7 @@ namespace Battle.Scripts.Battle.Players
             //Timer on
             _teammateVacuumState = true;
 
-            _battleDebugLogger.LogInfo("teammateVacuumStrength is ");
+            _battleDebugLogger.LogInfo("teammateVacuumStrength is " + _teammateVacuumStrength);
             _battleDebugLogger.LogInfo("TeammateVacuum on");
         }
 
@@ -107,22 +107,22 @@ namespace Battle.Scripts.Battle.Players
             if (_teammateVacuumState == true && _teammateVacuumDuration > _teammateVacuumTimer)
             {
                 _teammateVacuumTimer++;
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "TeammateVacuumTimer is {0}", _teammateVacuumTimer, _syncedFixedUpdateClock.UpdateCount));
-                //{n} kertoo muuttujan indeksin
+                _battleDebugLogger.LogInfo("TeammateVacuumTimer is " + _teammateVacuumTimer);
+                //{n} marks the index
 
-                //_actorShieldTransform on oma sijainti
-                //_teammateShieldTransform on kaverin sijainti
+                //_actorShieldTransform tells own position
+                //_teammateShieldTransform tells teammate position
 
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Own position is " + _actorShieldTransform.position));
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Teammate position is " + _teammateShieldTransform.position));
+                _battleDebugLogger.LogInfo("Own position is " + _actorShieldTransform.position);
+                _battleDebugLogger.LogInfo("Teammate position is " + _teammateShieldTransform.position);
 
-                //Laske tiimikaveri suhteessa positioon eli vektori C eli B-A
-                //Normalisoi C vektori
-                //Kerro C vektori (voimalla / sekunnilla jaettuna frameihin) eli saat siirtymän
+                //Calculate teammate position relative to own position C eli B-A
+                //Normalize C vector
+                //Multiply C vector (power / seconds divided to frames) yields distance moved
                 Vector3 newPosition = _actorShieldTransform.position + (_teammateShieldTransform.position - _actorShieldTransform.position).normalized * (_teammateVacuumStrength / (float)SyncedFixedUpdateClock.UpdatesPerSecond);
 
-                //Siirrä itseä lähemmäs tiimikaveria timerin ajan strengthin perusteella
-                _actorCharacterTransform.position = newPosition;
+                //Move self closer to teammate based on timers time and movement strength
+                //_actorCharacterTransform.position = newPosition;
                 _actorShieldTransform.position = newPosition;
             }
             else {

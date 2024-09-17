@@ -39,8 +39,8 @@ namespace Battle.Scripts.Battle.Players
 
         public void OnBallShieldCollision()
         {
-            // Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
-            // Käytännössä kilpi vaihtuu joka osuman jälkeen
+            // Projectile changes direction at random, making it difficult to predict.
+            // Shield changes after every contact
 
             _battleDebugLogger.LogInfo("OnBallShieldCollision called");
 
@@ -77,7 +77,7 @@ namespace Battle.Scripts.Battle.Players
 
                 int choiceIndex = Random.Range(0, _shieldBounceRandomizers.Length);
 
-                _battleDebugLogger.LogInfo("Trickster shield set to ");
+                _battleDebugLogger.LogInfo("Trickster shield set to " + choiceIndex);
                 _battleDebugLogger.LogInfo("Sending network message");
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
@@ -92,7 +92,7 @@ namespace Battle.Scripts.Battle.Players
         {
             PlayerActor playerActor = _battlePlayer.PlayerActor;
             int playerPos = _battlePlayer.PlayerPosition;
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player position is " + playerPos));
+            _battleDebugLogger.LogInfo("Player position is " + playerPos);
 
             byte eventCode = (byte)(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode + playerPos);
 
@@ -124,7 +124,7 @@ namespace Battle.Scripts.Battle.Players
                 GameObject _shieldChoice = _shieldBounceRandomizers[choiceIndex];
 
                 _shieldManager.SetShield(_shieldChoice);
-                _battleDebugLogger.LogInfo("Shield is set to choice {1}");
+                _battleDebugLogger.LogInfo("Shield is set to choice " + choiceIndex);
             });
         }
     }
