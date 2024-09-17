@@ -52,7 +52,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 if(i == 0 && _currentPageNumber == 0){
                     FeatureButton featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
                     featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { SetDefaultFeature(featureButton._slot); });
+                    (delegate { SetDefaultFeature(featureButton._slot+4); });
                 }
                 else if ((i + (8*_currentPageNumber) < _featureSpritesPlaceholder.Count) || 
                 (i + (8*_currentPageNumber) == _featureSpritesPlaceholder.Count && (_currentPageNumber != 0||i!=8)) )
@@ -61,7 +61,7 @@ namespace MenuUi.Scripts.AvatarEditor
                     featureButton._sprite = _featureSpritesPlaceholder[i+ (8*_currentPageNumber)-1];
                     featureButton.gameObject.GetComponent<Image>().sprite = featureButton._sprite;
                     featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot); });
+                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot+4); });
                 }
                
             }
