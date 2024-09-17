@@ -1,0 +1,1301 @@
+fileFormatVersion: 2
+guid: 2b8016811b3e7e24bb27cafa5a793794
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 120
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 1
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: 10
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_0
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 2741
+        width: 257
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7036aaffcb825c1459831c32ae8461ed
+      internalID: 687971260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_1
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 2829
+        width: 198
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcc6f83b33b98be41888a4783e982e7f
+      internalID: -754389922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_2
+      rect:
+        serializedVersion: 2
+        x: 983
+        y: 2764
+        width: 131
+        height: 174
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00a7342336444dc44952a2a32d7c88cc
+      internalID: -1024073563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_3
+      rect:
+        serializedVersion: 2
+        x: 1049
+        y: 2753
+        width: 175
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bc097caf99946549a0d4fbf5e693a21
+      internalID: -1235559018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_4
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 2752
+        width: 188
+        height: 202
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 823e1e70dbe77b849863e35b1a915b5f
+      internalID: -622912903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_5
+      rect:
+        serializedVersion: 2
+        x: 1387
+        y: 2771
+        width: 145
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76c308b238138144aa372ed0141c63ca
+      internalID: 817958539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_6
+      rect:
+        serializedVersion: 2
+        x: 1554
+        y: 2843
+        width: 177
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30a5e32f4eeb53449a3855ea772c6d60
+      internalID: -423643519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_7
+      rect:
+        serializedVersion: 2
+        x: 1739
+        y: 2784
+        width: 248
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a0fa1220ea86e54b9cf9b9568783729
+      internalID: 720029170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_8
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 2589
+        width: 202
+        height: 176
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0495fc417b0872d49be25d6442dad188
+      internalID: 737428526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_9
+      rect:
+        serializedVersion: 2
+        x: 693
+        y: 2563
+        width: 208
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c7a7b2d3272ddc48b1dff9e3dac8aeb
+      internalID: 1014185861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_10
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 2580
+        width: 148
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 901aff7370492f3479b80b718d31a5ac
+      internalID: -368445599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_11
+      rect:
+        serializedVersion: 2
+        x: 1029
+        y: 2572
+        width: 123
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 939e7947e4262084ebbf4291a7bddf0c
+      internalID: 2140674855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_12
+      rect:
+        serializedVersion: 2
+        x: 1150
+        y: 2515
+        width: 98
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 784593cc70a121c409e021e5a2251a83
+      internalID: 1834508838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_13
+      rect:
+        serializedVersion: 2
+        x: 1263
+        y: 2514
+        width: 118
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a60db6319cd9294a8bb7723c7928d70
+      internalID: -953967361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_14
+      rect:
+        serializedVersion: 2
+        x: 1368
+        y: 2575
+        width: 123
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04aa0b70a92d983489c93db7cf665ad1
+      internalID: -855022082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_15
+      rect:
+        serializedVersion: 2
+        x: 1506
+        y: 2586
+        width: 124
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6067cfb5895c7f48aca1dd226c1b23c
+      internalID: -1998525007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_16
+      rect:
+        serializedVersion: 2
+        x: 1611
+        y: 2586
+        width: 173
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c85b84cfc9f03f54ab47bced6362ecac
+      internalID: 1725077188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_17
+      rect:
+        serializedVersion: 2
+        x: 1888
+        y: 2654
+        width: 195
+        height: 153
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f47e8269442e3bc4a9e2aeef17e33047
+      internalID: 1064943868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_18
+      rect:
+        serializedVersion: 2
+        x: 1986
+        y: 2480
+        width: 181
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 951b47f84cbb2544cbd23a6395c0f581
+      internalID: 1073826788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_19
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 2425
+        width: 205
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c7bced5a95ee9c4f92a7546c29aeba4
+      internalID: -1409578535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_20
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 2486
+        width: 223
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fa3607f6ebe16548810ea81c2711736
+      internalID: 1046824796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_21
+      rect:
+        serializedVersion: 2
+        x: 1676
+        y: 2514
+        width: 211
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83a7040a8b0c6364e9587e627972f3d3
+      internalID: 522751985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_22
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 2301
+        width: 207
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ab16b56d9c069043855ace100a1a8e1
+      internalID: 664523218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_23
+      rect:
+        serializedVersion: 2
+        x: 593
+        y: 2370
+        width: 231
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c5d35269275f864cb9d43c3584bd5dc
+      internalID: -1300148467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_24
+      rect:
+        serializedVersion: 2
+        x: 977
+        y: 2144
+        width: 492
+        height: 351
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8a7aa56807751747a9d91f6b93d950b
+      internalID: -1217220839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_25
+      rect:
+        serializedVersion: 2
+        x: 1638
+        y: 2388
+        width: 225
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55fbc36fb577dc14da6dffb27b97a8d4
+      internalID: 936999380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_26
+      rect:
+        serializedVersion: 2
+        x: 1988
+        y: 2350
+        width: 183
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6adfc29718849747889f838bcf059df
+      internalID: -634826536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_27
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 2142
+        width: 204
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef57b028403350f4da548b7f68c1bd80
+      internalID: -1836533779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_28
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 2210
+        width: 226
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6a3cc8ce417ef3418d167c7c0c5ef26
+      internalID: -1933302525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_29
+      rect:
+        serializedVersion: 2
+        x: 1702
+        y: 2245
+        width: 213
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea2e53dce3efe044da2c66d764de1483
+      internalID: -1990131737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_30
+      rect:
+        serializedVersion: 2
+        x: 2006
+        y: 2211
+        width: 177
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e6c52c6300333c41ada8610a9e76f43
+      internalID: 704984588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_31
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 1960
+        width: 182
+        height: 172
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ecf161e043c3aa48b6569ce68ff5cd7
+      internalID: 853275972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_32
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 2080
+        width: 200
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8622ce01fc426246937f1159d963f9f
+      internalID: 1471066644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_33
+      rect:
+        serializedVersion: 2
+        x: 907
+        y: 2038
+        width: 163
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a5001af5a0eb174486e43f85f0f7471
+      internalID: 1086213137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_34
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 1947
+        width: 154
+        height: 166
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68e8e464c74e16f42b1f5e34333120b4
+      internalID: -1994629525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_35
+      rect:
+        serializedVersion: 2
+        x: 1407
+        y: 2065
+        width: 149
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2868fd37a9c55b4a9d729ea42653c80
+      internalID: -1696990354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_36
+      rect:
+        serializedVersion: 2
+        x: 1596
+        y: 1995
+        width: 143
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 638434fbac5e32c458148d14b7bd6d21
+      internalID: 889484566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_37
+      rect:
+        serializedVersion: 2
+        x: 1667
+        y: 2110
+        width: 185
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8475a63816902d4da1396c12d9567f5
+      internalID: 659671384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_38
+      rect:
+        serializedVersion: 2
+        x: 1914
+        y: 2014
+        width: 166
+        height: 198
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e0c7bf04a718a544aa7822d1db1374b
+      internalID: -1202779883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_39
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 1775
+        width: 192
+        height: 189
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5883385db0b1634a9d2ac37f191412d
+      internalID: 1437525630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_40
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 1919
+        width: 171
+        height: 170
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2fd550d52f0c67248b9a63ad09622632
+      internalID: -73250320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_41
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 1810
+        width: 153
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19fdbc4bd87e38a40895aab5c382227a
+      internalID: -1123677076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_42
+      rect:
+        serializedVersion: 2
+        x: 1076
+        y: 1919
+        width: 132
+        height: 181
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c29d9ff1bc343be46ab9c1420a8c1d49
+      internalID: 1369413353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_43
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 1726
+        width: 160
+        height: 207
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 171b63e9da9a42b45be1a0106d7fa05f
+      internalID: -995524873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_44
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 1837
+        width: 159
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5495fe407d303724884ab27f3bfab1ff
+      internalID: 203980013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_45
+      rect:
+        serializedVersion: 2
+        x: 1774
+        y: 1887
+        width: 161
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31ed9e80ab859fa42b8d2faa804701e2
+      internalID: -506079977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_46
+      rect:
+        serializedVersion: 2
+        x: 693
+        y: 1659
+        width: 204
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04bdb34ee205c044f9c03284382a85f8
+      internalID: -506157194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_47
+      rect:
+        serializedVersion: 2
+        x: 1047
+        y: 1716
+        width: 139
+        height: 203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0cd6f1191b94c94da3b8fc8aec5e035
+      internalID: 1315605849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_48
+      rect:
+        serializedVersion: 2
+        x: 1590
+        y: 1722
+        width: 187
+        height: 165
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d2f305adf4b86e4ebee4385a6b5707a
+      internalID: -540886012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_49
+      rect:
+        serializedVersion: 2
+        x: 948
+        y: 1522
+        width: 202
+        height: 184
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4a07e83a35e78442a5c0dca8510c3fe
+      internalID: -1290816311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SPRITESHEET_sydan_mustavalkoinen_50
+      rect:
+        serializedVersion: 2
+        x: 1327
+        y: 1522
+        width: 205
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec5145a40a8703841b646b00f9b8154f
+      internalID: -1047120196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      SPRITESHEET_sydan_mustavalkoinen_0: 687971260
+      SPRITESHEET_sydan_mustavalkoinen_1: -754389922
+      SPRITESHEET_sydan_mustavalkoinen_10: -368445599
+      SPRITESHEET_sydan_mustavalkoinen_11: 2140674855
+      SPRITESHEET_sydan_mustavalkoinen_12: 1834508838
+      SPRITESHEET_sydan_mustavalkoinen_13: -953967361
+      SPRITESHEET_sydan_mustavalkoinen_14: -855022082
+      SPRITESHEET_sydan_mustavalkoinen_15: -1998525007
+      SPRITESHEET_sydan_mustavalkoinen_16: 1725077188
+      SPRITESHEET_sydan_mustavalkoinen_17: 1064943868
+      SPRITESHEET_sydan_mustavalkoinen_18: 1073826788
+      SPRITESHEET_sydan_mustavalkoinen_19: -1409578535
+      SPRITESHEET_sydan_mustavalkoinen_2: -1024073563
+      SPRITESHEET_sydan_mustavalkoinen_20: 1046824796
+      SPRITESHEET_sydan_mustavalkoinen_21: 522751985
+      SPRITESHEET_sydan_mustavalkoinen_22: 664523218
+      SPRITESHEET_sydan_mustavalkoinen_23: -1300148467
+      SPRITESHEET_sydan_mustavalkoinen_24: -1217220839
+      SPRITESHEET_sydan_mustavalkoinen_25: 936999380
+      SPRITESHEET_sydan_mustavalkoinen_26: -634826536
+      SPRITESHEET_sydan_mustavalkoinen_27: -1836533779
+      SPRITESHEET_sydan_mustavalkoinen_28: -1933302525
+      SPRITESHEET_sydan_mustavalkoinen_29: -1990131737
+      SPRITESHEET_sydan_mustavalkoinen_3: -1235559018
+      SPRITESHEET_sydan_mustavalkoinen_30: 704984588
+      SPRITESHEET_sydan_mustavalkoinen_31: 853275972
+      SPRITESHEET_sydan_mustavalkoinen_32: 1471066644
+      SPRITESHEET_sydan_mustavalkoinen_33: 1086213137
+      SPRITESHEET_sydan_mustavalkoinen_34: -1994629525
+      SPRITESHEET_sydan_mustavalkoinen_35: -1696990354
+      SPRITESHEET_sydan_mustavalkoinen_36: 889484566
+      SPRITESHEET_sydan_mustavalkoinen_37: 659671384
+      SPRITESHEET_sydan_mustavalkoinen_38: -1202779883
+      SPRITESHEET_sydan_mustavalkoinen_39: 1437525630
+      SPRITESHEET_sydan_mustavalkoinen_4: -622912903
+      SPRITESHEET_sydan_mustavalkoinen_40: -73250320
+      SPRITESHEET_sydan_mustavalkoinen_41: -1123677076
+      SPRITESHEET_sydan_mustavalkoinen_42: 1369413353
+      SPRITESHEET_sydan_mustavalkoinen_43: -995524873
+      SPRITESHEET_sydan_mustavalkoinen_44: 203980013
+      SPRITESHEET_sydan_mustavalkoinen_45: -506079977
+      SPRITESHEET_sydan_mustavalkoinen_46: -506157194
+      SPRITESHEET_sydan_mustavalkoinen_47: 1315605849
+      SPRITESHEET_sydan_mustavalkoinen_48: -540886012
+      SPRITESHEET_sydan_mustavalkoinen_49: -1290816311
+      SPRITESHEET_sydan_mustavalkoinen_5: 817958539
+      SPRITESHEET_sydan_mustavalkoinen_50: -1047120196
+      SPRITESHEET_sydan_mustavalkoinen_6: -423643519
+      SPRITESHEET_sydan_mustavalkoinen_7: 720029170
+      SPRITESHEET_sydan_mustavalkoinen_8: 737428526
+      SPRITESHEET_sydan_mustavalkoinen_9: 1014185861
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
