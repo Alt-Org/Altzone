@@ -30,6 +30,7 @@ namespace Battle.Scripts.Battle.Players
         public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
             _battlePlayer = battlePlayer;
+            _battleDebugLogger = new BattleDebugLogger(this);
         }
 
         public void OnBallShieldCollision()
@@ -37,14 +38,14 @@ namespace Battle.Scripts.Battle.Players
             // Ammus vaihtaa sattumanvaraisesti suuntaa kun osuu suojakilpeen, jolloin on vaikea ennustaa mihin ammus menee.
             // Käytännössä kilpi vaihtuu joka osuman jälkeen
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("OnBallShieldCollision called");
 
             ShieldRandomizer();
         }
 
         public void OnBallShieldBounce()
         {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldBounce called", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("OnBallShieldBounce called");
         }
 
         // Variables
@@ -53,6 +54,7 @@ namespace Battle.Scripts.Battle.Players
         private PhotonEventDispatcher _photonEventDispatcher;
 
         // Debug
+        private BattleDebugLogger _battleDebugLogger;
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS TRICKSTER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
@@ -72,20 +74,20 @@ namespace Battle.Scripts.Battle.Players
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is master client", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("Shield is master client");
 
                 int ShieldChangeUpdateNumber = _syncedFixedUpdateClock.UpdateCount + Math.Max(5, _syncedFixedUpdateClock.ToUpdates(GameConfig.Get().Variables._networkDelay));
 
                 int choiceIndex = Random.Range(0, _shieldBounceRandomizers.Length);
 
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Trickster shield set to " + choiceIndex, _syncedFixedUpdateClock.UpdateCount));
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sending network message", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("Trickster shield set to ");
+                _battleDebugLogger.LogInfo("Sending network message");
 
                 _photonView.RPC(nameof(ShieldRandomizerRpc), RpcTarget.All, ShieldChangeUpdateNumber, choiceIndex);
             }
             else
             {
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is pleb client", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("Shield is pleb client");
             }
         }
 
@@ -118,14 +120,14 @@ namespace Battle.Scripts.Battle.Players
         [PunRPC]
         private void ShieldRandomizerRpc(int ShieldChangeUpdateNumber, int choiceIndex)
         {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Receiving network message", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("Receiving network message");
 
             _syncedFixedUpdateClock.ExecuteOnUpdate(ShieldChangeUpdateNumber, -10, () =>
             {
                 GameObject _shieldChoice = _shieldBounceRandomizers[choiceIndex];
 
                 _shieldManager.SetShield(_shieldChoice);
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to choice {1}", _syncedFixedUpdateClock.UpdateCount, choiceIndex));
+                _battleDebugLogger.LogInfo("Shield is set to choice {1}");
             });
         }
     }

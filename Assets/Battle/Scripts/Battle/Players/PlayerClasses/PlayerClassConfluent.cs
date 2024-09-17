@@ -10,6 +10,7 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private GameObject _shieldPopped;
         [SerializeField] private ShieldManager _shieldManager;
 
+
         [Header("Teammate Vacuum Strength")]
         [SerializeField] private float _teammateVacuumStrength;
         [SerializeField] private float _teammateVacuumStrengthIncrement;
@@ -23,6 +24,7 @@ namespace Battle.Scripts.Battle.Players
         public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
             _battlePlayer = battlePlayer;
+            _battleDebugLogger = new BattleDebugLogger(this);
         }
 
         public bool BounceOnBallShieldCollision => true;
@@ -34,7 +36,7 @@ namespace Battle.Scripts.Battle.Players
 
         public void OnBallShieldCollision()
         {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "OnBallShieldCollision called", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("OnBallShieldCollision called");
 
             //Increase vacuum strength
             _teammateVacuumStrength += _teammateVacuumStrengthIncrement;
@@ -45,8 +47,8 @@ namespace Battle.Scripts.Battle.Players
             //Timer on
             _teammateVacuumState = true;
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "teammateVacuumStrength is " + _teammateVacuumStrength, _syncedFixedUpdateClock.UpdateCount));
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "TeammateVacuum on", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("teammateVacuumStrength is ");
+            _battleDebugLogger.LogInfo("TeammateVacuum on");
         }
 
         public void OnBallShieldBounce()
@@ -57,13 +59,13 @@ namespace Battle.Scripts.Battle.Players
                 {
                     _shieldTurn++;
                     ShieldFlipper();
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME +"_shieldTurn set to 1", _syncedFixedUpdateClock.UpdateCount));
+                    _battleDebugLogger.LogInfo("_shieldTurn set to 1");
                 }
                 else
                 {
                     _shieldTurn = 0;
                     ShieldFlipper();
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "_shieldTurn set to 0", _syncedFixedUpdateClock.UpdateCount));
+                    _battleDebugLogger.LogInfo("_shieldTurn set to 0");
                 }
             });
         }
@@ -71,6 +73,8 @@ namespace Battle.Scripts.Battle.Players
         private IReadOnlyBattlePlayer _battlePlayer;
 
         private IPlayerDriver _driver;
+
+        private BattleDebugLogger _battleDebugLogger;
 
         private int _shieldTurn = 0;
 
@@ -135,12 +139,12 @@ namespace Battle.Scripts.Battle.Players
             if (_shieldTurn == 0)
             {
                 _shieldManager.SetShield(_shieldGumball);
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldGumball", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("Shield is set to _shieldGumball");
             }
             else
             {
                 _shieldManager.SetShield(_shieldPopped);
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield is set to _shieldPopped", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo("Shield is set to _shieldPopped");
             }
         }
     }
