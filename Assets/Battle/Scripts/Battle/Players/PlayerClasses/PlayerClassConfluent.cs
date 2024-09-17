@@ -74,15 +74,12 @@ namespace Battle.Scripts.Battle.Players
 
         private int _shieldTurn = 0;
 
-
         private Transform _actorShieldTransform;
         private Transform _actorCharacterTransform;
         private Transform _teammateShieldTransform;
-        
 
         private bool _teammateVacuumState = false;
         private int _teammateVacuumTimer;
-        
 
         private void Start()
         {
@@ -96,40 +93,12 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-
             PlayerActor playerActor = _battlePlayer.PlayerActor;
             int teamnumber = _battlePlayer.PlayerPosition;
-
 
             _actorShieldTransform = _battlePlayer.PlayerShieldManager.transform;
             _actorCharacterTransform = _battlePlayer.PlayerCharacter.transform;
             _teammateShieldTransform = _battlePlayer.Teammate.PlayerShieldManager.transform;
-
-
-
-            /* broken code pls fix
-                    
-            PlayerActor playerActor = transform.parent.GetComponentInParent<PlayerActor>();
-
-            int teamnumber = PhotonBattle.NoTeamValue;
-
-            foreach (IPlayerDriver driver in data.AllDrivers)
-            {
-                if (driver.PlayerActor == playerActor)
-                {
-                    teamnumber = driver.TeamNumber;
-                    _driver = driver;
-                }
-            }
-
-            foreach (IPlayerDriver driver in data.AllDrivers)
-            {
-                if (driver.TeamNumber == teamnumber && driver.PlayerActor != playerActor)
-                {
-                    _teammateTransform = driver.ActorShieldTransform;
-                }
-            }
-            */
         }
 
         private void FixedUpdate()
@@ -154,22 +123,6 @@ namespace Battle.Scripts.Battle.Players
                 //Siirrä itseä lähemmäs tiimikaveria timerin ajan strengthin perusteella
                 _actorCharacterTransform.position = newPosition;
                 _actorShieldTransform.position = newPosition;
-
-
-
-                /* broken code pls fix
-                _battleDebugLogger.LogInfo("Own position is " + _driver.ActorShieldTransform.position);
-                _battleDebugLogger.LogInfo("Teammate position is " + _teammateTransform.position);
-
-                //Laske tiimikaveri suhteessa positioon eli vektori C eli B-A
-                //Normalisoi C vektori
-                //Kerro C vektori (voimalla / sekunnilla jaettuna frameihin) eli saat siirtymän
-                Vector3 newPosition = _driver.ActorShieldTransform.position + (_teammateTransform.position - _driver.ActorShieldTransform.position).normalized * (_teammateVacuumStrength/(float)SyncedFixedUpdateClock.UPDATES_PER_SECOND);
-
-                //Siirrä itseä lähemmäs tiimikaveria timerin ajan strengthin perusteella
-                _driver.ActorCharacterTransform.position = newPosition;
-                _driver.ActorShieldTransform.position = newPosition;
-                */
             }
             else {
                 _teammateVacuumState = false;

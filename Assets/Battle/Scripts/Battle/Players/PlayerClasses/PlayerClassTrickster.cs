@@ -95,19 +95,6 @@ namespace Battle.Scripts.Battle.Players
             int playerPos = _battlePlayer.PlayerPosition;
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player position is " + playerPos));
 
-
-
-            /* broken code pls fix
-            foreach (IPlayerDriver driver in data.AllDrivers)
-            {
-                if (driver.PlayerActor == playerActor)
-                {
-                    playerPos = (byte)(driver.PlayerPos - PhotonBattle.PlayerPosition1);
-                    break;
-                }
-            }
-            */
-
             byte eventCode = (byte)(PhotonBattle.EventCodes.PlayerClassTricksterSetPhotonViewIdEventCode + playerPos);
 
             _photonEventDispatcher.RegisterEventListener(eventCode, OnPhotonViewIdReceived);

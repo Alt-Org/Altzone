@@ -80,14 +80,14 @@ namespace Battle.Scripts.Battle.Players
         {
             _currentShieldShapeIndex++;
             if (_currentShieldShapeIndex < _shieldShapes.Length)
-
-
+            {
                 _reflectionCount = 0; // Reset the reflection count for the new shape
 
                 Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Shield shape changed", _syncedFixedUpdateClock.UpdateCount));
             }
         }
     }
+}
 
 
 
