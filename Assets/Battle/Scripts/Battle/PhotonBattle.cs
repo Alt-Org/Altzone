@@ -61,6 +61,25 @@ namespace Battle.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
 
+        public static BattleCharacter GetBattleCharacter(Player player)
+        {
+
+            int[] characterIds = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerCharacterIdsKey, null);
+            float[] characterStats = player.GetCustomProperty<float[]>(PhotonBattleRoom.PlayerStatsKey, null);
+
+            BattleCharacter battleCharacter = new(
+                (CharacterID)characterIds[0],
+                "placeholder",
+                (int)characterStats[0],
+                (int)characterStats[1],
+                (int)characterStats[2],
+                (int)characterStats[3],
+                (int)characterStats[4]
+            );
+
+            return battleCharacter;
+        }
+
         #region Debug and test utilities
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]

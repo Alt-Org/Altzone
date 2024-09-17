@@ -88,11 +88,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 GameObject slot = Instantiate(_characterSlotprefab, content);
 
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.CustomCharacterId);
+                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.CharacterID);
 
                 if (info == null) continue;
 
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.CustomCharacterId, this);
+                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.CharacterID, this);
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
@@ -113,7 +113,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     characterSlot.gameObject.SetActive(true);
 
                     // Check if the character is currently selected
-                    if ((CharacterID)currentCharacterId[0] == character.CustomCharacterId)
+                    if ((CharacterID)currentCharacterId[0] == character.CharacterID)
                     {
                         // Set the character in the first slot of the horizontal character slot
                         if (_CurSelectedCharacterSlot.Length > 0)
@@ -133,7 +133,7 @@ namespace MenuUi.Scripts.CharacterGallery
                             if (newParent == curSlot.transform)
                             {
                                 // Set characterID, because it has been moved to the topslot 
-                                CurrentCharacterId = character.CustomCharacterId;
+                                CurrentCharacterId = character.CharacterID;
                             }
                         }
                     };

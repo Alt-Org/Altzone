@@ -119,7 +119,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 float[] characterStats = new float[25];
                 for (int i = 0; i < 5; i++)
                 {
-                    characterIds[i] = (int)battleCharacter[i].CustomCharacterId;
+                    characterIds[i] = (int)battleCharacter[i].CharacterID;
                     characterStats[i * 5] = battleCharacter[i].Hp;
                     characterStats[i * 5 + 1] = battleCharacter[i].Speed;
                     characterStats[i * 5 + 2] = battleCharacter[i].Resistance;

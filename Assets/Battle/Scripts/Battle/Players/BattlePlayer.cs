@@ -6,7 +6,7 @@ namespace Battle.Scripts.Battle.Players
     {
         // Info
         public int PlayerPosition { get; }
-        public CharacterID PlayerCharacterID { get; }
+        public BattleCharacter BattleCharacter { get; }
         public bool IsBot { get; }
 
         // Team
@@ -27,7 +27,7 @@ namespace Battle.Scripts.Battle.Players
     {
         // Info
         public int PlayerPosition => _playerPosition;
-        public CharacterID PlayerCharacterID => _playerCharacterID;
+        public BattleCharacter BattleCharacter => _battleCharacter;
         public bool IsBot => _isBot;
 
         // Team
@@ -43,10 +43,10 @@ namespace Battle.Scripts.Battle.Players
         public PlayerCharacter PlayerCharacter => _playerCharacter;
         public PlayerSoul PlayerSoul => _playerSoul;
 
-        public BattlePlayer(int playerPosition, CharacterID playerCharacterID, bool isBot, IPlayerDriver playerDriver)
+        public BattlePlayer(int playerPosition, BattleCharacter battleCharacter, bool isBot, IPlayerDriver playerDriver)
         {
             _playerPosition = playerPosition;
-            _playerCharacterID = playerCharacterID;
+            _battleCharacter = battleCharacter;
             _isBot = isBot;
 
             _playerDriver = playerDriver;
@@ -72,7 +72,7 @@ namespace Battle.Scripts.Battle.Players
         }
 
         private readonly int _playerPosition;
-        private readonly CharacterID _playerCharacterID;
+        private readonly BattleCharacter _battleCharacter;
         private readonly bool _isBot;
 
         private IReadOnlyBattleTeam _battleTeam;

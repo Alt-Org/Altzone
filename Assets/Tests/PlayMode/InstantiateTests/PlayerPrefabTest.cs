@@ -36,7 +36,7 @@ namespace Tests.PlayMode.InstantiateTests
                 Assert.IsNotNull(battleCharacter);
                 Debug.Log($"{battleCharacter}");
                 var playerPrefabs = gameConfig.PlayerPrefabs;
-                var playerPrefab = playerPrefabs.GetPlayerPrefab((int)battleCharacter.CustomCharacterId);
+                var playerPrefab = playerPrefabs.GetPlayerPrefab((int)battleCharacter.CharacterID);
                 Assert.IsNotNull(playerPrefab);
                 var instance = InstantiatePrefab(playerPrefab.gameObject, Vector3.one, Quaternion.identity, null);
                 instance.name = battleCharacter.Name;

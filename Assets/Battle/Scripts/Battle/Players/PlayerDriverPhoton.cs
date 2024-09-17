@@ -20,8 +20,8 @@ namespace Battle.Scripts.Battle.Players
     {
         // Serialized Fields
         [Header("Testing")]
-        [SerializeField] private bool _isTesting = false;
-        [SerializeField] private CharacterID _playerCharacterID;
+        [SerializeField, Tooltip("Deprecated")] [Obsolete("Deprecated")] private bool _isTesting = false;
+        [SerializeField, Tooltip("Deprecated")] [Obsolete("Deprecated")] private CharacterID _playerCharacterID;
 
         // { Public Properties and Fields
 
@@ -36,7 +36,7 @@ namespace Battle.Scripts.Battle.Players
             set
             {
                 _state.MovementEnabled = value;
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement set to {3}", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos, _state.MovementEnabled));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement set to {3}", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition, _state.MovementEnabled));
             }
         }
 
@@ -53,11 +53,11 @@ namespace Battle.Scripts.Battle.Players
             // debug
             const string DEBUG_LOG_MOVEMENT_DENIED = DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement denied";
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement requested", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement requested", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
             _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
             if (!_state.MovementEnabled || !_state.CanRequestMove)
             {
-                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
                 return;
             }
             _state.IsWaitingToMove(true);
@@ -72,7 +72,7 @@ namespace Battle.Scripts.Battle.Players
                 DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Movement info (current position: {3}, current grid position: ({4}), target position: {5}, target grid position: ({6}))",
                 _syncedFixedUpdateClock.UpdateCount,
                 _teamNumber,
-                _playerPos,
+                _playerPosition,
                 position,
                 gridPos,
                 targetPosition,
@@ -81,8 +81,8 @@ namespace Battle.Scripts.Battle.Players
 
             if (targetGridPos.Equals(gridPos) || !_gridManager.IsMovementGridSpaceFree(targetGridPos, _teamNumber))
             {
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Invalid movement destination", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
-                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Invalid movement destination", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
+                Debug.Log(string.Format(DEBUG_LOG_MOVEMENT_DENIED, _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
                 _state.IsWaitingToMove(false);
                 _state.DebugLogState(_syncedFixedUpdateClock.UpdateCount);
                 return;
@@ -91,7 +91,7 @@ namespace Battle.Scripts.Battle.Players
             float distance = (targetPosition - position).magnitude;
             double movementTimeS = Math.Max(distance / _playerMovementSpeed, _movementMinTimeS);
             int teleportUpdateNumber = _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(movementTimeS);
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Sending player movement network message", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPos));
+            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Sending player movement network message", _syncedFixedUpdateClock.UpdateCount, _teamNumber, _playerPosition));
             _photonView.RPC(nameof(MoveRpc), RpcTarget.All, targetGridPos.Row, targetGridPos.Col, teleportUpdateNumber);
         }
 
@@ -99,7 +99,7 @@ namespace Battle.Scripts.Battle.Players
 
         // Player Data
         private BattleTeamNumber _teamNumber;
-        private int _playerPos;
+        private int _playerPosition;
 
         // Config
         private float _playerMovementSpeed;
@@ -138,14 +138,14 @@ namespace Battle.Scripts.Battle.Players
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
             // get player data
-            _playerPos = PhotonBattle.GetPlayerPos(_photonView.Owner);
-            _teamNumber = PhotonBattle.GetTeamNumber(_playerPos);
+            _playerPosition = PhotonBattle.GetPlayerPos(_photonView.Owner);
+            _teamNumber = PhotonBattle.GetTeamNumber(_playerPosition);
 
             // create battle player
             {
-                CharacterID playerCharacterId = !_isTesting ? PhotonBattle.GetPlayerCharacterId(_photonView.Owner) : _playerCharacterID;
+                BattleCharacter battleCharacter = PhotonBattle.GetBattleCharacter(_photonView.Owner);
 
-                _battlePlayer = new BattlePlayer(_playerPos, playerCharacterId, false,  this);
+                _battlePlayer = new BattlePlayer(_playerPosition, battleCharacter, false,  this);
             }
 
 
@@ -166,7 +166,7 @@ namespace Battle.Scripts.Battle.Players
         {
             Player player = _photonView.Owner;
             _state ??= gameObject.AddComponent<PlayerDriverState>();
-            _state.ResetState(_battlePlayer.PlayerActor, _playerPos, _teamNumber);
+            _state.ResetState(_battlePlayer.PlayerActor, _playerPosition, _teamNumber);
             _state.MovementEnabled = false;
 
             _playerManager.RegisterPlayer(_battlePlayer, _teamNumber);
@@ -185,11 +185,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void InstantiatePlayerPrefab(Player player)
         {
-            string playerTag = $"{_teamNumber}:{_playerPos}:{player.NickName}";
+            string playerTag = $"{_teamNumber}:{_playerPosition}:{player.NickName}";
             PlayerName = playerTag;
             name = name.Replace("Clone", playerTag);
 
-            Debug.Log(string.Format("Selected player {0}, {1}", _battlePlayer.PlayerCharacterID, CustomCharacter.GetCharacterClassAndName(_battlePlayer.PlayerCharacterID)));
+            Debug.Log(string.Format("Selected player {0}, {1}", _battlePlayer.BattleCharacter.CharacterID, CustomCharacter.GetCharacterClassAndName(_battlePlayer.BattleCharacter.CharacterID)));
             PlayerActor.InstantiatePrefabFor(_battlePlayer, playerTag, _arenaScaleFactor);
         }
 
@@ -214,7 +214,7 @@ namespace Battle.Scripts.Battle.Players
             Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME_AND_PLAYER_INFO + "Received player movement network message (current grid position: ({3}), target grid position: ({4}))",
                 _syncedFixedUpdateClock.UpdateCount,
                 _teamNumber,
-                _playerPos,
+                _playerPosition,
                 debugGridPos,
                 gridPos
             ));

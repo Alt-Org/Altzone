@@ -65,7 +65,7 @@ namespace Battle.Scripts.Battle.Players
             Characters playerPrefabs = GameConfig.Get().Characters;
 
             // get instantiation args
-            PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(battlePlayer.PlayerCharacterID) as PlayerActor;
+            PlayerActor playerPrefab = playerPrefabs.GetPlayerPrefab(battlePlayer.BattleCharacter.CharacterID) as PlayerActor;
             Vector2 instantiationPosition;
             {
                 Game.GridPos instantiationGridPosition = Context.GetBattlePlayArea.GetPlayerStartPosition(battlePlayer.PlayerPosition);
@@ -313,7 +313,7 @@ namespace Battle.Scripts.Battle.Players
             // subscribe to messages
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsReadyForGameplay);
 
-            StartCoroutine(ResetShield());
+            StartCoroutine(ResetShieldCoroutine());
 
             if (_startBool == true)
             {
@@ -342,7 +342,7 @@ namespace Battle.Scripts.Battle.Players
 
         #region Private - Methods - Coroutines
 
-        private IEnumerator ResetShield()
+        private IEnumerator ResetShieldCoroutine()
         {
             yield return new WaitUntil(() => _battlePlayer.PlayerShieldManager.Initialized);
             _battlePlayer.PlayerShieldManager.SetHitboxActive(true);

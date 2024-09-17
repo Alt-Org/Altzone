@@ -113,13 +113,13 @@ namespace Battle.Scripts.Battle.Players
 
         public void AnalyticsReportPlayerCharacterSelection()
         {
-            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerCharacterID);
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.BattleCharacter.CharacterID);
             GameAnalyticsManager.Instance.CharacterSelection(name);
         }
 
         public void AnalyticsReportPlayerCharacterWinOrLoss(BattleTeamNumber winningTeam)
         {
-            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.PlayerCharacterID);
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.BattleCharacter.CharacterID);
             if (_localPlayer.BattleTeam.TeamNumber == winningTeam) GameAnalyticsManager.Instance.CharacterWin(name);
             else GameAnalyticsManager.Instance.CharacterLoss(name);
         }

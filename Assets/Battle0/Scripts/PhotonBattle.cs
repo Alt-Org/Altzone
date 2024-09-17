@@ -372,7 +372,7 @@ namespace Battle0.Scripts
         /// </summary>
         public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue)
         {
-            if ((int)battleCharacter.CustomCharacterId != -1) return (int)battleCharacter.CustomCharacterId;
+            if ((int)battleCharacter.CharacterID != -1) return (int)battleCharacter.CharacterID;
             return defaultValue;
         }
 

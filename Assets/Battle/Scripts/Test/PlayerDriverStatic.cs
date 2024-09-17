@@ -87,7 +87,7 @@ namespace Battle.Scripts.Test
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
             // create battle player
-            _battlePlayer = new BattlePlayer(_settings._playerPos, _playerCharacterID, true, this);
+            _battlePlayer = new BattlePlayer(_settings._playerPos, null/*<- this needs to be changed later*/, true, this);
 
             // get config
             _movementMinTimeS = GameConfig.Get().Variables._networkDelay;

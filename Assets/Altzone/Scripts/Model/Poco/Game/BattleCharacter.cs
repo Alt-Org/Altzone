@@ -10,7 +10,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// </remarks>
     public class BattleCharacter
     {
-        public readonly CharacterID CustomCharacterId;
+        public readonly CharacterID CharacterID;
         public readonly string Name;
         public readonly int Hp;
         public readonly int Speed;
@@ -18,14 +18,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly int Attack;
         public readonly int Defence;
 
-        public CharacterClassID CharacterClassID => CustomCharacter.GetClassID(CustomCharacterId);
+        public CharacterClassID CharacterClassID => CustomCharacter.GetClassID(CharacterID);
 
         public BattleCharacter(CharacterID customCharacterId, string name,
             int hp, int speed, int resistance, int attack, int defence)
         {
             //Assert.AreNotEqual(CharacterID.None, customCharacterId);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));
-            CustomCharacterId = customCharacterId;
+            CharacterID = customCharacterId;
             Name = name;
             Hp = hp;
             Speed = speed;
@@ -62,7 +62,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override string ToString()
         {
-            return $"CustomCharacter: {CustomCharacterId} : {Name}" +
+            return $"CustomCharacter: {CharacterID} : {Name}" +
                    $", Hp: {Hp}, Speed: {Speed}, Resistance: {Resistance}, Attack: {Attack}, Defence: {Defence}";
         }
     }

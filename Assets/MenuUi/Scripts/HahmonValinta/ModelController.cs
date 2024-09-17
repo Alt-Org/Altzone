@@ -36,7 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _view.OnCurrentCharacterIdChanged += HandleCurrentCharacterIdChanged;
                 var currentCharacterId = playerData.SelectedCharacterIds;
                 var characters = playerData.BattleCharacters.ToList();
-                characters.Sort((a, b) => a.CustomCharacterId.CompareTo(b.CustomCharacterId));
+                characters.Sort((a, b) => a.CharacterID.CompareTo(b.CharacterID));
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, currentCharacterId);
             });

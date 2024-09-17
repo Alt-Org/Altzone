@@ -111,10 +111,10 @@ namespace Battle0.Scripts.Lobby.InChooseModel
                 button.SetCaption(character.Name);
                 button.onClick.AddListener(() =>
                 {
-                    CurrentCharacterId = character.CustomCharacterId;
+                    CurrentCharacterId = character.CharacterID;
                     ShowCharacter(character);
                 });
-                if (currentCharacterId == character.CustomCharacterId)
+                if (currentCharacterId == character.CharacterID)
                 {
                     ShowCharacter(character);
                 }
