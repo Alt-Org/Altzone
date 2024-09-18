@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +18,13 @@ public class ClanCreateNew : MonoBehaviour
         Swedish,
         English
     }
+    //List
+    [SerializeField] private List <string> _valuesList;
+
+    //GameObject
+    [SerializeField] private GameObject _valuePrefab;
+    [SerializeField] private GameObject _valuesContainer;
+
     //InputFields Or TMP InputFields
 
     [SerializeField] private TMP_InputField _clanNameInputField;
@@ -52,6 +61,7 @@ public class ClanCreateNew : MonoBehaviour
 
 
        SetLanguageDropdown();
+       SetValuesPanel();
     }
     private void OnEnable()
     {
@@ -86,6 +96,18 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
+    private void SetValuesPanel()
+    {
+        for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_valuesContainer.transform.GetChild(i));
+        }
+        foreach(string Text in _valuesList)
+        {
+            GameObject ValueObject = Instantiate(_valuePrefab, _valuesContainer.transform);
+            ValueObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = Text;
+        }
+    }
 
     public void PostClanToServer()
     {
