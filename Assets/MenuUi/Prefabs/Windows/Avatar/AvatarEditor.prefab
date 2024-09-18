@@ -282,8 +282,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5103726520267484200}
   - {fileID: 6534819405116022010}
+  - {fileID: 5103726520267484200}
   m_Father: {fileID: 8944099634186064353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1348,30 +1348,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterImageParent: {fileID: 2628682925619732159}
   _featureButtonsParent: {fileID: 8944099634186064353}
-  _featureSpritesPlaceholder:
+  _eyeSpritesPlaceholder:
   - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: -645123957, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: 2082298074, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 606160789, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: 447521203, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 2082298074, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 2082298074, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 447521203, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 447521203, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 2082298074, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 606160789, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: -645123957, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: 606160789, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  - {fileID: 606160789, guid: e09469f90d223fc45b113c89e596df76, type: 3}
   - {fileID: -645123957, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: 2082298074, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -1968605215, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: 447521203, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -826850270, guid: e09469f90d223fc45b113c89e596df76, type: 3}
-  - {fileID: -645123957, guid: e09469f90d223fc45b113c89e596df76, type: 3}
+  _hairSpritesPlaceholder:
+  - {fileID: -1760762371, guid: bead01ea99b3de34c897e22aeda0889a, type: 3}
+  - {fileID: -104072763, guid: f957a48da9d70dc4b80106b8a38caccb, type: 3}
+  - {fileID: -1762378632, guid: 8954c61ff46f1a847a59eb760703a98c, type: 3}
+  - {fileID: 455252135, guid: 908cafb08f63d064d9d69d545a7b38cb, type: 3}
+  - {fileID: -1362513520, guid: a33d0fe499090164b9f1d18d0686b891, type: 3}
+  - {fileID: 21300000, guid: 31dd087add5629c4f8a0f40a46073f0f, type: 3}
+  - {fileID: -1362513520, guid: a33d0fe499090164b9f1d18d0686b891, type: 3}
+  - {fileID: -1760762371, guid: bead01ea99b3de34c897e22aeda0889a, type: 3}
+  - {fileID: 455252135, guid: 908cafb08f63d064d9d69d545a7b38cb, type: 3}
+  - {fileID: -1362513520, guid: a33d0fe499090164b9f1d18d0686b891, type: 3}
   _featureButtonPrefab: {fileID: 7536046636313906788, guid: 8f55646c2142ce847a1c13022c5e3b20,
     type: 3}
   _defaultFeatureButtonPrefab: {fileID: 2495285751562906155, guid: 3230374487accd24daf04a4da7d99d91,
     type: 3}
+  _defaultCategory: 0
+  _categoryButtons:
+  - {fileID: 3069549284983658686}
+  - {fileID: 6051527714715004706}
   _featureButtonPositions:
   - {fileID: 5744530409480245051}
   - {fileID: 8401843311296615443}
@@ -1823,7 +1838,7 @@ MonoBehaviour:
       DivanImage: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb, type: 3}
     - Name: Conman
       id: 514
-      characterImagePrefab: {fileID: 449202621717433028, guid: a6649153cc424c441aa1b180db100c5d,
+      characterImagePrefab: {fileID: 1425011335278788900, guid: d9b9dfb8374b7fd4ea24e25b7bb0779c,
         type: 3}
       DivanImage: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb, type: 3}
   - Name: Projector

@@ -4,8 +4,14 @@ using UnityEngine;
 
 public enum FeatureSlot 
 {
-    Eyes = 0,
-    Hair = 1,
-    Mouth = 2
+    Hair = 0,
+    Eyes = 1,
+    Nose = 2,
+    Mouth = 3,
+    FacialHair = 4,
+    Body = 5,
+    Hands = 6,
+    Feet = 7,
+
 
 }
