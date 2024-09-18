@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window;
@@ -8,13 +9,38 @@ using UnityEngine.UI;
 
 public class ClanCreateNew : MonoBehaviour
 {
+    public enum Language
+    {
+        None,
+        Finnish,
+        Swedish,
+        English
+    }
+    //InputFields Or TMP InputFields
+
     [SerializeField] private TMP_InputField _clanNameInputField;
     //[SerializeField] private TMP_InputField _clanTagInputField;
-    //[SerializeField] private TMP_InputField _gameCoinsInputField;
-    [SerializeField] private Toggle _openClanButton;
-    //[SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private TMP_InputField _clanPhrase;
+    [SerializeField] private TMP_InputField _clanAge;
+    [SerializeField] private TMP_InputField _clanMembers;
+    [SerializeField] private TMP_InputField _clanPassword;
 
-    [SerializeField] protected WindowDef _naviTarget;
+   //Toggles
+
+   [SerializeField] private Toggle _openClanButton;
+
+   //Buttons
+
+   [SerializeField] private Button _returnToMainClanViewButton;
+   [SerializeField] private Button _clanValues;
+   [SerializeField] private Button _buttonLogo;
+
+   // Dropdowns Or TMP Dropdowns
+
+   [SerializeField] private TMP_Dropdown _ClanLanguageDropdown;
+   [SerializeField] private TMP_Dropdown _ClanGoals;
+
+   [SerializeField] protected WindowDef _naviTarget;
 
     private void Reset()
     {
@@ -23,7 +49,43 @@ public class ClanCreateNew : MonoBehaviour
         //_clanTagInputField.text = "";
         //_gameCoinsInputField.text = "";
         _openClanButton.isOn = false;
+
+
+       SetLanguageDropdown();
     }
+    private void OnEnable()
+    {
+        Reset();
+    }
+    private void SetLanguageDropdown()
+    {
+     _ClanLanguageDropdown.options.Clear();
+     foreach(Language language in Enum.GetValues(typeof (Language) ) )
+        {
+            String Text;
+
+            switch (language)
+            {
+                case Language.None:
+                    Text = "Kieli / Språk / Language";
+                    break;
+                case Language.Finnish:
+                    Text = "Suomi";
+                    break;
+                case Language.Swedish:
+                    Text = "Svenska";
+                    break;
+                case Language.English:
+                    Text = "English";
+                    break;
+                default:
+                    Text = "";
+                    break;
+            }
+            _ClanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(Text));
+        }
+    }
+
 
     public void PostClanToServer()
     {
@@ -31,6 +93,10 @@ public class ClanCreateNew : MonoBehaviour
         //string clanTag = _clanTagInputField.text;
         //int gameCoins = int.Parse(_gameCoinsInputField.text);
         bool isOpen = !_openClanButton.isOn;
+
+        Language language = (Language)_ClanLanguageDropdown.value;
+        String Phrase = _clanPhrase.text;
+        Debug.Log($"language: {language}, Phrase: {Phrase} ");
 
         if (clanName == string.Empty /*|| clanTag == string.Empty || _gameCoinsInputField.text == string.Empty*/)
             return;
