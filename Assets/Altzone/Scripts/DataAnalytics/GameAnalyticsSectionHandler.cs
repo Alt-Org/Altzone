@@ -15,6 +15,7 @@ namespace Altzone.Scripts.GA
         ClanPage,
         ClanSelection,
         CharacterScreen,
+        AvatarModification,
         Settings,
         Voting
     }
