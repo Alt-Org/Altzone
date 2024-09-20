@@ -65,38 +65,38 @@ namespace Altzone.Scripts.GA
 
         }
 
-        public void BattleLaunch() //Milloin battle k‰ynnistet‰‰n
+        public void BattleLaunch() //Milloin battle k√§ynnistet√§√§n
         {
             _battlesStartedThisSession++;
             GameAnalytics.NewDesignEvent("battle:launched");
             Debug.Log("battle launched event");
         }
 
-        public void OpenSoulHome() //Milloin sielunkotiin menn‰‰n
+        public void OpenSoulHome() //Milloin sielunkotiin menn√§√§n
         {
             GameAnalytics.NewDesignEvent("location:soulhome:open");
             Debug.Log("SoulHome has been opened");
         }
 
-        public void CharacterSelection(string characterName) //Mik‰ hahmo valitaan
+        public void CharacterSelection(string characterName) //Mik√§ hahmo valitaan
         {
             GameAnalytics.NewDesignEvent("character:selected:" + characterName);
             Debug.Log($"Character selected: {characterName}");
         }
 
-        public void CharacterWin(string characterName) //Mik‰ hahmo voittaa
+        public void CharacterWin(string characterName) //Mik√§ hahmo voittaa
         {
             GameAnalytics.NewDesignEvent("character:win:" + characterName);
             Debug.Log($"{characterName} won");
         }
 
-        public void CharacterLoss(string characterName) //Mik‰ hahmo h‰vi‰‰
+        public void CharacterLoss(string characterName) //Mik√§ hahmo h√§vi√§√§
         {
             GameAnalytics.NewDesignEvent("character:loss:" + characterName);
             Debug.Log($"{characterName} lost");
         }
 
-        public void EnterSection(string sectionName) //Aloittaa ajan kun pelin osaan menn‰‰n
+        public void EnterSection(string sectionName) //Aloittaa ajan kun pelin osaan menn√§√§n
         {
             float currentTime = Time.time;
             if (!_sectionStartTimes.ContainsKey(sectionName))
@@ -109,7 +109,7 @@ namespace Altzone.Scripts.GA
             }
         }
 
-        public void ExitSection(string sectionName) //paljonko pelin osissa vietet‰‰n aikaa
+        public void ExitSection(string sectionName) //paljonko pelin osissa vietet√§√§n aikaa
         {
             if (_sectionStartTimes.ContainsKey(sectionName))
             {
@@ -122,7 +122,7 @@ namespace Altzone.Scripts.GA
                 eventData["event"] = "exit";
                 eventData["Time_spent"] = timeSpent;
 
-                GameAnalytics.NewDesignEvent($"section_event:{sectionName}:exit", eventData);
+                GameAnalytics.NewDesignEvent($"section_event:{sectionName}:exit", timeSpent);
                 Debug.Log($"Time spend: {timeSpent} seconds.");
 
                 _sectionStartTimes.Remove(sectionName);
@@ -163,7 +163,7 @@ namespace Altzone.Scripts.GA
 
             _shieldHits = 0;
         }
-        public void MoveCommand(Vector3 targetPosition) //Seuraa miss‰ hahmo liikkuu ja laskee liikkumisk‰skyt
+        public void MoveCommand(Vector3 targetPosition) //Seuraa miss√§ hahmo liikkuu ja laskee liikkumisk√§skyt
         {
             _moveCommandsCount++;
             var eventParams = new Dictionary<string, object>
@@ -189,7 +189,7 @@ namespace Altzone.Scripts.GA
             WallHitsPerMatchPerTeam();
         }
 
-        public void DistanceToPlayer(float distance) //et‰isyys kanssapelaajaan
+        public void DistanceToPlayer(float distance) //et√§isyys kanssapelaajaan
         {
             //float distance = Vector3.Distance(playerPosition, otherPlayerPosition);
 
@@ -198,11 +198,11 @@ namespace Altzone.Scripts.GA
                 {"distance", distance}
             };
 
-            GameAnalytics.NewDesignEvent("battle:distance:player", eventParams);
+            GameAnalytics.NewDesignEvent("battle:distance:player", distance);
             Debug.Log($"Distance to other player: {distance}");
         }
 
-        public void DistanceToWall(float distance) //et‰isyys muuriin
+        public void DistanceToWall(float distance) //et√§isyys muuriin
         {
             //float distance = Vector3.Distance(playerPosition, wallPosition);
 
@@ -211,7 +211,7 @@ namespace Altzone.Scripts.GA
                 {"distance", distance}
             };
 
-            GameAnalytics.NewDesignEvent("battle:distance:wall", eventParams);
+            GameAnalytics.NewDesignEvent("battle:distance:wall", distance);
             Debug.Log($"Distance to wall: {distance}");
         }
 
@@ -228,7 +228,7 @@ namespace Altzone.Scripts.GA
             Debug.Log($"Clan changed to {newClan}. Total clan changes: {_clanChanges}");
         }
 
-        // privaatti funktiot joka GameAnalyticsManager k‰sittelee
+        // privaatti funktiot joka GameAnalyticsManager k√§sittelee
 
         private void BattleShieldHitsBetweenWallHits()
         {
@@ -266,7 +266,7 @@ namespace Altzone.Scripts.GA
                 {
                     { "ShieldHitsPerMatch", _playerShieldHitsPerMatch[key] }
                 };
-                GameAnalytics.NewDesignEvent($"battle:shield_hits_per_match:{key}", eventParams);
+                GameAnalytics.NewDesignEvent($"battle:shield_hits_per_match:{key}", _playerShieldHitsPerMatch[key]);
                 Debug.Log($"Player {key} shield hits this match: {_playerShieldHitsPerMatch[key]}");
             }
 
@@ -281,7 +281,7 @@ namespace Altzone.Scripts.GA
                 {
                     { "WallHitsPerMatch", _teamWallHitsPerMatch[key] }
                 };
-                GameAnalytics.NewDesignEvent($"battle:wall_hits_per_match:{key}", eventParams);
+                GameAnalytics.NewDesignEvent($"battle:wall_hits_per_match:{key}", _teamWallHitsPerMatch[key]);
                 Debug.Log($"Team {key} wall hits this match: {_teamWallHitsPerMatch[key]}");
             }
 
