@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: valmis
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 988
+        width: 1686
+        height: 1006
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b99d4b7429005cd468a49f4b2a74e7f4
+      internalID: -1261762687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ajatuskupla
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 49
+        width: 1787
+        height: 925
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 196, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2617aa580693dd4fad1af4efef3eb21
+      internalID: 775297504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ajatuskupla: -1261762687
+      valmis: -1261762687
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
