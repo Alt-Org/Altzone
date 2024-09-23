@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,18 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField]private Transform _characterImageParent;
         [SerializeField]private Transform _featureButtonsParent;
+
+        #region placeholders
         [SerializeField]private List<Sprite> _eyeSpritesPlaceholder;
         [SerializeField]private List<Sprite> _hairSpritesPlaceholder;
+        [SerializeField]private List<Sprite> _noseSpritesPlaceholder;
+        [SerializeField]private List<Sprite> _mouthSpritesPlaceholder;
+        [SerializeField]private List<Sprite> _facialHairSpritesPlaceholder;
+        [SerializeField]private List<Sprite> _bodySpritesPlaceholder;
+        [SerializeField]private List<Sprite> _handsSpritesPlaceholder;
+        [SerializeField]private List<Sprite> _feetSpritesPlaceholder;
+        #endregion
+
         [SerializeField]private GameObject _featureButtonPrefab;
         [SerializeField]private GameObject _defaultFeatureButtonPrefab;
         [SerializeField]private FeatureSlot _defaultCategory;
@@ -26,16 +37,18 @@ namespace MenuUi.Scripts.AvatarEditor
         private Transform _characterImage;
         public void OnEnable()
         {
-            for(int i = 0; i < _categoryButtons.Count; i++){
-                int j = i;
-                _categoryButtons[i].onClick.AddListener
-                    (delegate {SwitchFeatureCategory((FeatureSlot)j); });
-            } 
+            _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
+            _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
+            // for(int i = 0; i < _categoryButtons.Count; i++){
+            //     int j = i;
+            //     _categoryButtons[i].onClick.AddListener
+            //         (delegate {SwitchFeatureCategory((FeatureSlot)j); });
+            // } 
 
 
 
-            
-            SwitchFeatureCategory(_defaultCategory);
+            _currentlySelectedCategory = _defaultCategory;
+            SwitchFeatureCategory();
             // DestroyFeatureButtons();
             // InstantiateFeatureButtons();
         }
@@ -64,7 +77,7 @@ namespace MenuUi.Scripts.AvatarEditor
                     FeatureButton featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
                     featureButton._slot = _currentlySelectedCategory;
                     featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { SetDefaultFeature(featureButton._slot+3); });
+                    (delegate { SetDefaultFeature(featureButton._slot+2); });
                 }
                 else if ((i + (8*_currentPageNumber) < _currentCategorySpritesPlaceholder.Count) || 
                 (i + (8*_currentPageNumber) == _currentCategorySpritesPlaceholder.Count && (_currentPageNumber != 0||i!=8)) )
@@ -74,7 +87,7 @@ namespace MenuUi.Scripts.AvatarEditor
                     featureButton._slot = _currentlySelectedCategory;
                     featureButton.gameObject.GetComponent<Image>().sprite = featureButton._sprite;
                     featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot+3); });
+                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot+2); });
                 }
             }
         }
@@ -88,28 +101,57 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
         private void FeatureClicked(Sprite featureToChange, FeatureSlot slot){
-            Debug.Log("switching feature in slot: " + slot.ToString());
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = featureToChange;
             _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,255);
         }
         private void SetDefaultFeature(FeatureSlot slot){
-            Debug.Log("Setting default for slot: " + slot.ToString());
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = null;
         }
-        private void SwitchFeatureCategory(FeatureSlot slot){
-            _currentlySelectedCategory = slot;
-            Debug.Log("Switching category into: " + _currentlySelectedCategory);
+        public void LoadNextCategory(){
+            _currentlySelectedCategory++ ;
+            if( (int)_currentlySelectedCategory >= Enum.GetNames(typeof(FeatureSlot)).Length ){
+                _currentlySelectedCategory = 0 ;
+            }
+            SwitchFeatureCategory();
+        }
+        public void LoadPreviousCategory(){
+            _currentlySelectedCategory--;
+            if( (int)_currentlySelectedCategory < 0){
+                _currentlySelectedCategory = (FeatureSlot)(Enum.GetNames(typeof(FeatureSlot)).Length-1);
+            }
+            SwitchFeatureCategory();
+        }
+
+        private void SwitchFeatureCategory(){
 
             //placeholder until available features can be read from player inventory
             switch (_currentlySelectedCategory){
+                case FeatureSlot.Hair:
+                    _currentCategorySpritesPlaceholder = _hairSpritesPlaceholder;
+                    break;
                 case FeatureSlot.Eyes:
                     _currentCategorySpritesPlaceholder = _eyeSpritesPlaceholder;
                     break;
-                case FeatureSlot.Hair:
-                    _currentCategorySpritesPlaceholder = _hairSpritesPlaceholder;
+                case FeatureSlot.Nose:
+                    _currentCategorySpritesPlaceholder = _noseSpritesPlaceholder;
+                    break;
+                case FeatureSlot.Mouth:
+                    _currentCategorySpritesPlaceholder = _mouthSpritesPlaceholder;
+                    break;
+                case FeatureSlot.FacialHair:
+                    _currentCategorySpritesPlaceholder = _facialHairSpritesPlaceholder;
+                    break;
+                case FeatureSlot.Body:
+                    _currentCategorySpritesPlaceholder = _bodySpritesPlaceholder;
+                    break;
+                case FeatureSlot.Hands:
+                    _currentCategorySpritesPlaceholder = _handsSpritesPlaceholder;
+                    break;
+                case FeatureSlot.Feet:
+                    _currentCategorySpritesPlaceholder = _feetSpritesPlaceholder;
                     break;
                 default:
                     break;
