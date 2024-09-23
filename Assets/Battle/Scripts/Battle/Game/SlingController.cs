@@ -70,7 +70,7 @@ namespace Battle.Scripts.Battle.Game
         {
             if (_slingActive)
             {
-                Debug.LogWarning(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sling already active", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogWarning("Sling already active");
                 return;
             }
 
@@ -78,12 +78,12 @@ namespace Battle.Scripts.Battle.Game
             {
                 case BattleTeamNumber.TeamAlpha:
                     _currentTeam = _teams[TeamAlpha];
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team alpha sling activated", _syncedFixedUpdateClock.UpdateCount));
+                    _battleDebugLogger.LogInfo("Team alpha sling activated");
                     break;
 
                 case BattleTeamNumber.TeamBeta:
                     _currentTeam = _teams[TeamBeta];
-                    Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Team beta sling activated", _syncedFixedUpdateClock.UpdateCount));
+                    _battleDebugLogger.LogInfo("Team beta sling activated");
                     break;
             }
             _slingActive = true;
@@ -107,7 +107,7 @@ namespace Battle.Scripts.Battle.Game
         {
             if (!_slingActive)
             {
-                Debug.LogWarning(string.Format(DEBUG_LOG_NAME_AND_TIME + "Sling not active", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogWarning("Sling not active");
                 return;
             }
 
@@ -118,13 +118,12 @@ namespace Battle.Scripts.Battle.Game
 
             if (_currentTeam.Distance >= 0)
             {
-                Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "info (front player: (position: {1}, grid position: ({2})), back player: (position: {3}, grid position: {4}))",
-                    _syncedFixedUpdateClock.UpdateCount,
+                _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "info (front player: (position: {0}, grid position: ({1})), back player: (position: {2}, grid position: {3}))",
                     _currentTeam.FrontPlayer.position,
                     _gridManager.WorldPointToGridPosition(_currentTeam.FrontPlayer.position),
                     _currentTeam.BackPlayer.position,
                     _gridManager.WorldPointToGridPosition(_currentTeam.BackPlayer.position)
-                ));
+                );
 
                 launchSpeed = MathPlus.RemapAndClamp(_currentTeam.Distance, _minDistance, _maxDistance, _slingMinSpeed, _slingMaxSpeed);
                 launchDirection = _currentTeam.LaunchDirection;
@@ -141,14 +140,14 @@ namespace Battle.Scripts.Battle.Game
             }
             else
             {
-                Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "players not in valid sling formation", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "players not in valid sling formation");
 
                 teamNumber = BattleTeamNumber.NoTeam;
                 launchDirection = new Vector3(0.5f, 0.5f);
                 launchSpeed = _slingDefaultSpeed;
                 launchPosition = Vector3.zero;
 
-                Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "animation skipped", _syncedFixedUpdateClock.UpdateCount));
+                _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "animation skipped");
 
                 SlingLaunchPrivate(teamNumber, launchPosition, launchDirection, launchSpeed);
             }
@@ -187,9 +186,8 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private - Fields
 
         #region DEBUG
-        private const string DEBUG_LOG_NAME = "[BATTLE] [SLING CONTROLLER] ";
-        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private const string DEBUG_LOG_LAUNCH_SEQUENCE = DEBUG_LOG_NAME_AND_TIME + "Launch sequence: ";
+        private BattleDebugLogger _battleDebugLogger;
+        private const string DebugLogLaunchSequence = "Launch sequence: ";
         private GridManager _gridManager; //only needed for logging grid position
         #endregion DEBUG
 
@@ -205,7 +203,8 @@ namespace Battle.Scripts.Battle.Game
 
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
 
-            // Degbug
+            // debug
+            _battleDebugLogger = new BattleDebugLogger(this);
             _gridManager = Context.GetGridManager;
         }
 
@@ -284,22 +283,21 @@ namespace Battle.Scripts.Battle.Game
             _slingActive = false;
             _slingIndicator.SetShow(false);
 
-            Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "launching ball (team: {1}, position: {2}, direction: {3}, speed {4})",
-                _syncedFixedUpdateClock.UpdateCount,
+            _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "launching ball (team: {0}, position: {1}, direction: {2}, speed {3})",
                 teamNumber != BattleTeamNumber.NoTeam ? (teamNumber == BattleTeamNumber.TeamAlpha ? "team alpha" : "team beta") : "no team",
                 position,
                 direction,
                 speed
-            ));
+            );
             _ball.Launch(position, direction, speed);
             _audioSource.Play();
-            Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "finished", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "finished");
             this.Publish(new BallSlinged(teamNumber));
         }
 
         private IEnumerator MovePusherCoroutine(float duration)
         {
-            Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "animation started", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "animation started");
             float speed = 1 / duration;
             float pusherPosition = 0;
             while (pusherPosition < 1)
@@ -308,7 +306,7 @@ namespace Battle.Scripts.Battle.Game
                 pusherPosition += speed * Time.deltaTime;
                 _slingIndicator.SetPusherPosition(pusherPosition);
             }
-            Debug.Log(string.Format(DEBUG_LOG_LAUNCH_SEQUENCE + "animation finished", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo(DebugLogLaunchSequence + "animation finished");
         }
 
         #endregion Private - Methods
