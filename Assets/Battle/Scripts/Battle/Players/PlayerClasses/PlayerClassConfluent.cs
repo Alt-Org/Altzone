@@ -114,7 +114,7 @@ namespace Battle.Scripts.Battle.Players
                 //_teammateShieldTransform tells teammate position
 
                 _battleDebugLogger.LogInfo("Own position is " + _actorShieldTransform.position);
-                _battleDebugLogger.LogInfo("Teammate position is " + _teammateShieldTransform.position);
+/*                _battleDebugLogger.LogInfo("Teammate position is " + _teammateShieldTransform.position);*/
 
                 //Calculate teammate position relative to own position C eli B-A
                 //Normalize C vector
