@@ -40,7 +40,7 @@ namespace Battle.Scripts.Battle.Game
             _sprite.enabled = true;
             _sparkleSprite.SetActive(true);
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball launched (position: {1}, velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
+            _battleDebugLogger.LogInfo("Ball launched (position: {0}, velocity: {1})", _rb.position, _rb.velocity);
         }
 
         public void Stop()
@@ -50,7 +50,7 @@ namespace Battle.Scripts.Battle.Game
             _sprite.enabled = false;
             _sparkleSprite.SetActive(false);
 
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Ball stopped", _syncedFixedUpdateClock.UpdateCount));
+            _battleDebugLogger.LogInfo("Ball stopped");
         }
 
         public (Vector2 position, GridPos gridPos, Vector2 direction) CalculateCollision(Vector2 position, Vector2 direction, Vector2 normal)
@@ -117,9 +117,7 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private - Fields
 
         #region DEBUG
-        private const string DEBUG_LOG_NAME = "[BATTLE] [BALL HANDLER] ";
-        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+        private BattleDebugLogger _battleDebugLogger;
         #endregion DEBUG
 
 
@@ -148,12 +146,12 @@ namespace Battle.Scripts.Battle.Game
             _sprite.enabled = false;
 
             // Debug
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            _battleDebugLogger = new BattleDebugLogger(this);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Info (current position: {1}, current velocity: {2})", _syncedFixedUpdateClock.UpdateCount, _rb.position, _rb.velocity));
+            _battleDebugLogger.LogInfo("Info (current position: {0}, current velocity: {1})", _rb.position, _rb.velocity);
             GridPos gridPos = null;
             GameObject otherGameObject = collision.gameObject;
 
@@ -184,14 +182,14 @@ namespace Battle.Scripts.Battle.Game
                             _rb.position = position;
                             SetVelocity(direction * speed);
 
-                            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (bounce), position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                            _battleDebugLogger.LogInfo("Collision (type: player (bounce), position: {0}, grid position: ({1}), velocity: {2})", _rb.position, gridPos, _rb.velocity);
 
                             playerClass.OnBallShieldBounce();
                         }
                         else
                         {
                             gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
-                            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: player (no bounce), position: {1}, grid position: ({2}))", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos));
+                            _battleDebugLogger.LogInfo("Collision (type: player (no bounce), position: {0}, grid position: ({1}))", _rb.position, gridPos);
                         }
                     }
                 }
@@ -199,7 +197,7 @@ namespace Battle.Scripts.Battle.Game
 
             if (otherGameObject.CompareTag("Wall"))
             {
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: soul wall, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                _battleDebugLogger.LogInfo("Collision (type: soul wall, position: {0}, grid position: ({1}), velocity: {2})", _rb.position, gridPos, _rb.velocity);
 
                 int soulWallSegmentHealth = otherGameObject.GetComponent<SoulWallSegmentRemove>().Health;
                 otherGameObject.GetComponent<SoulWallSegmentRemove>().BrickHitInit(_damage);
@@ -214,7 +212,7 @@ namespace Battle.Scripts.Battle.Game
             }
             else
             {
-                Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Collision (type: arena border, position: {1}, grid position: ({2}), velocity: {3})", _syncedFixedUpdateClock.UpdateCount, _rb.position, gridPos, _rb.velocity));
+                _battleDebugLogger.LogInfo("Collision (type: arena border, position: {0}, grid position: ({1}), velocity: {2})", _rb.position, gridPos, _rb.velocity);
             }
         }
 
