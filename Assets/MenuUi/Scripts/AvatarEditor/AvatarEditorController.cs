@@ -6,165 +6,50 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
-
     public class AvatarEditorController : MonoBehaviour
     {
-        [SerializeField]private Transform _characterImageParent;
-        [SerializeField]private Transform _featureButtonsParent;
-
-        #region placeholders
-        [SerializeField]private List<Sprite> _eyeSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _hairSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _noseSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _mouthSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _facialHairSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _bodySpritesPlaceholder;
-        [SerializeField]private List<Sprite> _handsSpritesPlaceholder;
-        [SerializeField]private List<Sprite> _feetSpritesPlaceholder;
-        #endregion
-
-        [SerializeField]private GameObject _featureButtonPrefab;
-        [SerializeField]private GameObject _defaultFeatureButtonPrefab;
-        [SerializeField]private FeatureSlot _defaultCategory;
-        [SerializeField]private List<Button> _categoryButtons;
-        [SerializeField]private List<Transform> _featureButtonPositions;
-        [SerializeField]private Animator animator;
+        private AvatarEditorMode _currentMode = 0;
+        [SerializeField]private List<GameObject> _modeList;
+        [SerializeField]private List<Button> _switchModeButtons;
         private FeatureSlot _currentlySelectedCategory;
-        private List<Sprite> _currentCategorySpritesPlaceholder = new();
-
-        private int _currentPageNumber = 0;
-        private int _pageCount = 0;
-        private Transform _characterImage;
-        public void OnEnable()
-        {
-            _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
-            _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
-            // for(int i = 0; i < _categoryButtons.Count; i++){
-            //     int j = i;
-            //     _categoryButtons[i].onClick.AddListener
-            //         (delegate {SwitchFeatureCategory((FeatureSlot)j); });
-            // } 
-
-
-
-            _currentlySelectedCategory = _defaultCategory;
-            SwitchFeatureCategory();
-            // DestroyFeatureButtons();
-            // InstantiateFeatureButtons();
+        void Start(){
+            _switchModeButtons[0].onClick.AddListener(LoadNextMode);
+            _switchModeButtons[1].onClick.AddListener(LoadPreviousMode);
+            GoIntoMode();
         }
-        public void LoadNextPage(){
-            if(_currentPageNumber < _pageCount-1){
-                _currentPageNumber++;
-                DestroyFeatureButtons();
-                InstantiateFeatureButtons();
-                animator.Play("PageFlip");
-                
+        private void GoIntoMode(){
+            _modeList[(int)_currentMode].SetActive(true);
+            if (_currentMode == AvatarEditorMode.ColorPicker){
+                _modeList[1].GetComponent<ColorPicker>().SelectFeature(_currentlySelectedCategory);
             }
         }
-        public void LoadPreviousPage(){
-            if (_currentPageNumber > 0){
-                _currentPageNumber--;
-                DestroyFeatureButtons();
-                InstantiateFeatureButtons();
-                animator.Play("BackPageFlip");
+        
+        private void LoadNextMode(){
+            if(_currentMode == AvatarEditorMode.FeaturePicker){
+                _currentlySelectedCategory = _modeList[0].GetComponent<FeaturePicker>().GetCurrentlySelectedCategory();
             }
-        }
-        private void InstantiateFeatureButtons()
-        {
-            for (int i = 0; i < 8; i++)
-            {
-                if(i == 0 && _currentPageNumber == 0){
-                    FeatureButton featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
-                    featureButton._slot = _currentlySelectedCategory;
-                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { SetDefaultFeature(featureButton._slot+2); });
-                }
-                else if ((i + (8*_currentPageNumber) < _currentCategorySpritesPlaceholder.Count) || 
-                (i + (8*_currentPageNumber) == _currentCategorySpritesPlaceholder.Count && (_currentPageNumber != 0||i!=8)) )
-                {
-                    FeatureButton featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
-                    featureButton._sprite = _currentCategorySpritesPlaceholder[i+ (8*_currentPageNumber)-1];
-                    featureButton._slot = _currentlySelectedCategory;
-                    featureButton.gameObject.GetComponent<Image>().sprite = featureButton._sprite;
-                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
-                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot+2); });
-                }
+            _modeList[(int)_currentMode].SetActive(false);
+            _currentMode++;
+            if ((int)_currentMode >= Enum.GetNames(typeof(AvatarEditorMode)).Length){
+                _currentMode = 0;
             }
+            GoIntoMode();
         }
-        private void DestroyFeatureButtons(){
-            foreach(Transform pos in _featureButtonPositions){
-                if(pos.childCount > 0){
-                    foreach(Transform child in pos){
-                        Destroy(child.gameObject);
-                    }
-                }
+        private void LoadPreviousMode(){
+            if(_currentMode == AvatarEditorMode.FeaturePicker){
+                _currentlySelectedCategory = _modeList[0].GetComponent<FeaturePicker>().GetCurrentlySelectedCategory();
             }
-        }
-        private void FeatureClicked(Sprite featureToChange, FeatureSlot slot){
-            _characterImage = _characterImageParent.GetChild(0);
-            _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = featureToChange;
-            _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,255);
-        }
-        private void SetDefaultFeature(FeatureSlot slot){
-            _characterImage = _characterImageParent.GetChild(0);
-            _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,0);
-            _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = null;
-        }
-        public void LoadNextCategory(){
-            _currentlySelectedCategory++ ;
-            if( (int)_currentlySelectedCategory >= Enum.GetNames(typeof(FeatureSlot)).Length ){
-                _currentlySelectedCategory = 0 ;
+            _modeList[(int)_currentMode].SetActive(false);
+            _currentMode--;
+            if((int)_currentMode < 0){
+                _currentMode = (AvatarEditorMode)Enum.GetNames(typeof(AvatarEditorMode)).Length-1;
             }
-            SwitchFeatureCategory();
+            GoIntoMode();
         }
-        public void LoadPreviousCategory(){
-            _currentlySelectedCategory--;
-            if( (int)_currentlySelectedCategory < 0){
-                _currentlySelectedCategory = (FeatureSlot)(Enum.GetNames(typeof(FeatureSlot)).Length-1);
-            }
-            SwitchFeatureCategory();
-        }
-
-        private void SwitchFeatureCategory(){
-
-            //placeholder until available features can be read from player inventory
-            switch (_currentlySelectedCategory){
-                case FeatureSlot.Hair:
-                    _currentCategorySpritesPlaceholder = _hairSpritesPlaceholder;
-                    break;
-                case FeatureSlot.Eyes:
-                    _currentCategorySpritesPlaceholder = _eyeSpritesPlaceholder;
-                    break;
-                case FeatureSlot.Nose:
-                    _currentCategorySpritesPlaceholder = _noseSpritesPlaceholder;
-                    break;
-                case FeatureSlot.Mouth:
-                    _currentCategorySpritesPlaceholder = _mouthSpritesPlaceholder;
-                    break;
-                case FeatureSlot.FacialHair:
-                    _currentCategorySpritesPlaceholder = _facialHairSpritesPlaceholder;
-                    break;
-                case FeatureSlot.Body:
-                    _currentCategorySpritesPlaceholder = _bodySpritesPlaceholder;
-                    break;
-                case FeatureSlot.Hands:
-                    _currentCategorySpritesPlaceholder = _handsSpritesPlaceholder;
-                    break;
-                case FeatureSlot.Feet:
-                    _currentCategorySpritesPlaceholder = _feetSpritesPlaceholder;
-                    break;
-                default:
-                    break;
-            }
-
-            _currentPageNumber = 0;
-            _pageCount = (_currentCategorySpritesPlaceholder.Count+1) / 8;
-            if((_currentCategorySpritesPlaceholder.Count+1) % 8 != 0){
-                _pageCount++;
-            }
-
-            DestroyFeatureButtons();
-            InstantiateFeatureButtons();
-        }
+    }
+    enum AvatarEditorMode{
+        FeaturePicker = 0,
+        ColorPicker = 1,
+        AvatarScaler = 2,
     }
 }
