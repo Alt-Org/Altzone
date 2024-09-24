@@ -352,9 +352,11 @@ MonoBehaviour:
   taskId: 0
   unActiveTask: {fileID: 8019332638029155957}
   activeTask: {fileID: 8389330685739268461}
+  popUpScreen: {fileID: 0}
   titleText: {fileID: 5185561672090061705}
   pointText: {fileID: 1574435518566141732}
   playerNameText: {fileID: 3755052230530444167}
+  questSelectButton: {fileID: 2923693537470604299}
   taskGoalSlider: {fileID: 4066522542657658651}
 --- !u!1 &2798787153316948277
 GameObject:
@@ -821,7 +823,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -835,7 +837,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 5800991678056314136}
   m_FillRect: {fileID: 7505234411109001549}
   m_HandleRect: {fileID: 0}

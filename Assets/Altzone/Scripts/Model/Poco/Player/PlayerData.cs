@@ -32,6 +32,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int BackpackCapacity;
 
+        public int dailyTaskId = 0;
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>

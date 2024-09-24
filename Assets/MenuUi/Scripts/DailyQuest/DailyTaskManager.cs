@@ -25,15 +25,14 @@ public class DailyTaskManager : MonoBehaviour
     {
         for (int i = 0; i < _questAmount; i++)
         {
-            Debug.Log("This is action #" + (i + 1));
-            // kopioi prefabin
             GameObject taskObject = Instantiate(dailyTaskPrefab.gameObject, gameObject.transform);
             // laittaa kopion arrayhin
             dailyQuestSlots[i] = taskObject;
             // pyytää QuestRandomizerilta tehtänvän ja laittaa local variableihin
             (string title, int points, int goals) = QuestRandomizer();
-            // lähettää questin tiedot tyhjälle kopiolle
             taskObject.GetComponent<DailyQuest>().getMissionData(title, points, goals);
+            taskObject.GetComponent<DailyQuest>().taskId = i + 1;
+            taskObject.GetComponent<DailyQuest>().popUpScreen = popupScreenPrefab;
         }
         Debug.Log("Taski slotit tehty!");
     }
