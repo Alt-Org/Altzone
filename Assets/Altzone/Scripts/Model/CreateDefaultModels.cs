@@ -168,6 +168,9 @@ namespace Altzone.Scripts.Model
             gameFurniture.Add(new GameFurniture(7.ToString(), "CoffeeTable_Taakka", FurnitureSize.TwoXThree, FurnitureSize.ThreeXTwo, FurniturePlacement.Floor, 10f, 15f));
             gameFurniture.Add(new GameFurniture(8.ToString(), "SideTable_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
             gameFurniture.Add(new GameFurniture(9.ToString(), "ArmChair_Taakka", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(10.ToString(), "Sofa_Rakkaus", FurnitureSize.ThreeXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(11.ToString(), "ArmChair_Rakkaus", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(12.ToString(), "Closet_Rakkaus", FurnitureSize.ThreeXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
