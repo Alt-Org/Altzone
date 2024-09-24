@@ -82,7 +82,7 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private - Fields
 
         #region DEBUG
-        BattleDebugLogger _battleDebugLogger;
+        private BattleDebugLogger _battleDebugLogger;
         #endregion DEBUG
 
         #region Private - Methods
