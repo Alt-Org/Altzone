@@ -44,7 +44,7 @@ namespace Battle.Scripts.Battle.Game
             color.b -= _colorChangeFactor;
             _spriteRenderer.color = color;
             Health -= damage;
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Brick hit (health: {1})", _syncedFixedUpdateClock.UpdateCount, Health));
+            _battleDebugLogger.LogInfo("Brick hit (health: {0})", Health);
             if (Health <= 0)
             {
                 Destroy(gameObject);
@@ -55,7 +55,7 @@ namespace Battle.Scripts.Battle.Game
             {
                 //_audioPlayer.Play(HIT_EFFECT_INDEX);
             }
-            Debug.Log("spriteIndex: " + _spriteIndex);
+            _battleDebugLogger.LogInfo("spriteIndex: " + _spriteIndex);
             _audioPlayer.Play(_spriteIndex);
 
             if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnWallHit(_side.ToString());
@@ -82,9 +82,7 @@ namespace Battle.Scripts.Battle.Game
         #endregion Private - Fields
 
         #region DEBUG
-        private const string DEBUG_LOG_NAME = "[BATTLE] [BRICK REMOVE] ";
-        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+        BattleDebugLogger _battleDebugLogger;
         #endregion DEBUG
 
         #region Private - Methods
@@ -100,7 +98,7 @@ namespace Battle.Scripts.Battle.Game
             _ballHandler = Context.GetBallHandler;
 
             // debug
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            _battleDebugLogger = new BattleDebugLogger(this);
         }
 
         #endregion Private - Methods
