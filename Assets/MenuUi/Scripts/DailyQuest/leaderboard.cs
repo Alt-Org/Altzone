@@ -50,7 +50,7 @@ public class Leaderboard : MonoBehaviour
         return score;
     }
 
-    [ContextMenu("lis‰‰ pisteit‰")]
+    [ContextMenu("lis√§√§ pisteit√§")]
     public void AddTestPoints()
     {
         AddScore(50); 
