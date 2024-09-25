@@ -38,13 +38,15 @@ namespace MenuUi.Scripts.SwipeNavigation
         private float swipeDistance = 50.0f;
         private float[] scrollPageValues;
         private float valueDistance = 0;
-        public int currentPage = 0;
+        public int currentPage = 1;
         private int maxPage = 0;
         public Vector2 _startTouch;
         public Vector2 _endTouch;
         private bool isSwipeMode = false;
         private float _startScrollvalue;
         private bool _swipeAllowed = false;
+        [SerializeField] private RectTransform _scrollTransform;
+        private bool _firstFrame = true;
 
         public bool isEnabled;
         private Rect swipeRect;
@@ -91,6 +93,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();
+            StartCoroutine(SetScrollBarValue(CurrentPage, true));
         }
 
         private void Start()
@@ -101,12 +104,12 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 Button button = buttons[i];
                 int index = i;
-                button.onClick.AddListener(() => StartCoroutine(SetScrollBarValue(index)));
+                button.onClick.AddListener(() => StartCoroutine(SetScrollBarValue(index, false)));
                 buttonImages[i] = button.GetComponent<Image>();
             }
 
             IsEnabled = true;
-            StartCoroutine(SetScrollBarValue(CurrentPage));
+            StartCoroutine(SetScrollBarValue(CurrentPage, true));
             EnhancedTouchSupport.Enable();
         }
 
@@ -115,13 +118,21 @@ namespace MenuUi.Scripts.SwipeNavigation
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
             CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
-            StartCoroutine(SetScrollBarValue(CurrentPage));
+            StartCoroutine(SetScrollBarValue(CurrentPage, true));
             isSwipeMode = false;
         }
         private void Update()
         {
             UpdateInput();
             //UpdateButtonContent();
+        }
+        private void LateUpdate()
+        {
+            if (_firstFrame)
+            {
+                _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage]*(1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
+                _firstFrame = false;
+            }
         }
 
         /// <summary>
@@ -148,19 +159,19 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the window to scroll to.</param>
         /// <returns></returns>
-        public IEnumerator SetScrollBarValue(int index)
+        public IEnumerator SetScrollBarValue(int index, bool instant)
         {
             yield return new WaitForEndOfFrame();
 
             CurrentPage = index;
-
             if (scrollBar)
             {
                 if (!IsEnabled)
                     IsEnabled = true;
 
-                StartCoroutine(OnSwipeOneStep(CurrentPage));
-                //scrollBar.value = scrollPageValues[index];
+                if(!instant)StartCoroutine(OnSwipeOneStep(CurrentPage));
+                else scrollBar.value = scrollPageValues[index];
+
             }
         }
 
