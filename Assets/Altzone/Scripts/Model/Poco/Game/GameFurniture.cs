@@ -17,11 +17,13 @@ namespace Altzone.Scripts.Model.Poco.Game
         TwoXThree,
         TwoXFour,
         TwoXSix,
+        TwoXSeven,
         TwoXEight,
         ThreeXTwo,
         ThreeXThree,
         ThreeXSeven,
         ThreeXEight,
+        FourXTwo,
         SevenXThree
     }
 

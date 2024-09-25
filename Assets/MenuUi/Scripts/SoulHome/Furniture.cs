@@ -140,6 +140,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 return new Vector2Int(6, 2);
             }
+            else if (furnitureSize == FurnitureSize.TwoXSeven)
+            {
+                return new Vector2Int(7, 2);
+            }
             else if (furnitureSize == FurnitureSize.TwoXEight)
             {
                 return new Vector2Int(8, 2);
@@ -159,6 +163,10 @@ namespace MenuUI.Scripts.SoulHome
             else if (furnitureSize == FurnitureSize.ThreeXEight)
             {
                 return new Vector2Int(8, 3);
+            }
+            else if (furnitureSize == FurnitureSize.FourXTwo)
+            {
+                return new Vector2Int(2, 4);
             }
             else if (furnitureSize == FurnitureSize.SevenXThree)
             {
