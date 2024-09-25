@@ -357,11 +357,16 @@ public class ServerManager : MonoBehaviour
             }
         }));
 
+        yield return StartCoroutine(GetClanPlayers(members =>
+        {
+            clanData.Members = members;
+        }));
+
         // Saves clan data including its items.
         store.SaveClanData(clanData, null);
     }
 
-    public IEnumerator GetClanPlayers(Action<List<ServerPlayer>> callback)
+    public IEnumerator GetClanPlayers(Action<List<ClanMember>> callback)
     {
         if (Clan == null)
         {
@@ -374,9 +379,9 @@ public class ServerManager : MonoBehaviour
             {
                 if (members != null)
                 {
-                    foreach (ServerPlayer player in members)
+                    foreach (ClanMember player in members)
                     {
-                        Debug.LogWarning(player.name);
+                        //Debug.Log(player.Name);
                     }
                     callback(members);
                 }
@@ -505,7 +510,7 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator GetClanMembersFromServer(Action<List<ServerPlayer>> callback)
+    public IEnumerator GetClanMembersFromServer(Action<List<ClanMember>> callback)
     {
         /*if (Clan != null)
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
@@ -518,12 +523,12 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                List<ServerPlayer> members = new List<ServerPlayer>();
+                List<ClanMember> members = new List<ClanMember>();
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 JArray middleresult = result["data"]["Clan"]["Player"] as JArray;
                 foreach (var value in middleresult)
                 {
-                    members.Add(value.ToObject<ServerPlayer>());
+                    members.Add(new(value.ToObject<ServerPlayer>()));
                 }
 
                 // Saves clan data to DataStorage
