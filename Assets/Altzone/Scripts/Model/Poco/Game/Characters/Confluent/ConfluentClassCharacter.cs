@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class TricksterClassCharacter : BaseCharacter
+    public class ConfluentClassCharacter : BaseCharacter
     {
-        public override CharacterClassID ClassID => CharacterClassID.Trickster;
+
+
+        public override CharacterClassID ClassID => CharacterClassID.Confluent;
 
         //Enums should equal 16.
-        protected TricksterClassCharacter()
+        protected ConfluentClassCharacter()
         {
-            _attackStrength = ValueStrength.SemiWeak;
-            _resistanceStrength = ValueStrength.Weak;
+            _attackStrength = ValueStrength.Weak;
+            _resistanceStrength = ValueStrength.SemiWeak;
             _hpStrength = ValueStrength.Medium;
             _defenceStrength = ValueStrength.VeryStrong;
             InitilizeValues();
