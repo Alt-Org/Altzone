@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -38,6 +39,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private int _pageCount = 0;
         private Transform _characterImage;
 
+        private CharacterClassID _characterClassID;
+
+
         public void Start()
         {
             //Placeholder buttons, will be replaced by swiping at some point
@@ -48,6 +52,10 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         public void OnEnable()
         {
+            
+
+
+
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
             // DestroyFeatureButtons();
@@ -112,12 +120,20 @@ namespace MenuUi.Scripts.AvatarEditor
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = featureToChange;
             _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,255);
+            if(_characterClassID == CharacterClassID.Confluent){
+                _characterImage.GetChild((int)slot).GetChild(0).GetComponent<Image>().sprite = featureToChange;
+                _characterImage.GetChild((int)slot).GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255,255);
+            }
         }
         private void SetDefaultFeature(FeatureSlot slot)
         {
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().color = new Color(255, 255, 255,0);
             _characterImage.GetChild((int)slot).GetComponent<Image>().sprite = null;
+            if(_characterClassID == CharacterClassID.Confluent){
+                _characterImage.GetChild((int)slot).GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255,0);
+                _characterImage.GetChild((int)slot).GetChild(0).GetComponent<Image>().sprite = null;
+            }
         }
         public void LoadNextCategory()
         {
@@ -179,6 +195,10 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         public FeatureSlot GetCurrentlySelectedCategory(){
             return _currentlySelectedCategory;
+        }
+
+        public void SetCharacterClassID(CharacterClassID id){
+            _characterClassID = id;
         }
     }
 }

@@ -17,10 +17,11 @@ namespace MenuUi.Scripts.AvatarEditor{
             _buttons[1].onClick.AddListener(ScaleUpVertically);
             _buttons[2].onClick.AddListener(ScaleUpHorizontally);
             _buttons[3].onClick.AddListener(ScaleDownVertically);
-            _characterImage = _characterImageParent.GetChild(0);
+            
         }
         void OnEnable(){
             _bookBackground.enabled = false;
+            _characterImage = _characterImageParent.GetChild(0);
         }
         void OnDisable(){
             _bookBackground.enabled = true;

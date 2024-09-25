@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -13,6 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private List<Transform> _colorButtonPositions;
         [SerializeField]private Transform _characterImageParent;
         private Image _colorChangeTarget;
+        private CharacterClassID _characterClassID;
         public void OnEnable(){
             // _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(2).GetComponent<Image>();
             InstantiateColorButtons();
@@ -56,7 +58,13 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetColor(Color color){
             if(_colorChangeTarget != null){
                 _colorChangeTarget.color = color;
+                if(_characterClassID == CharacterClassID.Confluent){
+                    _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = color;
+                }
             }
+        }
+        public void SetCharacterClassID(CharacterClassID id){
+            _characterClassID = id;
         }
 
 

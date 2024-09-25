@@ -16,6 +16,7 @@ public class CharacterLoader : MonoBehaviour
     [SerializeField] private Image _divanImage;
     private string _divanObjectName = "divaani";
     PlayerData _playerData = null;
+    private CharacterClassID _characterClassID;
 
 
     private void OnEnable()
@@ -36,6 +37,7 @@ public class CharacterLoader : MonoBehaviour
     private AvatarInfo GetCharacterPrefabInfo_bkp(int prefabId)
     {
         CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
+        _characterClassID = characterClass;
 
         AvatarClassInfo classObject = null;
         foreach (AvatarClassInfo classInfo in _avatarClassInfoList)
@@ -78,6 +80,10 @@ public class CharacterLoader : MonoBehaviour
             Instantiate(character.characterImagePrefab, _characterImageParent);
             _divanImage.sprite = character.DivanImage;
         }
+    }
+
+    public CharacterClassID GetCharacterClassID(){
+        return _characterClassID;
     }
 }
 
