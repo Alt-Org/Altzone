@@ -103,10 +103,10 @@ namespace Battle.Scripts.Battle.Players
                 {
                     _battleDebugLogger.LogInfo("Change shield to index " + _currentShieldShapeIndex);
 
-                    GameObject _kilpipäätös = _kilpivalinnat[_currentShieldShapeIndex];
+                    GameObject _shieldChoice = _kilpivalinnat[_currentShieldShapeIndex];
 
-                    _shieldManager.SetShield(_kilpipäätös);
-                    _battleDebugLogger.LogInfo("Shield is set to choice " + _kilpipäätös);
+                    _shieldManager.SetShield(_shieldChoice);
+                    _battleDebugLogger.LogInfo("Shield is set to choice " + _shieldChoice);
                     _battleDebugLogger.LogInfo("Shield shape changed to " + _kilpivalinnat[_currentShieldShapeIndex]);
                 });
             }
