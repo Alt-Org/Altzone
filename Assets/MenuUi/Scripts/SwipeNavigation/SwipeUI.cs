@@ -159,7 +159,8 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (!IsEnabled)
                     IsEnabled = true;
 
-                scrollBar.value = scrollPageValues[index];
+                StartCoroutine(OnSwipeOneStep(CurrentPage));
+                //scrollBar.value = scrollPageValues[index];
             }
         }
 
