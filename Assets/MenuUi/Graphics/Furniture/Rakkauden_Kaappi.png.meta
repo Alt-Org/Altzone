@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a6f74e5435710c74da29a170bdf69a3b
+guid: 8612b78b2b29d8f46b908300e2a2c94d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
+  spritePixelsToUnits: 120
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 256
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,49 +160,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Rakkauden_Kaappi_0
-      rect:
-        serializedVersion: 2
-        x: 38
-        y: 310
-        width: 566
-        height: 834
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d154d555590172d42bb509160291c258
-      internalID: -714799274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Rakkauden_Kaappi_1
-      rect:
-        serializedVersion: 2
-        x: 808
-        y: 31
-        width: 509
-        height: 1087
-      alignment: 9
-      pivot: {x: 0.65, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 86ac6e05c8cb9164ba70d230c33b8623
-      internalID: -204380305
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -213,14 +171,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Rakkauden_Kaappi_0: -714799274
-      Rakkauden_Kaappi_1: -204380305
-      Rakkauden_Kaappi_2: 1822852351
-      Rakkauden_Kaappi_3: -328906271
-      Rakkauden_Kaappi_6: -67309712
-      Rakkauden_Kaappi_7: 1822695457
-      Rakkauden_Kaappi_8: 970063483
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
