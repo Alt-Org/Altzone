@@ -52,40 +52,72 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         public void OnEnable()
         {
-            
-
-
-
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
-            // DestroyFeatureButtons();
-            // InstantiateFeatureButtons();
         }
-        public void OnDisable(){
+        public void OnDisable()
+        {
             DestroyFeatureButtons();
         }
-        public void LoadNextPage()
+        private void LoadNextPage()
         {
-            if(_currentPageNumber < _pageCount-1){
+            if(_currentPageNumber < _pageCount-1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber++;
-                DestroyFeatureButtons();
-                InstantiateFeatureButtons();
-                animator.Play("PageFlip");
-                
+                StartCoroutine(PlayNextPageAnimation());      
             }
         }
-        public void LoadPreviousPage()
+        private IEnumerator PlayNextPageAnimation()
         {
-            if (_currentPageNumber > 0){
+            DestroyRightSideButtons();
+            InstantiateRightSideButtons();
+            animator.Play("PageFlip");
+            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            animator.SetTrigger("ResetToIdle");
+            
+            DestroyLeftSideButtons();
+            InstantiateLeftSideButtons();
+        }
+        private void LoadPreviousPage()
+        {
+            if (_currentPageNumber > 0 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber--;
-                DestroyFeatureButtons();
-                InstantiateFeatureButtons();
-                animator.Play("BackPageFlip");
+                StartCoroutine(PlayPreviousPageAnimation());
             }
+        }
+        private IEnumerator PlayPreviousPageAnimation()
+        {
+            DestroyLeftSideButtons();
+            InstantiateLeftSideButtons();
+            animator.Play("BackPageFlip");
+            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            animator.SetTrigger("ResetToIdle");
+            DestroyRightSideButtons();
+            InstantiateRightSideButtons();
         }
         private void InstantiateFeatureButtons()
         {
-            for (int i = 0; i < 8; i++)
+            InstantiateRightSideButtons();
+            InstantiateLeftSideButtons();
+        }
+        private void InstantiateRightSideButtons()
+        {
+            for (int i = 4; i < 8; i++)
+            {
+                if ((i + (8*_currentPageNumber) < _currentCategorySpritesPlaceholder.Count) || 
+                (i + (8*_currentPageNumber) == _currentCategorySpritesPlaceholder.Count && (_currentPageNumber != 0||i!=8)) )
+                {
+                    FeatureButton featureButton = Instantiate(_featureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
+                    featureButton._sprite = _currentCategorySpritesPlaceholder[i+ (8*_currentPageNumber)-1];
+                    featureButton._slot = _currentlySelectedCategory;
+                    featureButton.gameObject.GetComponent<Image>().sprite = featureButton._sprite;
+                    featureButton.gameObject.GetComponent<Button>().onClick.AddListener
+                    (delegate { FeatureClicked(featureButton._sprite, featureButton._slot+2); });
+                }
+            }
+        }
+        private void InstantiateLeftSideButtons()
+        {
+            for (int i = 0; i < 4; i++)
             {
                 if(i == 0 && _currentPageNumber == 0){
                     FeatureButton featureButton = Instantiate(_defaultFeatureButtonPrefab, _featureButtonPositions[i]).GetComponent<FeatureButton>();
@@ -107,9 +139,24 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void DestroyFeatureButtons()
         {
-            foreach(Transform pos in _featureButtonPositions){
-                if(pos.childCount > 0){
-                    foreach(Transform child in pos){
+            DestroyLeftSideButtons();
+            DestroyRightSideButtons();
+        }
+        private void DestroyLeftSideButtons()
+        {
+            for(int i = 0; i < 4; i++){
+                if(_featureButtonPositions[i].childCount > 0){
+                    foreach(Transform child in _featureButtonPositions[i]){
+                        Destroy(child.gameObject);
+                    }
+                }
+            }
+        }
+        private void DestroyRightSideButtons()
+        {
+            for(int i = 4; i < 8; i++){
+                if(_featureButtonPositions[i].childCount > 0){
+                    foreach(Transform child in _featureButtonPositions[i]){
                         Destroy(child.gameObject);
                     }
                 }
@@ -193,11 +240,13 @@ namespace MenuUi.Scripts.AvatarEditor
             DestroyFeatureButtons();
             InstantiateFeatureButtons();
         }
-        public FeatureSlot GetCurrentlySelectedCategory(){
+        public FeatureSlot GetCurrentlySelectedCategory()
+        {
             return _currentlySelectedCategory;
         }
 
-        public void SetCharacterClassID(CharacterClassID id){
+        public void SetCharacterClassID(CharacterClassID id)
+        {
             _characterClassID = id;
         }
     }
