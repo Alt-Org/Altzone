@@ -12,6 +12,8 @@ public class SettingsCarrier : MonoBehaviour
     private EsineDisplay ItemToBeVoted;
     private List<VotingObject> votingItemsList = new List<VotingObject>();
 
+    private TextSize _textSize;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -29,6 +31,8 @@ public class SettingsCarrier : MonoBehaviour
     {
         Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", Screen.currentResolution.refreshRate);
         mainMenuWindowIndex = 0;
+
+        _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 2);
     }
 
     public float masterVolume;
@@ -43,6 +47,14 @@ public class SettingsCarrier : MonoBehaviour
         music,
         sound
     }
+    public enum TextSize
+    {
+        None,
+        Small,
+        Medium,
+        Large
+    }
+
 
     // SentVolume combines masterVolume and another volume chosen by the sent type
     public float SentVolume(SoundType type)
@@ -56,6 +68,12 @@ public class SettingsCarrier : MonoBehaviour
             default: break;
         }
         return 1 * (otherVolume * masterVolume);
+    }
+
+    public void SetTextSize(TextSize size)
+    {
+        _textSize = size;
+        PlayerPrefs.SetInt("Textsize", (int)size);
     }
 
     // Determines which character stat window to load/show from character gallery
@@ -73,6 +91,9 @@ public class SettingsCarrier : MonoBehaviour
             }
         }
     }
+
+    public TextSize Textsize { get => _textSize; }
+
     public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
 
 
