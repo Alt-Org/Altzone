@@ -1497,7 +1497,7 @@ MonoBehaviour:
   _geometryRoot: {fileID: 4593924629702427175}
   _movementSpeed: 3
   _shieldActivationDistance: 1
-  _impactForce: -2
+  _impactForce: 0
   SeePlayerName: 
   _sparkleUpdateInterval: 0.5
   _timeSinceLastUpdate: 0
@@ -1746,13 +1746,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
+      propertyPath: _time
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
       propertyPath: _maxDistance
-      value: 1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
       propertyPath: _maxReflections
-      value: 1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
+      propertyPath: _collisionLayer.m_Bits
+      value: 1986880
       objectReference: {fileID: 0}
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
@@ -1871,6 +1881,21 @@ PrefabInstance:
         type: 3}
       propertyPath: _spriteList.Array.data[18]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6720243486287710769, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6720243486287710769, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6720243486287710769, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Battle.Scripts.Battle.Game;
 using Prg.Scripts.Common.PubSub;
+using System.Linq;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -84,6 +85,8 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
+        private BallHandler _ballHandler;
+
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS INTELLECTUALIZER] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
@@ -92,7 +95,8 @@ namespace Battle.Scripts.Battle.Players
         private void Start()
         {
             // Get important objects
-            _rb = Context.GetBallHandler.GetComponent<Rigidbody2D>();
+            _ballHandler = Context.GetBallHandler;
+            _rb = _ballHandler.GetComponent<Rigidbody2D>();
             _gridManager = Context.GetGridManager;
             _positionSprites = new();
             _trailSprites = new();
@@ -106,29 +110,11 @@ namespace Battle.Scripts.Battle.Players
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            PlayerActor actor = transform.parent.GetComponentInParent<PlayerActor>();
 
-            /* broken code pls fix
-            // Check if the playeractor is on the same team as the local player
-            foreach (IPlayerDriver driver in data.AllDrivers)
-            {
-                if(driver.PlayerActor == actor)
-                {
-                    if (driver.TeamNumber == data.LocalPlayer.TeamNumber)
-                    {
-                        _isOnLocalTeam = true;
-                        _spriteRotation = Quaternion.Euler(new Vector3(0f, 0f, driver.TeamNumber == PhotonBattle.TeamBetaValue ? 180f : 0f));
-                    }
-                    else
-                    {
-                        _isOnLocalTeam = false;
-                    }
+            _isOnLocalTeam = BattlePlayer.BattleTeam.TeamNumber == data.LocalPlayer.BattleTeam.TeamNumber;
 
-                    break;
-                }
-            }
-            */
         }
+
 
         private void ProjectilePredictionUpdate()
         {
@@ -150,16 +136,17 @@ namespace Battle.Scripts.Battle.Players
 
                 if (hit.collider != null)
                 {
+                    Debug.Log("Collision Happened");
                     Debug.DrawLine(hit.point, hit.point + hit.normal, Color.green);
 
                     UpdatePositionAndVelocity(hit);
 
-                    // Reduce distance by the distance traveled
                     distance -= hit.distance;
                     reflections++;
                 }
                 else
                 {
+                    Debug.Log("No Collision");
                     _worldPosition = _currentPosition + _currentVelocity.normalized * distance;
                     _pointPosition = _currentPosition;
                     _pointVelocity = _currentVelocity;
@@ -170,7 +157,7 @@ namespace Battle.Scripts.Battle.Players
 
                 float pointDistance = (_worldPosition - _pointPosition).magnitude;
 
-                _pointVelocity /= 50;
+                _pointVelocity /= SyncedFixedUpdateClock.UpdatesPerSecond;
 
                 int positionCount = (int)Mathf.Floor(pointDistance / _pointVelocity.magnitude / _pointStep);
 
@@ -195,25 +182,36 @@ namespace Battle.Scripts.Battle.Players
 
         private void UpdatePositionAndVelocity(RaycastHit2D hit)
         {
-            // Calculate the reflection
-            Vector2 reflectionDirection = Vector2.Reflect(_currentVelocity.normalized, hit.normal);
-            Debug.DrawLine(hit.point, hit.point + reflectionDirection, Color.blue);
+            /*
+            _pointPosition = _currentVelocity;
+            _pointVelocity = _currentPosition;
 
-            UpdateGridAndWorldPosition(hit.point);
+            Vector2 newdirection;
+            (_currentPosition, _, newdirection) = _ballHandler.CalculateCollision(_currentPosition, _currentVelocity, hit.normal);
 
-            _pointPosition = _currentPosition;
-            _pointVelocity = _currentVelocity;
+            Debug.DrawLine(hit.point, hit.point + newdirection, Color.blue);
+
 
             // Update currentPosition for next raycast
-            _currentPosition = (Vector2)_worldPosition + reflectionDirection.normalized * 0.1f;
-            _currentVelocity = reflectionDirection * _currentVelocity.magnitude;
+            _currentPosition += newdirection * 0.1f;
+            _currentVelocity = newdirection * _currentVelocity.magnitude;
+
+            */
+
+
+            // Calculate new direction based on collision normal
+            Vector2 newDirection = Vector2.Reflect(_currentVelocity.normalized, hit.normal);
+
+            // Update current position slightly past the collision point to avoid re-collision
+            _currentPosition = hit.point + newDirection * 0.1f;
+
+            // Update current velocity with the new direction while maintaining its magnitude
+            _currentVelocity = newDirection * _currentVelocity.magnitude;
+
+
         }
 
-        private void UpdateGridAndWorldPosition(Vector2 hitPosition)
-        {
-            _gridPosition = _gridManager.WorldPointToGridPosition(hitPosition);
-            _worldPosition = _gridManager.GridPositionToWorldPoint(_gridPosition);
-        }
+
 
         private void UpdatePredictionSprites(List<Vector3> positions)
         {
@@ -309,6 +307,7 @@ namespace Battle.Scripts.Battle.Players
             }
         }
 
+        // Update the lifespan of the trail sprites
         private void UpdateTrailLifespan()
         {
             Debug.Log("Updating Trail Lifespan ");
@@ -343,7 +342,7 @@ namespace Battle.Scripts.Battle.Players
             // Adjust the count of trail sprites by the number of deleted sprites
             _trailSpritesAmount = i2;
 
-#if false
+#if true
             string str = "TRAIL SPRITES LIST\n";
 
             for (int debugI = 0; debugI < _trailSprites.Count; debugI++)
