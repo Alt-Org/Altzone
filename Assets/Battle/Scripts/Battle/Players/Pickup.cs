@@ -104,7 +104,7 @@ namespace Battle.Scripts.Battle.Players
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                     PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
                 }
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
             }
             if (collision.gameObject.CompareTag("Diamond2"))
             {
@@ -116,7 +116,7 @@ namespace Battle.Scripts.Battle.Players
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                     PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
                 }
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
             }
             if (collision.gameObject.CompareTag("Diamond3"))
             {
@@ -128,7 +128,7 @@ namespace Battle.Scripts.Battle.Players
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                     PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
                 }
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
             }
             if (collision.gameObject.CompareTag("Diamond4"))
             {
@@ -140,7 +140,7 @@ namespace Battle.Scripts.Battle.Players
                     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                     PhotonNetwork.RaiseEvent(PickupEvent, content, raiseEventOptions, SendOptions.SendReliable);
                 }
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
             }
         }
 

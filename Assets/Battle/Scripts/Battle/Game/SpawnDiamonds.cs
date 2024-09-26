@@ -6,18 +6,14 @@ using Photon.Pun;
 using Battle.Scripts.Battle.Players;
 using Prg.Scripts.Common.PubSub;
 using Battle.Scripts.Battle;
+using Battle.Scripts.Battle.Game;
 
 internal class SpawnDiamonds : MonoBehaviour
 {
-    [SerializeField] Transform _spawnPoint;
-    [SerializeField] GameObject _followTarget;
-    [SerializeField] float _minSpawnTime;
-    [SerializeField] float _maxSpawnTime;
-    [SerializeField] List<GameObject> _diamondObjects;
+    [SerializeField] GameObject[] _diamondObjects;
     [SerializeField] float _diamondSpeed;
     [SerializeField] float _bottomBoundary;
     [SerializeField] float _topBoundary;
-    [SerializeField] int _maxChance;
 
     public int PlayerLimit = 4;
     public bool StartBool;
@@ -56,24 +52,13 @@ internal class SpawnDiamonds : MonoBehaviour
         _rotateDiamonds = data.LocalPlayer.BattleTeam.TeamNumber == BattleTeamNumber.TeamBeta;
     }
 
-    /*
-    private void Update()
-    {
-        // Spawn point following the ball position
-        if (_followTarget != null)
-        {
-            _spawnPoint.position = _followTarget.transform.position;
-        }
-    }
-    */
-
     private void GenerateDiamondSpawnList()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             _diamondSpawnList.Clear();
 
-            for (int i = 0; i < _diamondObjects.Count; i++)
+            for (int i = 0; i < _diamondObjects.Length; i++)
             {
                 // Calculate random velocity
                 Vector2 randomDirection = Random.insideUnitCircle.normalized;
@@ -117,8 +102,6 @@ internal class SpawnDiamonds : MonoBehaviour
 
     private void SpawnDiamond(Vector3 spawnPoint)
     {
-        int chance = Random.Range(0, _maxChance);
-
         if (StartBool)
         {
             if (GameObject.FindGameObjectsWithTag("PlayerDriverPhoton").Length >= PlayerLimit)
@@ -130,7 +113,8 @@ internal class SpawnDiamonds : MonoBehaviour
         if (!StartBool)
         {
             Vector3 spawnPos = new Vector3(spawnPoint.x, spawnPoint.y, Random.Range(-spawnPoint.z / 2, spawnPoint.z / 2));
-
+            SyncedFixedUpdateClock syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            int diamondDisappearUpdateNumber = syncedFixedUpdateClock.UpdateCount + syncedFixedUpdateClock.ToUpdates(10);
             foreach (DiamondSpawnArgs diamondSpawnArgs in _diamondSpawnList)
             {
                 GameObject diamond = Instantiate(_diamondObjects[diamondSpawnArgs.PrefabIndex], spawnPos, Quaternion.Euler(0f, 0f, _rotateDiamonds ? 180f : 0f));
@@ -143,11 +127,8 @@ internal class SpawnDiamonds : MonoBehaviour
 
                 // Set velocity
                 rb.velocity = diamondSpawnArgs.Velocity;
-
-                Collider2D diamondCollider = diamond.GetComponent<Collider2D>();
-
                 // Add DiamondMovement script to handle stopping at bottom boundary
-                diamond.AddComponent<DiamondMovement>().Initialize(rb, _bottomBoundary, _topBoundary, isTopSide);
+                diamond.GetComponent<Diamond>().InitInstance(rb, _bottomBoundary, _topBoundary, isTopSide, diamondDisappearUpdateNumber);
             }
 
             GenerateDiamondSpawnList();
