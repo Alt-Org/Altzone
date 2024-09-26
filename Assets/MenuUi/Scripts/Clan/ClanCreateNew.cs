@@ -18,8 +18,17 @@ public class ClanCreateNew : MonoBehaviour
         Swedish,
         English
     }
+    public enum Goals
+    {
+        None,
+        Fiilistely,
+        Grindaus,
+        Intohimoisuus,
+        Keraily
+
+    }
     //List
-    [SerializeField] private List <string> _valuesList;
+    [SerializeField] private List<string> _valuesList;
 
     //GameObject
     [SerializeField] private GameObject _valuePrefab;
@@ -34,22 +43,26 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanMembers;
     [SerializeField] private TMP_InputField _clanPassword;
 
-   //Toggles
+    //Toggles
 
-   [SerializeField] private Toggle _openClanButton;
+    [SerializeField] private Toggle _openClanButton;
 
-   //Buttons
+    //Warnings
 
-   [SerializeField] private Button _returnToMainClanViewButton;
-   [SerializeField] private Button _clanValues;
-   [SerializeField] private Button _buttonLogo;
+    [SerializeField] private Image _ClanNameWarningImage;
 
-   // Dropdowns Or TMP Dropdowns
+    //Buttons
 
-   [SerializeField] private TMP_Dropdown _ClanLanguageDropdown;
-   [SerializeField] private TMP_Dropdown _ClanGoals;
+    [SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private Button _clanValues;
+    [SerializeField] private Button _buttonLogo;
 
-   [SerializeField] protected WindowDef _naviTarget;
+    // Dropdowns Or TMP Dropdowns
+
+    [SerializeField] private TMP_Dropdown _ClanLanguageDropdown;
+    [SerializeField] private TMP_Dropdown _ClanGoals;
+
+    [SerializeField] protected WindowDef _naviTarget;
 
     private void Reset()
     {
@@ -60,8 +73,9 @@ public class ClanCreateNew : MonoBehaviour
         _openClanButton.isOn = false;
 
 
-       SetLanguageDropdown();
-       SetValuesPanel();
+        SetLanguageDropdown();
+        SetValuesPanel();
+        SetGoalsDropDown();
     }
     private void OnEnable()
     {
@@ -69,8 +83,8 @@ public class ClanCreateNew : MonoBehaviour
     }
     private void SetLanguageDropdown()
     {
-     _ClanLanguageDropdown.options.Clear();
-     foreach(Language language in Enum.GetValues(typeof (Language) ) )
+        _ClanLanguageDropdown.options.Clear();
+        foreach (Language language in Enum.GetValues(typeof(Language)))
         {
             String Text;
 
@@ -96,6 +110,37 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
+    private void SetGoalsDropDown()
+    {
+        _ClanGoals.options.Clear();
+        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+            {
+          String Text;
+
+            switch (goal)
+            {
+                case Goals.None:
+                    Text = "None";
+                    break;
+                case Goals.Fiilistely:
+                    Text = "Fiilistely";
+                    break;
+                case Goals.Grindaus:
+                    Text = "Grindaus";
+                    break;
+                case Goals.Intohimoisuus:
+                    Text = "Intohimoisuus";
+                    break;
+                case Goals.Keraily:
+                    Text = "Keraily";
+                    break;
+                default:
+                    Text = "";
+                    break;
+            }
+            _ClanGoals.options.Add(new TMP_Dropdown.OptionData(Text));
+       }
+    }
     private void SetValuesPanel()
     {
         for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
@@ -117,11 +162,15 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanButton.isOn;
 
         Language language = (Language)_ClanLanguageDropdown.value;
+        Goals goals = (Goals)_ClanGoals.value;
         String Phrase = _clanPhrase.text;
-        Debug.Log($"language: {language}, Phrase: {Phrase} ");
+        Debug.Log($"language: {language}, Phrase: {Phrase}, Goals: {goals} ");
 
         if (clanName == string.Empty /*|| clanTag == string.Empty || _gameCoinsInputField.text == string.Empty*/)
+        {
+            _ClanNameWarningImage.gameObject.SetActive( true );
             return;
+        }
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
         {
@@ -132,7 +181,7 @@ public class ClanCreateNew : MonoBehaviour
 
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {true}", _naviTarget);
             var windowManager = WindowManager.Get();
-            windowManager.PopCurrentWindow();
+            //windowManager.PopCurrentWindow();
             // Check if navigation target window is already in window stack and we area actually going back to it via button.
             var windowCount = windowManager.WindowCount;
             if (windowCount > 1)
