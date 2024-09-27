@@ -97,7 +97,7 @@ namespace Battle.Scripts.Battle.Game
                 Debug.Log($"team {teamNumber} pos {playerPos} {player.GetDebugLabel()}");
                 _countingDown = true;
 
-                Context.GetPlayerManager.AnalyticsReportPlayerCharacterWinOrLoss((BattleTeamNumber)_goalNumber switch
+                Context.GetPlayerManager.OnBattleEnd((BattleTeamNumber)_goalNumber switch
                 {
                     BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
                     BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,

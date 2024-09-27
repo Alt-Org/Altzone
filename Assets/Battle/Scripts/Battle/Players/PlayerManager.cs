@@ -4,6 +4,10 @@ using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.GA;
 using Prg.Scripts.Common.PubSub;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -70,7 +74,7 @@ namespace Battle.Scripts.Battle.Players
         {
             int roomPlayerCount = PhotonBattle.GetPlayerCountForRoom();
             int realPlayerCount = PhotonBattle.CountRealPlayers();
-            Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount));
+            _battleDebugLogger.LogInfo("Info (room player count: {0}, real player count: {1})", roomPlayerCount, realPlayerCount);
             if (realPlayerCount < roomPlayerCount) return;
             int readyPeers = 0;
             foreach (BattlePlayer player in _allPlayers)
@@ -80,7 +84,7 @@ namespace Battle.Scripts.Battle.Players
                     readyPeers += 1;
                 }
             }
-            Debug.Log(string.Format(DEBUG_LOG_NAME + "Info (ready peers: {0})", readyPeers));
+            _battleDebugLogger.LogInfo("Info (ready peers: {0})", readyPeers);
 
             if (readyPeers == realPlayerCount)
             {
@@ -108,20 +112,31 @@ namespace Battle.Scripts.Battle.Players
             {
                 player.PlayerDriver.MovementEnabled = value;
             }
-            Debug.Log(string.Format(DEBUG_LOG_NAME_AND_TIME + "Player movement set to {1}", _syncedFixedUpdateClock.UpdateCount, value));
+            _battleDebugLogger.LogInfo("Player movement set to {1}", value);
+        }
+
+        public void OnBattleEnd(BattleTeamNumber winningTeam)
+        {
+            bool win = _localPlayer.BattleTeam.TeamNumber == winningTeam;
+
+            if (win)
+            {
+                DataStore dataStore = Storefront.Get();
+                PlayerData playerData = null;
+                ClanData clanData = null;
+                dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => playerData = data);
+                dataStore.GetClanData(playerData.ClanId, data => clanData = data);
+
+                foreach (ClanMember member in clanData.Members) if (member.Id == playerData.Id) { member.AddWin(); break; }
+            }
+
+            AnalyticsReportPlayerCharacterWinOrLoss(win);
         }
 
         public void AnalyticsReportPlayerCharacterSelection()
         {
             string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.BattleCharacter.CharacterID);
             GameAnalyticsManager.Instance.CharacterSelection(name);
-        }
-
-        public void AnalyticsReportPlayerCharacterWinOrLoss(BattleTeamNumber winningTeam)
-        {
-            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.BattleCharacter.CharacterID);
-            if (_localPlayer.BattleTeam.TeamNumber == winningTeam) GameAnalyticsManager.Instance.CharacterWin(name);
-            else GameAnalyticsManager.Instance.CharacterLoss(name);
         }
 
         #endregion Public - Methods
@@ -141,7 +156,8 @@ namespace Battle.Scripts.Battle.Players
         private readonly List<BattlePlayer> _allPlayers = new();
 
         // Teams
-        private readonly IReadOnlyList<BattleTeam> _battleTeams = new List<BattleTeam> {
+        private readonly IReadOnlyList<BattleTeam> _battleTeams = new List<BattleTeam>
+        {
             new(BattleTeamNumber.TeamAlpha),
             new (BattleTeamNumber.TeamBeta)
         };
@@ -153,9 +169,7 @@ namespace Battle.Scripts.Battle.Players
         #endregion Private - Fields
 
         #region DEBUG
-        private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER MANAGER] ";
-        private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
-        private SyncedFixedUpdateClock _syncedFixedUpdateClock; // only needed for logging time
+        private BattleDebugLogger _battleDebugLogger;
         #endregion DEBUG
 
         #region Private - Methods
@@ -168,7 +182,7 @@ namespace Battle.Scripts.Battle.Players
             teamBeta.SetOtherTeam(teamAlpha);
 
             // debug
-            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
+            _battleDebugLogger = new(this);
         }
 
         private void SetLocalPlayer()
@@ -205,6 +219,13 @@ namespace Battle.Scripts.Battle.Players
                 BattleTeamNumber.TeamBeta => _battleTeams[TeamBetaIndex],
                 _ => null,
             };
+        }
+
+        private void AnalyticsReportPlayerCharacterWinOrLoss(bool win)
+        {
+            string name = CustomCharacter.GetCharacterClassAndName(_localPlayer.BattleCharacter.CharacterID);
+            if (win) GameAnalyticsManager.Instance.CharacterWin(name);
+            else GameAnalyticsManager.Instance.CharacterLoss(name);
         }
 
         #endregion Private - Methods
