@@ -6324,6 +6324,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 5756210812238161094}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -6339,9 +6344,19 @@ PrefabInstance:
       objectReference: {fileID: 598841265}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
+      propertyPath: _background
+      value: 
+      objectReference: {fileID: 7732533816888444517}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
       propertyPath: BetaDiamonds
       value: 
       objectReference: {fileID: 577966835}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: _gridOverlay
+      value: 
+      objectReference: {fileID: 598841265}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
       propertyPath: AlphaDiamonds
@@ -6354,9 +6369,24 @@ PrefabInstance:
       objectReference: {fileID: 1288042208}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
+      propertyPath: _betaDiamonds
+      value: 
+      objectReference: {fileID: 577966835}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
       propertyPath: AlphaDiamonds2
       value: 
       objectReference: {fileID: 616148396}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: _alphaDiamonds
+      value: 
+      objectReference: {fileID: 740033387}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: _betaDiamonds2
+      value: 
+      objectReference: {fileID: 1288042208}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
       propertyPath: DiamondCounters
@@ -6369,6 +6399,11 @@ PrefabInstance:
       objectReference: {fileID: 1288042208}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
+      propertyPath: _alphaDiamonds2
+      value: 
+      objectReference: {fileID: 616148396}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
       propertyPath: DiamondCounters2
       value: 
       objectReference: {fileID: 628678170}
@@ -6379,9 +6414,19 @@ PrefabInstance:
       objectReference: {fileID: 616148396}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
+      propertyPath: _diamondCounters
+      value: 
+      objectReference: {fileID: 1563842759}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
       propertyPath: BetaDiamondsCount
       value: 
       objectReference: {fileID: 233460029}
+    - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
+        type: 3}
+      propertyPath: _diamondCounters2
+      value: 
+      objectReference: {fileID: 628678170}
     - target: {fileID: 637648641814191721, guid: beeca0598aa323045953bf66df53ccbf,
         type: 3}
       propertyPath: AlphaDiamondsCount
@@ -6457,6 +6502,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beeca0598aa323045953bf66df53ccbf, type: 3}
+--- !u!4 &5756210812238161094 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5756210811780550961, guid: beeca0598aa323045953bf66df53ccbf,
+    type: 3}
+  m_PrefabInstance: {fileID: 5756210812238161093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7192120351933927697
 PrefabInstance:
   m_ObjectHideFlags: 0
