@@ -112,7 +112,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 player.PlayerDriver.MovementEnabled = value;
             }
-            _battleDebugLogger.LogInfo("Player movement set to {1}", value);
+            _battleDebugLogger.LogInfo("Player movement set to {0}", value);
         }
 
         public void OnBattleEnd(BattleTeamNumber winningTeam)
