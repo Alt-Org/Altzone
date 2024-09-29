@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class ObedientClassCharacter : BaseCharacter
+    public abstract class ObedientClassCharacter : BaseCharacter
     {
 
 

@@ -146,6 +146,16 @@ namespace Altzone.Scripts.Model
             };
         }
 
+        internal static List<CustomCharacter> CreateCustomCharacters(List<BaseCharacter> characters)
+        {
+            List<CustomCharacter> list = new();
+            foreach (BaseCharacter character in characters)
+            {
+                list.Add(new(character));
+            }
+            return list;
+        }
+
         /// <summary>
         /// Game Furniture is based from data in Google Sheets.<br />
         /// https://docs.google.com/spreadsheets/d/1GGh2WWjZDs98yrxd2sU2STUX2AyvwqZGItSqwWWpCm4/edit#gid=0

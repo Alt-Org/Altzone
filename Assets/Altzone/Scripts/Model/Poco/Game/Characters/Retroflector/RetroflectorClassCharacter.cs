@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class RetroflectorClassCharacter : BaseCharacter
+    public abstract class RetroflectorClassCharacter : BaseCharacter
     {
 
 

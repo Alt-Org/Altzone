@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class IntellectualizerClassCharacter : BaseCharacter
+    public abstract class IntellectualizerClassCharacter : BaseCharacter
     {
 
 

@@ -30,13 +30,15 @@ namespace Altzone.Scripts.Model
 
     internal class LocalModels
     {
-        const int STORAGEVERSION = 4;
+        const int STORAGEVERSION = 5;
 
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
         private readonly StorageData _storageData;
+
+        private static List<BaseCharacter> _characters;
 
         private bool _saving = false;
 
@@ -104,6 +106,7 @@ namespace Altzone.Scripts.Model
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
             Debug.Log($"StorageFilename {_storagePath}");
+            _characters = new CharacterStorage().CharacterList;
             _storageData = File.Exists(_storagePath)
                 ? LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
@@ -319,8 +322,8 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
-            storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
-            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters());
+            //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
+            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(_characters));
             storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;

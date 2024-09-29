@@ -16,6 +16,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string CharacterClassAndName => GetCharacterClassAndName(Id);
         public CharacterClassID CharacterClassID => GetClassID(Id);
         public int InsideCharacterID => GetInsideCharacterID(Id);
+
+        public BaseCharacter CharacterBase { get => _characterBase;}
+
+        private BaseCharacter _characterBase;
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime.
         /// </summary>
@@ -40,6 +44,19 @@ namespace Altzone.Scripts.Model.Poco.Game
             Resistance = resistance;
             Attack = attack;
             Defence = defence;
+        }
+
+        public CustomCharacter(BaseCharacter character)
+        {
+            Assert.AreNotEqual(CharacterID.None, character.Id);
+            _characterBase = character;
+            Id = character.Id;
+            Name = GetCharacterName(character.Id);
+            Hp = character.Hp;
+            Speed = character.Speed;
+            Resistance = character.Resistance;
+            Attack = character.Attack;
+            Defence = character.Defence;
         }
 
         public override string ToString()

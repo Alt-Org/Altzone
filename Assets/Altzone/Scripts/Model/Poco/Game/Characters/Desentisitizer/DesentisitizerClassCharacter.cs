@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class DesentisitizerClassCharacter : BaseCharacter
+    public abstract class DesentisitizerClassCharacter : BaseCharacter
     {
 
 

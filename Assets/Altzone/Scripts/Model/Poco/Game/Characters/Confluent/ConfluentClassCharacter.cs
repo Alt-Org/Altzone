@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class ConfluentClassCharacter : BaseCharacter
+    public abstract class ConfluentClassCharacter : BaseCharacter
     {
 
 

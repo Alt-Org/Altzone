@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public class TricksterClassCharacter : BaseCharacter
+    public abstract class TricksterClassCharacter : BaseCharacter
     {
         public override CharacterClassID ClassID => CharacterClassID.Trickster;
 
