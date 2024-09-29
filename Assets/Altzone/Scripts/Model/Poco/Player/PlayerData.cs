@@ -45,21 +45,21 @@ namespace Altzone.Scripts.Model.Poco.Player
         public BattleCharacter BattleCharacter => BattleCharacters.FirstOrDefault(x => x.CharacterID == (CharacterID)SelectedCharacterIds[0]);
         public ReadOnlyCollection<BattleCharacter> BattleCharacters { get; private set; }
 
-        public ReadOnlyCollection<BattleCharacter> CurrentBattleCharacters
+        public ReadOnlyCollection<CustomCharacter> CurrentBattleCharacters
         {
             get
             {
-                List<BattleCharacter> list = new();
+                List<CustomCharacter> list = new();
                 foreach (var id in SelectedCharacterIds)
                 {
                     if (id == 0) continue;
-                    list.Add(BattleCharacters.FirstOrDefault(x => x.CharacterID == (CharacterID)id));
+                    list.Add(CustomCharacters.FirstOrDefault(x => x.Id == (CharacterID)id));
                 }
                 while(list.Count < 5)
                 {
-                    list.Add(BattleCharacter.CreateEmpty());
+                    list.Add(CustomCharacter.CreateEmpty());
                 }
-                return new ReadOnlyCollection<BattleCharacter>(list);
+                return new ReadOnlyCollection<CustomCharacter>(list);
             }
 
         }
