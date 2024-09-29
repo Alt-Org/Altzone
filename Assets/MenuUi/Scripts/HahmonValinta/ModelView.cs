@@ -77,7 +77,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        public void SetCharacters(List<BattleCharacter> characters, int[] currentCharacterId)
+        public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
             CurrentCharacterId = (CharacterID)currentCharacterId[0];
             Transform content = transform.Find("Content");
@@ -88,11 +88,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 GameObject slot = Instantiate(_characterSlotprefab, content);
 
-                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.CharacterID);
+                GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
 
                 if (info == null) continue;
 
-                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.CharacterID, this);
+                slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
@@ -113,7 +113,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     characterSlot.gameObject.SetActive(true);
 
                     // Check if the character is currently selected
-                    if ((CharacterID)currentCharacterId[0] == character.CharacterID)
+                    if ((CharacterID)currentCharacterId[0] == character.Id)
                     {
                         // Set the character in the first slot of the horizontal character slot
                         if (_CurSelectedCharacterSlot.Length > 0)
@@ -133,7 +133,7 @@ namespace MenuUi.Scripts.CharacterGallery
                             if (newParent == curSlot.transform)
                             {
                                 // Set characterID, because it has been moved to the topslot 
-                                CurrentCharacterId = character.CharacterID;
+                                CurrentCharacterId = character.Id;
                             }
                         }
                     };

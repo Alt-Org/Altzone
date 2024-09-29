@@ -63,6 +63,7 @@ public class CharacterStatWindow : MonoBehaviour
 
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
+    //private BaseCharacter _currentCharacter;
     private PlayerData _playerData;
     private CharacterID _characterId;
 
@@ -612,7 +613,7 @@ public class CharacterStatWindow : MonoBehaviour
             DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
             HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
-            DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
+            //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
             DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
             DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
             DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
