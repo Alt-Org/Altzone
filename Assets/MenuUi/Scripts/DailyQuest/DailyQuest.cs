@@ -40,7 +40,7 @@ public class DailyQuest : MonoBehaviour
             }
             else
             {
-                Debug.Log("Olet valinnut jo tehtävän");
+                Debug.Log("You have already chosen a Mission!");
             }
 
         });
