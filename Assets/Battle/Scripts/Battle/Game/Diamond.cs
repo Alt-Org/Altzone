@@ -1,7 +1,4 @@
-using System.Collections;
-
 using UnityEngine;
-using Photon.Pun;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -51,7 +48,14 @@ namespace Battle.Scripts.Battle.Game
             if (_rb != null)
             {
                 Vector2 reflectVelocity = Vector2.Reflect(_rb.velocity, collision.contacts[0].normal);
+                float reflectionAngle = Vector2.Angle(_rb.velocity.normalized, collision.contacts[0].normal.normalized);
                 _rb.velocity = reflectVelocity;
+                Debug.Log("[Diamond] Reflection angle: " + reflectionAngle);
+                if (reflectionAngle >= 165f)
+                {
+                    Debug.Log("[Diamond] Added more vertical velocity due to reflection angle");
+                    _rb.velocity = transform.position.y > 0 ? new Vector2(reflectVelocity.x, reflectVelocity.y - 1) : new Vector2(reflectVelocity.x, reflectVelocity.y + 1);
+                }
             }
         }
 
