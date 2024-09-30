@@ -8,6 +8,17 @@ namespace Battle.Scripts.Battle.Game
     {
         // UiGridRenderer laittaa tämän koodin päälle kun grid on luotu, jotta sitä voi kääntää tämän koodin startissa
 
+        // Serialized Fields
+        [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _background;
+        [SerializeField] private Transform _gridOverlay;
+        [SerializeField] private Transform _diamondCounters;
+        [SerializeField] private RectTransform _betaDiamonds;
+        [SerializeField] private RectTransform _alphaDiamonds;
+        [SerializeField] private Transform _diamondCounters2;
+        [SerializeField] private RectTransform _betaDiamonds2;
+        [SerializeField] private RectTransform _alphaDiamonds2;
+
         //Private methods
         private void Start()
         {
@@ -38,14 +49,5 @@ namespace Battle.Scripts.Battle.Game
 
         // Private fields
         private int _teamNumber;
-        [SerializeField] private Transform _camera;
-        [SerializeField] private Transform _background;
-        [SerializeField] private Transform _gridOverlay;
-        [SerializeField] private Transform _diamondCounters;
-        [SerializeField] private RectTransform _betaDiamonds;
-        [SerializeField] private RectTransform _alphaDiamonds;
-        [SerializeField] private Transform _diamondCounters2;
-        [SerializeField] private RectTransform _betaDiamonds2;
-        [SerializeField] private RectTransform _alphaDiamonds2;
     }
 }
