@@ -19,6 +19,9 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private RectTransform _betaDiamonds2;
         [SerializeField] private RectTransform _alphaDiamonds2;
 
+        // Private fields
+        private int _teamNumber;
+
         //Private methods
         private void Start()
         {
@@ -46,8 +49,5 @@ namespace Battle.Scripts.Battle.Game
             _betaDiamonds.anchoredPosition = new Vector2(-_betaDiamonds2.anchoredPosition.x, -_betaDiamonds2.anchoredPosition.y);
             _betaDiamonds2.anchoredPosition = new Vector2(-_alphaDiamonds.anchoredPosition.x, -_alphaDiamonds.anchoredPosition.y);
         }
-
-        // Private fields
-        private int _teamNumber;
     }
 }
