@@ -1747,7 +1747,12 @@ PrefabInstance:
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
       propertyPath: _time
-      value: 100
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
+        type: 3}
+      propertyPath: _pointStep
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
@@ -1757,7 +1762,7 @@ PrefabInstance:
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
       propertyPath: _maxReflections
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6095113972987146360, guid: 25b7836825e155e4fa7f01ec9b0bf48c,
         type: 3}
