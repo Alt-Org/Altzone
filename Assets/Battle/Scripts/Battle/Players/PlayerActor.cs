@@ -99,7 +99,7 @@ namespace Battle.Scripts.Battle.Players
             float multiplier = Mathf.Round(angle / _angleLimit);
             float newAngle = _angleLimit * multiplier;
             //_geometryRoot.eulerAngles = new Vector3(0, 0, newAngle);
-            _battlePlayer.PlayerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle + 180f);
+            _battlePlayer.PlayerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _squareFlashSprite.transform.eulerAngles = new Vector3(0, 0, newAngle);
