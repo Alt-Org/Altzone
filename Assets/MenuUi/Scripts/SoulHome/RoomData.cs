@@ -317,7 +317,7 @@ namespace MenuUI.Scripts.SoulHome
                         bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo, backupHit, useBackup);
                         if (check)
                         {
-                            MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, hover);
+                            MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, false);
                             return true;
                         }
                     }
