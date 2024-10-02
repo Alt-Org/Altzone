@@ -120,7 +120,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (startRow == 0)
                     {
-                        if (startRow < 0 || endColumn >= _slotColumns) return false;
+                        if (column < 0 || endColumn >= _slotColumns) return false;
                     }
                     else return false;
                 }
@@ -129,18 +129,18 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (column == 0 || endColumn == _slotColumns -1)
                     {
-                        if (startRow < 0 || endColumn >= _slotColumns) return false;
+                        if (startRow < 0 || row >= _slotRows) return false;
                     }
                     else return false;
                 }
             }
 
-                for (int i = startRow; i <= row; i++)
+            for (int i = startRow; i <= row; i++)
             {
                 for (int j = column; j <= endColumn; j++)
                 {
                     if (_furniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
-                        && _furniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != furniture) return false;
+                        && !_furniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture)) return false;
                 }
             }
             return true;
@@ -244,8 +244,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
 
-            Instantiate(_furnitureRefrence.GetSoulHomeFurnitureObject(furniture.Name), _furniturePoints.GetChild(row).GetChild(column));
-            GameObject furnitureObject = _furniturePoints.GetChild(row).GetChild(column).GetChild(0).gameObject;
+            GameObject furnitureObject = Instantiate(_furnitureRefrence.GetSoulHomeFurnitureObject(furniture.Name), _furniturePoints.GetChild(row).GetChild(column));
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(column, row);
             furnitureObject.GetComponent<FurnitureHandling>().Slot = _furniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
