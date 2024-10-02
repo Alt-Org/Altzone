@@ -185,6 +185,10 @@ namespace MenuUI.Scripts.SoulHome {
                     roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
                 }
                 roomObject.GetComponent<RoomData>().InitializeRoom(room,_soulHomeController, _towerCamera);
+                if (i == 0)
+                {
+                    _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();
+                }
                 i++;
             }
             SetSoulhomeHeight();
