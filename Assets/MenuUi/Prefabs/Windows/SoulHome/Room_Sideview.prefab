@@ -103,6 +103,8 @@ MonoBehaviour:
   _floorAnchorPosition: 1
   _furnitureSlotPrefab: {fileID: 1746976041712915479, guid: 52a494fde11e9d646aaf497a4da6fc89,
     type: 3}
+  _furnitureRefrence: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142, type: 2}
+  _furniturePoints: {fileID: 5491642917476491894}
 --- !u!1 &3199772665682332844
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +550,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5491642917476491894}
-  - component: {fileID: 4958877339111107357}
   m_Layer: 0
   m_Name: FurniturePoints
   m_TagString: Untagged
@@ -571,37 +572,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4562328694243148845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4958877339111107357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5426233948602993049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4684af46b5554cc4d9901da51b694533, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  standard: {fileID: 1203496312397654559, guid: 01165e16e7cbaa14d8b7ebd5cac5f90f,
-    type: 3}
-  shortWide: {fileID: 4385222394586765745, guid: 7da291f186ebb014abdbd5f8b5907b58,
-    type: 3}
-  _furnitureList:
-  - {fileID: 7560384329901659850, guid: e696ad26ec04e3944bb4bffd76155cae, type: 3}
-  - {fileID: 7560384329901659850, guid: 45f30829ef2b91f4f9affd300653f9ef, type: 3}
-  - {fileID: 7560384329901659850, guid: 3f91368a7ccf0494ebfcc06aded8a7fa, type: 3}
-  - {fileID: 7560384329901659850, guid: 0caae0fa5fc083041a00d97dfdbbc3e3, type: 3}
-  - {fileID: 7560384329901659850, guid: 760dca3b375b9984f85be7818b1a953d, type: 3}
-  - {fileID: 7560384329901659850, guid: 30c0269c42b77f44ca4ddb302f9fe64e, type: 3}
-  - {fileID: 7560384329901659850, guid: eaac4359ab01a46419b8c4494c21ac18, type: 3}
-  - {fileID: 7560384329901659850, guid: f1318433f3639df45946250e8b8a5cbe, type: 3}
-  - {fileID: 7560384329901659850, guid: de0bfe9ca76f4cb48a39ebbc56207632, type: 3}
-  - {fileID: 7560384329901659850, guid: 86f9641e0a09c6046b0886aedd4429da, type: 3}
-  - {fileID: 7560384329901659850, guid: 06b59e30b7b379f4a8f3fe6a634d4663, type: 3}
-  - {fileID: 7560384329901659850, guid: 2745658a8ef7f1e4585ee8bad0b866c8, type: 3}
-  - {fileID: 7560384329901659850, guid: 398d095072dda4e4ab5880ab941114d2, type: 3}
-  - {fileID: 7560384329901659850, guid: c7a53ae787dd80f43b14574b8f9faa4b, type: 3}
 --- !u!1 &5905566968938783653
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +12,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _traySlotObject;
         [SerializeField]
-        private FurnitureTrayRefrence _furnitureRefrence;
+        private StorageFurnitureReference _furnitureRefrence;
         [SerializeField]
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();
@@ -53,7 +54,7 @@ namespace MenuUI.Scripts.SoulHome
 
             foreach (FurnitureListObject listObject in list.Get())
             {
-                GameObject furnitureObject = _furnitureRefrence.GetFurniture(listObject.Name);
+                GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
                 if (furnitureObject == null) return;
 
                 if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
@@ -75,7 +76,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (furniture == null) return;
 
-            GameObject furnitureObject = _furnitureRefrence.GetFurniture(furniture.Name);
+            GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furniture.Name);
             if (furnitureObject == null) return;
 
             _furnitureList.Add(furniture);
@@ -143,7 +144,7 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         if (furnitureInList.Position.Equals(new(-1, -1)))
                         {
-                            GameObject furnitureObject = _furnitureRefrence.GetFurniture(furnitureInList.Name);
+                            GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furnitureInList.Name);
                             if (furnitureObject == null) return null;
                             GameObject newObject = Instantiate(furnitureObject, furnitureSlot.transform);
                             newObject.GetComponent<TrayFurniture>().Furniture = furnitureInList;
