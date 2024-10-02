@@ -16,19 +16,29 @@ namespace MenuUI.Scripts
 
         private IEnumerator _runningCoroutine = null;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            if (_popup == null) _popup = gameObject;
-        }
-
         void OnDisable()
         {
             _popup.SetActive(false);
         }
 
+        public void Initialize()
+        {
+            if (_popup is UnityEngine.Object obj)
+            {
+                if (!obj)
+                {
+                    _popup = gameObject;
+                }
+            }
+            else
+            {
+                if (_popup == null) _popup = gameObject;
+            }
+        }
+
         public void ActivatePopUp(string popupText)
         {
+            Initialize();
             _popup.SetActive(true);
 
             Color tempColour = _popup.GetComponent<Image>().color;
