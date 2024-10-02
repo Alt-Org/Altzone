@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,17 @@ using UnityEngine.UI;
 
 public class ClanCreateNew : MonoBehaviour
 {
+
+    public enum ClanAge
+    {
+       None,
+       AgeTeenagers,
+       AgeToddlers,
+       AgeAdults,
+       AgeAllAges
+    }
+
+
     public enum Language
     {
         None,
@@ -44,12 +56,16 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanPassword;
 
     //Toggles
-
+    [SerializeField] private Toggle _AgeTeinit;
+    [SerializeField] private Toggle _AgeTaaperot;
+    [SerializeField] private Toggle _AgeAikuiset;
+    [SerializeField] private Toggle _AgeKaikenIkaiset;
     [SerializeField] private Toggle _openClanButton;
 
     //Warnings
 
     [SerializeField] private Image _ClanNameWarningImage;
+    [SerializeField] private PopupController _NameTakenPopup;
 
     //Buttons
 
@@ -64,6 +80,8 @@ public class ClanCreateNew : MonoBehaviour
 
     [SerializeField] protected WindowDef _naviTarget;
 
+    private ClanAge _clanAgeEnum=ClanAge.None;
+
     private void Reset()
     {
         StopAllCoroutines();
@@ -76,6 +94,7 @@ public class ClanCreateNew : MonoBehaviour
         SetLanguageDropdown();
         SetValuesPanel();
         SetGoalsDropDown();
+        SetToggleListeners();
     }
     private void OnEnable()
     {
@@ -141,6 +160,87 @@ public class ClanCreateNew : MonoBehaviour
             _ClanGoals.options.Add(new TMP_Dropdown.OptionData(Text));
        }
     }
+    private void SetToggleListeners()
+    {
+        _AgeTaaperot.onValueChanged.RemoveAllListeners();
+        _AgeAikuiset.onValueChanged.RemoveAllListeners();
+        _AgeKaikenIkaiset.onValueChanged.RemoveAllListeners();
+        _AgeTeinit.onValueChanged.RemoveAllListeners();
+
+         _AgeTaaperot.onValueChanged.AddListener((Value) =>
+         {
+             if (Value)
+             {
+                 SetClanAge(ClanAge.AgeToddlers);
+                 ColorBlock colors = _AgeTaaperot.colors;
+                 colors.normalColor = Color.yellow;
+                 _AgeTaaperot.colors = colors;
+             }
+             else
+             {
+                 ColorBlock colors = _AgeTaaperot.colors;
+                 colors.normalColor = Color.white;
+                 _AgeTaaperot.colors = colors;
+             }
+         });
+        _AgeAikuiset.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeAdults);
+                ColorBlock colors = _AgeAikuiset.colors;
+                colors.normalColor = Color.yellow;
+                _AgeAikuiset.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeAikuiset.colors;
+                colors.normalColor = Color.white;
+                _AgeAikuiset.colors = colors;
+            }
+        });
+        _AgeKaikenIkaiset.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeAllAges);
+                ColorBlock colors = _AgeKaikenIkaiset.colors;
+                colors.normalColor = Color.yellow;
+                _AgeKaikenIkaiset.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeKaikenIkaiset.colors;
+                colors.normalColor = Color.white;
+                _AgeKaikenIkaiset.colors = colors;
+            }
+        });
+        _AgeTeinit.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeTeenagers);
+                ColorBlock colors = _AgeTeinit.colors;
+                colors.normalColor = Color.yellow;
+                _AgeTeinit.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeTeinit.colors;
+                colors.normalColor = Color.white;
+                _AgeTeinit.colors = colors;
+            }
+        });
+
+
+
+    }
+    private void SetClanAge(ClanAge age)
+    {
+        _clanAgeEnum = age;
+    }
+
+
     private void SetValuesPanel()
     {
         for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
@@ -164,13 +264,22 @@ public class ClanCreateNew : MonoBehaviour
         Language language = (Language)_ClanLanguageDropdown.value;
         Goals goals = (Goals)_ClanGoals.value;
         String Phrase = _clanPhrase.text;
-        Debug.Log($"language: {language}, Phrase: {Phrase}, Goals: {goals} ");
+        Debug.Log($"language: {language}, Phrase: {Phrase}, Goals: {goals} clanAgeEnum {_clanAgeEnum},");
 
         if (clanName == string.Empty /*|| clanTag == string.Empty || _gameCoinsInputField.text == string.Empty*/)
         {
             _ClanNameWarningImage.gameObject.SetActive( true );
+            _NameTakenPopup.ActivatePopUp("Lisää klaanin nimi");
             return;
         }
+
+        /*if (_clanPhrase.text== string.Empty)
+        {
+           _ClanNameWarningImage.gameObject.SetActive(true);
+            _NameTakenPopup.ActivatePopUp("Lisää klaanin motto");
+            return;
+        }*/
+        
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
         {
