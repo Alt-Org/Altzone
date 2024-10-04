@@ -12,16 +12,16 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public readonly CharacterID CharacterID;
         public readonly string Name;
-        public readonly int Hp;
-        public readonly int Speed;
-        public readonly int Resistance;
-        public readonly int Attack;
-        public readonly int Defence;
+        public readonly float Hp;
+        public readonly float Speed;
+        public readonly float Resistance;
+        public readonly float Attack;
+        public readonly float Defence;
 
         public CharacterClassID CharacterClassID => CustomCharacter.GetClassID(CharacterID);
 
         public BattleCharacter(CharacterID customCharacterId, string name,
-            int hp, int speed, int resistance, int attack, int defence)
+            float hp, float speed, float resistance, float attack, float defence)
         {
             //Assert.AreNotEqual(CharacterID.None, customCharacterId);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(name));

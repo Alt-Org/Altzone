@@ -63,18 +63,17 @@ namespace Battle.Scripts.Battle
 
         public static BattleCharacter GetBattleCharacter(Player player)
         {
-
             int[] characterIds = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerCharacterIdsKey, null);
-            float[] characterStats = player.GetCustomProperty<float[]>(PhotonBattleRoom.PlayerStatsKey, null);
+            int[] characterStats = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerStatsKey, null);
 
             BattleCharacter battleCharacter = new(
                 (CharacterID)characterIds[0],
                 "placeholder",
-                (int)characterStats[0],
-                (int)characterStats[1],
-                (int)characterStats[2],
-                (int)characterStats[3],
-                (int)characterStats[4]
+                BaseCharacter.GetStatValue(StatType.Hp, characterStats[0]),
+                BaseCharacter.GetStatValue(StatType.Speed, characterStats[1]),
+                BaseCharacter.GetStatValue(StatType.Resistance, characterStats[2]),
+                BaseCharacter.GetStatValue(StatType.Attack, characterStats[3]),
+                BaseCharacter.GetStatValue(StatType.Defence, characterStats[4])
             );
 
             return battleCharacter;

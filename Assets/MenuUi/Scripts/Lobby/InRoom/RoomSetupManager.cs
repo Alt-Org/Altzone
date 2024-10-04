@@ -116,7 +116,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 var battleCharacter = playerData.CurrentBattleCharacters;
                 Debug.Log($"{battleCharacter[0]}");
                 int[] characterIds = new int[5];
-                float[] characterStats = new float[25];
+                int[] characterStats = new int[25];
                 for (int i = 0; i < 5; i++)
                 {
                     characterIds[i] = (int)battleCharacter[i].Id;
@@ -325,7 +325,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     _buttonCaption = $"Closed";
                     Debug.Log(_buttonCaption);
                     break;
-                case 4: 
+                case 4:
                     _buttonStateNumber = 0;
                     break;
             }
