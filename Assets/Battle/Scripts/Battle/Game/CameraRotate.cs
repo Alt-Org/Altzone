@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Battle.Scripts.Battle.Game
 {
@@ -12,15 +13,21 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private Transform _camera;
         [SerializeField] private Transform _background;
         [SerializeField] private Transform _gridOverlay;
-        [SerializeField] private Transform _diamondCounters;
-        [SerializeField] private RectTransform _betaDiamonds;
         [SerializeField] private RectTransform _alphaDiamonds;
-        [SerializeField] private Transform _diamondCounters2;
-        [SerializeField] private RectTransform _betaDiamonds2;
-        [SerializeField] private RectTransform _alphaDiamonds2;
+        [SerializeField] private RectTransform _betaDiamonds;
 
         // Private fields
         private int _teamNumber;
+
+
+        private struct AnchorPreset {
+            public Vector2 min;
+            public Vector2 max;
+            public Vector2 anchoredPos;
+        }
+
+        private AnchorPreset _anchorPresetAlpha;
+        private AnchorPreset _anchorPresetBeta;
 
         //Private methods
         private void Start()
@@ -33,6 +40,20 @@ namespace Battle.Scripts.Battle.Game
 
             Debug.Log($"TeamNumber {_teamNumber} pos {localPlayerPos} {localPlayer.GetDebugLabel()}");
 
+            _anchorPresetAlpha = new()
+            {
+                min = _alphaDiamonds.anchorMin,
+                max = _alphaDiamonds.anchorMax,
+                anchoredPos = _alphaDiamonds.anchoredPosition
+            };
+
+            _anchorPresetBeta = new()
+            {
+                min = _betaDiamonds.anchorMin,
+                max = _betaDiamonds.anchorMax,
+                anchoredPos = _betaDiamonds.anchoredPosition
+            };
+
             if (_teamNumber == 2)
             {
                 RotateCamera();
@@ -44,10 +65,14 @@ namespace Battle.Scripts.Battle.Game
             _camera.eulerAngles = new Vector3(0, 0, 180);
             _background.eulerAngles = new Vector3(0, 0, 180);
             _gridOverlay.eulerAngles = new Vector3(0, 0, 180);
-            _alphaDiamonds.anchoredPosition = new Vector2(_betaDiamonds.anchoredPosition.x, _betaDiamonds.anchoredPosition.y);
-            _alphaDiamonds2.anchoredPosition = new Vector2(_betaDiamonds2.anchoredPosition.x, _betaDiamonds2.anchoredPosition.y);
-            _betaDiamonds.anchoredPosition = new Vector2(-_betaDiamonds2.anchoredPosition.x, -_betaDiamonds2.anchoredPosition.y);
-            _betaDiamonds2.anchoredPosition = new Vector2(-_alphaDiamonds.anchoredPosition.x, -_alphaDiamonds.anchoredPosition.y);
+
+            _alphaDiamonds.anchorMin = _anchorPresetBeta.min;
+            _alphaDiamonds.anchorMax = _anchorPresetBeta.max;
+            _alphaDiamonds.anchoredPosition = _anchorPresetBeta.anchoredPos;
+
+            _betaDiamonds.anchorMin = _anchorPresetAlpha.min;
+            _betaDiamonds.anchorMax = _anchorPresetAlpha.max;
+            _betaDiamonds.anchoredPosition = _anchorPresetAlpha.anchoredPos;
         }
     }
 }

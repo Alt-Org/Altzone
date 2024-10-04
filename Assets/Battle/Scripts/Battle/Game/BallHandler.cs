@@ -21,7 +21,7 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private float _sparkleUpdateInterval;
         [SerializeField] private float _timeSinceLastUpdate;
         [SerializeField] private GameObject _sparkleSprite;
-        [SerializeField] private SpawnDiamonds _diamondSpawner;
+        [SerializeField] private DiamondController _diamondSpawner;
         #endregion Serialized Fields
 
         #region Public
@@ -132,7 +132,7 @@ namespace Battle.Scripts.Battle.Game
             // Get important objects
             _battlePlayArea = Context.GetBattlePlayArea;
             _gridManager = Context.GetGridManager;
-            _diamondSpawner = FindObjectOfType<SpawnDiamonds>();
+            _diamondSpawner = FindObjectOfType<DiamondController>();
 
             // Get game config variables
             GameVariables variables = GameConfig.Get().Variables;

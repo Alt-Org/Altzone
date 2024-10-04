@@ -1,22 +1,31 @@
+
 using UnityEngine;
+
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Battle.Scripts.Battle.Game
 {
     internal class Diamond : MonoBehaviour
     {
         // Public methods
-        public void InitInstance(Rigidbody2D rb, float bottomBoundary, float topBoundary, bool isTopSide, int diamondDisappearUpdateNumber)
+        public void InitInstance(Rigidbody2D rb, float bottomBoundary, float topBoundary, bool isTopSide, int diamondDisappearUpdateNumber, DiamondType diamondType)
         {
             _rb = rb;
             _bottomBoundary = bottomBoundary;
             _topBoundary = topBoundary;
             _isTopSide = isTopSide;
             _diamondDisappearUpdateNumber = diamondDisappearUpdateNumber;
+            _diamondType = diamondType;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _syncedFixedUpdateClock.ExecuteOnUpdate(_diamondDisappearUpdateNumber, 0, () =>
             {
                 Destroy(gameObject);
             });
+        }
+
+        public DiamondType GetDiamondType()
+        {
+            return _diamondType;
         }
 
         // Private fields
@@ -26,6 +35,7 @@ namespace Battle.Scripts.Battle.Game
         private bool _isTopSide;
         private int _diamondDisappearUpdateNumber;
         private SyncedFixedUpdateClock _syncedFixedUpdateClock;
+        private DiamondType _diamondType;
 
         // Private methods
         private void Update()

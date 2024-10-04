@@ -15,6 +15,7 @@ namespace Battle.Scripts.Battle.Players
         public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
             _battlePlayer = battlePlayer;
+            GetComponentInChildren<Pickup>().InitInstance(battlePlayer);
         }
 
         #endregion Public - Methods
