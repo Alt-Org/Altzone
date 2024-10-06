@@ -341,7 +341,7 @@ public class ServerManager : MonoBehaviour
                         while (true)
                         {
                             furniture2X = UnityEngine.Random.Range(0, slotColumn - 7);
-                            furniture2Y = UnityEngine.Random.Range(1, slotRows);
+                            furniture2Y = UnityEngine.Random.Range(2, slotRows);
                             if ((furniture2X >= furniture1X - 7 && furniture2X <= furniture1X + 1 && furniture2Y >= furniture1Y - 1 && furniture2Y <= furniture1Y + 2)) continue;
                             else break;
                         }
