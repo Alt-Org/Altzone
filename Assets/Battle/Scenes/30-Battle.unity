@@ -1931,6 +1931,11 @@ PrefabInstance:
       objectReference: {fileID: 515804172}
     - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
         type: 3}
+      propertyPath: _view
+      value: 
+      objectReference: {fileID: 622190532}
+    - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
       propertyPath: _maxSpeed
       value: 10
       objectReference: {fileID: 0}
@@ -1938,6 +1943,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotFixMax
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: _ballBaseSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
         type: 3}
@@ -2060,6 +2070,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 622190530}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &622190532 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8473052537036719184, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+    type: 3}
+  m_PrefabInstance: {fileID: 622190530}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622190531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &628678169
 GameObject:
   m_ObjectHideFlags: 0
