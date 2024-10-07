@@ -12,15 +12,24 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private LogBoxController _logBoxController;
 
+        private MessagePanel _messagePanel;
+
         // Start is called before the first frame update
         void Start()
         {
             _logBoxController = GetComponentInParent<LogBoxController>();
         }
 
+        internal void Initialize(MessagePanel msgPanel, IReadOnlyMsgObject msgObject)
+        {
+            _messagePanel = msgPanel;
+            SetMessage(msgObject);
+        }
+
         public void Message()
         {
-            _logBoxController.MessageDeliver(_msgObject);
+            _messagePanel.SetMessage(_msgObject);
+            //_logBoxController.MessageDeliver(_msgObject);
         }
 
         internal void SetMessage(IReadOnlyMsgObject msgObject)

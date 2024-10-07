@@ -28,8 +28,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         internal void MessageDeliver(IReadOnlyMsgObject msgObject)
         {
-            string logText = string.Format("[Client {0}] [{1:000000}] {2}", msgObject.Client, msgObject.Time, msgObject.Msg);
-            _messagePanel.SetMessage(logText);
+            //string logText = string.Format("[Client {0}] [{1:000000}] {2}", msgObject.Client, msgObject.Time, msgObject.Msg);
+            //_messagePanel.SetMessage(logText);
         }
 
         private IReadOnlyMsgStorage _msgStorage;
@@ -56,10 +56,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
             }
 
-            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject)
+            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel)
             {
                 GameObject logMsgBox = Instantiate(logTextObject, LogTextBox.transform.GetChild(0).GetChild(0));
-                logMsgBox.GetComponent<LogBoxMessageHandler>().SetMessage(msg);
+                logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg);
                 _msgBoxObjectList.Add(logMsgBox);
             }
 
@@ -118,7 +118,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 foreach (IReadOnlyMsgObject msg in messages)
                 {
                     // Instantiate a new log message GameObject for each message
-                    msgBox.AddMsg(msg, _logTextObject);
+                    msgBox.AddMsg(msg, _logTextObject, _messagePanel);
                 }
 
                 FilterLog(msgBox, messages);
