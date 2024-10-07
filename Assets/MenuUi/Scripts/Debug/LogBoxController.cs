@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,16 +8,23 @@ namespace DebugUi.Scripts.BattleAnalyzer
     internal class LogBoxController : MonoBehaviour
     {
         [SerializeField] private GameObject _logTextObject;
-        [SerializeField] private GameObject _logTextBox1;
-        [SerializeField] private GameObject _logTextBox2;
-        [SerializeField] private GameObject _logTextBox3;
-        [SerializeField] private GameObject _logTextBox4;
+        [SerializeField] private GameObject[] _logTextBoxArray;
+        [SerializeField] private MessageTypeOptions _defaultMsgFilter;
         [SerializeField] private RectTransform _contentBoxRectTransform; // Reference to the content box RectTransform
         [SerializeField] private Scrollbar _verticalScrollbar;           // Reference to the vertical scrollbar (if applicable)
         [SerializeField] private MessagePanel _messagePanel;             // Reference to the vertical scrollbar (if applicable)
         [SerializeField] private bool _generateTestLogs;
 
         public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); }
+
+        public void SetMsgFilter(int client, MessageTypeOptions msgFilter)
+        {
+            MsgBox msgBox = _msgBoxArray[client];
+            IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(client);
+
+            msgBox.MsgFilter = msgFilter;
+            FilterLog(msgBox, messages);
+        }
 
         internal void MessageDeliver(IReadOnlyMsgObject msgObject)
         {
@@ -26,9 +34,48 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private IReadOnlyMsgStorage _msgStorage;
 
+        private class MsgBox
+        {
+            public GameObject LogTextBox { get; }
+            public IReadOnlyList<GameObject> MsgBoxObjectList => _msgBoxObjectList;
+            public MessageTypeOptions MsgFilter { get; set; }
+
+            public MsgBox(GameObject logTextBox, MessageTypeOptions msgFilter)
+            {
+                LogTextBox = logTextBox;
+                _msgBoxObjectList = new();
+                MsgFilter = msgFilter;
+            }
+
+            public void Clear()
+            {
+                _msgBoxObjectList.Clear();
+                foreach (GameObject msgBoxObject in _msgBoxObjectList)
+                {
+                    Destroy(msgBoxObject);
+                }
+            }
+
+            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject)
+            {
+                GameObject logMsgBox = Instantiate(logTextObject, LogTextBox.transform.GetChild(0).GetChild(0));
+                logMsgBox.GetComponent<LogBoxMessageHandler>().SetMessage(msg);
+                _msgBoxObjectList.Add(logMsgBox);
+            }
+
+            private readonly List<GameObject> _msgBoxObjectList;
+        }
+        private MsgBox[] _msgBoxArray;
+
         // Start is called before the first frame update
         private void Start()
         {
+            _msgBoxArray = new MsgBox[_logTextBoxArray.Length];
+            for (int i = 0; i < _logTextBoxArray.Length; i++)
+            {
+                _msgBoxArray[i] = new(_logTextBoxArray[i], _defaultMsgFilter);
+            }
+
             if (!_generateTestLogs) return;
 
             MsgStorage msgStorage = new(4);
@@ -57,43 +104,33 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Update the log text to display all messages
         private void UpdateLogText()
         {
+            foreach (MsgBox msgBox in _msgBoxArray) msgBox.Clear();
+
             // Loop through each log box
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < _msgStorage.ClientCount; i++)
             {
                 // Get the corresponding log text box GameObject
-                GameObject logTextBox = GetLogTextBox(i + 1);
+                MsgBox msgBox = _msgBoxArray[i];
+                // Get all messages for the current log box index
+                IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(i);
 
-                // Check if the logTextBox is not null
-                if (logTextBox != null)
+                //IReadOnlyList<IReadOnlyMsgObject> filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
+                foreach (IReadOnlyMsgObject msg in messages)
                 {
-                    // Get all messages for the current log box index
-                    IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(i);
-                    IReadOnlyList<IReadOnlyMsgObject> filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
-                    foreach (IReadOnlyMsgObject msg in filteredMessages)
-                    {
-                        // Instantiate a new log message GameObject for each message
-                        GameObject logMsgBox = Instantiate(_logTextObject, logTextBox.transform.GetChild(0).GetChild(0));
-                        logMsgBox.GetComponent<LogBoxMessageHandler>().SetMessage(msg);
-                    }
+                    // Instantiate a new log message GameObject for each message
+                    msgBox.AddMsg(msg, _logTextObject);
                 }
-                else
-                {
-                    Debug.LogError($"Log text box {_logTextBox1.name} not found.");
-                }
+
+                FilterLog(msgBox, messages);
             }
         }
 
-        // Get the corresponding log text box GameObject based on the index
-        private GameObject GetLogTextBox(int index)
+        private void FilterLog(MsgBox msgBox, IReadOnlyList<IReadOnlyMsgObject> messages)
         {
-            return index switch
+            for (int i = 0; i < msgBox.MsgBoxObjectList.Count; i++)
             {
-                1 => _logTextBox1,
-                2 => _logTextBox2,
-                3 => _logTextBox3,
-                4 => _logTextBox4,
-                _ => null,
-            };
+                msgBox.MsgBoxObjectList[i].SetActive(messages[i].IsType(msgBox.MsgFilter));
+            }
         }
     }
 }
