@@ -24,6 +24,8 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private DiamondController _diamondSpawner;
         #endregion Serialized Fields
 
+        private PhotonView _photonView;
+
         #region Public
 
         #region Public - Methods
@@ -37,6 +39,7 @@ namespace Battle.Scripts.Battle.Game
         {
             _rb.position = position;
             SetVelocity(LimitDirectionAngle(direction, _angleLimit) * speed);
+            _ballPotentialSpeed = speed;
             _sprite.enabled = true;
             _sparkleSprite.SetActive(true);
 
@@ -51,6 +54,11 @@ namespace Battle.Scripts.Battle.Game
             _sparkleSprite.SetActive(false);
 
             _battleDebugLogger.LogInfo("Ball stopped");
+        }
+
+        public void BallSpeedup()
+        {
+            _ballPotentialSpeed += 3f;
         }
 
         public (Vector2 position, GridPos gridPos, Vector2 direction) CalculateCollision(Vector2 position, Vector2 direction, Vector2 normal)
@@ -85,7 +93,7 @@ namespace Battle.Scripts.Battle.Game
             float angle = shieldTransform.rotation.eulerAngles.z + bounceAngle;
             Vector2 direction = Quaternion.Euler(0, 0, angle) * Vector2.up;
 
-            speed += impactForce * _attackMultiplier;
+            speed = _ballPotentialSpeed + impactForce * _attackMultiplier;
 
             return (true, true, position, gridPos, direction, speed);
         }
@@ -103,6 +111,7 @@ namespace Battle.Scripts.Battle.Game
         // Important Objects
         private PlayerPlayArea _battlePlayArea;
         private GridManager _gridManager;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         // Game Config Variables
         private float _attackMultiplier;
@@ -113,6 +122,8 @@ namespace Battle.Scripts.Battle.Game
         // Components
         private Rigidbody2D _rb;
         private SpriteRenderer _sprite;
+
+        private float _ballPotentialSpeed;
 
         #endregion Private - Fields
 
@@ -146,6 +157,7 @@ namespace Battle.Scripts.Battle.Game
             _sprite.enabled = false;
 
             // Debug
+            _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _battleDebugLogger = new BattleDebugLogger(this);
         }
 
@@ -154,7 +166,6 @@ namespace Battle.Scripts.Battle.Game
             _battleDebugLogger.LogInfo("Info (current position: {0}, current velocity: {1})", _rb.position, _rb.velocity);
             GridPos gridPos = null;
             GameObject otherGameObject = collision.gameObject;
-
             if (!otherGameObject.CompareTag("ShieldBoxCollider"))
             {
                 Vector2 position, direction;
@@ -191,6 +202,9 @@ namespace Battle.Scripts.Battle.Game
                             gridPos = _gridManager.WorldPointToGridPosition(_rb.position);
                             _battleDebugLogger.LogInfo("Collision (type: player (no bounce), position: {0}, grid position: ({1}))", _rb.position, gridPos);
                         }
+                    }
+                    if (!bounce)
+                    {
                     }
                 }
             }
