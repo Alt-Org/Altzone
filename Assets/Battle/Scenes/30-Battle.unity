@@ -6243,9 +6243,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[0]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[1]
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[2]
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 9117181731113809983, guid: 08228fd663f66f641b011c944c7baa80,
         type: 3}
       propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9117181731113809983, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: ObservedComponentsFoldoutOpen
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

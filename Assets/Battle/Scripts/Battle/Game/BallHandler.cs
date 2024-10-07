@@ -22,10 +22,6 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private float _timeSinceLastUpdate;
         [SerializeField] private GameObject _sparkleSprite;
         [SerializeField] private SpawnDiamonds _diamondSpawner;
-        [SerializeField] private float _ballBaseSpeed = 3;
-        [SerializeField] private float _ballPotentialSpeed = 0;
-        [SerializeField] private bool _ballOnCooldown = true;
-        [SerializeField] private float _ballSpeedupTimer = 0;
         #endregion Serialized Fields
 
         private PhotonView _photonView;
@@ -43,6 +39,7 @@ namespace Battle.Scripts.Battle.Game
         {
             _rb.position = position;
             SetVelocity(LimitDirectionAngle(direction, _angleLimit) * speed);
+            _ballPotentialSpeed = speed;
             _sprite.enabled = true;
             _sparkleSprite.SetActive(true);
 
@@ -57,6 +54,11 @@ namespace Battle.Scripts.Battle.Game
             _sparkleSprite.SetActive(false);
 
             _battleDebugLogger.LogInfo("Ball stopped");
+        }
+
+        public void BallSpeedup()
+        {
+            _ballPotentialSpeed += 3f;
         }
 
         public (Vector2 position, GridPos gridPos, Vector2 direction) CalculateCollision(Vector2 position, Vector2 direction, Vector2 normal)
@@ -91,7 +93,7 @@ namespace Battle.Scripts.Battle.Game
             float angle = shieldTransform.rotation.eulerAngles.z + bounceAngle;
             Vector2 direction = Quaternion.Euler(0, 0, angle) * Vector2.up;
 
-            speed = _ballBaseSpeed + impactForce * _attackMultiplier;
+            speed = _ballPotentialSpeed + impactForce * _attackMultiplier;
 
             return (true, true, position, gridPos, direction, speed);
         }
@@ -109,6 +111,7 @@ namespace Battle.Scripts.Battle.Game
         // Important Objects
         private PlayerPlayArea _battlePlayArea;
         private GridManager _gridManager;
+        private SyncedFixedUpdateClock _syncedFixedUpdateClock;
 
         // Game Config Variables
         private float _attackMultiplier;
@@ -119,6 +122,8 @@ namespace Battle.Scripts.Battle.Game
         // Components
         private Rigidbody2D _rb;
         private SpriteRenderer _sprite;
+
+        private float _ballPotentialSpeed;
 
         #endregion Private - Fields
 
@@ -153,41 +158,7 @@ namespace Battle.Scripts.Battle.Game
 
             // Debug
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
-            if(PhotonNetwork.IsMasterClient)
-            {
-                PhotonView photonView = GetComponent<PhotonView>();
-                Debug.Log("photonView " + photonView);
-                photonView.RPC(nameof(speedupRpc), RpcTarget.All, _syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(30));
-            }
             _battleDebugLogger = new BattleDebugLogger(this);
-        }
-
-        [PunRPC]
-        private void speedupRpc(int updateNumber)
-        {
-            Debug.Log("speedupPRC");
-            _syncedFixedUpdateClock.ExecuteOnUpdate(updateNumber, 0, ballSpeedup);
-        }
-
-        private void ballSpeedup()
-        {
-            /*  float impactForce = 1.1f;
-              if (_ballPotentialSpeed > 0) {
-                  _ballBaseSpeed = _ballPotentialSpeed;
-              }
-                  _ballPotentialSpeed = _ballBaseSpeed * impactForce;*/
-
-            _ballPotentialSpeed = 3f;
-           /* if(_ballSpeedupTimer > 30)
-            {
-                _ballOnCooldown = true;
-                _ballSpeedupTimer = 0;
-            } else
-            {
-                _ballOnCooldown = false;
-            }*/
-            Debug.Log("this gets called = " + _ballBaseSpeed + " and _syncecFixed = " + _syncedFixedUpdateClock.UpdateCount + " and toUpdates " + _syncedFixedUpdateClock.ToUpdates(30));
-            _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + _syncedFixedUpdateClock.ToUpdates(30), 0, ballSpeedup);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -195,14 +166,12 @@ namespace Battle.Scripts.Battle.Game
             _battleDebugLogger.LogInfo("Info (current position: {0}, current velocity: {1})", _rb.position, _rb.velocity);
             GridPos gridPos = null;
             GameObject otherGameObject = collision.gameObject;
-            float currentBaseSpeed = _ballBaseSpeed;
-            _ballBaseSpeed = _ballPotentialSpeed;
             if (!otherGameObject.CompareTag("ShieldBoxCollider"))
             {
                 Vector2 position, direction;
                 (position, gridPos, direction) = CalculateCollision(_rb.position, _rb.velocity, collision.contacts[0].normal);
                 _rb.position = position;
-                SetVelocity(direction * _ballBaseSpeed);
+                SetVelocity(direction * _rb.velocity.magnitude);
             }
             else
             {
@@ -221,7 +190,6 @@ namespace Battle.Scripts.Battle.Game
 
                         if (bounce)
                         {
-                           /* _ballOnCooldown = true;*/
                             _rb.position = position;
                             SetVelocity(direction * speed);
 
@@ -237,7 +205,6 @@ namespace Battle.Scripts.Battle.Game
                     }
                     if (!bounce)
                     {
-                        _ballBaseSpeed = currentBaseSpeed;
                     }
                 }
             }
@@ -315,11 +282,6 @@ namespace Battle.Scripts.Battle.Game
                     ChangeSparkleScale();
                     _timeSinceLastUpdate = 0f;
                 }
-            }
-            _ballSpeedupTimer += Time.fixedDeltaTime;
-            if (_ballSpeedupTimer > 30 && PhotonNetwork.IsMasterClient) {
-                _ballOnCooldown = false;
-                _ballSpeedupTimer = 0;
             }
         }
 
