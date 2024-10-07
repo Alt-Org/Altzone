@@ -39,9 +39,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (_logBoxController != null)
                 {
                     // Load log file contents
-                    string[] lines = File.ReadAllLines(_selectedFilePath);
+                    string[][] logs = new string[1][];
+                    logs[1] = File.ReadAllLines(_selectedFilePath);
 
-                    IReadOnlyMsgStorage msgStorage = BattleLogParser.ParseLog(lines);
+                    IReadOnlyMsgStorage msgStorage = BattleLogParser.ParseLogs(logs);
                     _logBoxController.SetMsgStorage(msgStorage);
                 }
                 else
@@ -76,7 +77,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
 #if UNITY_EDITOR
 
-                string path = UnityEditor.EditorUtility.OpenFilePanel("Select Log File", "", "txt");
+                string path = UnityEditor.EditorUtility.OpenFilePanel("Select Log File", "", "log");
                 return path;
 #else
 
