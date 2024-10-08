@@ -11,9 +11,26 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField, Tooltip("0: Speed\n1: Resistance\n2: Attack\n3: HP")] TMP_Text[] _diamondsAlpha;
         [SerializeField, Tooltip("0: Speed\n1: Resistance\n2: Attack\n3: HP")] TMP_Text[] _diamondsBeta;
 
+        [SerializeField] GameObject _winGraphics;
+        [SerializeField] GameObject _loseGraphics;
+
         public void UpdateDiamondCountText(BattleTeamNumber battleTeamNumber, DiamondType diamondType, int count)
         {
             GetDiamondText(battleTeamNumber, diamondType).text = count.ToString();
+        }
+
+        public void ShowWinGraphics(BattleTeamNumber goalSide, BattleTeamNumber teamNumber)
+        {
+            if (goalSide != teamNumber)
+            {
+                _winGraphics.SetActive(true);
+                _loseGraphics.SetActive(false);
+            }
+            else
+            {
+                _winGraphics.SetActive(false);
+                _loseGraphics.SetActive(true);
+            }
         }
 
         private TMP_Text GetDiamondText(BattleTeamNumber teamNumber, DiamondType diamondType)

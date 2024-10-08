@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -570,6 +569,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!114 &166184717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1616,19 +1616,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d462a16b94dc1740bb85e3d86ca77b4, type: 3}
---- !u!1 &622190531 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8473052537036719186, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
-    type: 3}
-  m_PrefabInstance: {fileID: 622190530}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &622190532 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8473052537036719184, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
     type: 3}
   m_PrefabInstance: {fileID: 622190530}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622190531}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
@@ -1661,9 +1655,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 1288042208}
-  - {fileID: 616148396}
+  m_Children: []
   m_Father: {fileID: 1715143004}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1701,7 +1693,7 @@ RectTransform:
   m_LocalScale: {x: 63.4, y: 63.4, z: 63.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 577966835}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2025,7 +2017,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -3119,7 +3111,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -4770,6 +4762,7 @@ RectTransform:
   - {fileID: 680639591}
   - {fileID: 1328429794}
   - {fileID: 1817275388}
+  - {fileID: 628678170}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6181,6 +6174,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
         type: 3}
+      propertyPath: _winGraphics
+      value: 
+      objectReference: {fileID: 1761139120}
+    - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
+        type: 3}
+      propertyPath: _loseGraphics
+      value: 
+      objectReference: {fileID: 1361277913}
+    - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
+        type: 3}
       propertyPath: _diamondsBeta.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -6880,3 +6883,4 @@ SceneRoots:
   - {fileID: 348265311}
   - {fileID: 4512101204273887873}
   - {fileID: 7988659286708465721}
+  - {fileID: 668191976}

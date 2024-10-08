@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {

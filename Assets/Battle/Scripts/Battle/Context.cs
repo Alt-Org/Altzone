@@ -28,5 +28,6 @@ namespace Battle.Scripts.Battle
         internal static SlingController GetSlingController => Object.FindObjectOfType<SlingController>();
         internal static BallHandler GetBallHandler => Object.FindObjectOfType<BallHandler>();
         internal static DiamondController GetDiamondController => Object.FindObjectOfType<DiamondController>();
+        internal static BattleUIController GetBattleUIController => Object.FindObjectOfType<BattleUIController>();
     }
 }
