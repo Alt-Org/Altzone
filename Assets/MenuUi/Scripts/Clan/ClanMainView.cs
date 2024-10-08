@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanMainView : MonoBehaviour
 {

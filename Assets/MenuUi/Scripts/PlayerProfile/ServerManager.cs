@@ -261,7 +261,7 @@ public class ServerManager : MonoBehaviour
             {
                 if (clanDataFromStorage == null)
                 {
-                    clanData = new ClanData(clan._id, clan.name, clan.tag, clan.gameCoins);
+                    clanData = new ClanData(clan);
                     return;
                 }
                 else
@@ -469,7 +469,7 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
                 Clan = clan;
-
+                Debug.LogWarning(clan.phrase);
                 // Saves clan data to DataStorage
                 StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
@@ -641,7 +641,7 @@ public class ServerManager : MonoBehaviour
                 Player.clan_id = Clan._id;
 
                 ClanData clanData = null;
-                clanData = new ClanData(Clan._id, Clan.name, Clan.tag, Clan.gameCoins);
+                clanData = new ClanData(Clan);
                 Storefront.Get().SaveClanData(clanData, null);
 
                 if (callback != null)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using ExitGames.Client.Photon;
 using Newtonsoft.Json.Linq;
