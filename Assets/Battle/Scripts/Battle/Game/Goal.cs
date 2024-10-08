@@ -24,9 +24,6 @@ namespace Battle.Scripts.Battle.Game
         [SerializeField] private TMP_Text _countDownText;
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip[] _audioClips;
-        [Header("End Screen Graphics")]
-        [SerializeField] private GameObject _winGraphics;
-        [SerializeField] private GameObject _lossGraphics;
         #endregion Serialized Fields
 
         #region Public Enums
@@ -106,7 +103,9 @@ namespace Battle.Scripts.Battle.Game
 
                 if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnBattleEnd();
 
-                if (_goalNumber != teamNumber)
+                Context.GetBattleUIController.ShowWinGraphics((BattleTeamNumber)_goalNumber, (BattleTeamNumber)teamNumber);
+
+                /*if (_goalNumber != teamNumber)
                 {
                     _winGraphics.SetActive(true);
                     if (PhotonNetwork.IsMasterClient)
@@ -123,7 +122,7 @@ namespace Battle.Scripts.Battle.Game
                     //PhotonNetwork.LeaveRoom();
                     _lossGraphics.SetActive(true);
                     //LobbyButton.SetActive(true);
-                }
+                }*/
             }
         }
         #endregion Private - Methods - Photon RPC
