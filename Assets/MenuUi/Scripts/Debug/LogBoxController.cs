@@ -49,11 +49,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             public void Clear()
             {
-                _msgBoxObjectList.Clear();
                 foreach (GameObject msgBoxObject in _msgBoxObjectList)
                 {
                     Destroy(msgBoxObject);
                 }
+                _msgBoxObjectList.Clear();
             }
 
             public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel)
