@@ -26,7 +26,7 @@ namespace Altzone.Scripts
         private static DataStore _instance;
 
         /// <summary>
-        /// Gets or creates an <c>DataStore</c> static singleton instance. 
+        /// Gets or creates an <c>DataStore</c> static singleton instance.
         /// </summary>
         public static DataStore Get() => _instance ??= new DataStore();
     }

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6972104265112568208}
   - component: {fileID: 9185149068604099717}
   - component: {fileID: 4206112031800091680}
-  - component: {fileID: 5888967630107417748}
   m_Layer: 0
   m_Name: FeatureButtonPrefab
   m_TagString: Untagged
@@ -68,8 +67,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -121,17 +120,3 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5888967630107417748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7536046636313906788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53ae12c923a0f4e4da51a5037bd4c4bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _slot: 0
-  _sprite: {fileID: 0}

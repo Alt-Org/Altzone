@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -13,21 +14,27 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private List<Transform> _colorButtonPositions;
         [SerializeField]private Transform _characterImageParent;
         private Image _colorChangeTarget;
-        public void OnEnable(){
+        private CharacterClassID _characterClassID;
+        private FeatureColor _currentColor;
+        public void OnEnable()
+        {
             // _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(2).GetComponent<Image>();
             InstantiateColorButtons();
         }
-        public void OnDisable(){
+        public void OnDisable()
+        {
             DestroyColorButtons();
         }
 
 
-        public void SelectFeature(FeatureSlot feature){
+        public void SelectFeature(FeatureSlot feature)
+        {
 
-            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature + 2).GetComponent<Image>();
+            _colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
         }
 
-        private void InstantiateColorButtons(){
+        private void InstantiateColorButtons()
+        {
             for (int i = 0; i < _colors.Count; i++){
                 int j = i;
                 if(i == 0){
@@ -41,7 +48,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
             }
         }
-        private void DestroyColorButtons(){
+        private void DestroyColorButtons()
+        {
             foreach(Transform pos in _colorButtonPositions){
                     if(pos.childCount > 0){
                         foreach(Transform child in pos){
@@ -50,15 +58,52 @@ namespace MenuUi.Scripts.AvatarEditor
                     }
                 }
         }
-        private void SetDefaultColor(){
-
-        }
-        private void SetColor(Color color){
+        private void SetColor(Color color)
+        {
+            _currentColor = (FeatureColor)_colors.IndexOf(color);
             if(_colorChangeTarget != null){
                 _colorChangeTarget.color = color;
+                if(_characterClassID == CharacterClassID.Confluent){
+                    _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = color;
+                }
             }
         }
+        private void SetDefaultColor()
+        {
 
-
+        }
+        private void SetTransparentColor(){
+            if(_colorChangeTarget != null){
+                _colorChangeTarget.color = new Color(255,255,255,0);
+                if(_characterClassID == CharacterClassID.Confluent){
+                    _colorChangeTarget.transform.GetChild(0).GetComponent<Image>().color = new Color(255,255,255,0);
+                }
+            }
+        }
+        public void SetCharacterClassID(CharacterClassID id)
+        {
+            _characterClassID = id;
+        }
+        public FeatureColor GetCurrentColor()
+        {
+            return _currentColor;
+        }
+        public void SetLoadedColors(List<FeatureColor> colors, List<FeatureID> features)
+        {
+            for (int i = 0; i < colors.Count; i++)
+            {
+                SelectFeature((FeatureSlot)i);
+                if(features[i] == FeatureID.None){
+                    SetTransparentColor();
+                }
+                else if (features[i] == FeatureID.Default){
+                    Debug.Log("feature was default when cioloring!");
+                }
+                else{
+                    SetColor(_colors[(int)colors[i]]);
+                }
+                
+            }
+        }
     }
 }

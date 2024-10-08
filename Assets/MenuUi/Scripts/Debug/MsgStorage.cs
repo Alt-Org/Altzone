@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -30,6 +31,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public string Msg { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+
+        public bool IsType(MessageTypeOptions typeOptions);
     }
 
     internal interface IReadOnlyTimestamp
@@ -41,6 +44,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal interface IReadOnlyMsgStorage
     {
+        public int ClientCount { get; }
+
         public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
@@ -72,6 +77,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Msg = msg;
             Trace = trace;
             Type = type;
+        }
+
+        public bool IsType(MessageTypeOptions typeOptions)
+        {
+            return typeOptions.HasFlag((MessageTypeOptions)Type);
         }
 
         internal void SetId(int id)
@@ -112,13 +122,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             foreach (IReadOnlyMsgObject msgObject in list)
             {
-                if (wantedTypes.HasFlag((MessageTypeOptions)msgObject.Type))
+                if (msgObject.IsType(wantedTypes))
                 {
                     newList.Add(msgObject);
                 }
             }
             return newList;
         }
+
+        public int ClientCount => _msgList.Length;
 
         internal MsgStorage(int clientCount)
         {
@@ -167,7 +179,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         public bool IsValidClient(int client)
         {
-            return _msgList.Length > client && client >= 0;
+            return ClientCount > client && client >= 0;
         }
 
         public int TotalMessages()

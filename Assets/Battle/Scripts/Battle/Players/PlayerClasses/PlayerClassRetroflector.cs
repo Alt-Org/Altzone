@@ -9,13 +9,11 @@ namespace Battle.Scripts.Battle.Players
         // Serialized fields
         [SerializeField] private ShieldManager _shieldManager;
 
-
         [SerializeField] private bool _allowLoveProjectiles = false; // Control for love projectiles
 
-        [Header("Kilpitoiminta")]
+        [Header("Shield functions")]
         [SerializeField] private int _maxReflections;
-        [SerializeField] private GameObject[] _kilpivalinnat;
-        
+        [SerializeField] private GameObject[] _shieldOptions;
 
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
@@ -55,6 +53,8 @@ namespace Battle.Scripts.Battle.Players
         private int _currentShieldShapeIndex = -1;
         private int _reflectionCount = 0;
 
+
+
         // Debug
         private const string DEBUG_LOG_NAME = "[BATTLE] [PLAYER CLASS RETROFLECTION] ";
         private const string DEBUG_LOG_NAME_AND_TIME = "[{0:000000}] " + DEBUG_LOG_NAME;
@@ -70,9 +70,9 @@ namespace Battle.Scripts.Battle.Players
 /*        private void InitializeShield()
         {
             // Initialize the shield with the first shape
-            if (_kilpivalinnat.Length > 0)
+            if (_shieldOptions.Length > 0)
             {
-                _shieldManager.SetShield(shieldGameObject: _kilpivalinnat[_currentShieldShapeIndex]);
+                _shieldManager.SetShield(shieldGameObject: _shieldOptions[_currentShieldShapeIndex]);
             }
         }*/
 
@@ -82,34 +82,36 @@ namespace Battle.Scripts.Battle.Players
 
             if (_reflectionCount >= _maxReflections)
             {
-                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, -10, () =>
-                {
                     _currentShieldShapeIndex++;
                     _battleDebugLogger.LogInfo("Shield index set to " + _currentShieldShapeIndex);
                     ChangeShieldShape(_currentShieldShapeIndex);
                     // Debug log to track reflections
-                });
             }   
         }
 
-
         private void ChangeShieldShape(int _currentShieldShapeIndex)
         {
-            if (_currentShieldShapeIndex < _kilpivalinnat.Length)
+            _battleDebugLogger.LogInfo("ShieldOptions 1 " + _shieldOptions);
+
+            _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, -10, () =>
             {
-                _reflectionCount = 0; // Reset the reflection count for the new shape
-
-                _syncedFixedUpdateClock.ExecuteOnUpdate(_syncedFixedUpdateClock.UpdateCount + 5, -10, () =>
+                if (_currentShieldShapeIndex > _shieldOptions.Length)
                 {
+                    return;
+                }
+
+                if (_currentShieldShapeIndex < _shieldOptions.Length)
+                {
+                    GameObject _shieldPick = _shieldOptions[_currentShieldShapeIndex];
+
+                    _reflectionCount = 0; // Reset the reflection count for the new shape
+
                     _battleDebugLogger.LogInfo("Change shield to index " + _currentShieldShapeIndex);
-
-                    GameObject _kilpipäätös = _kilpivalinnat[_currentShieldShapeIndex];
-
-                    _shieldManager.SetShield(_kilpipäätös);
-                    _battleDebugLogger.LogInfo("Shield is set to choice " + _kilpipäätös);
-                    _battleDebugLogger.LogInfo("Shield shape changed to " + _kilpivalinnat[_currentShieldShapeIndex]);
-                });
-            }
+                    _shieldManager.SetShield(_shieldPick);
+                    _battleDebugLogger.LogInfo("Shield is set to choice " + _shieldPick);
+                    _battleDebugLogger.LogInfo("Shield shape changed to " + _shieldOptions[_currentShieldShapeIndex]);
+                };
+            });
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,17 @@ using UnityEngine.UI;
 
 public class ClanCreateNew : MonoBehaviour
 {
+
+    public enum ClanAge
+    {
+       None,
+       AgeTeenagers,
+       AgeToddlers,
+       AgeAdults,
+       AgeAllAges
+    }
+
+
     public enum Language
     {
         None,
@@ -18,8 +30,17 @@ public class ClanCreateNew : MonoBehaviour
         Swedish,
         English
     }
+    public enum Goals
+    {
+        None,
+        Fiilistely,
+        Grindaus,
+        Intohimoisuus,
+        Keraily
+
+    }
     //List
-    [SerializeField] private List <string> _valuesList;
+    [SerializeField] private List<string> _valuesList;
 
     //GameObject
     [SerializeField] private GameObject _valuePrefab;
@@ -34,22 +55,32 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanMembers;
     [SerializeField] private TMP_InputField _clanPassword;
 
-   //Toggles
+    //Toggles
+    [SerializeField] private Toggle _AgeTeinit;
+    [SerializeField] private Toggle _AgeTaaperot;
+    [SerializeField] private Toggle _AgeAikuiset;
+    [SerializeField] private Toggle _AgeKaikenIkaiset;
+    [SerializeField] private Toggle _openClanButton;
 
-   [SerializeField] private Toggle _openClanButton;
+    //Warnings
 
-   //Buttons
+    [SerializeField] private Image _ClanNameWarningImage;
+    [SerializeField] private PopupController _NameTakenPopup;
 
-   [SerializeField] private Button _returnToMainClanViewButton;
-   [SerializeField] private Button _clanValues;
-   [SerializeField] private Button _buttonLogo;
+    //Buttons
 
-   // Dropdowns Or TMP Dropdowns
+    [SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private Button _clanValues;
+    [SerializeField] private Button _buttonLogo;
 
-   [SerializeField] private TMP_Dropdown _ClanLanguageDropdown;
-   [SerializeField] private TMP_Dropdown _ClanGoals;
+    // Dropdowns Or TMP Dropdowns
 
-   [SerializeField] protected WindowDef _naviTarget;
+    [SerializeField] private TMP_Dropdown _ClanLanguageDropdown;
+    [SerializeField] private TMP_Dropdown _ClanGoals;
+
+    [SerializeField] protected WindowDef _naviTarget;
+
+    private ClanAge _clanAgeEnum=ClanAge.None;
 
     private void Reset()
     {
@@ -60,8 +91,10 @@ public class ClanCreateNew : MonoBehaviour
         _openClanButton.isOn = false;
 
 
-       SetLanguageDropdown();
-       SetValuesPanel();
+        SetLanguageDropdown();
+        SetValuesPanel();
+        SetGoalsDropDown();
+        SetToggleListeners();
     }
     private void OnEnable()
     {
@@ -69,8 +102,8 @@ public class ClanCreateNew : MonoBehaviour
     }
     private void SetLanguageDropdown()
     {
-     _ClanLanguageDropdown.options.Clear();
-     foreach(Language language in Enum.GetValues(typeof (Language) ) )
+        _ClanLanguageDropdown.options.Clear();
+        foreach (Language language in Enum.GetValues(typeof(Language)))
         {
             String Text;
 
@@ -96,6 +129,118 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
+    private void SetGoalsDropDown()
+    {
+        _ClanGoals.options.Clear();
+        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+            {
+          String Text;
+
+            switch (goal)
+            {
+                case Goals.None:
+                    Text = "None";
+                    break;
+                case Goals.Fiilistely:
+                    Text = "Fiilistely";
+                    break;
+                case Goals.Grindaus:
+                    Text = "Grindaus";
+                    break;
+                case Goals.Intohimoisuus:
+                    Text = "Intohimoisuus";
+                    break;
+                case Goals.Keraily:
+                    Text = "Keraily";
+                    break;
+                default:
+                    Text = "";
+                    break;
+            }
+            _ClanGoals.options.Add(new TMP_Dropdown.OptionData(Text));
+       }
+    }
+    private void SetToggleListeners()
+    {
+        _AgeTaaperot.onValueChanged.RemoveAllListeners();
+        _AgeAikuiset.onValueChanged.RemoveAllListeners();
+        _AgeKaikenIkaiset.onValueChanged.RemoveAllListeners();
+        _AgeTeinit.onValueChanged.RemoveAllListeners();
+
+         _AgeTaaperot.onValueChanged.AddListener((Value) =>
+         {
+             if (Value)
+             {
+                 SetClanAge(ClanAge.AgeToddlers);
+                 ColorBlock colors = _AgeTaaperot.colors;
+                 colors.normalColor = Color.yellow;
+                 _AgeTaaperot.colors = colors;
+             }
+             else
+             {
+                 ColorBlock colors = _AgeTaaperot.colors;
+                 colors.normalColor = Color.white;
+                 _AgeTaaperot.colors = colors;
+             }
+         });
+        _AgeAikuiset.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeAdults);
+                ColorBlock colors = _AgeAikuiset.colors;
+                colors.normalColor = Color.yellow;
+                _AgeAikuiset.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeAikuiset.colors;
+                colors.normalColor = Color.white;
+                _AgeAikuiset.colors = colors;
+            }
+        });
+        _AgeKaikenIkaiset.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeAllAges);
+                ColorBlock colors = _AgeKaikenIkaiset.colors;
+                colors.normalColor = Color.yellow;
+                _AgeKaikenIkaiset.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeKaikenIkaiset.colors;
+                colors.normalColor = Color.white;
+                _AgeKaikenIkaiset.colors = colors;
+            }
+        });
+        _AgeTeinit.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeTeenagers);
+                ColorBlock colors = _AgeTeinit.colors;
+                colors.normalColor = Color.yellow;
+                _AgeTeinit.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeTeinit.colors;
+                colors.normalColor = Color.white;
+                _AgeTeinit.colors = colors;
+            }
+        });
+
+
+
+    }
+    private void SetClanAge(ClanAge age)
+    {
+        _clanAgeEnum = age;
+    }
+
+
     private void SetValuesPanel()
     {
         for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
@@ -117,11 +262,24 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanButton.isOn;
 
         Language language = (Language)_ClanLanguageDropdown.value;
+        Goals goals = (Goals)_ClanGoals.value;
         String Phrase = _clanPhrase.text;
-        Debug.Log($"language: {language}, Phrase: {Phrase} ");
+        Debug.Log($"language: {language}, Phrase: {Phrase}, Goals: {goals} clanAgeEnum {_clanAgeEnum},");
 
         if (clanName == string.Empty /*|| clanTag == string.Empty || _gameCoinsInputField.text == string.Empty*/)
+        {
+            _ClanNameWarningImage.gameObject.SetActive( true );
+            _NameTakenPopup.ActivatePopUp("Lisää klaanin nimi");
             return;
+        }
+
+        /*if (_clanPhrase.text== string.Empty)
+        {
+           _ClanNameWarningImage.gameObject.SetActive(true);
+            _NameTakenPopup.ActivatePopUp("Lisää klaanin motto");
+            return;
+        }*/
+        
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
         {
@@ -132,7 +290,7 @@ public class ClanCreateNew : MonoBehaviour
 
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {true}", _naviTarget);
             var windowManager = WindowManager.Get();
-            windowManager.PopCurrentWindow();
+            //windowManager.PopCurrentWindow();
             // Check if navigation target window is already in window stack and we area actually going back to it via button.
             var windowCount = windowManager.WindowCount;
             if (windowCount > 1)

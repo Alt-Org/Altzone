@@ -33,6 +33,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private SoulHomeController _soulHomeController;
         [SerializeField] private TowerController _towerController;
         [SerializeField] private GameObject _avatarPlaceholder;
+        [SerializeField] private Camera _towerCamera;
 
 
         private List<Furniture> _furnitureList = null;
@@ -156,9 +157,9 @@ namespace MenuUI.Scripts.SoulHome {
             foreach (Room room in _soulHomeRooms.Room)
             {
                 GameObject roomObject = Instantiate (_roomPrefab, roompositions[i].transform);
-                Room roomInfo = roomObject.GetComponent<RoomData>().RoomInfo = room;
-                roomObject.GetComponent<RoomData>().RoomInfo.Id = room.Id;
-                roomObject.GetComponent<RoomData>().Controller = _soulHomeController;
+                Room roomInfo = /*roomObject.GetComponent<RoomData>().RoomInfo =*/ room;
+                //roomObject.GetComponent<RoomData>().RoomInfo.Id = room.Id;
+                //roomObject.GetComponent<RoomData>().Controller = _soulHomeController;
                 roompositions[i].transform.localPosition = new(0,i* roomObject.GetComponent<BoxCollider2D>().size.y, 0);
                 if (_isometric) {
                     roomObject.transform.Find("Floor").gameObject.GetComponent<Image>().color = roomInfo.Floor;
@@ -183,7 +184,11 @@ namespace MenuUI.Scripts.SoulHome {
                     roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
                     roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
                 }
-                roompositions[i].transform.GetChild(0).GetComponent<RoomData>().InitializeRoom();
+                roomObject.GetComponent<RoomData>().InitializeRoom(room,_soulHomeController, _towerCamera);
+                if (i == 0)
+                {
+                    _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();
+                }
                 i++;
             }
             SetSoulhomeHeight();
@@ -308,6 +313,8 @@ namespace MenuUI.Scripts.SoulHome {
                     _soulHomeController.AddFurniture(test10);
                     var test11 = new Furniture(i * 1000 + 10, "ArmChair_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f, false);
                     _soulHomeController.AddFurniture(test11);
+                    var test12 = new Furniture(i * 1000 + 11, "Sofa_Rakkaus", new Vector2Int(-1, -1), FurnitureSize.ThreeXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
+                    _soulHomeController.AddFurniture(test12);
                     i++;
                 }
             }

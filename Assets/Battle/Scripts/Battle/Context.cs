@@ -27,5 +27,6 @@ namespace Battle.Scripts.Battle
         internal static SyncedFixedUpdateClock GetSyncedFixedUpdateClock => Object.FindObjectOfType<SyncedFixedUpdateClock>();
         internal static SlingController GetSlingController => Object.FindObjectOfType<SlingController>();
         internal static BallHandler GetBallHandler => Object.FindObjectOfType<BallHandler>();
+        internal static DiamondController GetDiamondController => Object.FindObjectOfType<DiamondController>();
     }
 }

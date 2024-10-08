@@ -1,5 +1,6 @@
 using UnityEngine;
 using Prg.Scripts.Common.PubSub;
+using System.Runtime.CompilerServices;
 
 namespace Battle.Scripts.Battle.Players
 {
@@ -9,7 +10,6 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private GameObject _shieldGumball;
         [SerializeField] private GameObject _shieldPopped;
         [SerializeField] private ShieldManager _shieldManager;
-
 
         [Header("Teammate Vacuum Strength")]
         [SerializeField] private float _teammateVacuumStrength;
@@ -29,6 +29,19 @@ namespace Battle.Scripts.Battle.Players
             _teammateVacuumDuration -= _teammateVacuumDurationIncrement;
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             this.Subscribe<TeamsAreReadyForGameplay>(OnTeamsAreReadyForGameplay);
+
+            PlayerActor playerActor = _battlePlayer.PlayerActor;
+
+            _actorShieldTransform = _battlePlayer.PlayerShieldManager.transform;
+            _actorCharacterTransform = _battlePlayer.PlayerCharacter.transform;
+
+            //Important check
+            _hasTeammate = _battlePlayer.Teammate != null;
+
+            if (_hasTeammate)
+            {
+                _teammateShieldTransform = _battlePlayer.Teammate.PlayerShieldManager.transform;
+            }
         }
 
         public bool BounceOnBallShieldCollision => true;
@@ -42,17 +55,20 @@ namespace Battle.Scripts.Battle.Players
         {
             _battleDebugLogger.LogInfo("OnBallShieldCollision called");
 
-            //Increase vacuum strength
-            _teammateVacuumStrength += _teammateVacuumStrengthIncrement;
+            if (_hasTeammate)
+            {
+                //Increase vacuum strength
+                _teammateVacuumStrength += _teammateVacuumStrengthIncrement;
 
-            //Increase vacuum duration
-            _teammateVacuumDuration += _teammateVacuumDurationIncrement;
+                //Increase vacuum duration
+                _teammateVacuumDuration += _teammateVacuumDurationIncrement;
 
-            //Timer on
-            _teammateVacuumState = true;
+                //Timer on
+                _teammateVacuumState = true;
 
-            _battleDebugLogger.LogInfo("teammateVacuumStrength is " + _teammateVacuumStrength);
-            _battleDebugLogger.LogInfo("TeammateVacuum on");
+                _battleDebugLogger.LogInfo("teammateVacuumStrength is " + _teammateVacuumStrength);
+                _battleDebugLogger.LogInfo("TeammateVacuum on");
+            }
         }
 
         public void OnBallShieldBounce()
@@ -78,7 +94,7 @@ namespace Battle.Scripts.Battle.Players
 
         private IPlayerDriver _driver;
 
-        private BattleDebugLogger _battleDebugLogger;
+        private bool _hasTeammate;
 
         private int _shieldTurn = 0;
 
@@ -89,21 +105,19 @@ namespace Battle.Scripts.Battle.Players
         private bool _teammateVacuumState = false;
         private int _teammateVacuumTimer;
 
+        private BattleDebugLogger _battleDebugLogger;
+
         private void Start()
         {}
 
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
-            PlayerActor playerActor = _battlePlayer.PlayerActor;
-            int teamnumber = _battlePlayer.PlayerPosition;
-
-            _actorShieldTransform = _battlePlayer.PlayerShieldManager.transform;
-            _actorCharacterTransform = _battlePlayer.PlayerCharacter.transform;
-            _teammateShieldTransform = _battlePlayer.Teammate.PlayerShieldManager.transform;
         }
 
         private void FixedUpdate()
         {
+            if (!_hasTeammate) return;
+
             if (_teammateVacuumState == true && _teammateVacuumDuration > _teammateVacuumTimer)
             {
                 _teammateVacuumTimer++;
@@ -125,7 +139,8 @@ namespace Battle.Scripts.Battle.Players
                 //_actorCharacterTransform.position = newPosition;
                 _actorShieldTransform.position = newPosition;
             }
-            else {
+            else
+            {
                 _teammateVacuumState = false;
                 _teammateVacuumTimer = 0;
             }

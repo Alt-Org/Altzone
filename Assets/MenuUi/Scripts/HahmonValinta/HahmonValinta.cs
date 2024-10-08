@@ -65,7 +65,7 @@ public class HahmonValinta : MonoBehaviour
         store.GetPlayerData(playerGuid, playerData =>
         {
             _playerData = playerData;
-            characters = playerData.BattleCharacters.ToList();
+            //characters = playerData.BattleCharacters.ToList();
         });
     }
 

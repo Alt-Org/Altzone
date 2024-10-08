@@ -13,6 +13,8 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] PlayerActor _teammatePlayerActor;
         [SerializeField] Transform _fakeBallTransform;
 
+        private bool _isOnLocalTeam = false;
+
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
         public bool BounceOnBallShieldCollision => false;
@@ -69,7 +71,9 @@ namespace Battle.Scripts.Battle.Players
         private void OnTeamsAreReadyForGameplay(TeamsAreReadyForGameplay data)
         {
             // Find and store the teammate
-            FindTeammate(data);
+            //FindTeammate(data);
+
+            _isOnLocalTeam = BattlePlayer.BattleTeam.TeamNumber == data.LocalPlayer.BattleTeam.TeamNumber;
         }
 
         private void FindTeammate(TeamsAreReadyForGameplay data)
@@ -99,6 +103,7 @@ namespace Battle.Scripts.Battle.Players
                 }
             }
             */
+
         }
 
         [PunRPC]

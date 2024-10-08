@@ -322,6 +322,10 @@ public class ServerManager : MonoBehaviour
                         clanFurniture.Add(new ClanFurniture((10000 + 1000 + i).ToString(), "Sofa_Rakkaus"));
                         clanFurniture.Add(new ClanFurniture((10000 + 1100 + i).ToString(), "ArmChair_Rakkaus"));
                         clanFurniture.Add(new ClanFurniture((10000 + 1200 + i).ToString(), "Closet_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1300 + i).ToString(), "Chair_Neuro"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1400 + i).ToString(), "Dresser_Neuro"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1500 + i).ToString(), "Stool_Neuro"));
+
                         i++;
                     }
 
@@ -337,7 +341,7 @@ public class ServerManager : MonoBehaviour
                         while (true)
                         {
                             furniture2X = UnityEngine.Random.Range(0, slotColumn - 7);
-                            furniture2Y = UnityEngine.Random.Range(1, slotRows);
+                            furniture2Y = UnityEngine.Random.Range(2, slotRows);
                             if ((furniture2X >= furniture1X - 7 && furniture2X <= furniture1X + 1 && furniture2Y >= furniture1Y - 1 && furniture2Y <= furniture1Y + 2)) continue;
                             else break;
                         }
@@ -353,11 +357,16 @@ public class ServerManager : MonoBehaviour
             }
         }));
 
+        yield return StartCoroutine(GetClanPlayers(members =>
+        {
+            clanData.Members = members;
+        }));
+
         // Saves clan data including its items.
         store.SaveClanData(clanData, null);
     }
 
-    public IEnumerator GetClanPlayers(Action<List<ServerPlayer>> callback)
+    public IEnumerator GetClanPlayers(Action<List<ClanMember>> callback)
     {
         if (Clan == null)
         {
@@ -370,9 +379,9 @@ public class ServerManager : MonoBehaviour
             {
                 if (members != null)
                 {
-                    foreach (ServerPlayer player in members)
+                    foreach (ClanMember player in members)
                     {
-                        Debug.LogWarning(player.name);
+                        //Debug.Log(player.Name);
                     }
                     callback(members);
                 }
@@ -501,7 +510,7 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator GetClanMembersFromServer(Action<List<ServerPlayer>> callback)
+    public IEnumerator GetClanMembersFromServer(Action<List<ClanMember>> callback)
     {
         /*if (Clan != null)
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
@@ -514,12 +523,12 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                List<ServerPlayer> members = new List<ServerPlayer>();
+                List<ClanMember> members = new List<ClanMember>();
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 JArray middleresult = result["data"]["Clan"]["Player"] as JArray;
                 foreach (var value in middleresult)
                 {
-                    members.Add(value.ToObject<ServerPlayer>());
+                    members.Add(new(value.ToObject<ServerPlayer>()));
                 }
 
                 // Saves clan data to DataStorage

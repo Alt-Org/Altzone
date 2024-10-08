@@ -1,42 +1,78 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Battle.Scripts.Battle.Game
 {
     internal class CameraRotate : MonoBehaviour
     {
-        //UiGridRenderer laittaa tämän koodin päälle kun grid on luotu, jotta sitä voi kääntää tämän koodin startissa
-        [SerializeField] Transform Camera;
-        [SerializeField] Transform Background;
-        [SerializeField] Transform GridOverlay;
-        [SerializeField] Transform DiamondCounters;
-        [SerializeField] RectTransform BetaDiamonds;
-        [SerializeField] RectTransform AlphaDiamonds;
-        [SerializeField] Transform DiamondCounters2;
-        [SerializeField] RectTransform BetaDiamonds2;
-        [SerializeField] RectTransform AlphaDiamonds2;
+        // UiGridRenderer laittaa tämän koodin päälle kun grid on luotu, jotta sitä voi kääntää tämän koodin startissa
 
-        private int TeamNumber;
+        // Serialized Fields
+        [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _background;
+        [SerializeField] private Transform _gridOverlay;
+        [SerializeField] private RectTransform _alphaDiamonds;
+        [SerializeField] private RectTransform _betaDiamonds;
 
+        // Private fields
+        private int _teamNumber;
+
+
+        private struct AnchorPreset {
+            public Vector2 min;
+            public Vector2 max;
+            public Vector2 anchoredPos;
+        }
+
+        private AnchorPreset _anchorPresetAlpha;
+        private AnchorPreset _anchorPresetBeta;
+
+        //Private methods
         private void Start()
         {
-            if (PhotonNetwork.InRoom)
+            if (!PhotonNetwork.InRoom) return;
+
+            Player localPlayer = PhotonNetwork.LocalPlayer;
+            int localPlayerPos = PhotonBattle.GetPlayerPos(localPlayer);
+            _teamNumber = (int)PhotonBattle.GetTeamNumber(localPlayerPos);
+
+            Debug.Log($"TeamNumber {_teamNumber} pos {localPlayerPos} {localPlayer.GetDebugLabel()}");
+
+            _anchorPresetAlpha = new()
             {
-                var player = PhotonNetwork.LocalPlayer;
-                var playerPos = PhotonBattle.GetPlayerPos(player);
-                TeamNumber = (int)PhotonBattle.GetTeamNumber(playerPos);
-                Debug.Log($"TeamNumber {TeamNumber} pos {playerPos} {player.GetDebugLabel()}");
-                if (TeamNumber == 2)   //2
-                {
-                    Camera.eulerAngles = new Vector3(0, 0, 180);
-                    Background.eulerAngles = new Vector3(0, 0, 180);
-                    GridOverlay.eulerAngles = new Vector3(0, 0, 180);
-                    AlphaDiamonds.anchoredPosition = new Vector2(BetaDiamonds.anchoredPosition.x, BetaDiamonds.anchoredPosition.y);
-                    AlphaDiamonds2.anchoredPosition = new Vector2(BetaDiamonds2.anchoredPosition.x, BetaDiamonds2.anchoredPosition.y);
-                    BetaDiamonds.anchoredPosition = new Vector2(-BetaDiamonds2.anchoredPosition.x, -BetaDiamonds2.anchoredPosition.y);
-                    BetaDiamonds2.anchoredPosition = new Vector2(-AlphaDiamonds.anchoredPosition.x, -AlphaDiamonds.anchoredPosition.y);
-                }
+                min = _alphaDiamonds.anchorMin,
+                max = _alphaDiamonds.anchorMax,
+                anchoredPos = _alphaDiamonds.anchoredPosition
+            };
+
+            _anchorPresetBeta = new()
+            {
+                min = _betaDiamonds.anchorMin,
+                max = _betaDiamonds.anchorMax,
+                anchoredPos = _betaDiamonds.anchoredPosition
+            };
+
+            if (_teamNumber == 2)
+            {
+                RotateCamera();
             }
+        }
+
+        private void RotateCamera()
+        {
+            _camera.eulerAngles = new Vector3(0, 0, 180);
+            _background.eulerAngles = new Vector3(0, 0, 180);
+            _gridOverlay.eulerAngles = new Vector3(0, 0, 180);
+
+            _alphaDiamonds.anchorMin = _anchorPresetBeta.min;
+            _alphaDiamonds.anchorMax = _anchorPresetBeta.max;
+            _alphaDiamonds.anchoredPosition = _anchorPresetBeta.anchoredPos;
+
+            _betaDiamonds.anchorMin = _anchorPresetAlpha.min;
+            _betaDiamonds.anchorMax = _anchorPresetAlpha.max;
+            _betaDiamonds.anchoredPosition = _anchorPresetAlpha.anchoredPos;
         }
     }
 }

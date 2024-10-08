@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 9189273488952845649}
   - component: {fileID: 9189273488952845648}
   - component: {fileID: 9189273488952845655}
-  - component: {fileID: 4576735683080757802}
-  - component: {fileID: 652385273024204873}
+  - component: {fileID: 2725682533225241869}
   m_Layer: 7
   m_Name: Diamond
   m_TagString: Diamond
@@ -160,7 +159,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &4576735683080757802
+--- !u!114 &2725682533225241869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,21 +168,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9189273488952845651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6417ca7a7f94ff418fe4981b079875f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  min: 5
-  max: 10
-  DiamondDisappear: {fileID: 0}
---- !u!114 &652385273024204873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9189273488952845651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53d8e546e66aad54aabc878b360d57b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 06a22fd8b05b4154cb51643da84582fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

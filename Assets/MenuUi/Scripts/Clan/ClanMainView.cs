@@ -8,15 +8,33 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _noClanPanel;
 
     [SerializeField] private ClanLeaderboard _leaderboard;
-    [SerializeField] private TextMeshProUGUI _clanCoins;
+
+    [Header("Text fields")]
+    [SerializeField] private TextMeshProUGUI _clanName;
+    [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
-    [SerializeField] private TextMeshProUGUI _clanNameTextField;
+    [SerializeField] private TextMeshProUGUI _clanCoins;
+    [SerializeField] private TextMeshProUGUI _clanTrophies;
+    [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
+    [SerializeField] private TextMeshProUGUI _clanPassword;
+    [SerializeField] private TextMeshProUGUI _clanLanguage;
+    [SerializeField] private TextMeshProUGUI _clanGoal;
+    [SerializeField] private TextMeshProUGUI _clanAge;
+
+    [Header("Other settings fields")]
+    [SerializeField] GameObject _clanOpenObject;
+    [SerializeField] GameObject _clanLockedObject;
+    [SerializeField] Transform _valueRowFirst;
+    [SerializeField] Transform _valueRowSecond;
+
+    [Header("Prefabs")]
+    [SerializeField] GameObject _valuePrefab;
 
     private void OnEnable()
     {
         ToggleClanPanel(false);
 
-        if(ServerManager.Instance.Clan != null)
+        if (ServerManager.Instance.Clan != null)
         {
             ToggleClanPanel(true);
             SetPanelValues(ServerManager.Instance.Clan);
@@ -27,9 +45,16 @@ public class ClanMainView : MonoBehaviour
     private void Reset()
     {
         ToggleClanPanel(false);
-        _clanNameTextField.text = "Clan Name";
+        _clanName.text = "Clan Name";
+        _clanPhrase.text = "Klaanin motto";
         _clanMembers.text = "-1";
         _clanCoins.text = "-1";
+        _clanTrophies.text = "-1";
+        _clanGlobalRanking.text = "-1";
+        _clanPassword.text = "SalainenSana123";
+        _clanLanguage.text = "suomi";
+        _clanGoal.text = "Tavoite";
+        _clanAge.text = "Kaikki";
     }
 
     private void ToggleClanPanel(bool isInClan)
@@ -40,16 +65,33 @@ public class ClanMainView : MonoBehaviour
 
     private void SetPanelValues(ServerClan clan)
     {
-        _clanNameTextField.text = clan.name;
-        _clanMembers.text = clan.playerCount.ToString();
+        _clanName.text = clan.name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
         _clanCoins.text = clan.gameCoins.ToString();
+
+        ToggleClanLockGraphic(clan.isOpen);
+
+        // Temp values for testing
+        _clanPhrase.text = "Tähän tulee se klaanin motto/lause";
+        _clanTrophies.text = "-1";
+        _clanGlobalRanking.text = "-1";
+        _clanPassword.text = "SalainenSana123";
+        _clanLanguage.text = "suomi";
+        _clanGoal.text = "Tavoite";
+        _clanAge.text = "Kaikki";
+    }
+
+    private void ToggleClanLockGraphic(bool isClanOpen)
+    {
+        _clanOpenObject.SetActive(isClanOpen);
+        _clanLockedObject.SetActive(!isClanOpen);
     }
 
     public void LeaveClan()
     {
         StartCoroutine(ServerManager.Instance.LeaveClan(success =>
         {
-            if(success)
+            if (success)
                 Reset();
         }));
     }

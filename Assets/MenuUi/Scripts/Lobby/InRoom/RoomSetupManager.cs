@@ -116,10 +116,10 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 var battleCharacter = playerData.CurrentBattleCharacters;
                 Debug.Log($"{battleCharacter[0]}");
                 int[] characterIds = new int[5];
-                float[] characterStats = new float[25];
+                int[] characterStats = new int[25];
                 for (int i = 0; i < 5; i++)
                 {
-                    characterIds[i] = (int)battleCharacter[i].CharacterID;
+                    characterIds[i] = (int)battleCharacter[i].Id;
                     characterStats[i * 5] = battleCharacter[i].Hp;
                     characterStats[i * 5 + 1] = battleCharacter[i].Speed;
                     characterStats[i * 5 + 2] = battleCharacter[i].Resistance;
@@ -127,7 +127,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     characterStats[i * 5 + 4] = battleCharacter[i].Defence;
                 }
 
-                var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
+                //var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
+                var prefabIndex = (int)battleCharacter[0].Id;
                 Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
                 player.SetCustomProperties(new Hashtable
                 {
@@ -324,7 +325,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     _buttonCaption = $"Closed";
                     Debug.Log(_buttonCaption);
                     break;
-                case 4: 
+                case 4:
                     _buttonStateNumber = 0;
                     break;
             }

@@ -146,6 +146,16 @@ namespace Altzone.Scripts.Model
             };
         }
 
+        internal static List<CustomCharacter> CreateCustomCharacters(List<BaseCharacter> characters)
+        {
+            List<CustomCharacter> list = new();
+            foreach (BaseCharacter character in characters)
+            {
+                list.Add(new(character));
+            }
+            return list;
+        }
+
         /// <summary>
         /// Game Furniture is based from data in Google Sheets.<br />
         /// https://docs.google.com/spreadsheets/d/1GGh2WWjZDs98yrxd2sU2STUX2AyvwqZGItSqwWWpCm4/edit#gid=0
@@ -159,18 +169,21 @@ namespace Altzone.Scripts.Model
 
             var gameFurniture = new List<GameFurniture>();
 
-            gameFurniture.Add(new GameFurniture(1.ToString(), "Sofa_Taakka", FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(2.ToString(), "Mirror_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(3.ToString(), "Floorlamp_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(4.ToString(), "Toilet_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(5.ToString(), "Sink_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(6.ToString(), "Closet_Taakka", FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(7.ToString(), "CoffeeTable_Taakka", FurnitureSize.TwoXThree, FurnitureSize.ThreeXTwo, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(8.ToString(), "SideTable_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(9.ToString(), "ArmChair_Taakka", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(10.ToString(), "Sofa_Rakkaus", FurnitureSize.ThreeXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(11.ToString(), "ArmChair_Rakkaus", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f));
-            gameFurniture.Add(new GameFurniture(12.ToString(), "Closet_Rakkaus", FurnitureSize.ThreeXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f));
+            gameFurniture.Add(new GameFurniture(1.ToString(), "Sofa_Taakka", FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 30f, 150f));
+            gameFurniture.Add(new GameFurniture(2.ToString(), "Mirror_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 8f, 100f));
+            gameFurniture.Add(new GameFurniture(3.ToString(), "Floorlamp_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 2.8f, 240f));
+            gameFurniture.Add(new GameFurniture(4.ToString(), "Toilet_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 31f, 150f));
+            gameFurniture.Add(new GameFurniture(5.ToString(), "Sink_Schrodinger", FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 13f, 150f));
+            gameFurniture.Add(new GameFurniture(6.ToString(), "Closet_Taakka", FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 48f, 120f));
+            gameFurniture.Add(new GameFurniture(7.ToString(), "CoffeeTable_Taakka", FurnitureSize.TwoXThree, FurnitureSize.ThreeXTwo, FurniturePlacement.Floor, 26f, 80f));
+            gameFurniture.Add(new GameFurniture(8.ToString(), "SideTable_Taakka", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 16f, 60f));
+            gameFurniture.Add(new GameFurniture(9.ToString(), "ArmChair_Taakka", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 16f, 120f));
+            gameFurniture.Add(new GameFurniture(10.ToString(), "Sofa_Rakkaus", FurnitureSize.TwoXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 27f, 130f));
+            gameFurniture.Add(new GameFurniture(11.ToString(), "ArmChair_Rakkaus", FurnitureSize.TwoXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 13f, 100f));
+            gameFurniture.Add(new GameFurniture(12.ToString(), "Closet_Rakkaus", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 45f, 130f));
+            gameFurniture.Add(new GameFurniture(13.ToString(), "Chair_Neuro", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 170f));
+            gameFurniture.Add(new GameFurniture(14.ToString(), "Dresser_Neuro", FurnitureSize.TwoXFour, FurnitureSize.FourXTwo, FurniturePlacement.Floor, 24f, 100f));
+            gameFurniture.Add(new GameFurniture(15.ToString(), "Stool_Neuro", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 4f, 40f));
             //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));

@@ -34,6 +34,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
+        private BoxCollider2D _roomBounds;
+
         private List<GameObject> _changedFurnitureList = new();
 
         private bool _startFinished = false;
@@ -83,6 +85,7 @@ namespace MenuUI.Scripts.SoulHome
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
         public bool Rotated { get => _rotated;}
+        public BoxCollider2D RoomBounds { get => _roomBounds; set { if(_roomBounds == null) _roomBounds = value; } }
 
         // Start is called before the first frame update
         void Start()
@@ -916,7 +919,7 @@ namespace MenuUI.Scripts.SoulHome
         public void SetCameraBounds()
         {
             cameraBounds = _backgroundSprite.bounds;
-            Bounds roomBounds = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().bounds;
+            Bounds roomBounds = _roomBounds.bounds;
             cameraMinX = roomBounds.min.x;
             cameraMinY = cameraBounds.min.y;
             cameraMaxX = roomBounds.max.x;
@@ -945,7 +948,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public float GetCameraYDistance()
         {
-            float heightToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.y / 2 + 2;
+            float heightToEdge = _roomBounds.size.y / 2 + 2;
             float cameraAngleVertical = _camera.fieldOfView / 2;
             float distanceMaxY = heightToEdge / Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180));
             //Debug.Log(heightToEdge + ":" + cameraAngleVertical + ":" + Mathf.Tan(cameraAngleVertical * (Mathf.PI / 180)) + ":" + distanceMaxY);
@@ -954,7 +957,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public float GetCameraXDistance()
         {
-            float widthToEdge = _rooms.transform.GetChild(0).GetChild(0).GetComponent<BoxCollider2D>().size.x / 2;
+            float widthToEdge = _roomBounds.size.x / 2;
             float cameraAngle = Camera.VerticalToHorizontalFieldOfView(_camera.fieldOfView, _camera.aspect) / 2;
             float distanceMaxX = widthToEdge / Mathf.Tan(cameraAngle * (Mathf.PI / 180));
             //Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);

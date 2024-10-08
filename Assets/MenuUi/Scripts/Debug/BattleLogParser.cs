@@ -4,16 +4,27 @@ namespace DebugUi.Scripts.BattleAnalyzer
 {
     internal static class BattleLogParser
     {
-        public static IReadOnlyMsgStorage ParseLog(string[] lines)
+        public static IReadOnlyMsgStorage ParseLogs(string[][] logs)
         {
-            MsgStorage msgStorage = new(1);
+            MsgStorage msgStorage = new(logs.Length);
 
+            for (int i = 0; i < logs.Length; i++)
+            {
+                string[] lines = logs[i];
+                ParseLog(msgStorage, i, lines);
+            }
+
+            return msgStorage;
+        }
+
+        private static void ParseLog(MsgStorage msgStorage, int client, string[] lines)
+        {
             int i = 0;
 
             // find start and set i to first battle msg line or return if not found
             while (true)
             {
-                if (i >= lines.Length) return msgStorage;
+                if (i >= lines.Length) return;
                 if (lines[i] == "[[BATTLE LOG START]]") break;
                 i++;
             }
@@ -85,12 +96,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     }
                 }
 
-                msgStorage.Add(new MsgObject(0, time, msg, trace, type));
+                msgStorage.Add(new MsgObject(client, time, msg, trace, type));
             } while (loop);
 
             // add test msg containing number of total messages
-            msgStorage.Add(new MsgObject(0, 999999, msgStorage.TotalMessages().ToString(), "", MessageType.Info));
-            return msgStorage;
+            //msgStorage.Add(new MsgObject(0, 999999, msgStorage.TotalMessages().ToString(), "", MessageType.Info));
         }
 
         private static readonly Regex[] s_filterPatters =
