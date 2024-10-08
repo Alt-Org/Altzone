@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
-    public class MessagePanel : MonoBehaviour, IPointerClickHandler
+    public class MessagePanel : MonoBehaviour/*, IPointerClickHandler*/
     {
         [SerializeField] private TextMeshProUGUI _infoTextField;
         [SerializeField] private TextMeshProUGUI _msgMainTextField;
         [SerializeField] private TextMeshProUGUI _traceTextField;
+        [SerializeField] private Button _logButton;
         public GameObject Panel;
+
+        void Start()
+        {
+            _logButton.onClick.AddListener(ClosePanel);
+        }
 
         public void OpenPanel()
         {
@@ -61,13 +68,21 @@ namespace DebugUi.Scripts.BattleAnalyzer
             OpenPanel();
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnPointerClick(BaseEventData eventData)
+        {
+            Debug.Log(((PointerEventData)eventData).pointerCurrentRaycast.gameObject.name);
+            if (!((PointerEventData)eventData).pointerCurrentRaycast.gameObject.Equals(Panel))
+            {
+                ClosePanel();
+            }
+        }
+        /*public void OnPointerClick(PointerEventData eventData)
         {
             Debug.Log(eventData.pointerCurrentRaycast.gameObject.name);
             if (!eventData.pointerCurrentRaycast.gameObject.Equals(Panel))
             {
                 ClosePanel();
             }
-        }
+        }*/
     }
 }
