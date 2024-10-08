@@ -35,7 +35,6 @@ Transform:
   - {fileID: 4399558442065964335}
   - {fileID: 5986016577246546197}
   - {fileID: 681645884381277407}
-  - {fileID: 599164680839746471}
   - {fileID: 2334243288313344559}
   m_Father: {fileID: 8975400094333792377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -113,7 +112,7 @@ Transform:
   m_GameObject: {fileID: 963002312254008919}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -1, z: 0}
+  m_LocalPosition: {x: 2, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -320,7 +319,7 @@ Transform:
   m_GameObject: {fileID: 2773596303812679124}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: -1, z: 0}
+  m_LocalPosition: {x: -2, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -495,7 +494,7 @@ Transform:
   m_GameObject: {fileID: 4943106236215032606}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -724,7 +723,7 @@ Transform:
   m_GameObject: {fileID: 6760968198380134112}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: 0}
+  m_LocalPosition: {x: -2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -918,21 +917,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d86e41d81ec448438c14ac9436f5bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TeamDiamonds: {fileID: 0}
-  TeamDiamondCount: {fileID: 0}
-  TeamDiamonds2: {fileID: 0}
-  TeamDiamondCount2: {fileID: 0}
-  TeamDiamonds3: {fileID: 0}
-  TeamDiamondCount3: {fileID: 0}
-  TeamDiamonds4: {fileID: 0}
-  TeamDiamondCount4: {fileID: 0}
-  PlayerDriverPhotons: []
-  PlayerDriverPhoton: {fileID: 0}
-  PlayerActor: {fileID: 8975400094333793158}
-  View: {fileID: 0}
-  OwnDiamonds1: 0
-  TeamNumber: 0
-  EventSender: 
 --- !u!61 &8290612016131678807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1100,7 +1084,7 @@ GameObject:
   - component: {fileID: 599164680839746471}
   - component: {fileID: 34747603798743812}
   m_Layer: 0
-  m_Name: SquareFlashSprite
+  m_Name: HitboxIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1119,7 +1103,7 @@ Transform:
   m_LocalScale: {x: 3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4593924629702427175}
+  m_Father: {fileID: 2334243288313344559}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &34747603798743812
 SpriteRenderer:
@@ -2223,6 +2207,10 @@ PrefabInstance:
     - {fileID: 8364714028245762417, guid: 2457932d6d029d74ba852ee545d0bfb7, type: 3}
     - {fileID: 9118148286315577285, guid: 2457932d6d029d74ba852ee545d0bfb7, type: 3}
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5822242101316914633, guid: 2457932d6d029d74ba852ee545d0bfb7,
+        type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 599164680839746471}
     - targetCorrespondingSourceObject: {fileID: 7987686430154631567, guid: 2457932d6d029d74ba852ee545d0bfb7,
         type: 3}
       insertIndex: -1
