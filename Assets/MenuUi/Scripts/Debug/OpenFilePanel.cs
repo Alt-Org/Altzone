@@ -13,14 +13,38 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private Button _denyLogsButton;
         [SerializeField] private TMP_InputField _filePathTextField;
         [SerializeField] private TMP_Dropdown _clientSelector;
+        [SerializeField] private DebugLogFileStoreHandler _fileStoreHandler;
+
+        private void OnEnable()
+        {
+            DebugLogStoreField.OnAddressDeleted += OnFilePathChange;
+        }
+        private void OnDisable()
+        {
+            DebugLogStoreField.OnAddressDeleted -= OnFilePathChange;
+        }
 
         public void OnButtonClick()
         {
             // Open file managing window
-            _selectedFilePath[_clientSelector.value] = PanelOpener.OpenFileDialog();
+            if (File.Exists(_filePathTextField.text))
+            {
+                if(_clientSelector.value == 0)
+                    _fileStoreHandler.SetLogAddress(_filePathTextField.text);
+                else
+                    _fileStoreHandler.SetLogAddress(_filePathTextField.text, _clientSelector.value-1);
+                _filePathTextField.text = "";
+            }
+            else
+            {
+                if (_clientSelector.value == 0)
+                    _fileStoreHandler.SetLogAddress(PanelOpener.OpenFileDialog());
+                else
+                    _fileStoreHandler.SetLogAddress(PanelOpener.OpenFileDialog(), _clientSelector.value-1);
 
-            // Show the file's address and location in the file path text field
-            _filePathTextField.text = _selectedFilePath[_clientSelector.value];
+                // Show the file's address and location in the file path text field
+                //_filePathTextField.text = _fileStoreHandler.GetAddress(_clientSelector.value);
+            }
 
             OnFilePathChange();
         }
@@ -28,7 +52,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public void OnTextFieldEndEdit()
         {
             // Update selected file path
-            _selectedFilePath[_clientSelector.value] = _filePathTextField.text;
+            //_selectedFilePath[_clientSelector.value] = _filePathTextField.text;
 
             OnFilePathChange();
         }
@@ -38,13 +62,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
             if (_logBoxController != null)
             {
                 bool foundlogs = false;
-                string[][] logs = new string[_selectedFilePath.Length][];
-                for (int i = 0; i < _selectedFilePath.Length; i++)
+                string[][] logs = new string[_fileStoreHandler.FieldListCount][];
+                for (int i = 0; i < _fileStoreHandler.FieldListCount; i++)
                 {
-                    if (!string.IsNullOrEmpty(_selectedFilePath[i]))
+                    if (!string.IsNullOrEmpty(_fileStoreHandler.GetAddress(i)))
                     {
                         // Load log file contents
-                        logs[i] = File.ReadAllLines(_selectedFilePath[i]);
+                        logs[i] = File.ReadAllLines(_fileStoreHandler.GetAddress(i));
 
                         foundlogs = true;
                     }
@@ -74,9 +98,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public void DenyLogs()
         {
             // Reset the selected file path and clear the text
-            for (int i = 0; i < _selectedFilePath.Length; i++)
+            for (int i = 0; i < _fileStoreHandler.FieldListCount; i++)
             {
-                _selectedFilePath[i] = "";
+                _fileStoreHandler.SetLogAddress("", i);
             }
             _filePathTextField.text = "";
 
@@ -118,9 +142,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _denyLogsButton.gameObject.SetActive(false);
         }
 
-        private void OnFilePathChange()
+        private void OnFilePathChange(int dummy=0)
         {
-            if (_selectedFilePath[_clientSelector.value] != "" && File.Exists(_selectedFilePath[_clientSelector.value]))
+            bool addressFound = false;
+            for (int i = 0; i < _fileStoreHandler.FieldListCount; i++)
+            {
+                string address = _fileStoreHandler.GetAddress(i);
+                if (string.IsNullOrEmpty(address)) continue;
+                addressFound = true;
+            }
+
+            if (addressFound)
             {
                 // Show "BT_CONFIRMLOGS" and "BT_DENYLOGS" buttons
                 _confirmLogsButton.gameObject.SetActive(true);
