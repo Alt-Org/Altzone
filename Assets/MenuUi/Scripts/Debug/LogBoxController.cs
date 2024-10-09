@@ -103,7 +103,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Add a message to the log box
         private void AddMessageToLog(MsgStorage msgStorage, string message, int time, int client, MessageType messageType)
         {
-            msgStorage.Add(new MsgObject(client, time, message, "", messageType));
+            msgStorage.Add(new MsgObject(client, time, message, 1, "", messageType));
         }
 
         // Update the log text to display all messages

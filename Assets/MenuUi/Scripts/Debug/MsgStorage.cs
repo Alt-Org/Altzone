@@ -32,6 +32,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public MessageType Type { get; }
 
         public bool IsType(MessageTypeOptions typeOptions);
+        public bool IsFromSource(int sourceFlags);
     }
 
     internal interface IReadOnlyTimestamp
@@ -49,6 +50,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
         public int TotalMessages();
+        public IReadOnlyList<int> GetSourceFlags();
+        public string GetSourceFlagName(int sourceFlag);
     }
 
     internal interface IReadOnlyTimelineStorage
@@ -69,7 +72,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public string Trace { get; }
         public MessageType Type { get; }
 
-        internal MsgObject(int client, int time, string msg, string trace, MessageType type)
+        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type)
         {
             Client = client;
             Id = -1;
@@ -77,6 +80,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Msg = msg;
             Trace = trace;
             Type = type;
+
+            _soucreFlag = sourceFlag;
         }
 
         public bool IsType(MessageTypeOptions typeOptions)
@@ -84,10 +89,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return typeOptions.HasFlag((MessageTypeOptions)Type);
         }
 
+        public bool IsFromSource(int soucreFlags)
+        {
+            return (soucreFlags & _soucreFlag) > 0;
+        }
+
         internal void SetId(int id)
         {
             Id = id;
         }
+
+        private int _soucreFlag;
     }
 
     internal class Timestamp : IReadOnlyTimestamp
@@ -192,9 +204,35 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return total;
         }
 
+        public int GetSourceFlagOrNew(string source)
+        {
+            int i = 0;
+            for (; i < _sourceFlagNameList.Count; i++)
+            {
+                if (_sourceFlagNameList[i] == source) return i * i + 1;
+            }
+            int flag = i * i + 1;
+            _sourceFlagList.Add(flag);
+            _sourceFlagNameList.Add(source);
+            return flag;
+        }
+
+        public IReadOnlyList<int> GetSourceFlags()
+        {
+            return _sourceFlagList;
+        }
+
+        public string GetSourceFlagName(int sourceFlag)
+        {
+            return _sourceFlagNameList[(int)Math.Log(sourceFlag, 2)];
+        }
+
         private readonly List<MsgObject>[] _msgList;
         private readonly Dictionary<int, IReadOnlyTimestamp>[] _timeStampMapList;
         private readonly TimelineStorage _timelineStorage;
+
+        private readonly List<int> _sourceFlagList = new();
+        private readonly List<string> _sourceFlagNameList = new();
 
         private class TimelineStorage : IReadOnlyTimelineStorage
         {

@@ -24,6 +24,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             // msg variables
             int time = 0;
             string msg;
+            string soucre;
             string trace;
             MessageType type;
 
@@ -112,12 +113,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 msg = msgParts[0];
 
                 // extract time from msg if possible else use previous time
+                // extract source from msg if possible else use SOURCE UNKNOW
+                soucre = "SOURCE UNKNOW";
                 match = s_battleMsgFormat.Match(msg);
                 if (match.Success)
                 {
                     time = int.Parse(match.Groups[1].Value);
-                    msg = match.Groups[2].Value;
+                    soucre = match.Groups[2].Value;
+                    msg = match.Groups[3].Value;
                 }
+
+                msg = string.Format("[{0}] {1}", soucre, msg);
 
                 switch (msgParts[1])
                 {
@@ -137,10 +143,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                 trace = msgParts[2];
 
-                msgStorage.Add(new MsgObject(client, time, msg, trace, type));
+                msgStorage.Add(new MsgObject(client, time, msg, msgStorage.GetSourceFlagOrNew(soucre), trace, type));
             }
         }
 
-        private static readonly Regex s_battleMsgFormat = new(@"^\[([0-9]+)\] (\[BATTLE\] .*)$", RegexOptions.Singleline);
+        private static void CompareLogs()
+        {
+
+        }
+
+        private static readonly Regex s_battleMsgFormat = new(@"^\[([0-9]+)\] \[BATTLE\] \[([^\]]+)\] (.*)$", RegexOptions.Singleline);
     }
 }
