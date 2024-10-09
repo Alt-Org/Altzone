@@ -38,7 +38,7 @@ namespace Battle.Scripts.Battle.Game
         // State
         private bool _gameStarted = false;
         private int _gameStage = 0;
-       
+
         private int _gameStartUpdateNumber;
 
         // Components
@@ -64,8 +64,6 @@ namespace Battle.Scripts.Battle.Game
             // get components
             _photonView = GetComponent<PhotonView>();
 
-
-
             // get other control objects
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _playerManager = Context.GetPlayerManager;
@@ -86,6 +84,11 @@ namespace Battle.Scripts.Battle.Game
 
             // debug test
             _battleDebugLogger.LogInfo("test");
+        }
+
+        private void OnDestroy()
+        {
+            BattleDebugLogger.End();
         }
 
         #region Private Methods - Message Listeners
