@@ -12,6 +12,8 @@ namespace Battle.Scripts.Battle.Players
 
         public bool Initialized => _initialized;
 
+        public bool ShieldManagerDebug = false;
+
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
         #endregion Public - Properties
@@ -44,6 +46,12 @@ namespace Battle.Scripts.Battle.Players
             _currentShield.ShieldGameObject.SetActive(true);
             _currentShield.ShieldHitbox.SetActive(_hitboxActive && _timer <= 0);
             _currentShield.ShieldSpriteRenderer.enabled = _showShield;
+
+            _currentShield.ShieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject.SetActive(false);
+            if (ShieldManagerDebug == true)
+            {
+                _currentShield.ShieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject.SetActive(true);
+            }
         }
 
         public void SetHitboxActive(bool active)
@@ -101,6 +109,7 @@ namespace Battle.Scripts.Battle.Players
 
             private readonly GameObject[] _spriteGameObjects;
             private readonly SpriteRenderer[] _spriteRenderers;
+
         }
 
         #region Private - Fields
@@ -110,6 +119,7 @@ namespace Battle.Scripts.Battle.Players
         private bool _hitboxActive;
         private bool _showShield;
         private int _timer = -1;
+
         #endregion Private - Fields
 
         #region Private - Methods
@@ -124,6 +134,10 @@ namespace Battle.Scripts.Battle.Players
         #endregion Private - Methods
 
         #endregion Private
+
+        #region ShieldManagerDebug
+
+        #endregion
     }
 }
 
