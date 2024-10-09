@@ -53,6 +53,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
     internal interface IReadOnlyTimelineStorage
     {
+        public int ClientCount { get; }
         public IReadOnlyTimestamp GetTimestamp(int client, int time);
         public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
     }
@@ -197,6 +198,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private class TimelineStorage : IReadOnlyTimelineStorage
         {
+            public int ClientCount => _timelines.Length;
             internal TimelineStorage(int clientCount)
             {
                 _timelines = new List<Timestamp>[clientCount];

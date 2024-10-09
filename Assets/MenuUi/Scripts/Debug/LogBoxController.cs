@@ -13,9 +13,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private RectTransform _contentBoxRectTransform; // Reference to the content box RectTransform
         [SerializeField] private Scrollbar _verticalScrollbar;           // Reference to the vertical scrollbar (if applicable)
         [SerializeField] private MessagePanel _messagePanel;             // Reference to the vertical scrollbar (if applicable)
+        [SerializeField] private DebugTimelineController _debugTimelineController;
         [SerializeField] private bool _generateTestLogs;
 
-        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); }
+        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); UpdateTimeline(); }
 
         public void SetMsgFilter(int client, MessageTypeOptions msgFilter)
         {
@@ -24,6 +25,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             msgBox.MsgFilter = msgFilter;
             FilterLog(msgBox, messages);
+        }
+        public void SetTimelineFilter(MessageTypeOptions msgFilter, bool includeEmpty, int client = 0)
+        {
+            _debugTimelineController.FilterTimeline(msgFilter, includeEmpty);
         }
 
         internal void MessageDeliver(IReadOnlyMsgObject msgObject)
@@ -131,6 +136,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
                 msgBox.MsgBoxObjectList[i].SetActive(messages[i].IsType(msgBox.MsgFilter));
             }
+        }
+
+        private void UpdateTimeline()
+        {
+            IReadOnlyTimelineStorage messages = _msgStorage.GetTimelineStorage();
+            _debugTimelineController.SetTimeline(messages);
         }
     }
 }
