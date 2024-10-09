@@ -49,7 +49,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _includeEmpty = false;
                 ChangeColor(_emptyToggle, Color.grey);
             }
-            if (_filterType is FilterType.LogBox) _controller.SetMsgFilter(_client, _typeOptions);
+            if (_filterType is FilterType.LogBox) _controller.SetMsgTypeFilter(_client, _typeOptions);
             else _controller.SetTimelineFilter(_typeOptions, _includeEmpty);
         }
 
@@ -65,7 +65,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _typeOptions &= ~MessageTypeOptions.Info;
                 ChangeColor(_infoToggle, Color.grey);
             }
-            if(_filterType is FilterType.LogBox)_controller.SetMsgFilter(_client, _typeOptions);
+            if(_filterType is FilterType.LogBox)_controller.SetMsgTypeFilter(_client, _typeOptions);
             else _controller.SetTimelineFilter(_typeOptions, _includeEmpty);
         }
         private void WarningToggle(bool toggle)
@@ -80,7 +80,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _typeOptions &= ~MessageTypeOptions.Warning;
                 ChangeColor(_warningToggle, Color.grey);
             }
-            if (_filterType is FilterType.LogBox) _controller.SetMsgFilter(_client, _typeOptions);
+            if (_filterType is FilterType.LogBox) _controller.SetMsgTypeFilter(_client, _typeOptions);
             else _controller.SetTimelineFilter(_typeOptions, _includeEmpty);
         }
         private void ErrorToggle(bool toggle)
@@ -95,7 +95,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _typeOptions &= ~MessageTypeOptions.Error;
                 ChangeColor(_errorToggle, Color.grey);
             }
-            if (_filterType is FilterType.LogBox) _controller.SetMsgFilter(_client, _typeOptions);
+            if (_filterType is FilterType.LogBox) _controller.SetMsgTypeFilter(_client, _typeOptions);
             else _controller.SetTimelineFilter(_typeOptions, _includeEmpty);
         }
 

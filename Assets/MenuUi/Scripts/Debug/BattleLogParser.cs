@@ -24,7 +24,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             // msg variables
             int time = 0;
             string msg;
-            string soucre;
+            string source;
             string trace;
             MessageType type;
 
@@ -114,16 +114,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                 // extract time from msg if possible else use previous time
                 // extract source from msg if possible else use SOURCE UNKNOW
-                soucre = "SOURCE UNKNOW";
+                source = "SOURCE UNKNOW";
                 match = s_battleMsgFormat.Match(msg);
                 if (match.Success)
                 {
                     time = int.Parse(match.Groups[1].Value);
-                    soucre = match.Groups[2].Value;
+                    source = match.Groups[2].Value;
                     msg = match.Groups[3].Value;
                 }
 
-                msg = string.Format("[{0}] {1}", soucre, msg);
+                msg = string.Format("[{0}] {1}", source, msg);
 
                 switch (msgParts[1])
                 {
@@ -143,7 +143,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                 trace = msgParts[2];
 
-                msgStorage.Add(new MsgObject(client, time, msg, msgStorage.GetSourceFlagOrNew(soucre), trace, type));
+                msgStorage.Add(new MsgObject(client, time, msg, msgStorage.GetSourceFlagOrNew(source), trace, type));
             }
         }
 

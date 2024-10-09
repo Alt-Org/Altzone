@@ -50,7 +50,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
         public int TotalMessages();
-        public IReadOnlyList<int> GetSourceFlags();
+        public int GetSourceAllFlags();
+        public IReadOnlyList<int> GetSourceFlagList();
         public string GetSourceFlagName(int sourceFlag);
     }
 
@@ -81,7 +82,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Trace = trace;
             Type = type;
 
-            _soucreFlag = sourceFlag;
+            _sourceFlag = sourceFlag;
         }
 
         public bool IsType(MessageTypeOptions typeOptions)
@@ -89,9 +90,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return typeOptions.HasFlag((MessageTypeOptions)Type);
         }
 
-        public bool IsFromSource(int soucreFlags)
+        public bool IsFromSource(int sourceFlags)
         {
-            return (soucreFlags & _soucreFlag) > 0;
+            return (sourceFlags & _sourceFlag) > 0;
         }
 
         internal void SetId(int id)
@@ -99,7 +100,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             Id = id;
         }
 
-        private int _soucreFlag;
+        private readonly int _sourceFlag;
     }
 
     internal class Timestamp : IReadOnlyTimestamp
@@ -212,12 +213,18 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (_sourceFlagNameList[i] == source) return i * i + 1;
             }
             int flag = i * i + 1;
+            _sourceAllFlags |= flag;
             _sourceFlagList.Add(flag);
             _sourceFlagNameList.Add(source);
             return flag;
         }
 
-        public IReadOnlyList<int> GetSourceFlags()
+        public int GetSourceAllFlags()
+        {
+            return _sourceAllFlags;
+        }
+
+        public IReadOnlyList<int> GetSourceFlagList()
         {
             return _sourceFlagList;
         }
@@ -231,6 +238,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private readonly Dictionary<int, IReadOnlyTimestamp>[] _timeStampMapList;
         private readonly TimelineStorage _timelineStorage;
 
+        private int _sourceAllFlags = 0;
         private readonly List<int> _sourceFlagList = new();
         private readonly List<string> _sourceFlagNameList = new();
 

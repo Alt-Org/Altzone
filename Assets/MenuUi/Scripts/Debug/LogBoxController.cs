@@ -18,14 +18,24 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); UpdateTimeline(); }
 
-        public void SetMsgFilter(int client, MessageTypeOptions msgFilter)
+        public void SetMsgTypeFilter(int client, MessageTypeOptions msgTypeFilter)
         {
             MsgBox msgBox = _msgBoxArray[client];
             IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(client);
 
-            msgBox.MsgFilter = msgFilter;
+            msgBox.MsgTypeFilter = msgTypeFilter;
             FilterLog(msgBox, messages);
         }
+
+        public void SetMsgSourceFilter(int client, int msgSourceFilter)
+        {
+            MsgBox msgBox = _msgBoxArray[client];
+            IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(client);
+
+            msgBox.MsgSourceFilter = msgSourceFilter;
+            FilterLog(msgBox, messages);
+        }
+
         public void SetTimelineFilter(MessageTypeOptions msgFilter, bool includeEmpty, int client = 0)
         {
             _debugTimelineController.FilterTimeline(msgFilter, includeEmpty);
@@ -43,13 +53,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             public GameObject LogTextBox { get; }
             public IReadOnlyList<GameObject> MsgBoxObjectList => _msgBoxObjectList;
-            public MessageTypeOptions MsgFilter { get; set; }
+            public MessageTypeOptions MsgTypeFilter { get; set; }
+            public int MsgSourceFilter { get; set; }
 
             public MsgBox(GameObject logTextBox, MessageTypeOptions msgFilter)
             {
                 LogTextBox = logTextBox;
+                MsgTypeFilter = msgFilter;
+                MsgSourceFilter = 0;
                 _msgBoxObjectList = new();
-                MsgFilter = msgFilter;
             }
 
             public void Clear()
@@ -119,6 +131,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 // Get all messages for the current log box index
                 IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(i);
 
+                msgBox.MsgSourceFilter = _msgStorage.GetSourceAllFlags();
+
                 //IReadOnlyList<IReadOnlyMsgObject> filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
                 foreach (IReadOnlyMsgObject msg in messages)
                 {
@@ -134,7 +148,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             for (int i = 0; i < msgBox.MsgBoxObjectList.Count; i++)
             {
-                msgBox.MsgBoxObjectList[i].SetActive(messages[i].IsType(msgBox.MsgFilter));
+                bool typeBool = messages[i].IsType(msgBox.MsgTypeFilter);
+                bool sourceBool = messages[i].IsFromSource(msgBox.MsgSourceFilter);
+                msgBox.MsgBoxObjectList[i].SetActive(typeBool && sourceBool);
             }
         }
 
