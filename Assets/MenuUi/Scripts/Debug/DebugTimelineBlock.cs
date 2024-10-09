@@ -19,12 +19,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private Action<int> _setTimeline;
         private Action<int, int[]> _setLogBoxPosition;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            _timestamps = new IReadOnlyTimestamp[4];
-        }
-
         public void Initialize(Action<int> setTimeline, Action<int, int[]> setLogBoxPosition)
         {
             _setTimeline = setTimeline;
@@ -40,7 +34,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             int i = 0;
             foreach (IReadOnlyTimestamp timestamp in timestamps)
             {
-                if (timestamp == null) { i++; continue; }
+                if (timestamp == null) { ChangeColour(MessageType.None, _image[i]); i++; continue; }
                 switch (timestamp.Type)
                 {
                     case MessageType.None:
@@ -57,7 +51,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
                 ChangeColour(timestamp.Type, _image[i]);
                 i++;
-                Math.Log(i, 2);
             }
 
             if( _type == MessageTypeOptions.None) _button.interactable = false;
@@ -98,9 +91,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             int[] values = new int[_timestamps.Length];
 
-            for(int i = 0; i < _timestamps.Length; i++)
+            for (int i = 0; i < _timestamps.Length; i++)
             {
-                Debug.LogWarning($"Timestamp: {_timestamps[i]}");
                 IReadOnlyList<IReadOnlyMsgObject> list = _timestamps[i]?.List;
                 if (list != null)
                 {
@@ -108,7 +100,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     else values[i] = -1;
                 }
                 else values[i] = -2;
-                Debug.LogWarning($"Blockvalue: {values[i]}");
             }
 
             _setLogBoxPosition.Invoke(_time, values);
