@@ -210,9 +210,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
             int i = 0;
             for (; i < _sourceFlagNameList.Count; i++)
             {
-                if (_sourceFlagNameList[i] == source) return i * i + 1;
+                if (_sourceFlagNameList[i] == source) return (int)Math.Pow(2, (i + 1));
             }
-            int flag = i * i + 1;
+            int flag = (int)Math.Pow(2, (i + 1));
             _sourceAllFlags |= flag;
             _sourceFlagList.Add(flag);
             _sourceFlagNameList.Add(source);
