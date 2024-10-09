@@ -92,6 +92,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
                 _msgBoxArray[i] = new(_logTextBoxArray[i], _defaultMsgFilter);
             }
+            InitializeTimeline();
 
             if (!_generateTestLogs) return;
 
@@ -158,6 +159,21 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             IReadOnlyTimelineStorage messages = _msgStorage.GetTimelineStorage();
             _debugTimelineController.SetTimeline(messages);
+        }
+
+        private void SetLogPosition(int[] values)
+        {
+            for(int i = 0; i < _msgBoxArray.Length ; i++)
+            {
+                float value = (float)values[i]/(float)_msgBoxArray[i].MsgBoxObjectList.Count;
+                Debug.LogWarning($" {value},{values[i]},{_msgBoxArray[i].MsgBoxObjectList.Count}");
+                _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.parent.parent.GetComponent<ScrollRect>().verticalScrollbar.value = 1-value;
+            }
+        }
+        private void InitializeTimeline()
+        {
+            _debugTimelineController.FilterTimeline(_defaultMsgFilter, false);
+            _debugTimelineController.Initialize(SetLogPosition);
         }
     }
 }
