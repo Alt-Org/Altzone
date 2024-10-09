@@ -1,4 +1,6 @@
+using System.Text;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -19,16 +21,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private static void ParseLog(MsgStorage msgStorage, int client, string[] lines)
         {
-            int i = 0;
-
-            // find start and set i to first battle msg line or return if not found
-            while (true)
-            {
-                if (i >= lines.Length) return;
-                if (lines[i] == "[[BATTLE LOG START]]") break;
-                i++;
-            }
-
             // msg variables
             int time = 0;
             string msg;
@@ -37,36 +29,87 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             Match match;
 
-            // flow control variables
-            bool loop = true;
-            bool skipMsg;
+            // line parsing output variables
+            string[] msgParts = new string[3];
+            int msgPart;
 
-            // loop through rest of the lines starting at i
-            do
+            // line parsing variables
+            StringBuilder stringBuilder = new();
+            string line;
+            bool endOfLine;
+            int startIndex;
+            int endIndex;
+            char replacementChar;
+
+            for (int lineI = 0; lineI < lines.Length; lineI++)
             {
-                // set to default
-                // use previous time as default
-                msg = "";
-                trace = "";
-                type = MessageType.Info;
+                // set parsing variables
+                msgPart = 0;
+                line = lines[lineI];
+                endOfLine = false;
+                startIndex = 0;
 
-                // get msg lines and set loop to exit if end of lines
-                for (;;)
+                // parse line
+                for (int charI = 0; !endOfLine;)
                 {
-                    if (i >= lines.Length) { loop = false; break; }
-                    if (lines[i].Length <= 0) { i++; break; }
-                    msg += lines[i] + "\n";
-                    i++;
+                    endOfLine = charI >= line.Length;
+
+                    if (endOfLine) { endIndex = charI; goto AddPart; }
+
+                    // check for escape character
+                    if (line[charI] == '\\')
+                    {
+                        endIndex = charI;
+
+                        // check next character
+                        charI++;
+                        switch (line[charI])
+                        {
+                            // replacement cases
+                            case '\\' : replacementChar = '\\'; break;
+                            case 'n'  : replacementChar = '\n'; break;
+
+                            // end of part case
+                            case ',':
+                                if (msgPart >= msgParts.Length)
+                                {
+                                    Debug.LogError(string.Format("BattleLogParser Error: Too many msg part at line: {0}, col: {1}", lineI, charI));
+                                    endOfLine = true;
+                                }
+                                charI++;
+                                goto AddPart;
+
+                            default:
+                                Debug.LogError(string.Format("BattleLogParser Error: Invalid escape sequence \"\\{0}\" at line: {1}, col: {2}", line[charI], lineI, charI));
+                                continue;
+                        }
+
+                        // replace
+                        if (startIndex < endIndex) stringBuilder.Append(line, startIndex, endIndex - startIndex);
+                        stringBuilder.Append(replacementChar);
+                        charI++;
+                        startIndex = charI;
+                        continue;
+                    }
+
+                    charI++;
+                    continue;
+
+                AddPart:
+                    if (startIndex < endIndex) stringBuilder.Append(line, startIndex, endIndex - startIndex);
+                    startIndex = charI;
+                    msgParts[msgPart] = stringBuilder.ToString();
+                    stringBuilder.Length = 0;
+                    msgPart++;
                 }
 
-                // skip msg if empty or matches a filter patter
-                if (msg.Length <= 0) continue;
-                skipMsg = false;
-                foreach (Regex filter in s_filterPatters)
+                if (msgPart < msgParts.Length)
                 {
-                    if (filter.Match(msg).Success) { skipMsg = true; break; }
+                    Debug.LogError(string.Format("BattleLogParser Error: Too few msg part at line: {0}", lineI));
+                    continue;
                 }
-                if (skipMsg) continue;
+
+                msg = msgParts[0];
 
                 // extract time from msg if possible else use previous time
                 match = s_battleMsgFormat.Match(msg);
@@ -76,40 +119,28 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     msg = match.Groups[2].Value;
                 }
 
-                // split msg to msg and trace if possible else leave msg as is and trace empty
-                match = s_unityMsgFormat.Match(msg);
-                if (match.Success)
+                switch (msgParts[1])
                 {
-                    msg = match.Groups[1].Value;
-                    trace = match.Groups[2].Value;
+                    case "Log"     : type = MessageType.Info   ; break;
+                    case "Warning" : type = MessageType.Warning; break;
 
-                    // get msg type from trace if possible or leave type as info
-                    match = s_msgTypePattern.Match(trace);
-                    if (match.Success)
-                    {
-                        switch (match.Groups[1].Value)
-                        {
-                            // skip checking for info since it's default
-                            case "Warning" : type = MessageType.Warning; break;
-                            case "Error"   : type = MessageType.Error; break;
-                        }
-                    }
+                    case "Error":
+                    case "Assert":
+                    case "Exception":
+                        type = MessageType.Error; break;
+
+                    default:
+                        Debug.LogError(string.Format("BattleLogParser Error: Invalid msg type \"{0}\" at line: {1}", msgParts[1], lineI));
+                        type = MessageType.Error;
+                        break;
                 }
 
-                msgStorage.Add(new MsgObject(client, time, msg, trace, type));
-            } while (loop);
+                trace = msgParts[2];
 
-            // add test msg containing number of total messages
-            //msgStorage.Add(new MsgObject(0, 999999, msgStorage.TotalMessages().ToString(), "", MessageType.Info));
+                msgStorage.Add(new MsgObject(client, time, msg, trace, type));
+            }
         }
 
-        private static readonly Regex[] s_filterPatters =
-        {
-            new(@"^\(Filename: .* Line: .*\)$")
-        };
-
         private static readonly Regex s_battleMsgFormat = new(@"^\[([0-9]+)\] (\[BATTLE\] .*)$", RegexOptions.Singleline);
-        private static readonly Regex s_unityMsgFormat  = new(@"^(.*?)\s*\n(UnityEngine\.StackTraceUtility:ExtractStackTrace \(\).*?)\s*$", RegexOptions.Singleline);
-        private static readonly Regex s_msgTypePattern  = new(@"^UnityEngine\.Debug:Log(.*) \(.*\)$", RegexOptions.Multiline);
     }
 }
