@@ -69,17 +69,19 @@ public class ClanMainView : MonoBehaviour
         _clanName.text = clan.name;
         _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
         _clanCoins.text = clan.gameCoins.ToString();
+        _clanPhrase.text = clan.phrase;
+        _clanLanguage.text = ClanDataTypeConverter.GetLanguageText(clan.language);
+        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.goals);
+        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.clanAge);
+
+        Debug.Log($"language: {clan.language}, goal: {clan.goals}, age: {clan.clanAge}");
 
         ToggleClanLockGraphic(clan.isOpen);
 
         // Temp values for testing
-        _clanPhrase.text = "Tähän tulee se klaanin motto/lause";
         _clanTrophies.text = "-1";
         _clanGlobalRanking.text = "-1";
-        _clanPassword.text = "SalainenSana123";
-        _clanLanguage.text = "suomi";
-        _clanGoal.text = "Tavoite";
-        _clanAge.text = "Kaikki";
+        _clanPassword.text = "";
     }
 
     private void ToggleClanLockGraphic(bool isClanOpen)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
+using System;
 
 public class ClanSettings : MonoBehaviour
 {
@@ -14,24 +16,112 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
 
     [Header("Input fields")]
-    [SerializeField] private TMP_InputField _clanPhrase;
-    [SerializeField] private TMP_InputField _clanPassword;
+    [SerializeField] private TMP_InputField _clanPhraseField;
+    [SerializeField] private TMP_InputField _clanPasswordField;
 
     [Header("Toggles and dropdowns")]
     [SerializeField] private Toggle _clanOpenToggle;
     [SerializeField] private TMP_Dropdown _clanLanguageDropdown;
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
+    [SerializeField] private TMP_Dropdown _clanAgeDropdown;
 
     [Header("Other settings fields")]
-    [SerializeField] Transform _valueRowFirst;
-    [SerializeField] Transform _valueRowSecond;
+    [SerializeField] private Transform _valueRowFirst;
+    [SerializeField] private Transform _valueRowSecond;
+
+    [Header("Buttons")]
+    [SerializeField] private Button _saveButton;
 
     [Header("Prefabs")]
-    [SerializeField] GameObject _valuePrefab;
+    [SerializeField] private GameObject _valuePrefab;
 
+    private void OnEnable()
+    {
+        if (ServerManager.Instance.Clan != null)
+        {
+            SetPanelValues(ServerManager.Instance.Clan);
+            SetInitialSettingValues(ServerManager.Instance.Clan);
+        }
+    }
+
+    private void SetPanelValues(ServerClan clan)
+    {
+        _clanName.text = clan.name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
+        _clanCoins.text = clan.gameCoins.ToString();
+        _clanTrophies.text = "-1";
+        _clanGlobalRanking.text = "-1";
+    }
+
+    private void SetInitialSettingValues(ServerClan clan)
+    {
+        _clanPhraseField.text = clan.phrase;
+        // _clanPasswordField.text = ;
+        _clanOpenToggle.isOn = !clan.isOpen;
+
+        InitLanguageDropdown();
+        _clanLanguageDropdown.value = EnumToDropdown(clan.language);
+        _clanLanguageDropdown.RefreshShownValue();
+
+        InitGoalsDropDown();
+        _clanGoalDropdown.value = EnumToDropdown(clan.goals);
+        _clanGoalDropdown.RefreshShownValue();
+
+        InitAgeDropDown();
+        _clanAgeDropdown.value = EnumToDropdown(clan.clanAge);
+        _clanAgeDropdown.RefreshShownValue();
+    }
+
+    private void InitLanguageDropdown()
+    {
+        _clanLanguageDropdown.options.Clear();
+        foreach (Language language in Enum.GetValues(typeof(Language)))
+        {
+            if (language == Language.None) continue;
+            string text = ClanDataTypeConverter.GetLanguageText(language);
+            _clanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+        }
+    }
+
+    private void InitGoalsDropDown()
+    {
+        _clanGoalDropdown.options.Clear();
+        foreach (Goals goal in Enum.GetValues(typeof(Goals)))
+        {
+            if (goal == Goals.None) continue;
+            string text = ClanDataTypeConverter.GetGoalText(goal);
+            _clanGoalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+        }
+    }
+
+    private void InitAgeDropDown()
+    {
+        _clanAgeDropdown.options.Clear();
+        foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)))
+        {
+            if (age == ClanAge.None) continue;
+            string text = ClanDataTypeConverter.GetAgeText(age);
+            _clanAgeDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+        }
+    }
+
+    // To skip over the None value
+    private int EnumToDropdown(Language lang) => ((int)lang) - 1;
+    private int EnumToDropdown(ClanAge age) => ((int)age) - 1;
+    private int EnumToDropdown(Goals goal) => ((int)goal) - 1;
+    private Language DropdownToLanguage(int lang) => (Language)lang + 1;
+    private ClanAge DropdownToAge(int age) => (ClanAge)age + 1;
+    private Goals DropdownToGoal(int goal) => (Goals)goal + 1;
 
     public void SaveClanSettings()
     {
-        Debug.Log("Saving settings not yet implimented.");
+        string phrase = _clanPhraseField.text;
+        bool isOpen = !_clanOpenToggle.isOn;
+        string password = _clanPasswordField.text;
+        Language language = DropdownToLanguage(_clanLanguageDropdown.value);
+        Goals goal = DropdownToGoal(_clanGoalDropdown.value);
+        ClanAge age = DropdownToAge(_clanAgeDropdown.value);
+
+        Debug.Log($"NOT SAVED, phrase: {phrase}, isOpen {isOpen}, password: {password}, language: {language}, goal: {goal}, age: {age}");
     }
 }

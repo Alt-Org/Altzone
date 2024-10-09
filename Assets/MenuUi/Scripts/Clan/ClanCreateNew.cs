@@ -1,44 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using MenuUI.Scripts;
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanCreateNew : MonoBehaviour
 {
-
-    public enum ClanAge
-    {
-       None,
-       AgeTeenagers,
-       AgeToddlers,
-       AgeAdults,
-       AgeAllAges
-    }
-
-
-    public enum Language
-    {
-        None,
-        Finnish,
-        Swedish,
-        English
-    }
-    public enum Goals
-    {
-        None,
-        Fiilistely,
-        Grindaus,
-        Intohimoisuus,
-        Keraily
-
-    }
     //List
     [SerializeField] private List<string> _valuesList;
 
@@ -80,7 +52,7 @@ public class ClanCreateNew : MonoBehaviour
 
     [SerializeField] protected WindowDef _naviTarget;
 
-    private ClanAge _clanAgeEnum=ClanAge.None;
+    private ClanAge _clanAgeEnum = ClanAge.None;
 
     private void Reset()
     {
@@ -96,36 +68,19 @@ public class ClanCreateNew : MonoBehaviour
         SetGoalsDropDown();
         SetToggleListeners();
     }
+
     private void OnEnable()
     {
         Reset();
     }
+
     private void SetLanguageDropdown()
     {
         _ClanLanguageDropdown.options.Clear();
         foreach (Language language in Enum.GetValues(typeof(Language)))
         {
-            String Text;
-
-            switch (language)
-            {
-                case Language.None:
-                    Text = "Kieli / Språk / Language";
-                    break;
-                case Language.Finnish:
-                    Text = "Suomi";
-                    break;
-                case Language.Swedish:
-                    Text = "Svenska";
-                    break;
-                case Language.English:
-                    Text = "English";
-                    break;
-                default:
-                    Text = "";
-                    break;
-            }
-            _ClanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(Text));
+            string text = ClanDataTypeConverter.GetLanguageText(language);
+            _ClanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
         }
     }
 
@@ -133,33 +88,12 @@ public class ClanCreateNew : MonoBehaviour
     {
         _ClanGoals.options.Clear();
         foreach (Goals goal in Enum.GetValues(typeof(Goals)))
-            {
-          String Text;
-
-            switch (goal)
-            {
-                case Goals.None:
-                    Text = "None";
-                    break;
-                case Goals.Fiilistely:
-                    Text = "Fiilistely";
-                    break;
-                case Goals.Grindaus:
-                    Text = "Grindaus";
-                    break;
-                case Goals.Intohimoisuus:
-                    Text = "Intohimoisuus";
-                    break;
-                case Goals.Keraily:
-                    Text = "Keraily";
-                    break;
-                default:
-                    Text = "";
-                    break;
-            }
-            _ClanGoals.options.Add(new TMP_Dropdown.OptionData(Text));
-       }
+        {
+            string text = ClanDataTypeConverter.GetGoalText(goal);
+            _ClanGoals.options.Add(new TMP_Dropdown.OptionData(text));
+        }
     }
+
     private void SetToggleListeners()
     {
         _AgeTaaperot.onValueChanged.RemoveAllListeners();
@@ -167,22 +101,22 @@ public class ClanCreateNew : MonoBehaviour
         _AgeKaikenIkaiset.onValueChanged.RemoveAllListeners();
         _AgeTeinit.onValueChanged.RemoveAllListeners();
 
-         _AgeTaaperot.onValueChanged.AddListener((Value) =>
-         {
-             if (Value)
-             {
-                 SetClanAge(ClanAge.AgeToddlers);
-                 ColorBlock colors = _AgeTaaperot.colors;
-                 colors.normalColor = Color.yellow;
-                 _AgeTaaperot.colors = colors;
-             }
-             else
-             {
-                 ColorBlock colors = _AgeTaaperot.colors;
-                 colors.normalColor = Color.white;
-                 _AgeTaaperot.colors = colors;
-             }
-         });
+        _AgeTaaperot.onValueChanged.AddListener((Value) =>
+        {
+            if (Value)
+            {
+                SetClanAge(ClanAge.AgeToddlers);
+                ColorBlock colors = _AgeTaaperot.colors;
+                colors.normalColor = Color.yellow;
+                _AgeTaaperot.colors = colors;
+            }
+            else
+            {
+                ColorBlock colors = _AgeTaaperot.colors;
+                colors.normalColor = Color.white;
+                _AgeTaaperot.colors = colors;
+            }
+        });
         _AgeAikuiset.onValueChanged.AddListener((Value) =>
         {
             if (Value)
@@ -231,15 +165,12 @@ public class ClanCreateNew : MonoBehaviour
                 _AgeTeinit.colors = colors;
             }
         });
-
-
-
     }
+
     private void SetClanAge(ClanAge age)
     {
         _clanAgeEnum = age;
     }
-
 
     private void SetValuesPanel()
     {
@@ -247,7 +178,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             Destroy(_valuesContainer.transform.GetChild(i));
         }
-        foreach(string Text in _valuesList)
+        foreach (string Text in _valuesList)
         {
             GameObject ValueObject = Instantiate(_valuePrefab, _valuesContainer.transform);
             ValueObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = Text;
@@ -263,23 +194,23 @@ public class ClanCreateNew : MonoBehaviour
 
         Language language = (Language)_ClanLanguageDropdown.value;
         Goals goals = (Goals)_ClanGoals.value;
-        String Phrase = _clanPhrase.text;
+        string Phrase = _clanPhrase.text;
         Debug.Log($"language: {language}, Phrase: {Phrase}, Goals: {goals} clanAgeEnum {_clanAgeEnum},");
 
         if (clanName == string.Empty /*|| clanTag == string.Empty || _gameCoinsInputField.text == string.Empty*/)
         {
-            _ClanNameWarningImage.gameObject.SetActive( true );
-            _NameTakenPopup.ActivatePopUp("Lisää klaanin nimi");
+            _ClanNameWarningImage.gameObject.SetActive(true);
+            _NameTakenPopup.ActivatePopUp("LisÃ¤Ã¤ klaanin nimi");
             return;
         }
 
         /*if (_clanPhrase.text== string.Empty)
         {
            _ClanNameWarningImage.gameObject.SetActive(true);
-            _NameTakenPopup.ActivatePopUp("Lisää klaanin motto");
+            _NameTakenPopup.ActivatePopUp("Lisï¿½ï¿½ klaanin motto");
             return;
         }*/
-        
+
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
         {
