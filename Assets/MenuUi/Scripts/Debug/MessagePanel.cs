@@ -17,7 +17,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         void Start()
         {
-            _logButton.onClick.AddListener(ClosePanel);
+            //_logButton.onClick.AddListener(ClosePanel);
         }
 
         public void OpenPanel()

@@ -42,10 +42,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _debugTimelineController.FilterTimeline(msgFilter, includeEmpty);
         }
 
-        internal void MessageDeliver(IReadOnlyMsgObject msgObject)
+        internal void SetTimelinePosition(int time)
         {
             //string logText = string.Format("[Client {0}] [{1:000000}] {2}", msgObject.Client, msgObject.Time, msgObject.Msg);
             //_messagePanel.SetMessage(logText);
+            _debugTimelineController.SetPosition(time);
         }
 
         private IReadOnlyMsgStorage _msgStorage;

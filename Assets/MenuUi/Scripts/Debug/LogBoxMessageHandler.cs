@@ -31,7 +31,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public void Message()
         {
             _messagePanel.SetMessage(_msgObject);
-            //_logBoxController.MessageDeliver(_msgObject);
+            _logBoxController.SetTimelinePosition(_msgObject.Time);
         }
 
         internal void SetMessage(IReadOnlyMsgObject msgObject)

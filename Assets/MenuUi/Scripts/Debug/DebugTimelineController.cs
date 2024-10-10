@@ -103,6 +103,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _sliderController.SetText(value);
         }
 
+        public void SetPosition(int time)
+        {
+            float contentWidth = _content.GetComponent<RectTransform>().rect.width;
+            float viewWidth = _content.transform.parent.GetComponent<RectTransform>().rect.width;
+            float blockPosition = _content.GetChild(time).transform.localPosition.x;
+            float value = (blockPosition-(viewWidth/2))/(contentWidth-viewWidth);
+            _sliderController.SetSlider(value);
+        }
+
         private void FindTimestampValues(int timestamp, int[] oldvalues)
         {
             int[] values = new int[_timelines.Length];
