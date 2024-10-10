@@ -85,7 +85,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         public void SetTimelineValue(int value)
         {
-            _sliderController.SetSlider(value);
+            _sliderController.SetText(value);
         }
 
         private void FindTimestampValues(int timestamp, int[] oldvalues)
