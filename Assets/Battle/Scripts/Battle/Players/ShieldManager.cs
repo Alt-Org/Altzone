@@ -12,7 +12,8 @@ namespace Battle.Scripts.Battle.Players
 
         public bool Initialized => _initialized;
 
-        public bool ShieldManagerDebug = false;
+        public bool ShieldManagerDebug { get; set; }
+
 
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
@@ -74,6 +75,11 @@ namespace Battle.Scripts.Battle.Players
             _timer = 5;
 
             if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_battlePlayer.PlayerPosition.ToString());
+        }
+
+        public void SetShieldManagerDebug(GameObject shieldGameObject)
+        {
+            ShieldManagerDebug = shieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject;
         }
 
         #endregion Public - Methods
