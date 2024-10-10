@@ -167,7 +167,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
                 if (values[i] < 0) continue; 
                 float value = (float)values[i]/(float)_msgBoxArray[i].MsgBoxObjectList.Count;
-                Debug.LogWarning($" {value},{values[i]},{_msgBoxArray[i].MsgBoxObjectList.Count}");
+                if(_msgBoxArray[i].MsgBoxObjectList[values[i]].GetComponent<LogBoxMessageHandler>().MsgObject.Id == values[i])
+                {
+                    float boxPosition = Mathf.Abs(_msgBoxArray[i].MsgBoxObjectList[values[i]].transform.localPosition.y);
+                    float contentHeight = _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.GetComponent<RectTransform>().rect.height;
+                    float viewHeight = _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.parent.GetComponent<RectTransform>().rect.height;
+                    value = boxPosition/(contentHeight-viewHeight);
+                }
                 _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.parent.parent.GetComponent<ScrollRect>().verticalScrollbar.value = 1-value;
             }
         }

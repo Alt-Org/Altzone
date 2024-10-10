@@ -14,6 +14,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private MessagePanel _messagePanel;
 
+        internal IReadOnlyMsgObject MsgObject { get => _msgObject;}
+
         // Start is called before the first frame update
         void Start()
         {
