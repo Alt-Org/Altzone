@@ -164,6 +164,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
+        private void InitializeTimeline()
+        {
+            _debugTimelineController.FilterTimeline(_defaultMsgFilter, false);
+            _debugTimelineController.Initialize(SetLogPosition);
+        }
+
         private void UpdateTimeline()
         {
             IReadOnlyTimelineStorage messages = _msgStorage.GetTimelineStorage();
@@ -178,18 +184,31 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 float value = (float)values[i]/(float)_msgBoxArray[i].MsgBoxObjectList.Count;
                 if(_msgBoxArray[i].MsgBoxObjectList[values[i]].GetComponent<LogBoxMessageHandler>().MsgObject.Id == values[i])
                 {
-                    float boxPosition = Mathf.Abs(_msgBoxArray[i].MsgBoxObjectList[values[i]].transform.localPosition.y);
+                    float boxPosition = 0;
+                    if (!_msgBoxArray[i].MsgBoxObjectList[values[i]].activeSelf)
+                    {
+                        int j = 1;
+                        do
+                        {
+                            Debug.LogWarning($"{j}. Pos: {_msgBoxArray[i].MsgBoxObjectList[values[i]].transform.localPosition.y}");
+                            if (_msgBoxArray[i].MsgBoxObjectList[values[i] - j].activeSelf)
+                            {
+                                boxPosition = Mathf.Abs(_msgBoxArray[i].MsgBoxObjectList[values[i]-j].transform.localPosition.y);
+                                break;
+                            }
+                            j++;
+                        } while (values[i] - j >= 0);
+                    }
+                    else
+                    {
+                        boxPosition = Mathf.Abs(_msgBoxArray[i].MsgBoxObjectList[values[i]].transform.localPosition.y);
+                    }
                     float contentHeight = _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.GetComponent<RectTransform>().rect.height;
                     float viewHeight = _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.parent.GetComponent<RectTransform>().rect.height;
                     value = boxPosition/(contentHeight-viewHeight);
                 }
                 _msgBoxArray[i].MsgBoxObjectList[0].transform.parent.parent.parent.GetComponent<ScrollRect>().verticalScrollbar.value = 1-value;
             }
-        }
-        private void InitializeTimeline()
-        {
-            _debugTimelineController.FilterTimeline(_defaultMsgFilter, false);
-            _debugTimelineController.Initialize(SetLogPosition);
         }
     }
 }

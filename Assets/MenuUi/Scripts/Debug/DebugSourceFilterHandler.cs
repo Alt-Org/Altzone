@@ -58,7 +58,6 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private void SetFilter(int flag, bool toggleValue)
         {
-            Debug.LogWarning(flag);
             if (flag < 0)
             {
                 flag = _msgSourceFilterAll;
