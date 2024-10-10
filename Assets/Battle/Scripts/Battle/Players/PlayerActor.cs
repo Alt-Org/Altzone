@@ -103,7 +103,7 @@ namespace Battle.Scripts.Battle.Players
             _battlePlayer.PlayerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
 
-            _shieldHitboxIndicators.transform.eulerAngles = new Vector3(0, 0, newAngle);*/
+            _shieldHitboxIndicators.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
