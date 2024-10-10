@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -56,12 +57,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
             public MessageTypeOptions MsgTypeFilter { get; set; }
             public int MsgSourceFilter { get; set; }
 
+            private DebugSourceFilterHandler _sourceFilterHandler;
+
             public MsgBox(GameObject logTextBox, MessageTypeOptions msgFilter)
             {
                 LogTextBox = logTextBox;
                 MsgTypeFilter = msgFilter;
                 MsgSourceFilter = 0;
                 _msgBoxObjectList = new();
+                _sourceFilterHandler = LogTextBox.transform.Find("SourceFilter").GetComponent<DebugSourceFilterHandler>();
             }
 
             public void Clear()
@@ -78,6 +82,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 GameObject logMsgBox = Instantiate(logTextObject, LogTextBox.transform.GetChild(0).GetChild(0));
                 logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg);
                 _msgBoxObjectList.Add(logMsgBox);
+            }
+
+            public void SetSourceFilter(int client, IReadOnlyMsgStorage msgStorage, Action<int, int> setMsgSourceFilter)
+            {
+                _sourceFilterHandler.SetInitialFilters(client, msgStorage, MsgSourceFilter, setMsgSourceFilter);
             }
 
             private readonly List<GameObject> _msgBoxObjectList;
@@ -140,7 +149,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     // Instantiate a new log message GameObject for each message
                     msgBox.AddMsg(msg, _logTextObject, _messagePanel);
                 }
-
+                msgBox.SetSourceFilter(i, _msgStorage, SetMsgSourceFilter);
                 FilterLog(msgBox, messages);
             }
         }
