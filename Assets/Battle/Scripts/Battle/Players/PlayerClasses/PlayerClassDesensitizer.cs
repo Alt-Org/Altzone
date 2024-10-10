@@ -10,9 +10,6 @@ namespace Battle.Scripts.Battle.Players
         [SerializeField] private int _maxCollisions;
         [SerializeField] GameObject _shield;
 
-        [SerializeField] bool _shieldManagerDebug;
-
-
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
         public bool BounceOnBallShieldCollision => true;
@@ -20,7 +17,6 @@ namespace Battle.Scripts.Battle.Players
         public void InitInstance(IReadOnlyBattlePlayer battlePlayer)
         {
             _battlePlayer = battlePlayer;
-            _shieldManagerDebug = battlePlayer.PlayerShieldManager.ShieldManagerDebug;
         }
 
         public void OnBallShieldCollision()

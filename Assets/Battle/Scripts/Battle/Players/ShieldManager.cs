@@ -1,3 +1,5 @@
+//#define SHIELD_MANAGER_DEBUG
+
 using Altzone.Scripts.GA;
 using Photon.Pun;
 using UnityEngine;
@@ -11,9 +13,6 @@ namespace Battle.Scripts.Battle.Players
         #region Public - Properties
 
         public bool Initialized => _initialized;
-
-        public bool ShieldManagerDebug { get; set; }
-
 
         public IReadOnlyBattlePlayer BattlePlayer => _battlePlayer;
 
@@ -48,11 +47,12 @@ namespace Battle.Scripts.Battle.Players
             _currentShield.ShieldHitbox.SetActive(_hitboxActive && _timer <= 0);
             _currentShield.ShieldSpriteRenderer.enabled = _showShield;
 
-            _currentShield.ShieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject.SetActive(false);
-            if (ShieldManagerDebug == true)
+#if SHIELD_MANAGER_DEBUG
+            if (ShieldManagerDebug)
             {
                 _currentShield.ShieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject.SetActive(true);
             }
+#endif
         }
 
         public void SetHitboxActive(bool active)
@@ -75,11 +75,6 @@ namespace Battle.Scripts.Battle.Players
             _timer = 5;
 
             if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.OnShieldHit(_battlePlayer.PlayerPosition.ToString());
-        }
-
-        public void SetShieldManagerDebug(GameObject shieldGameObject)
-        {
-            ShieldManagerDebug = shieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject;
         }
 
         #endregion Public - Methods
@@ -140,10 +135,6 @@ namespace Battle.Scripts.Battle.Players
         #endregion Private - Methods
 
         #endregion Private
-
-        #region ShieldManagerDebug
-
-        #endregion
     }
 }
 

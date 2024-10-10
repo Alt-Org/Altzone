@@ -103,7 +103,7 @@ namespace Battle.Scripts.Battle.Players
             _battlePlayer.PlayerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
 
-            _shieldHitboxIndicators.transform.eulerAngles = new Vector3(0, 0, newAngle);
+            //_shieldHitboxIndicators.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -154,8 +154,8 @@ namespace Battle.Scripts.Battle.Players
             _playerMovementIndicator.transform.position = targetPosition;
             _sparkleSprite.transform.position = targetPosition;
             Vector2 shieldPosition = new(targetPosition.x, targetPosition.y + _shieldHitboxIndicatorsYPosition);
-            _shieldHitboxIndicators.transform.position = shieldPosition;
-            _shieldHitboxIndicators.SetActive(false);
+            //_shieldHitboxIndicators.transform.position = shieldPosition;
+            //_shieldHitboxIndicators.SetActive(false);
 
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
@@ -234,7 +234,7 @@ namespace Battle.Scripts.Battle.Players
 
         private GameObject _playerMovementIndicator;
         private GameObject _sparkleSprite;
-        private GameObject _shieldHitboxIndicators;
+        //private GameObject _shieldHitboxIndicators;
         private float _shieldHitboxIndicatorsYPosition;
 
         private readonly List<IReadOnlyBattlePlayer> _otherPlayers = new();
@@ -302,9 +302,9 @@ namespace Battle.Scripts.Battle.Players
 
             _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
             _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
-            _shieldHitboxIndicators = _geometryRoot.transform.Find("ShieldHitBoxIndicators").gameObject;
+            //_shieldHitboxIndicators = _geometryRoot.transform.Find("ShieldHitBoxIndicators").gameObject;
 
-            _shieldHitboxIndicators.SetActive(false);
+            //_shieldHitboxIndicators.SetActive(false);
 
             // get components
             _audioSource = GetComponent<AudioSource>();
@@ -388,7 +388,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 _playerMovementIndicator.SetActive(false);
                 _sparkleSprite.SetActive(false);
-                _shieldHitboxIndicators.SetActive(false);
+                //_shieldHitboxIndicators.SetActive(false);
             }
 
             // Check if enough time has passed since the last sparkle update
