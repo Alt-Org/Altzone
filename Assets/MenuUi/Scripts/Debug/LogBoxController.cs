@@ -172,8 +172,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private void UpdateTimeline()
         {
-            IReadOnlyTimelineStorage messages = _msgStorage.GetTimelineStorage();
-            _debugTimelineController.SetTimeline(messages);
+            _debugTimelineController.SetTimeline(_msgStorage);
         }
 
         private void SetLogPosition(int[] values)

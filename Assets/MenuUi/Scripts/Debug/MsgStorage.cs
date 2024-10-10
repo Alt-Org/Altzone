@@ -39,6 +39,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
     {
         public int Time { get; }
         public MessageType Type { get; }
+        public int SourceTypes { get; }
         public IReadOnlyList<IReadOnlyMsgObject> List { get; }
     }
 
@@ -72,6 +73,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public string Msg { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public int SourceFlag => _sourceFlag;
 
         internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type)
         {
@@ -107,12 +109,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
     {
         public int Time { get; }
         public MessageType Type { get; private set; }
+        public int SourceTypes { get; private set; }
         public IReadOnlyList<IReadOnlyMsgObject> List => _list;
 
         internal Timestamp(int time)
         {
             Time = time;
             Type = MessageType.None;
+            SourceTypes = 0;
             _list = new();
         }
 
@@ -120,6 +124,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             _list.Add(msgObject);
             if(Type < msgObject.Type) Type = msgObject.Type;
+            SourceTypes |= msgObject.SourceFlag;
         }
 
         private readonly List<MsgObject> _list;

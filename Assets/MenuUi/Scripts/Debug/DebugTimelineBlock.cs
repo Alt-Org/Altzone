@@ -16,6 +16,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private int _time;
         private IReadOnlyTimestamp[] _timestamps;
         private MessageTypeOptions _type = MessageTypeOptions.None;
+        private int _sourceTypes = 0;
         private Action<int> _setTimeline;
         private Action<int, int[]> _setLogBoxPosition;
 
@@ -50,6 +51,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                         break;
                 }
                 ChangeColour(timestamp.Type, _image[i]);
+                _sourceTypes |= timestamp.SourceTypes;
                 i++;
             }
 
@@ -75,12 +77,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        public void FilterBlock(MessageTypeOptions options, bool includeEmpty)
+        public void FilterBlock(MessageTypeOptions options, bool includeEmpty, int sourceFilter)
         {
             if(_type == MessageTypeOptions.None)
                 gameObject.SetActive(includeEmpty);
             else
-                gameObject.SetActive(options.HasFlag(_type));
+                gameObject.SetActive(options.HasFlag(_type) && (_sourceTypes & sourceFilter) !=0);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

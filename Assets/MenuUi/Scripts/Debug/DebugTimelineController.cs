@@ -11,12 +11,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private Transform _content;
         [SerializeField] private GameObject _timelineBlock;
         [SerializeField] private SliderController _sliderController;
+        [SerializeField] private DebugSourceFilterHandler _debugSourceFilter;
 
-        private IReadOnlyTimelineStorage _storage;
+        private IReadOnlyMsgStorage _msgStorage;
+        private IReadOnlyTimelineStorage _timelineStorage;
         private IReadOnlyList<IReadOnlyTimestamp>[] _timelines;
         private int _lastTime = 0;
 
         private MessageTypeOptions _msgFilter = MessageTypeOptions.Info | MessageTypeOptions.Warning | MessageTypeOptions.Error;
+        private int _sourceFilters;
         private bool _includeEmpty = true;
         private Action<int[]> _setLogBoxPosition;
 
@@ -31,9 +34,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _setLogBoxPosition = setLogBoxPosition;
         }
 
-        internal void SetTimeline(IReadOnlyTimelineStorage storage)
+        internal void SetTimeline(IReadOnlyMsgStorage storage)
         {
-            _storage = storage;
+            _msgStorage = storage;
+            _timelineStorage = _msgStorage.GetTimelineStorage();
+            _sourceFilters = _msgStorage.GetSourceAllFlags();
             NewTimeline();
         }
 
@@ -44,11 +49,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 Destroy(_content.GetChild(i).gameObject);
             }
 
-            if(_timelines == null) _timelines = new IReadOnlyList<IReadOnlyTimestamp>[_storage.ClientCount];
+            if(_timelines == null) _timelines = new IReadOnlyList<IReadOnlyTimestamp>[_timelineStorage.ClientCount];
 
-            for(int i = 0; i < _storage.ClientCount; i++)
+            for(int i = 0; i < _timelineStorage.ClientCount; i++)
             {
-                IReadOnlyList<IReadOnlyTimestamp> timeline = _storage.GetTimeline(i);
+                IReadOnlyList<IReadOnlyTimestamp> timeline = _timelineStorage.GetTimeline(i);
                 Debug.LogWarning(timeline.Count);
                 if (timeline.Count != 0) 
                 if(timeline[timeline.Count-1].Time > _lastTime) _lastTime = timeline[timeline.Count-1].Time;
@@ -70,8 +75,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 }
 
                 debugTimelineBlock.SetTimeStamps(timestamp);
-                debugTimelineBlock.FilterBlock(_msgFilter, _includeEmpty);
+                debugTimelineBlock.FilterBlock(_msgFilter, _includeEmpty, _sourceFilters);
             }
+            _debugSourceFilter.SetInitialTimelineFilters(_msgStorage, FilterTimelineWithSource);
         }
         public void FilterTimeline(MessageTypeOptions msgFilter, bool includeEmpty)
         {
@@ -79,7 +85,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _includeEmpty = includeEmpty;
             foreach (Transform block in _content)
             {
-                block.GetComponent<DebugTimelineBlock>().FilterBlock(msgFilter, includeEmpty);
+                block.GetComponent<DebugTimelineBlock>().FilterBlock(msgFilter, includeEmpty, _sourceFilters);
+            }
+        }
+
+        public void FilterTimelineWithSource(int dummy, int sourceFilters)
+        {
+            _sourceFilters = sourceFilters;
+            foreach (Transform block in _content)
+            {
+                block.GetComponent<DebugTimelineBlock>().FilterBlock(_msgFilter, _includeEmpty, _sourceFilters);
             }
         }
 
