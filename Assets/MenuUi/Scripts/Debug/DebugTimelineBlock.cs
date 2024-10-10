@@ -35,7 +35,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             int i = 0;
             foreach (IReadOnlyTimestamp timestamp in timestamps)
             {
-                if (timestamp == null) { ChangeColour(MessageType.None, _image[i]); i++; continue; }
+                if (timestamp == null) { ChangeColour((MessageType)(-1), _image[i]); i++; continue; }
                 switch (timestamp.Type)
                 {
                     case MessageType.None:
@@ -73,6 +73,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     break;
                 case MessageType.Error:
                     image.color = Color.red;
+                    break;
+                default:
+                    image.color = Color.black;
                     break;
             }
         }

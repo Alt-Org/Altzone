@@ -86,7 +86,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             public void SetSourceFilter(int client, IReadOnlyMsgStorage msgStorage, Action<int, int> setMsgSourceFilter)
             {
-                _sourceFilterHandler.SetInitialFilters(client, msgStorage, MsgSourceFilter, setMsgSourceFilter);
+                _sourceFilterHandler.SetInitialLogBoxFilters(client, msgStorage, MsgSourceFilter, setMsgSourceFilter);
             }
 
             private readonly List<GameObject> _msgBoxObjectList;
