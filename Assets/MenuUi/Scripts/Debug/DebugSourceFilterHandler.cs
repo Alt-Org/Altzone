@@ -20,6 +20,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private int _msgSourceFilterCurrent;
         private IReadOnlyMsgStorage _storage;
         private Action<int, int> _setSourceFilter;
+        private DebugFilterToggleHandler _toggleAll;
 
         // Start is called before the first frame update
         void Start()
@@ -40,23 +41,41 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
                 Destroy(_filtersTransform.GetChild(i).gameObject);
             }
+            ((List<int>)flagList).Sort((x,y)=> storage.GetSourceFlagName(x).CompareTo(storage.GetSourceFlagName(y)));
 
+            GameObject toggleAll = Instantiate(_togglePrefab, _filtersTransform);
+            toggleAll.GetComponent<DebugFilterToggleHandler>().SetAllFilter(SetFilter);
+            _toggleAll = toggleAll.GetComponent<DebugFilterToggleHandler>();
+            StartCoroutine(_toggleAll.SetValue((_msgSourceFilterAll & _msgSourceFilterCurrent) != 0));
             foreach (int flag in flagList)
             {
                 GameObject toggle = Instantiate(_togglePrefab, _filtersTransform);
                 toggle.GetComponent<DebugFilterToggleHandler>().SetFilter(flag, storage.GetSourceFlagName(flag), SetFilter);
-                toggle.GetComponent<Toggle>().isOn = (flag & _msgSourceFilterCurrent)!= 0;
+                StartCoroutine(toggle.GetComponent<DebugFilterToggleHandler>().SetValue((flag & _msgSourceFilterCurrent)!= 0));
             }
             SetText();
         }
 
-        private void SetFilter(int flag, bool toggle)
+        private void SetFilter(int flag, bool toggleValue)
         {
-            if(toggle)
+            Debug.LogWarning(flag);
+            if (flag < 0)
+            {
+                flag = _msgSourceFilterAll;
+                foreach(Transform toggle in _filtersTransform)
+                {
+                    StartCoroutine(toggle.GetComponent<DebugFilterToggleHandler>().SetValue(toggleValue));
+                }
+            }
+            if(toggleValue)
                 _msgSourceFilterCurrent |= flag;
             else
                 _msgSourceFilterCurrent &= ~flag;
             SetText();
+            if(_msgSourceFilterCurrent != _msgSourceFilterAll)
+                StartCoroutine(_toggleAll.SetValue(false));
+            else
+                StartCoroutine(_toggleAll.SetValue(true));
             _setSourceFilter.Invoke(_client, _msgSourceFilterCurrent);
         }
 
