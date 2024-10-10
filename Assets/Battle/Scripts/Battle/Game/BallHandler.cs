@@ -76,7 +76,7 @@ namespace Battle.Scripts.Battle.Game
             Transform shieldTransform = shieldBoxCollider.transform;
             Vector2 incomingDirection = (position - (Vector2)shieldTransform.position).normalized;
             Vector3 shieldDirection = shieldTransform.up;
-            bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) < 0;
+            bool isCorrectDirection = Vector2.Dot(incomingDirection, shieldDirection) > 0;
 
             if (!isCorrectDirection) return (false, false, Vector2.zero, new GridPos(0, 0), Vector2.zero, 0);
 
@@ -90,7 +90,7 @@ namespace Battle.Scripts.Battle.Game
             GridPos gridPos = _gridManager.WorldPointToGridPosition(position);
             position = _gridManager.GridPositionToWorldPoint(gridPos);
 
-            float angle = shieldTransform.rotation.eulerAngles.z + bounceAngle;
+            float angle = shieldTransform.rotation.eulerAngles.z + 180 + bounceAngle;
             Vector2 direction = Quaternion.Euler(0, 0, angle) * Vector2.up;
 
             speed = _ballPotentialSpeed + impactForce * _attackMultiplier;
