@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using System;
+using MenuUI.Scripts;
 
 public class ClanSettings : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class ClanSettings : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button _saveButton;
+
+    [Header("Popups")]
+    [SerializeField] private PopupController settingsSavedPopup;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _valuePrefab;
@@ -106,9 +110,7 @@ public class ClanSettings : MonoBehaviour
     }
 
     // To skip over the None value
-    private int EnumToDropdown(Language lang) => ((int)lang) - 1;
-    private int EnumToDropdown(ClanAge age) => ((int)age) - 1;
-    private int EnumToDropdown(Goals goal) => ((int)goal) - 1;
+    private int EnumToDropdown<T>(T value) where T : Enum => Convert.ToInt32(value) - 1;
     private Language DropdownToLanguage(int lang) => (Language)lang + 1;
     private ClanAge DropdownToAge(int age) => (ClanAge)age + 1;
     private Goals DropdownToGoal(int goal) => (Goals)goal + 1;
@@ -122,6 +124,15 @@ public class ClanSettings : MonoBehaviour
         Goals goal = DropdownToGoal(_clanGoalDropdown.value);
         ClanAge age = DropdownToAge(_clanAgeDropdown.value);
 
-        Debug.Log($"NOT SAVED, phrase: {phrase}, isOpen {isOpen}, password: {password}, language: {language}, goal: {goal}, age: {age}");
+        // Save locally
+        ServerManager.Instance.Clan.phrase = phrase;
+        ServerManager.Instance.Clan.isOpen = isOpen;
+        ServerManager.Instance.Clan.language = language;
+        ServerManager.Instance.Clan.goals = goal;
+        ServerManager.Instance.Clan.clanAge = age;
+
+        Debug.Log($"SAVED LOCALLY, phrase: {phrase}, isOpen {isOpen}, password: {password}, language: {language}, goal: {goal}, age: {age}");
+
+        settingsSavedPopup.ActivatePopUp("Asetukset on tallennettu lokaalisti.");
     }
 }

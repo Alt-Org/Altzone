@@ -47,15 +47,9 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
-        _clanPhrase.text = "Klaanin motto";
-        _clanMembers.text = "-1";
-        _clanCoins.text = "-1";
-        _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
-        _clanPassword.text = "SalainenSana123";
-        _clanLanguage.text = "suomi";
-        _clanGoal.text = "Tavoite";
-        _clanAge.text = "Kaikki";
+        _clanPhrase.text = "Clan Phrase";
+        _clanMembers.text = _clanCoins.text = _clanTrophies.text = _clanGlobalRanking.text = "-1";
+        _clanPassword.text = _clanLanguage.text = _clanGoal.text = _clanAge.text = "";
     }
 
     private void ToggleClanPanel(bool isInClan)
@@ -73,8 +67,6 @@ public class ClanMainView : MonoBehaviour
         _clanLanguage.text = ClanDataTypeConverter.GetLanguageText(clan.language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.goals);
         _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.clanAge);
-
-        Debug.Log($"language: {clan.language}, goal: {clan.goals}, age: {clan.clanAge}");
 
         ToggleClanLockGraphic(clan.isOpen);
 
