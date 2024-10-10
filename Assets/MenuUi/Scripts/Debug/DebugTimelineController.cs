@@ -97,7 +97,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (oldvalues[i] >= 0) values[i] = oldvalues[i];
                 else
                 {
-                    if (_timelines[i].Count == 0) {values[i] = -1; continue; }
+                    if (_timelines[i].Count == 0 || _timelines[i].Count-1<timestamp) {values[i] = -1; continue; }
                     int id = -1;
                     int j = 0;
                     do
