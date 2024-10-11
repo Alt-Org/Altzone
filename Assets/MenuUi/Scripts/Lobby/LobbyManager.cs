@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using MenuUi.Scripts.Window;
@@ -75,6 +76,7 @@ namespace MenuUI.Scripts.Lobby
         {
             Debug.Log($"onEvent {data}");
             WindowManager.Get().ShowWindow(_roomWindow);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "BattleID", PhotonNetwork.CurrentRoom.Name+"_"+ DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
         }
 
         private void OnStartPlayingEvent(StartPlayingEvent data)
@@ -126,16 +128,19 @@ namespace MenuUI.Scripts.Lobby
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
                 var room = PhotonNetwork.CurrentRoom;
-                room.SetCustomProperties(new Hashtable
+                room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
+                room.CustomProperties.Add(TeamRedNameKey, redTeamName);
+                room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
+                /*room.SetCustomProperties(new Hashtable
                 {
                     { TeamBlueNameKey, blueTeamName },
                     { TeamRedNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
-                });
+                });*/
                 yield return null;
                 if (isCloseRoom)
                 {
-                    PhotonLobby.CloseRoom();
+                    PhotonLobby.CloseRoom(true);
                     yield return null;
                 }
             }
