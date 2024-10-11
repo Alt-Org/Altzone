@@ -212,7 +212,7 @@ public class ClanCreateNew : MonoBehaviour
         }*/
 
 
-        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
+        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), isOpen, null, _clanAgeEnum, goals, Phrase, language, clan =>
         {
             if (clan == null)
             {
