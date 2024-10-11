@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using System;
 using MenuUI.Scripts;
+using MenuUi.Scripts.Window;
 
 public class ClanSettings : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
-    [SerializeField] private PopupController settingsSavedPopup;
+    [SerializeField] private PopupController errorPopup;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _valuePrefab;
@@ -133,6 +134,8 @@ public class ClanSettings : MonoBehaviour
 
         Debug.Log($"SAVED LOCALLY, phrase: {phrase}, isOpen {isOpen}, password: {password}, language: {language}, goal: {goal}, age: {age}");
 
-        settingsSavedPopup.ActivatePopUp("Asetukset on tallennettu lokaalisti.");
+        WindowManager.Get().GoBack();
+
+        // errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
     }
 }

@@ -97,7 +97,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Asetukset tallennettu
+  m_text: Tallennus ei onnistunut.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 2999108260364851258}
   - component: {fileID: 8962305301179978571}
   m_Layer: 5
-  m_Name: Popup_SettingsSaved
+  m_Name: Popup_SaveError
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -704,6 +704,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2744039800164740701, guid: 62dbc4d8c62398e44804542dbd8b4a34,
+        type: 3}
+      propertyPath: errorPopup
+      value: 
+      objectReference: {fileID: 8962305301179978571}
     - target: {fileID: 2744039800164740701, guid: 62dbc4d8c62398e44804542dbd8b4a34,
         type: 3}
       propertyPath: settingsSavedPopup
