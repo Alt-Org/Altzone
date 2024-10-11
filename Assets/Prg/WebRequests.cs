@@ -104,7 +104,7 @@ public static class WebRequests
                     }
                     if (id != null)
                     {
-                        request.SetRequestHeader("BattleId", id);
+                        request.SetRequestHeader("Battle-Id", id);
                     }
 
                     yield return request.SendWebRequest();
