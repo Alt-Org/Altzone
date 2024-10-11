@@ -798,5 +798,13 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Battle
+
+    public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(WebRequests.Post(ADDRESS+"gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
+    }
+
+    #endregion
     #endregion
 }
