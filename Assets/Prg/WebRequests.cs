@@ -76,23 +76,19 @@ public static class WebRequests
     {
         byte[] boundary = UnityWebRequest.GenerateBoundary();
         byte[] formSections = UnityWebRequest.SerializeFormSections(formData, boundary);
-        byte[] terminate = System.Text.Encoding.UTF8.GetBytes(String.Concat("\r\n--", System.Text.Encoding.UTF8.GetString(boundary), "--"));
-        byte[] data = new byte[formSections.Length + terminate.Length];
-        Buffer.BlockCopy(formSections, 0, data, 0, formSections.Length);
-        Buffer.BlockCopy(terminate, 0, data, formSections.Length, terminate.Length);
 
         using (UnityWebRequest request = UnityWebRequest.Post(address, formData))
         {
-            using (UploadHandlerRaw uploadHandler = new UploadHandlerRaw(data))
+            using (UploadHandlerRaw uploadHandler = new UploadHandlerRaw(formSections))
             {
                 using (DownloadHandlerBuffer downloadHandler = new DownloadHandlerBuffer())
                 {
-
+                    uploadHandler.contentType = "multipart/form-data; boundary=" + Encoding.UTF8.GetString(boundary, 0, boundary.Length);
                     request.uploadHandler.Dispose();
                     request.downloadHandler.Dispose();
                     request.uploadHandler = uploadHandler;
                     request.downloadHandler = downloadHandler;
-                    request.SetRequestHeader("Content-Type", "multipart/form-data");
+                    //request.SetRequestHeader("Content-Type", "multipart/form-data boundary=" + Encoding.UTF8.GetString(boundary, 0, boundary.Length));
 
                     if (accessToken != null)
                     {
