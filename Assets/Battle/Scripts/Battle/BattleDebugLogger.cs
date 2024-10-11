@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Battle.Scripts.Battle
 {
@@ -16,6 +21,9 @@ namespace Battle.Scripts.Battle
             Debug.Log("[[BATTLE LOG START]]");
             s_battleDebugLogger = new(nameof(BattleDebugLogger));
 
+            s_fileWriter = null;
+            s_filePath = null;
+
             if (OpenFile()) Application.logMessageReceivedThreaded += UnityLogCallback;
         }
 
@@ -23,6 +31,8 @@ namespace Battle.Scripts.Battle
         {
             Application.logMessageReceivedThreaded -= UnityLogCallback;
             CloseFile();
+            if (s_filePath != null) SendFile();
+            s_filePath = null;
         }
 
         #endregion Public Static Methods
@@ -61,6 +71,8 @@ namespace Battle.Scripts.Battle
         private static readonly string s_fileNameFormat = "BattleLog-{0:yyy-MM-dd-HH-mm-ss}-UTC-{{0:d2}}.log";
         private static readonly int s_fileSuffixMax = 99;
         private static readonly Encoding s_fileEncoding = new UTF8Encoding(false, false);
+        private static string s_filePath;
+        private static readonly int s_fileReadAttemptLimit = 3;
 
         // Game Time
         private static SyncedFixedUpdateClock s_syncedFixedUpdateClock;
@@ -80,10 +92,7 @@ namespace Battle.Scripts.Battle
         private static bool OpenFile()
         {
             string fileName = string.Format(s_fileNameFormat, DateTime.UtcNow);
-            s_battleDebugLogger.LogInfo(fileName);
-
             string basePath = Path.Combine(Application.persistentDataPath, fileName);
-            s_battleDebugLogger.LogInfo(basePath);
 
             string path;
             int suffix = 0;
@@ -91,7 +100,7 @@ namespace Battle.Scripts.Battle
             for (;;)
             {
                 path = string.Format(basePath, suffix);
-                s_battleDebugLogger.LogInfo("Trying to open log file: {0}", path);
+                s_battleDebugLogger.LogInfo("Trying to open log file: {0} (write)", path);
 
                 try
                 {
@@ -105,13 +114,16 @@ namespace Battle.Scripts.Battle
                     if (suffix > s_fileSuffixMax)
                     {
                         s_fileWriter = null;
-                        s_battleDebugLogger.LogError("Unable to open log file");
+                        s_filePath = null;
+                        s_battleDebugLogger.LogError("Unable to open log file (write)");
                         return false;
                     }
                 }
             }
 
-            s_battleDebugLogger.LogInfo("Log file opened");
+            s_filePath = path;
+
+            s_battleDebugLogger.LogInfo("Log file opened (write)");
             return true;
         }
 
@@ -121,8 +133,63 @@ namespace Battle.Scripts.Battle
             {
                 s_fileWriter.Close();
                 s_fileWriter = null;
-                s_battleDebugLogger.LogInfo("Log file closed");
+                s_battleDebugLogger.LogInfo("Log file closed (write)");
             }
+        }
+
+        private static void SendFile()
+        {
+            /*
+            string path = s_filePath;
+            StreamReader fileReader = null;
+
+            int attempt = 1;
+
+            for (;;)
+            {
+                s_battleDebugLogger.LogInfo("Trying to open log file: {0} (read)", path);
+
+                try
+                {
+                    // Open for read!
+                    fileReader = new(path, s_fileEncoding);
+                    break;
+                }
+                catch (IOException)
+                {
+                    attempt++;
+                    if (attempt > s_fileReadAttemptLimit)
+                    {
+                        s_battleDebugLogger.LogError("Unable to open log file (read)");
+                        return;
+                    }
+                }
+            }
+
+            s_battleDebugLogger.LogInfo("Log file opened (read)");
+            s_battleDebugLogger.LogInfo("Reading file...");
+            string fileString = fileReader.ReadToEnd();
+            fileReader.Close();
+            s_battleDebugLogger.LogInfo("Log file closed (read)");
+            /**/
+
+            /*
+            string fileString = "log msg1\nlog msg2\nlog msg3";
+            /**/
+
+            /*
+            List<IMultipartFormSection> body = new()
+            {
+                new MultipartFormFileSection("logFile", fileString, s_fileEncoding, "BattleLog.log")
+            };
+
+            s_battleDebugLogger.LogInfo("Sending log file to server");
+            ServerManager.Instance.SendDebugLogFile(body, "my_secret", null, response =>
+            {
+                if (response.result == UnityWebRequest.Result.Success) s_battleDebugLogger.LogInfo("Server response: SUCCESS");
+                else s_battleDebugLogger.LogError("Server response: ERROR {0} {1}", response.error, response.downloadHandler.text);
+            });
+            /**/
         }
 
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
