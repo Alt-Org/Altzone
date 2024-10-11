@@ -21,6 +21,8 @@ namespace MenuUI.Scripts.Lobby
     /// </remarks>
     public class LobbyManager : MonoBehaviourPunCallbacks
     {
+        private const string BattleID = PhotonBattle.BattleID;
+
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
         private const string PlayerCountKey = PhotonBattle.PlayerCountKey;
         private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
@@ -71,12 +73,23 @@ namespace MenuUI.Scripts.Lobby
             Debug.Log($"onEvent {data}");
             SetPlayer(PhotonNetwork.LocalPlayer, data.PlayerPosition);
         }
-
         private void OnStartRoomEvent(StartRoomEvent data)
         {
             Debug.Log($"onEvent {data}");
+            StartCoroutine(OnStartRoom());
+        }
+        private IEnumerator OnStartRoom()
+        {
+            float startTime =Time.time;
+            yield return new WaitUntil(() => PhotonNetwork.InRoom || Time.time > startTime+10);
+            if (!PhotonNetwork.InRoom)
+            {
+                Debug.LogWarning("Failed to join a room in time.");
+                PhotonNetwork.LeaveRoom();
+                yield break;
+            } 
+            if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
             WindowManager.Get().ShowWindow(_roomWindow);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "BattleID", PhotonNetwork.CurrentRoom.Name+"_"+ DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
         }
 
         private void OnStartPlayingEvent(StartPlayingEvent data)

@@ -34,6 +34,7 @@ namespace Battle.Scripts.Battle
         // Player should be positioned so that if camera is rotated 180 degrees,
         // player with smaller number is always at the bottom of the left corner of the gameplay area.
 
+        public const string BattleID = PhotonBattleRoom.BattleID;
         public const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
         public const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         public const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
