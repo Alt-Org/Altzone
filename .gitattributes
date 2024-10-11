@@ -13,8 +13,8 @@ https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-d
 *.meta linguist-generated eol=lf
 *.prefab linguist-generated eol=lf
 *.unity linguist-generated eol=lf
-# Force all xml files to have windows line ends (GvhProjectSettings)
-/ProjectSettings/*.xml eol=crlf
+# Force all ProjectSettings xml files - GvhProjectSettings keeps changed on every build!
+/ProjectSettings/*.xml eol=lf
 #
 # JetUML state diagrams
 *.state.jet linguist-generated
