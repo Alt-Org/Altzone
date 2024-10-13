@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Random = UnityEngine.Random;
+using System.Text;
+using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -33,8 +34,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; }
         public int ColorGroup { get; }
 
+        public string GetHighlightedMsg(List<Color> colors);
         public bool IsType(MessageTypeOptions typeOptions);
         public bool IsFromSource(int sourceFlags);
     }
@@ -59,6 +62,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int GetSourceAllFlags();
         public IReadOnlyList<int> GetSourceFlagList();
         public string GetSourceFlagName(int sourceFlag);
+        public IReadOnlyList<int> GetColorSuperGroupList();
     }
 
     internal interface IReadOnlyTimelineStorage
@@ -79,7 +83,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
-        public int ColorGroup { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; private set; }
+        public int ColorGroup { get; private set; }
 
         internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type)
         {
@@ -90,9 +95,36 @@ namespace DebugUi.Scripts.BattleAnalyzer
             SourceFlag = sourceFlag;
             Trace = trace;
             Type = type;
+            MatchList = null;
+            ColorGroup = 0;
+        }
 
-            // for testing
-            ColorGroup = Random.Range(0, 5);
+        public string GetHighlightedMsg(List<Color> colors)
+        {
+            StringBuilder stringBuilder = new();
+
+            int colorGroupStart;
+            int colorGroupLength;
+            int colorGroupNumber;
+            Color color;
+
+            foreach (Tuple<int, int, int> colorColorGroup in _msgColorGroupList)
+            {
+                colorGroupStart  = colorColorGroup.Item1;
+                colorGroupLength = colorColorGroup.Item2;
+                colorGroupNumber = colorColorGroup.Item3;
+
+                if (colorGroupNumber != _fullMatchColorGroup)
+                {
+                    color = colors[colorGroupNumber];
+                    stringBuilder.Append(string.Format("<mark=#{0:x2}{1:x2}{2:x2}>", color.r * 255, color.g * 255, color.b * 255));
+                    stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
+                    stringBuilder.Append("</mark>");
+                }
+                else stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
+            }
+
+            return stringBuilder.ToString();
         }
 
         public bool IsType(MessageTypeOptions typeOptions)
@@ -109,6 +141,25 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             Id = id;
         }
+
+        internal void SetMatchList(IReadOnlyList<IReadOnlyMsgObject> matchList)
+        {
+            MatchList = matchList;
+        }
+
+        internal void SetColorGroup(int colorGroup, int fullMatchColorGroup)
+        {
+            ColorGroup = colorGroup;
+            _fullMatchColorGroup = fullMatchColorGroup;
+        }
+
+        internal void SetStringColorGroupList(IReadOnlyList<Tuple<int, int, int>> msgColorGroupList)
+        {
+            _msgColorGroupList = msgColorGroupList;
+        }
+
+        private IReadOnlyList<Tuple<int, int, int>> _msgColorGroupList;
+        private int _fullMatchColorGroup;
     }
 
     internal class Timestamp : IReadOnlyTimestamp
@@ -270,6 +321,16 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return _sourceFlagNameList[(int)Math.Log(sourceFlag, 2)];
         }
 
+        public IReadOnlyList<int> GetColorSuperGroupList()
+        {
+            return _colorSuperGroupList;
+        }
+
+        public void SetColorSuperGroupList(IReadOnlyList<int> colorSuperGroupList)
+        {
+            _colorSuperGroupList = colorSuperGroupList;
+        }
+
         private readonly List<MsgObject>[] _msgLists;
         private readonly Dictionary<int, Timestamp>[] _timeStampMaps;
         private readonly HashSet<int> _globalTimeSet;
@@ -278,6 +339,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private int _sourceAllFlags = 0;
         private readonly List<int> _sourceFlagList = new();
         private readonly List<string> _sourceFlagNameList = new();
+
+        private IReadOnlyList<int> _colorSuperGroupList;
 
         private class TimelineStorage : IReadOnlyTimelineStorage
         {

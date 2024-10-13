@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -83,11 +84,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     return;
                 }
 
-                IReadOnlyMsgStorage msgStorage = BattleLogParser.ParseLogs(logs);
-                _logBoxController.SetMsgStorage(msgStorage);
+                IReadOnlyBattleLogParserStatus battleLogParserStatus = BattleLogParser.ParseLogs(logs);
+                StartCoroutine(WaitForParser(battleLogParserStatus));
 
                 // Hide the panel after confirming
-                _filePanel.SetActive(false);
+                //_filePanel.SetActive(false);
             }
             else
             {
@@ -140,6 +141,20 @@ namespace DebugUi.Scripts.BattleAnalyzer
             // Initially hide the buttons
             _confirmLogsButton.gameObject.SetActive(false);
             _denyLogsButton.gameObject.SetActive(false);
+        }
+
+        private IEnumerator WaitForParser(IReadOnlyBattleLogParserStatus battleLogParserStatus)
+        {
+            IReadOnlyMsgStorage msgStorage;
+
+            for (;;)
+            {
+                yield return null;
+                msgStorage = battleLogParserStatus.GetResult();
+                if (msgStorage != null) break;
+            }
+
+            _logBoxController.SetMsgStorage(msgStorage);
         }
 
         private void OnFilePathChange(int dummy=0)
