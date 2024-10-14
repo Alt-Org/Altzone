@@ -117,7 +117,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (colorGroupNumber != _fullMatchColorGroup)
                 {
                     color = colors[colorGroupNumber];
-                    stringBuilder.Append(string.Format("<mark=#{0:x2}{1:x2}{2:x2}>", color.r * 255, color.g * 255, color.b * 255));
+                    color.a = 0.5f;
+                    stringBuilder.Append(string.Format("<mark=#{0:x8}>", ColorUtility.ToHtmlStringRGBA(color)));
                     stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
                     stringBuilder.Append("</mark>");
                 }

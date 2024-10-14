@@ -603,7 +603,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                     if (matchGroup != null)
                     {
-                        colorGroup = 4; /*compareData.ColorGroupArray[matchGroup.MatchFlags];*/
+                        colorGroup = compareData.ColorGroupArray[matchGroup.MatchFlags];
 
                         stringColorGroupList = new();
                         matchStringArray = matchGroup.MatchStringArrays[matchObject.Client];

@@ -78,10 +78,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _msgBoxObjectList.Clear();
             }
 
-            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel)
+            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel, IReadOnlyMsgStorage msgStorage)
             {
                 GameObject logMsgBox = Instantiate(logTextObject, LogTextBox.transform.GetChild(0).GetChild(0));
-                logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg);
+                logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg, msgStorage);
                 _msgBoxObjectList.Add(logMsgBox);
             }
 
@@ -148,7 +148,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 foreach (IReadOnlyMsgObject msg in messages)
                 {
                     // Instantiate a new log message GameObject for each message
-                    msgBox.AddMsg(msg, _logTextObject, _messagePanel);
+                    msgBox.AddMsg(msg, _logTextObject, _messagePanel, _msgStorage);
                 }
                 msgBox.SetSourceFilter(i, _msgStorage, SetMsgSourceFilter);
                 FilterLog(msgBox, messages);

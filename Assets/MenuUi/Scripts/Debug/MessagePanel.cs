@@ -39,12 +39,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        internal void SetMessage(IReadOnlyMsgObject message)
+        internal void SetMessage(IReadOnlyMsgObject message, List<Color>colourList)
         {
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
-
-            _msgMainTextField.text = message.Msg;
+            if (message.ColorGroup != 0)
+                _msgMainTextField.text = message.GetHighlightedMsg(colourList);
+            else
+                _msgMainTextField.text = message.Msg;
 
             switch (message.Type)
             {
