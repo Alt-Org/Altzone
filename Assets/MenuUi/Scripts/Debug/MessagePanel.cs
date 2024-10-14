@@ -44,7 +44,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
             if (message.ColorGroup != 0)
-                _msgMainTextField.text = message.GetHighlightedMsg(colourList);
+            {
+                string fullMessage = "";
+                foreach (IReadOnlyMsgObject matchMessage in message.MatchList)
+                {
+                    if (!string.IsNullOrWhiteSpace(fullMessage)) fullMessage += "\r\n";
+                    fullMessage += matchMessage.GetHighlightedMsg(colourList);
+                }
+                _msgMainTextField.text = fullMessage;
+            }
             else
                 _msgMainTextField.text = message.Msg;
 
