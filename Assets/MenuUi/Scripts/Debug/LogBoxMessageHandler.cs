@@ -44,7 +44,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         internal void SetMessage(IReadOnlyMsgObject msgObject)
         {
             _msgObject = msgObject;
-            string logText = string.Format("[{0:000000}] {1}", msgObject.Time, msgObject.Msg);
+            string logText = string.Format("[{0:000000}] {1} {2}", msgObject.Time, msgObject.ColorGroup, msgObject.Msg);
             _textField.text = logText;
 
             // Set text color based on message type
@@ -79,19 +79,19 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 totalGroupCount += superGroupSize;
             }
             _colourList = new();
-            float groupColourSampleSize = ((120 - (10 * (superColourList.Count - 1))) / (superColourList.Count - 2));
+            float groupColourSampleSize = ((120f - (10f * (superColourList.Count - 1))) / (superColourList.Count - 2));
             Debug.LogWarning("SuperGroupSize: "+groupColourSampleSize);
             int i = 0;
             foreach (int superGroupSize in superColourList)
             {
                 if (i == 0)
                 {
-                    Color colour = Color.HSVToRGB(360 / 360, 1, 0.7f);
+                    Color colour = Color.HSVToRGB(360f / 360f, 1, 0.7f);
                     _colourList.Add(colour);
                 }
                 else if (i == lastGroup - 1)
                 {
-                    Color colour = Color.HSVToRGB(240 / 360, 1, 1f);
+                    Color colour = Color.HSVToRGB(240f / 360f, 1, 1f);
                     _colourList.Add(colour);
                 }
                 else
@@ -99,8 +99,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     float colourSampleSize = groupColourSampleSize / superColourList[i] + 1;
                     for (int j = 1; j < superColourList[i] + 1; j++)
                     {
-                        Debug.LogWarning((360 - 10 * i - groupColourSampleSize * (i-1) - colourSampleSize * j )/ 360);
-                        Color colour = Color.HSVToRGB((360 - 10 * i - groupColourSampleSize * (i - 1) - colourSampleSize * j )/ 360, 1, 0.9f);
+                        Debug.LogWarning((360f - 10f * i - groupColourSampleSize * (i-1) - colourSampleSize * j )/ 360f);
+                        Color colour = Color.HSVToRGB((360f - 10f * i - groupColourSampleSize * (i - 1) - colourSampleSize * j )/ 360f, 1, 0.9f);
                         _colourList.Add(colour);
                     }
                 }
