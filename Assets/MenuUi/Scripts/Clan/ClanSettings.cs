@@ -118,24 +118,29 @@ public class ClanSettings : MonoBehaviour
 
     public void SaveClanSettings()
     {
-        string phrase = _clanPhraseField.text;
+        _saveButton.interactable = false;
+
+        ClanData clanData = new ClanData(ServerManager.Instance.Clan);
+        clanData.Phrase = _clanPhraseField.text;
+        clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
+        clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
+        clanData.ClanAge = DropdownToAge(_clanAgeDropdown.value);
+
+        // These are not saved at the moment
         bool isOpen = !_clanOpenToggle.isOn;
         string password = _clanPasswordField.text;
-        Language language = DropdownToLanguage(_clanLanguageDropdown.value);
-        Goals goal = DropdownToGoal(_clanGoalDropdown.value);
-        ClanAge age = DropdownToAge(_clanAgeDropdown.value);
 
-        // Save locally
-        ServerManager.Instance.Clan.phrase = phrase;
-        ServerManager.Instance.Clan.isOpen = isOpen;
-        ServerManager.Instance.Clan.language = language;
-        ServerManager.Instance.Clan.goals = goal;
-        ServerManager.Instance.Clan.clanAge = age;
-
-        Debug.Log($"SAVED LOCALLY, phrase: {phrase}, isOpen {isOpen}, password: {password}, language: {language}, goal: {goal}, age: {age}");
-
-        WindowManager.Get().GoBack();
-
-        // errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+        StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
+        {
+            _saveButton.interactable = true;
+            if (success)
+            {
+                WindowManager.Get().GoBack();
+            }
+            else
+            {
+                errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+            }
+        }));
     }
 }
