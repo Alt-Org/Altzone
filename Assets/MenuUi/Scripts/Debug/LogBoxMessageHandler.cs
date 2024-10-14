@@ -79,7 +79,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 totalGroupCount += superGroupSize;
             }
             _colourList = new();
-            float groupColourSampleSize = ((120f - (10f * (superColourList.Count - 1))) / (superColourList.Count - 2));
+            float groupColourSampleSize = ((120f - (20f * (superColourList.Count - 1))) / (superColourList.Count - 2));
             Debug.LogWarning("SuperGroupSize: "+groupColourSampleSize);
             int i = 0;
             foreach (int superGroupSize in superColourList)
@@ -100,7 +100,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     for (int j = 1; j < superColourList[i] + 1; j++)
                     {
                         Debug.LogWarning((360f - 10f * i - groupColourSampleSize * (i-1) - colourSampleSize * j )/ 360f);
-                        Color colour = Color.HSVToRGB((360f - 10f * i - groupColourSampleSize * (i - 1) - colourSampleSize * j )/ 360f, 1, 0.9f);
+                        Color colour = Color.HSVToRGB((360f - 20f * i - groupColourSampleSize * (i - 1) - colourSampleSize * j )/ 360f, 1, 0.9f);
                         _colourList.Add(colour);
                     }
                 }
