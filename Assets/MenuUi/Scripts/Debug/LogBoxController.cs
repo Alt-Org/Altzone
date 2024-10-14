@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private DebugTimelineController _debugTimelineController;
         [SerializeField] private bool _generateTestLogs;
 
-        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); UpdateTimeline(); }
+        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; StartCoroutine(UpdateLogText()); UpdateTimeline(); }
 
         public void SetMsgTypeFilter(int client, MessageTypeOptions msgTypeFilter)
         {
@@ -130,9 +131,19 @@ namespace DebugUi.Scripts.BattleAnalyzer
         }
 
         // Update the log text to display all messages
-        private void UpdateLogText()
+        private IEnumerator UpdateLogText()
         {
-            foreach (MsgBox msgBox in _msgBoxArray) msgBox.Clear();
+            long prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            foreach (MsgBox msgBox in _msgBoxArray)
+            {
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                {
+                    prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    Debug.LogWarning("Yield1");
+                    yield return null;
+                }
+                msgBox.Clear();
+            }
 
             // Loop through each log box
             for (int i = 0; i < _msgStorage.ClientCount; i++)
@@ -147,6 +158,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 //IReadOnlyList<IReadOnlyMsgObject> filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
                 foreach (IReadOnlyMsgObject msg in messages)
                 {
+                    if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                    {
+                        prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        Debug.LogWarning("Yield2");
+                        yield return null;
+                    }
                     // Instantiate a new log message GameObject for each message
                     msgBox.AddMsg(msg, _logTextObject, _messagePanel, _msgStorage);
                 }
