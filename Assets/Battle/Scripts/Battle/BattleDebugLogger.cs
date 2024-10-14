@@ -1,11 +1,12 @@
+//#define BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE
+//#define BATTLE_DEBUG_LOGGER_LOG_SEND_FILE_CALL
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -18,8 +19,9 @@ namespace Battle.Scripts.Battle
         public static void Init(SyncedFixedUpdateClock syncedFixedUpdateClock)
         {
             s_syncedFixedUpdateClock = syncedFixedUpdateClock;
-            Debug.Log("[[BATTLE LOG START]]");
             s_battleDebugLogger = new(nameof(BattleDebugLogger));
+
+            s_battleID = PhotonBattle.GetBattleID();
 
             s_fileWriter = null;
             s_filePath = null;
@@ -73,6 +75,8 @@ namespace Battle.Scripts.Battle
         private static readonly Encoding s_fileEncoding = new UTF8Encoding(false, false);
         private static string s_filePath;
         private static readonly int s_fileReadAttemptLimit = 3;
+
+        static string s_battleID;
 
         // Game Time
         private static SyncedFixedUpdateClock s_syncedFixedUpdateClock;
@@ -139,7 +143,6 @@ namespace Battle.Scripts.Battle
 
         private static void SendFile()
         {
-            /*
             string path = s_filePath;
             StreamReader fileReader = null;
 
@@ -166,30 +169,39 @@ namespace Battle.Scripts.Battle
                 }
             }
 
+            string fileSectionName = "logFile";
+            string fileData;
+            string fileName = "BattleLog.log";
+
             s_battleDebugLogger.LogInfo("Log file opened (read)");
             s_battleDebugLogger.LogInfo("Reading file...");
-            string fileString = fileReader.ReadToEnd();
+            fileData = fileReader.ReadToEnd();
             fileReader.Close();
             s_battleDebugLogger.LogInfo("Log file closed (read)");
-            /**/
 
-            /*
-            string fileString = "log msg1\nlog msg2\nlog msg3";
-            /**/
-
-            /*
-            List<IMultipartFormSection> body = new()
+            List<IMultipartFormSection> formData = new()
             {
-                new MultipartFormFileSection("logFile", fileString, s_fileEncoding, "BattleLog.log")
+                new MultipartFormFileSection(fileSectionName, fileData, s_fileEncoding, fileName)
             };
 
+            string secretKey = "my_secret";
+
+#if BATTLE_DEBUG_LOGGER_LOG_SEND_FILE_CALL
+            string formDataDebugString = string.Format("FileSection(name: \"{0}\", data: (fileData), dataEncoding: {1}, fileName: \"{2}\")", fileSectionName, s_fileEncoding, fileName);
+            s_battleDebugLogger.LogInfo("ServerManager.Instance.SendDebugLogFile(formData: {0}, secretKey: \"{1}\", id: \"{2}\", callback: response => {{...}});", formDataDebugString, secretKey, s_battleID);
+#endif
+
+#if !BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE
             s_battleDebugLogger.LogInfo("Sending log file to server");
-            ServerManager.Instance.SendDebugLogFile(body, "my_secret", null, response =>
+            ServerManager.Instance.SendDebugLogFile(formData, secretKey, s_battleID, response =>
             {
                 if (response.result == UnityWebRequest.Result.Success) s_battleDebugLogger.LogInfo("Server response: SUCCESS");
                 else s_battleDebugLogger.LogError("Server response: ERROR {0} {1}", response.error, response.downloadHandler.text);
             });
-            /**/
+#else
+            s_battleDebugLogger.LogWarning("BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE == TRUE");
+#endif
+
         }
 
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
@@ -240,6 +252,6 @@ namespace Battle.Scripts.Battle
             s_fileWriter.WriteLine(stringBuilder.ToString());
         }
 
-        #endregion Private Methods
+#endregion Private Methods
     }
 }
