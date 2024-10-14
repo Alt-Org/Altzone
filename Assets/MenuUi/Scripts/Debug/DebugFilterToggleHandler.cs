@@ -12,7 +12,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] Toggle _button;
         [SerializeField] TextMeshProUGUI _text;
         private int _filter = -1;
-        private Action<int, bool> _setFilter;
+        private Action<int, bool, bool> _setFilter;
         private bool _listenerBlock=false;
 
         private void Start()
@@ -20,13 +20,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _button.onValueChanged.AddListener(OnToggle);
         }
 
-        public void SetAllFilter(Action<int, bool> setFilter)
+        public void SetAllFilter(Action<int, bool, bool> setFilter)
         {
             _text.text = "Kaikki";
             _setFilter = setFilter;
         }
 
-        public void SetFilter(int filter, string text, Action<int, bool> setFilter)
+        public void SetFilter(int filter, string text, Action<int, bool, bool> setFilter)
         {
             _filter = filter;
             _text.text = text;
@@ -47,7 +47,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private void OnToggle(bool toggle)
         {
             if (_listenerBlock) return;
-            _setFilter.Invoke(_filter, toggle);
+            _setFilter.Invoke(_filter, toggle, false);
         }
     }
 }

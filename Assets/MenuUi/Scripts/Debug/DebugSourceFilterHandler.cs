@@ -15,17 +15,20 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] TextMeshProUGUI _filterText;
         [SerializeField] GameObject _filtersPanel;
 
+        [SerializeField] private DebugFilterSyncHandler _filterSync;
+
         private int _client = -1;
         private int _msgSourceFilterAll;
         private int _msgSourceFilterCurrent = -1;
         private IReadOnlyMsgStorage _storage;
         private Action<int, int> _setSourceFilter;
         private DebugFilterToggleHandler _toggleAll;
+        private IReadOnlyList<int> _flagList;
 
         // Start is called before the first frame update
         void Start()
         {
-
+            _filterSync.InitializeSourceFilterCalls(SetFilter);
         }
 
         internal void SetInitialTimelineFilters(IReadOnlyMsgStorage storage, Action<int, int> setSourceFilter)
@@ -58,7 +61,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 Destroy(_filtersTransform.GetChild(i).gameObject);
             }
             ((List<int>)flagList).Sort((x, y) => _storage.GetSourceFlagName(x).CompareTo(_storage.GetSourceFlagName(y)));
-
+            _flagList = flagList;
             GameObject toggleAll = Instantiate(_togglePrefab, _filtersTransform);
             toggleAll.GetComponent<DebugFilterToggleHandler>().SetAllFilter(SetFilter);
             _toggleAll = toggleAll.GetComponent<DebugFilterToggleHandler>();
@@ -72,7 +75,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             SetText();
         }
 
-        private void SetFilter(int flag, bool toggleValue)
+        private void SetFilter(int flag, bool toggleValue, bool fromSync)
         {
             if (flag < 0)
             {
@@ -82,15 +85,33 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     StartCoroutine(toggle.GetComponent<DebugFilterToggleHandler>().SetValue(toggleValue));
                 }
             }
-            if(toggleValue)
+            if (toggleValue)
+            {
                 _msgSourceFilterCurrent |= flag;
+                StartCoroutine(_toggleAll.SetValue(false));
+            }
             else
                 _msgSourceFilterCurrent &= ~flag;
+            if (fromSync)
+            {
+                int i = 0;
+                foreach (int flagFromList in _flagList)
+                {
+                    Debug.LogWarning($"List:{flagFromList}, Sync:{flag}");
+                    if (flagFromList == flag)
+                    {
+                        StartCoroutine(_filtersTransform.GetChild(i+1).GetComponent<DebugFilterToggleHandler>().SetValue(toggleValue));
+                        break;
+                    }
+                    i++;
+                }
+            }
             SetText();
             if(_msgSourceFilterCurrent != _msgSourceFilterAll)
                 StartCoroutine(_toggleAll.SetValue(false));
             else
                 StartCoroutine(_toggleAll.SetValue(true));
+            if (!fromSync) _filterSync.SendSourceFilters(flag, toggleValue);
             _setSourceFilter.Invoke(_client, _msgSourceFilterCurrent);
         }
 
