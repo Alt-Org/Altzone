@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -570,6 +569,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!114 &166184717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1483,6 +1483,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
         type: 3}
+      propertyPath: _view
+      value: 
+      objectReference: {fileID: 622190532}
+    - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
       propertyPath: _maxSpeed
       value: 10
       objectReference: {fileID: 0}
@@ -1490,6 +1495,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotFixMax
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+        type: 3}
+      propertyPath: _ballBaseSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2211436060130418491, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
         type: 3}
@@ -1606,6 +1616,128 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d462a16b94dc1740bb85e3d86ca77b4, type: 3}
+--- !u!114 &622190532 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8473052537036719184, guid: 0d462a16b94dc1740bb85e3d86ca77b4,
+    type: 3}
+  m_PrefabInstance: {fileID: 622190530}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &628678169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 628678170}
+  m_Layer: 5
+  m_Name: DiamondCounters2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &628678170
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628678169}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1715143004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &668191975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 668191976}
+  - component: {fileID: 668191978}
+  - component: {fileID: 668191977}
+  m_Layer: 0
+  m_Name: DiamondBackground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &668191976
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668191975}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.010575969}
+  m_LocalScale: {x: 63.4, y: 63.4, z: 63.4}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -384, y: -675.8}
+  m_SizeDelta: {x: 1, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &668191977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668191975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 447358807, guid: 0dca91ee639352d49a8ccee853f56527, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &668191978
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668191975}
+  m_CullTransparentMesh: 1
 --- !u!1 &671105154
 GameObject:
   m_ObjectHideFlags: 0
@@ -1885,7 +2017,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -2979,7 +3111,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -4630,6 +4762,7 @@ RectTransform:
   - {fileID: 680639591}
   - {fileID: 1328429794}
   - {fileID: 1817275388}
+  - {fileID: 628678170}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5830,9 +5963,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[0]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[1]
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816218739618235538, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: _gameStageChangeTimesSec.Array.data[2]
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 9117181731113809983, guid: 08228fd663f66f641b011c944c7baa80,
         type: 3}
       propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9117181731113809983, guid: 08228fd663f66f641b011c944c7baa80,
+        type: 3}
+      propertyPath: ObservedComponentsFoldoutOpen
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6014,6 +6172,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
+        type: 3}
+      propertyPath: _winGraphics
+      value: 
+      objectReference: {fileID: 1761139120}
+    - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
+        type: 3}
+      propertyPath: _loseGraphics
+      value: 
+      objectReference: {fileID: 1361277913}
     - target: {fileID: 5851585987300593459, guid: 577783f86cfa20b4d9c8d45eb6ac54d9,
         type: 3}
       propertyPath: _diamondsBeta.Array.size
@@ -6715,3 +6883,4 @@ SceneRoots:
   - {fileID: 348265311}
   - {fileID: 4512101204273887873}
   - {fileID: 7988659286708465721}
+  - {fileID: 668191976}

@@ -16,6 +16,7 @@ namespace MenuUI.Scripts.Lobby
     /// </summary>
     internal static class PhotonBattle
     {
+        public const string BattleID = PhotonBattleRoom.BattleID;
         public const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         public const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
         public const string PlayerPrefabIdKey = PhotonBattleRoom.PlayerCharacterIdKey;

@@ -102,7 +102,8 @@ namespace Battle.Scripts.Battle.Players
             _battlePlayer.PlayerShieldManager.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerCharacter.transform.eulerAngles = new Vector3(0, 0, newAngle);
             _battlePlayer.PlayerSoul.transform.eulerAngles = new Vector3(0, 0, newAngle);
-            _squareFlashSprite.transform.eulerAngles = new Vector3(0, 0, newAngle);
+
+            //_shieldHitboxIndicators.transform.eulerAngles = new Vector3(0, 0, newAngle);
         }
 
         /* old
@@ -152,9 +153,9 @@ namespace Battle.Scripts.Battle.Players
 
             _playerMovementIndicator.transform.position = targetPosition;
             _sparkleSprite.transform.position = targetPosition;
-            Vector2 shieldPosition = new(targetPosition.x, targetPosition.y + _squareFlashYPosition);
-            _squareFlashSprite.transform.position = shieldPosition;
-            _squareFlashSprite.SetActive(true);
+            Vector2 shieldPosition = new(targetPosition.x, targetPosition.y + _shieldHitboxIndicatorsYPosition);
+            //_shieldHitboxIndicators.transform.position = shieldPosition;
+            //_shieldHitboxIndicators.SetActive(false);
 
             Coroutine move = StartCoroutine(MoveCoroutine(targetPosition, movementSpeed));
             _syncedFixedUpdateClock.ExecuteOnUpdate(teleportUpdateNumber, 1, () =>
@@ -170,7 +171,7 @@ namespace Battle.Scripts.Battle.Players
                 playerCharacter.SpritIndex = _isUsingShield ? PlayerCharacter.SpriteIndexEnum.IdleWithShield : PlayerCharacter.SpriteIndexEnum.IdleWithoutShield;
 
                 playerSoul.Show = false;
-                _squareFlashSprite.SetActive(false);
+                /*_shieldHitboxIndicators.SetActive(true);*/
 
                 _isMoving = false;
 
@@ -233,8 +234,8 @@ namespace Battle.Scripts.Battle.Players
 
         private GameObject _playerMovementIndicator;
         private GameObject _sparkleSprite;
-        private GameObject _squareFlashSprite;
-        private float _squareFlashYPosition;
+        //private GameObject _shieldHitboxIndicators;
+        private float _shieldHitboxIndicatorsYPosition;
 
         private readonly List<IReadOnlyBattlePlayer> _otherPlayers = new();
 
@@ -301,9 +302,9 @@ namespace Battle.Scripts.Battle.Players
 
             _playerMovementIndicator = _geometryRoot.transform.Find("PlayerPositionIndicator").gameObject;
             _sparkleSprite = _geometryRoot.transform.Find("SparkleSprite").gameObject;
-            _squareFlashSprite = _geometryRoot.transform.Find("SquareFlashSprite").gameObject;
+            //_shieldHitboxIndicators = _geometryRoot.transform.Find("ShieldHitBoxIndicators").gameObject;
 
-            _squareFlashSprite.SetActive(false);
+            //_shieldHitboxIndicators.SetActive(false);
 
             // get components
             _audioSource = GetComponent<AudioSource>();
@@ -331,7 +332,7 @@ namespace Battle.Scripts.Battle.Players
                 BattleTeamNumber teamNumber = player.BattleTeam.TeamNumber;
                 if (teamNumber == data.LocalPlayer.BattleTeam.TeamNumber)
                 {
-                    _squareFlashYPosition = (teamNumber == BattleTeamNumber.TeamBeta ? -0.95f : 0.95f);
+                    _shieldHitboxIndicatorsYPosition = (teamNumber == BattleTeamNumber.TeamBeta ? -0.95f : 0.95f);
                 }
 
                 if (player == _battlePlayer) continue;
@@ -387,7 +388,7 @@ namespace Battle.Scripts.Battle.Players
             {
                 _playerMovementIndicator.SetActive(false);
                 _sparkleSprite.SetActive(false);
-                _squareFlashSprite.SetActive(false);
+                //_shieldHitboxIndicators.SetActive(false);
             }
 
             // Check if enough time has passed since the last sparkle update

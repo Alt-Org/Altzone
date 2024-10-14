@@ -1,3 +1,4 @@
+using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ public class ClanListing : MonoBehaviour
     private ServerClan _clan;
     private string _joinMessage = "Default Join Message";
 
-    private const string CLAN_OPEN = "Kyllä";
+    private const string CLAN_OPEN = "KyllÃ¤";
     private const string CLAN_CLOSED = "Ei";
 
     public ServerClan Clan { get => _clan; set { _clan = value; SetClanValues(); } }

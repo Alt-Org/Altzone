@@ -261,7 +261,7 @@ public class ServerManager : MonoBehaviour
             {
                 if (clanDataFromStorage == null)
                 {
-                    clanData = new ClanData(clan._id, clan.name, clan.tag, clan.gameCoins);
+                    clanData = new ClanData(clan);
                     return;
                 }
                 else
@@ -469,7 +469,7 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
                 Clan = clan;
-
+                Debug.LogWarning(clan.phrase);
                 // Saves clan data to DataStorage
                 StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
@@ -627,9 +627,10 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator PostClanToServer(string name, string tag, int coins, bool isOpen, Action<ServerClan> callback)
+    public IEnumerator PostClanToServer(string name, string tag, bool isOpen, string[] labels, ClanAge age, Goals goal, string phrase, Language language, Action<ServerClan> callback)
     {
-        string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""gameCoins"":{coins},""isOpen"":{isOpen.ToString().ToLower()}}}";
+        string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""isOpen"":{isOpen.ToString().ToLower()},""labels"": [{""}],
+                            ""ageRange"":{age},""goal"":{goal},""phrase"":{phrase},""language"":{language}}}";
 
         yield return StartCoroutine(WebRequests.Post(ADDRESS + "clan", body, AccessToken, request =>
         {
@@ -641,7 +642,7 @@ public class ServerManager : MonoBehaviour
                 Player.clan_id = Clan._id;
 
                 ClanData clanData = null;
-                clanData = new ClanData(Clan._id, Clan.name, Clan.tag, Clan.gameCoins);
+                clanData = new ClanData(Clan);
                 Storefront.Get().SaveClanData(clanData, null);
 
                 if (callback != null)
@@ -669,6 +670,32 @@ public class ServerManager : MonoBehaviour
                 }
             }));
         }
+    }
+
+    public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
+    {
+        string body = @$"{{""_id"":""{data.Id}"",""name"":""{data.Name}"",""tag"":""{data.Tag}"",""isOpen"":{Clan.isOpen.ToString().ToLower()},""labels"": [{""}],
+                            ""ageRange"":{data.ClanAge},""goal"":{data.Goals},""phrase"":{data.Phrase},""language"":{data.Language}}}";
+
+        yield return StartCoroutine(WebRequests.Put(ADDRESS + "clan", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Storefront.Get().SaveClanData(data, null);
+
+                if (callback != null)
+                {
+                    callback(true);
+                }
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(false);
+                }
+            }
+        }));
     }
 
     #endregion
@@ -798,5 +825,13 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Battle
+
+    public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(WebRequests.Post(ADDRESS+"gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
+    }
+
+    #endregion
     #endregion
 }

@@ -12,12 +12,19 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [PrimaryKey] public string Id;
         [Unique] public string Name;
         [Optional] public string Tag;
+        [Optional] public string Phrase;
         public int GameCoins;
+
+        public List<string> Labels = new();
 
         public ClanInventory Inventory = new();
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
+
+        public ClanAge ClanAge;
+        public Language Language;
+        public Goals Goals;
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
@@ -29,6 +36,23 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Name = name;
             Tag = tag ?? string.Empty;
             GameCoins = gameCoins;
+        }
+
+        public ClanData(ServerClan clan)
+        {
+            Assert.IsTrue(clan.id.IsPrimaryKey());
+            Assert.IsTrue(clan.name.IsMandatory());
+            Assert.IsTrue(clan.tag.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(clan.gameCoins >= 0);
+            Id = clan.id;
+            Name = clan.name;
+            Tag = clan.tag ?? string.Empty;
+            Phrase = clan.phrase ?? string.Empty;
+            GameCoins = clan.gameCoins;
+            Labels = clan.labels;
+            ClanAge = clan.clanAge;
+            Language = clan.language;
+            Goals = clan.goals;
         }
 
         public override string ToString()

@@ -17,6 +17,10 @@ namespace Battle.Scripts.Battle.Game
 
     internal class GameController : MonoBehaviour
     {
+        #region Serialized Fields
+        [SerializeField] private float[] _gameStageChangeTimesSec;
+        #endregion
+
         #region Private Constants
         // Game Startup
         private const double GameStartDelay = 1.0;
@@ -29,9 +33,13 @@ namespace Battle.Scripts.Battle.Game
         private bool _teamsAreReadyForGameplay = false;
         private bool _slingControllerReady = false;
         private int _clientsReady = 0;
+        private BallHandler _ballHandler;
 
         // State
         private bool _gameStarted = false;
+        private int _gameStage = 0;
+
+        private int _gameStartUpdateNumber;
 
         // Components
         private PhotonView _photonView;
@@ -60,6 +68,7 @@ namespace Battle.Scripts.Battle.Game
             _syncedFixedUpdateClock = Context.GetSyncedFixedUpdateClock;
             _playerManager = Context.GetPlayerManager;
             _slingController = Context.GetSlingController;
+            _ballHandler = Context.GetBallHandler;
 
             BattleDebugLogger.Init(_syncedFixedUpdateClock);
 
@@ -75,6 +84,11 @@ namespace Battle.Scripts.Battle.Game
 
             // debug test
             _battleDebugLogger.LogInfo("test");
+        }
+
+        private void OnDestroy()
+        {
+            BattleDebugLogger.End();
         }
 
         #region Private Methods - Message Listeners
@@ -134,6 +148,26 @@ namespace Battle.Scripts.Battle.Game
         }
         #endregion Private Methods - Game Startup
 
+        private void StageChange()
+        {
+            _gameStage++;
+            _battleDebugLogger.LogInfo("_gameStage {0}", _gameStage);
+
+            _ballHandler.BallSpeedup();
+
+            ScheduleNextStageChange();
+        }
+
+        private void ScheduleNextStageChange()
+        {
+            if (_gameStage < _gameStageChangeTimesSec.Length)
+            {
+                int nextStageUpdate = _gameStartUpdateNumber + _syncedFixedUpdateClock.ToUpdates(_gameStageChangeTimesSec[_gameStage]);
+                _battleDebugLogger.LogInfo("nextStageUpdate {0}", nextStageUpdate);
+                _syncedFixedUpdateClock.ExecuteOnUpdate(nextStageUpdate, 0, StageChange);
+            }
+        }
+
         private void Sling(BattleTeamNumber slingingTeam)
         {
             _battleDebugLogger.LogInfo(DebugLogSlingSequence + "activating sling");
@@ -182,7 +216,13 @@ namespace Battle.Scripts.Battle.Game
         {
             _syncedFixedUpdateClock.ExecuteOnUpdate(gameStartUpdateNumber, 0, () =>
             {
-                _battleDebugLogger.LogInfo(DebugLogGameStartup + "STARTING GAME");
+                _battleDebugLogger.LogInfo(DebugLogGameStartup + "STARTING GAME {0}", gameStartUpdateNumber);
+                _gameStartUpdateNumber = gameStartUpdateNumber;
+
+                /*int nextStageUpdate = _gameStartUpdateNumber + _syncedFixedUpdateClock.ToUpdates(_gameStageChangeTimesSec[_gameStage]);
+                _syncedFixedUpdateClock.ExecuteOnUpdate(nextStageUpdate, 0, ScheduleNextStageChange);*/
+                ScheduleNextStageChange();
+
                 _battleDebugLogger.LogInfo(DebugLogGameStartup + "ENABLING PLAYER MOVEMENT");
                 _playerManager.SetPlayerMovementEnabled(true);
                 _battleDebugLogger.LogInfo(DebugLogGameStartup + "STARTING SLING SEQUENCE");

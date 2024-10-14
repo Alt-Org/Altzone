@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+
 namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerClassDesensitizer : MonoBehaviour, IPlayerClass

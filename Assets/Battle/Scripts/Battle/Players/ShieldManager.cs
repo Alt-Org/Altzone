@@ -1,3 +1,5 @@
+//#define SHIELD_MANAGER_DEBUG
+
 using Altzone.Scripts.GA;
 using Photon.Pun;
 using UnityEngine;
@@ -44,6 +46,13 @@ namespace Battle.Scripts.Battle.Players
             _currentShield.ShieldGameObject.SetActive(true);
             _currentShield.ShieldHitbox.SetActive(_hitboxActive && _timer <= 0);
             _currentShield.ShieldSpriteRenderer.enabled = _showShield;
+
+#if SHIELD_MANAGER_DEBUG
+            if (ShieldManagerDebug)
+            {
+                _currentShield.ShieldGameObject.transform.Find("ShieldHitBoxIndicators").gameObject.SetActive(true);
+            }
+#endif
         }
 
         public void SetHitboxActive(bool active)
@@ -101,6 +110,7 @@ namespace Battle.Scripts.Battle.Players
 
             private readonly GameObject[] _spriteGameObjects;
             private readonly SpriteRenderer[] _spriteRenderers;
+
         }
 
         #region Private - Fields
@@ -110,6 +120,7 @@ namespace Battle.Scripts.Battle.Players
         private bool _hitboxActive;
         private bool _showShield;
         private int _timer = -1;
+
         #endregion Private - Fields
 
         #region Private - Methods

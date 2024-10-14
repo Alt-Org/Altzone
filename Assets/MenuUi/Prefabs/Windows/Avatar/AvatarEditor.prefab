@@ -762,6 +762,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6335798548563864101}
   - component: {fileID: 7212993086140125103}
+  - component: {fileID: 6741419406297277345}
   m_Layer: 0
   m_Name: FeaturePicker
   m_TagString: Untagged
@@ -833,6 +834,18 @@ MonoBehaviour:
   - sprite: {fileID: -1807108265, guid: 54ac73de859e4374db347d55dbb1b304, type: 3}
     iconSprite: {fileID: 1064981456, guid: 54ac73de859e4374db347d55dbb1b304, type: 3}
     id: 8
+  - sprite: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    iconSprite: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    id: 9
+  - sprite: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    iconSprite: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    id: 9
+  - sprite: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    iconSprite: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    id: 9
+  - sprite: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    iconSprite: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
+    id: 9
   - sprite: {fileID: 2018717533, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
     iconSprite: {fileID: -1490592614, guid: fd8ba004fcf667d46b109d1717cfa6c6, type: 3}
     id: 9
@@ -940,6 +953,18 @@ MonoBehaviour:
   - {fileID: 872962537359403051}
   - {fileID: 8554520893083663870}
   animator: {fileID: 7761057161337227046}
+--- !u!114 &6741419406297277345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583219091284170855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcb222a881e3234f98051491acc0259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1665418200380759846
 GameObject:
   m_ObjectHideFlags: 0
