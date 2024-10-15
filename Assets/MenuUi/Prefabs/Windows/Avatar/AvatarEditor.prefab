@@ -965,6 +965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abcb222a881e3234f98051491acc0259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _swipeThreshold: 100
 --- !u!1 &1665418200380759846
 GameObject:
   m_ObjectHideFlags: 0
@@ -1801,7 +1802,9 @@ MonoBehaviour:
   - {fileID: 209949699582882733}
   - {fileID: 2132873284520016942}
   _bookBackground: {fileID: 3478590080901631644}
-  _amountToScale: 0.1
+  _amountToScale: 0.5
+  _maxScaling: 5
+  _minScaling: 0.5
 --- !u!1 &4861242246575817548
 GameObject:
   m_ObjectHideFlags: 0
