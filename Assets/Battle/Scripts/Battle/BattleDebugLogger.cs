@@ -10,6 +10,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
+using Photon.Pun;
+
 namespace Battle.Scripts.Battle
 {
     internal class BattleDebugLogger
@@ -22,6 +24,7 @@ namespace Battle.Scripts.Battle
             s_battleDebugLogger = new(nameof(BattleDebugLogger));
 
             s_battleID = PhotonBattle.GetBattleID();
+            s_playerPosition = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);
 
             s_fileWriter = null;
             s_filePath = null;
@@ -68,15 +71,17 @@ namespace Battle.Scripts.Battle
 
         #region Private Static Fields
 
+        // Battle
+        static string s_battleID;
+        static int s_playerPosition;
+
         // Files
         private static StreamWriter s_fileWriter;
-        private static readonly string s_fileNameFormat = "BattleLog-{0:yyy-MM-dd-HH-mm-ss}-UTC-{{0:d2}}.log";
+        private static readonly string s_fileNameFormat = "BattleLog-{0:yyy-MM-dd-HH-mm-ss}-UTC-{1}-{2:d2}-{{0:d2}}.log";
         private static readonly int s_fileSuffixMax = 99;
         private static readonly Encoding s_fileEncoding = new UTF8Encoding(false, false);
         private static string s_filePath;
         private static readonly int s_fileReadAttemptLimit = 3;
-
-        static string s_battleID;
 
         // Game Time
         private static SyncedFixedUpdateClock s_syncedFixedUpdateClock;
@@ -95,7 +100,7 @@ namespace Battle.Scripts.Battle
 
         private static bool OpenFile()
         {
-            string fileName = string.Format(s_fileNameFormat, DateTime.UtcNow);
+            string fileName = string.Format(s_fileNameFormat, DateTime.UtcNow, s_battleID, s_playerPosition);
             string basePath = Path.Combine(Application.persistentDataPath, fileName);
 
             string path;

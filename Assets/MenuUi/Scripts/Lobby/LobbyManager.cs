@@ -88,7 +88,7 @@ namespace MenuUI.Scripts.Lobby
                 PhotonNetwork.LeaveRoom();
                 yield break;
             }
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
+            if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
             WindowManager.Get().ShowWindow(_roomWindow);
         }
 
