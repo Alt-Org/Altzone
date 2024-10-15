@@ -245,6 +245,10 @@ namespace Battle.Scripts.Battle
                 stringBuilder.Append("\\,");
                 stringBuilder.Append(type.ToString());
                 stringBuilder.Append("\\,");
+                if((type is LogType.Log) && !(AppPlatform.IsDevelopmentBuild || AppPlatform.IsEditor))
+                {
+                    break;
+                }
                 logString = stackTrace;
                 repeat = false;
             }
