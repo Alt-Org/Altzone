@@ -63,7 +63,6 @@ namespace Battle.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
 
-
         public static string GetBattleID()
         {
             return PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null);

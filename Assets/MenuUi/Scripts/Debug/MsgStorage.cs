@@ -34,6 +34,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
         public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; }
         public int ColorGroup { get; }
 
@@ -83,10 +84,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
         public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; private set; }
         public int ColorGroup { get; private set; }
 
-        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type)
+        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type, bool isMatchable)
         {
             Client = client;
             Id = -1;
@@ -95,8 +97,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
             SourceFlag = sourceFlag;
             Trace = trace;
             Type = type;
+            IsMatchable = isMatchable;
             MatchList = null;
-            ColorGroup = 0;
+            ColorGroup = -1;
         }
 
         public string GetHighlightedMsg(List<Color> colors)

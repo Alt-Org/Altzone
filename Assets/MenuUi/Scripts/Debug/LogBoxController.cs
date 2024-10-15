@@ -127,7 +127,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Add a message to the log box
         private void AddMessageToLog(MsgStorage msgStorage, string message, int time, int client, MessageType messageType)
         {
-            msgStorage.Add(new MsgObject(client, time, message, 1, "", messageType));
+            msgStorage.Add(new MsgObject(client, time, message, 1, "", messageType, false));
         }
 
         // Update the log text to display all messages
@@ -197,7 +197,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             for(int i = 0; i < _msgBoxArray.Length ; i++)
             {
-                if (values[i] < 0) continue; 
+                if (values[i] < 0) continue;
                 float value = (float)values[i]/(float)_msgBoxArray[i].MsgBoxObjectList.Count;
                 if(_msgBoxArray[i].MsgBoxObjectList[values[i]].GetComponent<LogBoxMessageHandler>().MsgObject.Id == values[i])
                 {

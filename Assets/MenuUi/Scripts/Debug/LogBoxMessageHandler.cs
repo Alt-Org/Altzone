@@ -64,8 +64,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     break;
             }
             if (_colourList == null) CreateColourSet();
-            _backgroundImage.color = _colourList[msgObject.ColorGroup];
-            
+            if (msgObject.IsMatchable) _backgroundImage.color = _colourList[msgObject.ColorGroup];
+
         }
 
         private void CreateColourSet()

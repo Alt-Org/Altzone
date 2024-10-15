@@ -43,13 +43,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
-            if (message.ColorGroup != 0)
+            if (message.ColorGroup > 0)
             {
                 string fullMessage = "";
                 foreach (IReadOnlyMsgObject matchMessage in message.MatchList)
                 {
                     if (!string.IsNullOrWhiteSpace(fullMessage)) fullMessage += "\r\n";
-                    fullMessage += matchMessage.GetHighlightedMsg(colourList);
+                    fullMessage += string.Format("[C{0}] {1}", matchMessage.Client, matchMessage.GetHighlightedMsg(colourList));
                 }
                 _msgMainTextField.text = fullMessage;
             }
