@@ -12,6 +12,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
     public class PaneInRoom : MonoBehaviour
     {
         [SerializeField] private Text title;
+        [SerializeField] private Text _battleID;
         [SerializeField] private Button[] buttons;
 
         private void Start()
@@ -51,9 +52,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            if(!string.IsNullOrWhiteSpace(PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid")))
-                title.text = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid") : "<color=red>Not in room</color>";
-            else
+            _battleID.text = PhotonNetwork.InRoom ? $"({PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
             title.text = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : "<color=red>Not in room</color>";
         }
     }
