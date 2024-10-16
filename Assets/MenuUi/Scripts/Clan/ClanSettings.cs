@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using System;
 using MenuUI.Scripts;
 using MenuUi.Scripts.Window;
+using Altzone.Scripts;
 
 public class ClanSettings : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class ClanSettings : MonoBehaviour
     [Header("Other settings fields")]
     [SerializeField] private Transform _valueRowFirst;
     [SerializeField] private Transform _valueRowSecond;
+    [SerializeField] private ClanRightsPanel _clanRightsPanel;
 
     [Header("Buttons")]
     [SerializeField] private Button _saveButton;
@@ -45,6 +47,10 @@ public class ClanSettings : MonoBehaviour
         if (ServerManager.Instance.Clan != null)
         {
             SetPanelValues(ServerManager.Instance.Clan);
+            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+            {
+                _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+            });
             SetInitialSettingValues(ServerManager.Instance.Clan);
         }
     }
@@ -120,27 +126,31 @@ public class ClanSettings : MonoBehaviour
     {
         _saveButton.interactable = false;
 
-        ClanData clanData = new ClanData(ServerManager.Instance.Clan);
-        clanData.Phrase = _clanPhraseField.text;
-        clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
-        clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
-        clanData.ClanAge = DropdownToAge(_clanAgeDropdown.value);
-
-        // These are not saved at the moment
-        bool isOpen = !_clanOpenToggle.isOn;
-        string password = _clanPasswordField.text;
-
-        StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
-            _saveButton.interactable = true;
-            if (success)
+            clanData.Phrase = _clanPhraseField.text;
+            clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
+            clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
+            clanData.ClanAge = DropdownToAge(_clanAgeDropdown.value);
+
+            // These are not saved at the moment
+            bool isOpen = !_clanOpenToggle.isOn;
+            string password = _clanPasswordField.text;
+            clanData.ClanRights = _clanRightsPanel.ClanRights;
+            Debug.Log("member: " + clanData.ClanRights[0] + " elder: " + clanData.ClanRights[1] + " admin: " + clanData.ClanRights[2]);
+
+            StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
-                WindowManager.Get().GoBack();
-            }
-            else
-            {
-                errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
-            }
-        }));
+                _saveButton.interactable = true;
+                if (success)
+                {
+                    WindowManager.Get().GoBack();
+                }
+                else
+                {
+                    errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+                }
+            }));
+        });
     }
 }

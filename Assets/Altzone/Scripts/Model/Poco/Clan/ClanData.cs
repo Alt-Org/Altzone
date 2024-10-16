@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int GameCoins;
 
         public List<string> Labels = new();
+        public ClanRoleRights[] ClanRights;
 
         public ClanInventory Inventory = new();
 
