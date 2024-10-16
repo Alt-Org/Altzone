@@ -57,5 +57,17 @@ namespace Prg.Scripts.Common
             }
             return ClickState.None;
         }
+
+        public static Vector2 GetClickPosition()
+        {
+            if (GetClickState() is not ClickState.None)
+                if (Touch.activeFingers.Count >= 1)
+                {
+                    Touch touch = Touch.activeTouches[0];
+                    return touch.screenPosition;
+                }
+                else return Mouse.current.position.ReadValue();
+            else return Vector2.negativeInfinity;
+        }
     }
 }
