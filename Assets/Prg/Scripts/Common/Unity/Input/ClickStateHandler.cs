@@ -18,6 +18,13 @@ namespace Prg.Scripts.Common
         None
     }
 
+    public enum ClickType
+    {
+        Click,
+        Pinch,
+        None
+    }
+
     /// <summary>
     /// Wrapper for getting the current state of clicking/touching regardless whether you are using touchscreen or a mouse.
     /// </summary>
@@ -58,6 +65,13 @@ namespace Prg.Scripts.Common
             return ClickState.None;
         }
 
+        public static ClickType GetClickType()
+        {
+            if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero)) return ClickType.Click;
+            else if (Touch.activeTouches.Count == 2 || (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero)) return ClickType.Pinch;
+            else return ClickType.None;
+        }
+
         public static Vector2 GetClickPosition()
         {
             if (GetClickState() is not ClickState.None)
@@ -66,8 +80,25 @@ namespace Prg.Scripts.Common
                     Touch touch = Touch.activeTouches[0];
                     return touch.screenPosition;
                 }
-                else return Mouse.current.position.ReadValue();
-            else return Vector2.negativeInfinity;
+                else if(Mouse.current != null) return Mouse.current.position.ReadValue();
+            return Vector2.negativeInfinity;
+        }
+
+        public static float GetPinchDistance()
+        {
+            float distance = -1f;
+            if (Touch.activeTouches.Count <= 2)
+            {
+                Vector2 touch1 = Touch.activeFingers[0].screenPosition;
+                Vector2 touch2 = Touch.activeFingers[1].screenPosition;
+
+                distance = Vector2.Distance(touch1, touch2);
+            }
+            else if (Mouse.current != null)
+            {
+                distance = Mouse.current.scroll.ReadValue().y;
+            }
+            return distance;
         }
     }
 }
