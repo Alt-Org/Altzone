@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +48,7 @@ namespace MenuUi.Scripts.AvatarEditor{
 
         void Update()
         {
+            //remember to change input to touch
             if (Input.touchCount >= 2)
             {
                 _touchOne = Input.GetTouch(0);
@@ -98,28 +100,54 @@ namespace MenuUi.Scripts.AvatarEditor{
     }
         private void ScaleUpVertically()
         {
-            if(_characterImage.localScale.y < 2){
+            if(_characterImage.localScale.y < _maxScaling){
                 _characterImage.localScale += new Vector3(0, _amountToScale, 0);
             }
             
         }
         private void ScaleDownVertically()
         {
-            if(_characterImage.localScale.y > 1){
+            if(_characterImage.localScale.y > _minScaling){
                 _characterImage.localScale += new Vector3(0, -_amountToScale, 0);
             }
         }
         private void ScaleUpHorizontally()
         {
-            if(_characterImage.localScale.x < 2){
+            if(_characterImage.localScale.x < _maxScaling){
                 _characterImage.localScale += new Vector3(_amountToScale, 0, 0);
             }
         }
         private void ScaleDownHorizontally()
         {
-            if(_characterImage.localScale.x > 1){
+            if(_characterImage.localScale.x > _minScaling){
                 _characterImage.localScale += new Vector3(-_amountToScale, 0, 0);
             }
+        }
+
+        public Vector2 GetCurrentScale(){
+            return _characterImage.localScale;
+        }
+
+        public void SetLoadedScale(Vector2 scale) {
+            float x = scale.x;
+            float y = scale.y;
+            if(x< _minScaling)
+            {
+                x = _minScaling;
+            }
+            else if(x> _maxScaling)
+            {
+                x = _maxScaling;
+            }
+            if(y< _minScaling)
+            {
+                y = _minScaling;
+            }
+            else if (y> _maxScaling)
+            {
+                y = _maxScaling;
+            }
+            _characterImage.localScale = new Vector2(x, y);
         }
     }
     

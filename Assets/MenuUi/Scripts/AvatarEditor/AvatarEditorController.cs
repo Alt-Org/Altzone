@@ -42,6 +42,7 @@ namespace MenuUi.Scripts.AvatarEditor
             FeatureColor.White,
             FeatureColor.White,     
         };
+        private Vector2 _selectedScale;
         private PlayerAvatar _playerAvatar;
         private FeaturePicker _featurePicker;
         private ColorPicker _colorPicker;
@@ -88,7 +89,9 @@ namespace MenuUi.Scripts.AvatarEditor
             _modeList[(int)_currentMode].SetActive(true);
         }
         private void RestoreDefaultColorToFeature(){
-            _selectedColors[(int)_currentlySelectedCategory] = FeatureColor.White;
+            // Debug.Log("restore default color");
+            // _selectedColors[(int)_currentlySelectedCategory] = FeatureColor.White;
+            // SetSaveableData();
         }
         
         private void LoadNextMode(){
@@ -117,9 +120,11 @@ namespace MenuUi.Scripts.AvatarEditor
                 _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
                 _selectedFeatures = _featurePicker.GetCurrentlySelectedFeature();
             }
-            else if(_currentMode == AvatarEditorMode.ColorPicker){
-                _selectedColors[(int)_currentlySelectedCategory] = _modeList[1].GetComponent<ColorPicker>().GetCurrentColor();
-            }
+            // else if(_currentMode == AvatarEditorMode.ColorPicker){
+            //     _selectedColors[(int)_currentlySelectedCategory] = _modeList[1].GetComponent<ColorPicker>().GetCurrentColor();
+            // }
+            _selectedColors[(int)_currentlySelectedCategory] = _colorPicker.GetCurrentColor();
+            _selectedScale = _avatarScaler.GetCurrentScale();
             // foreach(Feature feature in _selectedFeatures)
             //     Debug.Log("Data saved: " + feature.ToString());
             // foreach(FeatureColors color in _selectedColors)
@@ -135,7 +140,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void LoadAvatarData()
         {
-            _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeatures(), LoadColors());
+            _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeatures(), LoadColors(), LoadScale());
             _nameInput.text = _playerAvatar.Name;
             _featurePicker.gameObject.SetActive(true);
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
@@ -145,6 +150,9 @@ namespace MenuUi.Scripts.AvatarEditor
             _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.Features);
             _colorPicker.gameObject.SetActive(false);
+            _avatarScaler.gameObject.SetActive(true);
+            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+            _avatarScaler.gameObject.SetActive(false);
             // _modeList[1].SetActive(true);
             // _modeList[1].GetComponent<ColorPicker>().SetLoadedColors(_playerAvatar.Colors);
             // _modeList[1].SetActive(false);
@@ -168,6 +176,10 @@ namespace MenuUi.Scripts.AvatarEditor
             }
             return colors;
         }
+        private Vector2 LoadScale()
+        {
+            return new Vector2(PlayerPrefs.GetFloat("ScaleX"), PlayerPrefs.GetFloat("ScaleY"));
+        }
         // private void ResetAvatarDataToDefaults(){
         //     for(int i = 0; i < _playerAvatar.Features.Count; i++){
         //         PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Feature", 0);
@@ -184,6 +196,7 @@ namespace MenuUi.Scripts.AvatarEditor
             SaveName();
             SaveFeatures();
             SaveColors();
+            SaveScale();
             PlayerPrefs.Save();
         }
         private void SaveName()
@@ -207,6 +220,11 @@ namespace MenuUi.Scripts.AvatarEditor
                 // Debug.Log("Saving color: " +_selectedColors[i] + " to a string key named: " + ((FeatureSlot)i).ToString());
                 PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Color", (int)_selectedColors[i]);
             }
+        }
+        private void SaveScale()
+        {
+            PlayerPrefs.SetFloat("ScaleX", _selectedScale.x);
+            PlayerPrefs.SetFloat("ScaleY", _selectedScale.y);
         }
 
         #endregion
