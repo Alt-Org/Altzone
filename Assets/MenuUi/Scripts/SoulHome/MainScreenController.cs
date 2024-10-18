@@ -98,7 +98,7 @@ namespace MenuUI.Scripts.SoulHome
                 else if(ClickStateHandler.GetClickType() is ClickType.Pinch)
                 {
                     float distance = ClickStateHandler.GetPinchDistance();
-                    if (Touch.activeTouches.Count == 2)
+                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Pinch)
                     {
                         _soulHomeTower.PinchZoom(distance, false);
                     }

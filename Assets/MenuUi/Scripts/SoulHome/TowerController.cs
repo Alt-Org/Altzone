@@ -150,12 +150,11 @@ namespace MenuUI.Scripts.SoulHome
                     float targetX;
                     if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click)
                     {
-                        //touch = Input.GetTouch(0);
                         if (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
                         Vector2 lp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
                         targetY = currentY + (prevp.y - lp.y) / _scrollSpeed;
                         targetX = currentX + (prevp.x - lp.x) / _scrollSpeed;
-                        //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
+
                         if (ClickStateHandler.GetClickState() is ClickState.End)
                         {
                             startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / _scrollSpeed, Mathf.Abs(prevp.y - lp.y) / _scrollSpeed);
@@ -414,13 +413,8 @@ namespace MenuUI.Scripts.SoulHome
 
                         else if (click == ClickState.End /*&& _selectedFurniture == null*/)
                         {
-                            Vector2 _tempRoomHitEnd = new();
-                            if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is not ClickType.None)
-                            {
-                                _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
-                            }
-                            else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
-                                _tempRoomHitEnd = Mouse.current.position.ReadValue();
+                            Vector2 _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
+
                             if (selectedRoom == null && tempSelectedRoom != null
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
                                 && _tempRoomHitStart.x > _tempRoomHitEnd.x - 3f && _tempRoomHitStart.x < _tempRoomHitEnd.x + 3f)
@@ -446,7 +440,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
 
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && (Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame)) || Touch.activeFingers.Count >= 1) && (furnitureObject != null || _tempSelectedFurniture != null))
+            if ((ClickStateHandler.GetClickType() is ClickType.Click) && (furnitureObject != null || _tempSelectedFurniture != null))
             {
                 Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
