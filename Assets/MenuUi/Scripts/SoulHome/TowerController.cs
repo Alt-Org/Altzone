@@ -136,10 +136,8 @@ namespace MenuUI.Scripts.SoulHome
             //Debug.Log(cameraMove);
             if (!CheckInteractableStatus()) return;
 
-            Touch touch = new();
-            if(Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
-            if (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero)) prevp = touch.screenPosition;
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.leftButton.isPressed) || Touch.activeFingers.Count == 1) && cameraMove)
+            if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click && (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero)) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
+            if (ClickStateHandler.GetClickType() is ClickType.Click && cameraMove)
             {
                 if (_tempSelectedFurniture == null)
                 {
@@ -150,15 +148,15 @@ namespace MenuUI.Scripts.SoulHome
                     float currentX = transform.position.x;
                     float offsetX = Mathf.Abs(currentX - bl.x);
                     float targetX;
-                    if (Touch.activeFingers.Count == 1)
+                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click)
                     {
                         //touch = Input.GetTouch(0);
-                        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero) prevp = touch.screenPosition;
-                        Vector2 lp = touch.screenPosition;
+                        if (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
+                        Vector2 lp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
                         targetY = currentY + (prevp.y - lp.y) / _scrollSpeed;
                         targetX = currentX + (prevp.x - lp.x) / _scrollSpeed;
                         //Debug.Log("Touch: Y: "+(prevp.y - lp.y));
-                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
+                        if (ClickStateHandler.GetClickState() is ClickState.End)
                         {
                             startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / _scrollSpeed, Mathf.Abs(prevp.y - lp.y) / _scrollSpeed);
                             currentScrollSlide = startScrollSlide;
@@ -168,7 +166,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         else
                         {
-                            prevp = touch.screenPosition;
+                            prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
                         }
                     }
                     else
@@ -311,7 +309,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             cameraMove = false;
-            if (Touch.activeFingers.Count > 0 && (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)) prevp = Vector2.zero;
+            if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is not ClickType.None && ClickStateHandler.GetClickState() is ClickState.End) prevp = Vector2.zero;
             if(!_pinched && _prevPinchDistance != 0) _prevPinchDistance = 0;
             _pinched = false;
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
@@ -407,13 +405,7 @@ namespace MenuUI.Scripts.SoulHome
                         if (click == ClickState.Start)
                         {
                             tempSelectedRoom = roomObject;
-                            if (Touch.activeFingers.Count > 0)
-                            {
-                                Touch touch = Touch.activeTouches[0];
-                                _tempRoomHitStart = touch.screenPosition;
-                            }
-                            else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
-                            _tempRoomHitStart = Mouse.current.position.ReadValue();
+                            _tempRoomHitStart = ClickStateHandler.GetClickPosition();
                         }
                         else if (click is ClickState.Move or ClickState.Hold && tempSelectedRoom != null)
                         {
@@ -423,10 +415,9 @@ namespace MenuUI.Scripts.SoulHome
                         else if (click == ClickState.End /*&& _selectedFurniture == null*/)
                         {
                             Vector2 _tempRoomHitEnd = new();
-                            if (Touch.activeFingers.Count > 0)
+                            if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is not ClickType.None)
                             {
-                                Touch touch = Touch.activeTouches[0];
-                                _tempRoomHitEnd = touch.screenPosition;
+                                _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
                             }
                             else if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
                                 _tempRoomHitEnd = Mouse.current.position.ReadValue();
