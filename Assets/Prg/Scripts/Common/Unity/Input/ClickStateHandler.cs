@@ -25,7 +25,7 @@ namespace Prg.Scripts.Common
         None
     }
 
-    public enum InputDevice
+    public enum ClickInputDevice
     {
         Touch,
         Mouse,
@@ -72,40 +72,40 @@ namespace Prg.Scripts.Common
             return ClickState.None;
         }
 
-        public static ClickType GetClickType(InputDevice inputDevice = InputDevice.None)
+        public static ClickType GetClickType(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if ((Touch.activeTouches.Count == 1 && (inputDevice is InputDevice.Touch || inputDevice is InputDevice.None))
-                || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero) && (inputDevice is InputDevice.Mouse || inputDevice is InputDevice.None))
+            if ((Touch.activeTouches.Count == 1 && (inputDevice is ClickInputDevice.Touch || inputDevice is ClickInputDevice.None))
+                || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero) && (inputDevice is ClickInputDevice.Mouse || inputDevice is ClickInputDevice.None))
                 return ClickType.Click;
-            else if (Touch.activeTouches.Count == 2 && (inputDevice is InputDevice.Touch || inputDevice is InputDevice.None)
-                || (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero) && (inputDevice is InputDevice.Mouse || inputDevice is InputDevice.None))
+            else if (Touch.activeTouches.Count == 2 && (inputDevice is ClickInputDevice.Touch || inputDevice is ClickInputDevice.None)
+                || (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero) && (inputDevice is ClickInputDevice.Mouse || inputDevice is ClickInputDevice.None))
                 return ClickType.Pinch;
             else return ClickType.None;
         }
 
-        public static Vector2 GetClickPosition(InputDevice inputDevice = InputDevice.None)
+        public static Vector2 GetClickPosition(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
             if (GetClickState() is not ClickState.None)
-                if (Touch.activeFingers.Count >= 1 && (inputDevice is InputDevice.Touch || inputDevice is InputDevice.None))
+                if (Touch.activeFingers.Count >= 1 && (inputDevice is ClickInputDevice.Touch || inputDevice is ClickInputDevice.None))
                 {
                     Touch touch = Touch.activeTouches[0];
                     return touch.screenPosition;
                 }
-                else if(Mouse.current != null && (inputDevice is InputDevice.Mouse || inputDevice is InputDevice.None)) return Mouse.current.position.ReadValue();
+                else if(Mouse.current != null && (inputDevice is ClickInputDevice.Mouse || inputDevice is ClickInputDevice.None)) return Mouse.current.position.ReadValue();
             return Vector2.negativeInfinity;
         }
 
-        public static float GetPinchDistance(InputDevice inputDevice = InputDevice.None)
+        public static float GetPinchDistance(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
             float distance = -1f;
-            if (Touch.activeTouches.Count >= 2 && (inputDevice is InputDevice.Touch || inputDevice is InputDevice.None))
+            if (Touch.activeTouches.Count >= 2 && (inputDevice is ClickInputDevice.Touch || inputDevice is ClickInputDevice.None))
             {
                 Vector2 touch1 = Touch.activeFingers[0].screenPosition;
                 Vector2 touch2 = Touch.activeFingers[1].screenPosition;
 
                 distance = Vector2.Distance(touch1, touch2);
             }
-            else if (Mouse.current != null && (inputDevice is InputDevice.Mouse || inputDevice is InputDevice.None))
+            else if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse || inputDevice is ClickInputDevice.None))
             {
                 distance = Mouse.current.scroll.ReadValue().y;
             }
