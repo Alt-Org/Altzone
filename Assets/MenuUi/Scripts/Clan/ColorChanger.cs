@@ -33,13 +33,13 @@ public class ImageColorChanger : MonoBehaviour
         int i = 0;
         foreach (Transform heartPiece in _heart)
         {
-            heartPiece.GetComponent<HeartPieceColorHandler>().Initialize(i);
+  //          heartPiece.GetComponent<HeartPieceColorHandler>().Initialize(i);
             i++; 
         }
 
     }
 
- //color Change Colors
+  
     public void SetColorGreen()
     {
         selectedColor = Color.green;
@@ -72,11 +72,15 @@ public class ImageColorChanger : MonoBehaviour
         selectedColor = Color.yellow;
         Debug.Log("Color selected: Yellow ");
     }
+    public void SetColorCyan()
+    {
+    selectedColor = Color.cyan;
+    Debug.Log("Color selected: Cyan");
+    }
 
-   
 
 
-    void Update()
+void Update()
     {
         if (ClickStateHandler.GetClickState() == ClickState.Start)  
         {
@@ -100,17 +104,17 @@ public class ImageColorChanger : MonoBehaviour
 
                 HeartPieceColorHandler clickedImage = result.gameObject.GetComponent<HeartPieceColorHandler>();
 
-                // Tag for color change
+                 // Tag for color change
                 if (clickedImage != null && result.gameObject.CompareTag("HeartPiece"))
                 {
                     // Change the color of the Image component
                     clickedImage.SetColor (selectedColor);
-                    Debug.Log("Changed color of " + result.gameObject.name + " to " + selectedColor);
+     //    Debug.Log("Changed color of " + result.gameObject.name + " to " + selectedColor);
                 }
                 else
                 {
                     // Debug.log/console.log For wrong position click
-                    Debug.Log("Object " + result.gameObject.name + " is not a heart piece or has no Image component.");
+     //   Debug.Log("Object " + result.gameObject.name + " is not a heart piece or has no Image component.");
                 }
             }
         }
