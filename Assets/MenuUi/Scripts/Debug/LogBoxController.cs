@@ -50,7 +50,20 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _debugTimelineController.SetPosition(time);
         }
 
+        internal void SetDiffMode(bool value)
+        {
+            _diffMode = value;
+            for (int i = 0; i<_msgBoxArray.Length;i++)
+            {
+                MsgBox msgBox = _msgBoxArray[i];
+                IReadOnlyList<IReadOnlyMsgObject> messages = _msgStorage.AllMsgs(i);
+                FilterLog(msgBox, messages);
+            }
+            _messagePanel.SetDiffMode(_diffMode);
+        }
+
         private IReadOnlyMsgStorage _msgStorage;
+        private bool _diffMode = true;
 
         private class MsgBox
         {
@@ -94,6 +107,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
             private readonly List<GameObject> _msgBoxObjectList;
         }
         private MsgBox[] _msgBoxArray;
+
+        public bool DiffMode { get => _diffMode;}
 
         // Start is called before the first frame update
         private void Start()
@@ -179,6 +194,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 bool typeBool = messages[i].IsType(msgBox.MsgTypeFilter);
                 bool sourceBool = messages[i].IsFromSource(msgBox.MsgSourceFilter);
                 msgBox.MsgBoxObjectList[i].SetActive(typeBool && sourceBool);
+                msgBox.MsgBoxObjectList[i].GetComponent<LogBoxMessageHandler>().SetDiffMode(_diffMode);
             }
         }
 

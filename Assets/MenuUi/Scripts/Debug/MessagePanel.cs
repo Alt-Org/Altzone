@@ -14,6 +14,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private TextMeshProUGUI _traceTextField;
         [SerializeField] private Button _logButton;
         public GameObject Panel;
+        private bool _diffMode = true;
+        private IReadOnlyMsgObject _currentMessage;
+        private List<Color> _colourList;
 
         void Start()
         {
@@ -39,11 +42,19 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
+        internal void NewMessage(IReadOnlyMsgObject message, List<Color> colourList)
+        {
+            _currentMessage = message;
+            if (_colourList == null || _colourList.Count == 0) _colourList = colourList;
+            SetMessage(_currentMessage, _colourList);
+        }
+
         internal void SetMessage(IReadOnlyMsgObject message, List<Color>colourList)
         {
+            if (message == null || colourList == null|| colourList.Count == 0) return;
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
-            if (message.ColorGroup > 0)
+            if (message.ColorGroup > 0 && _diffMode)
             {
                 string fullMessage = "";
                 foreach (IReadOnlyMsgObject matchMessage in message.MatchList)
@@ -76,6 +87,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _traceTextField.text = message.Trace;
 
             OpenPanel();
+        }
+
+        public void SetDiffMode(bool value)
+        {
+            _diffMode = value;
+            SetMessage(_currentMessage, _colourList);
         }
 
         public void OnPointerClick(BaseEventData eventData)

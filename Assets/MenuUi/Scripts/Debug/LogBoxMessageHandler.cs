@@ -18,6 +18,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
         private MessagePanel _messagePanel;
 
+        private static Color s_defaultcolor = new(0.22f, 0.22f, 0.22f);
+
         private static List<Color> _colourList;
 
         internal IReadOnlyMsgObject MsgObject { get => _msgObject;}
@@ -28,20 +30,20 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _logBoxController = GetComponentInParent<LogBoxController>();
         }
 
-        internal void Initialize(MessagePanel msgPanel, IReadOnlyMsgObject msgObject, IReadOnlyMsgStorage msgStorage)
+        internal void Initialize(MessagePanel msgPanel, IReadOnlyMsgObject msgObject, IReadOnlyMsgStorage msgStorage, bool diffMode = false)
         {
             _messagePanel = msgPanel;
             _msgStorage = msgStorage;
-            SetMessage(msgObject);
+            SetMessage(msgObject, diffMode);
         }
 
         public void Message()
         {
-            _messagePanel.SetMessage(_msgObject, _colourList);
+            _messagePanel.NewMessage(_msgObject, _colourList);
             _logBoxController.SetTimelinePosition(_msgObject.Time);
         }
 
-        internal void SetMessage(IReadOnlyMsgObject msgObject)
+        internal void SetMessage(IReadOnlyMsgObject msgObject, bool diffMode)
         {
             _msgObject = msgObject;
             string logText = string.Format("[{0:000000}] {1} {2}", msgObject.Time, msgObject.ColorGroup, msgObject.Msg);
@@ -64,8 +66,15 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     break;
             }
             if (_colourList == null) CreateColourSet();
-            if (msgObject.IsMatchable) _backgroundImage.color = _colourList[msgObject.ColorGroup];
+            if (msgObject.IsMatchable && diffMode) _backgroundImage.color = _colourList[msgObject.ColorGroup];
+            else _backgroundImage.color = s_defaultcolor;
 
+        }
+
+        public void SetDiffMode(bool diffMode)
+        {
+            if (_msgObject.IsMatchable && diffMode) _backgroundImage.color = _colourList[_msgObject.ColorGroup];
+            else _backgroundImage.color = s_defaultcolor;
         }
 
         private void CreateColourSet()
