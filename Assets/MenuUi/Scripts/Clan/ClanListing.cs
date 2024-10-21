@@ -39,7 +39,7 @@ public class ClanListing : MonoBehaviour
     }
     public void JoinButtonPressed()
     {
-        string body = @$"{{""clan_id"":""{Clan.id}"",""player_id"":""{ServerManager.Instance.Player._id}""}}";
+        string body = @$"{{""clan_id"":""{Clan._id}"",""player_id"":""{ServerManager.Instance.Player._id}""}}";
 
         StartCoroutine(ServerManager.Instance.JoinClan(Clan, clan =>
         {

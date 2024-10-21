@@ -41,11 +41,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(ServerClan clan)
         {
-            Assert.IsTrue(clan.id.IsPrimaryKey());
+            Assert.IsTrue(clan._id.IsPrimaryKey());
             Assert.IsTrue(clan.name.IsMandatory());
             Assert.IsTrue(clan.tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(clan.gameCoins >= 0);
-            Id = clan.id;
+            Id = clan._id;
             Name = clan.name;
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
