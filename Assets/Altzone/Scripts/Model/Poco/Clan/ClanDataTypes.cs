@@ -7,10 +7,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
     public enum ClanAge
     {
         None,
-        AgeTeenagers,
-        AgeToddlers,
-        AgeAdults,
-        AgeAllAges
+        Teenagers,
+        Toddlers,
+        Adults,
+        All
     }
 
     public enum Language
@@ -37,10 +37,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
             return age switch
             {
                 ClanAge.None => "Ikäryhmä",
-                ClanAge.AgeTeenagers => "Teinit",
-                ClanAge.AgeToddlers => "Taaperot",
-                ClanAge.AgeAdults => "Aikuiset",
-                ClanAge.AgeAllAges => "Kaiken ikäiset",
+                ClanAge.Teenagers => "Teinit",
+                ClanAge.Toddlers => "Taaperot",
+                ClanAge.Adults => "Aikuiset",
+                ClanAge.All => "Kaiken ikäiset",
                 _ => "",
             };
         }
