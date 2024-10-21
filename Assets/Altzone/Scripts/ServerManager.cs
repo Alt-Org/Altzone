@@ -630,7 +630,9 @@ public class ServerManager : MonoBehaviour
     public IEnumerator PostClanToServer(string name, string tag, bool isOpen, string[] labels, ClanAge age, Goals goal, string phrase, Language language, Action<ServerClan> callback)
     {
         string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""isOpen"":{isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":{age},""goal"":{goal},""phrase"":{phrase},""language"":{language}}}";
+                            ""ageRange"":""{age}"",""goal"":""{goal}"",""phrase"":""{phrase}"",""language"":""{language}""}}";
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Post(ADDRESS + "clan", body, AccessToken, request =>
         {
@@ -675,7 +677,9 @@ public class ServerManager : MonoBehaviour
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
         string body = @$"{{""_id"":""{data.Id}"",""name"":""{data.Name}"",""tag"":""{data.Tag}"",""isOpen"":{Clan.isOpen.ToString().ToLower()},""labels"": [{""}],
-                            ""ageRange"":{data.ClanAge},""goal"":{data.Goals},""phrase"":{data.Phrase},""language"":{data.Language}}}";
+                            ""ageRange"":""{data.ClanAge}"",""goal"":""{data.Goals}"",""phrase"":""{data.Phrase}"",""language"":""{data.Language}""}}";
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Put(ADDRESS + "clan", body, AccessToken, request =>
         {

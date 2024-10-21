@@ -39,13 +39,19 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _msgStorage = storage;
             _timelineStorage = _msgStorage.GetTimelineStorage();
             _sourceFilters = _msgStorage.GetSourceAllFlags();
-            NewTimeline();
+            StartCoroutine(NewTimeline());
         }
 
-        private void NewTimeline()
+        private IEnumerator NewTimeline()
         {
-            for(int i = _content.childCount-1; i >= 0;i--)
+            float prevYield = Time.time;
+            for (int i = _content.childCount-1; i >= 0;i--)
             {
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                {
+                    prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    yield return null;
+                }
                 Destroy(_content.GetChild(i).gameObject);
             }
 
@@ -53,6 +59,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             for(int i = 0; i < _timelineStorage.ClientCount; i++)
             {
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                {
+                    prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    yield return null;
+                }
                 IReadOnlyList<IReadOnlyTimestamp> timeline = _timelineStorage.GetTimeline(i);
                 Debug.LogWarning(timeline.Count);
                 if (timeline.Count != 0) 
@@ -64,6 +75,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             for(int i = 0; i<= _lastTime; i++)
             {
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                {
+                    prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    yield return null;
+                }
                 GameObject timelineBlock = Instantiate(_timelineBlock, _content);
                 DebugTimelineBlock debugTimelineBlock = timelineBlock.GetComponent<DebugTimelineBlock>();
                 debugTimelineBlock.Initialize(SetTimelineValue, FindTimestampValues);

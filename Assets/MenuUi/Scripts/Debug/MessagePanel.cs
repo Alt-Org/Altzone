@@ -39,12 +39,22 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        internal void SetMessage(IReadOnlyMsgObject message)
+        internal void SetMessage(IReadOnlyMsgObject message, List<Color>colourList)
         {
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
-
-            _msgMainTextField.text = message.Msg;
+            if (message.ColorGroup > 0)
+            {
+                string fullMessage = "";
+                foreach (IReadOnlyMsgObject matchMessage in message.MatchList)
+                {
+                    if (!string.IsNullOrWhiteSpace(fullMessage)) fullMessage += "\r\n";
+                    fullMessage += string.Format("[C{0}] {1}", matchMessage.Client, matchMessage.GetHighlightedMsg(colourList));
+                }
+                _msgMainTextField.text = fullMessage;
+            }
+            else
+                _msgMainTextField.text = message.Msg;
 
             switch (message.Type)
             {

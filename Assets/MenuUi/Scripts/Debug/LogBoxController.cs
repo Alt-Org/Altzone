@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private DebugTimelineController _debugTimelineController;
         [SerializeField] private bool _generateTestLogs;
 
-        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; UpdateLogText(); UpdateTimeline(); }
+        public void SetMsgStorage(IReadOnlyMsgStorage msgStorage) { _msgStorage = msgStorage; StartCoroutine(UpdateLogText()); UpdateTimeline(); }
 
         public void SetMsgTypeFilter(int client, MessageTypeOptions msgTypeFilter)
         {
@@ -78,10 +79,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _msgBoxObjectList.Clear();
             }
 
-            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel)
+            public void AddMsg(IReadOnlyMsgObject msg, GameObject logTextObject, MessagePanel _messagePanel, IReadOnlyMsgStorage msgStorage)
             {
                 GameObject logMsgBox = Instantiate(logTextObject, LogTextBox.transform.GetChild(0).GetChild(0));
-                logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg);
+                logMsgBox.GetComponent<LogBoxMessageHandler>().Initialize(_messagePanel ,msg, msgStorage);
                 _msgBoxObjectList.Add(logMsgBox);
             }
 
@@ -126,13 +127,23 @@ namespace DebugUi.Scripts.BattleAnalyzer
         // Add a message to the log box
         private void AddMessageToLog(MsgStorage msgStorage, string message, int time, int client, MessageType messageType)
         {
-            msgStorage.Add(new MsgObject(client, time, message, 1, "", messageType));
+            msgStorage.Add(new MsgObject(client, time, message, 1, "", messageType, false));
         }
 
         // Update the log text to display all messages
-        private void UpdateLogText()
+        private IEnumerator UpdateLogText()
         {
-            foreach (MsgBox msgBox in _msgBoxArray) msgBox.Clear();
+            long prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            foreach (MsgBox msgBox in _msgBoxArray)
+            {
+                if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                {
+                    prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    Debug.LogWarning("Yield1");
+                    yield return null;
+                }
+                msgBox.Clear();
+            }
 
             // Loop through each log box
             for (int i = 0; i < _msgStorage.ClientCount; i++)
@@ -147,8 +158,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 //IReadOnlyList<IReadOnlyMsgObject> filteredMessages = MsgStorage.GetSubList(messages, (MessageTypeOptions)(MessageType.Info | MessageType.Warning | MessageType.Error));
                 foreach (IReadOnlyMsgObject msg in messages)
                 {
+                    if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - prevYield > 100)
+                    {
+                        prevYield = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        Debug.LogWarning("Yield2");
+                        yield return null;
+                    }
                     // Instantiate a new log message GameObject for each message
-                    msgBox.AddMsg(msg, _logTextObject, _messagePanel);
+                    msgBox.AddMsg(msg, _logTextObject, _messagePanel, _msgStorage);
                 }
                 msgBox.SetSourceFilter(i, _msgStorage, SetMsgSourceFilter);
                 FilterLog(msgBox, messages);
@@ -180,7 +197,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             for(int i = 0; i < _msgBoxArray.Length ; i++)
             {
-                if (values[i] < 0) continue; 
+                if (values[i] < 0) continue;
                 float value = (float)values[i]/(float)_msgBoxArray[i].MsgBoxObjectList.Count;
                 if(_msgBoxArray[i].MsgBoxObjectList[values[i]].GetComponent<LogBoxMessageHandler>().MsgObject.Id == values[i])
                 {

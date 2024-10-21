@@ -174,13 +174,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private CharacterClassID _characterClassID;
         private Action _restoreDefaultColor;
-        private AvatarEditorSwipe _swiper;
+        // private AvatarEditorSwipe _swiper;
+        private RectTransform _swipeArea;
 
 
         public void Start()
         {
-            GetComponent<AvatarEditorSwipe>().SetSwipeActions(swipeRight: LoadNextPage, swipeLeft: LoadPreviousPage, swipeUp: LoadPreviousCategory, swipeDown: LoadNextCategory);
-
+            _swipeArea = GetComponent<RectTransform>();
+            // GetComponent<AvatarEditorSwipe>().SetSwipeActions(swipeRight: LoadNextPage, swipeLeft: LoadPreviousPage, swipeUp: LoadPreviousCategory, swipeDown: LoadNextCategory);
+            
 
             //Placeholder buttons, will be replaced by swiping at some point
             _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
@@ -192,10 +194,34 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
+            SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
         }
         public void OnDisable()
         {
             DestroyFeatureButtons();
+            SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
+        }
+        private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 swipeStartPoint, Vector2 swipeEndPoint)
+        {
+            if(RectTransformUtility.RectangleContainsScreenPoint(_swipeArea, swipeStartPoint))
+            {
+                switch(direction){
+                    case SwipeDirection.Left:
+                        LoadNextPage();
+                        break;
+                    case SwipeDirection.Right:
+                        LoadPreviousPage();
+                        break;
+                    case SwipeDirection.Up:
+                        LoadNextCategory();
+                        break;
+                    case SwipeDirection.Down:
+                        LoadPreviousCategory();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         private void LoadNextPage()
         {

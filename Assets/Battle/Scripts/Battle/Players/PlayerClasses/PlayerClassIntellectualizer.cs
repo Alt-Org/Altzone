@@ -4,11 +4,13 @@ using UnityEngine;
 using Battle.Scripts.Battle.Game;
 using Prg.Scripts.Common.PubSub;
 using System.Linq;
+using System.Collections;
 
 namespace Battle.Scripts.Battle.Players
 {
     internal class PlayerClassIntellectualizer : MonoBehaviour, IPlayerClass
     {
+        private int hitcount;
         [SerializeField] private GameObject _positionSprite;
         [SerializeField] private LayerMask _collisionLayer;
         [SerializeField] private float _maxDistance;
@@ -166,6 +168,7 @@ namespace Battle.Scripts.Battle.Players
             _currentVelocity = newDirection * _currentVelocity.magnitude;
         }
 
+
         private void UpdatePredictionSprites(List<Vector3> positions)
         {
             int requiredCount = positions.Count;
@@ -189,6 +192,12 @@ namespace Battle.Scripts.Battle.Players
 
                 SpriteRenderer spriteRenderer = sprite.GetComponent<SpriteRenderer>();
                 spriteRenderer.sprite = _spriteList[UnityEngine.Random.Range(0, _spriteList.Count)];
+
+                if (GetCurrentVelocity() == Vector2.zero)
+                {
+                    ClearPrediction(); // Trigger after velocity reaches zero
+                }
+
             }
 
             // Deactivate any extra sprites
@@ -247,6 +256,14 @@ namespace Battle.Scripts.Battle.Players
 
         private void ClearPrediction()
         {
+            StartCoroutine(ClearPredictionAfterDelay(hitcount));
+            hitcount++;
+            Debug.Log("Hit Count: " + hitcount.ToString());
+        }
+
+        private IEnumerator ClearPredictionAfterDelay(int delaySeconds)
+        {
+            yield return new WaitForSeconds(delaySeconds);
             foreach (var sprite in _positionSprites)
             {
                 sprite.SetActive(false);
@@ -264,13 +281,13 @@ namespace Battle.Scripts.Battle.Players
                 }
                 else
                 {
-                    _timer = 0;
-                    ClearPrediction();
+                    //_timer = 0;
+                   // ClearPrediction();
                 }
             }
             else
             {
-                ClearPrediction();
+               // ClearPrediction();
             }
 
             UpdateTrailLifespan();

@@ -10,6 +10,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
     {
         [SerializeField] private LogBoxController _logBoxController;
         [SerializeField] private GameObject _filePanel;
+        [SerializeField] private Button _addLogButton;
         [SerializeField] private Button _confirmLogsButton;
         [SerializeField] private Button _denyLogsButton;
         [SerializeField] private TMP_InputField _filePathTextField;
@@ -88,7 +89,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 StartCoroutine(WaitForParser(battleLogParserStatus));
 
                 // Hide the panel after confirming
-                //_filePanel.SetActive(false);
+                _filePanel.SetActive(false);
             }
             else
             {
@@ -137,6 +138,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
             {
                 Debug.LogError("LogBoxController not found in parent hierarchy.");
             }
+            _addLogButton.onClick.AddListener(OnButtonClick);
+            _confirmLogsButton.onClick.AddListener(ConfirmLogs);
+            _denyLogsButton.onClick.AddListener(DenyLogs);
 
             // Initially hide the buttons
             _confirmLogsButton.gameObject.SetActive(false);

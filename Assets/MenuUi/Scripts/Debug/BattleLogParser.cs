@@ -10,7 +10,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
     interface IReadOnlyBattleLogParserStatus
     {
         public string Msg { get; }
-        public int Progress { get; }
+        public float Progress { get; }
 
         public IReadOnlyMsgStorage GetResult();
     }
@@ -18,18 +18,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
     class BattleLogParserStatus : IReadOnlyBattleLogParserStatus
     {
         public string Msg { get; private set; }
-        public int Progress { get; private set; }
-        public int StepCount { get; private set;  }
+        public float Progress { get; private set; }
 
-        public void InitInstance(int stepCount, Thread thread, IReadOnlyMsgStorage msgStorage)
+        public void InitInstance(Thread thread, IReadOnlyMsgStorage msgStorage)
         {
-            StepCount = stepCount;
+            Progress = 0f;
             _thread = thread;
             _msgStorage = msgStorage;
         }
 
         public void SetMsg(string msg) { Msg = msg; }
-        public void UpdateProgress() { Progress++; }
+        public void UpdateProgress(int progress, int steps) { Progress = progress / steps; }
 
         public IReadOnlyMsgStorage GetResult()
         {
@@ -45,33 +44,99 @@ namespace DebugUi.Scripts.BattleAnalyzer
     {
         public static IReadOnlyBattleLogParserStatus ParseLogs(string[][] logs)
         {
-            BattleLogParserStatus battleLogParserStatus = new();
             MsgStorage msgStorage = new(logs.Length);
+            bool compareLogs = msgStorage.ClientCount > 1;
+
+            BattleLogParserStatus battleLogParserStatus = new();
+            ProcessStatus procesStatus = new(battleLogParserStatus,compareLogs ? 2 : 1);
 
             Thread thread = new(new ThreadStart(() =>
             {
                 battleLogParserStatus.SetMsg("Parsing logs");
+                SubProcessStatus subProcessStatus = new(procesStatus, logs.Length);
                 for (int i = 0; i < logs.Length; i++)
                 {
                     string[] lines = logs[i];
-                    ParseLog(msgStorage, i, lines);
-                    battleLogParserStatus.UpdateProgress();
+                    ParseLog(msgStorage, i, lines, subProcessStatus);
+                    subProcessStatus.UpdateProgress();
                 }
+                procesStatus.UpdateProgress();
 
-                battleLogParserStatus.SetMsg("Comparing logs");
-                if (msgStorage.ClientCount > 1) CompareLogs(msgStorage);
-                battleLogParserStatus.UpdateProgress();
+                if (compareLogs)
+                {
+                    battleLogParserStatus.SetMsg("Comparing logs");
+                    CompareLogs(msgStorage, subProcessStatus);
+                    procesStatus.UpdateProgress();
+                }
             }));
 
-            battleLogParserStatus.InitInstance(logs.Length + 1, thread, msgStorage);
+            battleLogParserStatus.InitInstance(thread, msgStorage);
             thread.Start();
 
             return battleLogParserStatus;
         }
 
+        private interface IProcessStatus
+        {
+            public void UpdateProgress();
+            public void UpdateProgress(int subProgress, int subSteps);
+        }
+
+        private class ProcessStatus : IProcessStatus
+        {
+            public ProcessStatus(BattleLogParserStatus battleLogParserStatus, int steps)
+            {
+                _battleLogParserStatus = battleLogParserStatus;
+                _progress = 0;
+                _steps = steps;
+            }
+
+            public void UpdateProgress()
+            {
+                _progress++;
+                _battleLogParserStatus.UpdateProgress(_progress, _steps);
+            }
+
+            public void UpdateProgress(int subProgress, int subSteps)
+            {
+                _battleLogParserStatus.UpdateProgress(_progress * subSteps + subProgress, _steps * subSteps);
+            }
+
+            private readonly BattleLogParserStatus _battleLogParserStatus;
+            private int _progress;
+            private readonly int _steps;
+        }
+
+        private class SubProcessStatus : IProcessStatus
+        {
+            public SubProcessStatus(IProcessStatus parentProcess, int steps)
+            {
+                _parentProcess = parentProcess;
+                _progress = 0;
+                _steps = steps;
+            }
+
+            public void UpdateProgress()
+            {
+                _progress++;
+                _parentProcess.UpdateProgress(_progress, _steps);
+            }
+
+            public void UpdateProgress(int subProgress, int subSteps)
+            {
+                _parentProcess.UpdateProgress(_progress * subSteps + subProgress, _steps * subSteps);
+            }
+
+            private readonly IProcessStatus _parentProcess;
+            private int _progress;
+            private readonly int _steps;
+        }
+
         private class CompareData
         {
+            public int TimeArrayLength { get; }
             public MatchMatrix MatchMatrix { get; private set; }
+            public int[] LastMatchIndex { get; }
             public List<MatchGroup> AllMatchGroups { get; }
             public int[] ColorGroupArray { get; }
             public int ColorGroupFullMatch { get; }
@@ -82,9 +147,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 _timeArray = _msgStorage.GetTimes();
                 _timeIndex = -1;
 
+                TimeArrayLength = _timeArray.Length;
+
                 _msgObjectLists = new IReadOnlyList<MsgObject>[msgStorage.ClientCount];
 
+                LastMatchIndex = new int[msgStorage.ClientCount];
+
                 AllMatchGroups = new();
+
                 List<int> colorSuperGroupList;
                 (ColorGroupArray, colorSuperGroupList) = GenerateColorGroupArray(msgStorage.ClientCount);
                 ColorGroupFullMatch = ColorGroupArray[ColorGroupArray.Length - 1];
@@ -95,7 +165,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
             public bool CompareNextTime()
             {
                 _timeIndex++;
-                if (_timeIndex >= _timeArray.Length) return false;
+                if (_timeIndex >= TimeArrayLength) return false;
                 int time = _timeArray[_timeIndex];
                 Debug.Log(string.Format("BattleLogParser Info: Comparing timestamp {0}", time));
 
@@ -107,6 +177,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     if (_msgObjectLists[i] == null) _msgObjectLists[i] = new List<MsgObject>();
                     length = Math.Max(length, _msgObjectLists[i].Count);
                 }
+
+                Array.Fill(LastMatchIndex, 0);
 
                 MatchMatrix = new MatchMatrix(_msgStorage.ClientCount, length, _msgObjectLists);
                 AllMatchGroups.Clear();
@@ -179,7 +251,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 (float matchScore, int[] matchStringArrayA, int[] matchStringArrayB) = CompareMsgs(msgA, msgB);
                 if (matchScore > s_matchScoreThreshold)
                 {
-                    matchGroup.AddMatch(matchObjectA, matchObjectB, matchStringArrayA, matchStringArrayB);
+                    matchGroup.AddMatch(matchObjectA, matchObjectB, matchStringArrayA, matchStringArrayB, matchScore == 1f);
                     return true;
                 }
 
@@ -217,12 +289,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             public int[] IndexArray { get; }
             public int MatchFlags { get; private set; }
+            public bool FullStringMatch { get; private set; }
             public int[][] MatchStringArrays { get; }
 
             public MatchGroup(int clientCount)
             {
                 IndexArray = new int[clientCount];
                 MatchFlags = 0;
+                FullStringMatch = true;
                 MatchStringArrays = new int[clientCount][];
 
                 Array.Fill(IndexArray, -1);
@@ -231,12 +305,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
             public bool HasMatch(int client) { return IndexArray[client] >= 0; }
 
-            public void AddMatch(MatchObject matchObjectA, MatchObject matchObjectB, int[] matchStringArrayA, int[] matchStringArrayB)
+            public void AddMatch(MatchObject matchObjectA, MatchObject matchObjectB, int[] matchStringArrayA, int[] matchStringArrayB, bool fullStringMatch)
             {
                 Debug.Log(string.Format("BattleLogParser Info: Match ({0}, {1}), ({2}, {3})", matchObjectA.Client, matchObjectA.Index, matchObjectB.Client, matchObjectB.Index));
 
                 MatchFlags |= 1 << matchObjectA.Client;
                 MatchFlags |= 1 << matchObjectB.Client;
+
+                FullStringMatch = FullStringMatch && fullStringMatch;
 
                 if (IndexArray[matchObjectA.Client] < 0)
                 {
@@ -260,14 +336,17 @@ namespace DebugUi.Scripts.BattleAnalyzer
         private static readonly Regex s_battleMsgFormat = new(@"^\[([0-9]+)\] \[BATTLE\] \[([^\]]+)\] (.*)$", RegexOptions.Singleline);
         private static readonly float s_matchScoreThreshold = 0.5f;
 
-        private static void ParseLog(MsgStorage msgStorage, int client, string[] lines)
+        private static void ParseLog(MsgStorage msgStorage, int client, string[] lines, IProcessStatus parentProcessStatus)
         {
+            SubProcessStatus processStatus = new(parentProcessStatus, lines.Length);
+
             // msg variables
             int time = 0;
             string msg;
             string source;
             string trace;
             MessageType type;
+            bool isMatchable;
 
             Match match;
 
@@ -357,11 +436,14 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 // extract source from msg if possible else use SOURCE UNKNOW
                 source = "SOURCE UNKNOW";
                 match = s_battleMsgFormat.Match(msg);
+                isMatchable = false;
                 if (match.Success)
                 {
                     time = int.Parse(match.Groups[1].Value);
                     source = match.Groups[2].Value;
                     msg = match.Groups[3].Value;
+
+                    isMatchable = true;
                 }
 
                 msg = string.Format("[{0}] {1}", source, msg);
@@ -384,7 +466,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                 trace = msgParts[2];
 
-                msgStorage.Add(new MsgObject(client, time, msg, msgStorage.GetSourceFlagOrNew(source), trace, type));
+                msgStorage.Add(new MsgObject(client, time, msg, msgStorage.GetSourceFlagOrNew(source), trace, type, isMatchable));
+
+                processStatus.UpdateProgress();
             }
         }
 
@@ -444,18 +528,21 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
 
             colorGroupArray[0] = -1;
+            colorSuperGroupList.Add(1);
 
             return (colorGroupArray, colorSuperGroupList);
         }
 
-        private static void CompareLogs(MsgStorage msgStorage)
+        private static void CompareLogs(MsgStorage msgStorage, IProcessStatus parentProcessStatus)
         {
             CompareData compareData = new(msgStorage);
+            SubProcessStatus processStatus = new(parentProcessStatus, compareData.TimeArrayLength);
 
             while (compareData.CompareNextTime())
             {
                 CompareTime(compareData);
                 CompareTimeSaveResults(compareData);
+                processStatus.UpdateProgress();
             }
         }
 
@@ -489,24 +576,26 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     matchObjectA.DebugSheck();
 
                     if (matchObjectA.MsgObject == null) continue;
+                    if (!matchObjectA.MsgObject.IsMatchable) continue;
                     if (matchObjectA.MatchGroup != null) continue;
 
                     for (clientB = 0; clientB < matchMatrix.ClientCount; clientB++)
                     {
                         if (clientA == clientB) continue;
 
-                        for (indexB = indexA; indexB >= 0; indexB--)
+                        for (indexB = compareData.LastMatchIndex[clientB]; indexB <= indexA; indexB++)
                         {
                             matchObjectB = matchMatrix.GetMatchObject(clientB, indexB);
                             matchObjectB.DebugSheck();
 
                             if (matchObjectB.MsgObject == null) continue;
+                            if (!matchObjectB.MsgObject.IsMatchable) continue;
 
                             if (matchObjectB.IsComparedTo(matchObjectA)) continue;
 
                             if (matchObjectB.MatchGroup != null)
                             {
-                                if (matchObjectB.MatchGroup.HasMatch(clientA)) break;
+                                if (matchObjectB.MatchGroup.HasMatch(clientA)) continue;
 
                                 for (clientTemp = 0; clientTemp < matchMatrix.ClientCount; clientTemp++)
                                 {
@@ -520,9 +609,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
 
                                 matchObjectA.DebugSheck();
                                 matchObjectB.DebugSheck();
-                                if (match) matchObjectA.MatchGroup = matchObjectB.MatchGroup;
-
-                                break;
+                                if (match)
+                                {
+                                    matchObjectA.MatchGroup = matchObjectB.MatchGroup;
+                                    break;
+                                }
                             }
 
                             if (MatchObject.Compare(matchObjectA, matchObjectB, newMatchGroup))
@@ -538,10 +629,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
                             }
                         }
 
-                        if (match) break;
+                        if (match)
+                        {
+                            compareData.LastMatchIndex[clientA] = indexA;
+                            compareData.LastMatchIndex[clientB] = indexB;
+                            break;
+                        }
                     }
-
-                    if (match) break;
                 }
             }
         }
@@ -577,8 +671,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
 
             int colorGroup;
-            int[] matchStringArray;
+            bool fullStringMatch;
             List<Tuple<int, int, int>> stringColorGroupList;
+
+            int[] matchStringArray;
             int stringColorGroup;
             int stringColorGroupPrev;
             int stringColorGroupStart;
@@ -596,17 +692,21 @@ namespace DebugUi.Scripts.BattleAnalyzer
                     matchGroup = matchObject.MatchGroup;
 
                     colorGroup = 0;
+                    fullStringMatch = false;
                     stringColorGroupList = null;
-                    stringColorGroupPrev = -1;
-                    stringColorGroupStart = -1;
-                    stringColorGroupLength = -1;
+
+                    if (!msgObject.IsMatchable) colorGroup = -1;
 
                     if (matchGroup != null)
                     {
-                        colorGroup = 4; /*compareData.ColorGroupArray[matchGroup.MatchFlags];*/
-
+                        colorGroup = compareData.ColorGroupArray[matchGroup.MatchFlags];
+                        fullStringMatch = matchGroup.FullStringMatch;
                         stringColorGroupList = new();
-                        matchStringArray = matchGroup.MatchStringArrays[matchObject.Client];
+
+                        matchStringArray = matchGroup.MatchStringArrays[client];
+                        stringColorGroupPrev = -1;
+                        stringColorGroupStart = -1;
+                        stringColorGroupLength = -1;
                         endOfString = false;
 
                         for (i = 0;; i++)
@@ -617,7 +717,10 @@ namespace DebugUi.Scripts.BattleAnalyzer
                             if (stringColorGroup != stringColorGroupPrev)
                             {
                                 if (stringColorGroupStart >= 0)
-                                    stringColorGroupList.Add(new (stringColorGroupStart, stringColorGroupLength, stringColorGroupPrev));
+                                {
+                                    if (stringColorGroupPrev == colorGroup) stringColorGroupPrev = compareData.ColorGroupFullMatch + 1;
+                                    stringColorGroupList.Add(new(stringColorGroupStart, stringColorGroupLength, stringColorGroupPrev));
+                                }
 
                                 if (endOfString) break;
 
@@ -629,7 +732,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
                         }
                     }
 
-                    msgObject.SetColorGroup(colorGroup, compareData.ColorGroupFullMatch);
+                    if (colorGroup == compareData.ColorGroupFullMatch && fullStringMatch) colorGroup++;
+
+                    msgObject.SetColorGroup(colorGroup, compareData.ColorGroupFullMatch + 1);
                     msgObject.SetStringColorGroupList(stringColorGroupList);
                 }
             }
@@ -692,7 +797,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 {
                     matchStringArrayA[iA] = 1;
                     matchStringArrayB[iB] = 1;
-                    matchCount++;
+                    matchCount += 2;
                 }
                 else
                 {
@@ -709,7 +814,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (iA >= stringA.Length || iB >= stringB.Length) break;
             }
 
-            float matchScore = (float)(matchCount * 2) / (stringA.Length + stringB.Length);
+            int totalLength = stringA.Length + stringB.Length;
+            float matchScore = matchCount == totalLength ? 1f : (float)matchCount / totalLength;
 
             return (matchScore, matchStringArrayA, matchStringArrayB);
         }

@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.7
+  m_fontSize: 31.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -756,7 +756,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.3
+  m_fontSize: 40.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1097,7 +1097,7 @@ GameObject:
   - component: {fileID: 9043004684585307288}
   - component: {fileID: 1752462472024263134}
   m_Layer: 5
-  m_Name: Toggle (2)
+  m_Name: Toggle_Member
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1706,7 +1706,7 @@ GameObject:
   - component: {fileID: 7652819435920048702}
   - component: {fileID: 8443279910042142076}
   m_Layer: 5
-  m_Name: Toggle (1)
+  m_Name: Toggle_Elder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2133,7 +2133,7 @@ GameObject:
   - component: {fileID: 585806384978072402}
   - component: {fileID: 8898910055363605756}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: Toggle_Admin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2615,8 +2615,9 @@ MonoBehaviour:
   _clanAgeDropdown: {fileID: 3891532273510917405}
   _valueRowFirst: {fileID: 1657527314696345619}
   _valueRowSecond: {fileID: 2859517163696578681}
+  _clanRightsPanel: {fileID: 1533021619712263602}
   _saveButton: {fileID: 23146791591293713}
-  settingsSavedPopup: {fileID: 0}
+  errorPopup: {fileID: 0}
   _valuePrefab: {fileID: 8722640972951601500, guid: bb563a30d451a5c43bcb5f16844dd8f3,
     type: 3}
 --- !u!1 &1994256843219378594
@@ -3171,7 +3172,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.15
+  m_fontSize: 24.95
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4089,7 +4090,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39
+  m_fontSize: 60.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4559,7 +4560,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.4
+  m_fontSize: 31.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4980,7 +4981,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.4
+  m_fontSize: 31.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5207,7 +5208,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.05
+  m_fontSize: 35.55
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5480,7 +5481,7 @@ GameObject:
   - component: {fileID: 383392834456700284}
   - component: {fileID: 5374164661452227998}
   m_Layer: 5
-  m_Name: Toggle (1)
+  m_Name: Toggle_Elder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5729,7 +5730,7 @@ GameObject:
   - component: {fileID: 4885343381178456179}
   - component: {fileID: 6380597930876339536}
   m_Layer: 5
-  m_Name: Toggle (2)
+  m_Name: Toggle_Member
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6147,7 +6148,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.65
+  m_fontSize: 50.35
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6449,7 +6450,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 49.4
+  m_fontSize: 72
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6834,7 +6835,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.45
+  m_fontSize: 71.9
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7286,7 +7287,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.5
+  m_fontSize: 28.55
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7835,7 +7836,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39
+  m_fontSize: 60.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7967,7 +7968,7 @@ GameObject:
   - component: {fileID: 4051897616966603883}
   - component: {fileID: 4447579114910483973}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: Toggle_Admin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8579,7 +8580,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.3
+  m_fontSize: 20
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9059,7 +9060,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 46.9
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9114,6 +9115,7 @@ GameObject:
   - component: {fileID: 7421664667829923703}
   - component: {fileID: 2070450199672177161}
   - component: {fileID: 7103259988879977483}
+  - component: {fileID: 1533021619712263602}
   m_Layer: 5
   m_Name: ClanMemberRights
   m_TagString: Untagged
@@ -9184,6 +9186,30 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1533021619712263602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6982712296749512149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b12105d15920c2468379c5db16753d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clanMemberRightToggles:
+  - {fileID: 4885343381178456179}
+  - {fileID: 4021996804407601472}
+  - {fileID: 9043004684585307288}
+  _clanElderRightToggles:
+  - {fileID: 7652819435920048702}
+  - {fileID: 8895300643734168719}
+  - {fileID: 383392834456700284}
+  _clanAdminRightToggles:
+  - {fileID: 585806384978072402}
+  - {fileID: 7383194553867084716}
+  - {fileID: 4051897616966603883}
 --- !u!1 &6990497497049010710
 GameObject:
   m_ObjectHideFlags: 0
@@ -10280,7 +10306,7 @@ GameObject:
   - component: {fileID: 8895300643734168719}
   - component: {fileID: 2299612057506949788}
   m_Layer: 5
-  m_Name: Toggle (1)
+  m_Name: Toggle_Elder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10473,7 +10499,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.1
+  m_fontSize: 72
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10612,7 +10638,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21.3
+  m_fontSize: 32.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10752,7 +10778,7 @@ GameObject:
   - component: {fileID: 7383194553867084716}
   - component: {fileID: 6568404457867480243}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: Toggle_Admin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11185,7 +11211,7 @@ GameObject:
   - component: {fileID: 4021996804407601472}
   - component: {fileID: 4498680077259833329}
   m_Layer: 5
-  m_Name: Toggle (2)
+  m_Name: Toggle_Member
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

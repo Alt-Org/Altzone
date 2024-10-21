@@ -34,6 +34,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
         public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; }
         public int ColorGroup { get; }
 
@@ -83,10 +84,11 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
         public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; private set; }
         public int ColorGroup { get; private set; }
 
-        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type)
+        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type, bool isMatchable)
         {
             Client = client;
             Id = -1;
@@ -95,8 +97,9 @@ namespace DebugUi.Scripts.BattleAnalyzer
             SourceFlag = sourceFlag;
             Trace = trace;
             Type = type;
+            IsMatchable = isMatchable;
             MatchList = null;
-            ColorGroup = 0;
+            ColorGroup = -1;
         }
 
         public string GetHighlightedMsg(List<Color> colors)
@@ -117,7 +120,8 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 if (colorGroupNumber != _fullMatchColorGroup)
                 {
                     color = colors[colorGroupNumber];
-                    stringBuilder.Append(string.Format("<mark=#{0:x2}{1:x2}{2:x2}>", color.r * 255, color.g * 255, color.b * 255));
+                    color.a = 0.5f;
+                    stringBuilder.Append(string.Format("<mark=#{0:x8}>", ColorUtility.ToHtmlStringRGBA(color)));
                     stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
                     stringBuilder.Append("</mark>");
                 }

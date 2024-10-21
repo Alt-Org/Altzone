@@ -9,12 +9,14 @@ namespace MenuUi.Scripts.AvatarEditor
         private string _characterName;
         private List<FeatureID> _features;
         private List<FeatureColor> _colors;
+        private Vector2 _scale;
 
-        public PlayerAvatar(string name, List<FeatureID> features, List<FeatureColor> colors)
+        public PlayerAvatar(string name, List<FeatureID> features, List<FeatureColor> colors, Vector2 scale)
         {
             _characterName = name;
             _features = features;
             _colors = colors;
+            _scale = scale;
         }
         public string Name
         {
@@ -28,6 +30,10 @@ namespace MenuUi.Scripts.AvatarEditor
         public List<FeatureColor> Colors{
             get => _colors;
             set => _colors = value;
+        }
+        public Vector2 Scale{
+            get => _scale;
+            set => _scale = value;
         }
     }
 }

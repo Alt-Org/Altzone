@@ -93,22 +93,17 @@ namespace MenuUI.Scripts.SoulHome
             if (clickState is not ClickState.None)
             {
                 //Debug.Log(Touch.activeFingers[0].screenPosition);
-                if (Touch.activeTouches.Count == 1 || (Mouse.current != null && Mouse.current.leftButton.isPressed && Mouse.current.scroll.ReadValue() == Vector2.zero))
+                if (ClickStateHandler.GetClickType() is ClickType.Click)
                 RayPoint(clickState);
-                else if(Touch.activeTouches.Count <= 2|| (Mouse.current != null && Mouse.current.scroll.ReadValue() != Vector2.zero))
+                else if(ClickStateHandler.GetClickType() is ClickType.Pinch)
                 {
-                    float distance;
-                    if (Touch.activeTouches.Count <= 2)
+                    float distance = ClickStateHandler.GetPinchDistance();
+                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Pinch)
                     {
-                        Vector2 touch1 = Touch.activeFingers[0].screenPosition;
-                        Vector2 touch2 = Touch.activeFingers[1].screenPosition;
-
-                        distance = Vector2.Distance(touch1, touch2);
                         _soulHomeTower.PinchZoom(distance, false);
                     }
                     else
                     {
-                        distance = Mouse.current.scroll.ReadValue().y;
                         _soulHomeTower.PinchZoom(distance, true);
                     }
                 }
@@ -151,13 +146,8 @@ namespace MenuUI.Scripts.SoulHome
         {
             Debug.Log(click);
             Debug.Log(Screen.orientation);
-            Ray ray;
-            if (Touch.activeFingers.Count >= 1)
-            {
-                Touch touch = Touch.activeTouches[0];
-                ray = _camera.ScreenPointToRay(touch.screenPosition);
-            }
-            else ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+            Ray ray = _camera.ScreenPointToRay(ClickStateHandler.GetClickPosition());
 
             RaycastHit2D[] hit;
             hit = Physics2D.GetRayIntersectionAll(ray, 1000);
@@ -165,6 +155,7 @@ namespace MenuUI.Scripts.SoulHome
             bool soulHomeHit = false;
             foreach (RaycastHit2D hit1 in hit)
             {
+                Debug.LogWarning(hit1.collider.gameObject.ToString());
                 if (hit1.collider.gameObject.CompareTag("Overlay")) overlayHit = true;
                 /*else if (!hit1.collider.gameObject.CompareTag("SoulHomeScreen"))
                 {

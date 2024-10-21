@@ -5,6 +5,7 @@ using Photon.Realtime;
 
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
+using Photon.Pun;
 
 namespace Battle.Scripts.Battle
 {
@@ -61,6 +62,11 @@ namespace Battle.Scripts.Battle
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
+
+        public static string GetBattleID()
+        {
+            return PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null);
+        }
 
         public static BattleCharacter GetBattleCharacter(Player player)
         {

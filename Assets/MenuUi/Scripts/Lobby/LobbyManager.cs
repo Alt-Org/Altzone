@@ -87,8 +87,8 @@ namespace MenuUI.Scripts.Lobby
                 Debug.LogWarning("Failed to join a room in time.");
                 PhotonNetwork.LeaveRoom();
                 yield break;
-            } 
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
+            }
+            if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
             WindowManager.Get().ShowWindow(_roomWindow);
         }
 
@@ -174,7 +174,7 @@ namespace MenuUI.Scripts.Lobby
             }
             PhotonNetwork.LoadLevel(raidScene.SceneName);
         }
-        
+
         private void SetPlayer(Player player, int playerPosition)
         {
             Assert.IsTrue(PhotonBattle.IsValidGameplayPosOrGuest(playerPosition));
