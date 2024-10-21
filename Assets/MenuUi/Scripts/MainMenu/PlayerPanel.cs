@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 
@@ -62,8 +63,29 @@ public class PlayerPanel : MonoBehaviour
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
             _playerNameText.text = playerData.Name;
-            _playerClanText.text = "Tervetuloa ALT Zoneen!";
-            _playerClanDescription.text = "";
+
+            ClanData clanData = null;
+            string clanId = "";
+            if (playerData.HasClanId)
+            {
+                clanId = playerData.ClanId;
+                store.GetClanData(clanId, p => clanData = p);
+                if (clanData != null)
+                {
+                    _playerClanText.text = clanData.Name;
+                    _playerClanDescription.text = clanData.Phrase;
+                }
+                else
+                {
+                    _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut.";
+                    _playerClanDescription.text = "";
+                }
+            }
+            else
+            {
+                _playerClanText.text = "Et ole klaanissa.";
+                _playerClanDescription.text = "";
+            }
 
             _profileNaviButton.gameObject.SetActive(true);
         }
