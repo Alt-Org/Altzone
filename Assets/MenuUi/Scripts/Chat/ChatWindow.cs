@@ -14,7 +14,7 @@ public class ChatWindow : MonoBehaviour
 
     public void GetChatMessagesFromServer()
     {
-        ChatListener.Instance.GetChatHistoryFromServer(ChatListener.Instance._activeChatChannel, ChatListener.ServerHistoryLoadingCause.LoadMoreButtonClicked, null);
+        //ChatListener.Instance.GetChatHistoryFromServer(ChatListener.Instance._activeChatChannel, ChatListener.ServerHistoryLoadingCause.LoadMoreButtonClicked, null);
     }
 
     public void ToggleLoadMoreButton(bool value)

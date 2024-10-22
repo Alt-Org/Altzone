@@ -75,10 +75,6 @@ public class ChatController : MonoBehaviour
 
     private void Update()
     {
-        if (ChatListener.Instance.ChatClient != null && ChatListener.Instance.ChatClient.CanChat)
-            _connectionStatusText.text = ConnectedText;
-        else
-            _connectionStatusText.text = DisconnectedText;
     }
 
     /// <summary>
@@ -91,7 +87,6 @@ public class ChatController : MonoBehaviour
             return;
 
         object[] dataToSend = new object[] { ChatListener.Instance._username, _chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance._activeChatChannel._chatChannelType };
-        ChatListener.Instance.ChatClient.PublishMessage(ChatListener.Instance._activeChatChannel._channelName, dataToSend, true);
         _chatMessageInputField.text = null;
     }
 
