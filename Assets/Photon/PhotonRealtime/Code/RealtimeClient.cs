@@ -2525,6 +2525,8 @@ namespace Photon.Realtime
 }
 
 
+/*
+ Unfortunately we are using old Photon PUN side by side and this is defined twice!
 namespace ExitGames.Client.Photon
 {
     /// <summary>Replace by RealtimeClient.</summary>
@@ -2541,5 +2543,4 @@ namespace ExitGames.Client.Photon
     public class Hashtable : global::Photon.Client.PhotonHashtable
     {
     }
-}
-
+}*/
