@@ -10,7 +10,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.GA;
-using Photon.Realtime;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
