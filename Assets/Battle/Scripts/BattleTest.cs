@@ -1,12 +1,14 @@
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Battle.Scripts
 {
-    public class BattleTest : MonoBehaviour
+    internal static class BattleTest
     {
-        private void Awake()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void BeforeSceneLoad()
         {
-            Debug.Log($"{nameof(BattleTest)}");
+            Debug.Log($"Photon realtime {RealtimeClient.Version} for Quantum");
         }
     }
 }
