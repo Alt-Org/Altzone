@@ -86,6 +86,9 @@ public class ChatListener : MonoBehaviour, IChatClientListener
 
     private void Awake()
     {
+        Debug.LogWarning("Photon Chat is not in use!");
+        Destroy(this);
+        return;
         if (Instance != null && Instance != this)
         {
             Destroy(this);

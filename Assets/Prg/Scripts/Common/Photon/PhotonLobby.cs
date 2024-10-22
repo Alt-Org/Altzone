@@ -266,6 +266,8 @@ namespace Prg.Scripts.Common.Photon
 
         private static void ConnectUsingSettings(string playerName, AppSettings appSettings, string regionCodeOverride)
         {
+            Debug.LogWarning("Photon PUN is not in use!");
+            return;
             // See PhotonNetwork.SendRate and PhotonNetwork.SerializationRate
             // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
             // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_transform_view.html
