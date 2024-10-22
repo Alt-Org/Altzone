@@ -60,7 +60,7 @@ public class Raid_InventoryPage : MonoBehaviour
         LootTracker.ResetLootCount();
         _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 2;
-        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+       if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
             spectator = true;
         }
