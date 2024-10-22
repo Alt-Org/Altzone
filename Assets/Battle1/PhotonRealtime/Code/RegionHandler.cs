@@ -612,7 +612,8 @@ namespace Photon.Realtime
 
         public string GetResults()
         {
-            return string.Format("{0}: {1} ({2})", this.region.Code, this.region.Ping, this.rttResults.ToStringFull());
+            throw new NotImplementedException();
+            //return string.Format("{0}: {1} ({2})", this.region.Code, this.region.Ping, this.rttResults.ToStringFull());
         }
 
         /// <summary>

@@ -1957,7 +1957,8 @@ namespace Photon.Pun
             int[] indexesThatAreChangedToNull = incomingData[2] as int[];
             for (int index = SyncFirstValue; index < incomingData.Length; index++)
             {
-                if (indexesThatAreChangedToNull != null && indexesThatAreChangedToNull.Contains(index))
+                throw new NotImplementedException();
+                /*if (indexesThatAreChangedToNull != null && indexesThatAreChangedToNull.Contains(index))
                 {
                     continue; // if a value was set to null in this update, we don't need to fetch it from an earlier update
                 }
@@ -1966,7 +1967,7 @@ namespace Photon.Pun
                     // we replace null values in this received msg unless a index is in the "changed to null" list
                     object lastValue = lastOnSerializeDataReceived[index];
                     incomingData[index] = lastValue;
-                }
+                }*/
             }
 
             return incomingData;
