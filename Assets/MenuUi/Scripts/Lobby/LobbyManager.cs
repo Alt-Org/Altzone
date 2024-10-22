@@ -5,7 +5,6 @@ using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -60,11 +59,11 @@ namespace MenuUI.Scripts.Lobby
         {
             if (PhotonNetwork.InRoom)
             {
-                PhotonLobby.LeaveRoom();
+                //PhotonLobby.LeaveRoom();
             }
             else if (PhotonNetwork.InLobby)
             {
-                PhotonLobby.LeaveLobby();
+                //PhotonLobby.LeaveLobby();
             }
         }
 
@@ -153,7 +152,7 @@ namespace MenuUI.Scripts.Lobby
                 yield return null;
                 if (isCloseRoom)
                 {
-                    PhotonLobby.CloseRoom(true);
+                    //PhotonLobby.CloseRoom(true);
                     yield return null;
                 }
             }

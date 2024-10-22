@@ -4,7 +4,6 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Pun;
 using Photon.Realtime;
-using Prg.Scripts.Common.Photon;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,11 +32,11 @@ namespace MenuUI.Scripts.Lobby.InLobby
             var playerSettings = gameConfig.PlayerSettings;
             var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
             Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState} CloudRegion={cloudRegion} PhotonRegion={photonRegion}");
-            if (PhotonWrapper.IsConnectedToMasterServer && photonRegion != cloudRegion)
+            /*if (PhotonWrapper.IsConnectedToMasterServer && photonRegion != cloudRegion)
             {
                 // We need to disconnect from current region because it is not the same as in player settings.
                 PhotonLobby.Disconnect();
-            }
+            }*/
             _view.Reset();
             UpdateTitle();
             _view.LobbyText = string.Empty;
@@ -52,8 +51,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private void UpdateTitle()
         {
             // Save region for later use because getting it is not cheap (b ut not very expensive either). 
-            _currentRegion = PhotonLobby.GetRegion();
-            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion}";
+            /*_currentRegion = PhotonLobby.GetRegion();
+            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion}";*/
         }
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
@@ -69,7 +68,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     networkClientState = PhotonNetwork.NetworkClientState;
                     Debug.Log($"{networkClientState}");
                 }
-                if (PhotonNetwork.InRoom)
+                /*if (PhotonNetwork.InRoom)
                 {
                     PhotonLobby.LeaveRoom();
                 }
@@ -84,7 +83,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 else if (PhotonWrapper.CanJoinLobby)
                 {
                     PhotonLobby.JoinLobby();
-                }
+                }*/
                 yield return delay;
             }
             UpdateTitle();
