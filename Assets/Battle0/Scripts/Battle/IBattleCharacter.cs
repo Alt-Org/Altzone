@@ -1,7 +1,6 @@
-using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco.Game;
 
-namespace Altzone.Scripts.Temp
+namespace Battle0.Scripts.Battle
 {
     /// <summary>
     /// Read-only interface for Battle Character that is composite of <c>CharacterClassModel</c> and <c>CustomCharacterModel</c>.

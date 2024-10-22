@@ -1,7 +1,6 @@
 using System;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model;
-using Altzone.Scripts.Temp;
 using Battle0.Scripts.Battle.Game;
 using Battle0.Scripts.Ui;
 using Photon.Pun;

@@ -1,6 +1,5 @@
 using System;
 using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.Temp;
 using Battle0.Scripts.Battle.Game;
 using Battle0.Scripts.Ui;
 using Prg.Scripts.Common.PubSub;
