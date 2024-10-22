@@ -1041,9 +1041,9 @@ namespace Photon.Pun
             #endif
         }
 
-        #if UNITY_EDITOR && UNITY_2019_4_OR_NEWER
+        /*#if UNITY_EDITOR && UNITY_2019_4_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        #endif
+        #endif*/
         private static void StaticReset()
         {
             #if UNITY_EDITOR
