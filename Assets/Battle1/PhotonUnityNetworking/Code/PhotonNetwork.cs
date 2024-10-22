@@ -3202,7 +3202,7 @@ namespace Photon.Pun
 
 
             // in the editor, store the settings file as it's not loaded
-            #if  UNITY_EDITOR
+            /*#if  UNITY_EDITOR
             // don't save the settings before OnProjectUpdated got called (this hints at an ongoing import/load)
             if (!PhotonEditorUtils.ProjectChangedWasCalled)
             {
@@ -3227,7 +3227,7 @@ namespace Photon.Pun
 
             // if the project does not have PhotonServerSettings yet, enable "Development Build" to use the Dev Region.
             EditorUserBuildSettings.development = true;
-            #endif
+            #endif*/
         }
 
 
