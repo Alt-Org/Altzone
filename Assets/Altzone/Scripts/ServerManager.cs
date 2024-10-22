@@ -632,8 +632,6 @@ public class ServerManager : MonoBehaviour
         string body = @$"{{""name"":""{name}"",""tag"":""{tag}"",""isOpen"":{isOpen.ToString().ToLower()},""labels"": [{""}],
                             ""ageRange"":""{age}"",""goal"":""{goal}"",""phrase"":""{phrase}"",""language"":""{language}""}}";
 
-        Debug.LogWarning(body);
-
         yield return StartCoroutine(WebRequests.Post(ADDRESS + "clan", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
@@ -678,8 +676,6 @@ public class ServerManager : MonoBehaviour
     {
         string body = @$"{{""_id"":""{data.Id}"",""name"":""{data.Name}"",""tag"":""{data.Tag}"",""isOpen"":{Clan.isOpen.ToString().ToLower()},""labels"": [{""}],
                             ""ageRange"":""{data.ClanAge}"",""goal"":""{data.Goals}"",""phrase"":""{data.Phrase}"",""language"":""{data.Language}""}}";
-
-        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Put(ADDRESS + "clan", body, AccessToken, request =>
         {
