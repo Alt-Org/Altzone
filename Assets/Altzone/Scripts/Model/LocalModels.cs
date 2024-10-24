@@ -108,7 +108,7 @@ namespace Altzone.Scripts.Model
             Debug.Log($"StorageFilename {_storagePath}");
             _characters = new CharacterStorage().CharacterList;
             _storageData = File.Exists(_storagePath)
-                ? LoadStorage(_storagePath)
+                ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
         }
 
@@ -350,6 +350,11 @@ namespace Altzone.Scripts.Model
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
 
             if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+            else
+            {
+                storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+            }
 
             return storageData;
         }
