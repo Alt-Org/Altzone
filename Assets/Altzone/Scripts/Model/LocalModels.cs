@@ -290,6 +290,11 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
+        internal void GetAllBaseCharacters(Action<ReadOnlyCollection<BaseCharacter>> callback)
+        {
+            callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
+        }
+
         #endregion
 
         #region Setters for bulk data updates for base models.
@@ -322,8 +327,9 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
+            storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
-            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(_characters));
+            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
             storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;
@@ -360,6 +366,7 @@ namespace Altzone.Scripts.Model
     internal class StorageData
     {
         public int StorageVersion = 0;
+        public List<BaseCharacter> Characters = new();
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();

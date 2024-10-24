@@ -107,6 +107,11 @@ namespace Altzone.Scripts
             return new MYCustomYieldInstruction(_localModels, callback);
         }
 
+        public CustomYieldInstruction GetAllBaseCharacterYield(Action<ReadOnlyCollection<BaseCharacter>> callback)
+        {
+            return new MYCustomYieldInstruction(_localModels, callback);
+        }
+
         private class MYCustomYieldInstruction : CustomYieldInstruction
         {
             public override bool keepWaiting => _keepWaiting;
@@ -131,7 +136,7 @@ namespace Altzone.Scripts
             }
             public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<CharacterClass>> callback)
             {
-                void SafeCallbackWrapperCharacters(ReadOnlyCollection<CharacterClass> result)
+                void SafeCallbackWrapperCharactersClasses(ReadOnlyCollection<CharacterClass> result)
                 {
                     try
                     {
@@ -143,7 +148,23 @@ namespace Altzone.Scripts
                     }
                 }
 
-                localModels.GetAllCharacterClassModels(SafeCallbackWrapperCharacters);
+                localModels.GetAllCharacterClassModels(SafeCallbackWrapperCharactersClasses);
+            }
+            public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<BaseCharacter>> callback)
+            {
+                void SafeCallbackWrapperCharacters(ReadOnlyCollection<BaseCharacter> result)
+                {
+                    try
+                    {
+                        callback(result);
+                    }
+                    finally
+                    {
+                        _keepWaiting = false;
+                    }
+                }
+
+                localModels.GetAllBaseCharacters(SafeCallbackWrapperCharacters);
             }
         }
     }
