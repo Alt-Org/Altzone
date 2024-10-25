@@ -16,11 +16,19 @@ public class DailyQuest : MonoBehaviour
     public GameObject unActiveTask;
     public GameObject activeTask;
 
+    public DailyTaskManager dailyTaskManager;
+
     public GameObject popUpScreen;
 
+    //  Unactive texts
     public TMP_Text titleText;
     public TMP_Text pointText;
     public TMP_Text playerNameText;
+    public TMP_Text idText;
+    // active texts
+    public TMP_Text titleActiveText;
+    public TMP_Text pointActiveText;
+    public TMP_Text idActiveText;
 
     public Button questSelectButton;
     public Slider taskGoalSlider;
@@ -38,7 +46,7 @@ public class DailyQuest : MonoBehaviour
             }
             else
             {
-                Debug.Log("You have already chosen a Mission!");
+                Debug.Log("You have already chosen a Mission! " + playerData.dailyTaskId);
             }
 
         });
@@ -48,14 +56,35 @@ public class DailyQuest : MonoBehaviour
     {
         titleText.text = taskTitle;
         pointText.text = taskPoints.ToString();
+        idText.text = taskId.ToString();
         taskGoalSlider.maxValue = taskGoal;
+
+        titleActiveText.text = taskTitle;
+        pointActiveText.text = taskPoints.ToString();
+        idActiveText.text = taskId.ToString();
     }
 
     public void SetQuestActive()
     {
         unActiveTask.SetActive(false);
         activeTask.SetActive(true);
+        Debug.Log("Quest "+ taskId +" was selected");
+        dailyTaskManager.TakeTask(taskId);
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => p.dailyTaskId = taskId);
+    }
+
+    public void CancelQuest()
+    {
+        PlayerData playerData = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+        playerData.dailyTaskId = -1;
+
+        unActiveTask.SetActive(true);
+        activeTask.SetActive(false);
+        dailyTaskManager.CancelTask();
+
+        Debug.Log("Quest has been Canceled");
+
     }
 
 }

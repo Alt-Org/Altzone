@@ -1,15 +1,19 @@
 using System.Threading.Tasks;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class DailyTaskManager : MonoBehaviour
 {
-    private GameObject[] dailyQuestSlots = new GameObject[30];
+    private GameObject[] _dailyQuestSlots = new GameObject[31];
 
     private string _taskTitle;
     private int _taskPoints;
     private int _taskgoal;
-    private int _guestMultiplier;
-    private int _questAmount = 30;
+    private int _questAmount = 31;
+
+    public int currentTaskIndex = 1;
 
     public Leaderboard leaderboard;
     public GameObject popupScreenPrefab;
@@ -19,22 +23,53 @@ public class DailyTaskManager : MonoBehaviour
     private void Start()
     {
         QuestGenerator();
-
+        RestoreActiveQuest();
     }
 
     public void QuestGenerator()
     {
-        for (int i = 0; i < _questAmount; i++)
+        for (int i = 1; i < _questAmount; i++)
         {
             GameObject taskObject = Instantiate(dailyTaskPrefab.gameObject, gameObject.transform);
-            dailyQuestSlots[i] = taskObject;
+            _dailyQuestSlots[i] = taskObject;
             (string title, int points, int goals) = QuestRandomizer();
-            taskObject.GetComponent<DailyQuest>().getMissionData(title, points, goals);
-            taskObject.GetComponent<DailyQuest>().taskId = i + 1;
-            taskObject.GetComponent<DailyQuest>().popUpScreen = popupScreenPrefab;
+
+            DailyQuest quest = taskObject.GetComponent<DailyQuest>();
+            quest.taskId = i;
+            quest.getMissionData(title, points, goals);
+            quest.popUpScreen = popupScreenPrefab;
+            quest.dailyTaskManager = this;
         }
         Debug.Log("Task Slots populated!");
     }
+
+    private void RestoreActiveQuest()
+    {
+        PlayerData playerData = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+
+        if (playerData != null && playerData.dailyTaskId >= 1 && playerData.dailyTaskId < _dailyQuestSlots.Length)
+        {
+            int taskIndex = playerData.dailyTaskId;
+            if (_dailyQuestSlots[taskIndex] != null) // Check to avoid null reference
+            {
+                TakeTask(taskIndex);
+
+                DailyQuest activeQuest = _dailyQuestSlots[taskIndex].GetComponent<DailyQuest>();
+                activeQuest.unActiveTask.SetActive(false);
+                activeQuest.activeTask.SetActive(true);
+
+                Debug.Log("Restored active quest: " + taskIndex);
+            }
+        }
+        else
+        {
+            CancelTask();
+        }
+    }
+
+
+
     public (string _taskTitle, int _taskGoal, int _taskPoints) QuestRandomizer()
     {
         Debug.Log("taskInit Runned");
@@ -106,5 +141,31 @@ public class DailyTaskManager : MonoBehaviour
         }
     }
 
+    // Method to hide all tasks except the one currently taken
+    public void TakeTask(int taskIndex)
+    {
+        currentTaskIndex = taskIndex;
 
+        for (int i = 1; i < _dailyQuestSlots.Length; i++)
+        {
+            if (i != taskIndex)
+            {
+                _dailyQuestSlots[i].SetActive(false); // Hide all other tasks
+            }
+        }
+    }
+
+    // Method to cancel task and show all hidden tasks again
+    public void CancelTask()
+    {
+        currentTaskIndex = -1; // Reset current task
+
+        foreach (GameObject taskObject in _dailyQuestSlots)
+        {
+            if (taskObject != null) // Ensure taskObject is not null
+            {
+                taskObject.SetActive(true); // Show all tasks
+            }
+        }
+    }
 }
