@@ -11,7 +11,7 @@ public class HeartBackPopup : MonoBehaviour
     public Button sureButton;
     public Button closeButton;
 
-    public HeartSaveManager heartSaveManager;
+    public ClanHeartColorChanger heartColorChanger;
 
     void Start()
     {
@@ -24,15 +24,14 @@ public class HeartBackPopup : MonoBehaviour
 
     void OnBackButtonClick()
     {
-        
-        if (!heartSaveManager.IsAnyPieceChanged())
+
+        if (!heartColorChanger.IsAnyPieceChanged())
         {
             Debug.Log("No changes, Going Back.");
             StartCoroutine(GoBack());
         }
         else
         {
-            
             popupPanel.SetActive(true);
         }
     }

@@ -78,7 +78,7 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
-        if(_automaticallyLogIn) StartCoroutine(LogIn());
+        if (_automaticallyLogIn) StartCoroutine(LogIn());
     }
 
     public void Reset()
@@ -255,7 +255,10 @@ public class ServerManager : MonoBehaviour
             playerData.ClanId = clan._id;
             store.SavePlayerData(playerData, null);
 
+            clanData = new ClanData(clan);
+
             // Checks if the clan is found in DataStorage or if we have to create new one.
+            /*
             store.GetClanData(playerData.ClanId, clanDataFromStorage =>
             {
                 if (clanDataFromStorage == null)
@@ -268,7 +271,7 @@ public class ServerManager : MonoBehaviour
                     clanData = clanDataFromStorage;
                 }
 
-            });
+            }); */
         });
 
         // Creates or fetches the most up to date clan Stock before saving.
@@ -304,7 +307,7 @@ public class ServerManager : MonoBehaviour
                     clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
                 }*/
 
-                if(clanFurniture.Count == 0)
+                if (clanFurniture.Count == 0)
                 {
                     int i = 0;
                     while (i < 2)
@@ -468,7 +471,7 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
                 Clan = clan;
-                Debug.LogWarning(clan.phrase);
+
                 // Saves clan data to DataStorage
                 StartCoroutine(SaveClanFromServerToDataStorage(Clan));
 
@@ -602,7 +605,7 @@ public class ServerManager : MonoBehaviour
 
                 storefront.GetPlayerData(Player.uniqueIdentifier, data => playerData = data);
 
-                if(playerData != null)
+                if (playerData != null)
                 {
                     playerData.ClanId = "12345";                    //Demo-clan for not logged in players
                     storefront.SavePlayerData(playerData, null);
@@ -828,7 +831,7 @@ public class ServerManager : MonoBehaviour
 
     public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
-        StartCoroutine(WebRequests.Post(ADDRESS+"gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
+        StartCoroutine(WebRequests.Post(ADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
 
     #endregion

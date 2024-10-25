@@ -4,6 +4,18 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
+    public class HeartPieceData
+    {
+        public int pieceNumber;
+        public Color pieceColor;
+
+        public HeartPieceData(int number, Color color)
+        {
+            pieceNumber = number;
+            pieceColor = color;
+        }
+    }
+
     public enum ClanAge
     {
         None,

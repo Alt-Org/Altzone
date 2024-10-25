@@ -32,6 +32,8 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private Transform _valueRowFirst;
     [SerializeField] private Transform _valueRowSecond;
     [SerializeField] private ClanRightsPanel _clanRightsPanel;
+    [SerializeField] private ClanHeartColorChanger _clanHeartColorChanger;
+    [SerializeField] private ClanHeartColorSetter _settingsHeartColorSetter;
 
     [Header("Buttons")]
     [SerializeField] private Button _saveButton;
@@ -42,45 +44,58 @@ public class ClanSettings : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject _valuePrefab;
 
+    private List<HeartPieceData> _heartPieces;
+
     private void OnEnable()
     {
-        if (ServerManager.Instance.Clan != null)
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
-            SetPanelValues(ServerManager.Instance.Clan);
-            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
-            {
-                _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
-            });
-            SetInitialSettingValues(ServerManager.Instance.Clan);
-        }
+            SetPanelValues(clanData);
+            _clanHeartColorChanger.gameObject.SetActive(false);
+            _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+
+            clanData.ClanHeartPieces ??= new();
+            _heartPieces = clanData.ClanHeartPieces;
+            _clanHeartColorChanger.InitializeClanHeart(_heartPieces);
+
+            SetInitialSettingValues(clanData);
+        });
     }
 
-    private void SetPanelValues(ServerClan clan)
+    private void SetPanelValues(ClanData clan)
     {
-        _clanName.text = clan.name;
-        _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
-        _clanCoins.text = clan.gameCoins.ToString();
+        _clanName.text = clan.Name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
+        _clanCoins.text = clan.GameCoins.ToString();
         _clanTrophies.text = "-1";
         _clanGlobalRanking.text = "-1";
     }
 
-    private void SetInitialSettingValues(ServerClan clan)
+    private void SetInitialSettingValues(ClanData clan)
     {
-        _clanPhraseField.text = clan.phrase;
+        _clanPhraseField.text = clan.Phrase;
         // _clanPasswordField.text = ;
-        _clanOpenToggle.isOn = !clan.isOpen;
+        _clanOpenToggle.isOn = !clan.IsOpen;
 
         InitLanguageDropdown();
-        _clanLanguageDropdown.value = EnumToDropdown(clan.language);
+        _clanLanguageDropdown.value = EnumToDropdown(clan.Language);
         _clanLanguageDropdown.RefreshShownValue();
 
         InitGoalsDropDown();
-        _clanGoalDropdown.value = EnumToDropdown(clan.goals);
+        _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
         _clanGoalDropdown.RefreshShownValue();
 
         InitAgeDropDown();
-        _clanAgeDropdown.value = EnumToDropdown(clan.clanAge);
+        _clanAgeDropdown.value = EnumToDropdown(clan.ClanAge);
         _clanAgeDropdown.RefreshShownValue();
+    }
+
+    public void OpenClanHeartPanel() => _clanHeartColorChanger.gameObject.SetActive(true);
+    public void CloseClanHeartPanel()
+    {
+        _heartPieces = _clanHeartColorChanger.GetHeartPieceDatas();
+        _settingsHeartColorSetter.SetHeartColors(_heartPieces);
+        _clanHeartColorChanger.gameObject.SetActive(false);
     }
 
     private void InitLanguageDropdown()
@@ -137,13 +152,14 @@ public class ClanSettings : MonoBehaviour
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
-            Debug.Log("member: " + clanData.ClanRights[0] + " elder: " + clanData.ClanRights[1] + " admin: " + clanData.ClanRights[2]);
+            clanData.ClanHeartPieces = _heartPieces;
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
                 _saveButton.interactable = true;
                 if (success)
                 {
+
                     WindowManager.Get().GoBack();
                 }
                 else

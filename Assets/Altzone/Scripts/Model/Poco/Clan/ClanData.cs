@@ -14,9 +14,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [Optional] public string Tag;
         [Optional] public string Phrase;
         public int GameCoins;
+        public bool IsOpen;
 
         public List<string> Labels = new();
-        public ClanRoleRights[] ClanRights;
+        public List<HeartPieceData> ClanHeartPieces = new();
+        public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
         public ClanInventory Inventory = new();
 
@@ -51,9 +53,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Phrase = clan.phrase ?? string.Empty;
             GameCoins = clan.gameCoins;
             Labels = clan.labels;
-            ClanAge = clan.clanAge;
+            ClanAge = clan.ageRange;
             Language = clan.language;
-            Goals = clan.goals;
+            Goals = clan.goal;
+            ClanHeartPieces = new();
+            IsOpen = clan.isOpen;
         }
 
         public override string ToString()
