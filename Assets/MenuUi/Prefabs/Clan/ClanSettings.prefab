@@ -2753,7 +2753,8 @@ MonoBehaviour:
   _clanHeartColorChanger: {fileID: 5410227468969980500}
   _settingsHeartColorSetter: {fileID: 2642460324264567415}
   _saveButton: {fileID: 23146791591293713}
-  errorPopup: {fileID: 0}
+  _errorPopup: {fileID: 0}
+  _cancelConfirmationPopup: {fileID: 0}
   _valuePrefab: {fileID: 8722640972951601500, guid: bb563a30d451a5c43bcb5f16844dd8f3,
     type: 3}
 --- !u!1 &1994256843219378594
@@ -8320,7 +8321,6 @@ GameObject:
   - component: {fileID: 4743120162089164150}
   - component: {fileID: 2211635278136844769}
   - component: {fileID: 6381406905129650021}
-  - component: {fileID: 6754034628355137920}
   m_Layer: 5
   m_Name: Back_Button
   m_TagString: Untagged
@@ -8429,19 +8429,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2211635278136844769}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &6754034628355137920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6104946829910747423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33659b0b1c0242c3b28bc17acb0079e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+      m_Calls:
+      - m_Target: {fileID: 2744039800164740701}
+        m_TargetAssemblyTypeName: ClanSettings, MainMenu
+        m_MethodName: OnClickCancelClanSettingEdits
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6193446975840320299
 GameObject:
   m_ObjectHideFlags: 0
@@ -9300,7 +9300,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 46.9
+  m_fontSize: 46.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10739,7 +10739,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.1
+  m_fontSize: 51.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1

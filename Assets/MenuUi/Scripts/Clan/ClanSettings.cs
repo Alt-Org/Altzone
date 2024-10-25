@@ -8,6 +8,7 @@ using System;
 using MenuUI.Scripts;
 using MenuUi.Scripts.Window;
 using Altzone.Scripts;
+using System.Linq;
 
 public class ClanSettings : MonoBehaviour
 {
@@ -39,7 +40,8 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
-    [SerializeField] private PopupController errorPopup;
+    [SerializeField] private PopupController _errorPopup;
+    [SerializeField] private GameObject _cancelConfirmationPopup;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _valuePrefab;
@@ -50,15 +52,16 @@ public class ClanSettings : MonoBehaviour
     {
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
-            SetPanelValues(clanData);
             _clanHeartColorChanger.gameObject.SetActive(false);
+            _cancelConfirmationPopup.SetActive(false);
+
+            SetPanelValues(clanData);
             _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+            SetInitialSettingValues(clanData);
 
             clanData.ClanHeartPieces ??= new();
             _heartPieces = clanData.ClanHeartPieces;
             _clanHeartColorChanger.InitializeClanHeart(_heartPieces);
-
-            SetInitialSettingValues(clanData);
         });
     }
 
@@ -159,14 +162,36 @@ public class ClanSettings : MonoBehaviour
                 _saveButton.interactable = true;
                 if (success)
                 {
-
                     WindowManager.Get().GoBack();
                 }
                 else
                 {
-                    errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+                    _errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
                 }
             }));
         });
     }
+
+    public void OnClickCancelClanSettingEdits()
+    {
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        {
+            bool hasMadeEdits = _clanHeartColorChanger.IsAnyPieceChanged()
+                || clanData.Phrase != _clanPhraseField.text
+                || clanData.Language != DropdownToLanguage(_clanLanguageDropdown.value)
+                || clanData.Goals != DropdownToGoal(_clanGoalDropdown.value)
+                || clanData.ClanAge != DropdownToAge(_clanAgeDropdown.value)
+                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
+
+            if (hasMadeEdits)
+            {
+                _cancelConfirmationPopup.SetActive(true);
+            }
+            else
+            {
+                WindowManager.Get().GoBack();
+            }
+        });
+    }
+    public void OnClickContinueEditingClanSettings() => _cancelConfirmationPopup.SetActive(false);
 }
