@@ -19,7 +19,7 @@ namespace Photon.Chat.Demo
     public class FriendItem : MonoBehaviour
     {
         [HideInInspector]
-        public string FriendId 
+        public string FriendId
         {
             set { this.NameLabel.text = value; }
             get { return this.NameLabel.text; }
@@ -27,7 +27,13 @@ namespace Photon.Chat.Demo
 
         public Text NameLabel;
         public Text StatusLabel;
-   
+        public Text Health;
+
+        public void Awake()
+        {
+            this.Health.text = string.Empty;
+        }
+
         public void OnFriendStatusUpdate(int status, bool gotMessage, object message)
         {
             string _status;
@@ -57,8 +63,22 @@ namespace Photon.Chat.Demo
                     break;
             }
 
-            this.StatusLabel.text = _status;     
-        }
+            this.StatusLabel.text = _status;
 
+            if (gotMessage)
+            {
+                string _health = string.Empty;
+                if (message != null)
+                {
+                    string[] _messages = message as string[];
+                    if (_messages != null && _messages.Length >= 2)
+                    {
+                        _health = (string)_messages[1] + "%";
+                    }
+                }
+
+                this.Health.text = _health;
+            }
+        }
     }
 }

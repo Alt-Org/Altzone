@@ -42,35 +42,45 @@ namespace Photon.Realtime
     /// </summary>
     public abstract class PhotonPing : IDisposable
     {
+        /// <summary>Caches the last exception/error message, if any.</summary>
         public string DebugString = "";
-        
+
+        /// <summary>True of the ping was successful.</summary>
         public bool Successful;
 
+        /// <summary>True if there was any result.</summary>
         protected internal bool GotResult;
 
+        /// <summary>Length of a ping.</summary>
         protected internal int PingLength = 13;
 
+        /// <summary>Bytes to send in a (Photon UDP) ping.</summary>
         protected internal byte[] PingBytes = new byte[] { 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x00 };
 
+        /// <summary>Randomized number to identify a ping.</summary>
         protected internal byte PingId;
 
         private static readonly System.Random RandomIdProvider = new System.Random();
 
+        /// <summary>Begins sending a ping.</summary>
         public virtual bool StartPing(string ip)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Check if done.</summary>
         public virtual bool Done()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Dispose of this ping.</summary>
         public virtual void Dispose()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Initialize this ping (GotResult, Successful, PingId).</summary>
         protected internal void Init()
         {
             this.GotResult = false;
@@ -122,12 +132,16 @@ namespace Photon.Realtime
             catch (Exception e)
             {
                 this.sock = null;
-                Console.WriteLine(e);
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+
+                // bubble up
+                throw;
             }
 
             return false;
         }
 
+        /// <summary>Check if done.</summary>
         public override bool Done()
         {
             if (this.GotResult || this.sock == null)
@@ -168,8 +182,11 @@ namespace Photon.Realtime
             return true;
         }
 
+        /// <summary>Dispose of this ping.</summary>
         public override void Dispose()
         {
+            if (this.sock == null) { return; }
+
             try
             {
                 this.sock.Close();
@@ -210,6 +227,7 @@ namespace Photon.Realtime
             }
         }
 
+        /// <summary>Check if done.</summary>
         public override bool Done()
         {
             lock (this.syncer)
@@ -218,6 +236,7 @@ namespace Photon.Realtime
             }
         }
 
+        /// <summary>Dispose of this ping.</summary>
         public override void Dispose()
         {
             lock (this.syncer)
@@ -284,28 +303,28 @@ namespace Photon.Realtime
 
 
     #if NATIVE_SOCKETS
-	/// <summary>Abstract base class to provide proper resource management for the below native ping implementations</summary>
-	public abstract class PingNative : PhotonPing
-	{
-		// Native socket states - according to EnetConnect.h state definitions
-		protected enum NativeSocketState : byte
-		{
-			Disconnected = 0,
-			Connecting = 1,
-			Connected = 2,
-			ConnectionError = 3,
-			SendError = 4,
-			ReceiveError = 5,
-			Disconnecting = 6
-		}
+    /// <summary>Abstract base class to provide proper resource management for the below native ping implementations</summary>
+    public abstract class PingNative : PhotonPing
+    {
+        // Native socket states - according to EnetConnect.h state definitions
+        protected enum NativeSocketState : byte
+        {
+            Disconnected = 0,
+            Connecting = 1,
+            Connected = 2,
+            ConnectionError = 3,
+            SendError = 4,
+            ReceiveError = 5,
+            Disconnecting = 6
+        }
 
-		protected IntPtr pConnectionHandler = IntPtr.Zero;
+        protected IntPtr pConnectionHandler = IntPtr.Zero;
 
-		~PingNative()
-		{
-			Dispose();
-		}
-	}
+        ~PingNative()
+        {
+            Dispose();
+        }
+    }
 
     /// <summary>Uses dynamic linked native Photon socket library via DllImport("PhotonSocketPlugin") attribute (as done by Unity Android and Unity PS3).</summary>
     public class PingNativeDynamic : PingNative
@@ -316,17 +335,17 @@ namespace Photon.Realtime
             {
                 base.Init();
 
-				if(pConnectionHandler == IntPtr.Zero)
-				{
-					pConnectionHandler = SocketUdpNativeDynamic.egconnect(ip);
-					SocketUdpNativeDynamic.egservice(pConnectionHandler);
-					byte state = SocketUdpNativeDynamic.eggetState(pConnectionHandler);
-					while (state == (byte) NativeSocketState.Connecting)
-					{
-						SocketUdpNativeDynamic.egservice(pConnectionHandler);
-						state = SocketUdpNativeDynamic.eggetState(pConnectionHandler);
-					}
-				}
+                if(pConnectionHandler == IntPtr.Zero)
+                {
+                    pConnectionHandler = SocketUdpNativeDynamic.egconnect(ip);
+                    SocketUdpNativeDynamic.egservice(pConnectionHandler);
+                    byte state = SocketUdpNativeDynamic.eggetState(pConnectionHandler);
+                    while (state == (byte) NativeSocketState.Connecting)
+                    {
+                        SocketUdpNativeDynamic.egservice(pConnectionHandler);
+                        state = SocketUdpNativeDynamic.eggetState(pConnectionHandler);
+                    }
+                }
 
                 PingBytes[PingBytes.Length - 1] = PingId;
                 SocketUdpNativeDynamic.egsend(pConnectionHandler, PingBytes, PingBytes.Length);
@@ -378,24 +397,24 @@ namespace Photon.Realtime
     /// <summary>Uses static linked native Photon socket library via DllImport("__Internal") attribute (as done by Unity iOS and Unity Switch).</summary>
     public class PingNativeStatic : PingNative
     {
-		public override bool StartPing(string ip)
+        public override bool StartPing(string ip)
         {
             base.Init();
 
             lock (SocketUdpNativeStatic.syncer)
-			{
-				if(pConnectionHandler == IntPtr.Zero)
-				{
-					pConnectionHandler = SocketUdpNativeStatic.egconnect(ip);
-					SocketUdpNativeStatic.egservice(pConnectionHandler);
-					byte state = SocketUdpNativeStatic.eggetState(pConnectionHandler);
-					while (state == (byte) NativeSocketState.Connecting)
-					{
-						SocketUdpNativeStatic.egservice(pConnectionHandler);
-						state = SocketUdpNativeStatic.eggetState(pConnectionHandler);
-						Thread.Sleep(0); // suspending execution for a moment is critical on Switch for the OS to update the socket
-					}
-				}
+            {
+                if(pConnectionHandler == IntPtr.Zero)
+                {
+                    pConnectionHandler = SocketUdpNativeStatic.egconnect(ip);
+                    SocketUdpNativeStatic.egservice(pConnectionHandler);
+                    byte state = SocketUdpNativeStatic.eggetState(pConnectionHandler);
+                    while (state == (byte) NativeSocketState.Connecting)
+                    {
+                        SocketUdpNativeStatic.egservice(pConnectionHandler);
+                        state = SocketUdpNativeStatic.eggetState(pConnectionHandler);
+                        Thread.Sleep(0); // suspending execution for a moment is critical on Switch for the OS to update the socket
+                    }
+                }
 
                 PingBytes[PingBytes.Length - 1] = PingId;
                 SocketUdpNativeStatic.egsend(pConnectionHandler, PingBytes, PingBytes.Length);
@@ -455,7 +474,10 @@ namespace Photon.Realtime
         {
             base.Init();
 
-            address = "https://" + address + "/photon/m/?ping&r=" + UnityEngine.Random.Range(0, 10000);
+            // to work around an issue with UnityWebRequest in Editor (2021 at least), use http to ping in-Editor
+            string scheme = UnityEngine.Application.isEditor ? "http://" : "https://";
+            address = $"{scheme}{address}/photon/m/?ping&r={UnityEngine.Random.Range(0, 10000)}";
+
             this.webRequest = UnityWebRequest.Get(address);
             this.webRequest.SendWebRequest();
             return true;

@@ -56,8 +56,9 @@ namespace Photon.Pun
         public string OpenDevNetTooltip = "Online documentation for Photon.";
         public string OpenCloudDashboardText = "Cloud Dashboard Login";
         public string OpenCloudDashboardTooltip = "Review Cloud App information and statistics.";
-        public string OpenForumText = "Open Forum";
-        public string OpenForumTooltip = "Online support for Photon.";
+        public string CommunityLabel = "Developer Community:";
+        public string JoinDiscordText = "Join our Discord";
+        public string JoinDiscordTooltip = "Online support for Photon.";
         public string OkButton = "Ok";
         public string OwnHostCloudCompareLabel = "How 'my own host' compares to 'cloud'.";
         public string ComparisonPageButton = "Cloud versus OnPremise";
@@ -102,15 +103,9 @@ namespace Photon.Pun
 
         protected static string DocumentationLocation = "Assets/Photon/PhotonNetworking-Documentation.pdf";
 
-        protected static string UrlFreeLicense = "https://dashboard.photonengine.com/en-US/SelfHosted";
-
         public const string UrlDevNet = "https://doc.photonengine.com/en-us/pun/v2";
 
-        protected static string UrlForum = "https://forum.photonengine.com";
-
-        protected static string UrlCompare = "https://doc.photonengine.com/en-us/realtime/current/getting-started/onpremise-or-saas";
-
-        protected static string UrlHowToSetup = "https://doc.photonengine.com/en-us/onpremise/current/getting-started/photon-server-in-5min";
+        protected static string UrlJoinDiscord = "https://dashboard.photonengine.com/account/profile";
 
         protected static string UrlAppIDExplained = "https://doc.photonengine.com/en-us/realtime/current/getting-started/obtain-your-app-id";
 
@@ -217,19 +212,11 @@ namespace Photon.Pun
         // called in editor, opens wizard for initial setup, keeps scene PhotonViews up to date and closes connections when compiling (to avoid issues)
         private static void OnProjectChanged()
         {
-            PhotonEditorUtils.ProjectChangedWasCalled = true;
-
-
             // Prevent issues with Unity Cloud Builds where ServerSettings are not found.
             // Also, within the context of a Unity Cloud Build, ServerSettings is already present anyway.
             #if UNITY_CLOUD_BUILD
             return;
             #else
-
-            if (PhotonNetwork.PhotonServerSettings == null || PhotonNetwork.PhotonServerSettings.AppSettings == null || string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime))
-            {
-                PhotonNetwork.LoadOrCreateSettings(true);
-            }
 
             if (PhotonNetwork.PhotonServerSettings == null)
             {
@@ -579,10 +566,10 @@ namespace Photon.Pun
                 this.photonSetupState = PhotonSetupStates.RegisterForPhotonCloud;
             }
 
-            GUILayout.Space(15);
 
 
             // documentation
+            GUILayout.Space(15);
             GUILayout.Label(CurrentLang.DocumentationLabel, EditorStyles.boldLabel);
 
             if (GUILayout.Button(new GUIContent(CurrentLang.OpenPDFText, CurrentLang.OpenPDFTooltip)))
@@ -595,17 +582,21 @@ namespace Photon.Pun
                 Application.OpenURL(UrlDevNet);
             }
 
-            GUI.skin.label.wordWrap = true;
-            GUILayout.Label(CurrentLang.OwnHostCloudCompareLabel);
-            if (GUILayout.Button(CurrentLang.ComparisonPageButton))
-            {
-                Application.OpenURL(UrlCompare);
-            }
+            //GUI.skin.label.wordWrap = true;
+            //GUILayout.Label(CurrentLang.OwnHostCloudCompareLabel);
+            //if (GUILayout.Button(CurrentLang.ComparisonPageButton))
+            //{
+            //    Application.OpenURL(UrlCompare);
+            //}
 
 
-            if (GUILayout.Button(new GUIContent(CurrentLang.OpenForumText, CurrentLang.OpenForumTooltip)))
+            // community
+            GUILayout.Space(15);
+            GUILayout.Label(CurrentLang.CommunityLabel, EditorStyles.boldLabel);
+
+            if (GUILayout.Button(new GUIContent(CurrentLang.JoinDiscordText, CurrentLang.JoinDiscordTooltip)))
             {
-                Application.OpenURL(UrlForum);
+                Application.OpenURL(UrlJoinDiscord);
             }
 
             GUILayout.EndVertical();

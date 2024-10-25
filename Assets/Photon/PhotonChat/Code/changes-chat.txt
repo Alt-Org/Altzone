@@ -1,10 +1,81 @@
 
 Photon Chat C# Client - Changelog
-Exit Games GmbH - www.photonengine.com - forum.photonengine.com
+www.photonengine.com  -  Join our Discord Server: https://dashboard.photonengine.com/account/profile
 
 
-Version 4.1.6.17 (02. August 2022)
+
+Version 4.1.8.9 (02. September 2024 - rev7660)
+    No notable changes.
+
+Version 4.1.8.8 (02. August 2024 - rev7638)
+    No notable changes.
+
+Version 4.1.8.7 (05. July 2024 - rev7622)
+    No notable changes.
+
+Version 4.1.8.6 (25. May 2024 - rev7571)
+    No notable changes. The Realtime API has fixes for non-Unity projects.
+
+Version 4.1.8.5 (13. May 2024 - rev7556)
+    No notable changes (except in library).
+
+Version 4.1.8.4 (26. April 2024 - rev7530)
+    No notable changes (except in library).
+
+Version 4.1.8.3 (24. April 2024 - rev7519)
+    No notable changes.
+
+Version 4.1.8.2 (25. March 2024 - rev7471)
+    No notable changes.
+
+Version 4.1.8.1 (12. March 2024 - rev7444)
+    No notable changes.
+
+Version 4.1.8.0 (31. January 2024 - rev7364)
+    No notable changes.
+
+Version 4.1.7.4 (13. December 2023 - rev7284)
+    No notable changes.
+
+Version 4.1.7.3 (07. December 2023 - rev7252)
+    No notable changes.
+
+Version 4.1.7.1 (06. September 2023 - rev7148)
+    No notable changes.
+
+Version 4.1.7.0 (18. August 2023 - rev7111)
+    Changed: Some default Name Server ports: WS now connects via port 80, WSS via 443.
+    Note: The Frontend Server ports are provided by the Name Server. They might be changed to 80/443 respectively at some point (but are not yet).
+
+Version 4.1.6.26 (09. August 2023 - rev7076)
+    Changed: Name Server default port for WS is now 80, WSS is 443.
+
+Version 4.1.6.25 (05. June 2023 - rev6925)
+    No notable changes.
+
+Version 4.1.6.24 (15. May 2023 - rev6894)
+    No notable changes.
+
+Version 4.1.6.23 (15. March 2023 - rev6743)
+    Note: No notable changes for Chat API.
+
+Version 4.1.6.22  (21. December 2022 - rev6637)
+    Note: No notable changes. Only Reatime API changed.
+
+Version 4.1.6.21  (14. December 2022 - rev6623)
     Note: No notable changes.
+
+Version 4.1.6.20  (23. September 2022 - rev6568)
+    No notable changes.
+
+Version 4.1.6.19 (12. October 2022 - rev6519)
+    No notable changes.
+
+Version 4.1.6.18 (20. September 2022 - rev6501)
+    Added: More details to some reference docs.
+
+Version 4.1.6.17 (02. August 2022 - rev6472)
+    Removed: ChatAppSettings.AppId (was obsolete for a while).
 
 Version 4.1.6.16 (20. June 2022)
     Fixed: The ProxyServerAddress is also applied when connecting to the Frontend Server (was missing in previous update).

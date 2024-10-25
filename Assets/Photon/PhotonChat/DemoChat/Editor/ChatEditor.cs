@@ -47,7 +47,7 @@ public class ChatEditor : EditorWindow
 
     internal static string UrlCloudDashboard = "https://dashboard.photonengine.com/en-US/";
 
-    public string WelcomeText = "Thanks for importing Photon Chat.\nThis window should set you up.\n\nYou will need a free Photon Account to setup a Photon Chat application.\nOpen the Photon Dashboard (webpage) to access your account (see button below).\n\nCopy and paste a Chat AppId into the field and click \"Setup\".";
+    public string WelcomeText = "Thanks for importing Photon Chat.\nThis window should set you up.\n\nYou will need a free Photon Account to setup a Photon Chat application.\nOpen the Photon Dashboard (webpage) to access your account (see button below).\n\nCopy and paste a Chat AppId into the field below and click \"Setup\".";
     //public string AlreadyRegisteredInfo = "The email is registered so we can't fetch your AppId (without password).\n\nPlease login online to get your AppId and paste it above.";
     //public string RegisteredNewAccountInfo = "We created a (free) account and fetched you an AppId.\nWelcome. Your Photon Chat project is setup.";
     //public string FailedToRegisterAccount = "This wizard failed to register an account right now. Please check your mail address or try via the Dashboard.";

@@ -137,7 +137,7 @@ namespace Photon.Pun
                             break;
                         }
                 }
-             }
+            }
 
 
             PhotonView.ObservableSearch autoFindObservables = (PhotonView.ObservableSearch)EditorGUILayout.EnumPopup(observableSearchGuiContent, m_Target.observableSearch);

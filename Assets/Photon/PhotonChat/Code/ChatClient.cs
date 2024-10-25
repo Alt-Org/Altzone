@@ -271,7 +271,7 @@ namespace Photon.Chat
                 this.chatPeer.NameServerHost = appSettings.Server;
                 this.chatPeer.NameServerPortOverride = appSettings.Port;
             }
-            
+
             this.ProxyServerAddress = appSettings.ProxyServer;
 
             return this.Connect(appSettings.AppIdChat, appSettings.AppVersion, this.AuthValues);
@@ -429,6 +429,7 @@ namespace Photon.Chat
         }
 
         /// <summary>Sends operation to subscribe to a list of channels by name.</summary>
+        /// <remarks>ChatClient.PublicChannels keeps track of the currently subscribed ChatChannels. Optionally, they can list the subscribers.</remarks>
         /// <param name="channels">List of channels to subscribe to. Avoid null or empty values.</param>
         /// <returns>If the operation could be sent at all (Example: Fails if not connected to Chat Server).</returns>
         public bool Subscribe(string[] channels)
@@ -439,6 +440,7 @@ namespace Photon.Chat
         /// <summary>
         /// Sends operation to subscribe to a list of channels by name and possibly retrieve messages we did not receive while unsubscribed.
         /// </summary>
+        /// <remarks>ChatClient.PublicChannels keeps track of the currently subscribed ChatChannels. Optionally, they can list the subscribers.</remarks>
         /// <param name="channels">List of channels to subscribe to. Avoid null or empty values.</param>
         /// <param name="lastMsgIds">ID of last message received per channel. Useful when re subscribing to receive only messages we missed.</param>
         /// <returns>If the operation could be sent at all (Example: Fails if not connected to Chat Server).</returns>
@@ -499,6 +501,8 @@ namespace Photon.Chat
         /// <remarks>
         /// Subscribes channels will forward new messages to this user. Use PublishMessage to do so.
         /// The messages cache is limited but can be useful to get into ongoing conversations, if that's needed.
+        ///
+        /// ChatClient.PublicChannels keeps track of the currently subscribed ChatChannels. Optionally, they can list the subscribers.
         /// </remarks>
         /// <param name="channels">List of channels to subscribe to. Avoid null or empty values.</param>
         /// <param name="messagesFromHistory">0: no history. 1 and higher: number of messages in history. -1: all available history.</param>
@@ -1373,7 +1377,7 @@ namespace Photon.Chat
                         {
                             this.AuthValues = new AuthenticationValues();
                         }
-                        this.AuthValues.Token = operationResponse[ParameterCode.Secret] as string;
+                        this.AuthValues.Token = operationResponse[ParameterCode.Secret];
 
                         this.FrontendAddress = (string)operationResponse[ParameterCode.Address];
 

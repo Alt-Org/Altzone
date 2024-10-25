@@ -1,7 +1,36 @@
 
 PUN 2 - Changelog
-Exit Games GmbH - www.photonengine.com - forum.photonengine.com
+www.photonengine.com  -  Join the community Discord Server: https://dashboard.photonengine.com/account/profile
 
+
+v2.47 (02. September 2024)
+Fixed: PhotonNetwork.PunVersion to "2.47". Accidentally v2.46 used "2.45" as well.
+Updated: Library, Realtime and Chat API to 4.1.8.9. More details in the change logs.
+
+v2.46 (26. April 2024)
+Changed: PhotonStream serialization: Char values are cast to short before being sent (receivers will simply get a short but can cast accordingly).
+Added: PhotonStream.Serialize(ref byte value).
+Checked: Compatibility with Unity 2022.2.20 (soon to be Unity 6). All good.
+Updated: Library, Realtime and Chat API to 4.1.8.4. More details in the change logs.
+
+v2.45 (05. February 2024)
+Fixed: OpJoinRandomOrCreateRoom and OpJoinRandomRoom. The last version introduced an issue with random matchmaking, when using MaxPlayers as filter to find rooms. It caused clients never to find fitting rooms in those conditions.
+Updated: Library, Realtime and Chat API to 4.1.8.0. More details in the change logs.
+
+v2.44 (14. December 2023)
+Updated: Library, Realtime and Chat API to 4.1.7.4. Fixes and changes for Best Region Selection and reporting client timeouts to server. More in the related change logs.
+Updated: PUN Wizard panel. Replaced forum link with pointer to join our Discord.
+
+v2.43 (21. August 2023)
+Updated: Library, Realtime and Chat API to 4.1.7.0. This includes many improvements for WebSockets and connection-loss debugging (specifically for UDP, SocketUdp class). More in the related change logs.
+Updated: To Unity 2019.4.
+Fixed: PUN Basics GameManager to not accidentally send the network Instantiate request before joining the room (which could happen if the scene was loading too fast). See comments in OnJoinedRoom().
+Fixed: PUN Basics GUI Button call of LeaveRoom by removing the return value from the called method. It failed with the error "Method arguments are incompatible". Adjusted related code (minimally).
+Changed: Procedural Demo now randomizes the initial "seed" value. "Nice to have" addition.
+Changed: Demo Hub to include Procedural Demo.
+
+v2.42 (15. May 2023)
+Updated: Library, Realtime and Chat API to 4.1.6.24. More details in the change logs.
 
 v2.41 (02. August 2022)
 Changed: PhotonHandler.MaxDatagrams to 10. The previous value was unnecessary low.
@@ -60,7 +89,7 @@ Internal: RegisterPhotonView will set view.removedFromLocalViewList to false now
 v2.33.2 (06. July 2021)
 Fixed: Assigning photonView.ViewID = 0 will remove the PhotonView from the list of active views.
 Added: Namespaces for various classes that were not having any.
-    
+
 v2.33.1 (24. June 2021)
 Updated: Library to 4.1.6.3. More details in changes-library.txt.
 Note: This has no distinct value for PhotonNetwork.PunVersion and no separate release in the Asset Store (the previous release was on the same day).
@@ -72,7 +101,7 @@ Fixed: ControllerActorNr assignment will check if the assigned controller is ina
 Added: Additional check if the settings file exists, to avoid using CreateAsset, when it does.
 Added: JoinRandomOrCreateRoom(). This was implemented in Realtime but not PUN.
 Changed: The enumeration CustomAuthenticationType was changed to fix naming inconsistencies. Use PlayStation4 and PlayStation5 respectively. Old variants are available as obsolete.
-Fixed: In Asteroids Demo, remote ships are not reacting to input when remote controller is inactive. 
+Fixed: In Asteroids Demo, remote ships are not reacting to input when remote controller is inactive.
 Fixed: Potential KeyNotFound issue in the Asteroids Demo, PlayerOverviewPanel if remote players left or the object got destroyed.
 Added: PlayerDetailsController.OnDisable() override (used in cockpit) to unsubscribe from callbacks which are subscribed in OnEnable(). Both override the inherited implementation and call base.
 Updated: Library to 4.1.6.2 with several smaller adjustments. More details in changes-library.txt.
@@ -103,7 +132,7 @@ Removed: Setting of protocol 1.6 when connecting directly to a Master Server. Th
 Note: If you host Photon yourself, you can set the LoadBalancingClient.SerializationProtocol to SerializationProtocol.GpBinaryV16, before you connect.
 Added: IPunOwnershipCallbacks.OnOwnershipTransferFailed. This helps react when an Ownership Transfer request failed (due to earlier changes). This might mean you have to implement OnOwnershipTransferFailed in some scripts.
 Changed: PhotonView OwnerActorNr and ControllerActorNr to make use of the new Room.GetPlayer() option (to get the Master Client instance if the owner/controller is set to 0).
-Fixed: The PhotonView's "Find" button was not saving the observed components in scenes, which meant the script wasn't called at runtime. 
+Fixed: The PhotonView's "Find" button was not saving the observed components in scenes, which meant the script wasn't called at runtime.
 Updated: Library to 4.1.5.2.
 
 v2.28.3 (03. March 2021)
@@ -463,7 +492,7 @@ Changed: The property "timestamp" is obsolete (as name) in PhotonMessageInfo. Th
 Added: Callback OnDisconnected() to connection-exception handling for "Exception in Receive". Also for: "Max CCU Reached" (probably not used).
 Added: Note in reference doc, that "Exception" for receive is typical if you connect a local Photon on Windows but the server isn't running/available.
 Fixed: SetInterestGroup() for Offline mode. If offline, it can simply skip the call to OpChangeGroups and avoid some log spamming.
-Added: ServerSettings now let you open the dashboard directly for each types of ids, and let you open the whiteList region editor as well.
+Added: ServerSettings now let you open the dashboard directly for each types of ids, and let you open the region-allowlist editor as well.
 Fixed: PhotonEditorUtils.IsPrefab() is fixed for 2018.3 onwards, it now takes in consideration both assets and prefab editing stage when checking.
 Changed: Setting PhotonNetwork.PrefabPool to null now logs a warning and default to the DefaultPool class.
 Fixed: Problems with "Best Region" selection on Nintendo Switch. Best Region now works, even if all available Photon Cloud regions need to be pinged.

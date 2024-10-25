@@ -9,9 +9,6 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
-
 
 using Photon.Chat;
 using Photon.Realtime;
@@ -19,7 +16,6 @@ using AuthenticationValues = Photon.Chat.AuthenticationValues;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 #endif
-
 
 
 namespace Photon.Chat.Demo
@@ -75,8 +71,7 @@ namespace Photon.Chat.Demo
         public InputField InputFieldChat;   // set in inspector
         public Text CurrentChannelText;     // set in inspector
         public Toggle ChannelToggleToInstantiate; // set in inspector
-        
-        
+
 
         public GameObject FriendListUiItemtoInstantiate;
 
@@ -210,13 +205,11 @@ namespace Photon.Chat.Demo
 
         public void OnEnterSend()
         {
-            
-         if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame || Touchscreen.current.press.wasPressedThisFrame)
+            if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
                 this.SendChatMessage(this.InputFieldChat.text);
                 this.InputFieldChat.text = "";
-            } 
-         
+            }
         }
 
         public void OnClickSend()
@@ -230,8 +223,7 @@ namespace Photon.Chat.Demo
 
 
         public int TestLength = 2048;
-        private byte[] testBytes = new byte[2048];   
-
+        private byte[] testBytes = new byte[2048];
 
         private void SendChatMessage(string inputLine)
         {

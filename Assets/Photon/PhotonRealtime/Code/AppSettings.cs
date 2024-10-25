@@ -58,9 +58,9 @@ namespace Photon.Realtime
 
         /// <summary>Set to a previous BestRegionSummary value before connecting.</summary>
         /// <remarks>
-        /// This is a value used when the client connects to the "Best Region".</br>
+        /// This is a value used when the client connects to the "Best Region".<br/>
         /// If this is null or empty, all regions gets pinged. Providing a previous summary on connect,
-        /// speeds up best region selection and makes the previously selected region "sticky".</br>
+        /// speeds up best region selection and makes the previously selected region "sticky".<br/>
         ///
         /// Unity clients should store the BestRegionSummary in the PlayerPrefs.
         /// You can store the new result by implementing <see cref="IConnectionCallbacks.OnConnectedToMaster"/>.

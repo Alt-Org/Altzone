@@ -36,7 +36,6 @@ namespace Photon.Chat
         /// Clients have to be connected before they can send their state, subscribe to channels and send any messages.
         /// </remarks>
         void OnConnected();
-        
 
         /// <summary>The ChatClient's state changed. Usually, OnConnected and OnDisconnected are the callbacks to react to.</summary>
         /// <param name="state">The new state.</param>

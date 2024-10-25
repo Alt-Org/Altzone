@@ -1014,6 +1014,7 @@ MonoBehaviour:
   loggedOutLosesWinsText: "Voitot/H\xE4vi\xF6t"
   loggedOutCarbonText: "Hiilijalanj\xE4lki"
   _playerNameText: {fileID: 5215165325137679624}
+  _MottoText: {fileID: 0}
   _TimePlayedText: {fileID: 6461296434776696389}
   _LosesWinsText: {fileID: 1188025404754386890}
   _CarbonText: {fileID: 6354010782697853409}
@@ -2231,6 +2232,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1963798945391240201}
     m_Modifications:
+    - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 9.999939
+      objectReference: {fileID: 0}
     - target: {fileID: 6221160951982613882, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Name

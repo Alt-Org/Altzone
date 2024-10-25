@@ -152,7 +152,7 @@ namespace Photon.Pun
                 ServerSettings.ResetBestRegionCodeInPreferences();
             }
 
-            if (GUI.Button(editrect, "Edit WhiteList", EditorStyles.miniButton))
+            if (GUI.Button(editrect, "Edit Allowlist", EditorStyles.miniButton))
             {
                 Application.OpenURL("https://dashboard.photonengine.com/en-US/App/RegionsWhitelistEdit/" + PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime);
 
