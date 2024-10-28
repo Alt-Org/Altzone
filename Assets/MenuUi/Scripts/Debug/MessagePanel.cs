@@ -14,10 +14,13 @@ namespace DebugUi.Scripts.BattleAnalyzer
         [SerializeField] private TextMeshProUGUI _traceTextField;
         [SerializeField] private Button _logButton;
         public GameObject Panel;
+        private bool _diffMode = true;
+        private IReadOnlyMsgObject _currentMessage;
+        private List<Color> _colourList;
 
         void Start()
         {
-            _logButton.onClick.AddListener(ClosePanel);
+            //_logButton.onClick.AddListener(ClosePanel);
         }
 
         public void OpenPanel()
@@ -39,12 +42,30 @@ namespace DebugUi.Scripts.BattleAnalyzer
             }
         }
 
-        internal void SetMessage(IReadOnlyMsgObject message)
+        internal void NewMessage(IReadOnlyMsgObject message, List<Color> colourList)
         {
+            _currentMessage = message;
+            if (_colourList == null || _colourList.Count == 0) _colourList = colourList;
+            SetMessage(_currentMessage, _colourList);
+        }
+
+        internal void SetMessage(IReadOnlyMsgObject message, List<Color>colourList)
+        {
+            if (message == null || colourList == null|| colourList.Count == 0) return;
             string infoLogText = string.Format("[Client {0}] [{1:000000}]", message.Client, message.Time);
             _infoTextField.text = infoLogText;
-
-            _msgMainTextField.text = message.Msg;
+            if (message.ColorGroup > 0 && _diffMode)
+            {
+                string fullMessage = "";
+                foreach (IReadOnlyMsgObject matchMessage in message.MatchList)
+                {
+                    if (!string.IsNullOrWhiteSpace(fullMessage)) fullMessage += "\r\n";
+                    fullMessage += string.Format("[C{0}] {1}", matchMessage.Client, matchMessage.GetHighlightedMsg(colourList));
+                }
+                _msgMainTextField.text = fullMessage;
+            }
+            else
+                _msgMainTextField.text = message.Msg;
 
             switch (message.Type)
             {
@@ -66,6 +87,12 @@ namespace DebugUi.Scripts.BattleAnalyzer
             _traceTextField.text = message.Trace;
 
             OpenPanel();
+        }
+
+        public void SetDiffMode(bool value)
+        {
+            _diffMode = value;
+            SetMessage(_currentMessage, _colourList);
         }
 
         public void OnPointerClick(BaseEventData eventData)

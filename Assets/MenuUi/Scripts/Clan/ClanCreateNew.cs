@@ -105,7 +105,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (Value)
             {
-                SetClanAge(ClanAge.AgeToddlers);
+                SetClanAge(ClanAge.Toddlers);
                 ColorBlock colors = _AgeTaaperot.colors;
                 colors.normalColor = Color.yellow;
                 _AgeTaaperot.colors = colors;
@@ -121,7 +121,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (Value)
             {
-                SetClanAge(ClanAge.AgeAdults);
+                SetClanAge(ClanAge.Adults);
                 ColorBlock colors = _AgeAikuiset.colors;
                 colors.normalColor = Color.yellow;
                 _AgeAikuiset.colors = colors;
@@ -137,7 +137,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (Value)
             {
-                SetClanAge(ClanAge.AgeAllAges);
+                SetClanAge(ClanAge.All);
                 ColorBlock colors = _AgeKaikenIkaiset.colors;
                 colors.normalColor = Color.yellow;
                 _AgeKaikenIkaiset.colors = colors;
@@ -153,7 +153,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (Value)
             {
-                SetClanAge(ClanAge.AgeTeenagers);
+                SetClanAge(ClanAge.Teenagers);
                 ColorBlock colors = _AgeTeinit.colors;
                 colors.normalColor = Color.yellow;
                 _AgeTeinit.colors = colors;
@@ -212,7 +212,7 @@ public class ClanCreateNew : MonoBehaviour
         }*/
 
 
-        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), 0, isOpen, clan =>
+        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanName.Trim().Substring(0, 4), isOpen, null, _clanAgeEnum, goals, Phrase, language, clan =>
         {
             if (clan == null)
             {

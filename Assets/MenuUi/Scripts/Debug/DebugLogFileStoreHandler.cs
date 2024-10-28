@@ -8,7 +8,18 @@ namespace DebugUi.Scripts.BattleAnalyzer
     {
         private DebugLogStoreField[] _fieldList = new DebugLogStoreField[4];
 
-        public int FieldListCount { get { return _fieldList.Length; } }
+        public int FieldListCount {
+            get
+            {
+                int logs = 0;
+                for(int i=0 ; i<_fieldList.Length; i++)
+                {
+                    if (_fieldList[i].Address == null) continue;
+                    logs++;
+                }
+                return logs;
+            }
+        }
         // Start is called before the first frame update
         void Start()
         {

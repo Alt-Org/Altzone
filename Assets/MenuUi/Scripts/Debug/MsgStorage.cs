@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 
 namespace DebugUi.Scripts.BattleAnalyzer
 {
@@ -28,16 +31,23 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int Id { get;}
         public int Time { get; }
         public string Msg { get; }
+        public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; }
+        public int ColorGroup { get; }
 
+        public string GetHighlightedMsg(List<Color> colors);
         public bool IsType(MessageTypeOptions typeOptions);
+        public bool IsFromSource(int sourceFlags);
     }
 
     internal interface IReadOnlyTimestamp
     {
         public int Time { get; }
         public MessageType Type { get; }
+        public int SourceTypes { get; }
         public IReadOnlyList<IReadOnlyMsgObject> List { get; }
     }
 
@@ -46,13 +56,19 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int ClientCount { get; }
 
         public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client);
+        public int[] GetTimes();
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time);
         public IReadOnlyTimelineStorage GetTimelineStorage();
         public int TotalMessages();
+        public int GetSourceAllFlags();
+        public IReadOnlyList<int> GetSourceFlagList();
+        public string GetSourceFlagName(int sourceFlag);
+        public IReadOnlyList<int> GetColorSuperGroupList();
     }
 
     internal interface IReadOnlyTimelineStorage
     {
+        public int ClientCount { get; }
         public IReadOnlyTimestamp GetTimestamp(int client, int time);
         public IReadOnlyList<IReadOnlyTimestamp> GetTimeline(int client);
     }
@@ -65,17 +81,54 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int Id { get; private set; }
         public int Time { get; }
         public string Msg { get; }
+        public int SourceFlag { get; }
         public string Trace { get; }
         public MessageType Type { get; }
+        public bool IsMatchable { get; }
+        public IReadOnlyList<IReadOnlyMsgObject> MatchList { get; private set; }
+        public int ColorGroup { get; private set; }
 
-        internal MsgObject(int client, int time, string msg, string trace, MessageType type)
+        internal MsgObject(int client, int time, string msg, int sourceFlag, string trace, MessageType type, bool isMatchable)
         {
             Client = client;
             Id = -1;
             Time = time;
             Msg = msg;
+            SourceFlag = sourceFlag;
             Trace = trace;
             Type = type;
+            IsMatchable = isMatchable;
+            MatchList = null;
+            ColorGroup = -1;
+        }
+
+        public string GetHighlightedMsg(List<Color> colors)
+        {
+            StringBuilder stringBuilder = new();
+
+            int colorGroupStart;
+            int colorGroupLength;
+            int colorGroupNumber;
+            Color color;
+
+            foreach (Tuple<int, int, int> colorColorGroup in _msgColorGroupList)
+            {
+                colorGroupStart  = colorColorGroup.Item1;
+                colorGroupLength = colorColorGroup.Item2;
+                colorGroupNumber = colorColorGroup.Item3;
+
+                if (colorGroupNumber != _fullMatchColorGroup)
+                {
+                    color = colors[colorGroupNumber];
+                    color.a = 0.5f;
+                    stringBuilder.Append(string.Format("<mark=#{0:x8}>", ColorUtility.ToHtmlStringRGBA(color)));
+                    stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
+                    stringBuilder.Append("</mark>");
+                }
+                else stringBuilder.Append(Msg, colorGroupStart, colorGroupLength);
+            }
+
+            return stringBuilder.ToString();
         }
 
         public bool IsType(MessageTypeOptions typeOptions)
@@ -83,22 +136,49 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return typeOptions.HasFlag((MessageTypeOptions)Type);
         }
 
+        public bool IsFromSource(int sourceFlags)
+        {
+            return (sourceFlags & SourceFlag) > 0;
+        }
+
         internal void SetId(int id)
         {
             Id = id;
         }
+
+        internal void SetMatchList(IReadOnlyList<IReadOnlyMsgObject> matchList)
+        {
+            MatchList = matchList;
+        }
+
+        internal void SetColorGroup(int colorGroup, int fullMatchColorGroup)
+        {
+            ColorGroup = colorGroup;
+            _fullMatchColorGroup = fullMatchColorGroup;
+        }
+
+        internal void SetStringColorGroupList(IReadOnlyList<Tuple<int, int, int>> msgColorGroupList)
+        {
+            _msgColorGroupList = msgColorGroupList;
+        }
+
+        private IReadOnlyList<Tuple<int, int, int>> _msgColorGroupList;
+        private int _fullMatchColorGroup;
     }
 
     internal class Timestamp : IReadOnlyTimestamp
     {
         public int Time { get; }
         public MessageType Type { get; private set; }
+        public int SourceTypes { get; private set; }
         public IReadOnlyList<IReadOnlyMsgObject> List => _list;
+        public IReadOnlyList<MsgObject> MutableList => _list;
 
         internal Timestamp(int time)
         {
             Time = time;
             Type = MessageType.None;
+            SourceTypes = 0;
             _list = new();
         }
 
@@ -106,6 +186,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
         {
             _list.Add(msgObject);
             if(Type < msgObject.Type) Type = msgObject.Type;
+            SourceTypes |= msgObject.SourceFlag;
         }
 
         private readonly List<MsgObject> _list;
@@ -129,46 +210,70 @@ namespace DebugUi.Scripts.BattleAnalyzer
             return newList;
         }
 
-        public int ClientCount => _msgList.Length;
+        public int ClientCount => _msgLists.Length;
 
         internal MsgStorage(int clientCount)
         {
             _timelineStorage = new(clientCount);
-            _msgList = new List<MsgObject>[clientCount];
-            _timeStampMapList = new Dictionary<int, IReadOnlyTimestamp>[clientCount];
+            _msgLists = new List<MsgObject>[clientCount];
+            _timeStampMaps = new Dictionary<int, Timestamp>[clientCount];
+            _globalTimeSet = new();
             for (int i = 0; i < clientCount; i++)
             {
-                _msgList[i] = new();
-                _timeStampMapList[i] = new();
+                _msgLists[i] = new();
+                _timeStampMaps[i] = new();
             }
         }
 
         public IReadOnlyList<IReadOnlyMsgObject> AllMsgs(int client)
         {
             if (!IsValidClient(client)) return null;
-            return _msgList[client];
+            return _msgLists[client];
+        }
+
+        public IReadOnlyList<MsgObject> AllMutableMsgs(int client)
+        {
+            if (!IsValidClient(client)) return null;
+            return _msgLists[client];
         }
 
         internal void Add(MsgObject msg)
         {
             if (IsValidClient(msg.Client))
             {
-                msg.SetId(_msgList[msg.Client].Count);
-                _msgList[msg.Client].Add(msg);
+                msg.SetId(_msgLists[msg.Client].Count);
+                _msgLists[msg.Client].Add(msg);
 
-                IReadOnlyTimestamp stamp = _timelineStorage.AddMessageToTimestamp(msg);
+                Timestamp stamp = _timelineStorage.AddMessageToTimestamp(msg);
 
-                if (!_timeStampMapList[msg.Client].ContainsKey(msg.Time))
-                    _timeStampMapList[msg.Client][msg.Time] = stamp;
+                if (!_globalTimeSet.Contains(stamp.Time)) _globalTimeSet.Add(stamp.Time);
+
+                if (!_timeStampMaps[msg.Client].ContainsKey(msg.Time))
+                    _timeStampMaps[msg.Client][msg.Time] = stamp;
             }
+        }
+
+        public int[] GetTimes()
+        {
+            int[] timeArray = _globalTimeSet.ToArray();
+            Array.Sort(timeArray);
+            return timeArray;
         }
 
         public IReadOnlyList<IReadOnlyMsgObject> GetTime(int client, int time)
         {
             if (!IsValidClient(client)) return null;
-            if (_timeStampMapList[client] == null) return null;
-            if (!_timeStampMapList[client].ContainsKey(time)) return null;
-            return _timeStampMapList[client][time].List;
+            if (_timeStampMaps[client] == null) return null;
+            if (!_timeStampMaps[client].ContainsKey(time)) return null;
+            return _timeStampMaps[client][time].List;
+        }
+
+        public IReadOnlyList<MsgObject> GetMutableTime(int client, int time)
+        {
+            if (!IsValidClient(client)) return null;
+            if (_timeStampMaps[client] == null) return null;
+            if (!_timeStampMaps[client].ContainsKey(time)) return null;
+            return _timeStampMaps[client][time].MutableList;
         }
 
         public IReadOnlyTimelineStorage GetTimelineStorage()
@@ -184,19 +289,66 @@ namespace DebugUi.Scripts.BattleAnalyzer
         public int TotalMessages()
         {
             int total = 0;
-            foreach (List<MsgObject> msgList in _msgList)
+            foreach (List<MsgObject> msgList in _msgLists)
             {
                 total += msgList.Count;
             }
             return total;
         }
 
-        private readonly List<MsgObject>[] _msgList;
-        private readonly Dictionary<int, IReadOnlyTimestamp>[] _timeStampMapList;
+        public int GetSourceFlagOrNew(string source)
+        {
+            int i = 0;
+            for (; i < _sourceFlagNameList.Count; i++)
+            {
+                if (_sourceFlagNameList[i] == source) return 1 << i;
+            }
+            int flag = 1 << i;
+            _sourceAllFlags |= flag;
+            _sourceFlagList.Add(flag);
+            _sourceFlagNameList.Add(source);
+            return flag;
+        }
+
+        public int GetSourceAllFlags()
+        {
+            return _sourceAllFlags;
+        }
+
+        public IReadOnlyList<int> GetSourceFlagList()
+        {
+            return _sourceFlagList;
+        }
+
+        public string GetSourceFlagName(int sourceFlag)
+        {
+            return _sourceFlagNameList[(int)Math.Log(sourceFlag, 2)];
+        }
+
+        public IReadOnlyList<int> GetColorSuperGroupList()
+        {
+            return _colorSuperGroupList;
+        }
+
+        public void SetColorSuperGroupList(IReadOnlyList<int> colorSuperGroupList)
+        {
+            _colorSuperGroupList = colorSuperGroupList;
+        }
+
+        private readonly List<MsgObject>[] _msgLists;
+        private readonly Dictionary<int, Timestamp>[] _timeStampMaps;
+        private readonly HashSet<int> _globalTimeSet;
         private readonly TimelineStorage _timelineStorage;
+
+        private int _sourceAllFlags = 0;
+        private readonly List<int> _sourceFlagList = new();
+        private readonly List<string> _sourceFlagNameList = new();
+
+        private IReadOnlyList<int> _colorSuperGroupList;
 
         private class TimelineStorage : IReadOnlyTimelineStorage
         {
+            public int ClientCount => _timelines.Length;
             internal TimelineStorage(int clientCount)
             {
                 _timelines = new List<Timestamp>[clientCount];
@@ -231,7 +383,7 @@ namespace DebugUi.Scripts.BattleAnalyzer
                 return _timelines[client][time];
             }
 
-            internal IReadOnlyTimestamp AddMessageToTimestamp(MsgObject msg)
+            internal Timestamp AddMessageToTimestamp(MsgObject msg)
             {
                 Timestamp stamp = GetOrNew(msg.Client, msg.Time);
                 stamp.AddMsg(msg);

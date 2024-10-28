@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Prg.Scripts.Common.Photon;
 using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery

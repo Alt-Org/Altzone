@@ -76,7 +76,10 @@ public class ChatPreviewController : MonoBehaviour
 
     private void OnDisable()
     {
-        ChatListener.Instance.ChatPreviewController = null;
+        if (ChatListener.Instance)
+        {
+            ChatListener.Instance.ChatPreviewController = null;
+        }
     }
 
     private void Reset()

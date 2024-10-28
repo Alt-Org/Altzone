@@ -14,8 +14,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [Optional] public string Tag;
         [Optional] public string Phrase;
         public int GameCoins;
+        public bool IsOpen;
 
         public List<string> Labels = new();
+        public List<HeartPieceData> ClanHeartPieces = new();
+        public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
         public ClanInventory Inventory = new();
 
@@ -40,19 +43,21 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanData(ServerClan clan)
         {
-            Assert.IsTrue(clan.id.IsPrimaryKey());
+            Assert.IsTrue(clan._id.IsPrimaryKey());
             Assert.IsTrue(clan.name.IsMandatory());
             Assert.IsTrue(clan.tag.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(clan.gameCoins >= 0);
-            Id = clan.id;
+            Id = clan._id;
             Name = clan.name;
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
             GameCoins = clan.gameCoins;
             Labels = clan.labels;
-            ClanAge = clan.clanAge;
+            ClanAge = clan.ageRange;
             Language = clan.language;
-            Goals = clan.goals;
+            Goals = clan.goal;
+            ClanHeartPieces = new();
+            IsOpen = clan.isOpen;
         }
 
         public override string ToString()

@@ -3,23 +3,24 @@ using UnityEngine;
 
 public class DailyTaskManager : MonoBehaviour
 {
-    private GameObject[] dailyQuestSlots = new GameObject[12];
+    private GameObject[] dailyQuestSlots = new GameObject[30];
 
     private string _taskTitle;
     private int _taskPoints;
     private int _taskgoal;
-
-    private int _questAmount = 12;
+    private int _guestMultiplier;
+    private int _questAmount = 30;
 
     public Leaderboard leaderboard;
     public GameObject popupScreenPrefab;
     public GameObject dailyTaskPrefab;
 
+
     private void Start()
     {
         QuestGenerator();
-    }
 
+    }
 
     public void QuestGenerator()
     {
@@ -104,4 +105,6 @@ public class DailyTaskManager : MonoBehaviour
                 return (_taskTitle, _taskPoints, _taskgoal);
         }
     }
+
+
 }

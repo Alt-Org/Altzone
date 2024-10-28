@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using Prg;
 using UnityEngine.Networking;
@@ -60,6 +61,53 @@ public static class WebRequests
                     if (request.result != UnityWebRequest.Result.Success)
                     {
                         Debug.LogWarning("Error posting data to " + address + " - " + request.error + ": "+ request.downloadHandler.text);
+                    }
+
+                    if (callback != null)
+                    {
+                        callback(request);
+                    }
+                }
+            }
+        }
+    }
+
+    public static IEnumerator Post(string address, List<IMultipartFormSection> formData, string accessToken, string secretKey, string id, Action<UnityWebRequest> callback)
+    {
+        byte[] boundary = UnityWebRequest.GenerateBoundary();
+        byte[] formSections = UnityWebRequest.SerializeFormSections(formData, boundary);
+
+        using (UnityWebRequest request = UnityWebRequest.Post(address, formData))
+        {
+            using (UploadHandlerRaw uploadHandler = new UploadHandlerRaw(formSections))
+            {
+                using (DownloadHandlerBuffer downloadHandler = new DownloadHandlerBuffer())
+                {
+                    uploadHandler.contentType = "multipart/form-data; boundary=" + Encoding.UTF8.GetString(boundary, 0, boundary.Length);
+                    request.uploadHandler.Dispose();
+                    request.downloadHandler.Dispose();
+                    request.uploadHandler = uploadHandler;
+                    request.downloadHandler = downloadHandler;
+                    //request.SetRequestHeader("Content-Type", "multipart/form-data boundary=" + Encoding.UTF8.GetString(boundary, 0, boundary.Length));
+
+                    if (accessToken != null)
+                    {
+                        request.SetRequestHeader("authorization", "Bearer " + accessToken);
+                    }
+                    if (secretKey != null)
+                    {
+                        request.SetRequestHeader("Secret", secretKey);
+                    }
+                    if (id != null)
+                    {
+                        request.SetRequestHeader("Battle-Id", id);
+                    }
+
+                    yield return request.SendWebRequest();
+
+                    if (request.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogWarning("Error posting data to " + address + " - " + request.error + ": " + request.downloadHandler.text);
                     }
 
                     if (callback != null)

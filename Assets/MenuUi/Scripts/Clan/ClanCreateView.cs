@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanCreateView : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class ClanCreateView : MonoBehaviour
         if (clanName == string.Empty || clanTag == string.Empty || _gameCoinsInputField.text == string.Empty)
             return;
 
-        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanTag, gameCoins, isOpen, clan =>
+        StartCoroutine(ServerManager.Instance.PostClanToServer(clanName, clanTag, isOpen, null,ClanAge.None,Goals.None,null,Language.None, clan =>
         {
             if (clan == null)
             {

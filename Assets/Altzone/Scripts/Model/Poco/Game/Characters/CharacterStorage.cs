@@ -19,7 +19,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterList = new List<BaseCharacter>();
             //This finds every class that inherits the BaseCharacter class (and isn't abstract class like the CharacterClass classes)
             //and calls their constructor followed by adding them to the characterlist.
-            foreach ( Type type in Assembly.GetCallingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
+            foreach ( Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))
             {
                 _characterList.Add((BaseCharacter)Activator.CreateInstance(type));
             }

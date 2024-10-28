@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -35,27 +36,21 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
 
-        if (ServerManager.Instance.Clan != null)
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             ToggleClanPanel(true);
-            SetPanelValues(ServerManager.Instance.Clan);
+            SetPanelValues(clanData);
             _leaderboard?.LoadClanLeaderboard(ServerManager.Instance.Clan);
-        }
+        });
     }
 
     private void Reset()
     {
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
-        _clanPhrase.text = "Klaanin motto";
-        _clanMembers.text = "-1";
-        _clanCoins.text = "-1";
-        _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
-        _clanPassword.text = "SalainenSana123";
-        _clanLanguage.text = "suomi";
-        _clanGoal.text = "Tavoite";
-        _clanAge.text = "Kaikki";
+        _clanPhrase.text = "Clan Phrase";
+        _clanMembers.text = _clanCoins.text = _clanTrophies.text = _clanGlobalRanking.text = "-1";
+        _clanPassword.text = _clanLanguage.text = _clanGoal.text = _clanAge.text = "";
     }
 
     private void ToggleClanPanel(bool isInClan)
@@ -64,19 +59,17 @@ public class ClanMainView : MonoBehaviour
         _noClanPanel.SetActive(!isInClan);
     }
 
-    private void SetPanelValues(ServerClan clan)
+    private void SetPanelValues(ClanData clan)
     {
-        _clanName.text = clan.name;
-        _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
-        _clanCoins.text = clan.gameCoins.ToString();
-        _clanPhrase.text = clan.phrase;
-        _clanLanguage.text = ClanDataTypeConverter.GetLanguageText(clan.language);
-        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.goals);
-        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.clanAge);
+        _clanName.text = clan.Name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
+        _clanCoins.text = clan.GameCoins.ToString();
+        _clanPhrase.text = clan.Phrase;
+        _clanLanguage.text = ClanDataTypeConverter.GetLanguageText(clan.Language);
+        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
+        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
 
-        Debug.Log($"language: {clan.language}, goal: {clan.goals}, age: {clan.clanAge}");
-
-        ToggleClanLockGraphic(clan.isOpen);
+        ToggleClanLockGraphic(clan.IsOpen);
 
         // Temp values for testing
         _clanTrophies.text = "-1";

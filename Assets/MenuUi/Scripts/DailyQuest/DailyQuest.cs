@@ -27,8 +27,6 @@ public class DailyQuest : MonoBehaviour
 
     public void Start()
     {
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(1080, 540);
 
         questSelectButton.onClick.AddListener(() =>
         {

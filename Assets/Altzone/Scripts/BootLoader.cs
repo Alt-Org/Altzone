@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 using Altzone.Scripts.Config.ScriptableObjects;
-using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -22,7 +21,7 @@ namespace Altzone.Scripts
         private static void BeforeSceneLoad()
         {
             // Set last compiled bundle version for Photon to keep all clients connected with different platforms.
-            PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
+            //PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
 
             // Setup testing first before proceeding to load the game.
             PrepareLocalTesting();
@@ -30,7 +29,7 @@ namespace Altzone.Scripts
             var startupMessage = new StringBuilder()
                 .Append(" Game ").Append(Application.productName)
                 .Append(" Version ").Append(Application.version)
-                .Append(" Photon ").Append(PhotonLobby.GameVersion)
+                //.Append(" Photon ").Append(PhotonLobby.GameVersion)
                 .Append(" IsSimulator ").Append(AppPlatform.IsSimulator)
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
@@ -70,11 +69,11 @@ namespace Altzone.Scripts
             {
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
+            /*if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
             {
                 var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
                 PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
-            }
+            }*/
 #if UNITY_EDITOR
             if (localDevConfig != null && localDevConfig._targetFrameRateOverride != -1)
             {

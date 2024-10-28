@@ -108,7 +108,7 @@ namespace Altzone.Scripts.Model
             Debug.Log($"StorageFilename {_storagePath}");
             _characters = new CharacterStorage().CharacterList;
             _storageData = File.Exists(_storagePath)
-                ? LoadStorage(_storagePath)
+                ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
         }
 
@@ -290,6 +290,11 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
+        internal void GetAllBaseCharacters(Action<ReadOnlyCollection<BaseCharacter>> callback)
+        {
+            callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
+        }
+
         #endregion
 
         #region Setters for bulk data updates for base models.
@@ -322,8 +327,9 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
+            storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
-            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(_characters));
+            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
             storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;
@@ -344,6 +350,11 @@ namespace Altzone.Scripts.Model
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
 
             if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+            else
+            {
+                storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+            }
 
             return storageData;
         }
@@ -360,6 +371,7 @@ namespace Altzone.Scripts.Model
     internal class StorageData
     {
         public int StorageVersion = 0;
+        public List<BaseCharacter> Characters = new();
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();

@@ -1,16 +1,19 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="RoomInfo.cs" company="Exit Games GmbH">
-//   Loadbalancing Framework for Photon - Copyright (C) 2018 Exit Games GmbH
+// Photon Realtime API - Copyright (C) 2022 Exit Games GmbH
 // </copyright>
 // <summary>
-//   This class resembles info about available rooms, as sent by the Master
-//   server's lobby. Consider all values as readonly.
+// Defines which info is available about rooms via the lobby.
 // </summary>
 // <author>developer@photonengine.com</author>
 // ----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 
 #if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
+=======
+#if UNITY_2017_4_OR_NEWER
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 #define SUPPORTED_UNITY
 #endif
 
@@ -19,11 +22,10 @@ namespace Photon.Realtime
 {
     using System;
     using System.Collections;
-    using ExitGames.Client.Photon;
+    using Photon.Client;
 
     #if SUPPORTED_UNITY || NETFX_CORE
-    using Hashtable = ExitGames.Client.Photon.Hashtable;
-    using SupportClass = ExitGames.Client.Photon.SupportClass;
+    using SupportClass = Photon.Client.SupportClass;
     #endif
 
 
@@ -41,7 +43,7 @@ namespace Photon.Realtime
         public bool RemovedFromList;
 
         /// <summary>Backing field for property.</summary>
-        private Hashtable customProperties = new Hashtable();
+        private PhotonHashtable customProperties = new PhotonHashtable();
 
         /// <summary>Backing field for property.</summary>
         protected int maxPlayers = 0;
@@ -68,15 +70,15 @@ namespace Photon.Realtime
         protected string name;
 
         /// <summary>Backing field for master client id (actorNumber). defined by server in room props and ev leave.</summary>
-        public int masterClientId;
+        protected int masterClientId;
 
         /// <summary>Backing field for property.</summary>
-        protected string[] propertiesListedInLobby;
+        protected object[] propertiesListedInLobby;
 
         /// <summary>Read-only "cache" of custom properties of a room. Set via Room.SetCustomProperties (not available for RoomInfo class!).</summary>
         /// <remarks>All keys are string-typed and the values depend on the game/application.</remarks>
         /// <see cref="Room.SetCustomProperties"/>
-        public Hashtable CustomProperties
+        public PhotonHashtable CustomProperties
         {
             get
             {
@@ -156,7 +158,7 @@ namespace Photon.Realtime
         /// </summary>
         /// <param name="roomName">Name of the room and unique ID at the same time.</param>
         /// <param name="roomProperties">Properties for this room.</param>
-        protected internal RoomInfo(string roomName, Hashtable roomProperties)
+        protected internal RoomInfo(string roomName, PhotonHashtable roomProperties)
         {
             this.InternalCacheProperties(roomProperties);
 
@@ -186,7 +188,7 @@ namespace Photon.Realtime
         /// <returns>Summary of this RoomInfo instance.</returns>
         public override string ToString()
         {
-            return string.Format("Room: '{0}' {1},{2} {4}/{3} players.", this.name, this.isVisible ? "visible" : "hidden", this.isOpen ? "open" : "closed", this.maxPlayers, this.PlayerCount);
+            return string.Format("Room: '{0}' {1},{2} {4}/{3} players.{5}", this.name, this.isVisible ? "visible" : "hidden", this.isOpen ? "open" : "closed", this.maxPlayers, this.PlayerCount, this.RemovedFromList ? " removed!":"");
         }
 
         /// <summary>Returns most interesting room values as string, including custom properties.</summary>
@@ -198,7 +200,7 @@ namespace Photon.Realtime
 
         /// <summary>Copies "well known" properties to fields (IsVisible, etc) and caches the custom properties (string-keys only) in a local hashtable.</summary>
         /// <param name="propertiesToCache">New or updated properties to store in this RoomInfo.</param>
-        protected internal virtual void InternalCacheProperties(Hashtable propertiesToCache)
+        protected internal virtual void InternalCacheProperties(PhotonHashtable propertiesToCache)
         {
             if (propertiesToCache == null || propertiesToCache.Count == 0 || this.customProperties.Equals(propertiesToCache))
             {
@@ -221,11 +223,19 @@ namespace Photon.Realtime
             if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayersInt))
             {
                 this.maxPlayers = Convert.ToInt32(propertiesToCache[GamePropertyKey.MaxPlayersInt]);
+<<<<<<< HEAD
+            }
+            else if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayers))
+            {
+                this.maxPlayers = Convert.ToInt32(propertiesToCache[GamePropertyKey.MaxPlayers]);
+=======
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             }
             else if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayers))
             {
                 this.maxPlayers = Convert.ToInt32(propertiesToCache[GamePropertyKey.MaxPlayers]);
             }
+
 
             if (propertiesToCache.ContainsKey(GamePropertyKey.IsOpen))
             {
@@ -254,7 +264,7 @@ namespace Photon.Realtime
 
             if (propertiesToCache.ContainsKey(GamePropertyKey.PropsListedInLobby))
             {
-                this.propertiesListedInLobby = propertiesToCache[GamePropertyKey.PropsListedInLobby] as string[];
+                this.propertiesListedInLobby = propertiesToCache[GamePropertyKey.PropsListedInLobby] as object[];
             }
 
             if (propertiesToCache.ContainsKey((byte)GamePropertyKey.ExpectedUsers))
@@ -273,8 +283,7 @@ namespace Photon.Realtime
             }
 
             // merge the custom properties (from your application) to the cache (only string-typed keys will be kept)
-            this.customProperties.MergeStringKeys(propertiesToCache);
-            this.customProperties.StripKeysWithNullValues();
+            this.customProperties.Merge(propertiesToCache);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="PhotonPing.cs" company="Exit Games GmbH">
-//   PhotonNetwork Framework for Unity - Copyright (C) 2018 Exit Games GmbH
+// Photon Realtime API - Copyright (C) 2022 Exit Games GmbH
 // </copyright>
 // <summary>
 // This file includes various PhotonPing implementations for different APIs,
@@ -11,20 +11,16 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+#if UNITY_2017_4_OR_NEWER
+#define SUPPORTED_UNITY
+#endif
+
 
 namespace Photon.Realtime
 {
     using System;
     using System.Collections;
     using System.Threading;
-
-    #if NETFX_CORE
-    using System.Diagnostics;
-    using Windows.Foundation;
-    using Windows.Networking;
-    using Windows.Networking.Sockets;
-    using Windows.Storage.Streams;
-    #endif
 
     #if !NO_SOCKET && !NETFX_CORE
     using System.Collections.Generic;
@@ -63,6 +59,7 @@ namespace Photon.Realtime
         private static readonly System.Random RandomIdProvider = new System.Random();
 
         /// <summary>Begins sending a ping.</summary>
+<<<<<<< HEAD
         public virtual bool StartPing(string ip)
         {
             throw new NotImplementedException();
@@ -79,6 +76,15 @@ namespace Photon.Realtime
         {
             throw new NotImplementedException();
         }
+=======
+        public abstract bool StartPing(string ip);
+
+        /// <summary>Check if done.</summary>
+        public abstract bool Done();
+
+        /// <summary>Dispose of this ping.</summary>
+        public abstract void Dispose();
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
         /// <summary>Initialize this ping (GotResult, Successful, PingId).</summary>
         protected internal void Init()
@@ -120,8 +126,7 @@ namespace Photon.Realtime
                     }
 
                     this.sock.ReceiveTimeout = 5000;
-                    int port = (RegionHandler.PortToPingOverride != 0) ? RegionHandler.PortToPingOverride : 5055;
-                    this.sock.Connect(ip, port);
+                    this.sock.Connect(ip, RegionHandler.UdpPortToPing);
                 }
 
 
@@ -202,31 +207,23 @@ namespace Photon.Realtime
     #endif
 
 
-    #if NETFX_CORE
-    /// <summary>Windows store API implementation of PhotonPing, based on DatagramSocket for UDP.</summary>
-    public class PingWindowsStore : PhotonPing
+    #if NATIVE_SOCKETS
+    /// <summary>Abstract base class to provide proper resource management for the below native ping implementations</summary>
+    public abstract class PingNative : PhotonPing
     {
-        private DatagramSocket sock;
-        private readonly object syncer = new object();
-
-        public override bool StartPing(string host)
+        // Native socket states - according to EnetConnect.h state definitions
+        protected enum NativeSocketState : byte
         {
-            lock (this.syncer)
-            {
-                this.Init();
-
-                int port = (RegionHandler.PortToPingOverride != 0) ? RegionHandler.PortToPingOverride : 5055;
-                EndpointPair endPoint = new EndpointPair(null, string.Empty, new HostName(host), port.ToString());
-                this.sock = new DatagramSocket();
-                this.sock.MessageReceived += this.OnMessageReceived;
-
-                IAsyncAction result = this.sock.ConnectAsync(endPoint);
-                result.Completed = this.OnConnected;
-                this.DebugString += " End StartPing";
-                return true;
-            }
+            Disconnected = 0,
+            Connecting = 1,
+            Connected = 2,
+            ConnectionError = 3,
+            SendError = 4,
+            ReceiveError = 5,
+            Disconnecting = 6
         }
 
+<<<<<<< HEAD
         /// <summary>Check if done.</summary>
         public override bool Done()
         {
@@ -325,6 +322,15 @@ namespace Photon.Realtime
             Dispose();
         }
     }
+=======
+        protected IntPtr pConnectionHandler = IntPtr.Zero;
+
+        ~PingNative()
+        {
+            Dispose();
+        }
+    }
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
     /// <summary>Uses dynamic linked native Photon socket library via DllImport("PhotonSocketPlugin") attribute (as done by Unity Android and Unity PS3).</summary>
     public class PingNativeDynamic : PingNative

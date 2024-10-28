@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameAnalyticsSDK;
-using UnityEngine.InputSystem;
-using Photon.Realtime;
 
 
 namespace Altzone.Scripts.GA

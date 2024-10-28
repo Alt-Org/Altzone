@@ -17,11 +17,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int playerCount { get; set; }
         public int itemCount { get; set; }
         public int stockCount { get; set; }
-        public ClanAge clanAge { get; set; }
+        public ClanAge ageRange { get; set; }
         public Language language { get; set; }
-        public Goals goals { get; set; }
+        public Goals goal { get; set; }
         public bool isOpen { get; set; }
-        public string id { get; set; }
         public int? furnitureCount { get; set; }
         public int? raidRoomCount { get; set; }
 

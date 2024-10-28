@@ -3,6 +3,7 @@ Photon C# Client Library - Changelog
 www.photonengine.com  -  Join our Discord Server: https://dashboard.photonengine.com/account/profile
 
 
+<<<<<<< HEAD
 
 Version 4.1.8.9 (02. September 2024 - rev7660)
     No notable changes.
@@ -26,6 +27,94 @@ Version 4.1.8.6 (25. May 2024 - rev7571)
 Version 4.1.8.5 (13. May 2024 - rev7556)
     Changed: TPeer.SendPing() will now enqueue the message instead of sending it immmediately. This makes sure a ping is never sent as first message (which has to be an Init).
     Changed: To re-using a ParameterDictionary for pinging in WS / WSS.
+=======
+Version 5.0.10 (10 July 2024 - rev7627)
+    Fixed: SendAcksOnly() for TCP and WS/WSS. It now sends a ping immediately to actually keep the connection up if SendOutgoingCommands() is not called for longer (e.g. when PUN IsMessageQueueRunning is false).
+    Note: NOTE: The above issue was introduced 8. May 2024, rev7552. So v5.0.8. and v5.0.9 would time out for TCP or WebSockets, if SendOutgoingCommands() was paused longer.
+    Internal: TPeer.SendPing() to have an optional parameter to send the ping immediately. This allows SendAcksOnly to send it without sending anything queued.
+    Internal: TPeer.Reset() to also update lastPingActivity.
+
+Version 5.0.9 (26. June 2024 - rev7603)
+    Fixed: De/serialization when using struct-based Custom Types (e.g. Fusion's NetworkId).
+    Renamed: TrafficStatsSnapshot.SnapshotTimeStamp to SnapshotTimestamp with lowercase "stamp". Obsolete version is in place to avoid renaming trouble.
+
+Version 5.0.8 (27. May 2024 - rev7574)
+    No notable changes.
+
+Version 5.0.7 (16. May 2024 - rev7565)
+    Changed: TPeer.SendPing() will now enqueue the message instead of sending it immmediately. This makes sure a ping is never sent as first message (which has to be an Init).
+    Changed: To re-using a ParameterDictionary for pinging in WS / WSS.
+    Internal: Removed support for Native Datagram Encryptor v1. Removed related NATIVE_ENCRYPTOR_API1 define.
+    Changed: InitDatagramEncryption() now has one obsolete variant. Randomizing sequence numbers and using Chain Mode GCM are now mandatory. PhotonPeer.GcmDatagramEncryption as it is no longer optional. Note: An update of the Realtime API covers this change.
+    Changed: The EnetPeer NCommandPool is now a Pool<NCommand>. This avoids having another pooling class, just for NCommands.
+    Removed: NCommand.Release() which was returning the command to a pool.NCommands no longer refer to some pool they should return to.
+    Changed: NCommand creation and initialization to fit using Pool<NCommand>. This is now done in a few separate steps.
+    Changed: CommandQueue is now a ConcurrentQueue<NCommand> to avoid manual locking. The receive thread writes to it, others read.
+    Changed: ReceiveIncomingCommands no longer executes ACKs immediately on the receive thread.
+    Changed: Due to queueing ACKs, the CommandQueue must be executed in SendOutgoingCommands (to avoid resends due to not executed ACKs).
+    Internal: Added NCommand.TimeOfReceive to track when a command came in. Keeps roundtrip time useful, even if with infrequent dispatch.
+
+Version 5.0.6 (02. May 2024 - rev7543)
+    Internal: Removed surplus optional code to debug command pooling.
+    Internal: Simplified SendAcksOnly and SendOutgoingCommands. Removed duplication of code.
+    Changed: SendAcksOnly() no longer counts via SendOutgoingCommandsCalled(). It no longer sets the Stats.LastSendOutgoingTimestamp.
+    Changed: SendOutgoingCommands(bool) to set Stats.LastSendOutgoingTimestamp only if not using sendAcksOnly = true.
+    Changed: datagramEncryptedConnection is now thread safe, using Interlocked. Added property for this: SendWindowUpdateRequired.
+    Removed: Locks on the udpBuffer. Obsolete due to datagramEncryptedConnection becoming thread safe.
+    Removed: SendOutgoingCommands() use of a "lock (this.udpBuffer)". The method is locked in the PhotonPeer and the buffer itself does not need additional locking.
+
+Version 5.0.5 (29. April 2024 - rev7531)
+    Changed: SendAcksOnly and SendOutgoingCommands will return true (which means "more to send") when any resends did not fit into the current datagram. This usually causes another call to send them in another datagram.
+    Changed: Stats.UdpReliableCommandsResent is only increased, when the resent command actually fit into a datagram, which makes this value more precise.
+
+Version 5.0.4 (19. April 2024 - rev7511)
+    Changed: Sending of reliable commands. There is now a "Send Window" which limits how many reliable commands are being sent, based off the lowest sent sequence number, only the next XY sequence numbers can be sent. This moves with incoming acknowledgements. This avoids spamming the server, which caused resends.
+    Note: Per channel, the Send Window indirectly affects unreliable and even unsequenced commands by ending the sending for a channel early. Use a separate channel (higher number) for larger chunks of data to avoid related lag.
+    Renamed: PhotonPeer.SequenceDeltaLimitSends to SendWindowSize.
+    Removed: PhotonPeer.SequenceDeltaLimitResends. If a reliable command needs re-sending, it is something the server is waiting for, so we just send.
+    Changed: Stats.UdpReliableCommandsSent is increased only on the initial send of a command (excluding resends).
+    Changed: Stats.UdpFragmentsIn is increased only for new/unique receives of fragments (excluding resends from remote).
+
+Version 5.0.3 (25. March 2024 - rev7477)
+    Changed: Statistics handling for the PhotonPeer and connections. Several values moved to the PhotonPeer.Stats (e.g. PeerBase.BytesIn, .BytesOut and PeerBase.timestampOfLastReceive).
+    Removed: PhotonPeer.TrafficStatsEnabled. The stats are simplified and it should not be necessary to check a bool to avoid setting some.
+    Removed: Separate instance for In and Out values.
+    Removed: Traffic stats counting and handling in various internal places.
+    Note: Simpler for UDP now, as it just counts the complete UDP payload as passed to ReceiveIncomingCommands(). This was scattered around.
+    Changed: Use TrafficStats.ToSnapshot() to create a TrafficStatsSnapshot. This contains current values and the timestamp. TrafficStatsSnapshots can be compared to other snapshots and the current TrafficStats, providing you with a TrafficStatsDelta instance. This should be useful to get an idea of how things changed between both timestamps.
+    Changed: All dispatch callbacks now make use of Stats.DurationOfLastDispatchCallback instead of having individual values.
+    Changed: PhotonPeer.VitalStatsToString() to focus on important values and make them always available.
+    Changed: WebSocket paths now include a peerID field and a client-generated "ID" (which is not entirely unique but doesn't have to be). Also, it adds "_" and the connection-count (prepareWebSocketUrlCount).
+    Changed: WebSocket paths are built with a re-used StringBuilder and only ever contain the first 8 characters of an AppId (unless suppressed entirely).
+    Changed: OperationResponse.ToString() includes the DebugMessage (unless empty).
+
+Version 5.0.2 (01. February 2024 - rev7373)
+    Changed: PhotonClientWebSocket will now set the SocketErrorCode to clientWebSocket.CloseStatus if the WebSocket fails to go into "open" state.
+    Changed: Logging for this case to include a description (which might be empty).
+
+Version 5.0.1 (07. December 2023 - rev7261)
+    No notable changes.
+
+Version 5.0.0 (09. November 2023 - rev7225)
+    Changed: To semantic versioning with 3 digits only.
+    Removed: Support for .Net 3.5. From 5.x on we use .Net Standard 2.0 as minimum.
+    Changed: To a newer Unity version define (#if UNITY_2017_4_OR_NEWER).
+    Changed: Handling of incorrect stream data.
+    Breaking: DLLs for Unity will no longer use a custom Hashtable re-implementation. Remove all defines which Hashtable to use (using Hashtable = ExitGames.Client.Photon.Hashtable;).
+
+    Merged changes of Version 4.1.6.24 (11. May 2023 - rev6888)
+    Changed: PhotonClientWebSocket.Send() will now Wait up to 3ms for the Send-Task before it returns "busy". This allows the task to complete and the TPeer can send multiple messages until it send MTU bytes. That avoids increasing lag, if the game logic calls SendOutgoingCommands() sparingly.
+    Changed: PeerBase.Reset() will now also clear the ActionQueue.
+    Fixed: WebSocket connection issues where clients never get into a Connected state. This is a workaround for cases where a WebSocket bug skips the callback for the Init Response from the server. This is a rare issue which does not reproduce 100% of the time.
+    Changed: WebSocket connections will now send pings in one second intervals as long as the WebSocket is connected (and the peerConnectionState is not Disconnected).
+    Changed: If a ping result arrives while the peer is still Connecting, it is used as Init Response on WebSocket connections.
+    Changed: TPeer.FetchServerTimestamp() to only log something (INFO level) if the peer is not connected and initialized yet. FetchServerTimestamp can be repeated and does not need a SendError callback.
+    Changed: PhotonClientWebSocket.Disconnect() to call CloseAsync() if the WebSocket is already in state CloseReceived. This should just close the socket locally.
+
+
+---
+
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
 Version 4.1.8.4 (26. April 2024 - rev7530)
     Changed: SendAcksOnly and SendOutgoingCommands logging (they only log successful re-sends).
@@ -87,6 +176,7 @@ Version 4.1.6.24 (15. May 2023 - rev6894)
 Version 4.1.6.23 (15. March 2023 - rev6743)
     Fixed: Handling of unknown command types in Initialize(EnetPeer peer, byte[] inBuff, ref int readingOffset). Reading offset is set by Size value.
     Fixed: ReadCustomType() and ReadCustomTypeArray() to check if DeserializeStreamFunction is null, before using it. There was a check which prevented issues but it wasn't correct.
+<<<<<<< HEAD
 
 Version 4.1.6.22 (21. December 2022 - rev6637)
     Note: No notable changes. Only Reatime API changed.
@@ -1947,3 +2037,5 @@ Siverlight:
 - Fix: values for EV_KEY_M_MINPLAYERS and EV_KEY_M_MAXPLAYERS corrected (wrong case so far)
 - Changed: Neutron.millisecondsToWait (current value of polling-interval) is now
   set in Neutron.receiveResponse() for login, register and alike
+=======
+>>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
