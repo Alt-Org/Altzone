@@ -8,12 +8,7 @@
 // <author>developer@photonengine.com</author>
 // ----------------------------------------------------------------------------
 
-<<<<<<< HEAD
-
-#if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
-=======
 #if UNITY_2017_4_OR_NEWER
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 #define SUPPORTED_UNITY
 #endif
 
@@ -240,19 +235,11 @@ namespace Photon.Realtime
             {
                 return;
             }
-<<<<<<< HEAD
-            
-            // only remote player instances update their NickName from the properties
-            if (!this.IsLocal && properties.ContainsKey(ActorProperties.PlayerName))
-            {
-                string nameInServersProperties = (string)properties[ActorProperties.PlayerName];
-=======
 
             // only remote player instances update their NickName from the properties
             if (!this.IsLocal && properties.ContainsKey(ActorProperties.NickName))
             {
                 string nameInServersProperties = (string)properties[ActorProperties.NickName];
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
                 this.NickName = nameInServersProperties;
             }
 
@@ -262,11 +249,7 @@ namespace Photon.Realtime
             }
             if (properties.ContainsKey(ActorProperties.IsInactive))
             {
-<<<<<<< HEAD
-                this.IsInactive = (bool)properties[ActorProperties.IsInactive]; //TURNBASED new well-known property for players
-=======
                 this.IsInactive = (bool)properties[ActorProperties.IsInactive]; //well-known property for players
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             }
 
             this.CustomProperties.Merge(properties);
@@ -433,25 +416,6 @@ namespace Photon.Realtime
             if (!string.Equals(this.NickName, nickFromProps) && !(string.IsNullOrEmpty(this.NickName) && string.IsNullOrEmpty(nickFromProps)))
             {
                 return this.SetNickNameProperty();
-            }
-
-            return true;
-        }
-
-        /// <summary>If there is a nickname in the room props, but it's not the current (local) one, update the room when joining/joined.</summary>
-        internal bool UpdateNickNameOnJoined()
-        {
-            if (this.RoomReference == null || this.RoomReference.CustomProperties == null || !this.IsLocal)
-            {
-                return false;
-            }
-
-            bool found = this.RoomReference.CustomProperties.ContainsKey(ActorProperties.PlayerName);
-            string nickFromProps = found ? this.RoomReference.CustomProperties[ActorProperties.PlayerName] as string : string.Empty;
-
-            if (!string.Equals(this.NickName, nickFromProps))
-            {
-                return this.SetPlayerNameProperty();
             }
 
             return true;

@@ -17,10 +17,7 @@
 namespace Photon.Realtime
 {
     using System;
-<<<<<<< HEAD
-=======
     using System.Text;
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
     using System.Threading;
     using System.Diagnostics;
     using Photon.Client;
@@ -90,8 +87,6 @@ namespace Photon.Realtime
         private readonly Stopwatch backgroundStopwatch = new Stopwatch();
 
         private Timer stateTimer;
-<<<<<<< HEAD
-=======
 
         /// <summary>
         /// Creates an instance of the ConnectionHandler, assigns the given client. In Unity this uses a single GameObject to store all components on and applies DontDestroyOnLoad.
@@ -131,7 +126,6 @@ namespace Photon.Realtime
             #endif
         }
 
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
         #if SUPPORTED_UNITY
         private static GameObject go;
@@ -153,18 +147,10 @@ namespace Photon.Realtime
 
         #endif
 
-<<<<<<< HEAD
-
-        /// <summary></summary>
-        protected virtual void Awake()
-        {
-            if (this.ApplyDontDestroyOnLoad)
-=======
         /// <summary>Startup check if a Client is set (which is mandatory).</summary>
         protected virtual void Start()
         {
             if (this.Client == null)
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             {
                 UnityEngine.Debug.LogError("A ConnectionHandler should not be put into a scene. It is created by RealtimeClient.ConnectUsingSettings().", this);
             }
@@ -194,16 +180,6 @@ namespace Photon.Realtime
             }
         }
 
-<<<<<<< HEAD
-
-        /// <summary>Called by Unity when the application gets closed. The UnityEngine will also call OnDisable, which disconnects.</summary>
-        public void OnApplicationQuit()
-        {
-            AppQuits = true;
-        }
-
-=======
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         /// <summary>Called by Unity when the application gets paused or resumed.</summary>
         public void OnApplicationPause(bool pause)
         {
@@ -310,41 +286,6 @@ namespace Photon.Realtime
                 return;
             }
 
-<<<<<<< HEAD
-            if (this.Client.IsConnected && this.Client.LoadBalancingPeer.ConnectionTime - this.Client.LoadBalancingPeer.LastSendOutgoingTime > 100)
-            {
-                if (!this.didSendAcks)
-                {
-                    this.backgroundStopwatch.Reset();
-                    this.backgroundStopwatch.Start();
-                }
-
-                // check if the client should disconnect after some seconds in background
-                if (this.backgroundStopwatch.ElapsedMilliseconds > this.KeepAliveInBackground)
-                {
-                    if (this.DisconnectAfterKeepAlive)
-                    {
-                        this.Client.Disconnect();
-                    }
-                    return;
-                }
-
-
-                this.didSendAcks = true;
-                this.CountSendAcksOnly++;
-
-                this.Client.LoadBalancingPeer.SendAcksOnly();
-            }
-            else
-            {
-                // not connected or the LastSendOutgoingTimestamp was below the threshold
-                if (this.backgroundStopwatch.IsRunning)
-                {
-                    this.backgroundStopwatch.Reset();
-                }
-                this.didSendAcks = false;
-            }
-=======
 
             //Log.Warn($"PeerId {this.Client.RealtimePeer.PeerID} RealtimeFallback {this.Client.IsConnected}. {this.Client.RealtimePeer.ConnectionTime} - {this.Client.RealtimePeer.Stats.LastSendOutgoingTimestamp} = {this.Client.RealtimePeer.ConnectionTime - this.Client.RealtimePeer.Stats.LastSendOutgoingTimestamp}  backgroundStopwatch.ElapsedMilliseconds: {this.backgroundStopwatch.ElapsedMilliseconds.ToString("N0")}");
             if (this.Client.IsConnected && this.Client.RealtimePeer.ConnectionTime - this.Client.RealtimePeer.Stats.LastSendOutgoingTimestamp > 100)
@@ -618,7 +559,6 @@ namespace Photon.Realtime
         internal static void SetBits(ref int value, byte bitvals, int bitpos)
         {
             value |= bitvals << bitpos;
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         }
     }
 }

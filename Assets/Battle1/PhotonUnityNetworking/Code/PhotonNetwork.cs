@@ -64,7 +64,7 @@ namespace Photon.Pun
     public static partial class PhotonNetwork
     {
         /// <summary>Version number of PUN. Used in the AppVersion, which separates your playerbase in matchmaking.</summary>
-        public const string PunVersion = "2.47";
+        public const string PunVersion = "2.41";
 
         /// <summary>Version number of your game. Setting this updates the AppVersion, which separates your playerbase in matchmaking.</summary>
         /// <remarks>
@@ -462,7 +462,8 @@ namespace Photon.Pun
 
                 if (offlineMode)
                 {
-                    NetworkingClient.ChangeLocalID(-1, true);
+                    NetworkingClient.ChangeLocalID(-1);
+                    //SendMonoMessage(PhotonNetworkingMessage.OnConnectedToMaster);
                     NetworkingClient.ConnectionCallbackTargets.OnConnectedToMaster();
                 }
                 else
@@ -1371,7 +1372,7 @@ namespace Photon.Pun
 
             if (NetworkingClient == null)
             {
-                return; // Suppress error when quitting playmode in the editor
+                return; // Surpress error when quitting playmode in the editor
             }
 
             NetworkingClient.Disconnect();
@@ -1616,7 +1617,7 @@ namespace Photon.Pun
         /// <param name="expectedCustomRoomProperties">Filters for rooms that match these custom properties (string keys and values). To ignore, pass null.</param>
         /// <param name="expectedMaxPlayers">Filters for a particular maxplayer setting. Use 0 to accept any maxPlayer value.</param>
         /// <returns>If the operation got queued and will be sent.</returns>
-        public static bool JoinRandomRoom(Hashtable expectedCustomRoomProperties, int expectedMaxPlayers)
+        public static bool JoinRandomRoom(Hashtable expectedCustomRoomProperties, byte expectedMaxPlayers)
         {
             return JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers, MatchmakingMode.FillRoom, null, null);
         }
@@ -1645,7 +1646,7 @@ namespace Photon.Pun
         /// <param name="sqlLobbyFilter">A filter-string for SQL-typed lobbies.</param>
         /// <param name="expectedUsers">Optional list of users (by UserId) who are expected to join this game and who you want to block a slot for.</param>
         /// <returns>If the operation got queued and will be sent.</returns>
-        public static bool JoinRandomRoom(Hashtable expectedCustomRoomProperties, int expectedMaxPlayers, MatchmakingMode matchingType, TypedLobby typedLobby, string sqlLobbyFilter, string[] expectedUsers = null)
+        public static bool JoinRandomRoom(Hashtable expectedCustomRoomProperties, byte expectedMaxPlayers, MatchmakingMode matchingType, TypedLobby typedLobby, string sqlLobbyFilter, string[] expectedUsers = null)
         {
             if (OfflineMode)
             {
@@ -2054,7 +2055,7 @@ namespace Photon.Pun
         private static void EnterOfflineRoom(string roomName, RoomOptions roomOptions, bool createdRoom)
         {
             offlineModeRoom = new Room(roomName, roomOptions, true);
-            NetworkingClient.ChangeLocalID(1, true);
+            NetworkingClient.ChangeLocalID(1);
             offlineModeRoom.masterClientId = 1;
             offlineModeRoom.AddPlayer(PhotonNetwork.LocalPlayer);
             offlineModeRoom.LoadBalancingClient = PhotonNetwork.NetworkingClient;
@@ -2199,7 +2200,7 @@ namespace Photon.Pun
         ///
         /// When done, OnRoomListUpdate gets called.
         /// </remarks>
-        /// <see href="https://doc.photonengine.com/en-us/pun/v2/lobby-and-matchmaking/matchmaking-and-lobby/#sql_lobby_type"/>
+        /// <see cref="https://doc.photonengine.com/en-us/pun/v2/lobby-and-matchmaking/matchmaking-and-lobby/#sql_lobby_type"/>
         /// <param name="typedLobby">The lobby to query. Has to be of type SqlLobby.</param>
         /// <param name="sqlLobbyFilter">The sql query statement.</param>
         /// <returns>If the operation could be sent (has to be connected).</returns>
@@ -3116,7 +3117,7 @@ namespace Photon.Pun
         /// </summary>
         /// <remarks>
         /// This is a server-side feature which must be setup in the Photon Cloud Dashboard prior to use.
-        /// <see href="https://doc.photonengine.com/en-us/pun/v2/gameplay/web-extensions/webrpc"/>
+        /// <see cref="https://doc.photonengine.com/en-us/pun/v2/gameplay/web-extensions/webrpc"/>
         /// The Parameters will be converted into JSon format, so make sure your parameters are compatible.
         ///
         /// See <see cref="Photon.Realtime.IWebRpcCallback.OnWebRpcResponse"/> on how to get a response.
@@ -3191,7 +3192,7 @@ namespace Photon.Pun
             // create the ScriptableObject if it could not be loaded
             if (photonServerSettings == null)
             {
-                photonServerSettings = (ServerSettings)ScriptableObject.CreateInstance("ServerSettings");
+                photonServerSettings = (ServerSettings)ScriptableObject.CreateInstance(nameof(ServerSettings));
                 if (photonServerSettings == null)
                 {
                     Debug.LogError("Failed to create ServerSettings. PUN is unable to run this way. If you deleted it from the project, reload the Editor.");
@@ -3200,19 +3201,11 @@ namespace Photon.Pun
             }
 
 
-<<<<<<< HEAD:Assets/Photon/PhotonUnityNetworking/Code/PhotonNetwork.cs
-            #if UNITY_EDITOR
-            // in the editor, store the settings file as it could not be loaded
-            // unless Unity still imports assets
-            if (UnityEditor.EditorApplication.isUpdating)
-=======
             // in the editor, store the settings file as it's not loaded
             /*#if  UNITY_EDITOR
             // don't save the settings before OnProjectUpdated got called (this hints at an ongoing import/load)
             if (!PhotonEditorUtils.ProjectChangedWasCalled)
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Battle1/PhotonUnityNetworking/Code/PhotonNetwork.cs
             {
-                EditorApplication.delayCall += delegate { LoadOrCreateSettings(true); };
                 return;
             }
 

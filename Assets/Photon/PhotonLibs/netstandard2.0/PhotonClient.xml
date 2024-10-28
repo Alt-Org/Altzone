@@ -233,15 +233,6 @@
         <member name="F:Photon.Client.EnetChannel.highestReceivedAck">
             <summary>To store the highest acknowledged sequence number (and get some impression what the server already received and stored).</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="F:ExitGames.Client.Photon.EnetChannel.reliableCommandsInFlight">
-            <summary>Count of reliable commands sent and not yet acknowledged.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.EnetChannel.lowestUnacknowledgedSequenceNumber">
-            <summary>The lowest sequence number sent but not acknowledged yet. This defines the sequence delta "window" for sending subsequent reliable commands.</summary>
-        </member>
-        <member name="M:ExitGames.Client.Photon.EnetChannel.QueueIncomingReliableUnsequenced(ExitGames.Client.Photon.NCommand)">
-=======
         <member name="F:Photon.Client.EnetChannel.reliableCommandsInFlight">
             <summary>Count of reliable commands sent and not yet acknowledged.</summary>
         </member>
@@ -249,7 +240,6 @@
             <summary>The lowest sequence number sent but not acknowledged yet. This defines the sequence delta "window" for sending subsequent reliable commands.</summary>
         </member>
         <member name="M:Photon.Client.EnetChannel.QueueIncomingReliableUnsequenced(Photon.Client.NCommand)">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>Checks and queues incoming reliable unsequenced commands ("send" or "fragment"), if they haven't been received yet.</summary>
             <param name="command">The command to check and queue.</param>
             <returns>True if the command is new and got queued (or could be executed/dispatched).</returns>
@@ -263,17 +253,10 @@
         <member name="F:Photon.Client.EnetPeer.sentReliableCommands">
             <summary>One list for all channels keeps sent commands (for re-sending).</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="P:ExitGames.Client.Photon.EnetPeer.sendWindowUpdateRequired">
-            <summary>Thread safe.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.EnetPeer.outgoingAcknowledgementsPool">
-=======
         <member name="P:Photon.Client.EnetPeer.SendWindowUpdateRequired">
             <summary>When ACKs are executed they set this. Signals changes within sentReliableCommands. Thread safe.</summary>
         </member>
         <member name="F:Photon.Client.EnetPeer.outgoingAcknowledgementsPool">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>One pool of ACK byte arrays ( 20 bytes each)  for all channels to keep acknowledgements.</summary>
         </member>
         <member name="F:Photon.Client.EnetPeer.serverSentTime">
@@ -325,14 +308,7 @@
         <member name="F:Photon.Client.EnetPeer.channelsToUpdateLowestSent">
             <summary>Used to store temporary values in UpdateSendWindow().</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="F:ExitGames.Client.Photon.EnetPeer.channelsToUpdateLowestSent">
-            <summary>Used to store temporary values in UpdateSendWindow().</summary>
-        </member>
-        <member name="M:ExitGames.Client.Photon.EnetPeer.EnqueuePhotonMessage(ExitGames.Client.Photon.StreamBuffer,ExitGames.Client.Photon.SendOptions)">
-=======
         <member name="M:Photon.Client.EnetPeer.EnqueuePhotonMessage(Photon.Client.StreamBuffer,Photon.Client.SendOptions)">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>
             Checks connected state and channel before operation is serialized and enqueued for sending.
             </summary>
@@ -592,70 +568,10 @@
              </remarks>
              <param name="eventData">The event currently being dispatched.</param>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="F:ExitGames.Client.Photon.PhotonSocketError.Busy">
-            <summary>Data wasn't sent yet.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.PhotonSocketError.PendingSend">
-            <summary>Data is being sent async (still in use).</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.IPhotonSocket.Protocol">
-            <summary>The protocol for this socket, defined in constructor.</summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.SocketErrorCode">
-            <summary>Socket implementations should store the SocketErrorCode here, if anything happens.</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.IPhotonSocket.ConnectAddress">
-            <summary>Address, as defined via a Connect() call. Including protocol, port and or path.</summary>
-            <remarks>This is set in the constructor and in Connect() again. Typically the address does not change after the IPhotonSocket is instantiated.</remarks>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ServerAddress">
-            <summary>Contains only the server's hostname (stripped protocol, port and or path). Set in IPhotonSocket.Connect().</summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ServerIpAddress">
-            <summary>Contains the IP address of the previously resolved ServerAddress (or empty, if GetIpAddress wasn't used).</summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.ServerPort">
-            <summary>Contains only the server's port address (as string).  Set in IphotonSocket.Connect().</summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.AddressResolvedAsIpv6">
-            <summary>Where available, this exposes if the server's address was resolved into an IPv6 address or not.</summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.IPhotonSocket.SerializationProtocol">
-             <summary>
-             Provides the protocol string, of the current PhotonPeer.SerializationProtocolType to be used for WebSocket connections.
-             </summary>
-             <remarks>
-             Any WebSocket wrapper could access this to get the desired binary protocol for the connection.
-             Some WebSocket implementations use a static value of the same name and need to be updated.
-            
-             The value is not cached and each call will create the needed string on the fly.
-             </remarks>
-        </member>
-        <member name="M:ExitGames.Client.Photon.IPhotonSocket.TryParseAddress(System.String,System.String@,System.UInt16@,System.String@,System.String@)">
-             <summary>
-             Separates the given address into address (host name or IP) and port. Port must be included after colon!
-             </summary>
-             <remarks>
-             This method expects any address to include a port. The final ':' in addressAndPort has to separate it.
-             IPv6 addresses have multiple colons and <b>must use brackets</b> to separate address from port.
-            
-             Examples:
-                 ns.exitgames.com:5058
-                 http://[2001:db8:1f70::999:de8:7648:6e8]:100/
-                 [2001:db8:1f70::999:de8:7648:6e8]:100
-             See:
-                 http://serverfault.com/questions/205793/how-can-one-distinguish-the-host-and-the-port-in-an-ipv6-url
-             </remarks>
-        </member>
-        <member name="M:ExitGames.Client.Photon.IPhotonSocket.GetIpAddresses(System.String)">
-            <summary>Wraps a DNS call to provide an array of addresses, sorted to have the IPv6 ones first.</summary>
-=======
         <member name="M:Photon.Client.IPhotonPeerListener.OnMessage(System.Boolean,System.Object)">
             <summary>
             Called when a message (analog to an event but just the data) gets dispatched. Messages can be raw messages or ones that get deserialized.
             </summary>
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <remarks>
             In case a "raw message" the message parameter is an ArraySegment&lt;byte&gt;.
             </remarks>
@@ -1186,19 +1102,11 @@
             Use the SocketImplementationConfig to define which PhotonSocket is used per ConnectionProtocol.
             </remarks>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.SocketErrorCode">
-            <summary>Provides access to a SocketError code (if available) after a call to OnStatusChanged with a Socket-level exception.</summary>
-            <remarks>Useful for debugging send / receive error cases.</remarks>
-        </member>
-        <member name="F:ExitGames.Client.Photon.PhotonPeer.DebugOut">
-=======
         <member name="P:Photon.Client.PhotonPeer.SocketErrorCode">
             <summary>Provides access to a SocketError code (if available) after a call to OnStatusChanged with a Socket-level exception.</summary>
             <remarks>Useful for debugging send / receive error cases.</remarks>
         </member>
         <member name="F:Photon.Client.PhotonPeer.LogLevel">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>
             Sets the level (and amount) of logging for the PhotonPeer.
             </summary>
@@ -1264,21 +1172,13 @@
              Send either byte[], ArraySegment or use the ByteArraySlicePool to acquire ByteArraySlices to send.
              </remarks>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.WrapIncomingStructs">
-=======
         <member name="P:Photon.Client.PhotonPeer.WrapIncomingStructs">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>
             Incoming struct types are wrapped in a pooled IWrapperStruct, rather than being cast to object. This eliminated allocations and garbage collection from boxing,
             however object that are wrapped structs will need to be cast to WrapperStruct&lt;T&gt; and their values extracted with (obj as WrapperStruct&lt;T&gt;).Value.
             </summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.ByteArraySlicePool">
-=======
         <member name="P:Photon.Client.PhotonPeer.ByteArraySlicePool">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
              <summary>Instance of a ByteArraySlicePool. UseByteArraySlicePoolForEvents defines if this PhotonPeer is using the pool for deserialization of byte[] in Photon events.</summary>
              <remarks>
              ByteArraySlice is a serializable datatype of the Photon .Net client library.
@@ -1301,36 +1201,8 @@
             This debug setting enables a new send-ordering for commands. Defaults to true and commands are sent in the order they are created. Set to false to use Enet ordering.
             </summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="F:ExitGames.Client.Photon.PhotonPeer.SendWindowSize">
-             <summary>Defines how far ahead the client can go sending commands (on UDP connections), compared to the acknowledged sequence number.</summary>
-             <remarks>
-             This avoids spamming the receiver and puts focus on resending commands that are older and are needed on the receiver side to dispatch commands.
-            
-             When acks arrive, the SendWindow will move forward and newer commands get sent.
-             This indirectly affects unreliable commands as they are by default sent in creation order.
-             It queues more on the client side than on the server.
-             </remarks>
-        </member>
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.BytesIn">
-            <summary>
-            Gets count of all bytes coming in (including headers, excluding UDP/TCP overhead)
-            </summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.BytesOut">
-            <summary>
-            Gets count of all bytes going out (including headers, excluding UDP/TCP overhead)
-            </summary>
-        </member>
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.ByteCountCurrentDispatch">
-             <summary>
-             Gets the size of the dispatched event or operation-result in bytes.
-             This value is set before OnEvent() or OnOperationResponse() is called (within DispatchIncomingCommands()).
-             </summary>
-=======
         <member name="F:Photon.Client.PhotonPeer.SendWindowSize">
              <summary>Defines how far ahead the client can go sending commands (on UDP connections), compared to the acknowledged sequence number.</summary>
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
              <remarks>
              This avoids spamming the receiver and puts focus on resending commands that are older and are needed on the receiver side to dispatch commands.
             
@@ -1506,15 +1378,7 @@
              If null, the PhotonPeer will create a DiffieHellmanCryptoProvider, which is the default.
              This is only needed in rare cases, where using native payload encryption makes sense.
             
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-             DisconnectTimeout and SentCountAllowance are competing settings: either might trigger a disconnect on the
-             client first, depending on the values and Roundtrip Time.
-            
-             Default: 10000 ms.
-             Setting a negative value will apply the default timeout.
-=======
              Get in touch about this, if you got questions: developer@photonengine.com
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
              </remarks>
         </member>
         <member name="F:Photon.Client.PhotonPeer.PayloadEncryptionSecret">
@@ -2565,20 +2429,7 @@
         <member name="M:Photon.Client.SocketUdpAsync.Send(System.Byte[],System.Int32)">
             <summary>used by PhotonPeer*</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="T:ExitGames.Client.Photon.SocketUdpBlocking">
-            <summary>Encapsulates the network i/o functionality for the realtime library.</summary>
-        </member>
-        <member name="M:ExitGames.Client.Photon.SocketUdpBlocking.Send(System.Byte[],System.Int32)">
-            <summary>used by PhotonPeer*</summary>
-        </member>
-        <member name="M:ExitGames.Client.Photon.SocketUdpBlocking.ReceiveLoop">
-            <summary>Endless loop, run in Receive Thread.</summary>
-        </member>
-        <member name="M:ExitGames.Client.Photon.StreamBuffer.ToArray">
-=======
         <member name="M:Photon.Client.StreamBuffer.ToArray">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>
             Allocates a new byte[] that is the exact used length. Use GetBuffer for nonalloc operations.
             </summary>
@@ -2677,31 +2528,6 @@
         <member name="F:Photon.Client.TPeer.ALL_HEADER_BYTES">
             <summary>TCP header combined: 9 bytes</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="F:ExitGames.Client.Photon.TPeer.lastPingActivity">
-            <summary>Timestamp of last ping activity (updated when sending to avoid sending again immediately).</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.TPeer.pingRequest">
-            <summary>Re-used binary message used in the TCP protocol (WSS uses a Ping Operation due to lack of framing).</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.TPeer.pingParamDict">
-            <summary>Re-used ping-Operation parameter-dict used in the WS/WSS protocol (TCP uses pingRequest).</summary>
-        </member>
-        <member name="F:ExitGames.Client.Photon.TPeer.DoFraming">
-            <summary>Defines if the (TCP) socket implementation needs to do "framing".</summary>
-            <remarks>The WebSocket protocol (e.g.) includes framing, so when that is used, we set DoFraming to false.</remarks>
-        </member>
-        <member name="F:ExitGames.Client.Photon.TPeer.waitForInitResponse">
-            <summary>
-            Helper value to track if this TPeer sends an init request and has to wait for the response. Defaults to true.
-            </summary>
-            <remarks>
-            For WebSockets, the init request is usually skipped (unless there is an init-token)
-            Setting this false allows WS/WSS to send pings even before the init-response is back. this fixes a bug in some platforms which do not provide the init-response message (for unknown reasons)
-            </remarks>
-        </member>
-        <member name="M:ExitGames.Client.Photon.TPeer.DispatchIncomingCommands">
-=======
         <member name="F:Photon.Client.TPeer.lastPingActivity">
             <summary>Timestamp of last ping activity (updated when sending to avoid sending again immediately).</summary>
         </member>
@@ -2716,7 +2542,6 @@
             <remarks>The WebSocket protocol (e.g.) includes framing, so when that is used, we set DoFraming to false.</remarks>
         </member>
         <member name="M:Photon.Client.TPeer.DispatchIncomingCommands">
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
             <summary>
             Checks the incoming queue and Dispatches received data if possible. Returns if a Dispatch happened or
             not, which shows if more Dispatches might be needed.
@@ -2734,14 +2559,9 @@
         <member name="M:Photon.Client.TPeer.EnqueueMessageAsPayload(Photon.Client.DeliveryMode,Photon.Client.StreamBuffer,System.Byte)">
             <summary>enqueues serialized operations to be sent as tcp stream / package</summary>
         </member>
-<<<<<<< HEAD:Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.xml
-        <member name="M:ExitGames.Client.Photon.TPeer.SendPing">
-            <summary>Checks conditions. Immediately sends a ping as operation or "message". Updates this.lastPingActivity to avoid another ping for a while.</summary>
-=======
         <member name="M:Photon.Client.TPeer.SendPing(System.Boolean)">
             <summary>Queues a ping (operation or "message") and updates this.lastPingActivity to avoid another ping for a while.</summary>
             <param name="sendImmediately">Set to true to immediately send a Ping (not queueing it first). This is useful for SendAcksOnly() to keep the connection up.</param>
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30:Assets/Photon/PhotonLibs/netstandard2.0/PhotonClient.xml
         </member>
         <member name="M:Photon.Client.TPeer.ReceiveIncomingCommands(System.Byte[],System.Int32)">
             <summary>reads incoming tcp-packages to create and queue incoming commands*</summary>

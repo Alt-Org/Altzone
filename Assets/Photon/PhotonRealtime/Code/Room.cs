@@ -163,11 +163,7 @@ namespace Photon.Realtime
                     byte maxPlayersAsByte = value <= byte.MaxValue ? (byte)value : (byte)0;
                     if (!this.isOffline)
                     {
-<<<<<<< HEAD
-                        this.LoadBalancingClient.OpSetPropertiesOfRoom(new Hashtable() { { GamePropertyKey.MaxPlayers, maxPlayersAsByte }, { GamePropertyKey.MaxPlayersInt, this.maxPlayers } });
-=======
                         this.RealtimeClient.OpSetPropertiesOfRoom(new PhotonHashtable() { { GamePropertyKey.MaxPlayers, maxPlayersAsByte }, { GamePropertyKey.MaxPlayersInt, this.maxPlayers } });
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
                     }
                 }
             }
@@ -323,11 +319,7 @@ namespace Photon.Realtime
         /// <summary>Creates a Room (representation) with given name and properties and the "listing options" as provided by parameters.</summary>
         /// <param name="roomName">Name of the room (can be null until it's actually created on server).</param>
         /// <param name="options">Room options.</param>
-<<<<<<< HEAD
-        /// <param name="isOffline">Signal if this room is only used locally.</param>
-=======
         /// <param name="isOffline">True when using the special case for offline rooms in PUN.</param>
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         public Room(string roomName, RoomOptions options, bool isOffline = false) : base(roomName, options != null ? options.CustomRoomProperties : null)
         {
             // base() sets name and (custom)properties. here we set "well known" properties
@@ -441,12 +433,7 @@ namespace Photon.Realtime
                 this.CustomProperties.StripKeysWithNullValues();
 
                 // invoking callbacks
-<<<<<<< HEAD
-                this.LoadBalancingClient.InRoomCallbackTargets.OnRoomPropertiesUpdate(propertiesToSet);
-
-=======
                 this.RealtimeClient.InRoomCallbackTargets.OnRoomPropertiesUpdate(propertiesToSet);
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             }
             else
             {

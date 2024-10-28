@@ -101,21 +101,6 @@ namespace Photon.Realtime
                 }
 
                 this.EnabledRegions.Sort((a, b) => a.Ping.CompareTo(b.Ping));
-<<<<<<< HEAD
-
-                // in some locations, clients will get very similar results to various regions.
-                // in those places, it is best to select alphabetical from those with very similar ping.
-                int similarPingCutoff = (int)(this.EnabledRegions[0].Ping * pingSimilarityFactor);
-                Region firstFromSimilar = this.EnabledRegions[0];
-                foreach (Region region in this.EnabledRegions)
-                {
-                    if (region.Ping <= similarPingCutoff && region.Code.CompareTo(firstFromSimilar.Code) < 0)
-                    {
-                        firstFromSimilar = region;
-                    }
-                }
-
-=======
                 
                 // in some locations, clients will get very similar results to various regions.
                 // in those places, it is best to select alphabetical from those with very similar ping.
@@ -129,7 +114,6 @@ namespace Photon.Realtime
                     }
                 }
 
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
                 this.bestRegionCache = firstFromSimilar;
                 return this.bestRegionCache;
             }
@@ -148,17 +132,10 @@ namespace Photon.Realtime
             {
                 if (this.BestRegion != null && this.BestRegion.Ping < RegionPinger.MaxMillisecondsPerPing)
                 {
-<<<<<<< HEAD
-                    return this.BestRegion.Code + ";" + this.BestRegion.Ping + ";" + this.availableRegionCodes;
-                }
-
-                return this.availableRegionCodes;
-=======
                     return $"{this.BestRegion.Code};{this.BestRegion.Ping};{this.AvailableRegionCodes}";
                 }
 
                 return this.AvailableRegionCodes;
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             }
         }
 
@@ -173,12 +150,8 @@ namespace Photon.Realtime
                 sb.AppendLine(region.GetResults());
             }
 
-<<<<<<< HEAD
-            sb.AppendFormat("Previous summary: {0}", this.previousSummaryProvided);
-=======
             string summaryString = this.previousSummaryProvided ?? "N/A";
             sb.AppendFormat("Previous summary: {0}", summaryString);
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
             return sb.ToString();
         }
@@ -228,10 +201,6 @@ namespace Photon.Realtime
         private int previousPing;
         private string previousSummaryProvided;
 
-<<<<<<< HEAD
-        /// <summary>If non-zero, this port will be used to ping Master Servers on.</summary>
-        protected internal static ushort PortToPingOverride;
-=======
 
         /// <summary>If the previous Best Region's ping is now higher by this much, ping all regions and find a new Best Region.</summary>
         private float rePingFactor = 1.2f;
@@ -246,27 +215,10 @@ namespace Photon.Realtime
         /// This limit introduces an exception: Should the pre-defined best region have a ping worse than this, all regions are considered.
         /// </remarks>
         public int BestRegionSummaryPingLimit = 90;
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
-        /// <summary>If the previous Best Region's ping is now higher by this much, ping all regions and find a new Best Region.</summary>
-        private float rePingFactor = 1.2f;
 
-<<<<<<< HEAD
-        /// <summary>How much higher a region's ping can be from the absolute best, to be considered the Best Region (by ping and name).</summary>
-        private float pingSimilarityFactor = 1.2f;
-
-        /// <summary>If the region from a previous BestRegionSummary now has a ping higher than this limit, all regions get pinged again to find a better. Default: 90ms.</summary>
-        /// <remarks>
-        /// Pinging all regions takes time, which is why a BestRegionSummary gets stored.
-        /// If that is available, the Best Region becomes sticky and is used again.
-        /// This limit introduces an exception: Should the pre-defined best region have a ping worse than this, all regions are considered.
-        /// </remarks>
-        public int BestRegionSummaryPingLimit = 90;
-
-=======
         /// <summary>If non-zero, this port will be used to ping Master Servers on.</summary>
         protected internal static ushort UdpPortToPing;
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
         /// <summary>True if the available regions are being pinged currently.</summary>
         public bool IsPinging { get; private set; }
@@ -274,30 +226,19 @@ namespace Photon.Realtime
         /// <summary>True if the pinging of regions is being aborted.</summary>
         /// <see cref="Abort"/>
         public bool Aborted { get; private set; }
-<<<<<<< HEAD
-=======
 
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         #if SUPPORTED_UNITY
         private MonoBehaviourEmpty emptyMonoBehavior;
         #endif
 
         /// <summary>Creates a new RegionHandler.</summary>
-<<<<<<< HEAD
-        /// <param name="masterServerPortOverride">If non-zero, this port will be used to ping Master Servers on.</param>
-        public RegionHandler(ushort masterServerPortOverride = 0)
-=======
         /// <param name="masterServerUdpPort">If non-zero, this port will be used to ping Master Servers on.</param>
         public RegionHandler(ushort masterServerUdpPort = 0)
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         {
             UdpPortToPing = masterServerUdpPort;
         }
 
 
-<<<<<<< HEAD
-        /// <summary>Starts the process of pinging of all available regions.</summary>
-=======
         /// <summary>Starts the process of pinging the available regions.</summary>
         /// <remarks>Uses PingMinimumOfRegions without a summary.</remarks>
         /// <param name="onCompleteCallback">Provide a method to call when all ping results are available. Aborting the pings will also cancel the callback.</param>
@@ -308,7 +249,6 @@ namespace Photon.Realtime
         }
 
         /// <summary>Starts the process of pinging a subset of the available regions.</summary>
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
         /// <param name="onCompleteCallback">Provide a method to call when all ping results are available. Aborting the pings will also cancel the callback.</param>
         /// <param name="previousSummary">A BestRegionSummary from an earlier RegionHandler run. This makes a selected best region "sticky" and keeps ping times lower.</param>
         /// <returns>If pining the regions gets started now. False if the current state prevent this.</returns>
@@ -783,11 +723,7 @@ namespace Photon.Realtime
             //Debug.Log("Done: "+ this.region.Code);
             this.Done = true;
             this.ping.Dispose();
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             if (this.rttResults.Count > 1 && replyCount > 0)
             {
                 int bestRtt = this.rttResults.Min();

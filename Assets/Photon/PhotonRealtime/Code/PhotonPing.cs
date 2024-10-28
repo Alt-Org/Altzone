@@ -59,24 +59,6 @@ namespace Photon.Realtime
         private static readonly System.Random RandomIdProvider = new System.Random();
 
         /// <summary>Begins sending a ping.</summary>
-<<<<<<< HEAD
-        public virtual bool StartPing(string ip)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Check if done.</summary>
-        public virtual bool Done()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Dispose of this ping.</summary>
-        public virtual void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-=======
         public abstract bool StartPing(string ip);
 
         /// <summary>Check if done.</summary>
@@ -84,7 +66,6 @@ namespace Photon.Realtime
 
         /// <summary>Dispose of this ping.</summary>
         public abstract void Dispose();
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
         /// <summary>Initialize this ping (GotResult, Successful, PingId).</summary>
         protected internal void Init()
@@ -223,98 +204,6 @@ namespace Photon.Realtime
             Disconnecting = 6
         }
 
-<<<<<<< HEAD
-        /// <summary>Check if done.</summary>
-        public override bool Done()
-        {
-            lock (this.syncer)
-            {
-                return this.GotResult || this.sock == null; // this just indicates the ping is no longer waiting. this.Successful value defines if the roundtrip completed
-            }
-        }
-
-        /// <summary>Dispose of this ping.</summary>
-        public override void Dispose()
-        {
-            lock (this.syncer)
-            {
-                this.sock = null;
-            }
-        }
-
-        private void OnConnected(IAsyncAction asyncinfo, AsyncStatus asyncstatus)
-        {
-            lock (this.syncer)
-            {
-                if (asyncinfo.AsTask().IsCompleted && !asyncinfo.AsTask().IsFaulted && this.sock != null && this.sock.Information.RemoteAddress != null)
-                {
-                    this.PingBytes[this.PingBytes.Length - 1] = this.PingId;
-
-                    DataWriter writer;
-                    writer = new DataWriter(this.sock.OutputStream);
-                    writer.WriteBytes(this.PingBytes);
-                    DataWriterStoreOperation res = writer.StoreAsync();
-                    res.AsTask().Wait(100);
-
-                    this.PingBytes[this.PingBytes.Length - 1] = (byte)(this.PingId + 1); // this buffer is re-used for the result/receive. invalidate the result now.
-
-                    writer.DetachStream();
-                    writer.Dispose();
-                }
-                else
-                {
-                    this.sock = null; // will cause Done() to return true but this.Successful defines if the roundtrip completed
-                }
-            }
-        }
-
-        private void OnMessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
-        {
-            lock (this.syncer)
-            {
-                DataReader reader = null;
-                try
-                {
-                    reader = args.GetDataReader();
-                    uint receivedByteCount = reader.UnconsumedBufferLength;
-                    if (receivedByteCount > 0)
-                    {
-                        byte[] resultBytes = new byte[receivedByteCount];
-                        reader.ReadBytes(resultBytes);
-
-                        //TODO: check result bytes!
-
-
-                        this.Successful = receivedByteCount == this.PingLength && resultBytes[resultBytes.Length - 1] == this.PingId;
-                        this.GotResult = true;
-                    }
-                }
-                catch
-                {
-                    // TODO: handle error
-                }
-            }
-        }
-    }
-    #endif
-
-
-    #if NATIVE_SOCKETS
-    /// <summary>Abstract base class to provide proper resource management for the below native ping implementations</summary>
-    public abstract class PingNative : PhotonPing
-    {
-        // Native socket states - according to EnetConnect.h state definitions
-        protected enum NativeSocketState : byte
-        {
-            Disconnected = 0,
-            Connecting = 1,
-            Connected = 2,
-            ConnectionError = 3,
-            SendError = 4,
-            ReceiveError = 5,
-            Disconnecting = 6
-        }
-
         protected IntPtr pConnectionHandler = IntPtr.Zero;
 
         ~PingNative()
@@ -322,15 +211,6 @@ namespace Photon.Realtime
             Dispose();
         }
     }
-=======
-        protected IntPtr pConnectionHandler = IntPtr.Zero;
-
-        ~PingNative()
-        {
-            Dispose();
-        }
-    }
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 
     /// <summary>Uses dynamic linked native Photon socket library via DllImport("PhotonSocketPlugin") attribute (as done by Unity Android and Unity PS3).</summary>
     public class PingNativeDynamic : PingNative

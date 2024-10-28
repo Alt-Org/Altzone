@@ -8,12 +8,7 @@
 // <author>developer@photonengine.com</author>
 // ----------------------------------------------------------------------------
 
-<<<<<<< HEAD
-
-#if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
-=======
 #if UNITY_2017_4_OR_NEWER
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 #define SUPPORTED_UNITY
 #endif
 
@@ -223,13 +218,6 @@ namespace Photon.Realtime
             if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayersInt))
             {
                 this.maxPlayers = Convert.ToInt32(propertiesToCache[GamePropertyKey.MaxPlayersInt]);
-<<<<<<< HEAD
-            }
-            else if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayers))
-            {
-                this.maxPlayers = Convert.ToInt32(propertiesToCache[GamePropertyKey.MaxPlayers]);
-=======
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
             }
             else if (propertiesToCache.ContainsKey(GamePropertyKey.MaxPlayers))
             {

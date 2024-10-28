@@ -69,19 +69,11 @@ namespace Photon.Realtime
             return SupportClass.DictionaryToString(origin, false);
         }
 
-<<<<<<< HEAD
-		/// <summary>Helper method for debugging of <see cref="List{T}"/> content. Using this is not performant.</summary>
-		/// <remarks>Should only be used for debugging as necessary.</remarks>
-		/// <param name="data">Any <see cref="List{T}"/> where T implements .ToString().</param>
-		/// <returns>A comma-separated string containing each value's ToString().</returns>
-		public static string ToStringFull<T>(this List<T> data)
-=======
         /// <summary>Helper method for debugging of List&lt;T&gt; content. Using this is not performant.</summary>
         /// <remarks>Should only be used for debugging as necessary.</remarks>
         /// <param name="data">Any List&lt;T&gt; where T implements .ToString().</param>
         /// <returns>A comma-separated string containing each value's ToString().</returns>
         public static string ToStringFull<T>(this List<T> data)
->>>>>>> 3609c4bd4200a22412b7fdd6f96f9647875e3c30
 		{
 			if (data == null) return "null";
 
