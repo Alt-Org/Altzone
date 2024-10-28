@@ -1,7 +1,10 @@
+using Battle1.PhotonRealtime.Code;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using IOnEventCallback = Battle1.PhotonRealtime.Code.IOnEventCallback;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using ReceiverGroup = Battle1.PhotonRealtime.Code.ReceiverGroup;
 
 namespace Battle1.Scripts.Test.Elmeri
 {

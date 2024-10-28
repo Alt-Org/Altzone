@@ -8,13 +8,12 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code.Views
 {
-    using UnityEngine;
-    using System.Collections.Generic;
-
-
     /// <summary>
     /// This class helps you to synchronize position, rotation and scale
     /// of a GameObject. It also gives you many different options to make
@@ -69,7 +68,7 @@ namespace Photon.Pun
 
         void Update()
         {
-            if (this.m_PhotonView == null || this.m_PhotonView.IsMine == true || PhotonNetwork.IsConnectedAndReady == false)
+            if (this.m_PhotonView == null || this.m_PhotonView.IsMine == true || Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsConnectedAndReady == false)
             {
                 return;
             }
@@ -273,7 +272,7 @@ namespace Photon.Pun
 
                     // knowing the last (incoming) position and the one before, we can guess a speed.
                     // note that the speed is times sendRateOnSerialize! we send X updates/sec, so our estimate has to factor that in.
-                    float estimatedSpeed = (Vector3.Distance(m_NetworkPosition, GetOldestStoredNetworkPosition()) / m_OldNetworkPositions.Count) * PhotonNetwork.SerializationRate;
+                    float estimatedSpeed = (Vector3.Distance(m_NetworkPosition, GetOldestStoredNetworkPosition()) / m_OldNetworkPositions.Count) * Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate;
 
                     // move towards the targetPosition (including estimates, if that's active) with the speed calculated from the last updates.
                     currentPosition = Vector3.MoveTowards(currentPosition, targetPosition, Time.deltaTime * estimatedSpeed);
@@ -323,11 +322,11 @@ namespace Photon.Pun
         /// <returns>Estimated position of the remote object</returns>
         public Vector3 GetExtrapolatedPositionOffset()
         {
-            float timePassed = (float)(PhotonNetwork.Time - m_LastSerializeTime);
+            float timePassed = (float)(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Time - m_LastSerializeTime);
 
             if (m_Model.ExtrapolateIncludingRoundTripTime == true)
             {
-                timePassed += (float)PhotonNetwork.GetPing() / 1000f;
+                timePassed += (float)Battle1.PhotonUnityNetworking.Code.PhotonNetwork.GetPing() / 1000f;
             }
 
             Vector3 extrapolatePosition = Vector3.zero;
@@ -344,7 +343,7 @@ namespace Photon.Pun
                     extrapolatePosition = moveDirection * m_Model.ExtrapolateSpeed * timePassed;
                     break;
                 case PhotonTransformViewPositionModel.ExtrapolateOptions.EstimateSpeedAndTurn:
-                    Vector3 moveDelta = (m_NetworkPosition - GetOldestStoredNetworkPosition()) * PhotonNetwork.SerializationRate;
+                    Vector3 moveDelta = (m_NetworkPosition - GetOldestStoredNetworkPosition()) * Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate;
                     extrapolatePosition = moveDelta * timePassed;
                     break;
             }
@@ -368,7 +367,7 @@ namespace Photon.Pun
                 DeserializeData(stream, info);
             }
 
-            m_LastSerializeTime = PhotonNetwork.Time;
+            m_LastSerializeTime = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Time;
             m_UpdatedPositionAfterOnSerialize = false;
         }
 

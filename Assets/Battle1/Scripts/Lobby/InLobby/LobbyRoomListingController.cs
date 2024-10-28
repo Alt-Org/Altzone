@@ -1,13 +1,14 @@
 using System;
 using System.Linq;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {

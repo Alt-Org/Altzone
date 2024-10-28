@@ -1,10 +1,14 @@
 ﻿using System;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using AppSettings = Battle1.PhotonRealtime.Code.AppSettings;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
+using TypedLobby = Battle1.PhotonRealtime.Code.TypedLobby;
 
 namespace Prg.Scripts.Common.Photon
 {

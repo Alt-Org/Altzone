@@ -1,11 +1,12 @@
 using System;
 using Altzone.Scripts.Config;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Game;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Random = UnityEngine.Random;
 
 namespace Battle1.Scripts.Battle.Players.PlayerClasses

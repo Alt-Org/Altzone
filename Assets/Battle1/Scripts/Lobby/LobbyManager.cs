@@ -1,14 +1,17 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Battle1.PhotonUnityNetworking.Code;
 //using MenuUi.Scripts.Window;
 //using MenuUi.Scripts.Window.ScriptableObjects;
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.Assertions;
+using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby
 {

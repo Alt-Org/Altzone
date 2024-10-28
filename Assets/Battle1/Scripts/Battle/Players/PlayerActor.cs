@@ -6,11 +6,11 @@ using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.GA;
 using Battle1.Scripts.Battle.Game;
 using Battle1.Scripts.Battle.Players.PlayerClasses;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Players
 {

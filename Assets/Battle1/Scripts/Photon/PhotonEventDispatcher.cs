@@ -1,9 +1,12 @@
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using System;
+using Battle1.PhotonRealtime.Code;
 using UnityEngine;
 using UnityEngine.Assertions;
+using IOnEventCallback = Battle1.PhotonRealtime.Code.IOnEventCallback;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using ReceiverGroup = Battle1.PhotonRealtime.Code.ReceiverGroup;
 
 namespace Prg.Scripts.Common.Photon
 {

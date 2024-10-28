@@ -1,4 +1,5 @@
-﻿// ----------------------------------------------------------------------------
+﻿#define SUPPORTED_UNITY
+// ----------------------------------------------------------------------------
 // <copyright file="Room.cs" company="Exit Games GmbH">
 //   Loadbalancing Framework for Photon - Copyright (C) 2018 Exit Games GmbH
 // </copyright>
@@ -9,22 +10,19 @@
 // <author>developer@photonengine.com</author>
 // ----------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using ExitGames.Client.Photon;
+
 #if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
-#define SUPPORTED_UNITY
+//#define SUPPORTED_UNITY
 #endif
 
 
-namespace Photon.Realtime
+namespace Battle1.PhotonRealtime.Code
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
-
-    #if SUPPORTED_UNITY || NETFX_CORE
+#if SUPPORTED_UNITY || NETFX_CORE
     using Hashtable = ExitGames.Client.Photon.Hashtable;
-    using SupportClass = ExitGames.Client.Photon.SupportClass;
-    #endif
+#endif
 
 
     /// <summary>

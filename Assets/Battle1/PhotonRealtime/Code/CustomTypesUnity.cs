@@ -1,3 +1,4 @@
+#define SUPPORTED_UNITY
 // ----------------------------------------------------------------------------
 // <copyright file="CustomTypes.cs" company="Exit Games GmbH">
 //   PhotonNetwork Framework for Unity - Copyright (C) 2018 Exit Games GmbH
@@ -8,19 +9,16 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using ExitGames.Client.Photon;
+using UnityEngine;
+
 #if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
-#define SUPPORTED_UNITY
+//#define SUPPORTED_UNITY
 #endif
 
 #if SUPPORTED_UNITY
-namespace Photon.Realtime
+namespace Battle1.PhotonRealtime.Code
 {
-    using Photon.Realtime;
-    using ExitGames.Client.Photon;
-    using UnityEngine;
-    using Debug = UnityEngine.Debug;
-
-
     /// <summary>
     /// Internally used class, containing de/serialization methods for various Unity-specific classes.
     /// Adding those to the Photon serialization protocol allows you to send them in events, etc.

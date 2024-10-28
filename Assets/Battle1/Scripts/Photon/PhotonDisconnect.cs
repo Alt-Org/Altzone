@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 
 namespace Prg.Scripts.Common.Photon

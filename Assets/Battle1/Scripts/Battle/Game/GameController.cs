@@ -1,10 +1,11 @@
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.GA;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Players;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Game
 {

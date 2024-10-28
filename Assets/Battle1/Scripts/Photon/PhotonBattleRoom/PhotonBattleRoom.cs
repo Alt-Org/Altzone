@@ -5,9 +5,11 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using Altzone.Scripts.Model.Poco.Game;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using Room = Battle1.PhotonRealtime.Code.Room;
 
 namespace Altzone.Scripts.Battle.Photon
 {

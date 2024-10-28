@@ -2,10 +2,12 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {

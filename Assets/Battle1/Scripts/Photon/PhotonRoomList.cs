@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+using TypedLobbyInfo = Battle1.PhotonRealtime.Code.TypedLobbyInfo;
 
 namespace Prg.Scripts.Common.Photon
 {

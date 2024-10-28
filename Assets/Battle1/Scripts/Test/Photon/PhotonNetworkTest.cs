@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Linq;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.Assertions;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Test.Photon
 {
