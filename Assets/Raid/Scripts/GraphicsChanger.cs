@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
+//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class GraphicsChanger : MonoBehaviour
 {
@@ -25,7 +25,7 @@ public class GraphicsChanger : MonoBehaviour
     void Start()
     {
         Debug.Log("GraphicsChanger");
-        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
             Debug.Log("Switching to Loser graphics");
             SwitchToLoserGraphics();

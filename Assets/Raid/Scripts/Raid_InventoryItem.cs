@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using Photon.Pun;
-using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
+//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
@@ -72,7 +72,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemImage.gameObject.SetActive(false);
         empty = true;
 
-        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
             spectator = true;
     }
     public void Update()

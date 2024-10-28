@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Random = UnityEngine.Random;
-using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
+//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
@@ -60,7 +60,7 @@ public class Raid_InventoryPage : MonoBehaviour
         LootTracker.ResetLootCount();
         _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 2;
-        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
             spectator = true;
         }
