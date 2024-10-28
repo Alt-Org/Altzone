@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Linq;
-using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
+//using MenuUi.Scripts.Window;
+//using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
@@ -31,11 +31,11 @@ namespace MenuUI.Scripts.Lobby
         private const string TeamBlueNameKey = PhotonBattle.TeamAlphaNameKey;
         private const string TeamRedNameKey = PhotonBattle.TeamBetaNameKey;
 
-        [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
+        /*[Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
         [SerializeField] private WindowDef _gameWindow;
         [SerializeField] private bool _isCloseRoomOnGameStart;
-        [SerializeField] private SceneDef _raidScene;
+        [SerializeField] private SceneDef _raidScene;*/
 
         [Header("Team Names"), SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
@@ -88,90 +88,19 @@ namespace MenuUI.Scripts.Lobby
                 yield break;
             }
             if(PhotonNetwork.LocalPlayer.IsMasterClient)PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { BattleID, PhotonNetwork.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
-            WindowManager.Get().ShowWindow(_roomWindow);
+            //WindowManager.Get().ShowWindow(_roomWindow);
         }
 
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_gameWindow, _isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            //StartCoroutine(StartTheGameplay(_gameWindow, _isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
         private void OnStartRaidTestEvent(StartRaidTestEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheRaidTestRoom(_raidScene));
-        }
-
-        private IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
-        {
-            Debug.Log($"startTheGameplay {gameWindow}");
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                throw new UnityException("only master client can start the game");
-            }
-            var player = PhotonNetwork.LocalPlayer;
-            var masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (!PhotonBattle.IsValidPlayerPos(masterPosition))
-            {
-                throw new UnityException($"master client does not have valid player position: {masterPosition}");
-            }
-            // Snapshot player list before iteration because we can change it
-            var players = PhotonNetwork.CurrentRoom.Players.Values.ToList();
-            var realPlayerCount = 0;
-            foreach (var roomPlayer in players)
-            {
-                var playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonBattle.IsValidPlayerPos(playerPos))
-                {
-                    realPlayerCount += 1;
-                    continue;
-                }
-                if (playerPos == PlayerPositionSpectator)
-                {
-                    continue;
-                }
-                Debug.Log($"Kick player (close connection) @ {PlayerPositionKey}={playerPos} {roomPlayer.GetDebugLabel()}");
-                PhotonNetwork.CloseConnection(roomPlayer);
-                yield return null;
-            }
-            if (player.IsMasterClient)
-            {
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
-                var room = PhotonNetwork.CurrentRoom;
-                room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
-                room.CustomProperties.Add(TeamRedNameKey, redTeamName);
-                room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
-                /*room.SetCustomProperties(new Hashtable
-                {
-                    { TeamBlueNameKey, blueTeamName },
-                    { TeamRedNameKey, redTeamName },
-                    { PlayerCountKey, realPlayerCount }
-                });*/
-                yield return null;
-                if (isCloseRoom)
-                {
-                    //PhotonLobby.CloseRoom(true);
-                    yield return null;
-                }
-            }
-            WindowManager.Get().ShowWindow(gameWindow);
-        }
-
-        private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
-        {
-            Debug.Log($"RAID TEST {raidScene}");
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                throw new UnityException("only master client can start this game");
-            }
-            yield return null;
-            if (!raidScene.IsNetworkScene)
-            {
-                throw new UnityException($"scene {raidScene} IsNetworkScene = false");
-            }
-            PhotonNetwork.LoadLevel(raidScene.SceneName);
+            //StartCoroutine(StartTheRaidTestRoom(_raidScene));
         }
 
         private void SetPlayer(Player player, int playerPosition)
@@ -211,7 +140,7 @@ namespace MenuUI.Scripts.Lobby
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             // - can not use GoBack() because we do not know the reason for player leaving the room.
             // UPDATE 17.11.2023 - Since Lobby-scene has been moved to the main menu we will now load the main menu instead.
-            WindowManager.Get().ShowWindow(_mainMenuWindow);
+            //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
         public class PlayerPosEvent

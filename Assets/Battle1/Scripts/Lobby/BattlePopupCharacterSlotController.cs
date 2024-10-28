@@ -4,7 +4,7 @@ using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.CharacterGallery;
+//using MenuUi.Scripts.CharacterGallery;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,14 +12,14 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
 {
     [SerializeField] private GridLayoutGroup _layout;
     [SerializeField] private Transform _horizontalContentPanel;
-    private CharacterSlot[] _curSelectedCharacterSlots;
+    //private CharacterSlot[] _curSelectedCharacterSlots;
     [SerializeField] private GameObject _characterSlotprefab;
-    [SerializeField] private GalleryCharacterReference _referenceSheet;
+    //[SerializeField] private GalleryCharacterReference _referenceSheet;
 
 
     void Awake()
     {
-        _curSelectedCharacterSlots = _horizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
+        //_curSelectedCharacterSlots = _horizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
     }
 
     private void OnEnable()
@@ -28,10 +28,10 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
         //Debug.LogWarning(size);
         _layout.cellSize = new(size, size);
 
-        for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+        /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
         {
             _curSelectedCharacterSlots[i].GetComponent<GridLayoutGroup>().cellSize = new(size, size);
-        }
+        }*/
         ResetCharacters();
         SetCharacters();
     }
@@ -51,7 +51,7 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
             // Set characters in the ModelView
             //_view.SetCharacters(characters, currentCharacterId);
 
-            for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+            /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
             {
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast(characters[i]);
 
@@ -65,20 +65,20 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
 
                 slot.GetComponent<Button>().enabled = false;
 
-            }
+            }*/
 
         });
     }
 
     private void ResetCharacters()
     {
-        for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
+        /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
         {
             GameObject character = null;
             if (_curSelectedCharacterSlots[i].transform.childCount > 0)
             character = _curSelectedCharacterSlots[i].transform.GetChild(0).gameObject;
             if(character != null) Destroy(character);
-        }
+        }*/
     }
 
 }
