@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
-using Photon.Pun;
+//using Photon.Pun;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
@@ -57,7 +57,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     //type 0: default, type 1: lock
     public int _bombType = 0; 
 
-    public PhotonView _photonView { get; set; }
+    //public PhotonView _photonView { get; set; }
     public void Awake()
     {
         Heart = GameObject.FindWithTag("Heart");
