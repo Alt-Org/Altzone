@@ -1,6 +1,6 @@
 using MenuUi.Scripts.Window.ScriptableObjects;
 #if PHOTON_UNITY_NETWORKING
-using Photon.Pun;
+//using Photon.Pun;
 #endif
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -39,7 +39,7 @@ namespace MenuUi.Scripts.Window
             {
                 Debug.Log($"NETWORK {scene.SceneName} ({sceneIndex})", windowDef);
 #if PHOTON_UNITY_NETWORKING
-                PhotonNetwork.LoadLevel(scene.SceneName);
+                //PhotonNetwork.LoadLevel(scene.SceneName);
                 return;
 #else
                 throw new UnityException("PHOTON_UNITY_NETWORKING not available");
