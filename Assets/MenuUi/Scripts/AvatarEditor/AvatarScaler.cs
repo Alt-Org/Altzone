@@ -39,7 +39,7 @@ namespace MenuUi.Scripts.AvatarEditor{
         void OnEnable()
         {
             _bookBackground.enabled = false;
-            _characterImage = _characterImageParent.GetChild(0);
+            SetCharacterImage();
         }
         void OnDisable()
         {
@@ -124,11 +124,14 @@ namespace MenuUi.Scripts.AvatarEditor{
             }
         }
 
-        public Vector2 GetCurrentScale(){
+        public Vector2 GetCurrentScale()
+        {
             return _characterImage.localScale;
         }
 
-        public void SetLoadedScale(Vector2 scale) {
+        public void SetLoadedScale(Vector2 scale) 
+        {
+            SetCharacterImage();
             float x = scale.x;
             float y = scale.y;
             if(x< _minScaling)
@@ -148,6 +151,10 @@ namespace MenuUi.Scripts.AvatarEditor{
                 y = _maxScaling;
             }
             _characterImage.localScale = new Vector2(x, y);
+        }
+        private void SetCharacterImage()
+        {
+            _characterImage = _characterImageParent.GetChild(0);
         }
     }
     

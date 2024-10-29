@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -12,6 +13,7 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField]private Transform _characterImageParent;
         [SerializeField]private Transform _featureButtonsParent;
+        [SerializeField]private TMP_Text _categoryText;
 
         #region placeholders
         [Header("feature data placeholder lists")]
@@ -152,7 +154,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private List<Button> _categoryButtons;
         [SerializeField]private List<Button> _pageButtons;
         [SerializeField]private List<Transform> _featureButtonPositions;
-        [SerializeField]private Animator animator;
+        [SerializeField]private Animator _animator;
         private FeatureSlot _currentlySelectedCategory;
         private List<FeatureID> _selectedFeatures = new(){
             FeatureID.Default,
@@ -177,14 +179,14 @@ namespace MenuUi.Scripts.AvatarEditor
         // private AvatarEditorSwipe _swiper;
         private RectTransform _swipeArea;
 
+        private bool _featureButtonHasBeenClicked = false;
+
 
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
             // GetComponent<AvatarEditorSwipe>().SetSwipeActions(swipeRight: LoadNextPage, swipeLeft: LoadPreviousPage, swipeUp: LoadPreviousCategory, swipeDown: LoadNextCategory);
             
-
-            //Placeholder buttons, will be replaced by swiping at some point
             _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
             _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
             _pageButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextPage);
@@ -192,6 +194,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         public void OnEnable()
         {
+            _featureButtonHasBeenClicked = false;
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
             SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
@@ -225,7 +228,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void LoadNextPage()
         {
-            if(_currentPageNumber < _pageCount-1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+            if(_currentPageNumber < _pageCount-1 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber++;
                 StartCoroutine(PlayNextPageAnimation());      
             }
@@ -234,16 +237,16 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             DestroyRightSideButtons();
             InstantiateRightSideButtons();
-            animator.Play("PageFlip");
-            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
-            animator.SetTrigger("ResetToIdle");
+            _animator.Play("PageFlip");
+            yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            _animator.SetTrigger("ResetToIdle");
             
             DestroyLeftSideButtons();
             InstantiateLeftSideButtons();
         }
         private void LoadPreviousPage()
         {
-            if (_currentPageNumber > 0 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+            if (_currentPageNumber > 0 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber--;
                 StartCoroutine(PlayPreviousPageAnimation());
             }
@@ -252,9 +255,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             DestroyLeftSideButtons();
             InstantiateLeftSideButtons();
-            animator.Play("BackPageFlip");
-            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
-            animator.SetTrigger("ResetToIdle");
+            _animator.Play("BackPageFlip");
+            yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            _animator.SetTrigger("ResetToIdle");
             DestroyRightSideButtons();
             InstantiateRightSideButtons();
         }
@@ -342,6 +345,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void FeatureButtonClicked(FeatureData featureToChange, int slot){
             SetFeature(featureToChange, slot);
             _restoreDefaultColor?.Invoke();
+            _featureButtonHasBeenClicked = true;
         }
         private void SetFeature(FeatureData featureToChange, int slot)
         {
@@ -386,6 +390,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SwitchFeatureCategory()
         {
+            _featureButtonHasBeenClicked = false;
             //placeholder until available features can be read from player inventory
             _currentCategoryFeatureDataPlaceholder = GetSpritesByCategory(_currentlySelectedCategory);
 
@@ -395,8 +400,11 @@ namespace MenuUi.Scripts.AvatarEditor
                 _pageCount++;
             }
 
-            DestroyFeatureButtons();
-            InstantiateFeatureButtons();
+            StartCoroutine(PlayNextPageAnimation());
+            
+            // DestroyFeatureButtons();
+            // InstantiateFeatureButtons();
+            _categoryText.text = _currentlySelectedCategory.ToString();
         }
 
         //placeholder until available features can be read from player inventory
@@ -421,7 +429,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             return _currentlySelectedCategory;
         }
-        public List<FeatureID> GetCurrentlySelectedFeature()
+        public List<FeatureID> GetCurrentlySelectedFeatures()
         {
             return _selectedFeatures;
         }
@@ -469,6 +477,9 @@ namespace MenuUi.Scripts.AvatarEditor
                 CharacterClassID.Obedient => _preacherDefaults[slotIndex],
                 _ => FeatureID.None,
             };
+        }
+        public bool FeatureButtonHasBeenClicked(){
+            return _featureButtonHasBeenClicked;
         }
 
         

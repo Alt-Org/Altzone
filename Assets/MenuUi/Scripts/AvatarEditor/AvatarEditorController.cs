@@ -18,30 +18,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private TMP_InputField _nameInput;
         [SerializeField]private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         private FeatureSlot _currentlySelectedCategory;
-        private List<FeatureID> _selectedFeatures = new(){
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-            FeatureID.Default,
-        };
-        private List<FeatureColor> _selectedColors = new(){
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,
-            FeatureColor.White,     
-        };
+        
+        
         private Vector2 _selectedScale;
         private PlayerAvatar _playerAvatar;
         private FeaturePicker _featurePicker;
@@ -59,6 +37,7 @@ namespace MenuUi.Scripts.AvatarEditor
             
         }
         void OnEnable(){
+            // _colorPicker.SetCurrentCategoryAndColors(_currentlySelectedCategory, _selectedColors);
             _characterLoader.RefreshPlayerCurrentCharacter(CharacterLoaded);
             // ResetAvatarDataToDefaults();
             foreach(GameObject mode in _modeList){
@@ -82,14 +61,15 @@ namespace MenuUi.Scripts.AvatarEditor
                 
             }
             if (_currentMode == AvatarEditorMode.ColorPicker){
-                _modeList[1].GetComponent<ColorPicker>().SelectFeature(_currentlySelectedCategory);
-                _modeList[1].GetComponent<ColorPicker>().SetCharacterClassID(_characterLoader.GetCharacterClassID());
+                _colorPicker.SelectFeature(_currentlySelectedCategory);
+                _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             }
             
             _modeList[(int)_currentMode].SetActive(true);
         }
         private void RestoreDefaultColorToFeature(){
-            // Debug.Log("restore default color");
+            Debug.Log("restoring default color to slot: " + _currentlySelectedCategory);
+            _colorPicker.RestoreDefaultColor(_featurePicker.GetCurrentlySelectedCategory());
             // _selectedColors[(int)_currentlySelectedCategory] = FeatureColor.White;
             // SetSaveableData();
         }
@@ -113,53 +93,26 @@ namespace MenuUi.Scripts.AvatarEditor
             GoIntoMode();
         }
         #endregion
-        #region Saving and loading Data
-
-        private void SetSaveableData(){
-            if(_currentMode == AvatarEditorMode.FeaturePicker){
-                _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
-                _selectedFeatures = _featurePicker.GetCurrentlySelectedFeature();
-            }
-            // else if(_currentMode == AvatarEditorMode.ColorPicker){
-            //     _selectedColors[(int)_currentlySelectedCategory] = _modeList[1].GetComponent<ColorPicker>().GetCurrentColor();
-            // }
-            _selectedColors[(int)_currentlySelectedCategory] = _colorPicker.GetCurrentColor();
-            _selectedScale = _avatarScaler.GetCurrentScale();
-            // foreach(Feature feature in _selectedFeatures)
-            //     Debug.Log("Data saved: " + feature.ToString());
-            // foreach(FeatureColors color in _selectedColors)
-            //     Debug.Log("Color saved: " + color.ToString());
-        }
-
-
-
-
-
+        #region Loading Data
 
 
 
         private void LoadAvatarData()
         {
-            _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeatures(), LoadColors(), LoadScale());
+            _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeaturesFromPrefs(), LoadColorsFromPrefs(), LoadScaleFromPrefs());
             _nameInput.text = _playerAvatar.Name;
-            _featurePicker.gameObject.SetActive(true);
+
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
-            _featurePicker.GetComponent<FeaturePicker>().SetLoadedFeatures(_playerAvatar.Features);
-            _featurePicker.gameObject.SetActive(false);
-            _colorPicker.gameObject.SetActive(true);
+            _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
+
             _colorPicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _colorPicker.SetLoadedColors(_playerAvatar.Colors, _playerAvatar.Features);
-            _colorPicker.gameObject.SetActive(false);
-            _avatarScaler.gameObject.SetActive(true);
+
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
-            _avatarScaler.gameObject.SetActive(false);
-            // _modeList[1].SetActive(true);
-            // _modeList[1].GetComponent<ColorPicker>().SetLoadedColors(_playerAvatar.Colors);
-            // _modeList[1].SetActive(false);
-            // Debug.Log("Player chosen hair is: " +_playerAvatar.Features[0].ToString());
+
             
         }
-        private List<FeatureID> LoadFeatures()
+        private List<FeatureID> LoadFeaturesFromPrefs()
         {
             List<FeatureID> features = new();
             for(int i = 0; i < 8; i++){
@@ -168,7 +121,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
             return features;
         }
-        private List<FeatureColor> LoadColors()
+        private List<FeatureColor> LoadColorsFromPrefs()
         {
             List<FeatureColor> colors = new();
             for (int i = 0; i < 8; i++){
@@ -176,7 +129,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
             return colors;
         }
-        private Vector2 LoadScale()
+        private Vector2 LoadScaleFromPrefs()
         {
             return new Vector2(PlayerPrefs.GetFloat("ScaleX"), PlayerPrefs.GetFloat("ScaleY"));
         }
@@ -189,14 +142,24 @@ namespace MenuUi.Scripts.AvatarEditor
         //         PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Color", 0);
         //     }
         // }
+        #endregion
+        #region Saving Data
+        private void SetSaveableData(){
+            _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
+            _selectedScale = _avatarScaler.GetCurrentScale();
+            // foreach(Feature feature in _selectedFeatures)
+            //     Debug.Log("Data saved: " + feature.ToString());
+            // foreach(FeatureColors color in _selectedColors)
+            //     Debug.Log("Color saved: " + color.ToString());
+        }
 
         private void SaveAvatarData()
         {
             SetSaveableData();
             SaveName();
-            SaveFeatures();
-            SaveColors();
-            SaveScale();
+            SaveFeaturesToPrefs();
+            SaveColorsToPrefs();
+            SaveScaleToPrefs();
             PlayerPrefs.Save();
         }
         private void SaveName()
@@ -207,21 +170,23 @@ namespace MenuUi.Scripts.AvatarEditor
             _playerAvatar.Name = characterName;
             PlayerPrefs.SetString("CharacterName", characterName);
         }
-        private void SaveFeatures()
+        private void SaveFeaturesToPrefs()
         {
-            for(int i = 0; i < _selectedFeatures.Count; i++){
+            List<FeatureID> features = _featurePicker.GetCurrentlySelectedFeatures();
+            for(int i = 0; i < features.Count; i++){
                 // Debug.Log("Saving feature: " +_selectedFeatures[i] + " to a string key named: " + ((FeatureSlot)i).ToString());
-                PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Feature", (int)_selectedFeatures[i]);
+                PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Feature", (int)features[i]);
             }
         }
-        private void SaveColors()
+        private void SaveColorsToPrefs()
         {
+            List<FeatureColor> colors = _colorPicker.GetCurrentColors();
             for(int i = 0; i < _playerAvatar.Colors.Count; i++){
-                // Debug.Log("Saving color: " +_selectedColors[i] + " to a string key named: " + ((FeatureSlot)i).ToString());
-                PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Color", (int)_selectedColors[i]);
+                Debug.Log("Saving color: " +colors[i] + " to a string key named: " + ((FeatureSlot)i).ToString());
+                PlayerPrefs.SetInt(((FeatureSlot)i).ToString()+"Color", (int)colors[i]);
             }
         }
-        private void SaveScale()
+        private void SaveScaleToPrefs()
         {
             PlayerPrefs.SetFloat("ScaleX", _selectedScale.x);
             PlayerPrefs.SetFloat("ScaleY", _selectedScale.y);
