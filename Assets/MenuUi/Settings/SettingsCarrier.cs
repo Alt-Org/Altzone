@@ -8,10 +8,6 @@ public class SettingsCarrier : MonoBehaviour
     public static SettingsCarrier Instance { get; private set; }
     public int mainMenuWindowIndex;
 
-    // Pass item to be voted in here so you can give it to voting view
-    private EsineDisplay ItemToBeVoted;
-    private List<VotingObject> votingItemsList = new List<VotingObject>();
-
     private TextSize _textSize;
 
     private void Awake()
@@ -95,47 +91,5 @@ public class SettingsCarrier : MonoBehaviour
     public TextSize Textsize { get => _textSize; }
 
     public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
-
-
-
-
-
-
-
-    public void ItemSetForVoting(EsineDisplay item)
-    {
-        ItemToBeVoted = item;
-    }
-
-    public void ItemVotingCanceled()
-    {
-        ItemToBeVoted = null;
-    }
-
-
-    public bool ItemVotingStarted() => ItemToBeVoted != null ? true : false;
-
-    public EsineDisplay GetCurrentVoteItem() => ItemToBeVoted;
-
-    public void MakeVotingObject()
-    {
-        VotingObject votingObject = new VotingObject
-        {
-            id = ItemToBeVoted.GetInstanceID().ToString(),
-            votableName = ItemToBeVoted.items.name,
-            time = 100f,
-            sprite = ItemToBeVoted.items.esine
-        };
-
-
-        votingItemsList.Add(votingObject);
-
-    }
-
-    public List<VotingObject> GetVotingObjects()
-    {
-        return votingItemsList;
-
-    }
 
 }

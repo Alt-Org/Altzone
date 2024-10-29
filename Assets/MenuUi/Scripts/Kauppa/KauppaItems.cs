@@ -6,6 +6,7 @@ using UnityEngine;
 public class KauppaItems : ScriptableObject
 {
     public string hinta;
+    public float value;
 
     public Sprite esine;
 }

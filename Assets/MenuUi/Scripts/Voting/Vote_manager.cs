@@ -13,20 +13,20 @@ public class Vote_manager : MonoBehaviour
     //private List<GameObject> votes = new List<GameObject>();
 
 
-    private List<VotingObject> votingItemsList = new List<VotingObject>();
+    private List<PollObject> pollObjectList = new List<PollObject>();
 
     private SettingsCarrier settingsCarrier;
 
     // Start is called before the first frame update
     void Start()
     {
-        settingsCarrier = SettingsCarrier.Instance;
-
-        if (settingsCarrier.ItemVotingStarted())
-        {
-            votingItemsList = settingsCarrier.GetVotingObjects();
-        }
-       PopulateVoteList();
+        //settingsCarrier = SettingsCarrier.Instance;
+        //
+        //if (settingsCarrier.ItemVotingStarted())
+        //{
+        //    votingItemsList = settingsCarrier.GetVotingObjects();
+        //}
+        //PopulateVoteList();
     }
 
     //void PopulateVoteList()
@@ -46,7 +46,7 @@ public class Vote_manager : MonoBehaviour
 
     void PopulateVoteList()
     {
-        foreach (VotingObject item in votingItemsList)
+        foreach (PollObject item in pollObjectList)
         {
             //Debug.Log("new voting items: " + item.id); // Assuming VotingObject has a proper ToString() method or override
             //Debug.Log("new voting items: " + item.votableName);

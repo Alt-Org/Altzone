@@ -1,38 +1,38 @@
+using System.Diagnostics;
+using System.Security.AccessControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class KylläButtonÄänestyst : MonoBehaviour
 {
-    public GameObject item;
     public GameObject panelToBeSetInActive;
+    public EsineDisplay esine;
 
+    private void OnEnable()
+    {
+        VotingActions.PassKauppaItem += setItem;
+    }
 
-    // Tämä metodi kutsutaan, kun pelaaja painaa "Kyllä" -näppäintä
+    private void OnDisable()
+    {
+        VotingActions.PassKauppaItem -= setItem;
+    }
+
+    private void setItem(EsineDisplay item)
+    {
+        esine = item;
+    }
+
     public void YesButtonPressed()
     {
-        Debug.Log("trying to closse the panel");
-        // tavaran Id ulos, kun on painettu nappia, jotta menee oikein aanestykseen
-        // Tässä voit vaihtaa scenen tai siirtyä valikkoon
-        //SceneManager.LoadScene("ÄänestysView"); // Vaihda "UusiSceneNimi" haluamasi scenen nimeen
         Invoke("SetInactiveAfterTime", 2f);
 
-        SettingsCarrier.Instance.MakeVotingObject();
+        PollManager.CreatePollObject(PollType.Kauppa, esine.name, 2, esine.items.esine, EsinePollType.Buying, esine.items.value);
     }
-
-    public void NoButtonPressed()
-    {
-        item = null;
-        SettingsCarrier.Instance.ItemVotingCanceled();
-    }
-
 
     public void SetInactiveAfterTime()
     {
         panelToBeSetInActive.SetActive(false);
     }
-
 }
-
-    
-
