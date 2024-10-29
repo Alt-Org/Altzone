@@ -933,8 +933,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 4c08325afa94cd948bc6736d26cb8314,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1237,8 +1236,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 14690f6a2f18bbd49804d35f06139e45,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1430,8 +1428,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _nextNaviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 49456bc2e3f05254bb9bf031f48128d4,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 1440607170473138604, guid: 9a41ff97b9c3ff548b97a8e64c7da793,
         type: 3}
       propertyPath: _prevNaviTarget
@@ -1652,6 +1649,11 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 7695168990374541663, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1805,8 +1807,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 4d6a33657ed4a61429fb7cbf852c86ea,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1956,8 +1957,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 4650fd3d97a0c7b419804e31f7046f8c,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1977,6 +1977,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5480518614945220119}
     m_Modifications:
+    - target: {fileID: 1559136949628158544, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.0000019
+      objectReference: {fileID: 0}
+    - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.0000038
+      objectReference: {fileID: 0}
     - target: {fileID: 1816700110254165857, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_IsActive
@@ -2410,8 +2420,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: d61fc63178923d74ca940d72d40d2cd4,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2882,8 +2891,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 42ecfee9b6b24c646a739150b7bbf47e,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3033,8 +3041,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _naviTarget
       value: 
-      objectReference: {fileID: 11400000, guid: 7aad4f4aab3b8f047a34a1524b17e6fa,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

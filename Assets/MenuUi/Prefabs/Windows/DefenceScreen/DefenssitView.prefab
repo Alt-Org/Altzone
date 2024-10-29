@@ -806,7 +806,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4793987176479439813, guid: 7fe6fc90801a37d498444e0b9f3f734c,
         type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793987176479439813, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793987176479439813, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4793987176479439813, guid: 7fe6fc90801a37d498444e0b9f3f734c,
@@ -1111,7 +1121,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9010421601953684764, guid: 7fe6fc90801a37d498444e0b9f3f734c,
         type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9010421601953684764, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9010421601953684764, guid: 7fe6fc90801a37d498444e0b9f3f734c,
+        type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9010421601953684764, guid: 7fe6fc90801a37d498444e0b9f3f734c,
@@ -1170,7 +1190,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3874102304987034797, guid: 7fe6fc90801a37d498444e0b9f3f734c, type: 3}
+    - {fileID: 7674107664300183725, guid: 7fe6fc90801a37d498444e0b9f3f734c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fe6fc90801a37d498444e0b9f3f734c, type: 3}
@@ -1309,6 +1331,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2750133784544768409}
     m_Modifications:
+    - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 9.999878
+      objectReference: {fileID: 0}
+    - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -3.9999695
+      objectReference: {fileID: 0}
     - target: {fileID: 1637046768388801568, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Enabled

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -147,17 +146,17 @@ MonoBehaviour:
     list:
     - Name: Girls
       id: 1537
-      characterImagePrefab: {fileID: 0}
       DivanImage: {fileID: 21300000, guid: 6301d6e2ebd09b642abca19eaade6ecb, type: 3}
   - Name: EgotismEinstein
     id: 1792
     list:
     - Name: Einstein
       id: 1793
-      characterImagePrefab: {fileID: 0}
       DivanImage: {fileID: 21300000, guid: b473fdb75135d0b4881be82aed1d0365, type: 3}
   _characterImageParent: {fileID: 0}
   _divanImage: {fileID: 149215620}
+  _defaultAvatarImagePrefab: {fileID: 0}
+  _confluenceAvatarImagePrefab: {fileID: 0}
 --- !u!114 &149215620 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5791310710658964298, guid: 75313ac50a8cd504486c71cf72454b9e,
@@ -356,18 +355,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &1933211403 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5181688677249606757, guid: 75313ac50a8cd504486c71cf72454b9e,
-    type: 3}
-  m_PrefabInstance: {fileID: 4663983122293298706}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4663983122293298706
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -380,6 +367,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.000061035156
+      objectReference: {fileID: 0}
+    - target: {fileID: 2303743429245796774, guid: 75313ac50a8cd504486c71cf72454b9e,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2619582327181556341, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
@@ -430,7 +422,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _characterImage
       value: 
-      objectReference: {fileID: 1933211403}
+      objectReference: {fileID: 0}
     - target: {fileID: 3572067151878312193, guid: 75313ac50a8cd504486c71cf72454b9e,
         type: 3}
       propertyPath: _info.Array.size
