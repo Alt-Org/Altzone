@@ -1,4 +1,4 @@
-Battle [tehtävät](https://github.com/orgs/Alt-Org/projects/8/views/1).
+Battle [tehtävät](https://github.com/orgs/Alt-Org/projects/8/views/1) (vain jäsenille).
 
 [ALT Zone -esitys.pdf](https://github.com/user-attachments/files/17323217/ALT.Zone.-esitys.pdf)
 
