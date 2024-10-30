@@ -18,13 +18,30 @@ namespace MenuUI.Scripts.SoulHome
         SetFurniture
     }
 
-    public class SoulHomeAudioManager : MonoBehaviour
+    public class AudioManager : MonoBehaviour
     {
+        public static AudioManager Instance { get; private set; }
+
         [SerializeField] private AudioSource _musicAudio;
         private MusicList _musicList;
         [SerializeField] private List<AudioBlock> _audioList;
 
         [SerializeField] private GameObject _audioSourcePrefab;
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+        }
+
+
         // Start is called before the first frame update
         void Start()
         {
@@ -118,7 +135,7 @@ namespace MenuUI.Scripts.SoulHome
         }
     }
 
-    [CustomEditor(typeof(SoulHomeAudioManager))]
+    [CustomEditor(typeof(AudioManager))]
     public class AudioManagerEditor : Editor
     {
         private AudioType _type = AudioType.Music;
@@ -127,7 +144,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             DrawDefaultInspector();
             
-            SoulHomeAudioManager script = (SoulHomeAudioManager)target;
+            AudioManager script = (AudioManager)target;
             EditorGUILayout.LabelField("");
             EditorGUILayout.LabelField("New AudioSource", EditorStyles.boldLabel);
             _newName = EditorGUILayout.TextField("Name", _newName);
