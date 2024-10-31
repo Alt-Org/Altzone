@@ -586,7 +586,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3842604155604266233}
   - component: {fileID: 6731491020509089268}
-  - component: {fileID: 5465505592953799763}
   - component: {fileID: 1157714174984439896}
   m_Layer: 5
   m_Name: ClanList
@@ -623,22 +622,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 546899509300491230}
   m_CullTransparentMesh: 1
---- !u!114 &5465505592953799763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 546899509300491230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7118195278ab2bb4086d25127a1e9493, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _clanPrefab: {fileID: 4448567327820125797, guid: 9b3371e60ca95f64f97946595b00ffdb,
-    type: 3}
-  _clanListParent: {fileID: 4201336993777603817}
-  _loadMoreButton: {fileID: 3503811075455976672}
 --- !u!114 &1157714174984439896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1985,6 +1968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7118195278ab2bb4086d25127a1e9493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _filtersPanel: {fileID: 8468775308953998250}
   _clanPrefab: {fileID: 4448567327820125797, guid: 9b3371e60ca95f64f97946595b00ffdb,
     type: 3}
   _clanListParent: {fileID: 4201336993777603817}
@@ -4632,6 +4616,7 @@ GameObject:
   - component: {fileID: 4104803863824756999}
   - component: {fileID: 3812679165425025779}
   - component: {fileID: 2327694984236571526}
+  - component: {fileID: 8468775308953998250}
   m_Layer: 5
   m_Name: SearchAndFilterPanel
   m_TagString: Untagged
@@ -4697,6 +4682,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8468775308953998250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347373712825840380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d9b4cfb75cebb4999727a37949c08d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clanNameField: {fileID: 8062042597500988089}
+  _ageDropdown: {fileID: 4130950288773670665}
+  _activityDropdown: {fileID: 7390684616687365721}
+  _languageDropdown: {fileID: 4257049595173457226}
+  _goalDropdown: {fileID: 2184835439176175777}
+  _removeLockedToggle: {fileID: 3556400382978967236}
 --- !u!1 &4347952707573901881
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ClanSearchView : MonoBehaviour
 {
+    [SerializeField] ClanSearchFiltersPanel _filtersPanel;
     [SerializeField] private GameObject _clanPrefab;
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
@@ -30,6 +31,13 @@ public class ClanSearchView : MonoBehaviour
             ListClans(clans, paginationData);
         }
         )));
+
+        _filtersPanel.OnFiltersChanged += UpdateSearch;
+    }
+
+    private void OnDisable()
+    {
+        _filtersPanel.OnFiltersChanged -= UpdateSearch;
     }
 
     private void Reset()
@@ -85,5 +93,10 @@ public class ClanSearchView : MonoBehaviour
             _loadMoreButton.SetActive(false);
 
         _loadMoreButton.transform.SetAsLastSibling();
+    }
+
+    private void UpdateSearch(ClanSearchFilters filters)
+    {
+        Debug.LogWarning("Filters changed, filtering not yet implimented \n" + filters.ToString());
     }
 }
