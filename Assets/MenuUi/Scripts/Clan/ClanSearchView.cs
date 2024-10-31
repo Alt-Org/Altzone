@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ClanSearchView : MonoBehaviour
 {
     [SerializeField] private GameObject _clanPrefab;
-    [SerializeField] private Transform _parent;
+    [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
 
     private int currentPage;    // Current page found in pagination data
@@ -34,8 +34,8 @@ public class ClanSearchView : MonoBehaviour
 
     private void Reset()
     {
-        for (int i = 0; i < _parent.childCount - 1; i++)
-            Destroy(_parent.GetChild(i).gameObject);
+        for (int i = 0; i < _clanListParent.childCount - 1; i++)
+            Destroy(_clanListParent.GetChild(i).gameObject);
 
         totalPages = 0;
         currentPage = 0;
@@ -61,7 +61,7 @@ public class ClanSearchView : MonoBehaviour
 
         foreach (ServerClan clan in clans)
         {
-            GameObject clanInstance = Instantiate(_clanPrefab, _parent);
+            GameObject clanInstance = Instantiate(_clanPrefab, _clanListParent);
             ClanListing clanListing = clanInstance.GetComponent<ClanListing>();
             clanListing.Clan = clan;
 

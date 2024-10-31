@@ -1,19 +1,106 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUI.Scripts.SoulHome;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using static SettingsCarrier;
+using AudioType = MenuUI.Scripts.SoulHome.AudioType;
+
+enum AudioSelection
+{
+    Type,
+    Name,
+    ID
+}
 
 public class PlayAudioClip : MonoBehaviour
 {
-    private AudioSource _audioSource;
+    [SerializeField]
+    private AudioSelection _audioSelection = AudioSelection.Type;
+    [SerializeField]
+    AudioType _audioType = AudioType.None;
+    [SerializeField]
+    string _audioName = "";
+    [SerializeField]
+    int _audioId = 0;
+
     private void Start()
     {
-        _audioSource = GetComponent<AudioSource>();
+        GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+        GetComponent<Toggle>()?.onValueChanged.AddListener(PlayAudio);
     }
 
+    //Since we use editor calls we omit this function on build time
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    public void Reset()
+    {
+        Button source = GetComponent<Button>();
+        Toggle light = GetComponent<Toggle>();
+
+        if (source == null && light == null)
+        {
+            if (UnityEditor.EditorUtility.DisplayDialog("Choose a Component", "You are missing one of the required componets. Please choose one to add", "Button", "Toggle"))
+            {
+                gameObject.AddComponent<Button>();
+            }
+            else
+            {
+                gameObject.AddComponent<Toggle>();
+            }
+        }
+    }
+
+    public void PlayAudio(bool value) => PlayAudio();
     public void PlayAudio()
     {
-        if (_audioSource != null)
-            MainMenuAudioManager.Instance.PlaySound(_audioSource.clip, GetComponent<AudioSource>().volume);
+        AudioManager manager = AudioManager.Instance;
+        if (manager == null)
+        {
+            Debug.LogError("Cannot find audio manager. Check if AudioManager is added to the scene.");
+            return;
+        }
+        if (_audioSelection == AudioSelection.Type)
+            manager.PlayAudio(_audioType);
+        else if(_audioSelection == AudioSelection.Name)
+            manager.PlayAudio(_audioName);
+        else if (_audioSelection == AudioSelection.ID)
+            manager.PlayAudio(_audioId);
     }
+    [CustomEditor(typeof(PlayAudioClip))]
+    public class PlayAudioClipEditor : Editor
+    {
+        SerializedProperty section;
+        SerializedProperty sectionA;
+        SerializedProperty sectionB;
+        SerializedProperty sectionC;
+
+        void OnEnable()
+        {
+            section = serializedObject.FindProperty(nameof(_audioSelection));
+            sectionA = serializedObject.FindProperty(nameof(_audioType));
+            sectionB = serializedObject.FindProperty(nameof(_audioName));
+            sectionC = serializedObject.FindProperty(nameof(_audioId));
+        }
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(section);
+            switch ((AudioSelection)section.enumValueIndex)
+            {
+                case AudioSelection.Type:
+                    EditorGUILayout.PropertyField(sectionA);
+                    break;
+                case AudioSelection.Name:
+                    EditorGUILayout.PropertyField(sectionB);
+                    break;
+                case AudioSelection.ID:
+                    EditorGUILayout.PropertyField(sectionC);
+                    break;
+            }
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+
 }

@@ -38,7 +38,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private TextMeshProUGUI _musicName;
         [SerializeField]
-        private SoulHomeAudioManager _audioManager;
+        private AudioManager _audioManager;
 
         private FurnitureList _furnitureList = new();
 
@@ -67,9 +67,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>().StopMusic();
+                    rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             }
-            string name = _audioManager.PlayMusic();
+            AudioManager.Instance?.PlayMusic();
             //if(name != null)
             _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
             EditModeTrayResize();
@@ -82,9 +82,9 @@ namespace MenuUI.Scripts.SoulHome
             foreach (GameObject rootObject in root)
             {
                 if (rootObject.name == "AudioManager")
-                    rootObject.GetComponent<MainMenuAudioManager>().PlayMusic();
+                    rootObject.GetComponent<MainMenuAudioManager>()?.PlayMusic();
             }
-            _audioManager.StopMusic();
+            AudioManager.Instance?.StopMusic();
         }
 
         public void SetRoomName(GameObject room)
