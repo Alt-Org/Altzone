@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -355,6 +354,55 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!1 &667346629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 667346631}
+  - component: {fileID: 667346630}
+  m_Layer: 0
+  m_Name: Carbon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &667346630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667346629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0117ab3b2661f1242b46bf60d9d253b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dataUsedPerSecond: 0.5
+  baselineConsumption: 2
+  networkMultiplier: 1.5
+  enableDetailedTracking: 1
+--- !u!4 &667346631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667346629}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &850710465
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,11 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd8cda7d1b4cf5b520a142d730ecd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainMenuWindow: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
-  _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
-  _gameWindow: {fileID: 11400000, guid: 788f9d753ce503045bfe455e66f76270, type: 2}
-  _isCloseRoomOnGameStart: 1
-  _raidScene: {fileID: 11400000, guid: cc738fef709af534eb951a67291779f3, type: 2}
   _blueTeamName: Alpha
   _redTeamName: Beta
 --- !u!4 &850710467
@@ -845,12 +888,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb188fff0722d646b41d1e9c384deb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isActive: 0
-  isRunning: 0
-  _minTimeBetweenMessages: 0
-  _maxTimeBetweenMessages: 5
-  _minWordsInMessage: 1
-  _maxWordsInMessage: 25
 --- !u!1 &1733062927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,3 +1044,4 @@ SceneRoots:
   - {fileID: 850710467}
   - {fileID: 1733062929}
   - {fileID: 1277116465}
+  - {fileID: 667346631}

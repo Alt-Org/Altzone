@@ -8,8 +8,13 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using UnityEngine.UIElements;
 using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class ProfileMenu : MonoBehaviour
+
+    // Luokka siis näyttää pelaaja profiili statit (pelitunnit[mitkä tällä hetkellä näyttää ne minuutteina], voitot/häviöt ja pelaajan hiilijalanjäljen)
+    // Hiilijalanjälkilaskuri pääosin toimii oletusarvojen mukaan, mutta jos on Android-laitteella, se yrittää etsiä tiedot virrankulutukseen AINAKIN (30.10.2024) -Eemeli
 {
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
@@ -38,33 +43,48 @@ public class ProfileMenu : MonoBehaviour
     private int minuteCount;
     private float secondsCount;
     private float countToCarbon;
-    private float cabrbonCount;
+    private float carbonCount;
+
+
+    private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
+
+    
 
     private ServerPlayer _player;
+
 
     private void Update()
     {
         updateTime();
     }
 
+
     private void updateTime()
     {
         secondsCount += Time.deltaTime;
         countToCarbon += Time.deltaTime;
-        cabrbonCount = countToCarbon * 1.2f;
-        _TimePlayedText.text = "Pelitunnit\n" + minuteCount.ToString();
-        _CarbonText.text = "Hiilijalanjälki\n" + cabrbonCount.ToString("0.0");
+        carbonCount = CarbonFootprint.CarbonCount;
+        _TimePlayedText.text = "Peliaika\n" + minuteCount.ToString();
+
+        if (CarbonFootprint.CarbonCount >= 1000f)
+        {
+            _CarbonText.text = $"Hiilijalanjälki\n{kgCarbon:F2}kg/CO2";
+        } else
+        {
+            _CarbonText.text = $"Hiilijalanjälki\n{carbonCount:F1}g/CO2";
+        }
+        
+
         if (secondsCount > 60)
         {
             minuteCount++;
             secondsCount = 0;
         }
-
     }
 
     private void OnEnable()
     {
-         //tempLocalSaveTime
+        //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
 
@@ -72,7 +92,6 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
-
     }
 
     private void Reset()
@@ -107,4 +126,7 @@ public class ProfileMenu : MonoBehaviour
             Reset();
         }
     }
+
+
 }
+
