@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.GA
 {
+    /// <summary>
+    /// Section name for Game Analytics.
+    /// </summary>
     public enum SectionName
     {
         None,
@@ -20,50 +21,39 @@ namespace Altzone.Scripts.GA
         Voting
     }
 
-
+    /// <summary>
+    /// Sends Game Analytics section name event when this object is enabled and disabled (in UI).
+    /// </summary>
     public class GameAnalyticsSectionHandler : MonoBehaviour
     {
         [SerializeField] private SectionName _sectionName = SectionName.None;
 
-        private void OnEnable()
+        private void Awake()
         {
-            if (_sectionName == SectionName.None) return;
-            string name = GetSectionName();
-            if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.EnterSection(name);
+            Assert.AreNotEqual(SectionName.None, _sectionName, "section name is required");
         }
 
-        private void OnDisable()
-        {
-            if (_sectionName == SectionName.None) return;
-            string name = GetSectionName();
-            if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.ExitSection(name);
-        }
+        private void OnEnable() => HandleSection(_sectionName, isEnter: true);
 
-        private string GetSectionName()
+        private void OnDisable() => HandleSection(_sectionName, isEnter: false);
+
+        private static void HandleSection(SectionName sectionName, bool isEnter)
         {
-            switch (_sectionName)
+            var instance = GameAnalyticsManager.Instance;
+            if (instance == null)
             {
-               case SectionName.MainMenu:
-                    return "MainMenu";
-                case SectionName.SoulHome:
-                    return "SoulHome";
-                case SectionName.DailyTask:
-                    return "DailyTask";
-                case SectionName.Leaderboard:
-                    return "Leaderboard";
-                case SectionName.ClanPage:
-                    return "ClanPage";
-                case SectionName.ClanSelection:
-                    return "ClanSelection";
-                case SectionName.CharacterScreen:
-                    return "CharacterScreen";
-                case SectionName.Settings:
-                    return "Settings";
-                case SectionName.Voting:
-                    return "Voting";
-                default:
-                    return "";
+                return;
+            }
+            if (isEnter)
+            {
+                instance.EnterSection(GetSectionName(sectionName));
+            }
+            else
+            {
+                instance.ExitSection(GetSectionName(sectionName));
             }
         }
+
+        private static string GetSectionName(SectionName sectionName) => sectionName.ToString();
     }
 }

@@ -42,6 +42,15 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Keraily
     }
 
+    public enum ClanActivity
+    {
+        None,
+        VeryActive,
+        Active,
+        OccasionallyActive,
+        RarelyActive
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
@@ -78,6 +87,19 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 Goals.Grindaus => "Grindaus",
                 Goals.Intohimoisuus => "Intohimoisuus",
                 Goals.Keraily => "Keraily",
+                _ => "",
+            };
+        }
+
+        public static string GetActivityText(ClanActivity activity)
+        {
+            return activity switch
+            {
+                ClanActivity.None => "Aktiivisuusluokka",
+                ClanActivity.VeryActive => "Erittäin aktiivinen",
+                ClanActivity.Active => "Aktiivinen",
+                ClanActivity.OccasionallyActive => "Satunnainen",
+                ClanActivity.RarelyActive => "Harvoin paikalla",
                 _ => "",
             };
         }

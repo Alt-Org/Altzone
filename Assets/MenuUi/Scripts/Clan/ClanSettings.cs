@@ -27,7 +27,10 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private Toggle _clanOpenToggle;
     [SerializeField] private TMP_Dropdown _clanLanguageDropdown;
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
-    [SerializeField] private TMP_Dropdown _clanAgeDropdown;
+    [SerializeField] private Toggle _ageToddlersToggle;
+    [SerializeField] private Toggle _ageTeensToggle;
+    [SerializeField] private Toggle _ageAdultsToggle;
+    [SerializeField] private Toggle _ageEveryoneToggle;
 
     [Header("Other settings fields")]
     [SerializeField] private Transform _valueRowFirst;
@@ -47,6 +50,7 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private GameObject _valuePrefab;
 
     private List<HeartPieceData> _heartPieces;
+    private ClanAge _clanAgeRange = ClanAge.None;
 
     private void OnEnable()
     {
@@ -88,9 +92,52 @@ public class ClanSettings : MonoBehaviour
         _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
         _clanGoalDropdown.RefreshShownValue();
 
-        InitAgeDropDown();
-        _clanAgeDropdown.value = EnumToDropdown(clan.ClanAge);
-        _clanAgeDropdown.RefreshShownValue();
+        ConfigureAgeToggle(_ageToddlersToggle, ClanAge.Toddlers);
+        ConfigureAgeToggle(_ageTeensToggle, ClanAge.Teenagers);
+        ConfigureAgeToggle(_ageAdultsToggle, ClanAge.Adults);
+        ConfigureAgeToggle(_ageEveryoneToggle, ClanAge.All);
+
+        switch (clan.ClanAge)
+        {
+            case ClanAge.Toddlers:
+                _ageToddlersToggle.isOn = true;
+                _clanAgeRange = ClanAge.Toddlers;
+                break;
+            case ClanAge.Teenagers:
+                _ageTeensToggle.isOn = true;
+                _clanAgeRange = ClanAge.Teenagers;
+                break;
+            case ClanAge.Adults:
+                _ageAdultsToggle.isOn = true;
+                _clanAgeRange = ClanAge.Adults;
+                break;
+            case ClanAge.All:
+                _ageEveryoneToggle.isOn = true;
+                _clanAgeRange = ClanAge.All;
+                break;
+        }
+    }
+
+    private void ConfigureAgeToggle(Toggle toggle, ClanAge clanAge)
+    {
+        SetToggleColor(toggle, Color.white);
+        toggle.onValueChanged.RemoveAllListeners();
+        toggle.onValueChanged.AddListener((value) =>
+        {
+            if (value)
+            {
+                SetClanAge(clanAge);
+                SetToggleColor(toggle, Color.yellow);
+            }
+            else SetToggleColor(toggle, Color.white);
+        });
+    }
+    private void SetClanAge(ClanAge age) => _clanAgeRange = age;
+    private void SetToggleColor(Toggle toggle, Color color)
+    {
+        ColorBlock colors = toggle.colors;
+        colors.normalColor = color;
+        toggle.colors = colors;
     }
 
     public void OpenClanHeartPanel() => _clanHeartColorChanger.gameObject.SetActive(true);
@@ -123,21 +170,9 @@ public class ClanSettings : MonoBehaviour
         }
     }
 
-    private void InitAgeDropDown()
-    {
-        _clanAgeDropdown.options.Clear();
-        foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)))
-        {
-            if (age == ClanAge.None) continue;
-            string text = ClanDataTypeConverter.GetAgeText(age);
-            _clanAgeDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-    }
-
     // To skip over the None value
     private int EnumToDropdown<T>(T value) where T : Enum => Convert.ToInt32(value) - 1;
     private Language DropdownToLanguage(int lang) => (Language)lang + 1;
-    private ClanAge DropdownToAge(int age) => (ClanAge)age + 1;
     private Goals DropdownToGoal(int goal) => (Goals)goal + 1;
 
     public void SaveClanSettings()
@@ -149,7 +184,7 @@ public class ClanSettings : MonoBehaviour
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
             clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
-            clanData.ClanAge = DropdownToAge(_clanAgeDropdown.value);
+            clanData.ClanAge = _clanAgeRange;
 
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
@@ -180,7 +215,7 @@ public class ClanSettings : MonoBehaviour
                 || clanData.Phrase != _clanPhraseField.text
                 || clanData.Language != DropdownToLanguage(_clanLanguageDropdown.value)
                 || clanData.Goals != DropdownToGoal(_clanGoalDropdown.value)
-                || clanData.ClanAge != DropdownToAge(_clanAgeDropdown.value)
+                || clanData.ClanAge != _clanAgeRange
                 || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
 
             if (hasMadeEdits)
