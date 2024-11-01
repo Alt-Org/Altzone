@@ -58,7 +58,7 @@ MonoBehaviour:
     RawValue: 32768
   AvoidanceLayer: 0
   AvoidanceMask:
-    BitMask: -1
+    BitMask: 2029559
   MaxAvoidanceCandidates: 64
   ReduceAvoidanceAtWaypoints: 0
   ReduceAvoidanceFactor:
@@ -124,6 +124,11 @@ MonoBehaviour:
     SystemName: 
     StartDisabled: 0
     Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.PlayerMovementSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
 --- !u!114 &-195175908817591897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,7 +151,7 @@ MonoBehaviour:
     Y:
       RawValue: 0
   Radius:
-    RawValue: 45875
+    RawValue: 13107
   MaxPenetration:
     RawValue: 655
   PenetrationCorrection:
@@ -155,26 +160,26 @@ MonoBehaviour:
     RawValue: 13107
   MaxContacts: 4
   LayerMask:
-    BitMask: -1
+    BitMask: 2029559
   UseManifoldNormal: 0
-  AirControl: 1
+  AirControl: 0
   Acceleration:
-    RawValue: 1638400
+    RawValue: 3932160
   Braking:
-    RawValue: 655360
+    RawValue: 0
   BaseJumpImpulse:
     RawValue: 262144
   MaxSpeed:
-    RawValue: 196608
+    RawValue: 3932160
   Gravity:
     X:
       RawValue: 0
     Y:
-      RawValue: -655360
+      RawValue: 0
   MaxSlope:
     RawValue: 3932160
   MaxSlopeSpeed:
-    RawValue: 327680
+    RawValue: 3932160
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +224,7 @@ MonoBehaviour:
       X:
         RawValue: 0
       Y:
-        RawValue: -655360
+        RawValue: 0
       Z:
         RawValue: 0
     SolverType: 1
@@ -375,7 +380,7 @@ MonoBehaviour:
     RawValue: 6554
   MaxContacts: 8
   LayerMask:
-    BitMask: -1
+    BitMask: 2029559
   UseManifoldNormal: 0
   AirControl: 1
   Acceleration:
