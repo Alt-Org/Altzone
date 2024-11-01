@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ClanSearchView : MonoBehaviour
 {
     [SerializeField] ClanSearchFiltersPanel _filtersPanel;
+    [SerializeField] ClanProfilePopupPanel _profilePanel;
     [SerializeField] private GameObject _clanPrefab;
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
@@ -25,8 +26,7 @@ public class ClanSearchView : MonoBehaviour
 
         StartCoroutine(ServerManager.Instance.GetAllClans(++currentPage, new Action<List<ServerClan>, PaginationData>((clans, paginationData) =>
         {
-            if (clans == null || paginationData == null)
-                return;
+            if (clans == null || paginationData == null) return;
 
             ListClans(clans, paginationData);
         }
@@ -42,6 +42,8 @@ public class ClanSearchView : MonoBehaviour
 
     private void Reset()
     {
+        _profilePanel.gameObject.SetActive(false);
+
         for (int i = 0; i < _clanListParent.childCount - 1; i++)
             Destroy(_clanListParent.GetChild(i).gameObject);
 
@@ -54,8 +56,7 @@ public class ClanSearchView : MonoBehaviour
     {
         StartCoroutine(ServerManager.Instance.GetAllClans(++currentPage, new Action<List<ServerClan>, PaginationData>((clans, paginationData) =>
         {
-            if (clans == null || paginationData == null)
-                return;
+            if (clans == null || paginationData == null) return;
 
             ListClans(clans, paginationData);
         }
@@ -64,8 +65,7 @@ public class ClanSearchView : MonoBehaviour
 
     private void ListClans(List<ServerClan> clans, PaginationData paginationData)
     {
-        if (clans == null || clans.Count == 0)
-            return;
+        if (clans == null || clans.Count == 0) return;
 
         foreach (ServerClan clan in clans)
         {
@@ -73,10 +73,13 @@ public class ClanSearchView : MonoBehaviour
             ClanListing clanListing = clanInstance.GetComponent<ClanListing>();
             clanListing.Clan = clan;
 
+            clanListing.OpenProfileButton.onClick.RemoveAllListeners();
+            clanListing.OpenProfileButton.onClick.AddListener(() => _profilePanel.ShowClanProfile(clanListing.Clan));
 
-            if (ServerManager.Instance.Clan != null)
-                if (clanListing.Clan._id == ServerManager.Instance.Clan._id)
-                    clanListing.ToggleJoinButton(false);
+            if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)
+            {
+                clanListing.ToggleJoinButton(false);
+            }
         }
 
         // Only the first page in pagination data has totalPages field

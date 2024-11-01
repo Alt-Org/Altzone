@@ -21,10 +21,10 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanPasswordField;
 
     [Header("Toggles")]
-    [SerializeField] private Toggle _AgeTeinit;
-    [SerializeField] private Toggle _AgeTaaperot;
-    [SerializeField] private Toggle _AgeAikuiset;
-    [SerializeField] private Toggle _AgeKaikenIkaiset;
+    [SerializeField] private Toggle _ageToddlersToggle;
+    [SerializeField] private Toggle _ageTeensToggle;
+    [SerializeField] private Toggle _ageAdultsToggle;
+    [SerializeField] private Toggle _ageEveryoneToggle;
     [SerializeField] private Toggle _openClanButton;
 
     [Header("Warnings")]
@@ -50,7 +50,7 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Navigation")]
     [SerializeField] protected WindowDef _naviTarget;
 
-    private ClanAge _clanAgeEnum = ClanAge.None;
+    private ClanAge _clanAgeRange = ClanAge.None;
     private ClanRoleRights[] _defaultRights = new ClanRoleRights[3]  {
         ClanRoleRights.None,
         ClanRoleRights.EditSoulHome,
@@ -72,7 +72,12 @@ public class ClanCreateNew : MonoBehaviour
         SetLanguageDropdown();
         SetValuesPanel();
         SetGoalsDropDown();
-        SetToggleListeners();
+
+        ConfigureAgeToggle(_ageToddlersToggle, ClanAge.Toddlers);
+        ConfigureAgeToggle(_ageTeensToggle, ClanAge.Teenagers);
+        ConfigureAgeToggle(_ageAdultsToggle, ClanAge.Adults);
+        ConfigureAgeToggle(_ageEveryoneToggle, ClanAge.All);
+
         _clanRightsPanel.InitializeRightsToggles(_defaultRights);
     }
 
@@ -101,79 +106,27 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
-    private void SetToggleListeners()
+    private void ConfigureAgeToggle(Toggle toggle, ClanAge clanAge)
     {
-        _AgeTaaperot.onValueChanged.RemoveAllListeners();
-        _AgeAikuiset.onValueChanged.RemoveAllListeners();
-        _AgeKaikenIkaiset.onValueChanged.RemoveAllListeners();
-        _AgeTeinit.onValueChanged.RemoveAllListeners();
-
-        _AgeTaaperot.onValueChanged.AddListener((Value) =>
+        SetToggleColor(toggle, Color.white);
+        toggle.onValueChanged.RemoveAllListeners();
+        toggle.onValueChanged.AddListener((value) =>
         {
-            if (Value)
+            if (value)
             {
-                SetClanAge(ClanAge.Toddlers);
-                ColorBlock colors = _AgeTaaperot.colors;
-                colors.normalColor = Color.yellow;
-                _AgeTaaperot.colors = colors;
+                SetClanAge(clanAge);
+                SetToggleColor(toggle, Color.yellow);
             }
-            else
-            {
-                ColorBlock colors = _AgeTaaperot.colors;
-                colors.normalColor = Color.white;
-                _AgeTaaperot.colors = colors;
-            }
-        });
-        _AgeAikuiset.onValueChanged.AddListener((Value) =>
-        {
-            if (Value)
-            {
-                SetClanAge(ClanAge.Adults);
-                ColorBlock colors = _AgeAikuiset.colors;
-                colors.normalColor = Color.yellow;
-                _AgeAikuiset.colors = colors;
-            }
-            else
-            {
-                ColorBlock colors = _AgeAikuiset.colors;
-                colors.normalColor = Color.white;
-                _AgeAikuiset.colors = colors;
-            }
-        });
-        _AgeKaikenIkaiset.onValueChanged.AddListener((Value) =>
-        {
-            if (Value)
-            {
-                SetClanAge(ClanAge.All);
-                ColorBlock colors = _AgeKaikenIkaiset.colors;
-                colors.normalColor = Color.yellow;
-                _AgeKaikenIkaiset.colors = colors;
-            }
-            else
-            {
-                ColorBlock colors = _AgeKaikenIkaiset.colors;
-                colors.normalColor = Color.white;
-                _AgeKaikenIkaiset.colors = colors;
-            }
-        });
-        _AgeTeinit.onValueChanged.AddListener((Value) =>
-        {
-            if (Value)
-            {
-                SetClanAge(ClanAge.Teenagers);
-                ColorBlock colors = _AgeTeinit.colors;
-                colors.normalColor = Color.yellow;
-                _AgeTeinit.colors = colors;
-            }
-            else
-            {
-                ColorBlock colors = _AgeTeinit.colors;
-                colors.normalColor = Color.white;
-                _AgeTeinit.colors = colors;
-            }
+            else SetToggleColor(toggle, Color.white);
         });
     }
-    private void SetClanAge(ClanAge age) => _clanAgeEnum = age;
+    private void SetClanAge(ClanAge age) => _clanAgeRange = age;
+    private void SetToggleColor(Toggle toggle, Color color)
+    {
+        ColorBlock colors = toggle.colors;
+        colors.normalColor = color;
+        toggle.colors = colors;
+    }
 
     private void SetValuesPanel()
     {
@@ -196,7 +149,7 @@ public class ClanCreateNew : MonoBehaviour
         string password = _clanPasswordField.text;
         Language language = (Language)_clanLanguageDropdown.value;
         Goals goal = (Goals)_clanGoalDropdown.value;
-        ClanAge age = _clanAgeEnum;
+        ClanAge age = _clanAgeRange;
         ClanRoleRights[] clanRights = _clanRightsPanel.ClanRights;
 
         if (!CheckClanValuesValidity(clanName, phrase, isOpen, password, language, goal, age))
