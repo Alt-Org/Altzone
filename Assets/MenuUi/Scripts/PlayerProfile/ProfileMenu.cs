@@ -13,8 +13,6 @@ using System.Runtime.CompilerServices;
 
 public class ProfileMenu : MonoBehaviour
 
-    // Luokka siis näyttää pelaaja profiili statit (pelitunnit[mitkä tällä hetkellä näyttää ne minuutteina], voitot/häviöt ja pelaajan hiilijalanjäljen)
-    // Hiilijalanjälkilaskuri pääosin toimii oletusarvojen mukaan, mutta jos on Android-laitteella, se yrittää etsiä tiedot virrankulutukseen AINAKIN (30.10.2024) -Eemeli
 {
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
@@ -63,19 +61,24 @@ public class ProfileMenu : MonoBehaviour
     {
         secondsCount += Time.deltaTime;
         countToCarbon += Time.deltaTime;
-        carbonCount = CarbonFootprint.CarbonCount;
-        _TimePlayedText.text = "Peliaika\n" + minuteCount.ToString();
 
-        if (CarbonFootprint.CarbonCount >= 1000f)
+        // Peliaika
+        _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
+
+        // Tarkistaa onko kg vai g
+        float carbonDisplay = CarbonFootprint.CarbonCount;
+        string carbonUnit = "g";
+
+        if (carbonDisplay >= 1000f)
         {
-            _CarbonText.text = $"Hiilijalanjälki\n{kgCarbon:F2}kg/CO2";
-        } else
-        {
-            _CarbonText.text = $"Hiilijalanjälki\n{carbonCount:F1}g/CO2";
+            carbonDisplay /= 1000f;
+            carbonUnit = "kg";
         }
-        
 
-        if (secondsCount > 60)
+        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F2} {carbonUnit}/CO2"; // Hiilijalanjälki teksti
+
+        // Päivittää minuutin välein peliajan.
+        if (secondsCount >= 60f)
         {
             minuteCount++;
             secondsCount = 0;

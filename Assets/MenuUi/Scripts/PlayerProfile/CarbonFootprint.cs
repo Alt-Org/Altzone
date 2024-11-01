@@ -1,42 +1,31 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class CarbonFootprint : MonoBehaviour
 {
     private float lastCheckTime = 0f;
 
-    // Hiilijalanjälki jutut!
-    private float sessionTime = 0f; // laskee sessioajan
-    private float powerConsumption = 2f; // Oletusvirrankulutus per sekunti
-    private float co2PerKwh = 475f; // co2 per Kwh
-    private float batteryCapacity = 3000f; // Oletus akkukapasiteetti mAh (tarkennetaan jos saatavilla)
+    private float sessionTime = 0f; // Session kesto sekunneissa
+    private float powerConsumption = 2f; // Oletusvirrankulutus watteina
+    private float co2PerKwh = 475f; // CO2 per Kwh (grammoina)
+    private float batteryCapacity = 3000f; // Oletus akkukapasiteetti mAh
 
-    private float dataUsage = 0f; // datankäyttö
-    private float co2PerMB = 0.02f; // co2 per megatavu
+    private float dataUsage = 0f; // Datankäyttö MB
+    private float co2PerMB = 0.02f; // CO2 per megatavu
 
-    [SerializeField] private float dataUsedPerSecond = 0.5f; // Esimerkiksi MB per sekunti
-
-    private int minuteCount;
-    private float secondsCount;
-    private float countToCarbon;
-    static float carbonCount;
+    [SerializeField] private float dataUsedPerSecond = 0.5f; // MB per sekunti
+    static float carbonCount; // Hiilijalanjäljen kokonaismäärä grammoina
 
     public static float CarbonCount
     {
         get => carbonCount;
     }
 
-    private ServerPlayer _player;
-
     [Header("Carbon Tracking")]
     [SerializeField] private float baselineConsumption = 2f; // Peruskulutus watteina
     [SerializeField] private float networkMultiplier = 1.5f; // Verkkoliikenteen kerroin
-    [SerializeField] private bool enableDetailedTracking = true; // Tarkemman seurannan kytkentä
 
-    // Lista hiilijalanjäljen historiatiedoille
     private List<float> carbonHistory = new List<float>();
     private DateTime lastSaveTime;
 
@@ -47,18 +36,16 @@ public class CarbonFootprint : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Keep across scenes
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Enforce singleton
+            Destroy(gameObject);
         }
     }
 
-
     private void Start()
     {
-        // Yritetään hakea virrankulutustietoja Android-laitteella
         if (Application.platform == RuntimePlatform.Android)
         {
             powerConsumption = GetDevicePowerConsumption();
@@ -66,45 +53,32 @@ public class CarbonFootprint : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
-        updateCarbon();
+        UpdateCarbon();
     }
 
-
     /// <summary>
-    /// Laskee ja päivittää sovelluksen käytöstä aiheutuvan hiilijalanjäljen.
-    /// Huomioi sekä laitteen virrankulutuksen että verkkoyhteyden datankäytön.
+    /// Laskee ja päivittää sovelluksen käytöstä aiheutuvan hiilijalanjäljen grammoina CO2.
     /// </summary>
-    /// <remarks>
-    /// Laskenta perustuu kahteen päätekijään:
-    /// 1. Virrankulutus: 
-    ///    - Laskee kulutetun energian (kWh) session keston ja tehonkulutuksen perusteella
-    ///    - Muuntaa energian CO2-päästöiksi kertoimella co2PerKwh
-    /// 2. Datankäyttö:
-    ///    - Seuraa kertynyttä datankäyttöä (MB)
-    ///    - Muuntaa datan CO2-päästöiksi kertoimella co2PerMB
-    /// 
-    /// Päivittää tuloksen käyttöliittymään grammoina CO2.
-    /// </remarks>
-    private void updateCarbon()
+    private void UpdateCarbon()
     {
         sessionTime += Time.deltaTime;
 
-        // Lasketaan peruskulutus käyttäen määritettyä peruskulutusta
-        float energyConsumed = sessionTime / 3600f * baselineConsumption;
+        // Lasketaan peruskulutus kilowattitunteina ja muunnetaan CO2-päästöiksi
+        float energyConsumed = (sessionTime / 3600f) * (baselineConsumption / 1000f); // kWh
         carbonCount = energyConsumed * co2PerKwh;
 
-        // Lasketaan verkkoyhteyden vaikutus käyttäen kerrointa
+        // Lasketaan verkkoyhteyden vaikutus hiilijalanjälkeen
         dataUsage += dataUsedPerSecond * Time.deltaTime * networkMultiplier;
         carbonCount += dataUsage * co2PerMB;
 
         SaveCarbonHistory();
 
-        if (lastCheckTime + 10f < sessionTime)
-        {  
-            Debug.Log($"powerConsumption: {powerConsumption}, batteryCapacity: {batteryCapacity}, dataUsage: {dataUsage}");
+        // Tulostetaan tuloksia kerran sekunnissa
+        if (sessionTime - lastCheckTime >= 1f)
+        {
+            Debug.Log($"CO2 per tunti: {carbonCount / (sessionTime / 3600f)} g CO2");
             lastCheckTime = sessionTime;
         }
     }
@@ -112,7 +86,7 @@ public class CarbonFootprint : MonoBehaviour
     private void SaveCarbonHistory()
     {
         // Tallennetaan hiilijalanjälki minuutin välein
-        if (DateTime.Now - lastSaveTime >= TimeSpan.FromSeconds(1))
+        if (DateTime.Now - lastSaveTime >= TimeSpan.FromMinutes(1))
         {
             carbonHistory.Add(carbonCount);
             lastSaveTime = DateTime.Now;
@@ -128,28 +102,9 @@ public class CarbonFootprint : MonoBehaviour
         lastSaveTime = DateTime.Now;
     }
 
-
-    // <summary>
-    // Hakee laitteen virrankulutustiedot Android-järjestelmästä.
-    // </summary>
-    // <returns>Virrankulutus kilowattitunteina (kWh)</returns>
-    // <remarks>
-    // Toimintaperiaate:
-    // 1. Tarkistaa ensin onko kyseessä Android-laite
-    // 2. Android-laitteella:
-    //    - Hakee akun varaustason (%) käyttöjärjestelmän BATTERY_CHANGED-kuuntelijan avulla
-    //    - Laskee virrankulutuksen akun kapasiteetin (3000mAh) ja varaustason perusteella
-    // 3. Muilla alustoilla:
-    //    - Käyttää oletusarvoa 2.0 kWh
-    //
-    // Virheenkäsittely:
-    // - Jos Android-tietojen haku epäonnistuu, palauttaa oletusarvon ja kirjaa varoituksen
-    // 
-    // Huom: Akkukapasiteetti (3000mAh) on kiinteä oletusarvo, joka voi vaihdella laitekohtaisesti
-    // </remarks>
     private float GetDevicePowerConsumption()
     {
-        float powerUsage = 2f; // Oletusarvoinen virrankulutus per sekunti
+        float powerUsage = 2f;
 
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -164,28 +119,26 @@ public class CarbonFootprint : MonoBehaviour
                         {
                             int level = batteryIntent.Call<int>("getIntExtra", "level", -1);
                             int scale = batteryIntent.Call<int>("getIntExtra", "scale", -1);
-                            int batteryCapacity = 3000; // Oletusarvo akkukapasiteetti mAh
+                            int batteryCapacity = 3000;
 
                             float batteryLevel = (level / (float)scale) * batteryCapacity;
-                            powerUsage = batteryLevel / 1000f; // Muutetaan kWh:ksi
+                            powerUsage = batteryLevel / 1000f;
                         }
                     }
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogWarning("Virrankulutustietojen haku epäonnistui: " + e.Message);
             }
-
         }
 
         return powerUsage;
     }
 
-    // Funktio, joka hakee laitteen akkukapasiteetin
     private float GetBatteryCapacity()
     {
-        float capacity = 3000f; // Oletusarvo
+        float capacity = 3000f;
 
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -194,18 +147,15 @@ public class CarbonFootprint : MonoBehaviour
                 using (AndroidJavaClass batteryManager = new AndroidJavaClass("android.os.BatteryManager"))
                 using (AndroidJavaClass powerManager = new AndroidJavaClass("android.os.PowerManager"))
                 {
-                    // Yritetään hakea todellinen akkukapasiteetti
                     var batteryCapField = batteryManager.GetStatic<int>("BATTERY_PROPERTY_CAPACITY");
                     if (batteryCapField > 0)
                     {
                         capacity = batteryCapField;
                     }
 
-                    // Haetaan myös virransäästötila
                     var powerSaveMode = powerManager.Call<bool>("isPowerSaveMode");
                     if (powerSaveMode)
                     {
-                        // Virransäästötilassa kulutus on pienempi
                         capacity *= 0.7f;
                     }
                 }
