@@ -77,12 +77,12 @@ namespace Prg.Scripts.Common.Photon
             GetGameVersion = () => DefaultGameVersion;
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
             _isApplicationQuitting = false;
             Application.quitting += () => _isApplicationQuitting = true;
-        }
+        }*/
 
         /// <summary>
         /// Official game version used for Photon Connect (PhotonNetwork.GameVersion).

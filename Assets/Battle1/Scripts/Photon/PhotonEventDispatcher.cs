@@ -56,12 +56,12 @@ namespace Prg.Scripts.Common.Photon
             PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance = false;
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;
-        }
+        }*/
 
         private static PhotonEventDispatcher _instance;
 
