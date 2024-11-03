@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static SettingsCarrier;
-using AudioType = MenuUI.Scripts.SoulHome.AudioType;
+using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
 
 enum AudioSelection
 {
@@ -19,7 +19,7 @@ public class PlayAudioClip : MonoBehaviour
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
     [SerializeField]
-    AudioType _audioType = AudioType.None;
+    AudioTypeName _audioType = AudioTypeName.None;
     [SerializeField]
     string _audioName = "";
     [SerializeField]
@@ -61,11 +61,11 @@ public class PlayAudioClip : MonoBehaviour
             return;
         }
         if (_audioSelection == AudioSelection.Type)
-            manager.PlayAudio(_audioType);
+            manager.PlaySfxAudio(_audioType);
         else if(_audioSelection == AudioSelection.Name)
-            manager.PlayAudio(_audioName);
+            manager.PlaySfxAudio(_audioName);
         else if (_audioSelection == AudioSelection.ID)
-            manager.PlayAudio(_audioId);
+            manager.PlaySfxAudio(_audioId);
     }
     [CustomEditor(typeof(PlayAudioClip))]
     public class PlayAudioClipEditor : Editor
