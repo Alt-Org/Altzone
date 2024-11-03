@@ -145,7 +145,16 @@ namespace MenuUI.Scripts.SoulHome
             switch (sourcetype)
             {
                 case AudioSourceType.Music:
-                    break;
+                    Transform musicTransform = transform.Find("Music");
+                    if (musicTransform == null || musicTransform.GetComponent<MusicList>() == null)
+                    {
+                        GameObject gameObject = Instantiate(new GameObject(), transform);
+                        gameObject.name = "Music";
+                    }
+                    if(musicTransform.GetComponent<AudioSource>() == null) gameObject.AddComponent<AudioSource>();
+                    if(musicTransform.GetComponent<MusicList>() == null) gameObject.AddComponent<MusicList>();
+                    if(musicTransform.GetComponent<SetVolume>() == null) gameObject.AddComponent<SetVolume>();
+                    return;
                 case AudioSourceType.Sfx:
                     Transform sfxTransform = transform.Find("SoundFx");
                     if (sfxTransform == null)
