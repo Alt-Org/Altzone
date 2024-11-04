@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
+using UnityEngine.UI;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -19,18 +20,19 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanTrophies;
     [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
-    [SerializeField] private TextMeshProUGUI _clanLanguage;
     [SerializeField] private TextMeshProUGUI _clanGoal;
     [SerializeField] private TextMeshProUGUI _clanAge;
 
     [Header("Other settings fields")]
     [SerializeField] GameObject _clanOpenObject;
     [SerializeField] GameObject _clanLockedObject;
+    [SerializeField] Image _flagImage;
     [SerializeField] Transform _valueRowFirst;
     [SerializeField] Transform _valueRowSecond;
 
-    [Header("Prefabs")]
+    [Header("Prefabs and scriptable objects")]
     [SerializeField] GameObject _valuePrefab;
+    [SerializeField] private LanguageFlagMap _languageFlagMap;
 
     private void OnEnable()
     {
@@ -50,7 +52,8 @@ public class ClanMainView : MonoBehaviour
         _clanName.text = "Clan Name";
         _clanPhrase.text = "Clan Phrase";
         _clanMembers.text = _clanCoins.text = _clanTrophies.text = _clanGlobalRanking.text = "-1";
-        _clanPassword.text = _clanLanguage.text = _clanGoal.text = _clanAge.text = "";
+        _clanPassword.text = _clanGoal.text = _clanAge.text = "";
+        _flagImage.sprite = _languageFlagMap.GetFlag(Language.None);
     }
 
     private void ToggleClanPanel(bool isInClan)
@@ -65,7 +68,7 @@ public class ClanMainView : MonoBehaviour
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
         _clanCoins.text = clan.GameCoins.ToString();
         _clanPhrase.text = clan.Phrase;
-        _clanLanguage.text = ClanDataTypeConverter.GetLanguageText(clan.Language);
+        _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
         _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
 

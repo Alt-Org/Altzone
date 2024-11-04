@@ -11,6 +11,8 @@ public class ClanHeartColorSetter : MonoBehaviour
 
     private void OnEnable()
     {
+        if (ServerManager.Instance.Clan == null) return;
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             clanData.ClanHeartPieces ??= new();
