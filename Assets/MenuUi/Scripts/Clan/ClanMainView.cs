@@ -38,12 +38,29 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
 
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
-        {
-            ToggleClanPanel(true);
-            SetPanelValues(clanData);
-            _leaderboard?.LoadClanLeaderboard(ServerManager.Instance.Clan);
-        });
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) => SetClanProfile(clanData));
+    }
+
+    private void SetClanProfile(ClanData clan)
+    {
+        ToggleClanPanel(true);
+
+        _clanName.text = clan.Name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
+        _clanCoins.text = clan.GameCoins.ToString();
+        _clanPhrase.text = clan.Phrase;
+        _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
+        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
+        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
+
+        ToggleClanLockGraphic(clan.IsOpen);
+
+        // Temp values for testing
+        _clanTrophies.text = "-1";
+        _clanGlobalRanking.text = "-1";
+        _clanPassword.text = "";
+
+        _leaderboard?.LoadClanLeaderboard(ServerManager.Instance.Clan);
     }
 
     private void Reset()
@@ -62,24 +79,6 @@ public class ClanMainView : MonoBehaviour
         _noClanPanel.SetActive(!isInClan);
     }
 
-    private void SetPanelValues(ClanData clan)
-    {
-        _clanName.text = clan.Name;
-        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
-        _clanCoins.text = clan.GameCoins.ToString();
-        _clanPhrase.text = clan.Phrase;
-        _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
-        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
-        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
-
-        ToggleClanLockGraphic(clan.IsOpen);
-
-        // Temp values for testing
-        _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
-        _clanPassword.text = "";
-    }
-
     private void ToggleClanLockGraphic(bool isClanOpen)
     {
         _clanOpenObject.SetActive(isClanOpen);
@@ -90,8 +89,7 @@ public class ClanMainView : MonoBehaviour
     {
         StartCoroutine(ServerManager.Instance.LeaveClan(success =>
         {
-            if (success)
-                Reset();
+            if (success) Reset();
         }));
     }
 }
