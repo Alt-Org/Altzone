@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.Voting;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -21,6 +22,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
         public ClanInventory Inventory = new();
+
+        public List<PollObject> Polls = new();
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
@@ -64,6 +67,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Tag)}: {Tag}, {nameof(GameCoins)}: {GameCoins}" +
                    $", {nameof(Inventory)}: {Inventory}" +
+                   $", {nameof(Polls)}: {Polls.Count}" +
                    $", {nameof(Members)}: {Members.Count}, {nameof(Rooms)}: {Rooms.Count}";
         }
     }

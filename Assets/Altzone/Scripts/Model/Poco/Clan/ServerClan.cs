@@ -23,27 +23,5 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool isOpen { get; set; }
         public int? furnitureCount { get; set; }
         public int? raidRoomCount { get; set; }
-
-        // Lista Voting-objekteja ��nestyst� varten
-        public List<Voting> VoteList { get; set; }
-
-        public ServerClan()
-        {
-            // Alusta ��nestyslista konstruktorissa
-            VoteList = new List<Voting>();
-        }
-    }
-}
-
-// Luokka, joka sis�lt�� yksitt�isen ��nestyksen tiedot
-public class Voting
-{
-    public string itemName { get; set; }
-    public int votes { get; set; }
-
-    public Voting(string name)
-    {
-        itemName = name;
-        votes = 0;
     }
 }

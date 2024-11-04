@@ -13,7 +13,7 @@ public class Vote_manager : MonoBehaviour
     //private List<GameObject> votes = new List<GameObject>();
 
 
-    private List<PollObject> pollObjectList = new List<PollObject>();
+    //private List<PollObject> pollObjectList = new List<PollObject>();
 
     private SettingsCarrier settingsCarrier;
 
@@ -44,14 +44,14 @@ public class Vote_manager : MonoBehaviour
     //     VoteData voteData = VoteDataList[i];
     //   }
 
-    void PopulateVoteList()
-    {
-        foreach (PollObject item in pollObjectList)
-        {
-            //Debug.Log("new voting items: " + item.id); // Assuming VotingObject has a proper ToString() method or override
-            //Debug.Log("new voting items: " + item.votableName);
-        }
-    }
+    //void PopulateVoteList()
+    //{
+    //    foreach (PollObject item in pollObjectList)
+    //    {
+    //        //Debug.Log("new voting items: " + item.id); // Assuming VotingObject has a proper ToString() method or override
+    //        //Debug.Log("new voting items: " + item.votableName);
+    //    }
+    //}
 
     //}
 

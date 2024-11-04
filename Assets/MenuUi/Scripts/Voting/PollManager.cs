@@ -2,15 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Voting;
+using Altzone.Scripts;
 using UnityEngine;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 
 public static class PollManager
 {
     private static List<PollObject> pollObjectList = new List<PollObject>();
 
-
     public static void CreatePollObject(PollType pollType, string id, int durationInHours, Sprite sprite, EsinePollType esinePollType, float value)
     {
+        LoadPollList();
         string name = "joku";
 
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
@@ -19,10 +24,12 @@ public static class PollManager
         pollObjectList.Add(pollObject);
 
         PrintPollObjectList();
+        SavePollList();
     }
 
     public static void CreatePollObject(PollType pollType, string id, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
     {
+        LoadPollList();
         string name = "joku";
 
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
@@ -30,7 +37,8 @@ public static class PollManager
         PollObject pollObject = new FurniturePollObject(pollType, id, name, endTime, sprite, furniturePollType, furniture, weight, value);
         pollObjectList.Add(pollObject);
 
-        //PrintPollObjectList();
+        PrintPollObjectList();
+        SavePollList();
     }
 
     private static void PrintPollObjectList()
@@ -61,5 +69,28 @@ public static class PollManager
     public static List<PollObject> GetPollObjectList()
     {
         return pollObjectList;
+    }
+
+    public static void LoadPollList()
+    {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+        store.GetClanData(player.ClanId, data => clan = data);
+
+        pollObjectList = clan.Polls;
+    }
+
+    public static void SavePollList()
+    {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+        store.GetClanData(player.ClanId, data => clan = data);
+
+        clan.Polls = pollObjectList;
+        store.SaveClanData(clan, data => clan = data);
     }
 }
