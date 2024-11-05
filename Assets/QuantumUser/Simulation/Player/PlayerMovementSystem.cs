@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Numerics;
 using Photon.Deterministic;
 using UnityEngine;
@@ -12,8 +13,7 @@ namespace Quantum
         {
             public EntityRef Entity;
             public Transform2D* Transform;
-            //public CharacterController2D* CharaCtrl;
-            public PlayerLink* Link;
+            public PlayerData* PlayerData;
         }
 
         public override void Update(Frame f, ref Filter filter)
@@ -29,16 +29,13 @@ namespace Quantum
             FPVector3 targetPos;
             FPVector2 targetPos2D;
 
-            // move somewhere else
-            FP speed = 5;
-
             if (input->MouseClick)
             {
                 targetPos = input->MousePosition;
                 targetPos2D.X = targetPos.X;
                 targetPos2D.Y = targetPos.Z;
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", targetPos2D);
-                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, speed * f.DeltaTime);
+                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
             }
         }
     }
