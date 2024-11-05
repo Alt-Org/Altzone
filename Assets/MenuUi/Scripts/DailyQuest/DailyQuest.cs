@@ -20,7 +20,7 @@ public class DailyQuest : MonoBehaviour
 
     public GameObject popUpScreen;
 
-    //  Unactive texts
+   
     public TMP_Text titleText;
     public TMP_Text pointText;
     public TMP_Text playerNameText;
@@ -66,12 +66,18 @@ public class DailyQuest : MonoBehaviour
 
     public void SetQuestActive()
     {
+       
+        dailyTaskManager.CancelTask();
+
         unActiveTask.SetActive(false);
         activeTask.SetActive(true);
-        Debug.Log("Quest "+ taskId +" was selected");
+        Debug.Log("Quest " + taskId + " is now active.");
+
         dailyTaskManager.TakeTask(taskId);
+
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => p.dailyTaskId = taskId);
     }
+
 
     public void CancelQuest()
     {

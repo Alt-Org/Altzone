@@ -11,7 +11,7 @@ public class PopupManager : MonoBehaviour
 
     private DailyQuest _dailyQuest;
 
-    public TMP_Text debugText; 
+    public TMP_Text debugText;
     public GameObject popUpUiElement;
 
     private void Start()
