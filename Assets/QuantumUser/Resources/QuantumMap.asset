@@ -90,7 +90,6 @@ MonoBehaviour:
     - rid: 997026582742695937
     - rid: 997026582742695938
     - rid: 997026582742695939
-    - rid: 997026582742695940
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -148,12 +147,6 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 997026582742695939
-      type: {class: CharacterController2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
-      data:
-        Config:
-          Id:
-            Value: 2978950733451737196
-    - rid: 997026582742695940
       type: {class: PlayerLinkPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         Player:

@@ -14,15 +14,13 @@ namespace Quantum.Battle
 
         public void PollInput(CallbackPollInput callback)
         {
-            Quantum.Input i = new Quantum.Input();
-
-
-            i.MouseClick = UnityEngine.Input.GetMouseButton(0);
-
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-            i.MousePosition = mousePos.ToFPVector3();
 
-            
+            Input i = new()
+            {
+                MouseClick = UnityEngine.Input.GetMouseButton(0),
+                MousePosition = mousePos.ToFPVector3()
+            };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
         }
