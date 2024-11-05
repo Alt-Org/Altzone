@@ -179,7 +179,6 @@ namespace MenuUi.Scripts.AvatarEditor
         // private AvatarEditorSwipe _swiper;
         private RectTransform _swipeArea;
 
-        private bool _featureButtonHasBeenClicked = false;
 
 
         public void Start()
@@ -194,7 +193,6 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         public void OnEnable()
         {
-            _featureButtonHasBeenClicked = false;
             _currentlySelectedCategory = _defaultCategory;
             SwitchFeatureCategory();
             SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
@@ -345,7 +343,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private void FeatureButtonClicked(FeatureData featureToChange, int slot){
             SetFeature(featureToChange, slot);
             _restoreDefaultColor?.Invoke();
-            _featureButtonHasBeenClicked = true;
         }
         private void SetFeature(FeatureData featureToChange, int slot)
         {
@@ -390,7 +387,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SwitchFeatureCategory()
         {
-            _featureButtonHasBeenClicked = false;
             //placeholder until available features can be read from player inventory
             _currentCategoryFeatureDataPlaceholder = GetSpritesByCategory(_currentlySelectedCategory);
 
@@ -404,8 +400,28 @@ namespace MenuUi.Scripts.AvatarEditor
             
             // DestroyFeatureButtons();
             // InstantiateFeatureButtons();
-            _categoryText.text = _currentlySelectedCategory.ToString();
+            SetCategoryNameText(_currentlySelectedCategory);
+            // _categoryText.text = _currentlySelectedCategory.ToString();
         }
+
+        private void SetCategoryNameText(FeatureSlot category){
+            string name = category switch
+            {
+                FeatureSlot.WholeHead => "Pää",
+                FeatureSlot.Hair => "Hiukset",
+                FeatureSlot.Eyebrows => "Kulmakarvat",
+                FeatureSlot.Eyes => "Silmät",
+                FeatureSlot.Nose => "Nenä",
+                FeatureSlot.Mouth => "Suu",
+                FeatureSlot.FacialHair => "Parta & viikset",
+                FeatureSlot.Body => "Keho",
+                FeatureSlot.Hands => "Kädet",
+                FeatureSlot.Feet => "Jalat",
+                _ => "Virhe",
+            };
+            _categoryText.text = name;
+        }
+
 
         //placeholder until available features can be read from player inventory
         private List<FeatureData> GetSpritesByCategory(FeatureSlot slot)
@@ -477,9 +493,6 @@ namespace MenuUi.Scripts.AvatarEditor
                 CharacterClassID.Obedient => _preacherDefaults[slotIndex],
                 _ => FeatureID.None,
             };
-        }
-        public bool FeatureButtonHasBeenClicked(){
-            return _featureButtonHasBeenClicked;
         }
 
         
