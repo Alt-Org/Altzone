@@ -172,7 +172,7 @@ public class DailyTaskManager : MonoBehaviour
     public void TakeTask(int taskIndex)
     {
         _activeTab = _selectedTab;
-        _activeTaskIndex = taskIndex;
+        _activeTaskIndex = taskIndex -1;
         HideAllOtherTasks();
     }
 
@@ -207,6 +207,7 @@ public class DailyTaskManager : MonoBehaviour
     public void CancelTask()
     {
         currentTaskIndex = -1;
+        _activeTab = null;
         UpdateTabDisplay();
     }
 
