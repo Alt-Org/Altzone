@@ -26,7 +26,9 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
-    public static string ADDRESS = "https://devapi.altzone.fi/";
+    public static string ADDRESS = "https://altzone.fi/api/";
+    public static string DEVADDRESS = "https://devapi.altzone.fi/";
+
 
     #region Delegates & Events
 
@@ -35,6 +37,9 @@ public class ServerManager : MonoBehaviour
 
     public delegate void LogInFailed();
     public static event LogInFailed OnLogInFailed;
+
+    public delegate void ClanFetchFinished();
+    public static event ClanFetchFinished OnClanFetchFinished;
 
     public delegate void ClanChanged(ServerClan clan);
     public static event ClanChanged OnClanChanged;
@@ -131,12 +136,26 @@ public class ServerManager : MonoBehaviour
                     return;
                 }
 
-                SetPlayerValues(player);
+                StartCoroutine(GetPlayerTasksFromServer(player =>
+                {
+                    if (player == null)
+                    {
+                        Debug.LogError("Failed to fetch task data.");
+                        return;
+                    }
+                }));
+
+                    SetPlayerValues(player);
+
+                if (OnLogInStatusChanged != null)
+                    OnLogInStatusChanged(true);
 
                 if (Clan == null)
                 {
                     StartCoroutine(GetClanFromServer(clan =>
                     {
+                        if (OnClanFetchFinished != null)
+                            OnClanFetchFinished();
                         if (clan == null)
                         {
                             return;
@@ -146,7 +165,6 @@ public class ServerManager : MonoBehaviour
                         RaiseClanInventoryChangedEvent();
                     }));
                 }
-
             }));
         }
     }
@@ -222,8 +240,8 @@ public class ServerManager : MonoBehaviour
 
         isLoggedIn = true;
 
-        if (OnLogInStatusChanged != null)
-            OnLogInStatusChanged(true);
+        //if (OnLogInStatusChanged != null)
+        //    OnLogInStatusChanged(true);
     }
 
     /// <summary>
@@ -443,6 +461,28 @@ public class ServerManager : MonoBehaviour
 
                 if (callback != null)
                     callback(playerInfo);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetPlayerTasksFromServer(Action<ServerClan> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "playerTasks?period=month", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                //Clan = clan;
+
+                if (callback != null)
+                    callback(null);
             }
             else
             {
