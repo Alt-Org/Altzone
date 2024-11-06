@@ -63,7 +63,15 @@ public class ProfileMenu : MonoBehaviour
         countToCarbon += Time.deltaTime;
 
         // Peliaika
-        _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
+        if (minuteCount < 1)
+        {
+            _TimePlayedText.text = $"Peliaika\nAlle 1 min";
+        }
+
+        else
+        {
+            _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
+        }
 
         // Tarkistaa onko kg vai g
         float carbonDisplay = CarbonFootprint.CarbonCount;
@@ -75,7 +83,7 @@ public class ProfileMenu : MonoBehaviour
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F2} {carbonUnit}/CO2"; // Hiilijalanjälki teksti
+        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
 
         // Päivittää minuutin välein peliajan.
         if (secondsCount >= 60f)
