@@ -2363,6 +2363,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1181477148920833131, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: Prototype.Player._index
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1181477148920833131, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: Prototype.Speed.RawValue
+      value: 1310720
+      objectReference: {fileID: 0}
     - target: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Name

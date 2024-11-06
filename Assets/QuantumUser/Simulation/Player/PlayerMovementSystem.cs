@@ -9,11 +9,17 @@ namespace Quantum
     [Preserve]
     public unsafe class PlayerMovementSystem : SystemMainThreadFilter<PlayerMovementSystem.Filter>
     {
+        FPVector2 targetPos2D;
+
         public struct Filter
         {
             public EntityRef Entity;
             public Transform2D* Transform;
             public PlayerData* PlayerData;
+        }
+
+        public void Start(ref Filter filter){
+            targetPos2D = filter.Transform->Position;
         }
 
         public override void Update(Frame f, ref Filter filter)
@@ -27,16 +33,18 @@ namespace Quantum
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
             FPVector3 targetPos;
-            FPVector2 targetPos2D;
-
+            
             if (input->MouseClick)
             {
                 targetPos = input->MousePosition;
                 targetPos2D.X = targetPos.X;
                 targetPos2D.Y = targetPos.Z;
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", targetPos2D);
-                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
             }
+
+            filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
+
+
         }
     }
 }
