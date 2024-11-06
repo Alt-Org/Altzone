@@ -25,12 +25,16 @@ public class ClanSettings : MonoBehaviour
 
     [Header("Toggles and dropdowns")]
     [SerializeField] private Toggle _clanOpenToggle;
-    [SerializeField] private TMP_Dropdown _clanLanguageDropdown;
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
     [SerializeField] private Toggle _ageToddlersToggle;
     [SerializeField] private Toggle _ageTeensToggle;
     [SerializeField] private Toggle _ageAdultsToggle;
     [SerializeField] private Toggle _ageEveryoneToggle;
+
+    [Header("Language")]
+    [SerializeField] private LanguageFlagMap _languageFlagMap;
+    [SerializeField] private ClanLanguageList _languageList;
+    [SerializeField] Image _flagImage;
 
     [Header("Other settings fields")]
     [SerializeField] private Transform _valueRowFirst;
@@ -40,6 +44,8 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private ClanHeartColorSetter _settingsHeartColorSetter;
 
     [Header("Buttons")]
+    [SerializeField] private Button _closeClanLanguageSelect;
+    [SerializeField] private Button _openClanLanguageSelect;
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
@@ -57,10 +63,14 @@ public class ClanSettings : MonoBehaviour
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             _clanHeartColorChanger.gameObject.SetActive(false);
+            _languageList.gameObject.SetActive(false);
             _cancelConfirmationPopup.SetActive(false);
 
             SetPanelValues(clanData);
             _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+            _languageList.Initialize(clanData.Language);
+            SetFlag(clanData.Language);
+            _closeClanLanguageSelect.onClick.AddListener(() => SetFlag(_languageList.SelectedLanguage));
             SetInitialSettingValues(clanData);
 
             clanData.ClanHeartPieces ??= new();
@@ -68,6 +78,8 @@ public class ClanSettings : MonoBehaviour
             _clanHeartColorChanger.InitializeClanHeart(_heartPieces);
         });
     }
+
+    private void SetFlag(Language language) => _flagImage.sprite = _languageFlagMap.GetFlag(language);
 
     private void SetPanelValues(ClanData clan)
     {
@@ -83,10 +95,6 @@ public class ClanSettings : MonoBehaviour
         _clanPhraseField.text = clan.Phrase;
         // _clanPasswordField.text = ;
         _clanOpenToggle.isOn = !clan.IsOpen;
-
-        InitLanguageDropdown();
-        _clanLanguageDropdown.value = EnumToDropdown(clan.Language);
-        _clanLanguageDropdown.RefreshShownValue();
 
         InitGoalsDropDown();
         _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
@@ -148,17 +156,6 @@ public class ClanSettings : MonoBehaviour
         _clanHeartColorChanger.gameObject.SetActive(false);
     }
 
-    private void InitLanguageDropdown()
-    {
-        _clanLanguageDropdown.options.Clear();
-        foreach (Language language in Enum.GetValues(typeof(Language)))
-        {
-            if (language == Language.None) continue;
-            string text = ClanDataTypeConverter.GetLanguageText(language);
-            _clanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-    }
-
     private void InitGoalsDropDown()
     {
         _clanGoalDropdown.options.Clear();
@@ -172,7 +169,6 @@ public class ClanSettings : MonoBehaviour
 
     // To skip over the None value
     private int EnumToDropdown<T>(T value) where T : Enum => Convert.ToInt32(value) - 1;
-    private Language DropdownToLanguage(int lang) => (Language)lang + 1;
     private Goals DropdownToGoal(int goal) => (Goals)goal + 1;
 
     public void SaveClanSettings()
@@ -182,7 +178,7 @@ public class ClanSettings : MonoBehaviour
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             clanData.Phrase = _clanPhraseField.text;
-            clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
+            clanData.Language = _languageList.SelectedLanguage;
             clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
             clanData.ClanAge = _clanAgeRange;
 
@@ -213,7 +209,7 @@ public class ClanSettings : MonoBehaviour
         {
             bool hasMadeEdits = _clanHeartColorChanger.IsAnyPieceChanged()
                 || clanData.Phrase != _clanPhraseField.text
-                || clanData.Language != DropdownToLanguage(_clanLanguageDropdown.value)
+                || clanData.Language != _languageList.SelectedLanguage
                 || clanData.Goals != DropdownToGoal(_clanGoalDropdown.value)
                 || clanData.ClanAge != _clanAgeRange
                 || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
