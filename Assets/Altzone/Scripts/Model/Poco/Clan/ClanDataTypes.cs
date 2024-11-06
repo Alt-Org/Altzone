@@ -30,7 +30,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         None,
         Finnish,
         Swedish,
-        English
+        English,
+        Russian,
+        Ukrainian
     }
 
     public enum Goals
@@ -71,9 +73,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
             return language switch
             {
                 Language.None => "Kieli / Språk / Language",
-                Language.Finnish => "Suomi",
-                Language.Swedish => "Svenska",
+                Language.Finnish => "suomi",
+                Language.Swedish => "svenska",
                 Language.English => "English",
+                Language.Russian => "venäjä",
+                Language.Ukrainian => "ukraina",
                 _ => "",
             };
         }
