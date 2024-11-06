@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Numerics;
 using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -42,7 +40,11 @@ namespace Quantum
                 Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", targetPos2D);
             }
 
-            filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
+            if(filter.Transform->Position != targetPos2D)
+            {
+                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
+            }
+            
 
 
         }

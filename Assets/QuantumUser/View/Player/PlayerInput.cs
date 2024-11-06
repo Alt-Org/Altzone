@@ -1,9 +1,7 @@
 using Photon.Deterministic;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.Scripting;
 
-namespace Quantum.Battle
+namespace Quantum
 {
     public class PlayerInput : MonoBehaviour
     {
