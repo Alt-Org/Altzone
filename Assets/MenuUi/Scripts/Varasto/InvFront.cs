@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
+        [SerializeField] private TMP_Text _totalValueText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -129,6 +130,7 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
+            _totalValueText.text = $"Varaston Arvo: {GetTotalInventoryValue()}";
             _updatingInventory = false;
         }
 
@@ -335,6 +337,11 @@ namespace MenuUi.Scripts.Storage
                 return _furnImagePlaceholder;
             }
             return returned;
+        }
+
+        private float GetTotalInventoryValue()
+        {
+            return _items.Sum(item => item.Value);
         }
     }
 }
