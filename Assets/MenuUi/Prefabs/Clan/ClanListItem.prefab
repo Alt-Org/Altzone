@@ -4049,6 +4049,7 @@ GameObject:
   - component: {fileID: 7954447686503375529}
   - component: {fileID: 5547342656936681874}
   - component: {fileID: 3019686473570054690}
+  - component: {fileID: 8359627447796677295}
   m_Layer: 0
   m_Name: ClanListItem
   m_TagString: Untagged
@@ -4179,6 +4180,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8359627447796677295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4448567327820125797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: af7bed882640abb4c883d988f7d81a34, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &4514336985913846166
 GameObject:
   m_ObjectHideFlags: 0

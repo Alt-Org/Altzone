@@ -29,6 +29,11 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] Image _flagImage;
     [SerializeField] Transform _valueRowFirst;
     [SerializeField] Transform _valueRowSecond;
+    [SerializeField] GameObject _inClanButtons;
+    [SerializeField] GameObject _notInClanButtons;
+
+    [Header("Buttons")]
+    [SerializeField] private Button _joinClanButton;
 
     [Header("Prefabs and scriptable objects")]
     [SerializeField] GameObject _valuePrefab;
@@ -38,12 +43,29 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(false);
 
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) => SetClanProfile(clanData));
+        if (DataCarrier.Instance.clanToView != null)
+        {
+            SetClanProfile(new ClanData(DataCarrier.Instance.clanToView));
+
+            ServerClan clan = DataCarrier.Instance.clanToView;
+            DataCarrier.Instance.clanToView = null;
+
+            _joinClanButton.onClick.RemoveAllListeners();
+            _joinClanButton.onClick.AddListener(() => { JoinClan(clan); });
+        }
+        else
+        {
+            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) => SetClanProfile(clanData));
+        }
     }
 
     private void SetClanProfile(ClanData clan)
     {
         ToggleClanPanel(true);
+
+        bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
+        _inClanButtons.SetActive(isInClan);
+        _notInClanButtons.SetActive(!isInClan);
 
         _clanName.text = clan.Name;
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
@@ -53,14 +75,13 @@ public class ClanMainView : MonoBehaviour
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
         _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
 
-        ToggleClanLockGraphic(clan.IsOpen);
+        _clanOpenObject.SetActive(clan.IsOpen);
+        _clanLockedObject.SetActive(!clan.IsOpen);
 
         // Temp values for testing
         _clanTrophies.text = "-1";
         _clanGlobalRanking.text = "-1";
         _clanPassword.text = "";
-
-        _leaderboard?.LoadClanLeaderboard(ServerManager.Instance.Clan);
     }
 
     private void Reset()
@@ -79,10 +100,15 @@ public class ClanMainView : MonoBehaviour
         _noClanPanel.SetActive(!isInClan);
     }
 
-    private void ToggleClanLockGraphic(bool isClanOpen)
+    public void JoinClan(ServerClan clan)
     {
-        _clanOpenObject.SetActive(isClanOpen);
-        _clanLockedObject.SetActive(!isClanOpen);
+        StartCoroutine(ServerManager.Instance.JoinClan(clan, clan =>
+        {
+            if (clan == null) return;
+
+            ServerManager.Instance.RaiseClanChangedEvent();
+            SetClanProfile(new ClanData(clan));
+        }));
     }
 
     public void LeaveClan()

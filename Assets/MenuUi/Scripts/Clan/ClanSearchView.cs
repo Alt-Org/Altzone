@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class ClanSearchView : MonoBehaviour
 {
     [SerializeField] ClanSearchFiltersPanel _filtersPanel;
-    [SerializeField] ClanProfilePopupPanel _profilePanel;
     [SerializeField] private GameObject _clanPrefab;
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
@@ -42,8 +41,6 @@ public class ClanSearchView : MonoBehaviour
 
     private void Reset()
     {
-        _profilePanel.gameObject.SetActive(false);
-
         for (int i = 0; i < _clanListParent.childCount - 1; i++)
             Destroy(_clanListParent.GetChild(i).gameObject);
 
@@ -74,7 +71,10 @@ public class ClanSearchView : MonoBehaviour
             clanListing.Clan = clan;
 
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
-            clanListing.OpenProfileButton.onClick.AddListener(() => _profilePanel.ShowClanProfile(clanListing.Clan));
+            clanListing.OpenProfileButton.onClick.AddListener(() =>
+            {
+                DataCarrier.Instance.clanToView = clan;
+            });
 
             if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)
             {

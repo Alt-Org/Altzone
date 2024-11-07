@@ -384,10 +384,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0117ab3b2661f1242b46bf60d9d253b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataUsedPerSecond: 0.5
-  baselineConsumption: 2
-  networkMultiplier: 1.5
-  enableDetailedTracking: 1
 --- !u!4 &667346631
 Transform:
   m_ObjectHideFlags: 0
@@ -691,6 +687,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1336648547}
   - component: {fileID: 1336648546}
+  - component: {fileID: 1336648548}
   m_Layer: 0
   m_Name: SettingsCarrier
   m_TagString: Untagged
@@ -730,6 +727,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1336648548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336648545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1565dfa04abf6eb489856704b9f7b5aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clanData:
+    Id: 
+    Name: 
+    Tag: 
+    Phrase: 
+    GameCoins: 0
+    IsOpen: 0
+    Labels: []
+    ClanRights: 
+    Inventory:
+      Furniture: []
+    Members: []
+    Rooms: []
+    ClanAge: 0
+    Language: 0
+    Goals: 0
 --- !u!1 &1556160748
 GameObject:
   m_ObjectHideFlags: 0
