@@ -15,6 +15,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [Optional] public string Tag;
         [Optional] public string Phrase;
         public int GameCoins;
+        public int Points;
         public bool IsOpen;
 
         public List<string> Labels = new();
@@ -55,6 +56,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
             GameCoins = clan.gameCoins;
+            Points = clan.points;
             Labels = clan.labels;
             ClanAge = clan.ageRange;
             Language = clan.language;
