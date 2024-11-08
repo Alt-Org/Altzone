@@ -69,12 +69,12 @@ public class ProfileMenu : MonoBehaviour
         // Peliaika
         if (minuteCount < 1)
         {
-            _TimePlayedText.text = $"Peliaika\nAlle 1 min";
+            _TimePlayedText.text = $"Alle 1 min";
         }
 
         else
         {
-            _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
+            _TimePlayedText.text = $"{minuteCount} min";
         }
 
 
