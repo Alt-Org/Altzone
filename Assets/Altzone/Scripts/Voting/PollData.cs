@@ -26,7 +26,7 @@ namespace Altzone.Scripts.Voting
         Selling
     }
 
-    public class PollObject
+    public class PollData
     {
         public PollType PollType;
         public string Id;
@@ -34,7 +34,7 @@ namespace Altzone.Scripts.Voting
         public long EndTime;
         public Sprite Sprite;
 
-        public PollObject(PollType pollType, string id, string name, long endTime, Sprite sprite)
+        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite)
         {
             PollType = pollType;
             Id = id;
@@ -45,14 +45,14 @@ namespace Altzone.Scripts.Voting
     }
 
 
-    public class FurniturePollObject : PollObject
+    public class FurniturePollData : PollData
     {
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
         public double Weight;
         public float Value;
 
-        public FurniturePollObject(PollType pollType, string id, string name, long endTime, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
         : base(pollType, id, name, endTime, sprite)
         {
             FurniturePollType = furniturePollType;
@@ -62,12 +62,12 @@ namespace Altzone.Scripts.Voting
         }
     }
 
-    public class EsinePollObject : PollObject
+    public class EsinePollData : PollData
     {
         public EsinePollType EsinePollType;
         public float Value;
 
-        public EsinePollObject(PollType pollType, string id, string name, long endTime, Sprite sprite, EsinePollType esinePollType, float value)
+        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, EsinePollType esinePollType, float value)
         : base(pollType, id, name, endTime, sprite)
         {
             EsinePollType = esinePollType;

@@ -24,7 +24,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanInventory Inventory = new();
 
-        public List<PollObject> Polls = new();
+        public List<PollData> Polls = new();
 
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();

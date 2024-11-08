@@ -29,7 +29,7 @@ public class KylläButtonÄänestyst : MonoBehaviour
     {
         Invoke("SetInactiveAfterTime", 2f);
 
-        PollManager.CreatePollObject(PollType.Kauppa, esine.name, 2, esine.items.esine, EsinePollType.Buying, esine.items.value);
+        PollManager.CreatePoll(PollType.Kauppa, esine.name, 2, esine.items.esine, EsinePollType.Buying, esine.items.value);
     }
 
     public void SetInactiveAfterTime()
