@@ -23,8 +23,11 @@ namespace Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
-            // gets the input for player 1
-            Input* input = f.GetPlayerInput(0);
+            Input* input = default;
+            if(f.Unsafe.TryGetPointer(filter.Entity, out PlayerData* playerData))
+            {
+                input = f.GetPlayerInput(playerData->Player);
+            }
 
             UpdatePlayerMovement(f, ref filter, input);
         }
