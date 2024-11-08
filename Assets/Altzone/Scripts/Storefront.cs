@@ -94,6 +94,22 @@ namespace Altzone.Scripts
         }
 
         /// <summary>
+        /// Gets <c>PlayerTasks</c> entity.
+        /// </summary>
+        public void GetPlayerTasks( Action<PlayerTasks> callback)
+        {
+            _localModels.GetPlayerTasks(callback);
+        }
+
+        /// <summary>
+        /// Saves <c>PlayerTasks</c> entity.
+        /// </summary>
+        public void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        {
+            _localModels.SavePlayerTasks(tasks, callback);
+        }
+
+        /// <summary>
         /// Get all read-only <c>GameFurniture</c> entities.
         /// </summary>
         /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY <c>Coroutine</c> using <code>yield return</code></returns>

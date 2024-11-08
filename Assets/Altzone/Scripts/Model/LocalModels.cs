@@ -295,6 +295,17 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
         }
 
+        internal void GetPlayerTasks(Action<PlayerTasks> callback)
+        {
+            callback(_storageData.PlayerTasks);
+        }
+
+        internal void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        {
+            _storageData.PlayerTasks = tasks;
+            callback(_storageData.PlayerTasks);
+        }
+
         #endregion
 
         #region Setters for bulk data updates for base models.
@@ -354,6 +365,7 @@ namespace Altzone.Scripts.Model
             {
                 storageData.Characters = new CharacterStorage().CharacterList;
                 storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+                storageData.PlayerTasks = null;
             }
 
             return storageData;
@@ -377,5 +389,6 @@ namespace Altzone.Scripts.Model
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
+        public PlayerTasks PlayerTasks= null;
     }
 }
