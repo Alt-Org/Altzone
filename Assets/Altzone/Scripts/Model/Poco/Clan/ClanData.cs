@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [Unique] public string Name;
         [Optional] public string Tag;
         [Optional] public string Phrase;
-        public int GameCoins;
+        private int _gameCoins;
         public int Points;
         public bool IsOpen;
 
@@ -33,6 +33,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public Language Language;
         public Goals Goals;
 
+        public int GameCoins { get => _gameCoins; set { _gameCoins = value; CallDataUpdate(); } }
+
         public delegate void ClanInfoUpdated();
         public static event ClanInfoUpdated OnClanInfoUpdated;
 
@@ -45,7 +47,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Id = id;
             Name = name;
             Tag = tag ?? string.Empty;
-            GameCoins = gameCoins;
+            _gameCoins = gameCoins;
         }
 
         public ClanData(ServerClan clan)
@@ -58,7 +60,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Name = clan.name;
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
-            GameCoins = clan.gameCoins;
+            _gameCoins = clan.gameCoins;
             Points = clan.points;
             Labels = clan.labels;
             ClanAge = clan.ageRange;
