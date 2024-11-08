@@ -240,8 +240,9 @@ GameObject:
   - component: {fileID: 7636285992594450044}
   - component: {fileID: 9200195769848603328}
   - component: {fileID: 8102456642067938519}
+  - component: {fileID: 4561281503807402212}
   m_Layer: 5
-  m_Name: MoneyBackground
+  m_Name: ClanCoins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,6 +306,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4561281503807402212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934092503525569288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25e26f8ecccf8b4fb590c9d528792ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clanCoinsAmountText: {fileID: 7216358446363405444}
 --- !u!1 &2589664670808032201
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.14, y: 0.15}
   m_AnchorMax: {x: 0.24, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8513833266704927033
@@ -530,7 +544,7 @@ GameObject:
   - component: {fileID: 2458676145132035686}
   - component: {fileID: 7216358446363405444}
   m_Layer: 5
-  m_Name: MoneyText (TMP)
+  m_Name: ClanCoinsText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -667,7 +681,7 @@ GameObject:
   - component: {fileID: 3415844207169135211}
   - component: {fileID: 8627282628994339349}
   m_Layer: 5
-  m_Name: AddMoneyImage
+  m_Name: AddClanCoinsImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -948,7 +962,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.03, y: 0.15}
   m_AnchorMax: {x: 0.13, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3005329803064190920
@@ -1045,7 +1059,7 @@ GameObject:
   - component: {fileID: 3582304189994803913}
   - component: {fileID: 7990477652683786473}
   m_Layer: 5
-  m_Name: AddMoneyButton
+  m_Name: AddClanCoinsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1153,13 +1167,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8377284095442419154}
-  - {fileID: 7636285992594450044}
-  - {fileID: 3796718271485638456}
-  - {fileID: 9212066207485454122}
-  - {fileID: 8782303747129721840}
   - {fileID: 7504815644500887317}
   - {fileID: 2494480413859530925}
+  - {fileID: 3796718271485638456}
+  - {fileID: 7636285992594450044}
+  - {fileID: 8782303747129721840}
+  - {fileID: 9212066207485454122}
+  - {fileID: 8377284095442419154}
   m_Father: {fileID: 8476621660179101015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.93}
@@ -1239,7 +1253,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25, y: 0.15}
   m_AnchorMax: {x: 0.35, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &802853508962230002
