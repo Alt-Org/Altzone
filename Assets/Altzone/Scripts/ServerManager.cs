@@ -10,6 +10,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.GA;
+using Altzone.Scripts.Model.Poco.Game;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -135,16 +136,22 @@ public class ServerManager : MonoBehaviour
                     OnLogInFailed();
                     return;
                 }
-
-                StartCoroutine(GetPlayerTasksFromServer(player =>
+                bool gettingTasks = true;
+                StartCoroutine(GetPlayerTasksFromServer(tasks =>
                 {
-                    if (player == null)
+                    if (tasks == null)
                     {
                         Debug.LogError("Failed to fetch task data.");
+                        gettingTasks = false;
                         return;
                     }
-                }));
 
+                    Storefront.Get().SavePlayerTasks(tasks, tasks =>
+                    {
+                        gettingTasks = false;
+                    });
+                }));
+                new WaitUntil(() => gettingTasks == false);
                 SetPlayerValues(player);
 
                 if (OnLogInStatusChanged != null)
@@ -424,6 +431,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
                 Player = player;
 
@@ -470,7 +478,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerTasksFromServer(Action<ServerClan> callback)
+    public IEnumerator GetPlayerTasksFromServer(Action<PlayerTasks> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "latest-release/playerTasks?period=month", AccessToken, request =>
         {
@@ -478,11 +486,11 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                //ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                ServerPlayerTasks tasks = result["data"]["PlayerTask"].ToObject<ServerPlayerTasks>();
                 //Clan = clan;
 
                 if (callback != null)
-                    callback(null);
+                    callback(new(tasks));
             }
             else
             {
@@ -913,7 +921,6 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 JArray jArray = (JArray)result["data"]["Player"];
-                Debug.LogWarning(result);
                 List<ServerPlayer> players = jArray.ToObject<List<ServerPlayer>>();
                 List<PlayerLeaderboard> playersLeaderBoard = new();
                 foreach (ServerPlayer player in players)

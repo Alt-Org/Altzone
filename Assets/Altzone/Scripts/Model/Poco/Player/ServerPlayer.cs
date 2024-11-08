@@ -20,7 +20,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
     public class ServerGameStatistics
     {
-        public ServerChatMessages messages { get; set; }
+        //public ServerChatMessages messages { get; set; }
         public int playedBattles { get; set; }
         public int wonBattles { get; set; }
         public int startedVotings { get; set; }
