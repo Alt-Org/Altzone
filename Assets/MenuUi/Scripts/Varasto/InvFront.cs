@@ -130,7 +130,7 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
-            _totalValueText.text = $"Varaston Arvo: {GetTotalInventoryValue()}";
+            _totalValueText.text = $"Varaston arvo: {GetTotalInventoryValue()}";
             _updatingInventory = false;
         }
 
@@ -220,7 +220,7 @@ namespace MenuUi.Scripts.Storage
                         toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Value.ToString();
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
                         toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
@@ -287,7 +287,7 @@ namespace MenuUi.Scripts.Storage
             _name.text = _furn.VisibleName;
 
             // Weight
-            _weight.text = _furn.Weight + " KG";
+            _weight.text = "Paino:" + _furn.Weight + " KG";
 
             // Material text
             _material.text = $"{_furn.Material}";
