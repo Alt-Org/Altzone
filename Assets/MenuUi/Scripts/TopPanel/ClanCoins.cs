@@ -11,54 +11,46 @@ namespace MenuUi.Scripts.TopPanel
     public class ClanCoins : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _clanCoinsAmountText;
-        private ServerPlayer _player;
+        private ClanData _clanData = null;
 
         private void OnEnable()
         {
-            ServerManager.OnLogInStatusChanged += SetCoinsAmountText;
-            _player = ServerManager.Instance.Player;
-
-            if (_player == null)
-                SetCoinsAmountText(false);
-            else
-                SetCoinsAmountText(true);
+            if (_clanData == null)
+            {
+                ClanData.OnClanInfoUpdated += SetCoinsAmountText;
+            }
+            
+            SetCoinsAmountText();
         }
 
         private void OnDisable()
         {
-            ServerManager.OnLogInStatusChanged -= SetCoinsAmountText;
+            ClanData.OnClanInfoUpdated -= SetCoinsAmountText;
         }
 
         /// <summary>
-        /// Sets clan coins when login status changes. (Will be changed later on to a different event when clan coin systems get developed.)
+        /// Sets clan coins amount text when clan info was updated.
         /// </summary>
-        /// <param name="isLoggedIn">Logged in status</param>
-        private void SetCoinsAmountText(bool isLoggedIn)
+        private void SetCoinsAmountText()
         {
-            if (isLoggedIn)
+            var store = Storefront.Get();
+            PlayerData playerData = null;
+
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+
+            if (playerData != null && playerData.HasClanId)
             {
-                var store = Storefront.Get();
-                PlayerData playerData = null;
-
-                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-
-                ClanData clanData = null;
-                string clanId = "";
-
-                if (playerData.HasClanId)
+                string clanId = playerData.ClanId;
+                store.GetClanData(clanId, p => _clanData = p);
+                if (_clanData != null)
                 {
-                    clanId = playerData.ClanId;
-                    store.GetClanData(clanId, p => clanData = p);
-                    if (clanData != null)
-                    {
-                        _clanCoinsAmountText.text = clanData.GameCoins.ToString();
-                        return;
-                    }
+                    _clanCoinsAmountText.text = _clanData.GameCoins.ToString();
+                    return;
                 }
             }
 
             _clanCoinsAmountText.text = "-";
-
+            _clanData = null;
         }
     }
 }
