@@ -33,6 +33,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public Language Language;
         public Goals Goals;
 
+        public delegate void ClanInfoUpdated();
+        public static event ClanInfoUpdated OnClanInfoUpdated;
+
         public ClanData(string id, string name, string tag, int gameCoins)
         {
             Assert.IsTrue(id.IsPrimaryKey());
@@ -63,6 +66,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Goals = clan.goal;
             ClanHeartPieces = new();
             IsOpen = clan.isOpen;
+        }
+
+        public void CallDataUpdate()
+        {
+            OnClanInfoUpdated.Invoke();
         }
 
         public override string ToString()

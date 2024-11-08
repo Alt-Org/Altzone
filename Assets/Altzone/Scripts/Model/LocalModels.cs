@@ -227,6 +227,7 @@ namespace Altzone.Scripts.Model
             Debug.Log($"clanData {clanData}");
             SaveStorage(_storageData, _storagePath);
             _saving = false;
+            clanData.CallDataUpdate();
             callback?.Invoke(clanData);
         }
 
