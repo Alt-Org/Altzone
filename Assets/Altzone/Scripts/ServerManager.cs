@@ -123,7 +123,7 @@ public class ServerManager : MonoBehaviour
     {
         if (Player != null || AccessToken == string.Empty)
         {
-            OnLogInFailed();
+            OnLogInFailed?.Invoke();
             yield break;
         }
         else

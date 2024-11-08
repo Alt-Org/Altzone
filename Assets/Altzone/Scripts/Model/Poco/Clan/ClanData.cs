@@ -72,7 +72,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public void CallDataUpdate()
         {
-            OnClanInfoUpdated.Invoke();
+            OnClanInfoUpdated?.Invoke();
         }
 
         public override string ToString()
