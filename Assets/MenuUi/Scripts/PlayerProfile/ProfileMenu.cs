@@ -10,10 +10,13 @@ using UnityEngine.UIElements;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEditor.UIElements;
 
 public class ProfileMenu : MonoBehaviour
 
 {
+
+
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutTimeText;
@@ -26,6 +29,8 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
+
+
 
     //[Header("Images")]
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
@@ -50,7 +55,6 @@ public class ProfileMenu : MonoBehaviour
 
     private ServerPlayer _player;
 
-
     private void Update()
     {
         updateTime();
@@ -73,11 +77,13 @@ public class ProfileMenu : MonoBehaviour
             _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
         }
 
+
+
         // Tarkistaa onko kg vai g
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
-        if (carbonDisplay >= 1000f)
+        if (carbonDisplay >= 1000f)                                                                                  
         {
             carbonDisplay /= 1000f;
             carbonUnit = "kg";
