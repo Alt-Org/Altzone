@@ -10,18 +10,12 @@ public class PlayerPanel : MonoBehaviour
 {
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
-    [SerializeField] private string loggedOutClanText;
-    [SerializeField] private string loggedOutClanDescription;
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
-    [SerializeField] private TextMeshProUGUI _playerClanText;
-    [SerializeField] private TextMeshProUGUI _playerClanDescription;
 
     [Header("Navigation Buttons")]
     [SerializeField] private NaviButton _profileNaviButton;
-
-    [SerializeField] private GameObject _clanButtonGameObject;
 
     private ServerPlayer _player;
 
@@ -40,8 +34,6 @@ public class PlayerPanel : MonoBehaviour
     private void Reset()
     {
         _playerNameText.text = loggedOutPlayerText;
-        _playerClanText.text = loggedOutClanText;
-        _playerClanDescription.text = loggedOutClanDescription;
         _profileNaviButton.gameObject.SetActive(false);
     }
 
@@ -51,7 +43,7 @@ public class PlayerPanel : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the name text and clan text of player panel when log in status changes
+    /// Sets the name text of player panel when log in status changes
     /// </summary>
     /// <param name="isLoggedIn">Logged in status</param>
     private void SetPlayerPanelValues(bool isLoggedIn)
@@ -63,30 +55,6 @@ public class PlayerPanel : MonoBehaviour
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
             _playerNameText.text = playerData.Name;
-
-            ClanData clanData = null;
-            string clanId = "";
-            if (playerData.HasClanId)
-            {
-                clanId = playerData.ClanId;
-                store.GetClanData(clanId, p => clanData = p);
-                if (clanData != null)
-                {
-                    _playerClanText.text = clanData.Name;
-                    _playerClanDescription.text = clanData.Phrase;
-                }
-                else
-                {
-                    _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut.";
-                    _playerClanDescription.text = "";
-                }
-            }
-            else
-            {
-                _playerClanText.text = "Et ole klaanissa.";
-                _playerClanDescription.text = "";
-            }
-
             _profileNaviButton.gameObject.SetActive(true);
         }
         else

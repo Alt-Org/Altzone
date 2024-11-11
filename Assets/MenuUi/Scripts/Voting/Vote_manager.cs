@@ -10,7 +10,9 @@ using UnityEngine.UI;
 
 public class Vote_manager : MonoBehaviour
 {
-    private List<PollObject> pollObjectList = new List<PollObject>();
+    public GameObject Content;
+    public GameObject PollObjectPrefab;
+    private List<PollData> pollDataList = new List<PollData>();
     private List<GameObject> Polls = new List<GameObject>();
 
     private void OnEnable()
@@ -23,10 +25,31 @@ public class Vote_manager : MonoBehaviour
         DataStore store = Storefront.Get();
         PlayerData player = null;
         ClanData clan = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
         store.GetClanData(player.ClanId, data => clan = data);
 
-        pollObjectList = clan.Polls;
-        Debug.Log(pollObjectList.Count);
+        pollDataList = clan.Polls;
+        InstantiatePolls();
+
+        Debug.Log("Polls: " + pollDataList.Count);
+    }
+
+    public void InstantiatePolls()
+    {
+        // Clear existing polls
+        for (int i = 0; i < Polls.Count; i++)
+        {
+            GameObject obj = Polls[i];
+            Destroy(obj);
+        }
+        Polls.Clear();
+
+        // Instantiate new polls
+        foreach (var pollData in pollDataList)
+        {
+            GameObject obj = Instantiate(PollObjectPrefab, Content.transform);
+            Polls.Add(obj);
+        }
     }
 }
