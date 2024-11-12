@@ -4,6 +4,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -31,6 +32,10 @@ namespace MenuUi.Scripts.CharacterGallery
         public bool IsReady => _isReady;
 
         private CharacterID _currentCharacterId;
+
+        private Color orange = new Color(1f, 0.64f, 0, 0);
+        private Color purple = new Color(0.5f, 0, 0.5f, 0);
+        private ColorBlock _colorBlock;
 
         private void Awake()
         {
@@ -76,11 +81,43 @@ namespace MenuUi.Scripts.CharacterGallery
                 characterSlot.gameObject.SetActive(false);
             }
         }
+        public Color GetCharacterClassColor(CharacterClassID id)
+        {
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    return Color.blue;
+                case CharacterClassID.Trickster:
+                    return Color.green;
+                case CharacterClassID.Obedient:
+                    return orange;
+                case CharacterClassID.Projector:
+                    return Color.yellow;
+                case CharacterClassID.Retroflector:
+                    return Color.red;
+                case CharacterClassID.Confluent:
+                    return purple;
+                case CharacterClassID.Intellectualizer:
+                    return Color.blue;
+                default:
+                    return Color.gray;
+            }
+        }
 
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
             CurrentCharacterId = (CharacterID)currentCharacterId[0];
-            Transform content = transform.Find("Content");
+            Transform content = null;
+            if (VerticalContentPanel == null)
+            {
+                content = transform.Find("Content");
+            }
+            else
+            {
+                content = VerticalContentPanel.transform;
+            }
+            
+            
             foreach (var character in characters)
             {
 
@@ -108,6 +145,8 @@ namespace MenuUi.Scripts.CharacterGallery
                     var character = characters[i];
                     button.gameObject.SetActive(true);
                     button.interactable = true;
+                    _colorBlock.normalColor = GetCharacterClassColor(character.CharacterClassID);
+                    button.image.color = _colorBlock.normalColor;
                     //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
