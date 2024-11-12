@@ -510,7 +510,11 @@ public class ServerManager : MonoBehaviour
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
 
         if (Player.clan_id == null)
+        {
+            if (callback != null)
+                callback(Clan);
             yield break;
+        }
 
 
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan/" + Player.clan_id, AccessToken, request =>
