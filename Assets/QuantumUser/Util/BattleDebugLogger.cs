@@ -1,4 +1,4 @@
-//#define BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE
+#define BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE
 //#define BATTLE_DEBUG_LOGGER_LOG_SEND_FILE_CALL
 
 using System;
@@ -183,10 +183,12 @@ namespace Battle1.Scripts.Battle
             fileReader.Close();
             s_battleDebugLogger.LogInfo("Log file closed (read)");
 
+#if BATTLE_DEBUG_LOGGER_LOG_SEND_FILE_CALL
             List<IMultipartFormSection> formData = new()
             {
                 new MultipartFormFileSection(fileSectionName, fileData, s_fileEncoding, fileName)
             };
+#endif
 
             string secretKey = "my_secret";
 
@@ -205,7 +207,6 @@ namespace Battle1.Scripts.Battle
 #else
             s_battleDebugLogger.LogWarning("BATTLE_DEBUG_LOGGER_DO_NOT_SEND_FILE == TRUE");
 #endif
-
         }
 
         private static void UnityLogCallback(string logString, string stackTrace, LogType type)
