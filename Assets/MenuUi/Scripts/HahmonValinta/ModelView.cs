@@ -74,13 +74,16 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (var button in _buttons)
             {
-                _buttons.Remove(button);
+                Destroy(button.gameObject);
             }
             // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                _characterSlot.Remove(characterSlot);
+                Destroy(characterSlot.gameObject);
             }
+            _buttons.Clear();
+            _characterSlot.Clear();
+
         }
         public Color GetCharacterClassColor(CharacterClassID id)
         {
@@ -118,6 +121,7 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (var id in currentCharacterId)
             {
                 CurrentCharacterId = (CharacterID)id;
+                
             }
 
             var store = Storefront.Get();
@@ -153,10 +157,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (i < characters.Count)
                 {
                     var character = characters[i];
-                    button.image.color = GetCharacterClassColor(character.CharacterClassID);
+                    
                     button.gameObject.SetActive(true);
                     button.interactable = true;
-                    
+                    button.image.color = GetCharacterClassColor(character.CharacterClassID);
                     //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);

@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.CharacterGallery
             parentAfterDrag = transform.parent;
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
-            transform.SetAsLastSibling();
+            //transform.SetAsLastSibling();
             _backgroundSpriteImage.raycastTarget = false;
             button.interactable = false;
 
