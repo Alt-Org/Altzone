@@ -4,9 +4,7 @@ using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -38,6 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private Color orange = new Color(1f, 0.64f, 0, 0);
         private Color purple = new Color(0.5f, 0, 0.5f, 0);
         private ColorBlock _colorBlock;
+
 
         private void Awake()
         {
@@ -75,12 +74,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (var button in _buttons)
             {
-                Destroy(button);
+                _buttons.Remove(button);
             }
-            // Deactivate all character slots
+            // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                Destroy(characterSlot);
+                _characterSlot.Remove(characterSlot);
             }
         }
         public Color GetCharacterClassColor(CharacterClassID id)
@@ -92,13 +91,13 @@ namespace MenuUi.Scripts.CharacterGallery
                 case CharacterClassID.Trickster:
                     return Color.green;
                 case CharacterClassID.Obedient:
-                    return new Color(1f, 0.64f, 0, 0);
+                    return orange;
                 case CharacterClassID.Projector:
                     return Color.yellow;
                 case CharacterClassID.Retroflector:
                     return Color.red;
                 case CharacterClassID.Confluent:
-                    return new Color(0.5f, 0, 0.5f, 0);
+                    return purple;
                 case CharacterClassID.Intellectualizer:
                     return Color.blue;
                 default:
@@ -107,8 +106,8 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         public Transform GetContent()
         {
-            Transform content = (VerticalContentPanel == null) ? content = transform.Find("Content") :
-                content = VerticalContentPanel.transform;
+            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
+                VerticalContentPanel.transform;
             
             return content;
         }
@@ -126,7 +125,7 @@ namespace MenuUi.Scripts.CharacterGallery
             ReadOnlyCollection<BaseCharacter> allItems = null;
             store.GetAllBaseCharacterYield(result => allItems = result);
 
-            foreach (var character in characters)
+            foreach (var character in allItems)
             {
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
@@ -139,7 +138,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
+
             }
+
+            /*foreach (var character in characters)
+            {
+            }*/
 
             for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
             {
@@ -149,9 +153,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (i < characters.Count)
                 {
                     var character = characters[i];
+                    button.image.color = GetCharacterClassColor(character.CharacterClassID);
                     button.gameObject.SetActive(true);
                     button.interactable = true;
-                    button.image.color = GetCharacterClassColor(character.CharacterClassID);
+                    
                     //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
