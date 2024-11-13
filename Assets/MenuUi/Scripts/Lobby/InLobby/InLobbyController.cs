@@ -99,6 +99,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 _view.LobbyText = "Wait";
                 return;
             }
+            UpdateTitle();
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _view.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
             _view.PlayerCountText = $"Pelaajia online: {playerCount}";
@@ -114,9 +115,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }
 
+        public void ToggleWindow()
+        {
+            if(transform.GetChild(0).gameObject.activeSelf) CloseWindow();
+            else transform.GetChild(0).gameObject.SetActive(true);
+        }
+
         public void CloseWindow()
         {
-            gameObject.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
         }
 
         private void CharacterButtonOnClick()

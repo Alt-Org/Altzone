@@ -21,6 +21,8 @@ public static class PhotonRealtimeClient
 
     public static bool CanJoinLobby => Client.State == ClientState.ConnectedToMasterServer;
 
+    public static PhotonServerSettings ServerSettings { get; private set; }
+
     public static string NickName
     {
         get
@@ -255,7 +257,8 @@ public static class PhotonRealtimeClient
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
     private static void StartClient()
     {
-        var protocol = PhotonServerSettings.Global.AppSettings.Protocol;
+        ServerSettings = PhotonServerSettings.Global;
+        var protocol = ServerSettings.AppSettings.Protocol;
         Client = new RealtimeClient(protocol);
     }
 
@@ -540,7 +543,7 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        typedLobby = typedLobby ?? ((Client.InLobby) ? Client.CurrentLobby : null);  // use given lobby, or active lobby (if any active) or none
+        typedLobby ??= ((Client.InLobby) ? Client.CurrentLobby : null);  // use given lobby, or active lobby (if any active) or none
 
         EnterRoomArgs opParams = new EnterRoomArgs();
         opParams.RoomName = roomName;
@@ -728,6 +731,7 @@ public static class PhotonRealtimeClient
 
     public static long GetPing()
     {
+        Debug.LogWarning(Client.RealtimePeer.Stats.RoundtripTime);
         return Client.RealtimePeer.Stats.RoundtripTime;
     }
 }

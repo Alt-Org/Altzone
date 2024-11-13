@@ -55,7 +55,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 IsVisible = true, // Pit�� muokata varmaankin //
                 IsOpen = true,
-                MaxPlayers = 4
+                MaxPlayers = 4//,
+                //Plugins = new string[] { "QuantumPlugin" }//,
+                //PlayerTtl = PhotonRealtimeClient.ServerSettings.PlayerTtlInSeconds * 1000,
+                //EmptyRoomTtl = PhotonRealtimeClient.ServerSettings.EmptyRoomTtlInSeconds * 1000
             };
             Debug.Log($"{roomName}");
             PhotonRealtimeClient.CreateRoom(roomName, roomOptions);
@@ -85,16 +88,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 }
             }
         }
-        
+
         public void OnJoinedRoom()
         {
             var room = PhotonRealtimeClient.CurrentRoom; // hakee pelaajan tiedot // 
             var player = PhotonRealtimeClient.LocalPlayer;
-            PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
+            //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());
         }
-        
+
         private void UpdateStatus()
         {
             if (!PhotonRealtimeClient.InLobby)
@@ -106,16 +109,22 @@ namespace MenuUI.Scripts.Lobby.InLobby
             rooms.Sort((a, b) =>
             {
                 // First open rooms by name, then closed (aka playing) rooms by name
-                var strA = $"{(a.IsOpen?0:1)}{a.Name}";
-                var strB = $"{(b.IsOpen?0:1)}{b.Name}";
+                var strA = $"{(a.IsOpen ? 0 : 1)}{a.Name}";
+                var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
             _view.UpdateStatus(rooms, JoinRoom);
         }
 
         public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreatedRoom() => throw new NotImplementedException();
+        public void OnCreatedRoom()
+        {
+            Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
+        }
         public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnLeftRoom() => throw new NotImplementedException();
+        public void OnLeftRoom()
+        {
+            Debug.Log($"Left room");
+        }
     }
 }

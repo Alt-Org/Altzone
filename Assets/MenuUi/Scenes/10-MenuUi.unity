@@ -443,6 +443,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd274334cf8643b46904835d7fb16d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainMenuWindow: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
+  _roomWindow: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
+  _gameWindow: {fileID: 11400000, guid: 788f9d753ce503045bfe455e66f76270, type: 2}
+  _isCloseRoomOnGameStart: 0
+  _raidScene: {fileID: 11400000, guid: 8b6d1b82480137d4f8db8bbd3eec3358, type: 2}
   _blueTeamName: Alpha
   _redTeamName: Beta
 --- !u!1 &923945530
