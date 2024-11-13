@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Config.ScriptableObjects;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -30,6 +31,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
+        private int _characterSelectionCounter = 0;
 
         private CharacterID _currentCharacterId;
 
@@ -42,6 +44,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
             LoadAndCachePrefabs();
+            CheckSelectedCharacterSlotText();
         }
 
         private void LoadAndCachePrefabs()
@@ -83,7 +86,6 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _buttons.Clear();
             _characterSlot.Clear();
-
         }
         public Color GetCharacterClassColor(CharacterClassID id)
         {
@@ -105,6 +107,36 @@ namespace MenuUi.Scripts.CharacterGallery
                     return Color.blue;
                 default:
                     return Color.gray;
+            }
+        }
+        public void CheckSelectedCharacterSlotText()
+        {
+            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
+            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
+            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
+            if (_CurSelectedCharacterSlot[2].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (_CurSelectedCharacterSlot[1].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else if (_CurSelectedCharacterSlot[0].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
             }
         }
         public Transform GetContent()
@@ -197,6 +229,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     button.gameObject.SetActive(false);
                     characterSlot.gameObject.SetActive(false);
                 }
+                CheckSelectedCharacterSlotText();
             }
         }
     }
