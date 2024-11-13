@@ -13,7 +13,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace MenuUI.Scripts.Lobby
+namespace Battle1.Scripts.Lobby
 {
     /// <summary>
     /// Manages local player position and setup in a room.

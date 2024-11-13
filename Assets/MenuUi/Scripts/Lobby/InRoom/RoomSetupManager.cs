@@ -2,16 +2,17 @@ using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
+using Photon.Client;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
+//using Hashtable = ExitGames.Client.Photon.Hashtable;
+//using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
+//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+//using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace Battle1.Scripts.Lobby.InRoom
+namespace MenuUI.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.
@@ -76,7 +77,7 @@ namespace Battle1.Scripts.Lobby.InRoom
 
         private void OnEnable()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
             _buttonPlayerP1.interactable = false;
             _buttonPlayerP2.interactable = false;
             _buttonPlayerP3.interactable = false;
@@ -86,25 +87,25 @@ namespace Battle1.Scripts.Lobby.InRoom
             _buttonStartPlay.interactable = false;
             _buttonRaidTest.interactable = false;
 
-            PhotonNetwork.AddCallbackTarget(this);
+            PhotonRealtimeClient.Client.AddCallbackTarget(this);
             StartCoroutine(OnEnableInRoom());
         }
 
         private void OnDisable()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
-            PhotonNetwork.RemoveCallbackTarget(this);
+            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
         }
 
         private IEnumerator OnEnableInRoom()
         {
-            yield return new WaitUntil(() => PhotonNetwork.InRoom);
+            yield return new WaitUntil(() => PhotonRealtimeClient.Client.InRoom);
 
             UpdatePhotonNickname();
-            var room = PhotonNetwork.CurrentRoom;
-            var player = PhotonNetwork.LocalPlayer;
-            PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
-            Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonNetwork.NickName}'");
+            var room = PhotonRealtimeClient.CurrentRoom;
+            var player = PhotonRealtimeClient.LocalPlayer;
+            PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
+            Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonRealtimeClient.NickName}'");
 
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
@@ -132,7 +133,7 @@ namespace Battle1.Scripts.Lobby.InRoom
                 //var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
                 var prefabIndex = (int)battleCharacter[0].Id;
                 Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
-                player.SetCustomProperties(new Hashtable
+                player.SetCustomProperties(new PhotonHashtable
                 {
                     { PlayerPositionKey, playerPos },
                     { PlayerMainSkillKey, prefabIndex },
@@ -140,27 +141,27 @@ namespace Battle1.Scripts.Lobby.InRoom
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 });
-                Debug.Log($"{PhotonNetwork.NetworkClientState} {enabled}");
+                Debug.Log($"{PhotonRealtimeClient.NetworkClientState} {enabled}");
                 UpdateStatus();
             });
         }
 
         private void UpdateStatus()
         {
-            if (!enabled || !PhotonNetwork.InRoom)
+            if (!enabled || !PhotonRealtimeClient.Client.InRoom)
             {
                 return;
             }
             ResetState();
             // We need local player to check against other players
-            var localPLayer = PhotonNetwork.LocalPlayer;
+            var localPLayer = PhotonRealtimeClient.LocalPlayer;
             _localPlayerPosition = localPLayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             //currentRole = PlayerRole.Player;
             _isLocalPlayerPositionUnique = true;
 
             CheckMasterClient();
             // Check other players first is they have reserved some player positions etc. from the room already.
-            foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
+            foreach (var player in PhotonRealtimeClient.CurrentRoom.Players.Values)
             {
                 if (!player.Equals(localPLayer))
                 {
@@ -197,12 +198,12 @@ namespace Battle1.Scripts.Lobby.InRoom
             var store = Storefront.Get();
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            PhotonNetwork.NickName = playerData.Name;
+            PhotonRealtimeClient.NickName = playerData.Name;
         }
 
         private void SetTeamText()
         {
-            var room = PhotonNetwork.CurrentRoom;
+            var room = PhotonRealtimeClient.CurrentRoom;
             var masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
@@ -231,7 +232,7 @@ namespace Battle1.Scripts.Lobby.InRoom
 
         private void CheckMasterClient()
         {
-            var curValue = PhotonNetwork.MasterClient.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            var curValue = PhotonRealtimeClient.CurrentRoom.GetPlayer(PhotonRealtimeClient.CurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             _masterClientPosition = curValue;
         }
 
@@ -372,12 +373,12 @@ namespace Battle1.Scripts.Lobby.InRoom
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+        void IInRoomCallbacks.OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged)
         {
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
         {
             UpdateStatus();
         }
