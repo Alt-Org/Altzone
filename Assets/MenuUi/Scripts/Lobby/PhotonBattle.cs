@@ -1,33 +1,40 @@
-using System.Diagnostics;
+using System;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
-using Photon.Realtime;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using Player = Battle1.PhotonRealtime.Code.Player;
-using PhotonBattleRoom = Battle1.Scripts.Battle.Photon.PhotonBattleRoom;
+//using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace Battle1.Scripts.Battle
+namespace MenuUI.Scripts.Lobby
 {
-    internal enum BattleTeamNumber
-    {
-        NoTeam = PhotonBattleRoom.NoTeamValue,
-        TeamAlpha = PhotonBattleRoom.TeamAlphaValue,
-        TeamBeta = PhotonBattleRoom.TeamBetaValue,
-    }
-
     /// <summary>
-    /// Battle wrapper for <see cref="PhotonBattleRoom"/>
+    ///  wrapper for PhotonBattleRoom
     /// </summary>
     internal static class PhotonBattle
     {
+        public const string BattleID = PhotonBattleRoom.BattleID;
+        public const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
+        public const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
+        public const string PlayerPrefabIdKey = PhotonBattleRoom.PlayerCharacterIdKey;
+        public const string PlayerPrefabIdsKey = PhotonBattleRoom.PlayerCharacterIdsKey;
+        public const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
+        public const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
+        public const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
+        public const string TeamWinTypeKey = PhotonBattleRoom.TeamWinTypeKey;
+        public const string TeamWinKey = PhotonBattleRoom.TeamWinKey;
+        public const string TeamBlueScoreKey = PhotonBattleRoom.TeamBlueScoreKey;
+        public const string TeamRedScoreKey = PhotonBattleRoom.TeamRedScoreKey;
+
         // Team positions in world coordinates (game arena when camera isn't rotated)
         //  Beta team number 2
         //  - Player positions 3 and 4
         // | ======= |
-        // |  4 | 3  |      Team number 0
+        // |  4 |  3 |      Team number 0
         // | ======= |      - Guest number is 0
-        // |  1 | 2  |      - Spectator number is 10
+        // |  1 |  2 |      - Spectator number is 10
         // | ======= |
         //  Alpha team number 1
         //  - Player positions 1 and 2
@@ -35,7 +42,6 @@ namespace Battle1.Scripts.Battle
         // Player should be positioned so that if camera is rotated 180 degrees,
         // player with smaller number is always at the bottom of the left corner of the gameplay area.
 
-        public const string BattleID = PhotonBattleRoom.BattleID;
         public const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
         public const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         public const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -43,48 +49,21 @@ namespace Battle1.Scripts.Battle
         public const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
         public const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        internal static class EventCodes
-        {
-            public const byte PlayerClassTricksterSetPhotonViewIdEventCode = 11; // picked randomly
-            public const byte PlayerClassTricksterPos1SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 0;
-            public const byte PlayerClassTricksterPos2SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 1;
-            public const byte PlayerClassTricksterPos3SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 2;
-            public const byte PlayerClassTricksterPos4SetPhotonViewIdEventCode = PlayerClassTricksterSetPhotonViewIdEventCode + 3;
-        }
+        public const int NoTeamValue = PhotonBattleRoom.NoTeamValue;
+        public const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
+        public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(Player player) => s_photonBattleRoom.IsPlayerPosAvailable(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static BattleTeamNumber GetTeamNumber(int playerPos) => (BattleTeamNumber)s_photonBattleRoom.GetTeamNumber(playerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static BattleTeamNumber GetTeamNumber(Player player) => GetTeamNumber(GetPlayerPos(player));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static CharacterID GetPlayerCharacterId(Player player) => s_photonBattleRoom.GetPlayerCharacterID(player);
-
-        public static string GetBattleID()
-        {
-            return PhotonNetwork.CurrentRoom.GetCustomProperty<string>(BattleID, null);
-        }
-
-        public static BattleCharacter GetBattleCharacter(Player player)
-        {
-            int[] characterIds = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerCharacterIdsKey, null);
-            int[] characterStats = player.GetCustomProperty<int[]>(PhotonBattleRoom.PlayerStatsKey, null);
-
-            BattleCharacter battleCharacter = new(
-                (CharacterID)characterIds[0],
-                "placeholder",
-                BaseCharacter.GetStatValue(StatType.Hp, characterStats[0]),
-                BaseCharacter.GetStatValue(StatType.Speed, characterStats[1]),
-                BaseCharacter.GetStatValue(StatType.Resistance, characterStats[2]),
-                BaseCharacter.GetStatValue(StatType.Attack, characterStats[3]),
-                BaseCharacter.GetStatValue(StatType.Defence, characterStats[4])
-            );
-
-            return battleCharacter;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => s_photonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue) => s_photonBattleRoom.GetPrefabIndex(battleCharacter, defaultValue);
 
         #region Debug and test utilities
 

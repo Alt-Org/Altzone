@@ -5,9 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+//using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
-namespace Battle1.Scripts.Lobby.InLobby
+namespace MenuUI.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingView : MonoBehaviour
     {
@@ -59,14 +59,14 @@ namespace Battle1.Scripts.Lobby.InLobby
                 }
             }
             // Update button captions
-            /*for (var i = 0; i < rooms.Count; ++i)
+            for (var i = 0; i < rooms.Count; ++i)
             {
                 var room = rooms[i];
                 var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
                 //var button = buttonObject.GetComponent<Button>();
                 UpdateButton(buttonObject, room, onJoinRoom);
-            }*/
+            }
             _searchPanelController.RoomsData = rooms;
 
             // Hide extra lines

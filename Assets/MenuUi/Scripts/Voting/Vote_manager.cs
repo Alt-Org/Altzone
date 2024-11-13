@@ -29,10 +29,15 @@ public class Vote_manager : MonoBehaviour
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
         store.GetClanData(player.ClanId, data => clan = data);
 
-        pollDataList = clan.Polls;
-        InstantiatePolls();
+        if (clan.Polls != null)
+        {
+            pollDataList = clan.Polls;
+        }
 
+        InstantiatePolls();
         Debug.Log("Polls: " + pollDataList.Count);
+       
+
     }
 
     public void InstantiatePolls()

@@ -408,7 +408,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 850710467}
-  - component: {fileID: 850710466}
+  - component: {fileID: 850710468}
   m_Layer: 0
   m_Name: LobbyManager
   m_TagString: Untagged
@@ -416,20 +416,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &850710466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850710465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29bd8cda7d1b4cf5b520a142d730ecd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blueTeamName: Alpha
-  _redTeamName: Beta
 --- !u!4 &850710467
 Transform:
   m_ObjectHideFlags: 0
@@ -445,6 +431,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &850710468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850710465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd274334cf8643b46904835d7fb16d0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blueTeamName: Alpha
+  _redTeamName: Beta
 --- !u!1 &923945530
 GameObject:
   m_ObjectHideFlags: 0
@@ -739,22 +739,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1565dfa04abf6eb489856704b9f7b5aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clanData:
-    Id: 
-    Name: 
-    Tag: 
-    Phrase: 
-    GameCoins: 0
-    IsOpen: 0
-    Labels: []
-    ClanRights: 
-    Inventory:
-      Furniture: []
-    Members: []
-    Rooms: []
-    ClanAge: 0
-    Language: 0
-    Goals: 0
 --- !u!1 &1556160748
 GameObject:
   m_ObjectHideFlags: 0

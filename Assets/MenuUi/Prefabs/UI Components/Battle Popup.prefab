@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1313829224866225399}
   - component: {fileID: 2820937310570428755}
   - component: {fileID: 8467674143326099622}
-  - component: {fileID: 8898426910730169511}
-  - component: {fileID: 8442208053492289358}
+  - component: {fileID: 7138675558646921497}
+  - component: {fileID: 7453855708019822376}
   m_Layer: 5
   m_Name: Custom window
   m_TagString: Untagged
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 10, y: -10}
   m_UseGraphicAlpha: 1
---- !u!114 &8898426910730169511
+--- !u!114 &7138675558646921497
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,12 +104,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 97968044417673641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a530ab3be754e549076c08c776b80be, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ec8f5993408d6f4a86d53e6811366c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _view: {fileID: 8442208053492289358}
+  _view: {fileID: 7453855708019822376}
   _roomName: {fileID: 1587169648593828934}
---- !u!114 &8442208053492289358
+--- !u!114 &7453855708019822376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,14 +118,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 97968044417673641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c6020764c4c4afa990739b0de8f04fe, type: 3}
+  m_Script: {fileID: 11500000, guid: a70eeb61362544f44bcb7929b5ae02d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _roomButtonPrefab: {fileID: 5681015833721235279, guid: 0cecd4c09312a86458e040444e8a8283,
     type: 3}
   _roomCreateButton: {fileID: 541454913608251050}
   _buttonParent: {fileID: 1572250001894061115}
-  _searchPanelController: {fileID: 1793655933273282310}
+  _searchPanelController: {fileID: 9125601643704804931}
   _oldDesign: 0
 --- !u!1 &145119693073590725
 GameObject:
@@ -425,8 +425,8 @@ GameObject:
   - component: {fileID: 1297108217463052854}
   - component: {fileID: 4761292722213260732}
   - component: {fileID: 3001555532357770366}
-  - component: {fileID: 5682862198085397115}
-  - component: {fileID: 4687232493393090313}
+  - component: {fileID: 821737462262444307}
+  - component: {fileID: 6192111530651833301}
   m_Layer: 5
   m_Name: Battle Popup
   m_TagString: Untagged
@@ -507,7 +507,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 10, y: -10}
   m_UseGraphicAlpha: 1
---- !u!114 &5682862198085397115
+--- !u!114 &821737462262444307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -516,11 +516,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 820259465500924750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2329e0fc194a2254e9a174772e927aeb, type: 3}
+  m_Script: {fileID: 11500000, guid: 02a9ca57d31ebc743be6aabf4eb33005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _view: {fileID: 4687232493393090313}
---- !u!114 &4687232493393090313
+  _view: {fileID: 6192111530651833301}
+--- !u!114 &6192111530651833301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -529,7 +529,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 820259465500924750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62b41341c5306b14a97d81e4024661df, type: 3}
+  m_Script: {fileID: 11500000, guid: ddab103a91d77794999720131ca90257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _titleText: {fileID: 973764252743755166}
@@ -1313,7 +1313,6 @@ MonoBehaviour:
   _horizontalContentPanel: {fileID: 995605884803183295}
   _characterSlotprefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
     type: 3}
-  _referenceSheet: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964, type: 2}
 --- !u!1 &1845983529563244087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1933,7 +1932,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 0
   m_TargetGraphic: {fileID: 8041198876648850944}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 8041198876648850944}
   m_Group: {fileID: 9040477938452087359}
   onValueChanged:
@@ -3644,7 +3643,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -3660,7 +3659,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 0
   m_TargetGraphic: {fileID: 8231312223477126067}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 8231312223477126067}
   m_Group: {fileID: 9040477938452087359}
   onValueChanged:
@@ -3954,7 +3953,7 @@ GameObject:
   - component: {fileID: 4682681032384627432}
   - component: {fileID: 8705774278621979335}
   - component: {fileID: 7705450776096371856}
-  - component: {fileID: 1793655933273282310}
+  - component: {fileID: 9125601643704804931}
   m_Layer: 5
   m_Name: SearchRoomWindow
   m_TagString: Untagged
@@ -4037,7 +4036,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 10, y: -10}
   m_UseGraphicAlpha: 1
---- !u!114 &1793655933273282310
+--- !u!114 &9125601643704804931
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4046,7 +4045,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6208770814144148171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c080a209667d8044aa2071e9f67c5292, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ed8b2db562b4e540bae0f458ce0cc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _slotPrefab: {fileID: 3652834263103924743, guid: 2d64f3b6230386a41a3b854f40eccce6,
@@ -4487,7 +4486,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 757368475587745763}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 757368475587745763}
   m_Group: {fileID: 9040477938452087359}
   onValueChanged:

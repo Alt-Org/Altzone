@@ -4,13 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
-using ClientState = Battle1.PhotonRealtime.Code.ClientState;
-using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
-using TypedLobbyInfo = Battle1.PhotonRealtime.Code.TypedLobbyInfo;
+//using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+//using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
+//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+//using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+//using TypedLobbyInfo = Battle1.PhotonRealtime.Code.TypedLobbyInfo;
 
-namespace Prg.Scripts.Common.Photon
+namespace Altzone.Scripts.Common.Photon
 {
     /// <summary>
     /// Convenience class and example how to keep updated room list in a cache.
@@ -31,11 +31,11 @@ namespace Prg.Scripts.Common.Photon
 
         public ReadOnlyCollection<RoomInfo> GetCurrentRooms()
         {
-            if (PhotonNetwork.InLobby)
+            if (PhotonRealtimeClient.InLobby)
             {
                 return _currentRoomList.AsReadOnly();
             }
-            if (PhotonNetwork.NetworkClientState == ClientState.Joining)
+            if (PhotonRealtimeClient.NetworkClientState == ClientState.Joining)
             {
                 // It seems that OnRoomListUpdate can happen between transitioning from lobby to room:
                 // -> JoinedLobby -> Joining -> Joined
@@ -43,17 +43,17 @@ namespace Prg.Scripts.Common.Photon
                 _debugRoomListCount = 0;
                 return _currentRoomList.AsReadOnly();
             }
-            throw new UnityException($"Invalid connection state: {PhotonNetwork.NetworkClientState}");
+            throw new UnityException($"Invalid connection state: {PhotonRealtimeClient.NetworkClientState}");
         }
 
         private void OnEnable()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            PhotonRealtimeClient.Client.AddCallbackTarget(this);
         }
 
         private void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
         }
 
         private void UpdateRoomListing(List<RoomInfo> roomList)
@@ -83,7 +83,7 @@ namespace Prg.Scripts.Common.Photon
         {
             _currentRoomList.Clear();
             _debugRoomListCount = 0;
-            Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonNetwork.CloudRegion}");
+            Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonRealtimeClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
 

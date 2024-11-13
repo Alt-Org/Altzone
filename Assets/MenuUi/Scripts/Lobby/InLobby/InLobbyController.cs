@@ -2,16 +2,16 @@
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using Battle1.PhotonUnityNetworking.Code;
+//using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+//using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
+//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
-namespace Battle1.Scripts.Lobby.InLobby
+namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviourPunCallbacks
+    public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
 
@@ -25,15 +25,15 @@ namespace Battle1.Scripts.Lobby.InLobby
             //_view.QuickGameButtonOnClick = QuickGameButtonOnClick;
         }
 
-        public override void OnEnable()
+        public void OnEnable()
         {
-            base.OnEnable();
+            //base.OnEnable();
 
-            var cloudRegion = PhotonNetwork.NetworkingClient?.CloudRegion;
+            //var cloudRegion = PhotonNetwork.NetworkingClient?.CloudRegion;
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
-            Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState} CloudRegion={cloudRegion} PhotonRegion={photonRegion}");
+            //Debug.Log($"OnEnable {PhotonNetwork.NetworkClientState} CloudRegion={cloudRegion} PhotonRegion={photonRegion}");
             /*if (PhotonWrapper.IsConnectedToMasterServer && photonRegion != cloudRegion)
             {
                 // We need to disconnect from current region because it is not the same as in player settings.
@@ -45,7 +45,7 @@ namespace Battle1.Scripts.Lobby.InLobby
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
-        public override void OnDisable()
+        public void OnDisable()
         {
             CloseWindow();
         }
@@ -53,39 +53,39 @@ namespace Battle1.Scripts.Lobby.InLobby
         private void UpdateTitle()
         {
             // Save region for later use because getting it is not cheap (b ut not very expensive either). 
-            /*_currentRegion = PhotonLobby.GetRegion();
-            _view.TitleText = $"{Application.productName} {PhotonLobby.GameVersion}";*/
+            _currentRegion = PhotonRealtimeClient.CloudRegion != null ? PhotonRealtimeClient.CloudRegion : "";
+            _view.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
         }
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
         {
-            var networkClientState = PhotonNetwork.NetworkClientState;
+            var networkClientState = PhotonRealtimeClient.NetworkClientState;
             Debug.Log($"{networkClientState}");
             var delay = new WaitForSeconds(0.1f);
-            while (!PhotonNetwork.InLobby)
+            while (!PhotonRealtimeClient.Client.InLobby)
             {
-                if (networkClientState != PhotonNetwork.NetworkClientState)
+                if (networkClientState != PhotonRealtimeClient.NetworkClientState)
                 {
                     // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
-                    networkClientState = PhotonNetwork.NetworkClientState;
+                    networkClientState = PhotonRealtimeClient.NetworkClientState;
                     Debug.Log($"{networkClientState}");
                 }
-                /*if (PhotonNetwork.InRoom)
+                if (PhotonRealtimeClient.Client.InRoom)
                 {
-                    PhotonLobby.LeaveRoom();
+                    PhotonRealtimeClient.LeaveRoom();
                 }
-                else if (PhotonWrapper.CanConnect)
+                else if (PhotonRealtimeClient.CanConnect)
                 {
                     var store = Storefront.Get();
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
-                    PhotonLobby.Connect(playerData.Name, photonRegion);
+                    PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
                 }
-                else if (PhotonWrapper.CanJoinLobby)
+                else if (PhotonRealtimeClient.CanJoinLobby)
                 {
-                    PhotonLobby.JoinLobby();
-                }*/
+                    PhotonRealtimeClient.JoinLobby(null);
+                }
                 yield return delay;
             }
             UpdateTitle();
@@ -94,17 +94,17 @@ namespace Battle1.Scripts.Lobby.InLobby
 
         private void Update()
         {
-            if (!PhotonNetwork.InLobby)
+            if (!PhotonRealtimeClient.Client.InLobby)
             {
                 _view.LobbyText = "Wait";
                 return;
             }
-            var playerCount = PhotonNetwork.CountOfPlayers;
-            _view.LobbyText = $"Alue: {_currentRegion} : {PhotonNetwork.GetPing()} ms";
+            var playerCount = PhotonRealtimeClient.CountOfPlayers;
+            _view.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
             _view.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
-        public override void OnDisconnected(DisconnectCause cause)
+        public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
 
@@ -121,12 +121,12 @@ namespace Battle1.Scripts.Lobby.InLobby
 
         private void CharacterButtonOnClick()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
         }
 
         private void RoomButtonOnClick()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
         }
 
         private void RaidButtonOnClick()
@@ -136,7 +136,7 @@ namespace Battle1.Scripts.Lobby.InLobby
 
         private void QuickGameButtonOnClick()
         {
-            Debug.Log($"{PhotonNetwork.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
         }
     }
 }
