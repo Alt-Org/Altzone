@@ -19,40 +19,52 @@ public class FlexibleHorizontalGrid : LayoutGroup
     public int columns;
 
     public Vector2 cellSize;
+    public float cellAspectRatio; //times that width takes from the height (f.e. aspect ratio = 1.5 => Height = 100, Width = 100 * 1.5 = 150)
     public Vector2 spacing;
 
-    public float oneRowHeight;
+    //public float oneRowHeight;
     private int previousRowCount = -2;
 
     public override void CalculateLayoutInputHorizontal()
     {
+        ///Plan: Calculate size of cells based on width only
+        /// Than calculate height based on width and aspect ratio.
+        /// Calculate positions and parent size
+        
         base.CalculateLayoutInputHorizontal();
 
-        //Calculating current rows 
-        rows = CalculateRowsAmount();
+        ////Calculating current rows 
         //Updating rectTransform(parent) size
-        if (rows != previousRowCount)
-        {
-            previousRowCount = rows;
-            float newHeight = oneRowHeight * rows;
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newHeight);
-        }
-        Debug.Log(rows);
 
-        //fitX = true;
-        //fitY = false;
+        //Debug.Log(rows);
+
+        ////fitX = true;
+        ////fitY = false;
+
+        //float parentHeight = rectTransform.rect.height;
+        //float availableHeight = parentHeight - padding.top - padding.bottom - (spacing.y * (rows - 1));  //((spacing.y / rows) * (rows - 1));
+        //float cellHeight = availableHeight / rows;
 
         float parentWidth = rectTransform.rect.width;
-        float parentHeight = rectTransform.rect.height;
-
         float availableWidth = parentWidth - padding.left - padding.right - (spacing.x * (columns - 1));  //((spacing.x / columns) * (columns - 1));
-        float availableHeight = parentHeight - padding.top - padding.bottom - (spacing.y * (rows - 1));  //((spacing.y / rows) * (rows - 1));
-
         float cellWidth = availableWidth / columns;
-        float cellHeight = availableHeight / rows;
+        float cellHeight = cellWidth / cellAspectRatio;
+        //Debug.Log("cellHeight  -- " + cellHeight);
 
         cellSize.x = cellWidth;
         cellSize.y = cellHeight;
+
+        rows = CalculateRowsAmount();
+
+        if (rows != previousRowCount)
+        {
+            previousRowCount = rows;
+            float availableHeight = (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1));  //((spacing.y / rows) * (rows - 1));
+            Debug.Log("cellHeight * rows  -- " + cellHeight * rows);
+            Debug.Log("(cellHeight * rows) + padding.top + padding.bottom -- " + (cellHeight * rows) + padding.top + padding.bottom);
+            Debug.Log("(cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1)) -- " + (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1)));
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, availableHeight);
+        }
 
         int columnCount = 0;
         int rowCount = 0;
@@ -69,11 +81,11 @@ public class FlexibleHorizontalGrid : LayoutGroup
 
             SetChildAlongAxis(item, 0, xPos, cellSize.x);
             SetChildAlongAxis(item, 1, yPos, cellSize.y);
-
         }
     }
     private int CalculateRowsAmount()
     {
+        Debug.Log("CalculateRowsAmount  --" + Mathf.CeilToInt((float)rectChildren.Count / columns));
         return Mathf.CeilToInt((float)rectChildren.Count / columns);
     }
 
