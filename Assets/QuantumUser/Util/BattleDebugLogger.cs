@@ -6,24 +6,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Battle1.Scripts.Battle.Game;
-using Photon.Pun;
 using UnityEngine;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
-namespace Battle1.Scripts.Battle
+namespace BattleUtil // i'm not sure what namespace this should be in
 {
     internal class BattleDebugLogger
     {
         #region Public Static Methods
 
-        public static void Init(SyncedFixedUpdateClock syncedFixedUpdateClock)
+        public static void Init()
         {
-            s_syncedFixedUpdateClock = syncedFixedUpdateClock;
             s_battleDebugLogger = new(nameof(BattleDebugLogger));
 
+            s_battleID = "NO_BATTLE_ID";
+            s_playerPosition = 0;
+
+            /*
             s_battleID = PhotonBattle.GetBattleID();
             s_playerPosition = PhotonBattle.GetPlayerPos(PhotonNetwork.LocalPlayer);
+            /**/
 
             s_fileWriter = null;
             s_filePath = null;
@@ -57,13 +59,13 @@ namespace Battle1.Scripts.Battle
 
         #region Public Methods
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogInfo(string msg) { Debug.Log(string.Format(_loggerFormat, s_syncedFixedUpdateClock.UpdateCount, msg)); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogInfo(string msg) { Debug.Log(string.Format(_loggerFormat, 0, msg)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogInfo(string msgFormat, params object[] args) { LogInfo(string.Format(msgFormat, args)); }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogWarning(string msg) { Debug.LogWarning(string.Format(_loggerFormat, s_syncedFixedUpdateClock.UpdateCount, msg)); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogWarning(string msg) { Debug.LogWarning(string.Format(_loggerFormat, 0, msg)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogWarning(string msgFormat, params object[] args) { LogWarning(string.Format(msgFormat, args)); }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogError(string msg) { Debug.LogError(string.Format(_loggerFormat, s_syncedFixedUpdateClock.UpdateCount, msg)); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogError(string msg) { Debug.LogError(string.Format(_loggerFormat, 0, msg)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public void LogError(string msgFormat, params object[] args) { LogError(string.Format(msgFormat, args)); }
 
         #endregion Public Methods
@@ -81,9 +83,6 @@ namespace Battle1.Scripts.Battle
         private static readonly Encoding s_fileEncoding = new UTF8Encoding(false, false);
         private static string s_filePath;
         private static readonly int s_fileReadAttemptLimit = 3;
-
-        // Game Time
-        private static SyncedFixedUpdateClock s_syncedFixedUpdateClock;
 
         #endregion Private Static Fields
 
