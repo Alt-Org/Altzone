@@ -228,13 +228,14 @@ namespace MenuUI.Scripts.Lobby
                 return;
             }
 
-            RuntimeConfig config = new RuntimeConfig();
+            RuntimeConfig config = new()
+            {
+                Map = _map,
+                SimulationConfig = _simulationConfig,
+                SystemsConfig = _systemsConfig
+            };
 
-            config.Map = _map;
-            config.SimulationConfig = _simulationConfig;
-            config.SystemsConfig = _systemsConfig;
-
-            var sessionRunnerArguments = new SessionRunner.Arguments
+            SessionRunner.Arguments sessionRunnerArguments = new()
             {
                 RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
                 GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
