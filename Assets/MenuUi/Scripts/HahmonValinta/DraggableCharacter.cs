@@ -154,6 +154,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
+            _modelView.CheckSelectedCharacterSlotText();
         }
 
         private void HandleParentChange(Transform newParent)
