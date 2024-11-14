@@ -283,9 +283,20 @@ namespace MenuUI.Scripts.Lobby
                 Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
-            QuantumRunner runner = (QuantumRunner) await SessionRunner.StartAsync(sessionRunnerArguments);
+            string pluginDisconnectReason = null;
+            var pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
 
-            runner.Game.AddPlayer(_player);
+            QuantumRunner runner = null;
+            try
+            {
+                runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
+            }catch (Exception ex)
+            {
+                pluginDisconnectListener.Dispose();
+                Debug.LogException(ex);
+            }
+
+            runner?.Game.AddPlayer(_player);
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
