@@ -4,10 +4,9 @@ using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using Altzone.Scripts.Config.ScriptableObjects;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -32,6 +31,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
+        private int _characterSelectionCounter = 0;
 
         private CharacterID _currentCharacterId;
 
@@ -39,10 +39,12 @@ namespace MenuUi.Scripts.CharacterGallery
         private Color purple = new Color(0.5f, 0, 0.5f, 0);
         private ColorBlock _colorBlock;
 
+
         private void Awake()
         {
             _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
             LoadAndCachePrefabs();
+            CheckSelectedCharacterSlotText();
         }
 
         private void LoadAndCachePrefabs()
@@ -75,13 +77,15 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (var button in _buttons)
             {
-                Destroy(button);
+                Destroy(button.gameObject);
             }
-            // Deactivate all character slots
+            // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                Destroy(characterSlot);
+                Destroy(characterSlot.gameObject);
             }
+            _buttons.Clear();
+            _characterSlot.Clear();
         }
         public Color GetCharacterClassColor(CharacterClassID id)
         {
@@ -92,23 +96,53 @@ namespace MenuUi.Scripts.CharacterGallery
                 case CharacterClassID.Trickster:
                     return Color.green;
                 case CharacterClassID.Obedient:
-                    return new Color(1f, 0.64f, 0, 0);
+                    return orange;
                 case CharacterClassID.Projector:
                     return Color.yellow;
                 case CharacterClassID.Retroflector:
                     return Color.red;
                 case CharacterClassID.Confluent:
-                    return new Color(0.5f, 0, 0.5f, 0);
+                    return purple;
                 case CharacterClassID.Intellectualizer:
                     return Color.blue;
                 default:
                     return Color.gray;
             }
         }
+        public void CheckSelectedCharacterSlotText()
+        {
+            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
+            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
+            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
+            if (_CurSelectedCharacterSlot[2].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (_CurSelectedCharacterSlot[1].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else if (_CurSelectedCharacterSlot[0].transform.childCount == 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+        }
         public Transform GetContent()
         {
-            Transform content = (VerticalContentPanel == null) ? content = transform.Find("Content") :
-                content = VerticalContentPanel.transform;
+            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
+                VerticalContentPanel.transform;
             
             return content;
         }
@@ -119,6 +153,7 @@ namespace MenuUi.Scripts.CharacterGallery
             foreach (var id in currentCharacterId)
             {
                 CurrentCharacterId = (CharacterID)id;
+                
             }
 
             var store = Storefront.Get();
@@ -126,7 +161,7 @@ namespace MenuUi.Scripts.CharacterGallery
             ReadOnlyCollection<BaseCharacter> allItems = null;
             store.GetAllBaseCharacterYield(result => allItems = result);
 
-            foreach (var character in characters)
+            foreach (var character in allItems)
             {
 
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
@@ -139,7 +174,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
+
             }
+
+            /*foreach (var character in characters)
+            {
+            }*/
 
             for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
             {
@@ -149,6 +189,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (i < characters.Count)
                 {
                     var character = characters[i];
+                    
                     button.gameObject.SetActive(true);
                     button.interactable = true;
                     button.image.color = GetCharacterClassColor(character.CharacterClassID);
@@ -188,6 +229,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     button.gameObject.SetActive(false);
                     characterSlot.gameObject.SetActive(false);
                 }
+                CheckSelectedCharacterSlotText();
             }
         }
     }
