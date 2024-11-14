@@ -191,15 +191,16 @@ namespace MenuUI.Scripts.Lobby
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
                 var room = PhotonRealtimeClient.CurrentRoom;
-                room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
-                room.CustomProperties.Add(TeamRedNameKey, redTeamName);
-                room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
-                /*room.SetCustomProperties(new Hashtable
+                //room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
+                //room.CustomProperties.Add(TeamRedNameKey, redTeamName);
+                //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
+                room.SetCustomProperties(new PhotonHashtable
                 {
+                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>("bid")},
                     { TeamBlueNameKey, blueTeamName },
                     { TeamRedNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
-                });*/
+                });
                 yield return null;
                 if (isCloseRoom)
                 {
