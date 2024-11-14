@@ -60,6 +60,21 @@ namespace MenuUI.Scripts.Lobby
         [SerializeField]
         private Map _map;
 
+        public static LobbyManager Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+        }
+
         public void OnEnable()
         {
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
