@@ -744,7 +744,6 @@ public static class PhotonRealtimeClient
 
     public static long GetPing()
     {
-        Debug.LogWarning(Client.RealtimePeer.Stats.RoundtripTime);
         return Client.RealtimePeer.Stats.RoundtripTime;
     }
 }
