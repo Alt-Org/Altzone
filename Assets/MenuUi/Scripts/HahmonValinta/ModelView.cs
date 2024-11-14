@@ -6,7 +6,6 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Config.ScriptableObjects;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -35,8 +34,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private CharacterID _currentCharacterId;
 
-        private Color orange = new Color(1f, 0.64f, 0, 0);
-        private Color purple = new Color(0.5f, 0, 0.5f, 0);
+        public Color orange = new Color(1f, 0.64f, 0, 0);
+        public Color purple = new Color(0.5f, 0, 0.5f, 0);
+        public Color lightBlue = new Color(0.68f, 0.84f, 0.9f, 0);
         private ColorBlock _colorBlock;
 
 
@@ -92,7 +92,7 @@ namespace MenuUi.Scripts.CharacterGallery
             switch (id)
             {
                 case CharacterClassID.Desensitizer:
-                    return Color.blue;
+                    return lightBlue;
                 case CharacterClassID.Trickster:
                     return Color.green;
                 case CharacterClassID.Obedient:
@@ -111,22 +111,25 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         public void CheckSelectedCharacterSlotText()
         {
+            //TODO: tee näistä SerializeField
+            //Ois myös kiva jos tämä ylipäätään toimis.
             var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
             var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
             var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
-            if (_CurSelectedCharacterSlot[2].transform.childCount == 1)
+
+            if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(false);
                 text3.SetActive(false);
             }
-            else if (_CurSelectedCharacterSlot[1].transform.childCount == 1)
+            else if (_CurSelectedCharacterSlot[1].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(false);
                 text3.SetActive(true);
             }     
-            else if (_CurSelectedCharacterSlot[0].transform.childCount == 1)
+            else if (_CurSelectedCharacterSlot[0].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(true);
@@ -149,11 +152,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
-            
             foreach (var id in currentCharacterId)
             {
                 CurrentCharacterId = (CharacterID)id;
-                
             }
 
             var store = Storefront.Get();
@@ -163,7 +164,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (var character in allItems)
             {
-
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
 
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
@@ -174,7 +174,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
-
             }
 
             /*foreach (var character in characters)
@@ -229,7 +228,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     button.gameObject.SetActive(false);
                     characterSlot.gameObject.SetActive(false);
                 }
-                CheckSelectedCharacterSlotText();
             }
         }
     }

@@ -127,7 +127,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3508052492520471368}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -366,7 +366,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: d47e6ecceba2f8a46a80909ef0ecdc0e, type: 2}
   _isCurrentPopOutWindow: 0
-  CharacterStatWindowToShowValue: 0
 --- !u!1001 &4340108514400331155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -678,7 +677,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: d47e6ecceba2f8a46a80909ef0ecdc0e, type: 2}
   _isCurrentPopOutWindow: 0
-  CharacterStatWindowToShowValue: 0
 --- !u!114 &2672664813005901158 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1813859720648059125, guid: 00dd9bde2849f9c498dd00c084457690,
