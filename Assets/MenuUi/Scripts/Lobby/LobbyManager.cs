@@ -164,18 +164,18 @@ namespace MenuUI.Scripts.Lobby
             {
                 throw new UnityException("only master client can start the game");
             }
-            var player = PhotonRealtimeClient.LocalPlayer;
-            var masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            Player player = PhotonRealtimeClient.LocalPlayer;
+            int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             if (!PhotonBattle.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
             // Snapshot player list before iteration because we can change it
-            var players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
-            var realPlayerCount = 0;
-            foreach (var roomPlayer in players)
+            List<Player> players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
+            int realPlayerCount = 0;
+            foreach (Player roomPlayer in players)
             {
-                var playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
                 if (PhotonBattle.IsValidPlayerPos(playerPos))
                 {
                     realPlayerCount += 1;
@@ -193,7 +193,7 @@ namespace MenuUI.Scripts.Lobby
             {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
-                var room = PhotonRealtimeClient.CurrentRoom;
+                Room room = PhotonRealtimeClient.CurrentRoom;
                 //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                 //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
@@ -277,7 +277,7 @@ namespace MenuUI.Scripts.Lobby
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
                 return;
             }
-            var curValue = player.GetCustomProperty<int>(PlayerPositionKey);
+            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
         }
