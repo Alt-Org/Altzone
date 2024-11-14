@@ -19,9 +19,9 @@ MonoBehaviour:
   UserAsset:
     Id:
       Value: 0
-  Scene: QuantumGameScene
-  ScenePath: Assets/QuantumUser/Scenes/QuantumGameScene.unity
-  SceneGuid: eb1cfb40119c43643a8b8e67f2bd7cd6
+  Scene: QuantumTestScene
+  ScenePath: Assets/QuantumUser/Scenes/QuantumTestScene.unity
+  SceneGuid: 5afc5bef1f9146d62aebaa898a241a9e
   WorldSize: 256
   BucketsCount: 16
   BucketsSubdivisions: 8
@@ -46,7 +46,7 @@ MonoBehaviour:
       X:
         RawValue: 0
       Y:
-        RawValue: 1048576
+        RawValue: 0
     Height:
       RawValue: 0
     VerticalOffset:
@@ -60,9 +60,9 @@ MonoBehaviour:
       RawValue: 0
     BoxExtents:
       X:
-        RawValue: 294912
+        RawValue: 0
       Y:
-        RawValue: 524288
+        RawValue: 0
     CapsuleSize:
       X:
         RawValue: 0
@@ -74,7 +74,7 @@ MonoBehaviour:
       Vertices: []
       Normals: []
     StaticData:
-      Name: ArenaBorderTop
+      Name: floor
       Tag: Untagged
       Layer: 0
       Asset:
@@ -82,135 +82,6 @@ MonoBehaviour:
           Value: 0
       IsTrigger: 0
       ColliderIndex: 0
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: -1048576
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 524288
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderBottom
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 1
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: 589824
-      Y:
-        RawValue: 0
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 1048576
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderRight
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 2
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: -589824
-      Y:
-        RawValue: 0
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 1048576
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderLeft
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 3
       MutableMode: 0
   StaticColliders3D: []
   MapEntities: []

@@ -235,6 +235,7 @@ namespace MenuUI.Scripts.Lobby
                 RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
                 GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
                 ClientId = ServerManager.Instance.Player._id,
+                RuntimeConfig = config,
                 SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
                 GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
                 PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
@@ -244,7 +245,7 @@ namespace MenuUI.Scripts.Lobby
 
             QuantumRunner runner = (QuantumRunner) await SessionRunner.StartAsync(sessionRunnerArguments);
 
-            runner.Game.AddPlayer(_player);
+            //runner.Game.AddPlayer(_player);
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
