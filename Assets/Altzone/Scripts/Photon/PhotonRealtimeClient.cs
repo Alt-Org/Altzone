@@ -152,8 +152,9 @@ public static class PhotonRealtimeClient
 
     private static bool automaticallySyncScene = false;
 
-    internal class PhotonEvent
+    public class PhotonEvent
     {
+        public const byte StartGame = 110;
         public const byte RPC = 200;
         public const byte SendSerialize = 201;
         public const byte Instantiation = 202;
@@ -307,13 +308,6 @@ public static class PhotonRealtimeClient
 
     private static void ConnectUsingSettings(string playerName, AppSettings appSettings, string regionCodeOverride)
     {
-        // See PhotonNetwork.SendRate and PhotonNetwork.SerializationRate
-        // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_network.html#a7b4c9628657402e59fe292502511dcf4
-        // https://doc-api.photonengine.com/en/pun/v2/class_photon_1_1_pun_1_1_photon_transform_view.html
-        // Note that PUN will also send data at the end of frames that wrote data in OnPhotonSerializeView!
-        // This means that if you serialize data always when OnPhotonSerializeView is called
-        // then SendRate will effectively be same as SerializationRate if it is set to be less here.
-
         // Defaults are 30 times/second for SendRate and 10 times/second for SerializationRate, we set both explicitly here.
         //PhotonNetwork.SendRate = 30;
         //PhotonNetwork.SerializationRate = 30;
@@ -607,6 +601,25 @@ public static class PhotonRealtimeClient
         //}
 
         //return true;
+    }
+
+    public static void CloseRoom(bool keepVisible = false)
+    {
+        if (!Client.InRoom)
+        {
+            throw new UnityException($"Invalid connection state: {NetworkClientState}");
+        }
+        if (!LocalPlayer.IsMasterClient)
+        {
+            throw new UnityException($"Player is not Master Client: {LocalPlayer.GetDebugLabel()}");
+        }
+        var room = CurrentRoom;
+        if (!room.IsOpen)
+        {
+            throw new UnityException($"Room is closed already: {room.GetDebugLabel()}");
+        }
+        room.IsOpen = false;
+        room.IsVisible = keepVisible;
     }
 
     public static bool CloseConnection(Player kickPlayer)
