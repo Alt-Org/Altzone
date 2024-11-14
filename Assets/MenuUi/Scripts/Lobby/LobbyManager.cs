@@ -103,6 +103,7 @@ namespace MenuUI.Scripts.Lobby
                 PhotonRealtimeClient.LeaveLobby();
             }
         }
+
         private IEnumerator Service()
         {
             while (true)
@@ -123,11 +124,13 @@ namespace MenuUI.Scripts.Lobby
             Debug.Log($"onEvent {data}");
             SetPlayer(PhotonRealtimeClient.LocalPlayer, data.PlayerPosition);
         }
+
         private void OnStartRoomEvent(StartRoomEvent data)
         {
             Debug.Log($"onEvent {data}");
             StartCoroutine(OnStartRoom());
         }
+
         private IEnumerator OnStartRoom()
         {
             float startTime =Time.time;
@@ -306,24 +309,17 @@ namespace MenuUI.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnJoinedLobby()
-        {
-            StartCoroutine(Service());
-        }
-        public void OnLeftLobby() => throw new NotImplementedException();
-        public void OnRoomListUpdate(List<RoomInfo> roomList)
-        {
+        public void OnCreatedRoom() { StartCoroutine(Service()); }
+        public void OnJoinedLobby() { StartCoroutine(Service()); }
 
-        }
+        public void OnRoomListUpdate(List<RoomInfo> roomList) {}
+        public void OnLeftLobby() => throw new NotImplementedException();
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new NotImplementedException();
         public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreatedRoom()
-        {
-            StartCoroutine(Service());
-        }
         public void OnCreateRoomFailed(short returnCode, string message) => throw new NotImplementedException();
         public void OnJoinRoomFailed(short returnCode, string message) => throw new NotImplementedException();
         public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
+
         public void OnEvent(EventData photonEvent)
         {
             Debug.Log($"Received PhotonEvent {photonEvent.Code}");
@@ -358,6 +354,7 @@ namespace MenuUI.Scripts.Lobby
         public class StartPlayingEvent
         {
         }
+
         public class StartRaidTestEvent
         {
         }
