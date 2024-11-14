@@ -65,6 +65,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 var buttonObject = _buttonParent.GetChild(i).gameObject;
                 buttonObject.SetActive(true);
                 //var button = buttonObject.GetComponent<Button>();
+                if(buttonObject != null)
                 UpdateButton(buttonObject, room, onJoinRoom);
             }
             _searchPanelController.RoomsData = rooms;
@@ -135,6 +136,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 {
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=blue>{playerCountText}</color>";
+                    Debug.LogWarning(button.gameObject.name);
                     button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
                 }
                 else
