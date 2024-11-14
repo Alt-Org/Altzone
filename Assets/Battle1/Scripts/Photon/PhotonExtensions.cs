@@ -5,10 +5,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using Room = Battle1.PhotonRealtime.Code.Room;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
 /// <summary>
 /// Extension methods to Photon <c>Player</c> and <c>Room</c> (<c>RoomInfo</c>) objects.

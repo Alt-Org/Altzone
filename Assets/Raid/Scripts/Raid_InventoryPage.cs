@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
+//using Photon.Pun;
 using Random = UnityEngine.Random;
-using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
+//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
@@ -54,13 +54,13 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Sprite Image12;
     [SerializeField] private float ItemWeight12;
 
-    public PhotonView _photonView { get; private set; }
+    //public PhotonView _photonView { get; private set; }
     private void Awake()
     {
         LootTracker.ResetLootCount();
-        _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 2;
-        if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
+        //_photonView = gameObject.AddComponent<PhotonView>();
+        //_photonView.ViewID = 2;
+        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
             spectator = true;
         }
@@ -78,7 +78,7 @@ public class Raid_InventoryPage : MonoBehaviour
             UIItem.OnItemClicked += HandleItemLooting;
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        //if (PhotonNetwork.IsMasterClient)
         {
             //RandomizeBombs();
             //string jsonBombs = JsonUtility.ToJson(Bombs);
@@ -94,10 +94,10 @@ public class Raid_InventoryPage : MonoBehaviour
     public void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
-        _photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
+        //_photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
     }
 
-    [PunRPC]
+    /*[PunRPC]*/
     public void HandleItemLootingRPC(int index, float itemWeight)
     {
         if (firstItem)
@@ -201,7 +201,7 @@ public class Raid_InventoryPage : MonoBehaviour
         for (int i = 0; i < InventorySize; i++)
         {
             int RandomFurniture = Random.Range(0, 12);
-            _photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
+            //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
         }
 
     }
@@ -211,7 +211,7 @@ public class Raid_InventoryPage : MonoBehaviour
         Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, (ListOfUIItems.Count / 3) * 2);
         Bombs[2].bombIndex = Random.Range(((ListOfUIItems.Count / 3) * 2) + 1, ListOfUIItems.Count);
     }
-    [PunRPC]
+    /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
     {
         Bombs = JsonUtility.FromJson<BombData[]>(jsonBombs);
@@ -238,7 +238,7 @@ public class Raid_InventoryPage : MonoBehaviour
         if (ListOfUIItems[index + 4])
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
     }
-    [PunRPC]
+    /*[PunRPC]*/
     public void SetInventorySlotDataRPC(int Index, int RandomFurniture)
     {
         switch (RandomFurniture)

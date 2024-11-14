@@ -1,13 +1,12 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-
-using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
+//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby
 {

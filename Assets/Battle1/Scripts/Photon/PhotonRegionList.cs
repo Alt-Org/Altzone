@@ -1,10 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
+using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
+using IConnectionCallbacks = Battle1.PhotonRealtime.Code.IConnectionCallbacks;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Region = Battle1.PhotonRealtime.Code.Region;
+using RegionHandler = Battle1.PhotonRealtime.Code.RegionHandler;
 
 namespace Prg.Scripts.Common.Photon
 {

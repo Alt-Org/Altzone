@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Players;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Game
 {

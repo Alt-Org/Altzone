@@ -2,11 +2,25 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Battle1.PhotonUnityNetworking.Code;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ActorProperties = Battle1.PhotonRealtime.Code.ActorProperties;
+using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
+using FriendInfo = Battle1.PhotonRealtime.Code.FriendInfo;
+using GamePropertyKey = Battle1.PhotonRealtime.Code.GamePropertyKey;
+using IConnectionCallbacks = Battle1.PhotonRealtime.Code.IConnectionCallbacks;
+using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
+using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
+using IMatchmakingCallbacks = Battle1.PhotonRealtime.Code.IMatchmakingCallbacks;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using RegionHandler = Battle1.PhotonRealtime.Code.RegionHandler;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+using TypedLobbyInfo = Battle1.PhotonRealtime.Code.TypedLobbyInfo;
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -52,11 +66,11 @@ namespace Prg.Scripts.Common.Photon
             };
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
             SetEditorStatus();
-        }
+        }*/
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private static void SetEditorStatus()

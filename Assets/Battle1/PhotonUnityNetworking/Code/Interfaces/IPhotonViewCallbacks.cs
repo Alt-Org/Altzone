@@ -1,7 +1,8 @@
-﻿namespace Photon.Pun
-{
-    using Photon.Realtime;
+﻿using Photon.Realtime;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
+namespace Battle1.PhotonUnityNetworking.Code.Interfaces
+{
     /// <summary>
     /// Empty Base class for all PhotonView callbacks.
     /// </summary>

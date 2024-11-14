@@ -8,11 +8,11 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code.Views
 {
-    using UnityEngine;
-
     [AddComponentMenu("Photon Networking/Photon Transform View")]
     [HelpURL("https://doc.photonengine.com/en-us/pun/v2/gameplay/synchronization-and-state")]
     public class PhotonTransformView : MonoBehaviourPun, IPunObservable
@@ -63,13 +63,13 @@ namespace Photon.Pun
                 if (m_UseLocal)
 
                 {
-                    tr.localPosition = Vector3.MoveTowards(tr.localPosition, this.m_NetworkPosition, this.m_Distance  * Time.deltaTime * PhotonNetwork.SerializationRate);
-                    tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime * PhotonNetwork.SerializationRate);
+                    tr.localPosition = Vector3.MoveTowards(tr.localPosition, this.m_NetworkPosition, this.m_Distance  * Time.deltaTime * Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate);
+                    tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime * Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate);
                 }
                 else
                 {
-                    tr.position = Vector3.MoveTowards(tr.position, this.m_NetworkPosition, this.m_Distance * Time.deltaTime * PhotonNetwork.SerializationRate);
-                    tr.rotation = Quaternion.RotateTowards(tr.rotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime *  PhotonNetwork.SerializationRate);
+                    tr.position = Vector3.MoveTowards(tr.position, this.m_NetworkPosition, this.m_Distance * Time.deltaTime * Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate);
+                    tr.rotation = Quaternion.RotateTowards(tr.rotation, this.m_NetworkRotation, this.m_Angle * Time.deltaTime *  Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace Photon.Pun
                     }
                     else
                     {
-                        float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+                        float lag = Mathf.Abs((float)(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Time - info.SentServerTime));
                         this.m_NetworkPosition += this.m_Direction * lag;
                         if (m_UseLocal)
                         {

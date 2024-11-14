@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -12,6 +13,7 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField]private Transform _characterImageParent;
         [SerializeField]private Transform _featureButtonsParent;
+        [SerializeField]private TMP_Text _categoryText;
 
         #region placeholders
         [Header("feature data placeholder lists")]
@@ -152,7 +154,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private List<Button> _categoryButtons;
         [SerializeField]private List<Button> _pageButtons;
         [SerializeField]private List<Transform> _featureButtonPositions;
-        [SerializeField]private Animator animator;
+        [SerializeField]private Animator _animator;
         private FeatureSlot _currentlySelectedCategory;
         private List<FeatureID> _selectedFeatures = new(){
             FeatureID.Default,
@@ -178,13 +180,12 @@ namespace MenuUi.Scripts.AvatarEditor
         private RectTransform _swipeArea;
 
 
+
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
             // GetComponent<AvatarEditorSwipe>().SetSwipeActions(swipeRight: LoadNextPage, swipeLeft: LoadPreviousPage, swipeUp: LoadPreviousCategory, swipeDown: LoadNextCategory);
             
-
-            //Placeholder buttons, will be replaced by swiping at some point
             _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
             _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
             _pageButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextPage);
@@ -225,7 +226,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void LoadNextPage()
         {
-            if(_currentPageNumber < _pageCount-1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+            if(_currentPageNumber < _pageCount-1 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber++;
                 StartCoroutine(PlayNextPageAnimation());      
             }
@@ -234,16 +235,16 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             DestroyRightSideButtons();
             InstantiateRightSideButtons();
-            animator.Play("PageFlip");
-            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
-            animator.SetTrigger("ResetToIdle");
+            _animator.Play("PageFlip");
+            yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            _animator.SetTrigger("ResetToIdle");
             
             DestroyLeftSideButtons();
             InstantiateLeftSideButtons();
         }
         private void LoadPreviousPage()
         {
-            if (_currentPageNumber > 0 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+            if (_currentPageNumber > 0 && _animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
                 _currentPageNumber--;
                 StartCoroutine(PlayPreviousPageAnimation());
             }
@@ -252,9 +253,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             DestroyLeftSideButtons();
             InstantiateLeftSideButtons();
-            animator.Play("BackPageFlip");
-            yield return new WaitWhile(()=> !animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
-            animator.SetTrigger("ResetToIdle");
+            _animator.Play("BackPageFlip");
+            yield return new WaitWhile(()=> !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+            _animator.SetTrigger("ResetToIdle");
             DestroyRightSideButtons();
             InstantiateRightSideButtons();
         }
@@ -395,9 +396,32 @@ namespace MenuUi.Scripts.AvatarEditor
                 _pageCount++;
             }
 
-            DestroyFeatureButtons();
-            InstantiateFeatureButtons();
+            StartCoroutine(PlayNextPageAnimation());
+            
+            // DestroyFeatureButtons();
+            // InstantiateFeatureButtons();
+            SetCategoryNameText(_currentlySelectedCategory);
+            // _categoryText.text = _currentlySelectedCategory.ToString();
         }
+
+        private void SetCategoryNameText(FeatureSlot category){
+            string name = category switch
+            {
+                FeatureSlot.WholeHead => "Pää",
+                FeatureSlot.Hair => "Hiukset",
+                FeatureSlot.Eyebrows => "Kulmakarvat",
+                FeatureSlot.Eyes => "Silmät",
+                FeatureSlot.Nose => "Nenä",
+                FeatureSlot.Mouth => "Suu",
+                FeatureSlot.FacialHair => "Parta & viikset",
+                FeatureSlot.Body => "Keho",
+                FeatureSlot.Hands => "Kädet",
+                FeatureSlot.Feet => "Jalat",
+                _ => "Virhe",
+            };
+            _categoryText.text = name;
+        }
+
 
         //placeholder until available features can be read from player inventory
         private List<FeatureData> GetSpritesByCategory(FeatureSlot slot)
@@ -421,7 +445,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             return _currentlySelectedCategory;
         }
-        public List<FeatureID> GetCurrentlySelectedFeature()
+        public List<FeatureID> GetCurrentlySelectedFeatures()
         {
             return _selectedFeatures;
         }

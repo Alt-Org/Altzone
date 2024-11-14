@@ -1,5 +1,6 @@
-using Photon.Pun;
 using Photon.Realtime;
+using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Prg.Scripts.Common.Photon
 {

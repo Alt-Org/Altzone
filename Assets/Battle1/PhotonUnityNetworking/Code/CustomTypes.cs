@@ -8,14 +8,12 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using ExitGames.Client.Photon;
+using Photon.Realtime;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using UnityEngine;
-    using Photon.Realtime;
-    using ExitGames.Client.Photon;
-
-
     /// <summary>
     /// Internally used class, containing de/serialization method for PUN specific classes.
     /// </summary>
@@ -61,9 +59,9 @@ namespace Photon.Pun
                 Protocol.Deserialize(out ID, memPlayer, ref off);
             }
 
-            if (PhotonNetwork.CurrentRoom != null)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom != null)
             {
-                Player player = PhotonNetwork.CurrentRoom.GetPlayer(ID);
+                Player player = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.GetPlayer(ID);
                 return player;
             }
             return null;

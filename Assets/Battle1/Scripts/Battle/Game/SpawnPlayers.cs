@@ -1,5 +1,5 @@
-using Photon.Pun;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Game
 {

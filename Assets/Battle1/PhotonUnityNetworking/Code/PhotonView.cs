@@ -8,16 +8,18 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using Battle1.PhotonUnityNetworking.Code.Utilities;
+using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.Serialization;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System;
-    using UnityEngine;
-    using UnityEngine.Serialization;
-    using System.Collections.Generic;
-    using Photon.Realtime;
-
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     using UnityEditor;
     #endif
 
@@ -81,9 +83,9 @@ namespace Photon.Pun
         {
             get
             {
-                if (this.prefixField == -1 && PhotonNetwork.NetworkingClient != null)
+                if (this.prefixField == -1 && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient != null)
                 {
-                    this.prefixField = PhotonNetwork.currentLevelPrefix;
+                    this.prefixField = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.currentLevelPrefix;
                 }
 
                 return this.prefixField;
@@ -219,10 +221,10 @@ namespace Photon.Pun
 
                 Player prevOwner = this.Owner;
 
-                this.Owner = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(value, true);
+                this.Owner = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom == null ? null : Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.GetPlayer(value, true);
                 this.ownerActorNr = this.Owner != null ? this.Owner.ActorNumber : value;
 
-                this.AmOwner = PhotonNetwork.LocalPlayer != null && this.ownerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
+                this.AmOwner = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer != null && this.ownerActorNr == Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer.ActorNumber;
 
                 this.UpdateCallbackLists();
                 if (!ReferenceEquals(this.OnOwnerChangeCallbacks, null))
@@ -246,14 +248,14 @@ namespace Photon.Pun
             {
                 Player prevController = this.Controller;
 
-                this.Controller = PhotonNetwork.CurrentRoom == null ? null : PhotonNetwork.CurrentRoom.GetPlayer(value, true);
+                this.Controller = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom == null ? null : Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.GetPlayer(value, true);
                 if (this.Controller != null && this.Controller.IsInactive)
                 {
-                    this.Controller = PhotonNetwork.MasterClient;
+                    this.Controller = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MasterClient;
                 }
                 this.controllerActorNr = this.Controller != null ? this.Controller.ActorNumber : value;
 
-                this.IsMine = PhotonNetwork.LocalPlayer != null && this.controllerActorNr == PhotonNetwork.LocalPlayer.ActorNumber;
+                this.IsMine = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer != null && this.controllerActorNr == Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer.ActorNumber;
 
                 if (!ReferenceEquals(this.Controller, prevController))
                 {
@@ -303,11 +305,11 @@ namespace Photon.Pun
                 
                 if (value == 0 && this.viewIdField != 0)
                 {
-                    PhotonNetwork.LocalCleanPhotonView(this);
+                    Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalCleanPhotonView(this);
                 }
 
                 this.viewIdField = value;
-                this.CreatorActorNr = value / PhotonNetwork.MAX_VIEW_IDS;   // the creator can be derived from the viewId. this is also the initial owner and creator.
+                this.CreatorActorNr = value / Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MAX_VIEW_IDS;   // the creator can be derived from the viewId. this is also the initial owner and creator.
                 this.OwnerActorNr = this.CreatorActorNr;
                 this.ControllerActorNr = this.CreatorActorNr;
                 this.RebuildControllerCache();
@@ -316,7 +318,7 @@ namespace Photon.Pun
                 // if the viewID is set to a new, legit value, the view should register in the list of active PVs.
                 if (value != 0)
                 {
-                    PhotonNetwork.RegisterPhotonView(this);
+                    Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RegisterPhotonView(this);
                 }
             }
         }
@@ -374,7 +376,7 @@ namespace Photon.Pun
             // objects without controller and room objects (ownerId 0) check if controller update is needed
             if (this.controllerActorNr == 0 || this.OwnerActorNr == 0 || this.Owner == null || this.Owner.IsInactive)
             {
-                var masterclient = PhotonNetwork.MasterClient;
+                var masterclient = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MasterClient;
                 this.ControllerActorNr = masterclient == null ? -1 : masterclient.ActorNumber;
             }
             else
@@ -399,9 +401,9 @@ namespace Photon.Pun
         {
             if (!this.removedFromLocalViewList)
             {
-                bool wasInList = PhotonNetwork.LocalCleanPhotonView(this);
+                bool wasInList = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalCleanPhotonView(this);
 
-                if (wasInList && this.InstantiationId > 0 && !PhotonHandler.AppQuits && PhotonNetwork.LogLevel >= PunLogLevel.Informational)
+                if (wasInList && this.InstantiationId > 0 && !PhotonHandler.AppQuits && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel >= PunLogLevel.Informational)
                 {
                     Debug.Log("PUN-instantiated '" + this.gameObject.name + "' got destroyed by engine. This is OK when loading levels. Otherwise use: PhotonNetwork.Destroy().");
                 }
@@ -422,11 +424,11 @@ namespace Photon.Pun
         {
             if (OwnershipTransfer != OwnershipOption.Fixed)
             {
-                PhotonNetwork.RequestOwnership(this.ViewID, this.ownerActorNr);
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RequestOwnership(this.ViewID, this.ownerActorNr);
             }
             else
             {
-                if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
+                if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel >= PunLogLevel.Informational)
                 {
                     Debug.LogWarning("Attempting to RequestOwnership of GameObject '" + name + "' viewId: " + ViewID +
                         ", but PhotonView.OwnershipTransfer is set to Fixed.");
@@ -446,7 +448,7 @@ namespace Photon.Pun
                 TransferOwnership(newOwner.ActorNumber);
             else
             {
-                if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
+                if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel >= PunLogLevel.Informational)
                 {
                     Debug.LogWarning("Attempting to TransferOwnership of GameObject '" + name + "' viewId: " + ViewID +
                    ", but provided Player newOwner is null.");
@@ -464,11 +466,11 @@ namespace Photon.Pun
         {
             if (OwnershipTransfer == OwnershipOption.Takeover || (OwnershipTransfer == OwnershipOption.Request && this.AmController))
             {
-                PhotonNetwork.TransferOwnership(this.ViewID, newOwnerId);
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.TransferOwnership(this.ViewID, newOwnerId);
             }
             else
             {
-                if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
+                if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel >= PunLogLevel.Informational)
                 {
                     if (OwnershipTransfer == OwnershipOption.Fixed)
                         Debug.LogWarning("Attempting to TransferOwnership of GameObject '" + name + "' viewId: " + ViewID +
@@ -601,7 +603,7 @@ namespace Photon.Pun
         /// <param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RPC(string methodName, RpcTarget target, params object[] parameters)
         {
-            PhotonNetwork.RPC(this, methodName, target, false, parameters);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RPC(this, methodName, target, false, parameters);
         }
 
         /// <summary>
@@ -627,7 +629,7 @@ namespace Photon.Pun
         ///<param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RpcSecure(string methodName, RpcTarget target, bool encrypt, params object[] parameters)
         {
-            PhotonNetwork.RPC(this, methodName, target, encrypt, parameters);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RPC(this, methodName, target, encrypt, parameters);
         }
 
         /// <summary>
@@ -650,7 +652,7 @@ namespace Photon.Pun
         /// <param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RPC(string methodName, Player targetPlayer, params object[] parameters)
         {
-            PhotonNetwork.RPC(this, methodName, targetPlayer, false, parameters);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RPC(this, methodName, targetPlayer, false, parameters);
         }
 
         /// <summary>
@@ -674,7 +676,7 @@ namespace Photon.Pun
         ///<param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RpcSecure(string methodName, Player targetPlayer, bool encrypt, params object[] parameters)
         {
-            PhotonNetwork.RPC(this, methodName, targetPlayer, encrypt, parameters);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RPC(this, methodName, targetPlayer, encrypt, parameters);
         }
 
         public static PhotonView Get(Component component)
@@ -694,7 +696,7 @@ namespace Photon.Pun
         /// <returns>The PhotonView with ViewID. Returns null if none found</returns>
         public static PhotonView Find(int viewID)
         {
-            return PhotonNetwork.GetPhotonView(viewID);
+            return Battle1.PhotonUnityNetworking.Code.PhotonNetwork.GetPhotonView(viewID);
         }
 
         

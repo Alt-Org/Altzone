@@ -1,8 +1,8 @@
-﻿using Photon.Pun;
-using Prg.Scripts.Common.PubSub;
+﻿using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
+//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
@@ -52,8 +52,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            _battleID.text = PhotonNetwork.InRoom ? $"({PhotonNetwork.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            title.text = PhotonNetwork.InRoom ? PhotonNetwork.CurrentRoom.Name : "<color=red>Not in room</color>";
+            _battleID.text = PhotonRealtimeClient.Client.InRoom ? $"({PhotonRealtimeClient.Client.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
+            title.text = PhotonRealtimeClient.Client.InRoom ? PhotonRealtimeClient.Client.CurrentRoom.Name : "<color=red>Not in room</color>";
         }
     }
 }

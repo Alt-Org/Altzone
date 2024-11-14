@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
-using Photon.Pun;
 using Prg.Scripts.Common.Photon;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUi.Scripts.ChangeRegion
 {

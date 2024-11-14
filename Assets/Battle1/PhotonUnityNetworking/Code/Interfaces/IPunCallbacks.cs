@@ -1,10 +1,10 @@
 ﻿
-namespace Photon.Pun
+using Photon.Realtime;
+using UnityEngine;
+using Player = Battle1.PhotonRealtime.Code.Player;
+
+namespace Battle1.PhotonUnityNetworking.Code.Interfaces
 {
-    using UnityEngine;
-    using Photon.Realtime;
-
-
     /// <summary>Defines the OnPhotonSerializeView method to make it easy to implement correctly for observable scripts.</summary>
     /// \ingroup callbacks
     public interface IPunObservable
