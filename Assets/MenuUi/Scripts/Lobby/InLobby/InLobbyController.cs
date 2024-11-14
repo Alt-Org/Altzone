@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
@@ -11,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour
+    public class InLobbyController : MonoBehaviour, ILobbyCallbacks, IConnectionCallbacks
     {
         [SerializeField] private InLobbyView _view;
 
@@ -100,6 +101,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 return;
             }
             UpdateTitle();
+            _view.EnableButtons();
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _view.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
             _view.PlayerCountText = $"Pelaajia online: {playerCount}";
@@ -145,5 +147,15 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
         }
+
+        public void OnJoinedLobby() => throw new System.NotImplementedException();
+        public void OnLeftLobby() => throw new System.NotImplementedException();
+        public void OnRoomListUpdate(List<RoomInfo> roomList) => throw new System.NotImplementedException();
+        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new System.NotImplementedException();
+        public void OnConnected() => throw new System.NotImplementedException();
+        public void OnConnectedToMaster() => throw new System.NotImplementedException();
+        public void OnRegionListReceived(RegionHandler regionHandler) => throw new System.NotImplementedException();
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new System.NotImplementedException();
+        public void OnCustomAuthenticationFailed(string debugMessage) => throw new System.NotImplementedException();
     }
 }

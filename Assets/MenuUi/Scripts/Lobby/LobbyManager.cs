@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Client;
@@ -28,7 +30,7 @@ namespace MenuUI.Scripts.Lobby
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback
+    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IConnectionCallbacks
     {
         private const string BattleID = PhotonBattle.BattleID;
 
@@ -108,9 +110,42 @@ namespace MenuUI.Scripts.Lobby
         {
             while (true)
             {
-                PhotonRealtimeClient.Client.Service();
+                PhotonRealtimeClient.Client?.Service();
                 Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        private IEnumerator StartLobby(string playerGuid, string photonRegion)
+        {
+            var networkClientState = PhotonRealtimeClient.NetworkClientState;
+            Debug.Log($"{networkClientState}");
+            var delay = new WaitForSeconds(0.1f);
+            while (!PhotonRealtimeClient.Client.InLobby)
+            {
+                if (networkClientState != PhotonRealtimeClient.NetworkClientState)
+                {
+                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
+                    networkClientState = PhotonRealtimeClient.NetworkClientState;
+                    Debug.Log($"{networkClientState}");
+                }
+                if (PhotonRealtimeClient.Client.InRoom)
+                {
+                    PhotonRealtimeClient.LeaveRoom();
+                }
+                else if (PhotonRealtimeClient.CanConnect)
+                {
+                    var store = Storefront.Get();
+                    PlayerData playerData = null;
+                    store.GetPlayerData(playerGuid, p => playerData = p);
+                    yield return new WaitUntil(() => playerData != null);
+                    PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
+                }
+                else if (PhotonRealtimeClient.CanJoinLobby)
+                {
+                    PhotonRealtimeClient.JoinLobby(null);
+                }
+                yield return delay;
             }
         }
 
@@ -222,7 +257,7 @@ namespace MenuUI.Scripts.Lobby
 
         private async void StartQuantum()
         {
-            if(QuantumRunner.Default != null)
+            if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
                 return;
@@ -250,7 +285,7 @@ namespace MenuUI.Scripts.Lobby
 
             QuantumRunner runner = (QuantumRunner) await SessionRunner.StartAsync(sessionRunnerArguments);
 
-            //runner.Game.AddPlayer(_player);
+            runner.Game.AddPlayer(_player);
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
@@ -286,6 +321,10 @@ namespace MenuUI.Scripts.Lobby
         public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
+            var gameConfig = GameConfig.Get();
+            var playerSettings = gameConfig.PlayerSettings;
+            var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
@@ -332,6 +371,12 @@ namespace MenuUI.Scripts.Lobby
                     break;
             }
         }
+
+        public void OnConnected() { }
+        public void OnConnectedToMaster() { }
+        public void OnRegionListReceived(RegionHandler regionHandler) { }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new NotImplementedException();
+        public void OnCustomAuthenticationFailed(string debugMessage) => throw new NotImplementedException();
 
         public class PlayerPosEvent
         {
