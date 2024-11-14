@@ -1,6 +1,7 @@
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
 
@@ -11,7 +12,7 @@ enum AudioSelection
     ID
 }
 
-public class PlayAudioClip : MonoBehaviour
+public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
@@ -23,6 +24,8 @@ public class PlayAudioClip : MonoBehaviour
     int _audioId = 0;
     [SerializeField, Tooltip("If enabled the script will add listener to the button component's onClick event to play the audio clip.")]
     bool _useOnClickEvent = true;
+    [SerializeField, Tooltip("If enabled the script will add listener to onPointerDown event to play the audio clip.")]
+    bool _useOnPointerDownEvent = false;
 
 
     private void Start()
@@ -71,6 +74,15 @@ public class PlayAudioClip : MonoBehaviour
         else if (_audioSelection == AudioSelection.ID)
             manager.PlaySfxAudio(_audioId);
     }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (_useOnPointerDownEvent)
+        {
+            PlayAudio();
+        }
+    }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(PlayAudioClip))]
     public class PlayAudioClipEditor : Editor
@@ -80,6 +92,7 @@ public class PlayAudioClip : MonoBehaviour
         SerializedProperty sectionB;
         SerializedProperty sectionC;
         SerializedProperty sectionOnClickBool;
+        SerializedProperty sectionOnPointerDownBool;
 
         void OnEnable()
         {
@@ -88,6 +101,7 @@ public class PlayAudioClip : MonoBehaviour
             sectionB = serializedObject.FindProperty(nameof(_audioName));
             sectionC = serializedObject.FindProperty(nameof(_audioId));
             sectionOnClickBool = serializedObject.FindProperty(nameof(_useOnClickEvent));
+            sectionOnPointerDownBool = serializedObject.FindProperty(nameof(_useOnPointerDownEvent));
         }
         public override void OnInspectorGUI()
         {
@@ -107,6 +121,7 @@ public class PlayAudioClip : MonoBehaviour
                     break;
             }
             EditorGUILayout.PropertyField(sectionOnClickBool);
+            EditorGUILayout.PropertyField(sectionOnPointerDownBool);
             serializedObject.ApplyModifiedProperties();
         }
     }
