@@ -38,8 +38,8 @@ namespace MenuUI.Scripts.Lobby
 
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattle.TeamAlphaNameKey;
-        private const string TeamRedNameKey = PhotonBattle.TeamBetaNameKey;
+        private const string TeamAlphaNameKey = PhotonBattle.TeamAlphaNameKey;
+        private const string TeamBetaNameKey = PhotonBattle.TeamBetaNameKey;
 
         [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
@@ -191,14 +191,14 @@ namespace MenuUI.Scripts.Lobby
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
                 var room = PhotonRealtimeClient.CurrentRoom;
-                //room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
-                //room.CustomProperties.Add(TeamRedNameKey, redTeamName);
+                //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
+                //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
                 room.SetCustomProperties(new PhotonHashtable
                 {
                     { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>("bid")},
-                    { TeamBlueNameKey, blueTeamName },
-                    { TeamRedNameKey, redTeamName },
+                    { TeamAlphaNameKey, blueTeamName },
+                    { TeamBetaNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
                 });
                 yield return null;
