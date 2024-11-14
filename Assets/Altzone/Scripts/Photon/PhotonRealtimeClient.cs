@@ -249,7 +249,7 @@ public static class PhotonRealtimeClient
     static PhotonRealtimeClient()
     {
         #if !UNITY_EDITOR
-            StaticReset();  // in builds, we just reset/init the client once
+            StartClient();  // in builds, we just reset/init the client once
         #else
             Client = new RealtimeClient();
         #endif
