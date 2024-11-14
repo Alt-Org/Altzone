@@ -37,7 +37,7 @@ public class PlayAudioClip : MonoBehaviour
     {
         Button source = GetComponent<Button>();
         Toggle light = GetComponent<Toggle>();
-
+#if UNITY_EDITOR
         if (source == null && light == null)
         {
             if (UnityEditor.EditorUtility.DisplayDialog("Choose a Component", "You are missing one of the required componets. Please choose one to add", "Button", "Toggle"))
@@ -49,6 +49,7 @@ public class PlayAudioClip : MonoBehaviour
                 gameObject.AddComponent<Toggle>();
             }
         }
+#endif
     }
 
     public void PlayAudio(bool value) => PlayAudio();
@@ -67,6 +68,7 @@ public class PlayAudioClip : MonoBehaviour
         else if (_audioSelection == AudioSelection.ID)
             manager.PlaySfxAudio(_audioId);
     }
+#if UNITY_EDITOR
     [CustomEditor(typeof(PlayAudioClip))]
     public class PlayAudioClipEditor : Editor
     {
@@ -102,5 +104,6 @@ public class PlayAudioClip : MonoBehaviour
             serializedObject.ApplyModifiedProperties();
         }
     }
+#endif
 
 }
