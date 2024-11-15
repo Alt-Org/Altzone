@@ -208,7 +208,7 @@ namespace MenuUI.Scripts.SoulHome
             this.name = name;
         }
     }
-
+#if UNITY_EDITOR
     [CustomEditor(typeof(AudioManager))]
     public class AudioManagerEditor : Editor
     {
@@ -267,4 +267,5 @@ namespace MenuUI.Scripts.SoulHome
             GUI.enabled = true;
         }
     }
+#endif
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Client;
@@ -10,8 +11,10 @@ using Photon.Client;
 //using MenuUi.Scripts.Window.ScriptableObjects;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
+using Quantum;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Assert = UnityEngine.Assertions.Assert;
 //using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
@@ -25,7 +28,7 @@ namespace MenuUI.Scripts.Lobby
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviour, ILobbyCallbacks
+    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback
     {
         private const string BattleID = PhotonBattle.BattleID;
 
@@ -46,6 +49,31 @@ namespace MenuUI.Scripts.Lobby
 
         [Header("Team Names"), SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
+
+        [Header("Player"), SerializeField]
+        private RuntimePlayer _player;
+
+        [Header("Configs"), SerializeField]
+        private SimulationConfig _simulationConfig;
+        [SerializeField]
+        private SystemsConfig _systemsConfig;
+        [SerializeField]
+        private Map _map;
+
+        public static LobbyManager Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+        }
 
         public void OnEnable()
         {
@@ -80,6 +108,7 @@ namespace MenuUI.Scripts.Lobby
             while (true)
             {
                 PhotonRealtimeClient.Client.Service();
+                Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -174,11 +203,48 @@ namespace MenuUI.Scripts.Lobby
                 yield return null;
                 if (isCloseRoom)
                 {
-                    //PhotonLobby.CloseRoom(true);
+                    PhotonRealtimeClient.CloseRoom(true);
                     yield return null;
                 }
             }
-            WindowManager.Get().ShowWindow(gameWindow);
+            if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame,null, new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+            {
+                Debug.LogError("Unable to start game.");
+                yield break;
+            }
+            Debug.Log("Starting Game");
+            //WindowManager.Get().ShowWindow(gameWindow);
+        }
+
+        private async void StartQuantum()
+        {
+            if(QuantumRunner.Default != null)
+            {
+                Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
+                return;
+            }
+
+            RuntimeConfig config = new RuntimeConfig();
+
+            config.Map = _map;
+            config.SimulationConfig = _simulationConfig;
+            config.SystemsConfig = _systemsConfig;
+
+            var sessionRunnerArguments = new SessionRunner.Arguments
+            {
+                RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
+                GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
+                ClientId = ServerManager.Instance.Player._id,
+                SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
+                GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
+                PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
+                StartGameTimeoutInSeconds = 10,
+                Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
+            };
+
+            QuantumRunner runner = (QuantumRunner) await SessionRunner.StartAsync(sessionRunnerArguments);
+
+            runner.Game.AddPlayer(_player);
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
@@ -230,6 +296,7 @@ namespace MenuUI.Scripts.Lobby
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
+            StartCoroutine(Service());
             // Goto lobby if we left (in)voluntarily any room
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             // - can not use GoBack() because we do not know the reason for player leaving the room.
@@ -237,10 +304,35 @@ namespace MenuUI.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnJoinedLobby() => throw new NotImplementedException();
+        public void OnJoinedLobby()
+        {
+            StartCoroutine(Service());
+        }
         public void OnLeftLobby() => throw new NotImplementedException();
-        public void OnRoomListUpdate(List<RoomInfo> roomList) => throw new NotImplementedException();
+        public void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+
+        }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new NotImplementedException();
+        public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
+        public void OnCreatedRoom()
+        {
+            StartCoroutine(Service());
+        }
+        public void OnCreateRoomFailed(short returnCode, string message) => throw new NotImplementedException();
+        public void OnJoinRoomFailed(short returnCode, string message) => throw new NotImplementedException();
+        public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
+        public void OnEvent(EventData photonEvent)
+        {
+            Debug.Log($"Received PhotonEvent {photonEvent.Code}");
+
+            switch (photonEvent.Code)
+            {
+                case PhotonRealtimeClient.PhotonEvent.StartGame:
+                    StartQuantum();
+                    break;
+            }
+        }
 
         public class PlayerPosEvent
         {

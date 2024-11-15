@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3311448749483425505}
   - component: {fileID: 7243477358482785458}
   - component: {fileID: 4728231669390482462}
+  - component: {fileID: 152343811253911172}
   m_Layer: 5
   m_Name: "BT_\xC4\xC4NESTYS"
   m_TagString: Untagged
@@ -142,12 +143,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7195143674239219267}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 6e04f143f7d154c4092dba163406cfca, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!114 &7243477358482785458
 MonoBehaviour:
@@ -178,3 +179,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &152343811253911172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195143674239219267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 1
+  _audioType: 0
+  _audioName: ButtonNote5
+  _audioId: 0
+  _useOnClickEvent: 0
+  _useOnPointerDownEvent: 1

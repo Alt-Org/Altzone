@@ -2757,7 +2757,7 @@ PrefabInstance:
     - target: {fileID: 7313701258348059457, guid: 0dc265c7860e2ff459362c238d4f0cf8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.0000038
+      value: -1.0000019
       objectReference: {fileID: 0}
     - target: {fileID: 7320133090893269842, guid: 0dc265c7860e2ff459362c238d4f0cf8,
         type: 3}
@@ -3405,6 +3405,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 862149422187005141, guid: 36168b4a92b6679449c8fc40f06c0cf9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1112999500237497258, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3413,7 +3418,7 @@ PrefabInstance:
     - target: {fileID: 1461201440876164513, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1585635811369531566, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -3618,12 +3623,12 @@ PrefabInstance:
     - target: {fileID: 2911237465571812804, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2911237465571812804, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: MenuUI.Scripts.Lobby.InLobby.InLobbyController, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 2911237465571812804, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -3648,13 +3653,8 @@ PrefabInstance:
     - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 3149065957271324492}
     - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
@@ -3663,12 +3663,12 @@ PrefabInstance:
     - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetActive
+      value: CloseWindow
       objectReference: {fileID: 0}
     - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: MenuUI.Scripts.Lobby.InLobby.InLobbyController, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 3792459214054727537, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -3750,11 +3750,6 @@ PrefabInstance:
       propertyPath: m_PreserveAspect
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4745498924861322025, guid: 36168b4a92b6679449c8fc40f06c0cf9,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
-      value: 
-      objectReference: {fileID: 3149065957271324492}
     - target: {fileID: 5053033307081780130, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_fontSize
@@ -3823,12 +3818,12 @@ PrefabInstance:
     - target: {fileID: 6836189953017562017, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6836189953017562017, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: MenuUI.Scripts.Lobby.InLobby.InLobbyController, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 6836189953017562017, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}

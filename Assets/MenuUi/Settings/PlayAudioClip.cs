@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SettingsCarrier;
 using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
 
 enum AudioSelection
@@ -14,7 +12,7 @@ enum AudioSelection
     ID
 }
 
-public class PlayAudioClip : MonoBehaviour
+public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
@@ -24,10 +22,18 @@ public class PlayAudioClip : MonoBehaviour
     string _audioName = "";
     [SerializeField]
     int _audioId = 0;
+    [SerializeField, Tooltip("If enabled the script will add listener to the button component's onClick event to play the audio clip.")]
+    bool _useOnClickEvent = true;
+    [SerializeField, Tooltip("If enabled the script will add listener to onPointerDown event to play the audio clip.")]
+    bool _useOnPointerDownEvent = false;
+
 
     private void Start()
     {
-        GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+        if (_useOnClickEvent)
+        {
+            GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+        }
         GetComponent<Toggle>()?.onValueChanged.AddListener(PlayAudio);
     }
 
@@ -37,7 +43,7 @@ public class PlayAudioClip : MonoBehaviour
     {
         Button source = GetComponent<Button>();
         Toggle light = GetComponent<Toggle>();
-
+#if UNITY_EDITOR
         if (source == null && light == null)
         {
             if (UnityEditor.EditorUtility.DisplayDialog("Choose a Component", "You are missing one of the required componets. Please choose one to add", "Button", "Toggle"))
@@ -49,6 +55,7 @@ public class PlayAudioClip : MonoBehaviour
                 gameObject.AddComponent<Toggle>();
             }
         }
+#endif
     }
 
     public void PlayAudio(bool value) => PlayAudio();
@@ -67,6 +74,16 @@ public class PlayAudioClip : MonoBehaviour
         else if (_audioSelection == AudioSelection.ID)
             manager.PlaySfxAudio(_audioId);
     }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (_useOnPointerDownEvent)
+        {
+            PlayAudio();
+        }
+    }
+
+#if UNITY_EDITOR
     [CustomEditor(typeof(PlayAudioClip))]
     public class PlayAudioClipEditor : Editor
     {
@@ -74,6 +91,8 @@ public class PlayAudioClip : MonoBehaviour
         SerializedProperty sectionA;
         SerializedProperty sectionB;
         SerializedProperty sectionC;
+        SerializedProperty sectionOnClickBool;
+        SerializedProperty sectionOnPointerDownBool;
 
         void OnEnable()
         {
@@ -81,6 +100,8 @@ public class PlayAudioClip : MonoBehaviour
             sectionA = serializedObject.FindProperty(nameof(_audioType));
             sectionB = serializedObject.FindProperty(nameof(_audioName));
             sectionC = serializedObject.FindProperty(nameof(_audioId));
+            sectionOnClickBool = serializedObject.FindProperty(nameof(_useOnClickEvent));
+            sectionOnPointerDownBool = serializedObject.FindProperty(nameof(_useOnPointerDownEvent));
         }
         public override void OnInspectorGUI()
         {
@@ -99,8 +120,11 @@ public class PlayAudioClip : MonoBehaviour
                     EditorGUILayout.PropertyField(sectionC);
                     break;
             }
+            EditorGUILayout.PropertyField(sectionOnClickBool);
+            EditorGUILayout.PropertyField(sectionOnPointerDownBool);
             serializedObject.ApplyModifiedProperties();
         }
     }
+#endif
 
 }

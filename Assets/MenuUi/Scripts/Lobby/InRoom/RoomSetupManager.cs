@@ -104,7 +104,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             UpdatePhotonNickname();
             var room = PhotonRealtimeClient.CurrentRoom;
             var player = PhotonRealtimeClient.LocalPlayer;
-            PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
+            //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonRealtimeClient.NickName}'");
 
             // Reset player custom properties for new game
