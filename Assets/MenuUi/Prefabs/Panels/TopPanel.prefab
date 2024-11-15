@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 2494480413859530925}
   - component: {fileID: 8513833266704927033}
   - component: {fileID: 2409936207376414101}
+  - component: {fileID: 1743105379117003584}
   m_Layer: 5
   m_Name: MatchmakingRankImage
   m_TagString: Untagged
@@ -395,6 +396,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1743105379117003584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2589664670808032201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cbb4877f6507f49bb03f3b3dc2591c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _images:
+  - ShowCondition: 8
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 9
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 10
+    ImageSprite: {fileID: 0}
 --- !u!1 &3562355431961625240
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,6 +959,7 @@ GameObject:
   - component: {fileID: 3153717341407315700}
   - component: {fileID: 124671689533697189}
   - component: {fileID: 2029361718019638718}
+  - component: {fileID: 3467556909806299412}
   m_Layer: 5
   m_Name: ClanLeaderboardButton
   m_TagString: Untagged
@@ -1065,6 +1086,27 @@ MonoBehaviour:
   _audioName: 
   _audioId: 0
   _playType: 0
+--- !u!114 &3467556909806299412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264391340277126322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cbb4877f6507f49bb03f3b3dc2591c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _images:
+  - ShowCondition: 4
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 5
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 6
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 7
+    ImageSprite: {fileID: 0}
 --- !u!1 &6393869949846683486
 GameObject:
   m_ObjectHideFlags: 0

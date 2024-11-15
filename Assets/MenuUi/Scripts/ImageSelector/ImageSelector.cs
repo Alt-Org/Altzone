@@ -17,10 +17,17 @@ namespace MenuUI.Scripts
         /// </summary>
         public enum ImageShowConditions
         {
-            IsOnLeaderboard,
-            NotOnLeaderboard,
-            VoteAvailable,
-            VoteUnavailable,
+            IsOnLeaderboard = 0,
+            NotOnLeaderboard = 1,
+            VoteAvailable = 2,
+            VoteUnavailable = 3,
+            ShowLeaderboard1 = 4,
+            ShowLeaderboard2 = 5,
+            ShowLeaderboard3 = 6,
+            ShowLeaderboard4 = 7,
+            MatchmakingRankPoor = 8,
+            MatchmakingRankMiddleClass = 9,
+            MatchmakingRankUpperClass = 10
         }
 
         [SerializeField] private List<ImageData> _images;
