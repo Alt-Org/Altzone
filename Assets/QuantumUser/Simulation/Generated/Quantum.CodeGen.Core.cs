@@ -527,6 +527,22 @@ namespace Quantum {
         FP.Serialize(&p->Speed, serializer);
     }
   }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct SpawnIdentifier : Quantum.IComponent {
+    public const Int32 SIZE = 4;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    private fixed Byte _alignment_padding_[4];
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 11057;
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (SpawnIdentifier*)ptr;
+    }
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
@@ -575,6 +591,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerData>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerData>();
+      BuildSignalsArrayOnComponentAdded<Quantum.SpawnIdentifier>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.SpawnIdentifier>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -683,6 +701,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.SpawnIdentifier), Quantum.SpawnIdentifier.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
@@ -692,9 +711,10 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 1)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 2)
         .AddBuiltInComponents()
         .Add<Quantum.PlayerData>(Quantum.PlayerData.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.SpawnIdentifier>(Quantum.SpawnIdentifier.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
     [Preserve()]
