@@ -12,6 +12,14 @@ enum AudioSelection
     ID
 }
 
+
+enum PlayType
+{
+    OnClick = 0,
+    OnPointerDown = 1,
+    Both = 2,
+}
+
 public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField]
@@ -22,17 +30,18 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
     string _audioName = "";
     [SerializeField]
     int _audioId = 0;
-    [SerializeField, Tooltip("If enabled the script will add listener to the button component's onClick event to play the audio clip.")]
-    bool _useOnClickEvent = true;
-    [SerializeField, Tooltip("If enabled the script will add listener to onPointerDown event to play the audio clip.")]
-    bool _useOnPointerDownEvent = false;
+    [SerializeField, Tooltip("Determines which event to use in order to play the audio clip. OnClick: sound will play when the button is released, OnPointerDown: sound will play when button press is started, Both: sound will play at both of these events")]
+    private PlayType _playType = PlayType.OnClick;
 
 
     private void Start()
     {
-        if (_useOnClickEvent)
+        switch (_playType)
         {
-            GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+            case PlayType.OnClick:
+            case PlayType.Both:
+                GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+                break;
         }
         GetComponent<Toggle>()?.onValueChanged.AddListener(PlayAudio);
     }
@@ -77,9 +86,12 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_useOnPointerDownEvent)
+        switch (_playType)
         {
-            PlayAudio();
+            case PlayType.OnPointerDown:
+            case PlayType.Both:
+                PlayAudio();
+                break;
         }
     }
 
@@ -91,8 +103,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
         SerializedProperty sectionA;
         SerializedProperty sectionB;
         SerializedProperty sectionC;
-        SerializedProperty sectionOnClickBool;
-        SerializedProperty sectionOnPointerDownBool;
+        SerializedProperty sectionPlayType;
 
         void OnEnable()
         {
@@ -100,8 +111,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             sectionA = serializedObject.FindProperty(nameof(_audioType));
             sectionB = serializedObject.FindProperty(nameof(_audioName));
             sectionC = serializedObject.FindProperty(nameof(_audioId));
-            sectionOnClickBool = serializedObject.FindProperty(nameof(_useOnClickEvent));
-            sectionOnPointerDownBool = serializedObject.FindProperty(nameof(_useOnPointerDownEvent));
+            sectionPlayType = serializedObject.FindProperty(nameof(_playType));
         }
         public override void OnInspectorGUI()
         {
@@ -120,8 +130,7 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
                     EditorGUILayout.PropertyField(sectionC);
                     break;
             }
-            EditorGUILayout.PropertyField(sectionOnClickBool);
-            EditorGUILayout.PropertyField(sectionOnPointerDownBool);
+            EditorGUILayout.PropertyField(sectionPlayType);
             serializedObject.ApplyModifiedProperties();
         }
     }
