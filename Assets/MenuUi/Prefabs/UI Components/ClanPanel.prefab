@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 1017011496216944022}
   - component: {fileID: 7922750211339974749}
   - component: {fileID: 1864201552857883822}
+  - component: {fileID: 5114704486631550583}
   m_Layer: 5
   m_Name: ClanButton
   m_TagString: Untagged
@@ -508,3 +509,20 @@ MonoBehaviour:
   _isCurrentPopOutWindow: 0
   _alternateNaviTarget: {fileID: 11400000, guid: 61a4cbe88e24d13439d73a445c64a793,
     type: 2}
+--- !u!114 &5114704486631550583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612480394231691680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 1
