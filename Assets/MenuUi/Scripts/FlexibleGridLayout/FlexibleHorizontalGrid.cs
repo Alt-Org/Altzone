@@ -16,55 +16,46 @@ public class FlexibleHorizontalGrid : LayoutGroup
     [Header("Flexible Horizontal Grid")]
 
     private int rows;
-    public int columns;
+    public int columns = 4;
 
     public Vector2 cellSize;
     public float cellAspectRatio; //times that width takes from the height (f.e. aspect ratio = 1.5 => Height = 100, Width = 100 * 1.5 = 150)
     public Vector2 spacing;
 
-    //public float oneRowHeight;
-    private int previousRowCount = -2;
+    private int _previousRowCount = -2;
+    private bool _firstCalculation = true; //For some reason the first calculation shows incorrect values for rectTransform.rect's. This bool intended to fix this problem
 
     public override void CalculateLayoutInputHorizontal()
     {
-        ///Plan: Calculate size of cells based on width only
-        /// Than calculate height based on width and aspect ratio.
-        /// Calculate positions and parent size
-        
+        /// Plan: Calculate size of cells based on width only
+        /// If rows amount has been changed => chnage parent's size (rectTransform.sizeDelta). Then calculate the height based on the width and aspect ratio.
+        /// Calculate Positions and 
+
         base.CalculateLayoutInputHorizontal();
 
-        ////Calculating current rows 
-        //Updating rectTransform(parent) size
-
-        //Debug.Log(rows);
-
-        ////fitX = true;
-        ////fitY = false;
-
-        //float parentHeight = rectTransform.rect.height;
-        //float availableHeight = parentHeight - padding.top - padding.bottom - (spacing.y * (rows - 1));  //((spacing.y / rows) * (rows - 1));
-        //float cellHeight = availableHeight / rows;
-
         float parentWidth = rectTransform.rect.width;
-        float availableWidth = parentWidth - padding.left - padding.right - (spacing.x * (columns - 1));  //((spacing.x / columns) * (columns - 1));
+        float availableWidth = rectTransform.rect.width - padding.left - padding.right - (spacing.x * (columns - 1));  //((spacing.x / columns) * (columns - 1));
+        //Debug.Log("Available width: "+ availableWidth);
         float cellWidth = availableWidth / columns;
         float cellHeight = cellWidth / cellAspectRatio;
-        //Debug.Log("cellHeight  -- " + cellHeight);
-
         cellSize.x = cellWidth;
         cellSize.y = cellHeight;
 
-        rows = CalculateRowsAmount();
+        //Debug.Log(cellHeight + "--- Cell Height");
+        //Debug.Log(cellSize.y + "--- cellSize y");
 
-        if (rows != previousRowCount)
+        if (!_firstCalculation)
         {
-            previousRowCount = rows;
-            float availableHeight = (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1));  //((spacing.y / rows) * (rows - 1));
-            Debug.Log("cellHeight * rows  -- " + cellHeight * rows);
-            Debug.Log("(cellHeight * rows) + padding.top + padding.bottom -- " + (cellHeight * rows) + padding.top + padding.bottom);
-            Debug.Log("(cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1)) -- " + (cellHeight * rows) + padding.top + padding.bottom + (spacing.y * (rows - 1)));
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, availableHeight);
+            rows = CalculateRowsAmount();
+            if (rows != _previousRowCount)
+            {
+                _previousRowCount = rows;
+                float availableHeight = (cellSize.y * (float)rows) + (float)padding.top + (float)padding.bottom + (spacing.y * ((float)rows - 1));  //((spacing.y / rows) * (rows - 1));
+                //Debug.Log("Available Height: " + availableHeight);
+                rectTransform.sizeDelta = new Vector2(rectTransform.rect.width, availableHeight);
+            }
         }
+        _firstCalculation = false;
 
         int columnCount = 0;
         int rowCount = 0;
@@ -85,42 +76,9 @@ public class FlexibleHorizontalGrid : LayoutGroup
     }
     private int CalculateRowsAmount()
     {
-        Debug.Log("CalculateRowsAmount  --" + Mathf.CeilToInt((float)rectChildren.Count / columns));
         return Mathf.CeilToInt((float)rectChildren.Count / columns);
     }
 
-    //if (fitType == FitType.WIDTH || fitType == FitType.HEIGHT || fitType == FitType.UNIFORM)
-    //{
-    //    float squareRoot = Mathf.Sqrt(transform.childCount);
-    //    rows = columns = Mathf.CeilToInt(squareRoot);
-    //    switch (fitType)
-    //    {
-    //        case FitType.WIDTH:
-    //            fitX = true;
-    //            fitY = false;
-    //            break;
-    //        case FitType.HEIGHT:
-    //            fitX = false;
-    //            fitY = true;
-    //            break;
-    //        case FitType.UNIFORM:
-    //            fitX = fitY = true;
-    //            break;
-    //    }
-    //}
-
-    //if (fitType == FitType.WIDTH || fitType == FitType.FIXEDCOLUMNS)
-    //{
-    //    rows = Mathf.CeilToInt(transform.childCount / (float)columns);
-    //    if (fitType == FitType.FIXEDCOLUMNS)
-    //    {
-    //        fitX = true;
-    //    }
-    //}
-    //if (fitType == FitType.HEIGHT || fitType == FitType.FIXEDROWS)
-    //{
-    //    columns = Mathf.CeilToInt(transform.childCount / (float)rows);
-    //}
     private int CalculateCellWidth()
     {
         return 0;
