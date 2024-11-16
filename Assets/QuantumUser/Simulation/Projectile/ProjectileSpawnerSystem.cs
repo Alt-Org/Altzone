@@ -1,4 +1,5 @@
 using Photon.Deterministic;
+using UnityEngine;
 using UnityEngine.Scripting;
 
 namespace Quantum
@@ -53,7 +54,10 @@ namespace Quantum
 
         public override void OnInit(Frame f)
         {
-            //SpawnProjectile(f);
+            ProjectileGameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
+            SpawnProjectile(f,config.ProjectilePrototype);
         }
+
+      
     }
 }

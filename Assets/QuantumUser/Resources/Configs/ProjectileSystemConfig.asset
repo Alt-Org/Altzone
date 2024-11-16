@@ -42,8 +42,13 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.Projectile.TestProjectile,
+      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.Projectile.Projectile,
         Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.ProjectileSpawnerSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []
