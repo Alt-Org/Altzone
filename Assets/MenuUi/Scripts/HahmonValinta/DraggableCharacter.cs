@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using ExitGames.Client.Photon;
+//using ExitGames.Client.Photon;
 using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
@@ -179,14 +179,3 @@ namespace MenuUi.Scripts.CharacterGallery
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

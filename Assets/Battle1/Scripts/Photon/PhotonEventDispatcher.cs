@@ -1,9 +1,12 @@
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using System;
+using Battle1.PhotonRealtime.Code;
 using UnityEngine;
 using UnityEngine.Assertions;
+using IOnEventCallback = Battle1.PhotonRealtime.Code.IOnEventCallback;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using ReceiverGroup = Battle1.PhotonRealtime.Code.ReceiverGroup;
 
 namespace Prg.Scripts.Common.Photon
 {
@@ -53,12 +56,12 @@ namespace Prg.Scripts.Common.Photon
             PhotonNetwork.NetworkingClient.LoadBalancingPeer.ReuseEventInstance = false;
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;
-        }
+        }*/
 
         private static PhotonEventDispatcher _instance;
 

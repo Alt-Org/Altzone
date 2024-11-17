@@ -1,11 +1,13 @@
 using System;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Game;
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace Battle1.Scripts.Battle.Players
 {

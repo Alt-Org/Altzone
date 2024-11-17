@@ -7,9 +7,9 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Battle1.Scripts.Battle.Game;
-using Photon.Pun;
 using UnityEngine;
 using UnityEngine.Networking;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle
 {

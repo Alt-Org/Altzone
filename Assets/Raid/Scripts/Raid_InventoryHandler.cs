@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
+//using Photon.Pun;
 using Random = UnityEngine.Random;
 
 public class Raid_InventoryHandler : MonoBehaviour
@@ -14,7 +14,7 @@ public class Raid_InventoryHandler : MonoBehaviour
     public int MediumItemMaxAmount;
     public int LargeItemMaxAmount;
 
-    public PhotonView _photonView { get; private set; }
+    /*public PhotonView _photonView { get; private set; }
 
     private void Start()
     {
@@ -40,7 +40,7 @@ public class Raid_InventoryHandler : MonoBehaviour
         Debug.Log("Inventory initialized");
         if (PhotonNetwork.IsMasterClient)
             InventoryUI.SetInventorySlotData(InventorySize);
-    }
+    }*/
 
 
 }

@@ -1,6 +1,7 @@
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using TMPro;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Test.Elmeri
 {

@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Test.Elmeri
 {

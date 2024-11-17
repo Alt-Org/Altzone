@@ -2,8 +2,10 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
-using Photon.Pun;
 using Photon.Realtime;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using PhotonBattleRoom = Battle1.Scripts.Battle.Photon.PhotonBattleRoom;
 
 namespace Battle1.Scripts.Battle
 {

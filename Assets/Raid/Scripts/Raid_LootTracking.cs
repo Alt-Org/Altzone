@@ -4,9 +4,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
-using Photon.Pun;
+//using Photon.Pun;
 
-public class Raid_LootTracking : MonoBehaviourPunCallbacks
+public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
 
@@ -18,11 +18,11 @@ public class Raid_LootTracking : MonoBehaviourPunCallbacks
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
 
-    public PhotonView _photonView { get; private set; }
+    //public PhotonView _photonView { get; private set; }
 
     public void Awake()
     {
-        _photonView = gameObject.AddComponent<PhotonView>();
+/*        _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
         {
@@ -30,10 +30,10 @@ public class Raid_LootTracking : MonoBehaviourPunCallbacks
             _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.AllBuffered, randomlootWeight);
         }
 
-        ResetLootCount();
+        ResetLootCount();*/
     }
 
-    [PunRPC]
+    /*[PunRPC]*/
     public void SetRandomMaxLootWeightRPC(float maxLootWeight)
     {
         MaxLootWeight = maxLootWeight;

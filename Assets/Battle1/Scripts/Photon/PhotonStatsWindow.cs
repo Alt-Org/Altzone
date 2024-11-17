@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Battle1.PhotonRealtime.Code;
 #if PHOTON_UNITY_NETWORKING
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 #endif
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Prg.Scripts.DevUtil
 {

@@ -33,6 +33,9 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
 
         public int dailyTaskId = 0;
+
+        public int points = 0;
+        public ServerGameStatistics stats = null;
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>
@@ -79,6 +82,25 @@ namespace Altzone.Scripts.Model.Poco.Player
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
+        }
+
+        public PlayerData(ServerPlayer player)
+        {
+            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
+            //Assert.IsTrue(player.currentCustomCharacterId >= 0);
+            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.backpackCapacity >= 0);
+            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Id = player._id;
+            ClanId = player.clan_id ?? string.Empty;
+            SelectedCharacterId = 0;
+            SelectedCharacterIds = null;
+            Name = player.name;
+            BackpackCapacity = player.backpackCapacity;
+            UniqueIdentifier = player.uniqueIdentifier;
+            points = player.points;
+            stats = player.gameStatistics;
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)

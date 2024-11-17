@@ -8,13 +8,12 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code.Views
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
-
     /// <summary>
     /// This class helps you to synchronize Mecanim animations
     /// Simply add the component to your GameObject and make sure that
@@ -126,12 +125,12 @@ namespace Photon.Pun
 
         private void Update()
         {
-            if (this.m_Animator.applyRootMotion && this.photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            if (this.m_Animator.applyRootMotion && this.photonView.IsMine == false && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsConnected == true)
             {
                 this.m_Animator.applyRootMotion = false;
             }
 
-            if (PhotonNetwork.InRoom == false || PhotonNetwork.CurrentRoom.PlayerCount <= 1)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.InRoom == false || Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.PlayerCount <= 1)
             {
                 this.m_StreamQueue.Reset();
                 return;

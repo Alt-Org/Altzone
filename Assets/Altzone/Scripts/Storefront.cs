@@ -94,6 +94,22 @@ namespace Altzone.Scripts
         }
 
         /// <summary>
+        /// Gets <c>PlayerTasks</c> entity.
+        /// </summary>
+        public void GetPlayerTasks( Action<PlayerTasks> callback)
+        {
+            _localModels.GetPlayerTasks(callback);
+        }
+
+        /// <summary>
+        /// Saves <c>PlayerTasks</c> entity.
+        /// </summary>
+        public void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        {
+            _localModels.SavePlayerTasks(tasks, callback);
+        }
+
+        /// <summary>
         /// Get all read-only <c>GameFurniture</c> entities.
         /// </summary>
         /// <returns><c>CustomYieldInstruction</c> that can be 'waited' in UNITY <c>Coroutine</c> using <code>yield return</code></returns>
@@ -103,6 +119,11 @@ namespace Altzone.Scripts
         }
 
         public CustomYieldInstruction GetAllCharacterClassesYield(Action<ReadOnlyCollection<CharacterClass>> callback)
+        {
+            return new MYCustomYieldInstruction(_localModels, callback);
+        }
+
+        public CustomYieldInstruction GetAllBaseCharacterYield(Action<ReadOnlyCollection<BaseCharacter>> callback)
         {
             return new MYCustomYieldInstruction(_localModels, callback);
         }
@@ -131,7 +152,7 @@ namespace Altzone.Scripts
             }
             public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<CharacterClass>> callback)
             {
-                void SafeCallbackWrapperCharacters(ReadOnlyCollection<CharacterClass> result)
+                void SafeCallbackWrapperCharactersClasses(ReadOnlyCollection<CharacterClass> result)
                 {
                     try
                     {
@@ -143,7 +164,23 @@ namespace Altzone.Scripts
                     }
                 }
 
-                localModels.GetAllCharacterClassModels(SafeCallbackWrapperCharacters);
+                localModels.GetAllCharacterClassModels(SafeCallbackWrapperCharactersClasses);
+            }
+            public MYCustomYieldInstruction(LocalModels localModels, Action<ReadOnlyCollection<BaseCharacter>> callback)
+            {
+                void SafeCallbackWrapperCharacters(ReadOnlyCollection<BaseCharacter> result)
+                {
+                    try
+                    {
+                        callback(result);
+                    }
+                    finally
+                    {
+                        _keepWaiting = false;
+                    }
+                }
+
+                localModels.GetAllBaseCharacters(SafeCallbackWrapperCharacters);
             }
         }
     }
