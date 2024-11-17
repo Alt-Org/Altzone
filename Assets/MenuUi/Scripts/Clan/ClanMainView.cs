@@ -3,6 +3,7 @@ using TMPro;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using UnityEngine.UI;
+using MenuUi.Scripts.Window;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -42,13 +43,13 @@ public class ClanMainView : MonoBehaviour
     private void OnEnable()
     {
         ToggleClanPanel(false);
-
-        if (DataCarrier.Instance.clanToView != null)
+        ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing);
+        if (clan != null)
         {
-            SetClanProfile(new ClanData(DataCarrier.Instance.clanToView));
+            SetClanProfile(new ClanData(clan));
 
-            ServerClan clan = DataCarrier.Instance.clanToView;
-            DataCarrier.Instance.clanToView = null;
+            //ServerClan clan = DataCarrier.Instance.clanToView;
+            //DataCarrier.Instance.clanToView = null;
 
             _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { JoinClan(clan); });

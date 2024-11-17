@@ -3,57 +3,62 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine;
 
-public class DataCarrier : MonoBehaviour
+namespace MenuUi.Scripts.Window
 {
-    public static DataCarrier Instance { get; private set; }
-    public ServerClan clanToView;
-
-    private static Dictionary<string, object> s_datastorage = new();
-
-    private void Awake()
+    public class DataCarrier : MonoBehaviour
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-        clanToView = null;
-    }
+        public const string ClanListing = "cl";
 
-    public static void AddData<T>(string key, T value) where T : class
-    {
-        if(Instance == null)
-        {
-            GameObject carrier =Instantiate(new GameObject());
-            carrier.AddComponent<DataCarrier>();
-        }
-        if (s_datastorage.ContainsKey(key))
-        {
-            Debug.LogWarning($"Cannot add Data: Data with supplied key ({key}) already exist in DataCarrier.");
-            return;
-        }
-        s_datastorage.Add(key, value);
-    }
+        public static DataCarrier Instance { get; private set; }
+        public ServerClan clanToView;
 
-    public static T GetData<T>(string key, bool clear = true) where T : class
-    {
-        if (s_datastorage.ContainsKey(key))
+        private static Dictionary<string, object> s_datastorage = new();
+
+        private void Awake()
         {
-            T value = s_datastorage[key] as T;
-            if (clear)
+            if (Instance != null && Instance != this)
             {
-                s_datastorage.Remove(key);
+                Destroy(this);
             }
-            return value;
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(this);
+            }
+            clanToView = null;
         }
-        else
+
+        public static void AddData<T>(string key, T value) where T : class
         {
-            Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
-            return null;
+            if (Instance == null)
+            {
+                GameObject carrier = Instantiate(new GameObject());
+                carrier.AddComponent<DataCarrier>();
+            }
+            if (s_datastorage.ContainsKey(key))
+            {
+                Debug.LogWarning($"Cannot add Data: Data with supplied key ({key}) already exist in DataCarrier.");
+                return;
+            }
+            s_datastorage.Add(key, value);
+        }
+
+        public static T GetData<T>(string key, bool clear = true) where T : class
+        {
+            if (s_datastorage.ContainsKey(key))
+            {
+                T value = s_datastorage[key] as T;
+                if (clear)
+                {
+                    s_datastorage.Remove(key);
+                }
+                return value;
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot find Data: Data with supplied key ({key}) cannot be found in DataCarrier.");
+                return null;
+            }
         }
     }
 }
