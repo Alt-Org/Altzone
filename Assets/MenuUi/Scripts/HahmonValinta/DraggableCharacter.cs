@@ -68,7 +68,6 @@ namespace MenuUi.Scripts.CharacterGallery
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
 
-            _modelView.CheckSelectedCharacterSlotText();
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
@@ -153,7 +152,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-            _modelView.CheckSelectedCharacterSlotText();
+            
         }
 
         private void HandleParentChange(Transform newParent)
