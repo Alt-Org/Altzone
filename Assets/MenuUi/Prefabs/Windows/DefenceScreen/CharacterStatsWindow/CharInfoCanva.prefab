@@ -83,7 +83,6 @@ GameObject:
   m_Component:
   - component: {fileID: 15923625434554650}
   - component: {fileID: 1261486900083564076}
-  - component: {fileID: 3217156028475498019}
   - component: {fileID: 4920563090435246036}
   m_Layer: 5
   m_Name: Canvas
@@ -135,29 +134,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &3217156028475498019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1368744054218269991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &4920563090435246036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -468,7 +444,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5906680199309823621}
   - component: {fileID: 5944220967344299873}
-  - component: {fileID: 5540043650246756711}
   - component: {fileID: 6280999105084247483}
   m_Layer: 5
   m_Name: LowerUISpace
@@ -519,29 +494,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &5540043650246756711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4357489907179517975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &6280999105084247483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -638,7 +590,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: 1080
-  m_PreferredHeight: -1
+  m_PreferredHeight: 1920
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -901,7 +853,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8250077543715145815}
   - component: {fileID: 2287838260143600912}
-  - component: {fileID: 3232381134460837752}
   - component: {fileID: 986257261007574992}
   m_Layer: 5
   m_Name: MiddleCanvas
@@ -954,29 +905,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &3232381134460837752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7271381186690704904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &986257261007574992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1004,7 +932,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6462980308771986192}
   - component: {fileID: 8123863826667263244}
-  - component: {fileID: 7617653535433124858}
   - component: {fileID: 6288939148113739396}
   m_Layer: 5
   m_Name: BackgroundCanvas
@@ -1056,29 +983,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &7617653535433124858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7959276207211677768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &6288939148113739396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,7 +1010,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3546449619106321479}
   - component: {fileID: 2452366458804247279}
-  - component: {fileID: 1805833304792723544}
   - component: {fileID: 5269766837748259245}
   m_Layer: 5
   m_Name: Canvas
@@ -1161,29 +1064,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1805833304792723544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8266927591176547009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &5269766837748259245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1399,6 +1279,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CharacterImageAndName
+      objectReference: {fileID: 0}
+    - target: {fileID: 4457510666052455963, guid: a9618da4aa794f0408a362084a7e2afa,
+        type: 3}
+      propertyPath: m_Name
+      value: CustomCharacterName
       objectReference: {fileID: 0}
     - target: {fileID: 4904080251471573330, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
