@@ -16,6 +16,7 @@ using Prg.Scripts.Common.PubSub;
 using Quantum;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 using Assert = UnityEngine.Assertions.Assert;
 //using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -286,6 +287,16 @@ namespace MenuUI.Scripts.Lobby
             string pluginDisconnectReason = null;
             var pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
 
+            Transform currentroot = null;
+            GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (var root in roots)
+            {
+                if(root.name == "DefaultWindow")
+                {
+                    currentroot = root.transform;
+                }
+            }
+
             QuantumRunner runner = null;
             try
             {
@@ -295,7 +306,14 @@ namespace MenuUI.Scripts.Lobby
                 pluginDisconnectListener.Dispose();
                 Debug.LogException(ex);
             }
-
+            foreach (Transform window in currentroot)
+            {
+                Debug.Log(window.name);
+                if (window.gameObject.activeSelf == true)
+                {
+                    window.gameObject.SetActive(false);
+                }
+            }
             runner?.Game.AddPlayer(_player);
         }
 
