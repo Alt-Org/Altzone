@@ -271,7 +271,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!1 &7810913197396123263
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,6 +1931,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CharacterImageAndName
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904080251471573330, guid: a9618da4aa794f0408a362084a7e2afa,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 20.2
       objectReference: {fileID: 0}
     - target: {fileID: 7801117341591077631, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}

@@ -165,35 +165,35 @@ public class CharacterStatWindow : MonoBehaviour
             case 0:
                 StatAddButton.onClick.AddListener(UpgradeCharacterSpeed);
                 StatRemoveButton.onClick.AddListener(DegradeCharacterSpeed);
-                UpgradeDiamondImage.color = new Color32(240,117,117,255);
+                UpgradeDiamondImage.color = new Color32(240, 117, 117, 255);
                 UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedCostAmount.ToString();
                 _statSpeedSelectedBackground.enabled = true;
                 break;
             case 1:
                 StatAddButton.onClick.AddListener(UpgradeCharacterResistance);
                 StatRemoveButton.onClick.AddListener(DegradeCharacterResistance);
-                UpgradeDiamondImage.color = new Color32(247,178,59,255);
+                UpgradeDiamondImage.color = new Color32(247, 178, 59, 255);
                 UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceCostAmount.ToString();
                 _statResistanceSelectedBackground.enabled = true;
                 break;
             case 2:
                 StatAddButton.onClick.AddListener(UpgradeCharacterAttack);
                 StatRemoveButton.onClick.AddListener(DegradeCharacterAttack);
-                UpgradeDiamondImage.color = new Color32(232,56,215,255);
+                UpgradeDiamondImage.color = new Color32(232, 56, 215, 255);
                 UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackCostAmount.ToString();
                 _statAttackSelectedBackground.enabled = true;
                 break;
             case 3:
                 StatAddButton.onClick.AddListener(UpgradeCharacterDefence);
                 StatRemoveButton.onClick.AddListener(DegradeCharacterDefence);
-                UpgradeDiamondImage.color = new Color32(118,79,234,255);
+                UpgradeDiamondImage.color = new Color32(118, 79, 234, 255);
                 UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceCostAmount.ToString();
                 _statDefenceSelectedBackground.enabled = true;
                 break;
             case 4:
                 StatAddButton.onClick.AddListener(UpgradeCharacterHP);
                 StatRemoveButton.onClick.AddListener(DegradeCharacterHP);
-                UpgradeDiamondImage.color = new Color32(228,32,35,255);
+                UpgradeDiamondImage.color = new Color32(228, 32, 35, 255);
                 UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPCostAmount.ToString();
                 _statHPSelectedBackground.enabled = true;
                 break;
@@ -219,7 +219,7 @@ public class CharacterStatWindow : MonoBehaviour
     //  upgrade
     private void UpgradeCharacterSpeed()
     {
-        if (CheckMaxLevel() == true)            
+        if (CheckMaxLevel() == true)
         {
             if (DiamondSpeedAmount >= SpeedCostAmount)
             {
@@ -530,7 +530,8 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
-        if (galleryCharacter == null) {
+        if (galleryCharacter == null)
+        {
 
             Debug.LogError($"GalleryCharacterReference not found for index {index}");
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
@@ -538,61 +539,37 @@ public class CharacterStatWindow : MonoBehaviour
             return;
         }
 
+
+        //Tähän pitää tehdä muutos, että kutsutaan vaan metodia aina jokaisessa casessa -Tehty, en tiedä vielä toimiiko.
+        //Voisko tätä vielä jotenkin refactoroida selkeämmäksi?
         switch (index)
         {
             case CharacterID.IntellectualizerResearcher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Albert");
+                SetCharacterInfo(CharacterID.IntellectualizerResearcher);
                 break;
             case CharacterID.RetroflectorOvereater:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Hannu");
+                SetCharacterInfo(CharacterID.RetroflectorOvereater);
                 break;
             case CharacterID.TricksterComedian:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Ville");
+                SetCharacterInfo(CharacterID.TricksterComedian);
                 break;
             case CharacterID.TricksterConman:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Lasse");
+                SetCharacterInfo(CharacterID.TricksterConman);
                 break;
             case CharacterID.DesensitizerBodybuilder:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Rami");
+                SetCharacterInfo(CharacterID.DesensitizerBodybuilder);
                 break;
             case CharacterID.ObedientPreacher:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Sami");
+                SetCharacterInfo(CharacterID.ObedientPreacher);
                 break;
             case CharacterID.ProjectorGrafitiartist:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Gaya");
+                SetCharacterInfo(CharacterID.ProjectorGrafitiartist);
                 break;
             case CharacterID.ConfluentBesties:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Tytöt");
+                SetCharacterInfo(CharacterID.ConfluentBesties);
                 break;
             case CharacterID.RetroflectorAlcoholic:
-                _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
-                CharacterArtWorkToShow.sprite = galleryCharacter.Image;
-                Debug.Log("loaded Piraatti");
+                SetCharacterInfo(CharacterID.RetroflectorAlcoholic);
                 break;
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
@@ -637,7 +614,7 @@ public class CharacterStatWindow : MonoBehaviour
         if (_demoCharacterWindowCharacter.CharacterSpeed + _demoCharacterWindowCharacter.CharacterResistance + _demoCharacterWindowCharacter.CharacterAttack + _demoCharacterWindowCharacter.CharacterDefence + _demoCharacterWindowCharacter.CharacterHP < 100)
         {
             return true;
-        } 
+        }
         return false;
     }
 
@@ -659,6 +636,19 @@ public class CharacterStatWindow : MonoBehaviour
         // pie chart works with the floats being in reverse order compared to the image array which holds the pie chart circles, atleast for now 
         float[] characterStatsFloatValues = { characterHP, characterDefence, characterAttack, characterResistance, characterSpeed, unusedStats };
         return characterStatsFloatValues;
+    }
+    private void SetCharacterInfo(CharacterID index)
+    {
+        //Tällä metodilla pitäis saada haettua hahmon tiedot.
+
+        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
+
+        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
+
+        _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
+                   customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
+        CharacterArtWorkToShow.sprite = galleryCharacter.Image;
+        Debug.Log($"loaded {galleryCharacter.Name}");
     }
 
 
