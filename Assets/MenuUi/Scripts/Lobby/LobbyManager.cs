@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Settings;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -119,7 +120,7 @@ namespace MenuUI.Scripts.Lobby
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
         {
-            var networkClientState = PhotonRealtimeClient.NetworkClientState;
+            ClientState networkClientState = PhotonRealtimeClient.NetworkClientState;
             Debug.Log($"{networkClientState}");
             var delay = new WaitForSeconds(0.1f);
             while (!PhotonRealtimeClient.Client.InLobby)
@@ -136,7 +137,7 @@ namespace MenuUI.Scripts.Lobby
                 }
                 else if (PhotonRealtimeClient.CanConnect)
                 {
-                    var store = Storefront.Get();
+                    DataStore store = Storefront.Get();
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
@@ -285,15 +286,15 @@ namespace MenuUI.Scripts.Lobby
             };
 
             string pluginDisconnectReason = null;
-            var pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
+            IDisposable pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
 
-            Transform currentroot = null;
+            Transform currentRoot = null;
             GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
-            foreach (var root in roots)
+            foreach (GameObject root in roots)
             {
                 if(root.name == "DefaultWindow")
                 {
-                    currentroot = root.transform;
+                    currentRoot = root.transform;
                 }
             }
 
@@ -306,7 +307,7 @@ namespace MenuUI.Scripts.Lobby
                 pluginDisconnectListener.Dispose();
                 Debug.LogException(ex);
             }
-            foreach (Transform window in currentroot)
+            foreach (Transform window in currentRoot)
             {
                 Debug.Log(window.name);
                 if (window.gameObject.activeSelf == true)
@@ -350,9 +351,9 @@ namespace MenuUI.Scripts.Lobby
         public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
-            var gameConfig = GameConfig.Get();
-            var playerSettings = gameConfig.PlayerSettings;
-            var photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
