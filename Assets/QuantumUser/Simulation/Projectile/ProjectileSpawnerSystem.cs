@@ -58,6 +58,6 @@ namespace Quantum
             SpawnProjectile(f,config.ProjectilePrototype);
         }
 
-      
+
     }
 }
