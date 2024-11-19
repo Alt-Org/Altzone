@@ -6,7 +6,7 @@ using UnityEngine.Scripting;
 namespace Quantum.QuantumUser.Simulation.Projectile
 {
     [Preserve]
-    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnCollisionProjectileHitSoulWall
+    public unsafe class ProjectileSystem : SystemMainThreadFilter<ProjectileSystem.Filter>, ISignalOnCollisionProjectileHitSoulWall, ISignalOnCollisionProjectileHitSomething
     {
         public struct Filter
         {
@@ -19,25 +19,7 @@ namespace Quantum.QuantumUser.Simulation.Projectile
         // Variable to store the projectile speed from config
         private FP defaultProjectileSpeed;
 
-        public override void Update(Frame f, ref Filter filter)
-        {
-            if (!filter.Projectile->IsLaunched) // Access the IsLaunched property from the regenerated component
-            {
-                // Retrieve the projectile speed from the config
-                var config = f.FindAsset(filter.Projectile->ProjectileConfig);
-                defaultProjectileSpeed = config.ProjectileSpeed;
-
-                Debug.Log("Projectile Launched");
-
-                // Apply initial velocity to the projectile body
-                filter.Body->Velocity = filter.Transform->Up * defaultProjectileSpeed;
-
-                // Set the IsLaunched field to true to ensure it's launched only once
-                filter.Projectile->IsLaunched = true;
-            }
-        }
-
-        public void OnCollisionProjectileHitSoulWall(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile, Quantum.SoulWall* soulWall)
+        private void ProjectileBounce(Frame f,CollisionInfo2D info )
         {
             Debug.Log("Projectile hit a wall");
 
@@ -63,11 +45,40 @@ namespace Quantum.QuantumUser.Simulation.Projectile
             }
         }
 
+        public override void Update(Frame f, ref Filter filter)
+        {
+            if (!filter.Projectile->IsLaunched) // Access the IsLaunched property from the regenerated component
+            {
+                // Retrieve the projectile speed from the config
+                var config = f.FindAsset(filter.Projectile->ProjectileConfig);
+                defaultProjectileSpeed = config.ProjectileSpeed;
+
+                Debug.Log("Projectile Launched");
+
+                // Apply initial velocity to the projectile body
+                filter.Body->Velocity = filter.Transform->Up * defaultProjectileSpeed;
+
+                // Set the IsLaunched field to true to ensure it's launched only once
+                filter.Projectile->IsLaunched = true;
+            }
+        }
         // Function to adjust the speed of the projectile
         public void AdjustProjectileSpeed(FP newSpeed)
         {
             defaultProjectileSpeed = newSpeed;
             Debug.Log($"Projectile speed adjusted to: {newSpeed}");
         }
+
+        public void OnCollisionProjectileHitSoulWall(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile, Quantum.SoulWall* soulWall)
+        {
+            ProjectileBounce(f, info);
+        }
+
+        public void OnCollisionProjectileHitSomething(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile)
+        {
+            ProjectileBounce(f, info);
+        }
+
     }
+
 }

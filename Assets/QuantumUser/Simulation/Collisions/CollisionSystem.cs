@@ -30,7 +30,7 @@ namespace Quantum
                 {
                     //projectile hit a side wall
                     //Debug.Log("Something hit, side wall probably - CollisionSystem");
-                   // f.Signals.OnCollisionProjectileHitSoulWall(info,projectile,soulWall);
+                    f.Signals.OnCollisionProjectileHitSomething(info,projectile);
                 }
             }
 
