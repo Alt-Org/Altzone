@@ -21,7 +21,7 @@ namespace Battle1.Scripts.Lobby
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviourPunCallbacks
+    public class LobbyManagerOld : MonoBehaviourPunCallbacks
     {
         private const string BattleID = PhotonBattle.BattleID;
 
