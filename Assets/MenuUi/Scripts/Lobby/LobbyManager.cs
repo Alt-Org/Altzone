@@ -2,23 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Assert = UnityEngine.Assertions.Assert;
+
+using Photon.Client;
+using Photon.Realtime;
+using Quantum;
+
 using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Model.Poco.Player;
+using Prg.Scripts.Common.PubSub;
+
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
-using Photon.Client;
-//using Battle1.PhotonUnityNetworking.Code;
-//using MenuUi.Scripts.Window;
-//using MenuUi.Scripts.Window.ScriptableObjects;
-using Photon.Realtime;
-using Prg.Scripts.Common.PubSub;
-using Quantum;
-using UnityEngine;
-using UnityEngine.Assertions;
-using Assert = UnityEngine.Assertions.Assert;
-//using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby
 {
@@ -28,7 +28,7 @@ namespace MenuUI.Scripts.Lobby
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback
+    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IConnectionCallbacks
     {
         private const string BattleID = PhotonBattle.BattleID;
 
@@ -38,8 +38,8 @@ namespace MenuUI.Scripts.Lobby
 
         private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattle.TeamAlphaNameKey;
-        private const string TeamRedNameKey = PhotonBattle.TeamBetaNameKey;
+        private const string TeamAlphaNameKey = PhotonBattle.TeamAlphaNameKey;
+        private const string TeamBetaNameKey = PhotonBattle.TeamBetaNameKey;
 
         [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
@@ -103,13 +103,47 @@ namespace MenuUI.Scripts.Lobby
                 PhotonRealtimeClient.LeaveLobby();
             }
         }
+
         private IEnumerator Service()
         {
             while (true)
             {
-                PhotonRealtimeClient.Client.Service();
+                PhotonRealtimeClient.Client?.Service();
                 Debug.LogWarning(".");
                 yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        private IEnumerator StartLobby(string playerGuid, string photonRegion)
+        {
+            ClientState networkClientState = PhotonRealtimeClient.NetworkClientState;
+            Debug.Log($"{networkClientState}");
+            var delay = new WaitForSeconds(0.1f);
+            while (!PhotonRealtimeClient.Client.InLobby)
+            {
+                if (networkClientState != PhotonRealtimeClient.NetworkClientState)
+                {
+                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
+                    networkClientState = PhotonRealtimeClient.NetworkClientState;
+                    Debug.Log($"{networkClientState}");
+                }
+                if (PhotonRealtimeClient.Client.InRoom)
+                {
+                    PhotonRealtimeClient.LeaveRoom();
+                }
+                else if (PhotonRealtimeClient.CanConnect)
+                {
+                    DataStore store = Storefront.Get();
+                    PlayerData playerData = null;
+                    store.GetPlayerData(playerGuid, p => playerData = p);
+                    yield return new WaitUntil(() => playerData != null);
+                    PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
+                }
+                else if (PhotonRealtimeClient.CanJoinLobby)
+                {
+                    PhotonRealtimeClient.JoinLobby(null);
+                }
+                yield return delay;
             }
         }
 
@@ -123,11 +157,13 @@ namespace MenuUI.Scripts.Lobby
             Debug.Log($"onEvent {data}");
             SetPlayer(PhotonRealtimeClient.LocalPlayer, data.PlayerPosition);
         }
+
         private void OnStartRoomEvent(StartRoomEvent data)
         {
             Debug.Log($"onEvent {data}");
             StartCoroutine(OnStartRoom());
         }
+
         private IEnumerator OnStartRoom()
         {
             float startTime =Time.time;
@@ -161,18 +197,18 @@ namespace MenuUI.Scripts.Lobby
             {
                 throw new UnityException("only master client can start the game");
             }
-            var player = PhotonRealtimeClient.LocalPlayer;
-            var masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            Player player = PhotonRealtimeClient.LocalPlayer;
+            int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             if (!PhotonBattle.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
             // Snapshot player list before iteration because we can change it
-            var players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
-            var realPlayerCount = 0;
-            foreach (var roomPlayer in players)
+            List<Player> players = PhotonRealtimeClient.CurrentRoom.Players.Values.ToList();
+            int realPlayerCount = 0;
+            foreach (Player roomPlayer in players)
             {
-                var playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
                 if (PhotonBattle.IsValidPlayerPos(playerPos))
                 {
                     realPlayerCount += 1;
@@ -190,16 +226,17 @@ namespace MenuUI.Scripts.Lobby
             {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
-                var room = PhotonRealtimeClient.CurrentRoom;
-                room.CustomProperties.Add(TeamBlueNameKey, blueTeamName);
-                room.CustomProperties.Add(TeamRedNameKey, redTeamName);
-                room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
-                /*room.SetCustomProperties(new Hashtable
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
+                //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
+                //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
+                room.SetCustomProperties(new PhotonHashtable
                 {
-                    { TeamBlueNameKey, blueTeamName },
-                    { TeamRedNameKey, redTeamName },
+                    { BattleID, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>("bid")},
+                    { TeamAlphaNameKey, blueTeamName },
+                    { TeamBetaNameKey, redTeamName },
                     { PlayerCountKey, realPlayerCount }
-                });*/
+                });
                 yield return null;
                 if (isCloseRoom)
                 {
@@ -218,23 +255,25 @@ namespace MenuUI.Scripts.Lobby
 
         private async void StartQuantum()
         {
-            if(QuantumRunner.Default != null)
+            if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
                 return;
             }
 
-            RuntimeConfig config = new RuntimeConfig();
+            RuntimeConfig config = new()
+            {
+                Map = _map,
+                SimulationConfig = _simulationConfig,
+                SystemsConfig = _systemsConfig
+            };
 
-            config.Map = _map;
-            config.SimulationConfig = _simulationConfig;
-            config.SystemsConfig = _systemsConfig;
-
-            var sessionRunnerArguments = new SessionRunner.Arguments
+            SessionRunner.Arguments sessionRunnerArguments = new()
             {
                 RunnerFactory = QuantumRunnerUnityFactory.DefaultFactory,
                 GameParameters = QuantumRunnerUnityFactory.CreateGameParameters,
                 ClientId = ServerManager.Instance.Player._id,
+                RuntimeConfig = config,
                 SessionConfig = QuantumDeterministicSessionConfigAsset.Global.Config,
                 GameMode = Photon.Deterministic.DeterministicGameMode.Multiplayer,
                 PlayerCount = PhotonRealtimeClient.CurrentRoom.MaxPlayers,
@@ -242,9 +281,37 @@ namespace MenuUI.Scripts.Lobby
                 Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
-            QuantumRunner runner = (QuantumRunner) await SessionRunner.StartAsync(sessionRunnerArguments);
+            string pluginDisconnectReason = null;
+            IDisposable pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
 
-            runner.Game.AddPlayer(_player);
+            Transform currentRoot = null;
+            GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (GameObject root in roots)
+            {
+                if(root.name == "DefaultWindow")
+                {
+                    currentRoot = root.transform;
+                }
+            }
+
+            QuantumRunner runner = null;
+            try
+            {
+                runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
+            }catch (Exception ex)
+            {
+                pluginDisconnectListener.Dispose();
+                Debug.LogException(ex);
+            }
+            foreach (Transform window in currentRoot)
+            {
+                Debug.Log(window.name);
+                if (window.gameObject.activeSelf == true)
+                {
+                    window.gameObject.SetActive(false);
+                }
+            }
+            runner?.Game.AddPlayer(_player);
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
@@ -272,7 +339,7 @@ namespace MenuUI.Scripts.Lobby
                 player.SetCustomProperties(new PhotonHashtable { { PlayerPositionKey, playerPosition } });
                 return;
             }
-            var curValue = player.GetCustomProperty<int>(PlayerPositionKey);
+            int curValue = player.GetCustomProperty<int>(PlayerPositionKey);
             Debug.Log($"setPlayer {PlayerPositionKey}=({curValue}<-){playerPosition}");
             player.SafeSetCustomProperty(PlayerPositionKey, playerPosition, curValue);
         }
@@ -280,6 +347,10 @@ namespace MenuUI.Scripts.Lobby
         public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
@@ -304,24 +375,17 @@ namespace MenuUI.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnJoinedLobby()
-        {
-            StartCoroutine(Service());
-        }
-        public void OnLeftLobby() => throw new NotImplementedException();
-        public void OnRoomListUpdate(List<RoomInfo> roomList)
-        {
+        public void OnCreatedRoom() { StartCoroutine(Service()); }
+        public void OnJoinedLobby() { StartCoroutine(Service()); }
 
-        }
+        public void OnRoomListUpdate(List<RoomInfo> roomList) {}
+        public void OnLeftLobby() => throw new NotImplementedException();
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new NotImplementedException();
         public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreatedRoom()
-        {
-            StartCoroutine(Service());
-        }
         public void OnCreateRoomFailed(short returnCode, string message) => throw new NotImplementedException();
         public void OnJoinRoomFailed(short returnCode, string message) => throw new NotImplementedException();
         public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
+
         public void OnEvent(EventData photonEvent)
         {
             Debug.Log($"Received PhotonEvent {photonEvent.Code}");
@@ -333,6 +397,12 @@ namespace MenuUI.Scripts.Lobby
                     break;
             }
         }
+
+        public void OnConnected() { }
+        public void OnConnectedToMaster() { }
+        public void OnRegionListReceived(RegionHandler regionHandler) { }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new NotImplementedException();
+        public void OnCustomAuthenticationFailed(string debugMessage) => throw new NotImplementedException();
 
         public class PlayerPosEvent
         {
@@ -356,6 +426,7 @@ namespace MenuUI.Scripts.Lobby
         public class StartPlayingEvent
         {
         }
+
         public class StartRaidTestEvent
         {
         }
