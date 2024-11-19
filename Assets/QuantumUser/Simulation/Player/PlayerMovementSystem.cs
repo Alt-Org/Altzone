@@ -31,7 +31,7 @@ namespace Quantum
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
             FPVector3 targetPos;
-            
+
             if (input->MouseClick)
             {
                 targetPos = input->MousePosition;

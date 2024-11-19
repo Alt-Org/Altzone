@@ -7,14 +7,14 @@ namespace Quantum
     public unsafe class PlayerSpawnSystem  : SystemSignalsOnly, ISignalOnPlayerAdded
     {
         private FPVector2 _spawnPos2D;
-        
+
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
             //creates player entity from prefab and gives it playerdata component
             RuntimePlayer data = f.GetPlayerData(player);
-            EntityPrototype entityPrototypeAsset = f.FindAsset<EntityPrototype>(data.PlayerAvatar);
+            EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player});
+            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20});
 
             //gets the right spawnpoint for player
             int spawnCount = f.ComponentCount<SpawnIdentifier>();

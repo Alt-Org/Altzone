@@ -14,7 +14,7 @@ using Quantum;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
-using Altzone.Scripts.Model.Poco.Player;
+using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
 using Prg.Scripts.Common.PubSub;
 
 using MenuUi.Scripts.Window;
