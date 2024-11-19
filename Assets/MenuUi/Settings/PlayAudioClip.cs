@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SettingsCarrier;
 using AudioTypeName = MenuUI.Scripts.SoulHome.AudioTypeName;
 
 enum AudioSelection
@@ -14,7 +12,15 @@ enum AudioSelection
     ID
 }
 
-public class PlayAudioClip : MonoBehaviour
+
+enum PlayType
+{
+    OnClick = 0,
+    OnPointerDown = 1,
+    Both = 2,
+}
+
+public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField]
     private AudioSelection _audioSelection = AudioSelection.Type;
@@ -24,10 +30,19 @@ public class PlayAudioClip : MonoBehaviour
     string _audioName = "";
     [SerializeField]
     int _audioId = 0;
+    [SerializeField, Tooltip("Determines which event to use in order to play the audio clip. OnClick: sound will play when the button is released, OnPointerDown: sound will play when button press is started, Both: sound will play at both of these events")]
+    private PlayType _playType = PlayType.OnClick;
+
 
     private void Start()
     {
-        GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+        switch (_playType)
+        {
+            case PlayType.OnClick:
+            case PlayType.Both:
+                GetComponent<Button>()?.onClick.AddListener(PlayAudio);
+                break;
+        }
         GetComponent<Toggle>()?.onValueChanged.AddListener(PlayAudio);
     }
 
@@ -68,6 +83,18 @@ public class PlayAudioClip : MonoBehaviour
         else if (_audioSelection == AudioSelection.ID)
             manager.PlaySfxAudio(_audioId);
     }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        switch (_playType)
+        {
+            case PlayType.OnPointerDown:
+            case PlayType.Both:
+                PlayAudio();
+                break;
+        }
+    }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(PlayAudioClip))]
     public class PlayAudioClipEditor : Editor
@@ -76,6 +103,7 @@ public class PlayAudioClip : MonoBehaviour
         SerializedProperty sectionA;
         SerializedProperty sectionB;
         SerializedProperty sectionC;
+        SerializedProperty sectionPlayType;
 
         void OnEnable()
         {
@@ -83,6 +111,7 @@ public class PlayAudioClip : MonoBehaviour
             sectionA = serializedObject.FindProperty(nameof(_audioType));
             sectionB = serializedObject.FindProperty(nameof(_audioName));
             sectionC = serializedObject.FindProperty(nameof(_audioId));
+            sectionPlayType = serializedObject.FindProperty(nameof(_playType));
         }
         public override void OnInspectorGUI()
         {
@@ -101,6 +130,7 @@ public class PlayAudioClip : MonoBehaviour
                     EditorGUILayout.PropertyField(sectionC);
                     break;
             }
+            EditorGUILayout.PropertyField(sectionPlayType);
             serializedObject.ApplyModifiedProperties();
         }
     }

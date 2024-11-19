@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 2494480413859530925}
   - component: {fileID: 8513833266704927033}
   - component: {fileID: 2409936207376414101}
+  - component: {fileID: 1743105379117003584}
   m_Layer: 5
   m_Name: MatchmakingRankImage
   m_TagString: Untagged
@@ -387,7 +388,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 685e44e1229a3954fb5b47bc881f1e99, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -395,6 +396,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1743105379117003584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2589664670808032201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cbb4877f6507f49bb03f3b3dc2591c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _images:
+  - ShowCondition: 8
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 9
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 10
+    ImageSprite: {fileID: 0}
 --- !u!1 &3562355431961625240
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,7 +756,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 0925d4926f35811449b0460cd59a65ed, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -938,6 +958,8 @@ GameObject:
   - component: {fileID: 3005329803064190920}
   - component: {fileID: 3153717341407315700}
   - component: {fileID: 124671689533697189}
+  - component: {fileID: 2029361718019638718}
+  - component: {fileID: 3467556909806299412}
   m_Layer: 5
   m_Name: ClanLeaderboardButton
   m_TagString: Untagged
@@ -962,7 +984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.03, y: 0.15}
   m_AnchorMax: {x: 0.13, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3005329803064190920
@@ -995,7 +1017,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: a8a4fcdeaac583d45acdce1ad0cecfe2, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1047,6 +1069,44 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2029361718019638718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264391340277126322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
+--- !u!114 &3467556909806299412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264391340277126322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cbb4877f6507f49bb03f3b3dc2591c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _images:
+  - ShowCondition: 4
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 5
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 6
+    ImageSprite: {fileID: 0}
+  - ShowCondition: 7
+    ImageSprite: {fileID: 0}
 --- !u!1 &6393869949846683486
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1118,7 @@ GameObject:
   - component: {fileID: 8782303747129721840}
   - component: {fileID: 3582304189994803913}
   - component: {fileID: 7990477652683786473}
+  - component: {fileID: 4717476275841633432}
   m_Layer: 5
   m_Name: AddClanCoinsButton
   m_TagString: Untagged
@@ -1137,6 +1198,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4717476275841633432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393869949846683486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1 &8490706599846565077
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,11 +1247,11 @@ RectTransform:
   m_Children:
   - {fileID: 7504815644500887317}
   - {fileID: 2494480413859530925}
-  - {fileID: 3796718271485638456}
   - {fileID: 7636285992594450044}
+  - {fileID: 3796718271485638456}
   - {fileID: 8782303747129721840}
-  - {fileID: 9212066207485454122}
   - {fileID: 8377284095442419154}
+  - {fileID: 9212066207485454122}
   m_Father: {fileID: 8476621660179101015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1253,7 +1331,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.25, y: 0.15}
   m_AnchorMax: {x: 0.35, y: 0.85}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &802853508962230002
@@ -1286,7 +1364,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: f988998f590691148a18baf4f43bb1de, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1416,7 +1494,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2472968820478298304, guid: f8344c471eab70640b21c56b49071030,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7854154580216516761}
   m_SourcePrefab: {fileID: 100100000, guid: f8344c471eab70640b21c56b49071030, type: 3}
 --- !u!114 &309370926395138676 stripped
 MonoBehaviour:
@@ -1424,12 +1506,35 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3749097094265790334}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1609676208198424510}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1609676208198424510 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2472968820478298304, guid: f8344c471eab70640b21c56b49071030,
+    type: 3}
+  m_PrefabInstance: {fileID: 3749097094265790334}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7854154580216516761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609676208198424510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!224 &9212066207485454122 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5463045129984391252, guid: f8344c471eab70640b21c56b49071030,

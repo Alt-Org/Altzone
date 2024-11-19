@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,7 +73,7 @@ public class ClanSearchView : MonoBehaviour
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
-                DataCarrier.Instance.clanToView = clan;
+                DataCarrier.AddData(DataCarrier.ClanListing, clan);
             });
 
             if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)

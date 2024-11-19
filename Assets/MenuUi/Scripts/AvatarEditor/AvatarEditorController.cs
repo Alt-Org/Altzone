@@ -103,7 +103,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void LoadAvatarData()
         {
             _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeaturesFromPrefs(), LoadColorsFromPrefs(), LoadScaleFromPrefs());
-            _nameInput.text = _playerAvatar.Name;
+            // _nameInput.text = _playerAvatar.Name;
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
@@ -159,20 +159,19 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SaveAvatarData()
         {
             SetSaveableData();
-            SaveName();
             SaveFeaturesToPrefs();
             SaveColorsToPrefs();
             SaveScaleToPrefs();
             PlayerPrefs.Save();
         }
-        private void SaveName()
-        {
-            string characterName = _nameInput.text;
-            // Debug.Log("Character name saved: " + characterName);
+        // private void SaveName()
+        // {
+        //     string characterName = _nameInput.text;
+        //     // Debug.Log("Character name saved: " + characterName);
 
-            _playerAvatar.Name = characterName;
-            PlayerPrefs.SetString("CharacterName", characterName);
-        }
+        //     _playerAvatar.Name = characterName;
+        //     PlayerPrefs.SetString("CharacterName", characterName);
+        // }
         private void SaveFeaturesToPrefs()
         {
             List<FeatureID> features = _featurePicker.GetCurrentlySelectedFeatures();
