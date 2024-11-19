@@ -2,27 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Assert = UnityEngine.Assertions.Assert;
+
+using Photon.Client;
+using Photon.Realtime;
+using Quantum;
+
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
 using Altzone.Scripts.Model.Poco.Player;
+using Prg.Scripts.Common.PubSub;
+
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
-using Photon.Client;
-//using Battle1.PhotonUnityNetworking.Code;
-//using MenuUi.Scripts.Window;
-//using MenuUi.Scripts.Window.ScriptableObjects;
-using Photon.Realtime;
-using Prg.Scripts.Common.PubSub;
-using Quantum;
-using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.SceneManagement;
-using Assert = UnityEngine.Assertions.Assert;
-//using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby
 {
