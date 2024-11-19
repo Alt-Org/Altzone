@@ -218,6 +218,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                     characterSlot.gameObject.SetActive(true);
 
+                    //***************
                     // Check if the character is currently selected
                     if ((CharacterID)currentCharacterId[0] == character.Id)
                     {
@@ -228,6 +229,7 @@ namespace MenuUi.Scripts.CharacterGallery
                         }
                     }
 
+                    //Tekstin vaihto tähän /characterSlot
                     // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>
