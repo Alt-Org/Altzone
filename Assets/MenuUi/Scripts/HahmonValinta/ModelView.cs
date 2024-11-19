@@ -113,19 +113,19 @@ namespace MenuUi.Scripts.CharacterGallery
             var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
             var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
 
-            if (_CurSelectedCharacterSlot[2] == null)
+            if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(false);
                 text3.SetActive(false);
             }
-            else if (_CurSelectedCharacterSlot[1] == null)
+            else if (_CurSelectedCharacterSlot[1].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(false);
                 text3.SetActive(true);
             }     
-            else if (_CurSelectedCharacterSlot[0] == null)
+            else if (_CurSelectedCharacterSlot[0].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(true);
@@ -137,6 +137,31 @@ namespace MenuUi.Scripts.CharacterGallery
                 text2.SetActive(true);
                 text3.SetActive(true);
             }
+
+            /*if (_CurSelectedCharacterSlot[0] == null)
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+            else if (_CurSelectedCharacterSlot[1] == null)
+            {
+                text1.SetActive(true);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }     
+            else if (_CurSelectedCharacterSlot[2] == null)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }*/
         }
         public Transform GetContent()
         {
