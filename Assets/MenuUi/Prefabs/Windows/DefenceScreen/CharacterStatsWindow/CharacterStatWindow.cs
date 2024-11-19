@@ -118,7 +118,7 @@ public class CharacterStatWindow : MonoBehaviour
     }
 
     // CurrentlySelectedStat
-    public void UpdateCurrentlySelectedStatToSpeed()
+   /*  public void UpdateCurrentlySelectedStatToSpeed()
     {
         UpgradeButtonsRemoveAllListeners();
         DisableAllStatSelectedBackground();
@@ -153,8 +153,8 @@ public class CharacterStatWindow : MonoBehaviour
         CurrentlySelectedStat = 4;
         UpdateUpgradeButtons();
     }
-
-    private void UpdateUpgradeButtons()
+ */
+    /* private void UpdateUpgradeButtons()
     {
         switch (CurrentlySelectedStat)
         {
@@ -201,7 +201,7 @@ public class CharacterStatWindow : MonoBehaviour
                 Debug.Log("CurrentlySelecterStat is probably somewhere it shouldn't be :/");
                 break;
         }
-    }
+    } */
 
     private void UpgradeButtonsRemoveAllListeners()
     {
@@ -598,7 +598,7 @@ public class CharacterStatWindow : MonoBehaviour
             EraserAmountNumber.text = EraserAmount.ToString();
 
             UpdatePieChart();
-            UpdateUpgradeButtons();
+            //UpdateUpgradeButtons();
             DisableAllStatSelectedBackground();
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
