@@ -53,7 +53,7 @@ namespace Prg.Scripts.Common.Photon
 
         private void OnDisable()
         {
-            //PhotonNetwork.RemoveCallbackTarget(this);
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         private void UpdateRoomListing(List<RoomInfo> roomList)
@@ -83,7 +83,7 @@ namespace Prg.Scripts.Common.Photon
         {
             _currentRoomList.Clear();
             _debugRoomListCount = 0;
-            Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonNetwork.NetworkingClient.CloudRegion}");
+            Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonNetwork.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
 

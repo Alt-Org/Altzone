@@ -1,63 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts;
+using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Vote_manager : MonoBehaviour
 {
-    //kesken
-    //public GameObject aVote;
-    //public Transform voteList;
-    //public int maxVotes = 10;
+    public GameObject Content;
+    public GameObject PollObjectPrefab;
+    private List<PollData> pollDataList = new List<PollData>();
+    private List<GameObject> Polls = new List<GameObject>();
 
-    //private List<GameObject> votes = new List<GameObject>();
-
-
-    private List<PollObject> pollObjectList = new List<PollObject>();
-
-    private SettingsCarrier settingsCarrier;
-
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        //settingsCarrier = SettingsCarrier.Instance;
-        //
-        //if (settingsCarrier.ItemVotingStarted())
-        //{
-        //    votingItemsList = settingsCarrier.GetVotingObjects();
-        //}
-        //PopulateVoteList();
+        LoadPollList();
     }
 
-    //void PopulateVoteList()
-    //{
-    //foreach (var entry in votes)
-    //{
-    //Destroy(entry.gameObject);
-    //}
-    //votes.Clear();
-
-    // for (int i = 0; i < Mathf.Min(maxVotes, VoteDataList.Count); i++)
-    // {
-    // GameObject entry = Instantiate(aVote, voteList);
-    //
-    //     VoteData voteData = VoteDataList[i];
-    //   }
-
-    void PopulateVoteList()
+    public void LoadPollList()
     {
-        foreach (PollObject item in pollObjectList)
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+        store.GetClanData(player.ClanId, data => clan = data);
+
+        if (clan.Polls != null)
         {
-            //Debug.Log("new voting items: " + item.id); // Assuming VotingObject has a proper ToString() method or override
-            //Debug.Log("new voting items: " + item.votableName);
+            pollDataList = clan.Polls;
         }
+
+        InstantiatePolls();
+        Debug.Log("Polls: " + pollDataList.Count);
+       
+
     }
 
-    //}
-
-    // Update is called once per frame
-    void Update()
+    public void InstantiatePolls()
     {
-        
+        // Clear existing polls
+        for (int i = 0; i < Polls.Count; i++)
+        {
+            GameObject obj = Polls[i];
+            Destroy(obj);
+        }
+        Polls.Clear();
+
+        // Instantiate new polls
+        foreach (var pollData in pollDataList)
+        {
+            GameObject obj = Instantiate(PollObjectPrefab, Content.transform);
+            Polls.Add(obj);
+        }
     }
 }

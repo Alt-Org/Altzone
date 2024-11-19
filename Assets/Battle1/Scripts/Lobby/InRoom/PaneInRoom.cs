@@ -1,10 +1,11 @@
-﻿using Prg.Scripts.Common.PubSub;
+﻿using Battle1.Scripts.Lobby;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace Battle1.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Middle pane in lobby while in room to manage current player "state".

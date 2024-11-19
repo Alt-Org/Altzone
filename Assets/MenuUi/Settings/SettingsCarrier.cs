@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+
 public class SettingsCarrier : MonoBehaviour
 {
     // Script for carrying settings data between scenes

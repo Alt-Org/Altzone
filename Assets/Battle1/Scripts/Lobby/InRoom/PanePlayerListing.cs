@@ -8,7 +8,7 @@ using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace Battle1.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Lowest pane in lobby while in room to show current players list that have joined this room.

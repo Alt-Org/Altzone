@@ -21,49 +21,55 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         SetToggleListeners();
         _clanNameField.onEndEdit.RemoveAllListeners();
         _clanNameField.onEndEdit.AddListener((value) => UpdateFilters());
+        UpdateFilters();
     }
 
     private void InitDropdowns()
     {
+        _languageDropdown.onValueChanged.RemoveAllListeners();
+        _languageDropdown.value = 0;
         _languageDropdown.options.Clear();
         foreach (Language language in Enum.GetValues(typeof(Language)))
         {
             string text = ClanDataTypeConverter.GetLanguageText(language);
             _languageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
         }
-        _languageDropdown.onValueChanged.RemoveAllListeners();
         _languageDropdown.onValueChanged.AddListener((value) => UpdateFilters());
 
+        _goalDropdown.onValueChanged.RemoveAllListeners();
+        _goalDropdown.value = 0;
         _goalDropdown.options.Clear();
         foreach (Goals goal in Enum.GetValues(typeof(Goals)))
         {
             string text = ClanDataTypeConverter.GetGoalText(goal);
             _goalDropdown.options.Add(new TMP_Dropdown.OptionData(text));
         }
-        _goalDropdown.onValueChanged.RemoveAllListeners();
         _goalDropdown.onValueChanged.AddListener((value) => UpdateFilters());
 
+        _ageDropdown.onValueChanged.RemoveAllListeners();
+        _ageDropdown.value = 0;
         _ageDropdown.options.Clear();
         foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)))
         {
             string text = ClanDataTypeConverter.GetAgeText(age);
             _ageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
         }
-        _ageDropdown.onValueChanged.RemoveAllListeners();
         _ageDropdown.onValueChanged.AddListener((value) => UpdateFilters());
 
+        _activityDropdown.onValueChanged.RemoveAllListeners();
+        _activityDropdown.value = 0;
         _activityDropdown.options.Clear();
         foreach (ClanActivity activity in Enum.GetValues(typeof(ClanActivity)))
         {
             string text = ClanDataTypeConverter.GetActivityText(activity);
             _activityDropdown.options.Add(new TMP_Dropdown.OptionData(text));
         }
-        _activityDropdown.onValueChanged.RemoveAllListeners();
         _activityDropdown.onValueChanged.AddListener((value) => UpdateFilters());
     }
 
     private void SetToggleListeners()
     {
+        _removeLockedToggle.isOn = false;
         _removeLockedToggle.onValueChanged.RemoveAllListeners();
         _removeLockedToggle.onValueChanged.AddListener((isOn) =>
         {

@@ -15,10 +15,12 @@ public class GridAutoScale : MonoBehaviour
 
     private void OnEnable()
     {
+        Canvas.ForceUpdateCanvases();
         if (_gridLayout == null) _gridLayout = GetComponent<GridLayoutGroup>();
         if (_gridContainer == null) _gridContainer = GetComponent<RectTransform>();
 
-        if (_gridContainer.rect.width == 0 || _gridContainer.rect.height == 0) return;
+        if ((_gridContainer.rect.width == 0 && _gridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+            || (_gridContainer.rect.height == 0 && _gridLayout.constraint == GridLayoutGroup.Constraint.FixedRowCount)) return;
         if (_aspectRatio <= 0) _aspectRatio = 0.000001f;
 
         switch (_gridLayout.constraint)

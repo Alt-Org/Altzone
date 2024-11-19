@@ -6,16 +6,15 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using UnityEngine.UIElements;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 public class ProfileMenu : MonoBehaviour
 
-    // Luokka siis näyttää pelaaja profiili statit (pelitunnit[mitkä tällä hetkellä näyttää ne minuutteina], voitot/häviöt ja pelaajan hiilijalanjäljen)
-    // Hiilijalanjälkilaskuri pääosin toimii oletusarvojen mukaan, mutta jos on Android-laitteella, se yrittää etsiä tiedot virrankulutukseen AINAKIN (30.10.2024) -Eemeli
 {
+
+
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutTimeText;
@@ -28,6 +27,8 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
+
+
 
     //[Header("Images")]
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
@@ -52,7 +53,6 @@ public class ProfileMenu : MonoBehaviour
 
     private ServerPlayer _player;
 
-
     private void Update()
     {
         updateTime();
@@ -63,19 +63,34 @@ public class ProfileMenu : MonoBehaviour
     {
         secondsCount += Time.deltaTime;
         countToCarbon += Time.deltaTime;
-        carbonCount = CarbonFootprint.CarbonCount;
-        _TimePlayedText.text = "Peliaika\n" + minuteCount.ToString();
 
-        if (CarbonFootprint.CarbonCount >= 1000f)
+        // Peliaika
+        if (minuteCount < 1)
         {
-            _CarbonText.text = $"Hiilijalanjälki\n{kgCarbon:F2}kg/CO2";
-        } else
-        {
-            _CarbonText.text = $"Hiilijalanjälki\n{carbonCount:F1}g/CO2";
+            _TimePlayedText.text = $"Alle 1 min";
         }
-        
 
-        if (secondsCount > 60)
+        else
+        {
+            _TimePlayedText.text = $"{minuteCount} min";
+        }
+
+
+
+        // Tarkistaa onko kg vai g
+        float carbonDisplay = CarbonFootprint.CarbonCount;
+        string carbonUnit = "g";
+
+        if (carbonDisplay >= 1000f)                                                                                  
+        {
+            carbonDisplay /= 1000f;
+            carbonUnit = "kg";
+        }
+
+        _CarbonText.text = $"Hiilijalanjï¿½lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjï¿½lki teksti
+
+        // Pï¿½ivittï¿½ï¿½ minuutin vï¿½lein peliajan.
+        if (secondsCount >= 60f)
         {
             minuteCount++;
             secondsCount = 0;

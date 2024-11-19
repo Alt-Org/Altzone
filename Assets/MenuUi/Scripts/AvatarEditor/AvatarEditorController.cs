@@ -32,9 +32,9 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         void Start(){
             _saveButton.onClick.AddListener(SaveAvatarData);
-            _switchModeButtons[0].onClick.AddListener(LoadNextMode);
-            _switchModeButtons[1].onClick.AddListener(LoadPreviousMode);
-            
+            _switchModeButtons[0].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.FeaturePicker);});
+            _switchModeButtons[1].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.ColorPicker);});
+            _switchModeButtons[2].onClick.AddListener(delegate{GoIntoMode(AvatarEditorMode.AvatarScaler);});
         }
         void OnEnable(){
             // _colorPicker.SetCurrentCategoryAndColors(_currentlySelectedCategory, _selectedColors);
@@ -49,11 +49,14 @@ namespace MenuUi.Scripts.AvatarEditor
         private void CharacterLoaded()
         {
             LoadAvatarData();
-            GoIntoMode();
+            GoIntoMode(_defaultMode);
         }
         #region Mode selection
-        private void GoIntoMode()
+        private void GoIntoMode(AvatarEditorMode mode)
         {
+            SetSaveableData();
+            _modeList[(int)_currentMode].SetActive(false);
+            _currentMode = mode;
             
             if(_currentMode == AvatarEditorMode.FeaturePicker){
                 _featurePicker.RestoreDefaultColorToFeature(RestoreDefaultColorToFeature);
@@ -74,24 +77,24 @@ namespace MenuUi.Scripts.AvatarEditor
             // SetSaveableData();
         }
         
-        private void LoadNextMode(){
-            SetSaveableData();
-            _modeList[(int)_currentMode].SetActive(false);
-            _currentMode++;
-            if ((int)_currentMode >= Enum.GetNames(typeof(AvatarEditorMode)).Length){
-                _currentMode = 0;
-            }
-            GoIntoMode();
-        }
-        private void LoadPreviousMode(){
-            SetSaveableData();
-            _modeList[(int)_currentMode].SetActive(false);
-            _currentMode--;
-            if((int)_currentMode < 0){
-                _currentMode = (AvatarEditorMode)Enum.GetNames(typeof(AvatarEditorMode)).Length-1;
-            }
-            GoIntoMode();
-        }
+        // private void LoadNextMode(){
+        //     SetSaveableData();
+        //     _modeList[(int)_currentMode].SetActive(false);
+        //     _currentMode++;
+        //     if ((int)_currentMode >= Enum.GetNames(typeof(AvatarEditorMode)).Length){
+        //         _currentMode = 0;
+        //     }
+        //     GoIntoMode();
+        // }
+        // private void LoadPreviousMode(){
+        //     SetSaveableData();
+        //     _modeList[(int)_currentMode].SetActive(false);
+        //     _currentMode--;
+        //     if((int)_currentMode < 0){
+        //         _currentMode = (AvatarEditorMode)Enum.GetNames(typeof(AvatarEditorMode)).Length-1;
+        //     }
+        //     GoIntoMode();
+        // }
         #endregion
         #region Loading Data
 
@@ -100,7 +103,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void LoadAvatarData()
         {
             _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeaturesFromPrefs(), LoadColorsFromPrefs(), LoadScaleFromPrefs());
-            _nameInput.text = _playerAvatar.Name;
+            // _nameInput.text = _playerAvatar.Name;
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
@@ -156,20 +159,19 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SaveAvatarData()
         {
             SetSaveableData();
-            SaveName();
             SaveFeaturesToPrefs();
             SaveColorsToPrefs();
             SaveScaleToPrefs();
             PlayerPrefs.Save();
         }
-        private void SaveName()
-        {
-            string characterName = _nameInput.text;
-            // Debug.Log("Character name saved: " + characterName);
+        // private void SaveName()
+        // {
+        //     string characterName = _nameInput.text;
+        //     // Debug.Log("Character name saved: " + characterName);
 
-            _playerAvatar.Name = characterName;
-            PlayerPrefs.SetString("CharacterName", characterName);
-        }
+        //     _playerAvatar.Name = characterName;
+        //     PlayerPrefs.SetString("CharacterName", characterName);
+        // }
         private void SaveFeaturesToPrefs()
         {
             List<FeatureID> features = _featurePicker.GetCurrentlySelectedFeatures();

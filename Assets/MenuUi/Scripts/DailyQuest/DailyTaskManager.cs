@@ -7,17 +7,35 @@ using UnityEngine;
 public class DailyTaskManager : MonoBehaviour
 {
     private GameObject[] _dailyQuestSlots = new GameObject[31];
+    private GameObject[] _weeklyQuestSlots = new GameObject[31];
+    private GameObject[] _monthlyQuestSlots = new GameObject[31];
+
+    private int _dailyQuestAmount = 31;
+    private int _weeklyQuestAmount = 30;
+    private int _monthlyQuestAmount = 30;
 
     private string _taskTitle;
     private int _taskPoints;
     private int _taskgoal;
-    private int _questAmount = 31;
 
     public int currentTaskIndex = 1;
 
     public Leaderboard leaderboard;
     public GameObject popupScreenPrefab;
     public GameObject dailyTaskPrefab;
+    public GameObject weeklyTaskPrefab;
+    public GameObject monthlyTaskPrefab;
+
+    private enum SelectedTab
+    {
+        Daily,
+        Weekly,
+        Monthly
+    }
+
+    private SelectedTab _selectedTab = SelectedTab.Daily;
+    private SelectedTab? _activeTab = null; 
+    private int _activeTaskIndex = -1;      
 
 
     private void Start()
@@ -28,10 +46,18 @@ public class DailyTaskManager : MonoBehaviour
 
     public void QuestGenerator()
     {
-        for (int i = 1; i < _questAmount; i++)
+        PopulateQuests(SelectedTab.Daily, _dailyQuestSlots, _dailyQuestAmount, dailyTaskPrefab);
+        PopulateQuests(SelectedTab.Weekly, _weeklyQuestSlots, _weeklyQuestAmount, weeklyTaskPrefab);
+        PopulateQuests(SelectedTab.Monthly, _monthlyQuestSlots, _monthlyQuestAmount, monthlyTaskPrefab);
+        Debug.Log("Task Slots populated!");
+    }
+
+    private void PopulateQuests(SelectedTab tab, GameObject[] questSlots, int questAmount, GameObject questPrefab)
+    {
+        for (int i = 1; i <= questAmount; i++)
         {
-            GameObject taskObject = Instantiate(dailyTaskPrefab.gameObject, gameObject.transform);
-            _dailyQuestSlots[i] = taskObject;
+            GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
+            questSlots[i - 1] = taskObject;
             (string title, int points, int goals) = QuestRandomizer();
 
             DailyQuest quest = taskObject.GetComponent<DailyQuest>();
@@ -39,36 +65,37 @@ public class DailyTaskManager : MonoBehaviour
             quest.getMissionData(title, points, goals);
             quest.popUpScreen = popupScreenPrefab;
             quest.dailyTaskManager = this;
+
+            taskObject.SetActive(tab == _selectedTab); 
         }
-        Debug.Log("Task Slots populated!");
     }
 
-    private void RestoreActiveQuest()
+    public void SwitchTab(int tabIndex)
     {
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-
-        if (playerData != null && playerData.dailyTaskId >= 1 && playerData.dailyTaskId < _dailyQuestSlots.Length)
+        if (_activeTab.HasValue)
         {
-            int taskIndex = playerData.dailyTaskId;
-            if (_dailyQuestSlots[taskIndex] != null) // Check to avoid null reference
-            {
-                TakeTask(taskIndex);
-
-                DailyQuest activeQuest = _dailyQuestSlots[taskIndex].GetComponent<DailyQuest>();
-                activeQuest.unActiveTask.SetActive(false);
-                activeQuest.activeTask.SetActive(true);
-
-                Debug.Log("Restored active quest: " + taskIndex);
-            }
+            Debug.Log("Cannot switch tabs while a quest is active.");
+            return; 
         }
-        else
-        {
-            CancelTask();
-        }
+
+        _selectedTab = (SelectedTab)tabIndex;
+        UpdateTabDisplay();
     }
 
 
+
+    private void UpdateTabDisplay()
+    {
+        foreach (GameObject taskObject in _dailyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Daily);
+        foreach (GameObject taskObject in _weeklyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Weekly);
+        foreach (GameObject taskObject in _monthlyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Monthly);
+
+        
+        if (_activeTab == _selectedTab && _activeTaskIndex >= 0)
+        {
+            GetQuestSlot(_selectedTab, _activeTaskIndex)?.SetActive(true);
+        }
+    }
 
     public (string _taskTitle, int _taskGoal, int _taskPoints) QuestRandomizer()
     {
@@ -141,31 +168,58 @@ public class DailyTaskManager : MonoBehaviour
         }
     }
 
-    // Method to hide all tasks except the one currently taken
+    
     public void TakeTask(int taskIndex)
     {
-        currentTaskIndex = taskIndex;
+        _activeTab = _selectedTab;
+        _activeTaskIndex = taskIndex -1;
+        HideAllOtherTasks();
+    }
 
-        for (int i = 1; i < _dailyQuestSlots.Length; i++)
+    private void HideAllOtherTasks()
+    {
+        if (!_activeTab.HasValue) return;
+
+       
+        GameObject[] questSlots = GetQuestSlots(_activeTab.Value);
+        for (int i = 0; i < questSlots.Length; i++)
         {
-            if (i != taskIndex)
-            {
-                _dailyQuestSlots[i].SetActive(false); // Hide all other tasks
-            }
+            questSlots[i]?.SetActive(i == _activeTaskIndex);
+        }
+    }
+    private void RestoreActiveQuest()
+    {
+        PlayerData playerData = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+
+        if (playerData != null && playerData.dailyTaskId >= 1)
+        {
+            _activeTab = SelectedTab.Daily; 
+            _activeTaskIndex = playerData.dailyTaskId - 1;
+            HideAllOtherTasks();
+        }
+        else
+        {
+            CancelTask();
         }
     }
 
-    // Method to cancel task and show all hidden tasks again
     public void CancelTask()
     {
-        currentTaskIndex = -1; // Reset current task
-
-        foreach (GameObject taskObject in _dailyQuestSlots)
-        {
-            if (taskObject != null) // Ensure taskObject is not null
-            {
-                taskObject.SetActive(true); // Show all tasks
-            }
-        }
+        currentTaskIndex = -1;
+        _activeTab = null;
+        UpdateTabDisplay();
     }
+
+    private GameObject GetQuestSlot(SelectedTab tab, int index) =>
+    GetQuestSlots(tab)[index];
+
+    private GameObject[] GetQuestSlots(SelectedTab tab) =>
+        tab switch
+        {
+            SelectedTab.Daily => _dailyQuestSlots,
+            SelectedTab.Weekly => _weeklyQuestSlots,
+            SelectedTab.Monthly => _monthlyQuestSlots,
+            _ => null
+        };
 }

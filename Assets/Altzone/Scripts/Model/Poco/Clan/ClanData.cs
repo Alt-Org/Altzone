@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.Voting;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
@@ -13,7 +14,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         [Unique] public string Name;
         [Optional] public string Tag;
         [Optional] public string Phrase;
-        public int GameCoins;
+        private int _gameCoins;
+        public int Points;
         public bool IsOpen;
 
         public List<string> Labels = new();
@@ -22,12 +24,19 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public ClanInventory Inventory = new();
 
+        public List<PollData> Polls = new();
+
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
 
         public ClanAge ClanAge;
         public Language Language;
         public Goals Goals;
+
+        public int GameCoins { get => _gameCoins; set { _gameCoins = value; CallDataUpdate(); } }
+
+        public delegate void ClanInfoUpdated();
+        public static event ClanInfoUpdated OnClanInfoUpdated;
 
         public ClanData(string id, string name, string tag, int gameCoins)
         {
@@ -38,7 +47,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Id = id;
             Name = name;
             Tag = tag ?? string.Empty;
-            GameCoins = gameCoins;
+            _gameCoins = gameCoins;
         }
 
         public ClanData(ServerClan clan)
@@ -51,7 +60,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Name = clan.name;
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
-            GameCoins = clan.gameCoins;
+            _gameCoins = clan.gameCoins;
+            Points = clan.points;
             Labels = clan.labels;
             ClanAge = clan.ageRange;
             Language = clan.language;
@@ -60,10 +70,16 @@ namespace Altzone.Scripts.Model.Poco.Clan
             IsOpen = clan.isOpen;
         }
 
+        public void CallDataUpdate()
+        {
+            OnClanInfoUpdated?.Invoke();
+        }
+
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Tag)}: {Tag}, {nameof(GameCoins)}: {GameCoins}" +
                    $", {nameof(Inventory)}: {Inventory}" +
+                   $", {nameof(Polls)}: {Polls.Count}" +
                    $", {nameof(Members)}: {Members.Count}, {nameof(Rooms)}: {Rooms.Count}";
         }
     }

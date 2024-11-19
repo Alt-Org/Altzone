@@ -66,11 +66,11 @@ namespace Prg.Scripts.Common.Photon
             };
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
             SetEditorStatus();
-        }
+        }*/
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         private static void SetEditorStatus()

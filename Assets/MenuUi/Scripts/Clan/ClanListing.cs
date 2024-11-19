@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class ClanListing : MonoBehaviour
 {
     [SerializeField] private Button _joinButton;
+    [field: SerializeField] public Button OpenProfileButton { get; private set; }
     [SerializeField] private Button _returnToMainClanViewButton;
 
     [SerializeField] private TextMeshProUGUI _clanName;
