@@ -30,14 +30,10 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
-        private int _characterSelectionCounter = 0;
 
         private CharacterID _currentCharacterId;
 
-        public Color orange = new Color(1f, 0.64f, 0, 0);
-        public Color purple = new Color(0.5f, 0, 0.5f, 0);
-        public Color lightBlue = new Color(0.68f, 0.84f, 0.9f, 0);
-        private ColorBlock _colorBlock;
+        public ColorBlock _colorBlock = new();
 
 
         private void Awake()
@@ -77,12 +73,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             foreach (var button in _buttons)
             {
-                Destroy(button.gameObject);
+                Destroy(button);
             }
             // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                Destroy(characterSlot.gameObject);
+                Destroy(characterSlot);
             }
             _buttons.Clear();
             _characterSlot.Clear();
@@ -92,17 +88,17 @@ namespace MenuUi.Scripts.CharacterGallery
             switch (id)
             {
                 case CharacterClassID.Desensitizer:
-                    return lightBlue;
+                    return new Color(0.68f, 0.84f, 0.9f, 1);
                 case CharacterClassID.Trickster:
                     return Color.green;
                 case CharacterClassID.Obedient:
-                    return orange;
+                    return new Color(1f, 0.64f, 0, 1);
                 case CharacterClassID.Projector:
                     return Color.yellow;
                 case CharacterClassID.Retroflector:
                     return Color.red;
                 case CharacterClassID.Confluent:
-                    return purple;
+                    return new Color(0.5f, 0, 0.5f, 1);
                 case CharacterClassID.Intellectualizer:
                     return Color.blue;
                 default:
@@ -141,6 +137,31 @@ namespace MenuUi.Scripts.CharacterGallery
                 text2.SetActive(true);
                 text3.SetActive(true);
             }
+
+            /*if (_CurSelectedCharacterSlot[0] == null)
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+            else if (_CurSelectedCharacterSlot[1] == null)
+            {
+                text1.SetActive(true);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }     
+            else if (_CurSelectedCharacterSlot[2] == null)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }*/
         }
         public Transform GetContent()
         {
@@ -188,10 +209,11 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (i < characters.Count)
                 {
                     var character = characters[i];
-                    
+
                     button.gameObject.SetActive(true);
                     button.interactable = true;
-                    button.image.color = GetCharacterClassColor(character.CharacterClassID);
+                    _colorBlock.normalColor = GetCharacterClassColor(character.CharacterClassID);
+                    button.colors = _colorBlock;
                     //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
