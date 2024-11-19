@@ -17,9 +17,9 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
-    [SerializeField] private TextMeshProUGUI _clanCoins;
     [SerializeField] private TextMeshProUGUI _clanTrophies;
-    [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
+    [SerializeField] private TextMeshProUGUI _clanWinsRanking;
+    [SerializeField] private TextMeshProUGUI _clanActivityRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
     [SerializeField] private TextMeshProUGUI _clanGoal;
     [SerializeField] private TextMeshProUGUI _clanAge;
@@ -71,7 +71,6 @@ public class ClanMainView : MonoBehaviour
 
         _clanName.text = clan.Name;
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
-        _clanCoins.text = clan.GameCoins.ToString();
         _clanPhrase.text = clan.Phrase;
         _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
@@ -82,7 +81,7 @@ public class ClanMainView : MonoBehaviour
 
         // Temp values for testing
         _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
+        _clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = "";
     }
 
@@ -91,7 +90,7 @@ public class ClanMainView : MonoBehaviour
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
         _clanPhrase.text = "Clan Phrase";
-        _clanMembers.text = _clanCoins.text = _clanTrophies.text = _clanGlobalRanking.text = "-1";
+        _clanMembers.text = _clanTrophies.text = _clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = _clanGoal.text = _clanAge.text = "";
         _flagImage.sprite = _languageFlagMap.GetFlag(Language.None);
     }
