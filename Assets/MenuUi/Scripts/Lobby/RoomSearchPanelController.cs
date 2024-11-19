@@ -5,6 +5,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+//using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -86,10 +87,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
             }
             var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
-            Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");
+            Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room}");
             roomNameText.text = roomText;
             var playerCountLabel = buttonObject.transform.Find("InfoPanel").Find("Player count").GetComponent<TextMeshProUGUI>();
-            Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room.GetDebugLabel()}");
+            Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room}");
             playerCountLabel.text = playerCountText;
 
             button.onClick.RemoveAllListeners();

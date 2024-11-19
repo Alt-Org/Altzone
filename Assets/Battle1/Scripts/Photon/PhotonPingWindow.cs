@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 #if PHOTON_UNITY_NETWORKING
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 #endif
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Region = Battle1.PhotonRealtime.Code.Region;
+using RegionPinger = Battle1.PhotonRealtime.Code.RegionPinger;
 
 namespace Prg.Scripts.DevUtil
 {

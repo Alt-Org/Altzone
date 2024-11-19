@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 
 #if UNITY_2017_4_OR_NEWER
-#define SUPPORTED_UNITY
+//#define SUPPORTED_UNITY
 #endif
 
 

@@ -28,7 +28,8 @@ namespace MenuUi.Scripts.Loader
         private void OnEnable()
         {
             ServerManager.OnLogInFailed += OpenLogInScreen;
-            ServerManager.OnLogInStatusChanged += MoveToMain;
+            ServerManager.OnLogInStatusChanged += PlayerDataFetched;
+            ServerManager.OnClanFetchFinished += MoveToMain;
             _loginSuccess.OnLogInPanelSuccess += CloseLogInScreen;
             CheckPrivacy();
         }
@@ -36,7 +37,8 @@ namespace MenuUi.Scripts.Loader
         private void OnDisable()
         {
             ServerManager.OnLogInFailed -= OpenLogInScreen;
-            ServerManager.OnLogInStatusChanged -= MoveToMain;
+            ServerManager.OnLogInStatusChanged -= PlayerDataFetched;
+            ServerManager.OnClanFetchFinished -= MoveToMain;
             _loginSuccess.OnLogInPanelSuccess -= CloseLogInScreen;
         }
 
@@ -68,15 +70,20 @@ namespace MenuUi.Scripts.Loader
             AttemptLogIn();
         }
 
-        private void MoveToMain(bool value)
+        private void PlayerDataFetched(bool value)
         {
-            if (value)
+            _loadInfoController.SetInfoText(InfoType.FetchClanData);
+        }
+
+        private void MoveToMain()
+        {
+            if (true)
             {
-                StartCoroutine(MoveToMain());
+                StartCoroutine(MoveToMainCoroutine());
             }
         }
 
-        private IEnumerator MoveToMain()
+        private IEnumerator MoveToMainCoroutine()
         {
             _loadInfoController.SetInfoText(InfoType.FetchPlayerData);
             PlayerData playerData = null;

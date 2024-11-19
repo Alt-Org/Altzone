@@ -223,7 +223,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, Assembly-CSharp
         m_MethodName: SetColorGreen
         m_Mode: 1
@@ -588,7 +588,6 @@ GameObject:
   m_Component:
   - component: {fileID: 499012360117812599}
   - component: {fileID: 5622279470821800516}
-  - component: {fileID: 2164499194663615615}
   m_Layer: 5
   m_Name: Heart
   m_TagString: Untagged
@@ -674,22 +673,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 956879864092356902}
   m_CullTransparentMesh: 1
---- !u!114 &2164499194663615615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 956879864092356902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 446a2017d2454e442ba4dc6a45bd6555, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  raycaster: {fileID: 0}
-  eventSystem: {fileID: 0}
-  _heart: {fileID: 499012360117812599}
 --- !u!1 &1238202852482651149
 GameObject:
   m_ObjectHideFlags: 0
@@ -2200,7 +2183,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, Assembly-CSharp
         m_MethodName: SetColorRed
         m_Mode: 1
@@ -2881,7 +2864,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, Assembly-CSharp
         m_MethodName: SetColorWhite
         m_Mode: 1
@@ -5153,7 +5136,6 @@ GameObject:
   - component: {fileID: 2367784367534028418}
   - component: {fileID: 8997264057359116464}
   - component: {fileID: 6422593153041509745}
-  - component: {fileID: 2755959067244039284}
   m_Layer: 0
   m_Name: Button (save)
   m_TagString: Untagged
@@ -5275,19 +5257,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2755959067244039284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7083990912000056395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e898eebd2b1f242ae7bc3ac49a1319, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heartParent: {fileID: 0}
 --- !u!1 &7244281715991538005
 GameObject:
   m_ObjectHideFlags: 0
@@ -7136,7 +7105,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, Assembly-CSharp
         m_MethodName: SetColorBlue
         m_Mode: 1
@@ -7371,7 +7340,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, MainMenu
         m_MethodName: SetColorMagenta
         m_Mode: 1
@@ -7503,7 +7472,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, Assembly-CSharp
         m_MethodName: SetColorYellow
         m_Mode: 1
@@ -7635,7 +7604,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2164499194663615615}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageColorChanger, MainMenu
         m_MethodName: SetColorCyan
         m_Mode: 1

@@ -11,14 +11,12 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Net.Sockets;
 
-namespace Photon.Realtime
+namespace Battle1.PhotonRealtime.Code
 {
-    using System;
-    using System.Collections;
-    using System.Threading;
-
-    #if NETFX_CORE
+#if NETFX_CORE
     using System.Diagnostics;
     using Windows.Foundation;
     using Windows.Networking;
@@ -26,13 +24,7 @@ namespace Photon.Realtime
     using Windows.Storage.Streams;
     #endif
 
-    #if !NO_SOCKET && !NETFX_CORE
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Net.Sockets;
-    #endif
-
-    #if UNITY_WEBGL
+#if UNITY_WEBGL
     // import UnityWebRequest
     using UnityEngine.Networking;
     #endif

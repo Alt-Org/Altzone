@@ -1,9 +1,11 @@
 using Altzone.Scripts.GA;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using TMPro;
 using UnityConstants;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace Battle1.Scripts.Battle.Game
 {

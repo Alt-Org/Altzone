@@ -8,6 +8,27 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Battle1.PhotonRealtime.Code;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
+using ErrorInfo = Battle1.PhotonRealtime.Code.ErrorInfo;
+using FriendInfo = Battle1.PhotonRealtime.Code.FriendInfo;
+using IConnectionCallbacks = Battle1.PhotonRealtime.Code.IConnectionCallbacks;
+using IErrorInfoCallback = Battle1.PhotonRealtime.Code.IErrorInfoCallback;
+using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
+using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
+using IMatchmakingCallbacks = Battle1.PhotonRealtime.Code.IMatchmakingCallbacks;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using RegionHandler = Battle1.PhotonRealtime.Code.RegionHandler;
+using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
+using TypedLobbyInfo = Battle1.PhotonRealtime.Code.TypedLobbyInfo;
 
 #pragma warning disable 1587
 /// \defgroup publicApi Public API
@@ -21,18 +42,8 @@
 #pragma warning restore 1587
 
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using ExitGames.Client.Photon;
-    using UnityEngine;
-    using UnityEngine.SceneManagement;
-    using Photon.Realtime;
-    using SupportClassPun = ExitGames.Client.Photon.SupportClass;
-
-
     /// <summary>Replacement for RPC attribute with different name. Used to flag methods as remote-callable.</summary>
     public class PunRPC : Attribute
     {
@@ -100,7 +111,7 @@ namespace Photon.Pun
     /// Visual Studio and MonoDevelop should provide the list of methods when you begin typing "override".
     /// <b>Your implementation does not have to call "base.method()".</b>
     ///
-    /// This class implements all callback interfaces and extends <see cref="Photon.Pun.MonoBehaviourPun"/>.
+    /// This class implements all callback interfaces and extends <see cref="MonoBehaviourPun"/>.
     /// </remarks>
     /// \ingroup callbacks
     // the documentation for the interface methods becomes inherited when Doxygen builds it.
@@ -108,12 +119,12 @@ namespace Photon.Pun
     {
         public virtual void OnEnable()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.AddCallbackTarget(this);
         }
 
         public virtual void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         /// <summary>

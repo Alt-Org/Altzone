@@ -8,25 +8,42 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Battle1.PhotonRealtime.Code;
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using AppSettings = Battle1.PhotonRealtime.Code.AppSettings;
+using AuthenticationValues = Battle1.PhotonRealtime.Code.AuthenticationValues;
+using ClientState = Battle1.PhotonRealtime.Code.ClientState;
+using EnterRoomParams = Battle1.PhotonRealtime.Code.EnterRoomParams;
+using EventCaching = Battle1.PhotonRealtime.Code.EventCaching;
+using LoadBalancingClient = Battle1.PhotonRealtime.Code.LoadBalancingClient;
+using MatchmakingMode = Battle1.PhotonRealtime.Code.MatchmakingMode;
+using OpJoinRandomRoomParams = Battle1.PhotonRealtime.Code.OpJoinRandomRoomParams;
+using ParameterCode = Battle1.PhotonRealtime.Code.ParameterCode;
+using PhotonPortDefinition = Battle1.PhotonRealtime.Code.PhotonPortDefinition;
+using Player = Battle1.PhotonRealtime.Code.Player;
+using RaiseEventOptions = Battle1.PhotonRealtime.Code.RaiseEventOptions;
+using ReceiverGroup = Battle1.PhotonRealtime.Code.ReceiverGroup;
+using Room = Battle1.PhotonRealtime.Code.Room;
+using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
+using ServerConnection = Battle1.PhotonRealtime.Code.ServerConnection;
+using TypedLobby = Battle1.PhotonRealtime.Code.TypedLobby;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System.Diagnostics;
-    using UnityEngine;
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
-    using UnityEngine.SceneManagement;
-
-    using Photon.Realtime;
     using Debug = UnityEngine.Debug;
     using Hashtable = ExitGames.Client.Photon.Hashtable;
 
     #if UNITY_EDITOR
     using UnityEditor;
-    using System.IO;
-    #endif
+#endif
 
 
     public struct InstantiateParameters
@@ -84,7 +101,7 @@ namespace Photon.Pun
             set
             {
                 gameVersion = value;
-                NetworkingClient.AppVersion = string.Format("{0}_{1}", value, PhotonNetwork.PunVersion);
+                NetworkingClient.AppVersion = string.Format("{0}_{1}", value, Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PunVersion);
             }
         }
 
@@ -262,7 +279,7 @@ namespace Photon.Pun
                 {
                     return CurrentRoom == null ? ServerConnection.MasterServer : ServerConnection.GameServer;
                 }
-                return (PhotonNetwork.NetworkingClient != null) ? PhotonNetwork.NetworkingClient.Server : ServerConnection.NameServer;
+                return (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient != null) ? Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.Server : ServerConnection.NameServer;
             }
         }
 
@@ -274,7 +291,7 @@ namespace Photon.Pun
         /// These values set the userId, if and how that userId gets verified (server-side), etc..
         ///
         /// If authentication fails for any values, PUN will call your implementation of OnCustomAuthenticationFailed(string debugMessage).
-        /// See <see cref="Photon.Realtime.IConnectionCallbacks.OnCustomAuthenticationFailed"/>.
+        /// See <see cref="PhotonRealtime.Code.IConnectionCallbacks.OnCustomAuthenticationFailed"/>.
         /// </remarks>
         public static AuthenticationValues AuthValues
         {
@@ -475,7 +492,7 @@ namespace Photon.Pun
                         LeftRoomCleanup();
                     }
                     offlineModeRoom = null;
-                    PhotonNetwork.NetworkingClient.CurrentRoom = null;
+                    Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.CurrentRoom = null;
                     NetworkingClient.ChangeLocalID(-1);
                     if (wasInOfflineRoom)
                     {
@@ -840,7 +857,7 @@ namespace Photon.Pun
             {
                 if (OfflineMode)
                 {
-                    return PhotonNetwork.LocalPlayer;
+                    return Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer;
                 }
 
                 if (NetworkingClient == null || NetworkingClient.CurrentRoom == null)
@@ -1058,7 +1075,7 @@ namespace Photon.Pun
 
             // set up the NetworkingClient, protocol, etc
             OfflineMode = false;
-            ConnectionProtocol protocol = PhotonNetwork.PhotonServerSettings.AppSettings.Protocol;
+            ConnectionProtocol protocol = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonServerSettings.AppSettings.Protocol;
             NetworkingClient = new LoadBalancingClient(protocol);
             NetworkingClient.LoadBalancingPeer.QuickResendAttempts = 2;
             NetworkingClient.LoadBalancingPeer.SentCountAllowance = 9;
@@ -1081,10 +1098,10 @@ namespace Photon.Pun
             PrefabPool = new DefaultPool();
 
             // RPC shortcut lookup creation (from list of RPCs, which is updated by Editor scripts)
-            rpcShortcuts = new Dictionary<string, int>(PhotonNetwork.PhotonServerSettings.RpcList.Count);
-            for (int index = 0; index < PhotonNetwork.PhotonServerSettings.RpcList.Count; index++)
+            rpcShortcuts = new Dictionary<string, int>(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonServerSettings.RpcList.Count);
+            for (int index = 0; index < Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonServerSettings.RpcList.Count; index++)
             {
-                var name = PhotonNetwork.PhotonServerSettings.RpcList[index];
+                var name = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonServerSettings.RpcList[index];
                 rpcShortcuts[name] = index;
             }
 
@@ -1117,7 +1134,7 @@ namespace Photon.Pun
         /// - Subscription CCU limit reached
         /// - etc.
         ///
-        /// In general check out the <see cref="DisconnectCause"/> from the <see cref="IConnectionCallbacks.OnDisconnected"/> callback.
+        /// In general check out the <see cref="PhotonRealtime.Code.DisconnectCause"/> from the <see cref="PhotonRealtime.Code.IConnectionCallbacks.OnDisconnected"/> callback.
         ///  </remarks>
         public static bool ConnectUsingSettings()
         {
@@ -1223,7 +1240,7 @@ namespace Photon.Pun
         /// - Subscription CCU limit reached
         /// - etc.
         ///
-        /// In general check out the <see cref="DisconnectCause"/> from the <see cref="IConnectionCallbacks.OnDisconnected"/> callback.
+        /// In general check out the <see cref="PhotonRealtime.Code.DisconnectCause"/> from the <see cref="PhotonRealtime.Code.IConnectionCallbacks.OnDisconnected"/> callback.
         /// </remarks>
         /// <param name="masterServerAddress">The server's address (either your own or Photon Cloud address).</param>
         /// <param name="port">The server's port to connect to.</param>
@@ -1284,7 +1301,7 @@ namespace Photon.Pun
         /// - Subscription CCU limit reached
         /// - etc.
         ///
-        /// In general check out the <see cref="DisconnectCause"/> from the <see cref="IConnectionCallbacks.OnDisconnected"/> callback.
+        /// In general check out the <see cref="PhotonRealtime.Code.DisconnectCause"/> from the <see cref="PhotonRealtime.Code.IConnectionCallbacks.OnDisconnected"/> callback.
         /// </remarks>
         /// <returns>If this client is going to connect to cloud server based on ping. Even if true, this does not guarantee a connection but the attempt is being made.</returns>
         public static bool ConnectToBestCloudServer()
@@ -1304,7 +1321,7 @@ namespace Photon.Pun
             ConnectMethod = ConnectMethod.ConnectToBest;
 
             // Connecting to "Best Region" begins with connecting to the Name Server.
-            bool couldConnect = PhotonNetwork.NetworkingClient.ConnectToNameServer();
+            bool couldConnect = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.ConnectToNameServer();
             return couldConnect;
         }
 
@@ -1505,7 +1522,7 @@ namespace Photon.Pun
                 return false;
             }
 
-            if (!PhotonNetwork.EnableCloseConnection)
+            if (!Battle1.PhotonUnityNetworking.Code.PhotonNetwork.EnableCloseConnection)
             {
                 Debug.LogError("CloseConnection is disabled. No need to call it.");
                 return false;
@@ -1702,7 +1719,7 @@ namespace Photon.Pun
         /// Note: There will be no callbacks if this method returned false.
         /// </remarks>
         /// <returns>If the operation will be sent (requires connection to Master Server).</returns>
-        public static bool JoinRandomOrCreateRoom(Hashtable expectedCustomRoomProperties = null, byte expectedMaxPlayers = 0, MatchmakingMode matchingType = MatchmakingMode.FillRoom, TypedLobby typedLobby = null, string sqlLobbyFilter = null, string roomName = null, RoomOptions roomOptions = null, string[] expectedUsers = null)
+        public static bool JoinRandomOrCreateRoom(Hashtable expectedCustomRoomProperties = null, byte expectedMaxPlayers = 0, MatchmakingMode matchingType = MatchmakingMode.FillRoom, TypedLobby typedLobby = null, string sqlLobbyFilter = null, string roomName = null, PhotonRealtime.Code.RoomOptions roomOptions = null, string[] expectedUsers = null)
         {
             if (OfflineMode)
             {
@@ -2035,7 +2052,7 @@ namespace Photon.Pun
             {
                 if (CurrentRoom == null)
                 {
-                    Debug.LogWarning("PhotonNetwork.CurrentRoom is null. You don't have to call LeaveRoom() when you're not in one. State: " + PhotonNetwork.NetworkClientState);
+                    Debug.LogWarning("PhotonNetwork.CurrentRoom is null. You don't have to call LeaveRoom() when you're not in one. State: " + Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkClientState);
                 }
                 else
                 {
@@ -2057,9 +2074,9 @@ namespace Photon.Pun
             offlineModeRoom = new Room(roomName, roomOptions, true);
             NetworkingClient.ChangeLocalID(1);
             offlineModeRoom.masterClientId = 1;
-            offlineModeRoom.AddPlayer(PhotonNetwork.LocalPlayer);
-            offlineModeRoom.LoadBalancingClient = PhotonNetwork.NetworkingClient;
-            PhotonNetwork.NetworkingClient.CurrentRoom = offlineModeRoom;
+            offlineModeRoom.AddPlayer(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalPlayer);
+            offlineModeRoom.LoadBalancingClient = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient;
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.CurrentRoom = offlineModeRoom;
 
             if (createdRoom)
             {
@@ -2071,7 +2088,7 @@ namespace Photon.Pun
 
         /// <summary>On MasterServer this joins the default lobby which list rooms currently in use.</summary>
         /// <remarks>
-        /// The room list is sent and refreshed by the server using <see cref="ILobbyCallbacks.OnRoomListUpdate"/>.
+        /// The room list is sent and refreshed by the server using <see cref="PhotonRealtime.Code.ILobbyCallbacks.OnRoomListUpdate"/>.
         ///
         /// Per room you should check if it's full or not before joining. Photon also lists rooms that are
         /// full, unless you close and hide them (room.open = false and room.visible = false).
@@ -2096,7 +2113,7 @@ namespace Photon.Pun
 
         /// <summary>On a Master Server you can join a lobby to get lists of available rooms.</summary>
         /// <remarks>
-        /// The room list is sent and refreshed by the server using <see cref="ILobbyCallbacks.OnRoomListUpdate"/>.
+        /// The room list is sent and refreshed by the server using <see cref="PhotonRealtime.Code.ILobbyCallbacks.OnRoomListUpdate"/>.
         ///
         /// Any client can "make up" any lobby on the fly. Splitting rooms into multiple lobbies will
         /// keep each list shorter. However, having too many lists might ruin the matchmaking experience.
@@ -2128,7 +2145,7 @@ namespace Photon.Pun
         /// <param name="typedLobby">A typed lobby to join (must have name and type).</param>
         public static bool JoinLobby(TypedLobby typedLobby)
         {
-            if (PhotonNetwork.IsConnected && PhotonNetwork.Server == ServerConnection.MasterServer)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsConnected && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Server == ServerConnection.MasterServer)
             {
                 return NetworkingClient.OpJoinLobby(typedLobby);
             }
@@ -2148,7 +2165,7 @@ namespace Photon.Pun
         /// </remarks>
         public static bool LeaveLobby()
         {
-            if (PhotonNetwork.IsConnected && PhotonNetwork.Server == ServerConnection.MasterServer)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsConnected && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Server == ServerConnection.MasterServer)
             {
                 return NetworkingClient.OpLeaveLobby();
             }
@@ -2285,7 +2302,7 @@ namespace Photon.Pun
         /// </summary>
         /// <remarks>
         /// To receive events, implement IOnEventCallback in any class and register it via PhotonNetwork.AddCallbackTarget.
-        /// See <see cref="IOnEventCallback.OnEvent"/>.
+        /// See <see cref="PhotonRealtime.Code.IOnEventCallback.OnEvent"/>.
         ///
         /// The eventContent is optional. If set, eventContent must be a "serializable type", something that
         /// the client can turn into a byte[] basically. Most basic types and arrays of them are supported, including
@@ -2381,7 +2398,7 @@ namespace Photon.Pun
         /// <returns>True if a viewId was assigned. False if the PhotonView already had a non-zero viewID or if this client is not the Master Client.</returns>
         public static bool AllocateRoomViewID(PhotonView view)
         {
-            if (!PhotonNetwork.IsMasterClient)
+            if (!Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMasterClient)
             {
                 Debug.LogError("Only the Master Client can AllocateRoomViewID(). Check PhotonNetwork.IsMasterClient!");
                 return false;
@@ -2474,11 +2491,11 @@ namespace Photon.Pun
         {
             if (CurrentRoom == null)
             {
-                Debug.LogError("Can not Instantiate before the client joined/created a room. State: "+PhotonNetwork.NetworkClientState);
+                Debug.LogError("Can not Instantiate before the client joined/created a room. State: "+Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkClientState);
                 return null;
             }
 
-            Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
+            InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
             return NetworkInstantiate(netParams, false);
         }
 
@@ -2498,7 +2515,7 @@ namespace Photon.Pun
 
             if (LocalPlayer.IsMasterClient)
             {
-                Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
+                InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
                 return NetworkInstantiate(netParams, true);
             }
 
@@ -2568,14 +2585,14 @@ namespace Photon.Pun
             }
 
 
-            Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, incomingInstantiationData, objLevelPrefix, viewsIDs, creator, serverTime);
+            InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, incomingInstantiationData, objLevelPrefix, viewsIDs, creator, serverTime);
             return NetworkInstantiate(netParams, false, true);
         }
 
 
         private static readonly HashSet<string> PrefabsWithoutMagicCallback = new HashSet<string>();
 
-        private static GameObject NetworkInstantiate(Pun.InstantiateParameters parameters, bool roomObject = false, bool instantiateEvent = false)
+        private static GameObject NetworkInstantiate(InstantiateParameters parameters, bool roomObject = false, bool instantiateEvent = false)
         {
             //Instantiate(name, pos, rot)
             //pv[] GetPhotonViewsInChildren()
@@ -2674,7 +2691,7 @@ namespace Photon.Pun
         private static readonly Hashtable SendInstantiateEvHashtable = new Hashtable();                             // SendInstantiate reuses this to reduce GC
         private static readonly RaiseEventOptions SendInstantiateRaiseEventOptions = new RaiseEventOptions();       // SendInstantiate reuses this to reduce GC
 
-        internal static bool SendInstantiate(Pun.InstantiateParameters parameters, bool roomObject = false)
+        internal static bool SendInstantiate(InstantiateParameters parameters, bool roomObject = false)
         {
             // first viewID is now also the gameobject's instantiateId
             int instantiateId = parameters.viewIDs[0];   // LIMITS PHOTONVIEWS&PLAYERS
@@ -2714,13 +2731,13 @@ namespace Photon.Pun
                 SendInstantiateEvHashtable[keyByteEight] = currentLevelPrefix;    // photonview's / object's level prefix
             }
 
-            SendInstantiateEvHashtable[keyByteSix] = PhotonNetwork.ServerTimestamp;
+            SendInstantiateEvHashtable[keyByteSix] = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.ServerTimestamp;
             SendInstantiateEvHashtable[keyByteSeven] = instantiateId;
 
 
             SendInstantiateRaiseEventOptions.CachingOption = (roomObject) ? EventCaching.AddToRoomCacheGlobal : EventCaching.AddToRoomCache;
 
-            return PhotonNetwork.RaiseEventInternal(PunEvent.Instantiation, SendInstantiateEvHashtable, SendInstantiateRaiseEventOptions, SendOptions.SendReliable);
+            return Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RaiseEventInternal(PunEvent.Instantiation, SendInstantiateEvHashtable, SendInstantiateRaiseEventOptions, SendOptions.SendReliable);
         }
 
 
@@ -2833,7 +2850,7 @@ namespace Photon.Pun
             }
             else
             {
-                Debug.LogError("DestroyPlayerObjects() failed, cause players can only destroy their own GameObjects. A Master Client can destroy anyone's. This is master: " + PhotonNetwork.IsMasterClient);
+                Debug.LogError("DestroyPlayerObjects() failed, cause players can only destroy their own GameObjects. A Master Client can destroy anyone's. This is master: " + Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMasterClient);
             }
         }
 
@@ -3060,12 +3077,12 @@ namespace Photon.Pun
                 return;
             }
 
-            if (PhotonNetwork.AutomaticallySyncScene)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.AutomaticallySyncScene)
             {
                 SetLevelInPropsIfSynced(levelNumber);
             }
 
-            PhotonNetwork.IsMessageQueueRunning = false;
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMessageQueueRunning = false;
             loadingLevelAndPausedNetwork = true;
             _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelNumber,LoadSceneMode.Single);
         }
@@ -3102,12 +3119,12 @@ namespace Photon.Pun
                 return;
             }
 
-            if (PhotonNetwork.AutomaticallySyncScene)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.AutomaticallySyncScene)
             {
                 SetLevelInPropsIfSynced(levelName);
             }
 
-            PhotonNetwork.IsMessageQueueRunning = false;
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMessageQueueRunning = false;
             loadingLevelAndPausedNetwork = true;
             _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Single);
         }
@@ -3120,7 +3137,7 @@ namespace Photon.Pun
         /// <see cref="https://doc.photonengine.com/en-us/pun/v2/gameplay/web-extensions/webrpc"/>
         /// The Parameters will be converted into JSon format, so make sure your parameters are compatible.
         ///
-        /// See <see cref="Photon.Realtime.IWebRpcCallback.OnWebRpcResponse"/> on how to get a response.
+        /// See <see cref="IWebRpcCallback.OnWebRpcResponse"/> on how to get a response.
         ///
         /// It's important to understand that the OperationResponse only tells if the WebRPC could be called.
         /// The content of the response contains any values your web-service sent and the error/success code.
@@ -3155,15 +3172,15 @@ namespace Photon.Pun
         private static void SetupLogging()
         {
             // only apply Settings if LogLevel is default ( see ServerSettings.cs), else it means it's been set programmatically
-            if (PhotonNetwork.LogLevel == PunLogLevel.ErrorsOnly)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel == PunLogLevel.ErrorsOnly)
             {
-                PhotonNetwork.LogLevel = PhotonServerSettings.PunLogging;
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LogLevel = PhotonServerSettings.PunLogging;
             }
 
             // only apply Settings if LogLevel is default ( see ServerSettings.cs), else it means it's been set programmatically
-            if (PhotonNetwork.NetworkingClient.LoadBalancingPeer.DebugOut == DebugLevel.ERROR)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.LoadBalancingPeer.DebugOut == DebugLevel.ERROR)
             {
-                PhotonNetwork.NetworkingClient.LoadBalancingPeer.DebugOut = PhotonServerSettings.AppSettings.NetworkLogging;
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.LoadBalancingPeer.DebugOut = PhotonServerSettings.AppSettings.NetworkLogging;
             }
         }
 
@@ -3182,7 +3199,7 @@ namespace Photon.Pun
 
 
             // try to load the resource / asset (ServerSettings a.k.a. PhotonServerSettings)
-            photonServerSettings = (ServerSettings)Resources.Load(PhotonNetwork.ServerSettingsFileName, typeof(ServerSettings));
+            photonServerSettings = (ServerSettings)Resources.Load(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.ServerSettingsFileName, typeof(ServerSettings));
             if (photonServerSettings != null)
             {
                 return;
@@ -3288,7 +3305,7 @@ namespace Photon.Pun
         /// <remarks>This is done in this class, because the Editor assembly can't access PhotonHandler.</remarks>
         public static void InternalCleanPhotonMonoFromSceneIfStuck()
         {
-            PhotonHandler[] photonHandlers = GameObject.FindObjectsOfType(typeof(PhotonHandler)) as PhotonHandler[];
+            /*PhotonHandler[] photonHandlers = GameObject.FindObjectsOfType(typeof(PhotonHandler)) as PhotonHandler[];
             if (photonHandlers != null && photonHandlers.Length > 0)
             {
                 Debug.Log("Cleaning up hidden PhotonHandler instances in scene. Please save the scene to fix the problem.");
@@ -3303,7 +3320,7 @@ namespace Photon.Pun
 
                     Component.DestroyImmediate(photonHandler);
                 }
-            }
+            }*/
         }
 
         #endif

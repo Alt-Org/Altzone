@@ -8,17 +8,21 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Battle1.PhotonRealtime.Code;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.Profiling;
+using ConnectionHandler = Battle1.PhotonRealtime.Code.ConnectionHandler;
+using FriendInfo = Battle1.PhotonRealtime.Code.FriendInfo;
+using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
+using IMatchmakingCallbacks = Battle1.PhotonRealtime.Code.IMatchmakingCallbacks;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System;
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
-    using Photon.Realtime;
-    using UnityEngine;
-    using UnityEngine.Profiling;
-
-
     /// <summary>
     /// Internal MonoBehaviour that allows Photon to run an Update loop.
     /// </summary>
@@ -32,12 +36,12 @@ namespace Photon.Pun
             {
                 if (instance == null)
                 {
-                    instance = FindObjectOfType<PhotonHandler>();
+                    //instance = FindObjectOfType<PhotonHandler>();
                     if (instance == null)
                     {
                         GameObject obj = new GameObject();
                         obj.name = "PhotonMono";
-                        instance = obj.AddComponent<PhotonHandler>();
+                        //instance = obj.AddComponent<PhotonHandler>();
                     }
                 }
 
@@ -69,7 +73,7 @@ namespace Photon.Pun
         private SupportLogger supportLoggerComponent;
 
 
-        protected override void Awake()
+        /*protected override void Awake()
         {
             if (instance == null || ReferenceEquals(this, instance))
             {
@@ -80,7 +84,7 @@ namespace Photon.Pun
             {
                 Destroy(this);
             }
-        }
+        }*/
 
         protected virtual void OnEnable()
         {
@@ -90,11 +94,11 @@ namespace Photon.Pun
                 return;
             }
 
-            this.Client = PhotonNetwork.NetworkingClient;
+            this.Client = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient;
 
-            if (PhotonNetwork.PhotonServerSettings.EnableSupportLogger)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonServerSettings.EnableSupportLogger)
             {
-                SupportLogger supportLogger = this.gameObject.GetComponent<SupportLogger>();
+                /*SupportLogger supportLogger = this.gameObject.GetComponent<SupportLogger>();
                 if (supportLogger == null)
                 {
                     supportLogger = this.gameObject.AddComponent<SupportLogger>();
@@ -107,13 +111,13 @@ namespace Photon.Pun
                     }
                 }
                 this.supportLoggerComponent = supportLogger;
-                this.supportLoggerComponent.Client = PhotonNetwork.NetworkingClient;
+                this.supportLoggerComponent.Client = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient;*/
             }
 
-            this.UpdateInterval = 1000 / PhotonNetwork.SendRate;
-            this.UpdateIntervalOnSerialize = 1000 / PhotonNetwork.SerializationRate;
+            this.UpdateInterval = 1000 / Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SendRate;
+            this.UpdateIntervalOnSerialize = 1000 / Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate;
 
-            PhotonNetwork.AddCallbackTarget(this);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.AddCallbackTarget(this);
             this.StartFallbackSendAckThread();  // this is not done in the base class
         }
 
@@ -121,15 +125,15 @@ namespace Photon.Pun
         {
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += (scene, loadingMode) =>
             {
-                PhotonNetwork.NewSceneLoaded();
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NewSceneLoaded();
             };
         }
 
-        protected override void OnDisable()
+        /*protected override void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RemoveCallbackTarget(this);
             base.OnDisable();
-        }
+        }*/
 
 
         /// <summary>Called in intervals by UnityEngine. Affected by Time.timeScale.</summary>
@@ -140,7 +144,7 @@ namespace Photon.Pun
             #elif PUN_DISPATCH_IN_LATEUPDATE
             // do not dispatch here
             #else
-            if (Time.timeScale > PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate)
+            if (Time.timeScale > Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate)
             {
                 this.Dispatch();
             }
@@ -156,16 +160,16 @@ namespace Photon.Pun
             // do not dispatch here
             #else
             // see MinimalTimeScaleToDispatchInFixedUpdate and FixedUpdate for explanation:
-            if (Time.timeScale <= PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate)
+            if (Time.timeScale <= Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate)
             {
                 this.Dispatch();
             }
             #endif
 
             int currentMsSinceStart = (int)(Time.realtimeSinceStartup * 1000); // avoiding Environment.TickCount, which could be negative on long-running platforms
-            if (PhotonNetwork.IsMessageQueueRunning && currentMsSinceStart > this.nextSendTickCountOnSerialize)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMessageQueueRunning && currentMsSinceStart > this.nextSendTickCountOnSerialize)
             {
-                PhotonNetwork.RunViewUpdate();
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.RunViewUpdate();
                 this.nextSendTickCountOnSerialize = currentMsSinceStart + this.UpdateIntervalOnSerialize - SerializeRateFrameCorrection;
                 this.nextSendTickCount = 0; // immediately send when synchronization code was running
             }
@@ -176,11 +180,11 @@ namespace Photon.Pun
                 SendAsap = false;
                 bool doSend = true;
                 int sendCounter = 0;
-                while (PhotonNetwork.IsMessageQueueRunning && doSend && sendCounter < MaxDatagrams)
+                while (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMessageQueueRunning && doSend && sendCounter < MaxDatagrams)
                 {
                     // Send all outgoing commands
                     Profiler.BeginSample("SendOutgoingCommands");
-                    doSend = PhotonNetwork.NetworkingClient.LoadBalancingPeer.SendOutgoingCommands();
+                    doSend = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.LoadBalancingPeer.SendOutgoingCommands();
                     sendCounter++;
                     Profiler.EndSample();
                 }
@@ -202,7 +206,7 @@ namespace Photon.Pun
         /// </remarks>
         protected void Dispatch()
         {
-            if (PhotonNetwork.NetworkingClient == null)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient == null)
             {
                 Debug.LogError("NetworkPeer broke!");
                 return;
@@ -217,13 +221,13 @@ namespace Photon.Pun
             bool doDispatch = true;
             Exception ex = null;
             int exceptionCount = 0;
-            while (PhotonNetwork.IsMessageQueueRunning && doDispatch)
+            while (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMessageQueueRunning && doDispatch)
             {
                 // DispatchIncomingCommands() returns true of it dispatched any command (event, response or state change)
                 Profiler.BeginSample("DispatchIncomingCommands");
                 try
                 {
-                    doDispatch = PhotonNetwork.NetworkingClient.LoadBalancingPeer.DispatchIncomingCommands();
+                    doDispatch = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.NetworkingClient.LoadBalancingPeer.DispatchIncomingCommands();
                 }
                 catch (Exception e)
                 {
@@ -246,12 +250,12 @@ namespace Photon.Pun
 
         public void OnCreatedRoom()
         {
-            PhotonNetwork.SetLevelInPropsIfSynced(SceneManagerHelper.ActiveSceneName);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SetLevelInPropsIfSynced(SceneManagerHelper.ActiveSceneName);
         }
 
         public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            PhotonNetwork.LoadLevelIfSynced();
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LoadLevelIfSynced();
         }
 
 
@@ -259,7 +263,7 @@ namespace Photon.Pun
 
         public void OnMasterClientSwitched(Player newMasterClient)
         {
-            var views = PhotonNetwork.PhotonViewCollection;
+            var views = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonViewCollection;
             foreach (var view in views)
             {
                 if (view.IsRoomView)
@@ -283,13 +287,13 @@ namespace Photon.Pun
         public void OnJoinedRoom()
         {
 
-            if (PhotonNetwork.ViewCount == 0)
+            if (Battle1.PhotonUnityNetworking.Code.PhotonNetwork.ViewCount == 0)
                 return;
 
-            var views = PhotonNetwork.PhotonViewCollection;
+            var views = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonViewCollection;
 
-            bool amMasterClient = PhotonNetwork.IsMasterClient;
-            bool amRejoiningMaster = amMasterClient && PhotonNetwork.CurrentRoom.PlayerCount > 1;
+            bool amMasterClient = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMasterClient;
+            bool amRejoiningMaster = amMasterClient && Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.PlayerCount > 1;
 
             if (amRejoiningMaster)
                 reusableIntList.Clear();
@@ -314,14 +318,14 @@ namespace Photon.Pun
 
             if (amRejoiningMaster && reusableIntList.Count > 0)
             {
-                PhotonNetwork.OwnershipUpdate(reusableIntList.ToArray());
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.OwnershipUpdate(reusableIntList.ToArray());
             }
         }
 
         public void OnLeftRoom()
         {
             // Destroy spawned objects and reset scene objects
-            PhotonNetwork.LocalCleanupAnythingInstantiated(true);
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.LocalCleanupAnythingInstantiated(true);
         }
 
 
@@ -330,9 +334,9 @@ namespace Photon.Pun
             // note: if the master client becomes inactive, someone else becomes master. so there is no case where the active master client reconnects
             // what may happen is that the Master Client disconnects locally and uses ReconnectAndRejoin before anyone (including the server) notices.
 
-            bool amMasterClient = PhotonNetwork.IsMasterClient;
+            bool amMasterClient = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.IsMasterClient;
 
-            var views = PhotonNetwork.PhotonViewCollection;
+            var views = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonViewCollection;
             if (amMasterClient)
             {
                 reusableIntList.Clear();
@@ -357,14 +361,14 @@ namespace Photon.Pun
             // update the joining player of non-creator ownership in the room
             if (amMasterClient && reusableIntList.Count > 0)
             {
-                PhotonNetwork.OwnershipUpdate(reusableIntList.ToArray(), newPlayer.ActorNumber);
+                Battle1.PhotonUnityNetworking.Code.PhotonNetwork.OwnershipUpdate(reusableIntList.ToArray(), newPlayer.ActorNumber);
             }
 
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
-            var views = PhotonNetwork.PhotonViewCollection;
+            var views = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.PhotonViewCollection;
 
             int leavingPlayerId = otherPlayer.ActorNumber;
             bool isInactive = otherPlayer.IsInactive;
@@ -377,14 +381,14 @@ namespace Photon.Pun
                 {
                     // v2.27: changed from owner-check to controller-check
                     if (view.ControllerActorNr == leavingPlayerId)
-                        view.ControllerActorNr = PhotonNetwork.MasterClient.ActorNumber;
+                        view.ControllerActorNr = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MasterClient.ActorNumber;
                 }
 
             }
             // HARD DISCONNECT: Player permanently removed. Remove that actor as owner for all items they created (Unless AutoCleanUp is false)
             else
             {
-                bool autocleanup = PhotonNetwork.CurrentRoom.AutoCleanUp;
+                bool autocleanup = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.CurrentRoom.AutoCleanUp;
 
                 foreach (var view in views)
                 {
@@ -396,7 +400,7 @@ namespace Photon.Pun
                     if (view.OwnerActorNr == leavingPlayerId || view.ControllerActorNr == leavingPlayerId)
                     {
                         view.OwnerActorNr = 0;
-                        view.ControllerActorNr = PhotonNetwork.MasterClient.ActorNumber;
+                        view.ControllerActorNr = Battle1.PhotonUnityNetworking.Code.PhotonNetwork.MasterClient.ActorNumber;
                     }
                 }
             }

@@ -1,8 +1,8 @@
 using Altzone.Scripts.GA;
-using Photon.Pun;
 using Prg.Scripts.Common.AudioPlayer;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Game
 {

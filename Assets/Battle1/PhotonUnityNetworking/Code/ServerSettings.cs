@@ -8,15 +8,14 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Photon.Realtime;
+using UnityEngine;
+using AppSettings = Battle1.PhotonRealtime.Code.AppSettings;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System;
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
-    using Photon.Realtime;
-    using UnityEngine;
-
     /// <summary>
     /// Collection of connection-relevant settings, used internally by PhotonNetwork.ConnectUsingSettings.
     /// </summary>
@@ -82,13 +81,13 @@ namespace Photon.Pun
         /// <value>The best region code in preferences.</value>
         public static string BestRegionSummaryInPreferences
         {
-            get { return PhotonNetwork.BestRegionSummaryInPreferences; }
+            get { return Battle1.PhotonUnityNetworking.Code.PhotonNetwork.BestRegionSummaryInPreferences; }
         }
 
         /// <summary>Sets the "best region summary" in the preferences to null. On next start, the client will ping all available.</summary>
         public static void ResetBestRegionCodeInPreferences()
         {
-            PhotonNetwork.BestRegionSummaryInPreferences = null;
+            Battle1.PhotonUnityNetworking.Code.PhotonNetwork.BestRegionSummaryInPreferences = null;
         }
 
         /// <summary>String summary of the AppSettings.</summary>

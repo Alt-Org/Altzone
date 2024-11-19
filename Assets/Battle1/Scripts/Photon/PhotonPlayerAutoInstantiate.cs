@@ -1,6 +1,6 @@
 using System.Collections;
-using Photon.Pun;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Prg.Scripts.Common.Photon
 {

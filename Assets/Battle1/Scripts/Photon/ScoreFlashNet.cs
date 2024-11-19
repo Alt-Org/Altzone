@@ -25,12 +25,12 @@ namespace Prg.Scripts.Common.Unity.ToastMessages
             return _instance ??= new ScoreFlasherNet();
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void SubsystemRegistration()
         {
             // Manual reset if UNITY Domain Reloading is disabled.
             _instance = null;
-        }
+        }*/
 
         public static void RegisterEventListener()
         {

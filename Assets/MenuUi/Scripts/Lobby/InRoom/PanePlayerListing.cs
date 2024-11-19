@@ -1,10 +1,13 @@
 ﻿using System.Linq;
 using ExitGames.Client.Photon;
-using Photon.Pun;
+using Photon.Client;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
+//using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
+//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
@@ -27,30 +30,30 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void OnEnable()
         {
-            if (PhotonNetwork.InRoom)
+            if (PhotonRealtimeClient.Client.InRoom)
             {
                 UpdateStatus();
             }
-            PhotonNetwork.AddCallbackTarget(this);
+            PhotonRealtimeClient.Client.AddCallbackTarget(this);
         }
 
         private void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
             DeleteExtraLines(_contentRoot);
         }
 
         private void UpdateStatus()
         {
             // Use PaneRoomListing.updateStatus() style to manage dynamic text lines - IMHO is has better implementation!
-            if (!PhotonNetwork.InRoom)
+            if (!PhotonRealtimeClient.Client.InRoom)
             {
                 DeleteExtraLines(_contentRoot);
                 return;
             }
-            var players = PhotonNetwork.CurrentRoom.GetPlayersByNickName().ToList();
-            Debug.Log($"updateStatus {PhotonNetwork.NetworkClientState} lines: {_contentRoot.childCount} players: {players.Count}");
-
+            var players = PhotonRealtimeClient.Client.CurrentRoom.GetPlayersByNickName().ToList();
+            Debug.Log($"updateStatus {PhotonRealtimeClient.Client.State} lines: {_contentRoot.childCount} players: {players.Count}");
+            
             // Synchronize line count with player count.
             while (_contentRoot.childCount < players.Count)
             {
@@ -126,12 +129,12 @@ namespace MenuUI.Scripts.Lobby.InRoom
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+        void IInRoomCallbacks.OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged)
         {
             // NOP
         }
 
-        void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
         {
             UpdateStatus();
         }

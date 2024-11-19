@@ -8,12 +8,11 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
     /// <summary>
     /// The PhotonStreamQueue helps you poll object states at higher frequencies than what
     /// PhotonNetwork.SendRate dictates and then sends all those states at once when

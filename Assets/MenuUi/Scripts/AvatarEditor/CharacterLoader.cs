@@ -18,7 +18,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Image _divanImage;
         [SerializeField]private GameObject _defaultAvatarImagePrefab;
         [SerializeField]private GameObject _confluenceAvatarImagePrefab;
-        private string _divanObjectName = "divaani";
         PlayerData _playerData = null;
         private CharacterClassID _characterClassID;
         private CharacterClassID _previousID = CharacterClassID.None;
@@ -26,7 +25,7 @@ namespace MenuUi.Scripts.AvatarEditor
         public void RefreshPlayerCurrentCharacter(Action onComplete)
         {
             // _characterImage = GetComponent<Image>();
-            _divanImage = GameObject.Find(_divanObjectName).GetComponent<Image>();
+            // _divanImage = GameObject.Find(_divanObjectName).GetComponent<Image>();
             Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => _playerData = p);
 
             int selectedCharacterId = _playerData.SelectedCharacterIds[0];

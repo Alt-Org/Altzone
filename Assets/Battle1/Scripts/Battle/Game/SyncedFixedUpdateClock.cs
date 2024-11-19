@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using Altzone.Scripts.Config;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Players;
-using Photon.Pun;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 #if DEVELOPMENT_BUILD
 using TMPro;
 #endif
