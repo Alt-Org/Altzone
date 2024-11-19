@@ -117,105 +117,7 @@ public class CharacterStatWindow : MonoBehaviour
         Debug.Log("handled window change");
     }
 
-    // CurrentlySelectedStat
-   /*  public void UpdateCurrentlySelectedStatToSpeed()
-    {
-        UpgradeButtonsRemoveAllListeners();
-        DisableAllStatSelectedBackground();
-        CurrentlySelectedStat = 0;
-        UpdateUpgradeButtons();
-    }
-    public void UpdateCurrentlySelectedStatToResistance()
-    {
-        UpgradeButtonsRemoveAllListeners();
-        DisableAllStatSelectedBackground();
-        CurrentlySelectedStat = 1;
-        UpdateUpgradeButtons();
-    }
-    public void UpdateCurrentlySelectedStatToAttack()
-    {
-        UpgradeButtonsRemoveAllListeners();
-        DisableAllStatSelectedBackground();
-        CurrentlySelectedStat = 2;
-        UpdateUpgradeButtons();
-    }
-    public void UpdateCurrentlySelectedStatToDefence()
-    {
-        UpgradeButtonsRemoveAllListeners();
-        DisableAllStatSelectedBackground();
-        CurrentlySelectedStat = 3;
-        UpdateUpgradeButtons();
-    }
-    public void UpdateCurrentlySelectedStatToHP()
-    {
-        UpgradeButtonsRemoveAllListeners();
-        DisableAllStatSelectedBackground();
-        CurrentlySelectedStat = 4;
-        UpdateUpgradeButtons();
-    }
- */
-    /* private void UpdateUpgradeButtons()
-    {
-        switch (CurrentlySelectedStat)
-        {
-            case -1:
-                UpgradeDiamondImage.color = new Color32(100, 100, 100, 255);
-                UpgradeCostAmountNumber.text = "";
-                break;
-            case 0:
-                StatAddButton.onClick.AddListener(UpgradeCharacterSpeed);
-                StatRemoveButton.onClick.AddListener(DegradeCharacterSpeed);
-                UpgradeDiamondImage.color = new Color32(240, 117, 117, 255);
-                UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedCostAmount.ToString();
-                _statSpeedSelectedBackground.enabled = true;
-                break;
-            case 1:
-                StatAddButton.onClick.AddListener(UpgradeCharacterResistance);
-                StatRemoveButton.onClick.AddListener(DegradeCharacterResistance);
-                UpgradeDiamondImage.color = new Color32(247, 178, 59, 255);
-                UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceCostAmount.ToString();
-                _statResistanceSelectedBackground.enabled = true;
-                break;
-            case 2:
-                StatAddButton.onClick.AddListener(UpgradeCharacterAttack);
-                StatRemoveButton.onClick.AddListener(DegradeCharacterAttack);
-                UpgradeDiamondImage.color = new Color32(232, 56, 215, 255);
-                UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackCostAmount.ToString();
-                _statAttackSelectedBackground.enabled = true;
-                break;
-            case 3:
-                StatAddButton.onClick.AddListener(UpgradeCharacterDefence);
-                StatRemoveButton.onClick.AddListener(DegradeCharacterDefence);
-                UpgradeDiamondImage.color = new Color32(118, 79, 234, 255);
-                UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceCostAmount.ToString();
-                _statDefenceSelectedBackground.enabled = true;
-                break;
-            case 4:
-                StatAddButton.onClick.AddListener(UpgradeCharacterHP);
-                StatRemoveButton.onClick.AddListener(DegradeCharacterHP);
-                UpgradeDiamondImage.color = new Color32(228, 32, 35, 255);
-                UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPCostAmount.ToString();
-                _statHPSelectedBackground.enabled = true;
-                break;
-            default:
-                Debug.Log("CurrentlySelecterStat is probably somewhere it shouldn't be :/");
-                break;
-        }
-    } */
-
-    private void UpgradeButtonsRemoveAllListeners()
-    {
-        StatAddButton.onClick.RemoveAllListeners();
-        StatRemoveButton.onClick.RemoveAllListeners();
-    }
-    private void DisableAllStatSelectedBackground()
-    {
-        _statSpeedSelectedBackground.enabled = false;
-        _statResistanceSelectedBackground.enabled = false;
-        _statAttackSelectedBackground.enabled = false;
-        _statDefenceSelectedBackground.enabled = false;
-        _statHPSelectedBackground.enabled = false;
-    }
+   
     //  upgrade
     private void UpgradeCharacterSpeed()
     {
@@ -540,10 +442,10 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
 
-        //Tähän pitää tehdä muutos, että kutsutaan vaan metodia aina jokaisessa casessa -Tehty, en tiedä vielä toimiiko.
-        //Voisko tätä vielä jotenkin refactoroida selkeämmäksi?
+        
         switch (index)
         {
+            //Kutsutaan metodia joka casessa
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo(CharacterID.IntellectualizerResearcher);
                 break;
@@ -599,7 +501,7 @@ public class CharacterStatWindow : MonoBehaviour
 
             UpdatePieChart();
             //UpdateUpgradeButtons();
-            DisableAllStatSelectedBackground();
+            //DisableAllStatSelectedBackground();
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
         else
@@ -639,7 +541,7 @@ public class CharacterStatWindow : MonoBehaviour
     }
     private void SetCharacterInfo(CharacterID index)
     {
-        //Tällä metodilla pitäis saada haettua hahmon tiedot.
+       //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
 
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
 
