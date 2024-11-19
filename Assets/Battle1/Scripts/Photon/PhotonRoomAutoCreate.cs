@@ -1,8 +1,11 @@
 using System.Collections;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using Prg.Scripts.EditorSupport.Attributes;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
+using TypedLobby = Battle1.PhotonRealtime.Code.TypedLobby;
 
 namespace Prg.Scripts.Common.Photon
 {

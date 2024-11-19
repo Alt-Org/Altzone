@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
-using Photon.Pun;
 using Photon.Realtime;
 using Prg.Scripts.Common.Photon;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace Battle1.Scripts.Test.Photon
 {

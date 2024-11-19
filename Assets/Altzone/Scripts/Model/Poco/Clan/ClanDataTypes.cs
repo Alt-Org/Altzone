@@ -4,6 +4,18 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
+    public class HeartPieceData
+    {
+        public int pieceNumber;
+        public Color pieceColor;
+
+        public HeartPieceData(int number, Color color)
+        {
+            pieceNumber = number;
+            pieceColor = color;
+        }
+    }
+
     public enum ClanAge
     {
         None,
@@ -18,7 +30,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         None,
         Finnish,
         Swedish,
-        English
+        English,
+        Russian,
+        Ukrainian
     }
 
     public enum Goals
@@ -28,6 +42,15 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Grindaus,
         Intohimoisuus,
         Keraily
+    }
+
+    public enum ClanActivity
+    {
+        None,
+        VeryActive,
+        Active,
+        OccasionallyActive,
+        RarelyActive
     }
 
     public static class ClanDataTypeConverter
@@ -50,9 +73,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
             return language switch
             {
                 Language.None => "Kieli / Språk / Language",
-                Language.Finnish => "Suomi",
-                Language.Swedish => "Svenska",
+                Language.Finnish => "suomi",
+                Language.Swedish => "svenska",
                 Language.English => "English",
+                Language.Russian => "venäjä",
+                Language.Ukrainian => "ukraina",
                 _ => "",
             };
         }
@@ -66,6 +91,19 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 Goals.Grindaus => "Grindaus",
                 Goals.Intohimoisuus => "Intohimoisuus",
                 Goals.Keraily => "Keraily",
+                _ => "",
+            };
+        }
+
+        public static string GetActivityText(ClanActivity activity)
+        {
+            return activity switch
+            {
+                ClanActivity.None => "Aktiivisuusluokka",
+                ClanActivity.VeryActive => "Erittäin aktiivinen",
+                ClanActivity.Active => "Aktiivinen",
+                ClanActivity.OccasionallyActive => "Satunnainen",
+                ClanActivity.RarelyActive => "Harvoin paikalla",
                 _ => "",
             };
         }

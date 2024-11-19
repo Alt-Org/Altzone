@@ -1,8 +1,10 @@
 using System;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace Battle1.Scripts.Test.Photon
 {

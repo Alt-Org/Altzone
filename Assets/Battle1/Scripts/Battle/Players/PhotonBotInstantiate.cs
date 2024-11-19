@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
-using Photon.Pun;
+using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace Battle1.Scripts.Battle.Players
 {

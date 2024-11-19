@@ -5,7 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using UnityEngine.SceneManagement;
+using MenuUi.Scripts.AvatarEditor;
 
+[RequireComponent(typeof(SwipeHandler))]
 public class ManagerCarousel : MonoBehaviour
 {
     [SerializeField]
@@ -62,13 +64,15 @@ public class ManagerCarousel : MonoBehaviour
 
     }
 
-
-
-    private void Update()
+    private void OnEnable()
     {
-        HandleSwipe(); // Handle user input for sliding the carousel
+        SwipeHandler.OnSwipe += HandleSwipe;
     }
 
+    private void OnDisable()
+    {
+        SwipeHandler.OnSwipe -= HandleSwipe;
+    }
 
 
     // Set the visibility of the slides based on the given page index
@@ -117,53 +121,44 @@ public void GoToPreviousSlide()
     // ^^
 
     // Handle user input for sliding the carousel
-void HandleSwipe()
+void HandleSwipe(SwipeDirection direction,Vector2 startPoint,Vector2 endPoint)
 {
-    if (Touch.activeTouches.Count > 0 && isSliding == false)
+    if (isSliding == false)
     {
-        Touch touch = Touch.activeTouches[0];
-            // Retrieve the position of the finger in the real world coordinates
-            Vector3 realWorldPos = _camera2D.ScreenToWorldPoint(touch.screenPosition);
-        switch (touch.phase)
-        {
-            case UnityEngine.InputSystem.TouchPhase.Began:
-                startPos = _camera2D.ScreenToWorldPoint(touch.screenPosition);
-                scrollRect.enabled = false; // Disable the ScrollRect component to prevent scrolling during the slide
-                break;
 
-            case UnityEngine.InputSystem.TouchPhase.Ended:
-                // Calculate the horizontal distance between the initial touch position and the current touch position
-                float swipeHorizontalValue = (new Vector3(realWorldPos.x, 0, 0) - new Vector3(startPos.x, 0, 0)).magnitude;
+            // Calculate the horizontal distance between the initial touch position and the current touch position
+            float swipeHorizontalValue = Mathf.Abs(startPoint.x - endPoint.x);
                 // Check if the swipe distance is greater than the minimum required to consider it a slide
                 if (swipeHorizontalValue > minSwipeSlideX)
                 {
-                    // Determine the direction of the swipe based on the sign of the horizontal distance
-                    float swipeValue = Mathf.Sign(realWorldPos.x - startPos.x);
-                    if (swipeValue > 0)
+              
+                    if (direction is SwipeDirection.Left)
                     {
-                        // If the swipe is to the right, go to the previous slide if available
-                        if (currentSlide > 0)
-                        {
-                            currentSlide = currentSlide - 1;
-                            CheckSlide();
-                        }
-                    }
-                    else if (swipeValue < 0)
+                    if (currentSlide == mySlide.Count - 1)
                     {
-                        // If the swipe is to the left, go to the next slide if available
-                        if (currentSlide < mySlide.Count-1)
-                        {
-                            currentSlide = currentSlide + 1;
-                            CheckSlide();
-                        }
+                        currentSlide = 0;
                     }
+                    currentSlide++;
+                    CheckSlide();
+                        
+                    }
+
+
+                    else if (direction is SwipeDirection.Right)
+                    {
+                    if (currentSlide <= 1)
+                    {
+                        currentSlide = mySlide.Count;
+                    }
+                    currentSlide--;
+                     CheckSlide();
+                        
+                    }
+
+               
                 }
-            break;
-        }
     }
 }
-
-
 
     // Set up the relative positions of each slide in the scrollbar
 void SetUpScrollBar()

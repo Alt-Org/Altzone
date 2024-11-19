@@ -9,7 +9,7 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code
 {
     /// <summary>Which PhotonNetwork method was called to connect (which influences the regions we want pinged).</summary>
     /// <remarks>PhotonNetwork.ConnectUsingSettings will call either ConnectToMaster, ConnectToRegion or ConnectToBest, depending on the settings.</remarks>

@@ -8,12 +8,11 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using Battle1.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
 
-namespace Photon.Pun
+namespace Battle1.PhotonUnityNetworking.Code.Views
 {
-    using UnityEngine;
-
-
     [RequireComponent(typeof(Rigidbody2D))]
     [AddComponentMenu("Photon Networking/Photon Rigidbody 2D View")]
     public class PhotonRigidbody2DView : MonoBehaviourPun, IPunObservable
@@ -48,8 +47,8 @@ namespace Photon.Pun
         {
             if (!this.photonView.IsMine)
             {
-                this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.0f / PhotonNetwork.SerializationRate));
-                this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.0f / PhotonNetwork.SerializationRate));
+                this.m_Body.position = Vector2.MoveTowards(this.m_Body.position, this.m_NetworkPosition, this.m_Distance * (1.0f / Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate));
+                this.m_Body.rotation = Mathf.MoveTowards(this.m_Body.rotation, this.m_NetworkRotation, this.m_Angle * (1.0f / Battle1.PhotonUnityNetworking.Code.PhotonNetwork.SerializationRate));
             }
         }
 
@@ -85,7 +84,7 @@ namespace Photon.Pun
 
                 if (this.m_SynchronizeVelocity || this.m_SynchronizeAngularVelocity)
                 {
-                    float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+                    float lag = Mathf.Abs((float)(Battle1.PhotonUnityNetworking.Code.PhotonNetwork.Time - info.SentServerTime));
 
                     if (m_SynchronizeVelocity)
                     {

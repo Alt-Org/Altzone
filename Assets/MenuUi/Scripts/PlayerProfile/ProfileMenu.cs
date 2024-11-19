@@ -6,11 +6,15 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using UnityEngine.UIElements;
 using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class ProfileMenu : MonoBehaviour
+
 {
+
+
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutTimeText;
@@ -23,6 +27,8 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
+
+
 
     //[Header("Images")]
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
@@ -38,7 +44,12 @@ public class ProfileMenu : MonoBehaviour
     private int minuteCount;
     private float secondsCount;
     private float countToCarbon;
-    private float cabrbonCount;
+    private float carbonCount;
+
+
+    private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
+
+    
 
     private ServerPlayer _player;
 
@@ -47,24 +58,48 @@ public class ProfileMenu : MonoBehaviour
         updateTime();
     }
 
+
     private void updateTime()
     {
         secondsCount += Time.deltaTime;
         countToCarbon += Time.deltaTime;
-        cabrbonCount = countToCarbon * 1.2f;
-        _TimePlayedText.text = "Pelitunnit\n" + minuteCount.ToString();
-        _CarbonText.text = "Hiilijalanjälki\n" + cabrbonCount.ToString("0.0");
-        if (secondsCount > 60)
+
+        // Peliaika
+        if (minuteCount < 1)
+        {
+            _TimePlayedText.text = $"Alle 1 min";
+        }
+
+        else
+        {
+            _TimePlayedText.text = $"{minuteCount} min";
+        }
+
+
+
+        // Tarkistaa onko kg vai g
+        float carbonDisplay = CarbonFootprint.CarbonCount;
+        string carbonUnit = "g";
+
+        if (carbonDisplay >= 1000f)                                                                                  
+        {
+            carbonDisplay /= 1000f;
+            carbonUnit = "kg";
+        }
+
+        _CarbonText.text = $"Hiilijalanjï¿½lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjï¿½lki teksti
+
+        // Pï¿½ivittï¿½ï¿½ minuutin vï¿½lein peliajan.
+        if (secondsCount >= 60f)
         {
             minuteCount++;
             secondsCount = 0;
         }
-
     }
 
     private void OnEnable()
     {
-         //tempLocalSaveTime
+        //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
 
@@ -72,7 +107,6 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
-
     }
 
     private void Reset()
@@ -107,4 +141,7 @@ public class ProfileMenu : MonoBehaviour
             Reset();
         }
     }
+
+
 }
+

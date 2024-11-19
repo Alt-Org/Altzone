@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Game;
+using System;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -15,7 +16,19 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private Transform _characterImageParent;
         private Image _colorChangeTarget;
         private CharacterClassID _characterClassID;
-        private FeatureColor _currentColor;
+        private List<FeatureColor> _currentColors = new(){
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,
+            FeatureColor.White,     
+        };
+        private FeatureSlot _currentlySelectedCategory;
         public void OnEnable()
         {
             // _colorChangeTarget = _characterImageParent.GetChild(0).GetChild(2).GetComponent<Image>();
@@ -29,7 +42,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SelectFeature(FeatureSlot feature)
         {
-
+            _currentlySelectedCategory = feature;
             _colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
         }
 
@@ -60,7 +73,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void SetColor(Color color)
         {
-            _currentColor = (FeatureColor)_colors.IndexOf(color);
+            _currentColors[(int)_currentlySelectedCategory] = (FeatureColor)_colors.IndexOf(color);
             if(_colorChangeTarget != null){
                 _colorChangeTarget.color = color;
                 if(_characterClassID == CharacterClassID.Confluent){
@@ -84,9 +97,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _characterClassID = id;
         }
-        public FeatureColor GetCurrentColor()
+        public List<FeatureColor> GetCurrentColors()
         {
-            return _currentColor;
+            return _currentColors;
         }
         public void SetLoadedColors(List<FeatureColor> colors, List<FeatureID> features)
         {
@@ -105,5 +118,13 @@ namespace MenuUi.Scripts.AvatarEditor
                 
             }
         }
+        public void RestoreDefaultColor(FeatureSlot slot){
+            _currentColors[(int)slot] = FeatureColor.White;
+        }
+
+        // internal void SetCurrentCategoryAndColors(FeatureSlot category, List<FeatureColor> colors) {
+        //     _currentlySelectedCategory = category;
+        //     _currentColors = colors;
+        // }
     }
 }

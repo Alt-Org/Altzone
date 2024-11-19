@@ -25,7 +25,7 @@ public class ClanRightsPanel : MonoBehaviour
                 ClanRoleRights.EditClanSettings | ClanRoleRights.EditSoulHome | ClanRoleRights.EditMemberRights
             };
         }
-        ClanRights = initialRights;
+        ClanRights = (ClanRoleRights[])initialRights.Clone();
 
         for (int i = 0; i < allToggles.Length; i++)
         {

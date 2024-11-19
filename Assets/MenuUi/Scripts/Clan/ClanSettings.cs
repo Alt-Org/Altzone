@@ -8,15 +8,16 @@ using System;
 using MenuUI.Scripts;
 using MenuUi.Scripts.Window;
 using Altzone.Scripts;
+using System.Linq;
 
 public class ClanSettings : MonoBehaviour
 {
     [Header("Text fields")]
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanMembers;
-    [SerializeField] private TextMeshProUGUI _clanCoins;
     [SerializeField] private TextMeshProUGUI _clanTrophies;
-    [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
+    [SerializeField] private TextMeshProUGUI _clanWinsRanking;
+    [SerializeField] private TextMeshProUGUI _clanActivityRanking;
 
     [Header("Input fields")]
     [SerializeField] private TMP_InputField _clanPhraseField;
@@ -24,74 +25,85 @@ public class ClanSettings : MonoBehaviour
 
     [Header("Toggles and dropdowns")]
     [SerializeField] private Toggle _clanOpenToggle;
-    [SerializeField] private TMP_Dropdown _clanLanguageDropdown;
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
-    [SerializeField] private TMP_Dropdown _clanAgeDropdown;
+
+    [Header("Language")]
+    [SerializeField] private LanguageFlagMap _languageFlagMap;
+    [SerializeField] private ClanLanguageList _languageList;
+    [SerializeField] Image _flagImage;
 
     [Header("Other settings fields")]
     [SerializeField] private Transform _valueRowFirst;
     [SerializeField] private Transform _valueRowSecond;
     [SerializeField] private ClanRightsPanel _clanRightsPanel;
+    [SerializeField] private ClanAgeSelection _ageSelection;
+    [SerializeField] private ClanHeartColorChanger _clanHeartColorChanger;
+    [SerializeField] private ClanHeartColorSetter _settingsHeartColorSetter;
 
     [Header("Buttons")]
+    [SerializeField] private Button _closeClanLanguageSelect;
+    [SerializeField] private Button _openClanLanguageSelect;
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
-    [SerializeField] private PopupController errorPopup;
+    [SerializeField] private PopupController _errorPopup;
+    [SerializeField] private GameObject _cancelConfirmationPopup;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _valuePrefab;
 
+    private List<HeartPieceData> _heartPieces;
+
     private void OnEnable()
     {
-        if (ServerManager.Instance.Clan != null)
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
-            SetPanelValues(ServerManager.Instance.Clan);
-            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
-            {
-                _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
-            });
-            SetInitialSettingValues(ServerManager.Instance.Clan);
-        }
+            _clanHeartColorChanger.gameObject.SetActive(false);
+            _languageList.gameObject.SetActive(false);
+            _cancelConfirmationPopup.SetActive(false);
+
+            SetPanelValues(clanData);
+            _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+            _languageList.Initialize(clanData.Language);
+            SetFlag(clanData.Language);
+            _closeClanLanguageSelect.onClick.AddListener(() => SetFlag(_languageList.SelectedLanguage));
+            SetInitialSettingValues(clanData);
+
+            clanData.ClanHeartPieces ??= new();
+            _heartPieces = clanData.ClanHeartPieces;
+            _clanHeartColorChanger.InitializeClanHeart(_heartPieces);
+        });
     }
 
-    private void SetPanelValues(ServerClan clan)
+    private void SetFlag(Language language) => _flagImage.sprite = _languageFlagMap.GetFlag(language);
+
+    private void SetPanelValues(ClanData clan)
     {
-        _clanName.text = clan.name;
-        _clanMembers.text = "Jäsenmäärä: " + clan.playerCount.ToString();
-        _clanCoins.text = clan.gameCoins.ToString();
+        _clanName.text = clan.Name;
+        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
         _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
+        _clanActivityRanking.text = _clanWinsRanking.text = "-1";
     }
 
-    private void SetInitialSettingValues(ServerClan clan)
+    private void SetInitialSettingValues(ClanData clan)
     {
-        _clanPhraseField.text = clan.phrase;
+        _clanPhraseField.text = clan.Phrase;
         // _clanPasswordField.text = ;
-        _clanOpenToggle.isOn = !clan.isOpen;
-
-        InitLanguageDropdown();
-        _clanLanguageDropdown.value = EnumToDropdown(clan.language);
-        _clanLanguageDropdown.RefreshShownValue();
+        _clanOpenToggle.isOn = !clan.IsOpen;
 
         InitGoalsDropDown();
-        _clanGoalDropdown.value = EnumToDropdown(clan.goals);
+        _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
         _clanGoalDropdown.RefreshShownValue();
 
-        InitAgeDropDown();
-        _clanAgeDropdown.value = EnumToDropdown(clan.clanAge);
-        _clanAgeDropdown.RefreshShownValue();
+        _ageSelection.Initialize(clan.ClanAge);
     }
 
-    private void InitLanguageDropdown()
+    public void OpenClanHeartPanel() => _clanHeartColorChanger.gameObject.SetActive(true);
+    public void CloseClanHeartPanel()
     {
-        _clanLanguageDropdown.options.Clear();
-        foreach (Language language in Enum.GetValues(typeof(Language)))
-        {
-            if (language == Language.None) continue;
-            string text = ClanDataTypeConverter.GetLanguageText(language);
-            _clanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
+        _heartPieces = _clanHeartColorChanger.GetHeartPieceDatas();
+        _settingsHeartColorSetter.SetHeartColors(_heartPieces);
+        _clanHeartColorChanger.gameObject.SetActive(false);
     }
 
     private void InitGoalsDropDown()
@@ -105,21 +117,8 @@ public class ClanSettings : MonoBehaviour
         }
     }
 
-    private void InitAgeDropDown()
-    {
-        _clanAgeDropdown.options.Clear();
-        foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)))
-        {
-            if (age == ClanAge.None) continue;
-            string text = ClanDataTypeConverter.GetAgeText(age);
-            _clanAgeDropdown.options.Add(new TMP_Dropdown.OptionData(text));
-        }
-    }
-
     // To skip over the None value
     private int EnumToDropdown<T>(T value) where T : Enum => Convert.ToInt32(value) - 1;
-    private Language DropdownToLanguage(int lang) => (Language)lang + 1;
-    private ClanAge DropdownToAge(int age) => (ClanAge)age + 1;
     private Goals DropdownToGoal(int goal) => (Goals)goal + 1;
 
     public void SaveClanSettings()
@@ -129,15 +128,15 @@ public class ClanSettings : MonoBehaviour
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             clanData.Phrase = _clanPhraseField.text;
-            clanData.Language = DropdownToLanguage(_clanLanguageDropdown.value);
+            clanData.Language = _languageList.SelectedLanguage;
             clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
-            clanData.ClanAge = DropdownToAge(_clanAgeDropdown.value);
+            clanData.ClanAge = _ageSelection.ClanAgeRange;
 
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
-            Debug.Log("member: " + clanData.ClanRights[0] + " elder: " + clanData.ClanRights[1] + " admin: " + clanData.ClanRights[2]);
+            clanData.ClanHeartPieces = _heartPieces;
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
@@ -148,9 +147,32 @@ public class ClanSettings : MonoBehaviour
                 }
                 else
                 {
-                    errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+                    _errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
                 }
             }));
         });
     }
+
+    public void OnClickCancelClanSettingEdits()
+    {
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        {
+            bool hasMadeEdits = _clanHeartColorChanger.IsAnyPieceChanged()
+                || clanData.Phrase != _clanPhraseField.text
+                || clanData.Language != _languageList.SelectedLanguage
+                || clanData.Goals != DropdownToGoal(_clanGoalDropdown.value)
+                || clanData.ClanAge != _ageSelection.ClanAgeRange
+                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
+
+            if (hasMadeEdits)
+            {
+                _cancelConfirmationPopup.SetActive(true);
+            }
+            else
+            {
+                WindowManager.Get().GoBack();
+            }
+        });
+    }
+    public void OnClickContinueEditingClanSettings() => _cancelConfirmationPopup.SetActive(false);
 }

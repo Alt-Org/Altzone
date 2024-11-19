@@ -1,9 +1,10 @@
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Battle1.PhotonUnityNetworking.Code;
 using Battle1.Scripts.Battle.Players;
 using Battle1.Scripts.Battle.Players.PlayerClasses;
-using Photon.Pun;
 using UnityEngine;
+using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace Battle1.Scripts.Battle.Game
 {

@@ -108,7 +108,7 @@ namespace Altzone.Scripts.Model
             Debug.Log($"StorageFilename {_storagePath}");
             _characters = new CharacterStorage().CharacterList;
             _storageData = File.Exists(_storagePath)
-                ? LoadStorage(_storagePath)
+                ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
         }
 
@@ -227,6 +227,7 @@ namespace Altzone.Scripts.Model
             Debug.Log($"clanData {clanData}");
             SaveStorage(_storageData, _storagePath);
             _saving = false;
+            clanData.CallDataUpdate();
             callback?.Invoke(clanData);
         }
 
@@ -290,6 +291,22 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<GameFurniture>(_storageData.GameFurniture));
         }
 
+        internal void GetAllBaseCharacters(Action<ReadOnlyCollection<BaseCharacter>> callback)
+        {
+            callback(new ReadOnlyCollection<BaseCharacter>(_storageData.Characters));
+        }
+
+        internal void GetPlayerTasks(Action<PlayerTasks> callback)
+        {
+            callback(_storageData.PlayerTasks);
+        }
+
+        internal void SavePlayerTasks(PlayerTasks tasks, Action<PlayerTasks> callback)
+        {
+            _storageData.PlayerTasks = tasks;
+            callback(_storageData.PlayerTasks);
+        }
+
         #endregion
 
         #region Setters for bulk data updates for base models.
@@ -322,8 +339,9 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
+            storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
-            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(_characters));
+            storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
             storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;
@@ -344,6 +362,12 @@ namespace Altzone.Scripts.Model
             var storageData = JsonUtility.FromJson<StorageData>(jsonText);
 
             if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+            else
+            {
+                storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+                storageData.PlayerTasks = null;
+            }
 
             return storageData;
         }
@@ -360,10 +384,12 @@ namespace Altzone.Scripts.Model
     internal class StorageData
     {
         public int StorageVersion = 0;
+        public List<BaseCharacter> Characters = new();
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
+        public PlayerTasks PlayerTasks= null;
     }
 }
