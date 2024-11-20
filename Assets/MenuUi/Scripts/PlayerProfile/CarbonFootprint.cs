@@ -61,7 +61,7 @@ public class CarbonFootprint : MonoBehaviour
         // Tulostaa konsoliin CO2 määrän ja per minuutti
         if (sessionTime - lastCheckTime >= 1f)
         {
-            Debug.Log($"Current total: {carbonCount} g CO2");
+            //Debug.Log($"Current total: {carbonCount} g CO2");
             lastCheckTime = sessionTime;
         }
     }

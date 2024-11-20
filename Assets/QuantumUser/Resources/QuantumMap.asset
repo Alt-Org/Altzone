@@ -21,7 +21,7 @@ MonoBehaviour:
       Value: 0
   Scene: QuantumGameScene
   ScenePath: Assets/QuantumUser/Scenes/QuantumGameScene.unity
-  SceneGuid: eb1cfb40119c43643a8b8e67f2bd7cd6
+  SceneGuid: 5afc5bef1f9146d62aebaa898a241a9e
   WorldSize: 256
   BucketsCount: 16
   BucketsSubdivisions: 8
@@ -39,7 +39,50 @@ MonoBehaviour:
   GridNodeSize: 4
   NavMeshLinks: []
   Regions: []
-  StaticColliders2D: []
+  StaticColliders2D:
+  - Rotation:
+      RawValue: 0
+    Position:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    Height:
+      RawValue: 0
+    VerticalOffset:
+      RawValue: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    Layer: 0
+    ShapeType: 4
+    CircleRadius:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CapsuleSize:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    EdgeExtent:
+      RawValue: 0
+    PolygonCollider:
+      Vertices: []
+      Normals: []
+    StaticData:
+      Name: floor
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 0
+      MutableMode: 0
   StaticColliders3D: []
   MapEntities: []
   SerializedTriangleDataUncompressedSize: 8

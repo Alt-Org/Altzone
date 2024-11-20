@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace Battle1.Scripts.Lobby.InLobby
 {
     public class InLobbyController : MonoBehaviourPunCallbacks
     {

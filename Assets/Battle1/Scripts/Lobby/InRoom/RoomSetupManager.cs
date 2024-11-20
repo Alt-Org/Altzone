@@ -11,7 +11,7 @@ using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace Battle1.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Prepares players in a room for the game play.

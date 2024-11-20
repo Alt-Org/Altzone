@@ -76,7 +76,7 @@ public class ClanPanel : MonoBehaviour
             else
             {
                 _playerClanText.text = "Et ole klaanissa";
-                _playerClanDescription.text = "";
+                _playerClanDescription.text = "Paina tästä liittyäksesi klaaniin";
             }
         }
         else
