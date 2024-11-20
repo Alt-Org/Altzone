@@ -11,7 +11,7 @@ using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
 using Room = Battle1.PhotonRealtime.Code.Room;
 
-namespace Altzone.Scripts.Battle.Photon
+namespace Battle1.Scripts.Battle.Photon
 {
     public class PhotonBattleRoom
     {

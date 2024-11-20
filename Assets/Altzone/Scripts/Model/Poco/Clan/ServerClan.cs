@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Voting;
 
 /// <summary>
 /// Clan object received from the server
@@ -13,6 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string phrase { get; set; }
         public List<string> labels { get; set; }
         public int gameCoins { get; set; }
+        public int points { get; set; }
         public List<string> admin_ids { get; set; }
         public int playerCount { get; set; }
         public int itemCount { get; set; }
@@ -23,5 +25,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool isOpen { get; set; }
         public int? furnitureCount { get; set; }
         public int? raidRoomCount { get; set; }
+        public List<PollData> polls { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
-namespace MenuUI.Scripts.Lobby.InLobby
+namespace Battle1.Scripts.Lobby.InLobby
 {
     public class LobbyRoomListingView : MonoBehaviour
     {

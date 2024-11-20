@@ -6,7 +6,6 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using UnityEngine.UIElements;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,6 +13,8 @@ using System.Runtime.CompilerServices;
 public class ProfileMenu : MonoBehaviour
 
 {
+
+
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutTimeText;
@@ -26,6 +27,8 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesWinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
+
+
 
     //[Header("Images")]
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
@@ -50,7 +53,6 @@ public class ProfileMenu : MonoBehaviour
 
     private ServerPlayer _player;
 
-
     private void Update()
     {
         updateTime();
@@ -65,27 +67,29 @@ public class ProfileMenu : MonoBehaviour
         // Peliaika
         if (minuteCount < 1)
         {
-            _TimePlayedText.text = $"Peliaika\nAlle 1 min";
+            _TimePlayedText.text = $"Alle 1 min";
         }
 
         else
         {
-            _TimePlayedText.text = $"Peliaika\n{minuteCount} min";
+            _TimePlayedText.text = $"{minuteCount} min";
         }
+
+
 
         // Tarkistaa onko kg vai g
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
-        if (carbonDisplay >= 1000f)
+        if (carbonDisplay >= 1000f)                                                                                  
         {
             carbonDisplay /= 1000f;
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
+        _CarbonText.text = $"Hiilijalanjï¿½lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjï¿½lki teksti
 
-        // Päivittää minuutin välein peliajan.
+        // Pï¿½ivittï¿½ï¿½ minuutin vï¿½lein peliajan.
         if (secondsCount >= 60f)
         {
             minuteCount++;

@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 8972975073786983638}
   - component: {fileID: 1343159886761862469}
   - component: {fileID: 3311448749483425505}
+  - component: {fileID: 7128625730939008617}
+  - component: {fileID: 5457960922954305025}
   m_Layer: 5
   m_Name: BT_LEADERBOARD
   m_TagString: Untagged
@@ -69,7 +71,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: a8a4fcdeaac583d45acdce1ad0cecfe2, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -135,3 +137,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: dec6696e02e9d4744a8d905d598a48ce, type: 2}
   _isCurrentPopOutWindow: 0
+--- !u!114 &7128625730939008617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195143674239219267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 1
+  _audioType: 0
+  _audioName: ButtonNote2
+  _audioId: 0
+  _playType: 1
+--- !u!114 &5457960922954305025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195143674239219267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cbb4877f6507f49bb03f3b3dc2591c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _images:
+  - ShowCondition: 0
+    ImageSprite: {fileID: 21300000, guid: a8a4fcdeaac583d45acdce1ad0cecfe2, type: 3}
+  - ShowCondition: 1
+    ImageSprite: {fileID: 21300000, guid: 1cde3c60371bdcf48a7eb1229f047b5c, type: 3}
