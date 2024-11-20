@@ -17,7 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
-
+        
         private Button button;
         private ColorBlock originalColors;
 
@@ -43,7 +43,6 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             button = GetComponent<Button>();
             originalColors = button.colors;
-
             _swipe = transform.root.Find("MainMenuViewSwipe").Find("Scroll View").GetComponent<SwipeUI>();
             // Set starting slot if null
             if (initialSlot == null)
@@ -67,7 +66,6 @@ namespace MenuUi.Scripts.CharacterGallery
             button.colors = transparentColors;
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
-
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
@@ -166,6 +164,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     OnParentChanged?.Invoke(newParent);
                 }
             }
+            _modelView.CheckSelectedCharacterSlotText();
         }
 
 
