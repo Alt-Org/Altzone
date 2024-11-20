@@ -34,12 +34,14 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI CharacterName;
     public TextMeshProUGUI CustomCharacterName;
 
+    [Header("Current stat level?")]
     public TextMeshProUGUI SpeedNumber;
     public TextMeshProUGUI ResistanceNumber;
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
     public TextMeshProUGUI HPNumber;
 
+    [Header("Amount of diamonds that can be used")]
     public TextMeshProUGUI DiamondSpeedAmountNumber;
     public TextMeshProUGUI DiamondResistanceAmountNumber;
     public TextMeshProUGUI DiamondAttackAmountNumber;
@@ -50,8 +52,10 @@ public class CharacterStatWindow : MonoBehaviour
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
 
     private int CurrentlySelectedStat = -1;
-    [SerializeField] public Button StatAddButton;
-    [SerializeField] public Button StatRemoveButton;
+    [Header("Increase and decrease buttons")]
+    [SerializeField] public Button StatIncreaseButton;
+    [SerializeField] public Button StatDecreaseButton;
+   
     [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
@@ -68,6 +72,7 @@ public class CharacterStatWindow : MonoBehaviour
     private CharacterID _characterId;
 
 
+
     private void OnEnable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
@@ -76,7 +81,8 @@ public class CharacterStatWindow : MonoBehaviour
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
-
+        
+    
         Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
         {
             if (playerData == null)
@@ -97,8 +103,8 @@ public class CharacterStatWindow : MonoBehaviour
             EraserAmount = playerData.Eraser;
 
             Debug.Log("Timanttiarvot asetettu onnistuneesti");
-        });
 
+        });
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
 
     }
@@ -134,6 +140,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
+            
 
                 if (customCharacter != null)
                 {
@@ -422,7 +429,11 @@ public class CharacterStatWindow : MonoBehaviour
     private void _decideWhatCharacterToShow(CharacterID index)
     {
         // Etsi CustomCharacter -tiedot valitulle hahmolle
-        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
+
+        //Metodia muutettu niin, että nyt se käyttää valmiiksi asetettua _characterId -muuttujaa. Vanhat koodit kommentoitu pois.
+
+        //var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
+        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         if (customCharacter == null)
         {
             Debug.LogError($"CustomCharacter not found for index {index}");
@@ -431,7 +442,8 @@ public class CharacterStatWindow : MonoBehaviour
             return;
         }
 
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
+        //var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
+        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
         if (galleryCharacter == null)
         {
 
@@ -447,31 +459,31 @@ public class CharacterStatWindow : MonoBehaviour
         {
             //Kutsutaan metodia joka casessa
             case CharacterID.IntellectualizerResearcher:
-                SetCharacterInfo(CharacterID.IntellectualizerResearcher);
+                SetCharacterInfo();
                 break;
             case CharacterID.RetroflectorOvereater:
-                SetCharacterInfo(CharacterID.RetroflectorOvereater);
+                SetCharacterInfo();
                 break;
             case CharacterID.TricksterComedian:
-                SetCharacterInfo(CharacterID.TricksterComedian);
+                SetCharacterInfo();
                 break;
             case CharacterID.TricksterConman:
-                SetCharacterInfo(CharacterID.TricksterConman);
+                SetCharacterInfo();
                 break;
             case CharacterID.DesensitizerBodybuilder:
-                SetCharacterInfo(CharacterID.DesensitizerBodybuilder);
+                SetCharacterInfo();
                 break;
             case CharacterID.ObedientPreacher:
-                SetCharacterInfo(CharacterID.ObedientPreacher);
+                SetCharacterInfo();
                 break;
             case CharacterID.ProjectorGrafitiartist:
-                SetCharacterInfo(CharacterID.ProjectorGrafitiartist);
+                SetCharacterInfo();
                 break;
             case CharacterID.ConfluentBesties:
-                SetCharacterInfo(CharacterID.ConfluentBesties);
+                SetCharacterInfo();
                 break;
             case CharacterID.RetroflectorAlcoholic:
-                SetCharacterInfo(CharacterID.RetroflectorAlcoholic);
+                SetCharacterInfo();
                 break;
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
@@ -539,19 +551,20 @@ public class CharacterStatWindow : MonoBehaviour
         float[] characterStatsFloatValues = { characterHP, characterDefence, characterAttack, characterResistance, characterSpeed, unusedStats };
         return characterStatsFloatValues;
     }
-    private void SetCharacterInfo(CharacterID index)
+    private void SetCharacterInfo()
     {
        //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
 
-        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
+        var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
-        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)index);
+        var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
         CharacterArtWorkToShow.sprite = galleryCharacter.Image;
         Debug.Log($"loaded {galleryCharacter.Name}");
     }
+
 
 
     // Character Name. DISABLED FOR THE SAKE OF TESTERS

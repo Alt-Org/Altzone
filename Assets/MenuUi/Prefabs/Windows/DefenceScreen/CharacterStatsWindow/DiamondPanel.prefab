@@ -1904,6 +1904,7 @@ GameObject:
   - component: {fileID: 7852866474787132367}
   - component: {fileID: 5167537083786609293}
   - component: {fileID: 5608165929996257197}
+  - component: {fileID: -8446328543023702546}
   m_Layer: 5
   m_Name: DiamondPanel
   m_TagString: Untagged
@@ -1994,6 +1995,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &-8446328543023702546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212407852267014076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  increaseButton: {fileID: 3416144960045963076}
+  decreaseButton: {fileID: 840816912608977929}
 --- !u!1001 &2445862684581803188
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2116,6 +2131,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LevelProgressBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 6988361390254057479, guid: b8390200217e25a4cb8b56c61480ab3c,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6988361390254057479, guid: b8390200217e25a4cb8b56c61480ab3c,
         type: 3}
