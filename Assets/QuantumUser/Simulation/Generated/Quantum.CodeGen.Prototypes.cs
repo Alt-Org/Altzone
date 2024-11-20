@@ -93,17 +93,15 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.SoulWall))]
-  public unsafe partial class SoulWallPrototype : ComponentPrototype<Quantum.SoulWall> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.SoulWall result, in PrototypeMaterializationContext context);
+  public unsafe class SoulWallPrototype : ComponentPrototype<Quantum.SoulWall> {
+    public MapEntityId ChildEntity;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.SoulWall component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.SoulWall result, in PrototypeMaterializationContext context = default) {
-        MaterializeUser(frame, ref result, in context);
+        PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
     }
   }
 }

@@ -18,15 +18,17 @@ namespace Quantum {
     partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.SoulWallPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.SoulWallPrototype Prototype;
+    public Quantum.Prototypes.Unity.SoulWallPrototype Prototype;
     public override System.Type ComponentType {
       get {
         return typeof(Quantum.SoulWall);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      CreatePrototypeUser(converter, ref Prototype);
-      return Prototype;
+      Quantum.Prototypes.SoulWallPrototype result;
+      converter.Convert(Prototype, out result);
+      CreatePrototypeUser(converter, ref result);
+      return result;
     }
   }
 }

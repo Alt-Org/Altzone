@@ -536,18 +536,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
+    public EntityRef ChildEntity;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10253;
+        hash = hash * 31 + ChildEntity.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (SoulWall*)ptr;
+        EntityRef.Serialize(&p->ChildEntity, serializer);
     }
   }
   public unsafe partial interface ISignalOnCollisionProjectileHitSoulWall : ISignal {
