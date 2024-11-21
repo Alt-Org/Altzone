@@ -425,18 +425,19 @@ public class CharacterStatWindow : MonoBehaviour
     }
 
 
-    // doing this at awake
-    private void _decideWhatCharacterToShow(CharacterID index)
+    // doing this at awake                                     
+    private void _decideWhatCharacterToShow(CharacterID _characterId) //index
     {
         // Etsi CustomCharacter -tiedot valitulle hahmolle
 
         //Metodia muutettu niin, että nyt se käyttää valmiiksi asetettua _characterId -muuttujaa. Vanhat koodit kommentoitu pois.
+        //Aikaisemmin käytetty muuttujaa index.
 
         //var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         if (customCharacter == null)
-        {
-            Debug.LogError($"CustomCharacter not found for index {index}");
+        {                                                          
+            Debug.LogError($"CustomCharacter not found for index {_characterId}");  //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
             return;
@@ -446,8 +447,8 @@ public class CharacterStatWindow : MonoBehaviour
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
         if (galleryCharacter == null)
         {
-
-            Debug.LogError($"GalleryCharacterReference not found for index {index}");
+                                                                            
+            Debug.LogError($"GalleryCharacterReference not found for index {_characterId}"); //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
             return;
@@ -455,7 +456,7 @@ public class CharacterStatWindow : MonoBehaviour
 
 
         
-        switch (index)
+        switch (_characterId) //index
         {
             //Kutsutaan metodia joka casessa
             case CharacterID.IntellectualizerResearcher:
