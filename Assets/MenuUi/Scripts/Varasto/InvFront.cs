@@ -232,15 +232,33 @@ namespace MenuUi.Scripts.Storage
                 // Shape
                 toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
-                // Name
-                toSet.GetChild(4).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
-                if (_furn.Position == new Vector2Int(-1, -1))
+                // SetName
+                var furnitureInfo = _furnitureReference.GetFurnitureInfo(_furn.Name);
+                if (furnitureInfo != null)
                 {
-                    toSet.GetChild(4).gameObject.SetActive(false);
+                    foreach (var setInfo in _furnitureReference.Info)
+                    {
+                        if (setInfo.list.Exists(info => info.Name == _furn.Name.Split('_')[0]))
+                        {
+                            toSet.GetChild(4).GetComponent<TMP_Text>().text = setInfo.SetName;
+                            break;
+                        }
+                    }
                 }
                 else
                 {
-                    toSet.GetChild(4).gameObject.SetActive(true);
+                    toSet.GetChild(4).GetComponent<TMP_Text>().text = "Unknown Set";
+                }
+
+                // Name
+                toSet.GetChild(5).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                if (_furn.Position == new Vector2Int(-1, -1))
+                {
+                    toSet.GetChild(5).gameObject.SetActive(false);
+                }
+                else
+                {
+                    toSet.GetChild(5).gameObject.SetActive(true);
                 }
 
                 i++;
