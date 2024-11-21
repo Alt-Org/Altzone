@@ -44,6 +44,12 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
 
+        [Header("Rarity Color")]
+        [SerializeField] private Color commonColor = Color.gray;
+        [SerializeField] private Color rareColor = Color.blue;
+        [SerializeField] private Color epicColor = Color.magenta;
+        [SerializeField] private Color antiqueColor = Color.yellow;
+
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
 
@@ -188,6 +194,17 @@ namespace MenuUi.Scripts.Storage
             {
                 GameObject newSlot = Instantiate(_invSlot, _content);
                 var capturedSlotVal = i;
+
+                // Default rarity to "common" since no rarity system is implemented yet
+                string rarity = "common";
+
+                // Set color based on rarity
+                var backgroundImage = newSlot.GetComponent<Image>();
+                if (backgroundImage != null)
+                {
+                    backgroundImage.color = GetColorByRarity(rarity);
+                }
+
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
                 // C# variable capture in the body of anonymous function!
@@ -360,6 +377,18 @@ namespace MenuUi.Scripts.Storage
         private float GetTotalInventoryValue()
         {
             return _items.Sum(item => item.Value);
+        }
+
+        private Color GetColorByRarity(string rarity)
+        {
+            return rarity switch
+            {
+                "common" => commonColor,
+                "rare" => rareColor,
+                "epic" => epicColor,
+                "antique" => antiqueColor,
+                _ => commonColor, // Default to common color
+            };
         }
     }
 }
