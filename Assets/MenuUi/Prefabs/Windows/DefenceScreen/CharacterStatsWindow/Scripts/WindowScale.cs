@@ -30,8 +30,10 @@ public class WindowScale : MonoBehaviour
     void Start() // Start-metodi suoritetaan ennen ensimmäistä framepäivitystä
     {
         var windowManager = WindowManager.Get(); // Haetaan WindowManager-instanssi
-        
-        _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("ScaleWindow"); // Etsitään kaikki käyttöliittymän elementit, joissa on tag "ScaleWindow".
+
+        // Etsitään kaikki käyttöliittymän elementit, joissa on tag "ScaleWindow".
+        _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("ScaleWindow"); 
+
         // Haetaan käyttöliittymän elementti, joissa on tag "ScrollRectCanvas".
         _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
         SetMainMenuLayoutDimensions(); // Asetetaan päävalikon ulkoasun mitat
