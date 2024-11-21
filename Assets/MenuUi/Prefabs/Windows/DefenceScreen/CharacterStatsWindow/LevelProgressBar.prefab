@@ -583,6 +583,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1376997940138033366}
   - component: {fileID: 2388809191458198318}
+  - component: {fileID: -6294553474501454998}
   m_Layer: 5
   m_Name: LevelProgressBar
   m_TagString: Untagged
@@ -660,10 +661,23 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.45
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-6294553474501454998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6092634931285013518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 991bc22eb118e7a4088e5b0d701eea8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelProgressBar: {fileID: 0}
 --- !u!1 &6952798561888056300
 GameObject:
   m_ObjectHideFlags: 0
