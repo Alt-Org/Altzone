@@ -267,15 +267,17 @@ namespace MenuUi.Scripts.Storage
                     toSet.GetChild(4).GetComponent<TMP_Text>().text = "Unknown Set";
                 }
 
+                // Id
+
                 // Name
-                toSet.GetChild(5).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(6).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(5).gameObject.SetActive(false);
+                    toSet.GetChild(6).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(5).gameObject.SetActive(true);
+                    toSet.GetChild(6).gameObject.SetActive(true);
                 }
 
                 i++;
