@@ -17,6 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _nameText;
 
         public CharacterID Id { get => _id; }
+        
 
         // Called when an object is dropped onto the character slot
         public void OnDrop(PointerEventData eventData)
@@ -49,8 +50,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 GameObject current = transform.GetChild(0).gameObject;
                 DraggableCharacter currentDraggable = current.GetComponent<DraggableCharacter>();              
             }
-            ModelView modelView = GetComponent<ModelView>();
-            modelView.CheckSelectedCharacterSlotText();
+            
         }
 
         public void SetCharacterDown()
@@ -61,8 +61,7 @@ namespace MenuUi.Scripts.CharacterGallery
             Transform currentInitialSlot = currentCharacter.initialSlot;
             currentCharacter.transform.SetParent(currentInitialSlot);
             currentCharacter.transform.position = currentInitialSlot.position;
-            ModelView modelView = GetComponent<ModelView>();
-            modelView.CheckSelectedCharacterSlotText();
+            
         }
 
         public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)

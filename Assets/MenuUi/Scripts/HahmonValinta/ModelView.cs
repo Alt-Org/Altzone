@@ -40,7 +40,6 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _CurSelectedCharacterSlot = HorizontalContentPanel.GetComponentsInChildren<CharacterSlot>();
             LoadAndCachePrefabs();
-            CheckSelectedCharacterSlotText();
         }
 
         private void LoadAndCachePrefabs()
