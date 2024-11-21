@@ -30,6 +30,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
+        public int characterTextCounter;
 
         private CharacterID _currentCharacterId;
 
@@ -70,14 +71,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
+            //Poistaa myös valitut hahmot!!!
             foreach (var button in _buttons)
             {
-                Destroy(button);
+                Destroy(button.gameObject);
             }
             // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                Destroy(characterSlot);
+                Destroy(characterSlot.gameObject);
             }
             _buttons.Clear();
             _characterSlot.Clear();
@@ -104,7 +106,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     return Color.gray;
             }
         }
-        public void CheckSelectedCharacterSlotText()
+        public void CheckSelectedCharacterSlotText(bool isAdditive)
         {
             //TODO: tee näistä SerializeField
             //Ois myös kiva jos tämä ylipäätään toimis.
@@ -112,7 +114,18 @@ namespace MenuUi.Scripts.CharacterGallery
             var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
             var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
 
-            if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
+            if (isAdditive == true)
+            {
+                characterTextCounter++;
+            }
+            else
+            {
+                characterTextCounter--;
+            }
+            if (characterTextCounter < 0) characterTextCounter = 0;
+            if (characterTextCounter > 3) characterTextCounter = 3;
+            
+            /*if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(false);
@@ -135,32 +148,32 @@ namespace MenuUi.Scripts.CharacterGallery
                 text1.SetActive(true);
                 text2.SetActive(true);
                 text3.SetActive(true);
-            }
+            }*/
 
-            /*if (_CurSelectedCharacterSlot[0] == null)
+            if (characterTextCounter > 2)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (characterTextCounter > 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else if (characterTextCounter > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }     
+            else
             {
                 text1.SetActive(true);
                 text2.SetActive(true);
                 text3.SetActive(true);
             }
-            else if (_CurSelectedCharacterSlot[1] == null)
-            {
-                text1.SetActive(true);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }     
-            else if (_CurSelectedCharacterSlot[2] == null)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }     
-            else
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }*/
         }
         public Transform GetContent()
         {

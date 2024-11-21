@@ -164,7 +164,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     OnParentChanged?.Invoke(newParent);
                 }
             }
-            _modelView.CheckSelectedCharacterSlotText();
+            
         }
 
 

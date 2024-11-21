@@ -17,7 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _nameText;
 
         public CharacterID Id { get => _id; }
-        
+        [SerializeField] private ModelView _modelView;
 
         // Called when an object is dropped onto the character slot
         public void OnDrop(PointerEventData eventData)
@@ -43,6 +43,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 // If the slot is empty, set the dropped object as a child of this slot
                 draggableItem.parentAfterDrag = transform;
+                
             }
             else
             {
