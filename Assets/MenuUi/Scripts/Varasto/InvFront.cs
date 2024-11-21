@@ -250,22 +250,8 @@ namespace MenuUi.Scripts.Storage
                 toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                var furnitureInfo = _furnitureReference.GetFurnitureInfo(_furn.Name);
-                if (furnitureInfo != null)
-                {
-                    foreach (var setInfo in _furnitureReference.Info)
-                    {
-                        if (setInfo.list.Exists(info => info.Name == _furn.Name.Split('_')[0]))
-                        {
-                            toSet.GetChild(4).GetComponent<TMP_Text>().text = setInfo.SetName;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    toSet.GetChild(4).GetComponent<TMP_Text>().text = "Unknown Set";
-                }
+                string setName = GetSetNameForFurniture(_furn.Name);
+                toSet.GetChild(4).GetComponent<TMP_Text>().text = setName;
 
                 // Id
 
@@ -321,7 +307,8 @@ namespace MenuUi.Scripts.Storage
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            _name.text = _furn.VisibleName;
+            string setName = GetSetNameForFurniture(_furn.Name);
+            _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
 
             // Weight
             _weight.text = "Paino:" + _furn.Weight + " KG";
@@ -391,6 +378,24 @@ namespace MenuUi.Scripts.Storage
                 "antique" => antiqueColor,
                 _ => commonColor, // Default to common color
             };
+        }
+
+        private string GetSetNameForFurniture(string furnitureName)
+        {
+            if (string.IsNullOrWhiteSpace(furnitureName))
+                return "Unknown Set";
+
+            string[] parts = furnitureName.Split('_');
+            if (parts.Length != 2)
+                return "Unknown Set";
+
+            string setName = parts[1];
+            foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
+            {
+                if (setInfo.SetName == setName)
+                    return setInfo.SetName;
+            }
+            return "Unknown Set";
         }
     }
 }

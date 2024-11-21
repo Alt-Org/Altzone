@@ -3088,7 +3088,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Artists name
+  m_text: 'Suunnittelu: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -3792,6 +3792,10 @@ MonoBehaviour:
   _type: {fileID: 4393833472174082232}
   _typeText: {fileID: 4254005211886955827}
   _inSoulHome: {fileID: 675277525985316714}
+  commonColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  rareColor: {r: 0, g: 0, b: 1, a: 1}
+  epicColor: {r: 1, g: 0, b: 1, a: 1}
+  antiqueColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &5294908814318722480
 GameObject:
   m_ObjectHideFlags: 0
