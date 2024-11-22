@@ -8,6 +8,7 @@ using Altzone.Scripts;
 using System.Linq;
 using MenuUi.Scripts.CharacterGallery;
 using System;
+using Altzone.Scripts.Config;
 
 
 public class CharacterStatWindow : MonoBehaviour
@@ -58,17 +59,17 @@ public class CharacterStatWindow : MonoBehaviour
 
     private int CurrentlySelectedStat = -1;
     [Header("Increase and decrease buttons")]
-    [SerializeField] public Button StatIncreaseButton;
-    [SerializeField] public Button StatDecreaseButton;
+    [SerializeField] public Button statImpactoforceIncreaseButton;
+    [SerializeField] public Button statImpactforceDecreaseButton;
    
     [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-    [SerializeField] private Image _statSpeedSelectedBackground;
+/*     [SerializeField] private Image _statSpeedSelectedBackground;
     [SerializeField] private Image _statResistanceSelectedBackground;
     [SerializeField] private Image _statAttackSelectedBackground;
     [SerializeField] private Image _statDefenceSelectedBackground;
-    [SerializeField] private Image _statHPSelectedBackground;
+    [SerializeField] private Image _statHPSelectedBackground; */
 
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
@@ -76,10 +77,25 @@ public class CharacterStatWindow : MonoBehaviour
     private PlayerData _playerData;
     private CharacterID _characterId;
 
+    //Nouseeko progressbarin arvo siinä tilanteessa kun ostetaan timanteilla uusi taso?
+    //Kun ostetaan uusi taso palkki nousee ja kun se menee täyteen niin tulee uusi leveli.
 
+    //Mistä löytyy hahmonkuvaus? -saatavilla, jahka valmistuu
+    //Mistä löytyy defenssiluokan kuvaus? -saatavilla, jahka valmistuu
+
+    //Onko olemassa jo tieto käytetyistä tasopykälistä jossain?
+    //Ei ole. Palataan myöhemmin.
+
+    //Virheilmoitus rivillä 86, mikä sen aiheuttaa? Onko meistä riippumaton asia?
+    //Mitä tarkoittaa stat selected backround?
+    //Pitääkö tähän lisätä jokaisen stattipaneelin plus ja miinusnapit. Onko helpompi tehdä niin?
+
+    //Luokan saa customcharacter get character id
 
     private void OnEnable()
     {
+        
+
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled");
 
@@ -87,8 +103,10 @@ public class CharacterStatWindow : MonoBehaviour
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
         
-    
-        Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
+        DataStore dataStore = Storefront.Get();
+        dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
+
+        //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
         {
             if (playerData == null)
             {
@@ -436,7 +454,7 @@ public class CharacterStatWindow : MonoBehaviour
         // Etsi CustomCharacter -tiedot valitulle hahmolle
 
         //Metodia muutettu niin, että nyt se käyttää valmiiksi asetettua _characterId -muuttujaa. Vanhat koodit kommentoitu pois.
-        //Aikaisemmin käytetty muuttujaa index.
+        //Aikaisemmin käytetty muuttujaa "index".
 
         //var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
@@ -515,7 +533,7 @@ public class CharacterStatWindow : MonoBehaviour
             DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
             DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
             DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
-            EraserAmountNumber.text = EraserAmount.ToString();
+            //EraserAmountNumber.text = EraserAmount.ToString();
 
             UpdatePieChart();
             //UpdateUpgradeButtons();
@@ -566,12 +584,12 @@ public class CharacterStatWindow : MonoBehaviour
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
 
-        //haetaan timanttien määrät playerdatasta
+        //Timanttien määrän saa playerdatasta
         int DiamondSpeedAmount = _playerData.DiamondSpeed;
         int diamondAttackAmount = _playerData.DiamondAttack;
         int diamondDefenceAmount = _playerData.DiamondDefence;
         int diamondHPAmount = _playerData.DiamondHP;
-        //pyyhekumien määrä playerdatasta
+        //pyyhekumien määrän saa playerdatasta
         int eraserAmount = _playerData.Eraser;
 
 

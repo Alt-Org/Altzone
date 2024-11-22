@@ -152,7 +152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1080.8495, y: 0}
+  m_AnchoredPosition: {x: 443.71497, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &641151530561109115
@@ -405,10 +405,25 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 20.15
       objectReference: {fileID: 0}
+    - target: {fileID: 1319329335166074391, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: ImpactforceMinusButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836404956581013121, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: levelProgressBar
+      value: 
+      objectReference: {fileID: 3582854367527039439}
     - target: {fileID: 2275908273028643563, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
       value: 20.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2446725495262965429, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: ImpactforcePlusButton
       objectReference: {fileID: 0}
     - target: {fileID: 2483658678907994294, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -430,6 +445,26 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: StatImpactforceDecreaseButton
+      value: 
+      objectReference: {fileID: 4234588700676813404}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statImpactforceDecreaseButton
+      value: 
+      objectReference: {fileID: 4234588700676813404}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: StatImpactoforceIncreaseButton
+      value: 
+      objectReference: {fileID: 2163976081366597905}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statImpactoforceIncreaseButton
+      value: 
+      objectReference: {fileID: 2163976081366597905}
     - target: {fileID: 3057268807720375956, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -801,6 +836,42 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ab03391b3dcfa54496511f4e4eb6183, type: 3}
+--- !u!114 &2163976081366597905 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4557817619331323419, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+    type: 3}
+  m_PrefabInstance: {fileID: 2397993345412421386}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3582854367527039439 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1224901233394394821, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+    type: 3}
+  m_PrefabInstance: {fileID: 2397993345412421386}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4234588700676813404 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1982469779863610710, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+    type: 3}
+  m_PrefabInstance: {fileID: 2397993345412421386}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8357034282234990418 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5961996630473185368, guid: 4ab03391b3dcfa54496511f4e4eb6183,
@@ -878,12 +949,12 @@ PrefabInstance:
     - target: {fileID: 5121922535685081116, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Size
-      value: 0.43180695
+      value: 0.41084713
       objectReference: {fileID: 0}
     - target: {fileID: 5121922535685081116, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Value
-      value: -0.00069292396
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5415047304489936540, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

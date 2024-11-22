@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class DiamondPanelButtons : MonoBehaviour
 {
+
+    //Tee tähän serielisefield jokaiselle napille
     [SerializeField] private Button increaseButton;
     [SerializeField] private Button decreaseButton;
 
@@ -14,16 +16,18 @@ public class DiamondPanelButtons : MonoBehaviour
     private void Awake()
     {
         Debug.Log("Timanttiapaneelin awake");
-        increaseButton.onClick.AddListener(OnIncreaseButtonClicked);
-        decreaseButton.onClick.AddListener(OnDecreaseButtonClicked);
+        increaseButton.onClick.AddListener(OnPlusButtonClicked);
+        decreaseButton.onClick.AddListener(OnMinusButtonClicked);
     } 
 
-    private void OnIncreaseButtonClicked()
+
+    //Kutsutaan vaan metodia olion nimellä toisessa scriptissä
+    private void OnPlusButtonClicked()
     {
         value++;
         Debug.Log("plusnappia painettu");
     }
-    private void OnDecreaseButtonClicked()
+    private void OnMinusButtonClicked()
     {
         value--;
         Debug.Log("miinusnappia painettu");
