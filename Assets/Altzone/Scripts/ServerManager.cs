@@ -353,6 +353,15 @@ public class ServerManager : MonoBehaviour
                         clanFurniture.Add(new ClanFurniture((10000 + 1300 + i).ToString(), "Chair_Neuro"));
                         clanFurniture.Add(new ClanFurniture((10000 + 1400 + i).ToString(), "Dresser_Neuro"));
                         clanFurniture.Add(new ClanFurniture((10000 + 1500 + i).ToString(), "Stool_Neuro"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1600 + i).ToString(), "Mirror_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1700 + i).ToString(), "Carpet_Schrodinger"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1800 + i).ToString(), "Clock_Neuro"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 1900 + i).ToString(), "Carpet_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2000 + i).ToString(), "Bed_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2100 + i).ToString(), "CoffeeTable_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2200 + i).ToString(), "DiningTable_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2300 + i).ToString(), "Mirror_Rakkaus"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2400 + i).ToString(), "Chair_Polarity"));
 
                         i++;
                     }

@@ -157,18 +157,24 @@ namespace MenuUI.Scripts.SoulHome
                 //if (_tempSlot != null) width = _tempSlot.width * 2;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
             }
-            else if (furnitureSize is FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.SevenXThree)
+            else if (furnitureSize is FurnitureSize.OneXThree or FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.FourXThree or FurnitureSize.SevenXThree)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 3;
                 /*else*/
                 width = transform.parent.GetComponent<FurnitureSlot>().width * 3;
             }
-            else if (furnitureSize is FurnitureSize.OneXFour or FurnitureSize.TwoXFour)
+            else if (furnitureSize is FurnitureSize.OneXFour or FurnitureSize.TwoXFour or FurnitureSize.ThreeXFour or FurnitureSize.FourXFour)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
             }
-            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix)
+            else if (furnitureSize is FurnitureSize.FiveXFive)
+            {
+                //if (_tempSlot != null) width = _tempSlot.width * 4;
+                /*else*/
+                width = transform.parent.GetComponent<FurnitureSlot>().width * 5;
+            }
+            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix)
             {
                 //if (_tempSlot != null) width = _tempSlot.width * 4;
                 /*else*/
