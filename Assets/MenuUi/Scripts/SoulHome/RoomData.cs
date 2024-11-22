@@ -376,7 +376,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     int prevRow = furniture.GetComponent<FurnitureHandling>().TempSlot.row;
                     int prevColumn = furniture.GetComponent<FurnitureHandling>().TempSlot.column;
-                    if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall)
+                    if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.Wall)
                     {
                         if (furniture.GetComponent<FurnitureHandling>().TempSlot.TempRotated != furniture.GetComponent<FurnitureHandling>().IsRotated)
                         furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSizeRotated();
@@ -390,7 +390,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     startRow = prevRow - (furnitureSize.y - 1);
                     endColumn = prevColumn + (furnitureSize.x - 1);
-                    Debug.Log("StartColumn:" + startRow + ", EndColumn:" + endColumn);
+                    Debug.Log("StartRow:" + startRow + ", EndColumn:" + endColumn);
                     for (int i = startRow; i <= prevRow; i++)
                     {
                         for (int j = prevColumn; j <= endColumn; j++)
@@ -410,7 +410,7 @@ namespace MenuUI.Scripts.SoulHome
                         }
                     }
                 }
-                if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall)
+                if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                 {
                     furniture.GetComponent<FurnitureHandling>().TempSlot = _floorFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
                 }
@@ -454,7 +454,7 @@ namespace MenuUI.Scripts.SoulHome
                             bool check = CheckFurniturePosition(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furnitureInfo, backupHit, useBackup);
                             if (check)
                             {
-                                MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, false);
+                                MoveFurniture(slot.GetComponent<FurnitureSlot>().row, slot.GetComponent<FurnitureSlot>().column, furniture, hover);
                                 return true;
                             }
                         }
