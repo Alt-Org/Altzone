@@ -6,6 +6,9 @@
 // fields or methods to them, please create partial
 // declarations in another file.
 // </auto-generated>
+
+using Quantum.QuantumUser.Simulation.Goal;
+
 #pragma warning disable 0109
 #pragma warning disable 1591
 
@@ -52,8 +55,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Goal))]
   public unsafe partial class GoalPrototype : ComponentPrototype<Quantum.Goal> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
+    public AssetRef<GoalConfig> goalConfig;
     partial void MaterializeUser(Frame frame, ref Quantum.Goal result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Goal component = default;
@@ -61,6 +63,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.Goal result, in PrototypeMaterializationContext context = default) {
+        result.goalConfig = this.goalConfig;
         MaterializeUser(frame, ref result, in context);
     }
   }

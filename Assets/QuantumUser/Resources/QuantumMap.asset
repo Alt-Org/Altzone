@@ -44,92 +44,6 @@ MonoBehaviour:
       RawValue: 0
     Position:
       X:
-        RawValue: 0
-      Y:
-        RawValue: 1048576
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 524288
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderTop
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 0
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: -1048576
-    Height:
-      RawValue: 0
-    VerticalOffset:
-      RawValue: 0
-    PhysicsMaterial:
-      Id:
-        Value: 0
-    Layer: 0
-    ShapeType: 4
-    CircleRadius:
-      RawValue: 0
-    BoxExtents:
-      X:
-        RawValue: 294912
-      Y:
-        RawValue: 524288
-    CapsuleSize:
-      X:
-        RawValue: 0
-      Y:
-        RawValue: 0
-    EdgeExtent:
-      RawValue: 0
-    PolygonCollider:
-      Vertices: []
-      Normals: []
-    StaticData:
-      Name: ArenaBorderBottom
-      Tag: Untagged
-      Layer: 0
-      Asset:
-        Id:
-          Value: 0
-      IsTrigger: 0
-      ColliderIndex: 1
-      MutableMode: 0
-  - Rotation:
-      RawValue: 0
-    Position:
-      X:
         RawValue: 589824
       Y:
         RawValue: 0
@@ -167,7 +81,7 @@ MonoBehaviour:
         Id:
           Value: 0
       IsTrigger: 0
-      ColliderIndex: 2
+      ColliderIndex: 0
       MutableMode: 0
   - Rotation:
       RawValue: 0
@@ -210,7 +124,7 @@ MonoBehaviour:
         Id:
           Value: 0
       IsTrigger: 0
-      ColliderIndex: 3
+      ColliderIndex: 1
       MutableMode: 0
   StaticColliders3D: []
   MapEntities:
@@ -281,22 +195,22 @@ MonoBehaviour:
     - rid: 4610315412758855682
     - rid: 4610315412758855683
   - Components:
-    - rid: 7239202054973947904
-    - rid: 7239202054973947905
-    - rid: 7239202054973947906
-    - rid: 7239202054973947907
-  - Components:
     - rid: 3090045393979834368
     - rid: 3090045393979834369
     - rid: 3090045393979834370
     - rid: 3090045393979834371
   - Components:
+    - rid: 8757235375044296704
+  - Components:
+    - rid: 7239202054973947904
+    - rid: 7239202054973947905
+    - rid: 7239202054973947906
+    - rid: 7239202054973947907
+  - Components:
     - rid: 4057351488081494016
     - rid: 4057351488081494017
     - rid: 4057351488081494018
     - rid: 4057351488081494019
-  - Components:
-    - rid: 8757235375044296704
   - Components:
     - rid: 6247138562492334080
     - rid: 6247138562492334081
@@ -335,22 +249,17 @@ MonoBehaviour:
     - rid: 2427227359900860418
     - rid: 2427227359900860419
   - Components:
+    - rid: 1525988969597108224
+    - rid: 1525988969597108225
+    - rid: 1525988969597108226
+    - rid: 1525988969597108227
+  - Components:
     - rid: 349698631684587520
     - rid: 349698631684587521
     - rid: 349698631684587522
     - rid: 349698631684587523
   - Components:
     - rid: 5599446166279290880
-  - Components:
-    - rid: 1525988969597108224
-    - rid: 1525988969597108225
-    - rid: 1525988969597108226
-    - rid: 1525988969597108227
-  - Components:
-    - rid: 5829801037778649088
-    - rid: 5829801037778649089
-    - rid: 5829801037778649090
-    - rid: 5829801037778649091
   - Components:
     - rid: 7441333422913486848
   - Components:
@@ -364,6 +273,13 @@ MonoBehaviour:
     - rid: 5104471107621093378
     - rid: 5104471107621093379
   - Components:
+    - rid: 5829801037778649088
+    - rid: 5829801037778649089
+    - rid: 5829801037778649090
+    - rid: 5829801037778649091
+  - Components:
+    - rid: 8914818115976560640
+  - Components:
     - rid: 4364814261780742144
     - rid: 4364814261780742145
     - rid: 4364814261780742146
@@ -374,12 +290,20 @@ MonoBehaviour:
     - rid: 7515546100544045058
     - rid: 7515546100544045059
   - Components:
-    - rid: 8914818115976560640
-  - Components:
     - rid: 2881458542018035712
     - rid: 2881458542018035713
     - rid: 2881458542018035714
     - rid: 2881458542018035715
+  - Components:
+    - rid: 7580778974368759808
+    - rid: 7580778974368759809
+    - rid: 7580778974368759810
+    - rid: 7580778974368759811
+  - Components:
+    - rid: 8911495939445751808
+    - rid: 8911495939445751809
+    - rid: 8911495939445751810
+    - rid: 8911495939445751811
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -389,7 +313,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 18481
+            RawValue: 628621
           Y:
             RawValue: 509870
         Rotation:
@@ -446,7 +370,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 126550
+            RawValue: 736690
           Y:
             RawValue: 454164
         Rotation:
@@ -503,7 +427,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 7929
+            RawValue: 618070
           Y:
             RawValue: -509673
         Rotation:
@@ -560,7 +484,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -88932
+            RawValue: 521207
           Y:
             RawValue: 481689
         Rotation:
@@ -617,7 +541,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 46989
+            RawValue: 657129
           Y:
             RawValue: 481689
         Rotation:
@@ -674,7 +598,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 35782
+            RawValue: 645922
           Y:
             RawValue: -482344
         Rotation:
@@ -731,7 +655,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -254148
+            RawValue: 355991
           Y:
             RawValue: -483000
         Rotation:
@@ -788,7 +712,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 115343
+            RawValue: 725483
           Y:
             RawValue: -509870
         Rotation:
@@ -845,7 +769,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 144834
+            RawValue: 754974
           Y:
             RawValue: -481951
         Rotation:
@@ -902,7 +826,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 19136
+            RawValue: 629276
           Y:
             RawValue: 454361
         Rotation:
@@ -959,7 +883,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -126353
+            RawValue: 483786
           Y:
             RawValue: -510525
         Rotation:
@@ -1016,7 +940,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 290979
+            RawValue: 901120
           Y:
             RawValue: 511180
         Rotation:
@@ -1073,7 +997,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 270270
+            RawValue: 880410
           Y:
             RawValue: -481689
         Rotation:
@@ -1130,7 +1054,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -101449
+            RawValue: 508690
           Y:
             RawValue: -454164
         Rotation:
@@ -1187,7 +1111,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -242941
+            RawValue: 367198
           Y:
             RawValue: 481034
         Rotation:
@@ -1244,7 +1168,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -266600
+            RawValue: 343539
           Y:
             RawValue: -509870
         Rotation:
@@ -1301,7 +1225,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 279773
+            RawValue: 889913
           Y:
             RawValue: -452853
         Rotation:
@@ -1358,7 +1282,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 262143
+            RawValue: 872284
           Y:
             RawValue: 454819
         Rotation:
@@ -1415,7 +1339,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 142868
+            RawValue: 753008
           Y:
             RawValue: -454819
         Rotation:
@@ -1472,7 +1396,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -115146
+            RawValue: 494993
           Y:
             RawValue: 453509
         Rotation:
@@ -1529,7 +1453,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 156041
+            RawValue: 766181
           Y:
             RawValue: 482082
         Rotation:
@@ -1586,7 +1510,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -132251
+            RawValue: 477888
           Y:
             RawValue: -482344
         Rotation:
@@ -1596,7 +1520,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 13893
+            RawValue: 624033
           Y:
             RawValue: 481689
         Rotation:
@@ -1606,7 +1530,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 154075
+            RawValue: 764215
           Y:
             RawValue: 509214
         Rotation:
@@ -1663,7 +1587,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -121045
+            RawValue: 489095
           Y:
             RawValue: 481689
         Rotation:
@@ -1673,7 +1597,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -255393
+            RawValue: 354746
           Y:
             RawValue: 454164
         Rotation:
@@ -1730,7 +1654,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -230096
+            RawValue: 380043
           Y:
             RawValue: 509870
         Rotation:
@@ -1787,7 +1711,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 7274
+            RawValue: 617414
           Y:
             RawValue: -454164
         Rotation:
@@ -1844,7 +1768,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 250937
+            RawValue: 861077
           Y:
             RawValue: -509214
         Rotation:
@@ -1901,7 +1825,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 247136
+            RawValue: 857276
           Y:
             RawValue: 481689
         Rotation:
@@ -1911,7 +1835,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 281477
+            RawValue: 891617
           Y:
             RawValue: 482344
         Rotation:
@@ -1963,12 +1887,70 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+    - rid: 7580778974368759808
+      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 785121
+        Rotation:
+          RawValue: 0
+    - rid: 7580778974368759809
+      type: {class: PhysicsCollider2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        ShapeConfig:
+          ShapeType: 4
+          PolygonCollider:
+            Id:
+              Value: 0
+          CircleRadius:
+            RawValue: 0
+          CapsuleSize:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          EdgeExtent:
+            RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 294912
+            Y:
+              RawValue: 262144
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          RotationOffset:
+            RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+        Layer: 0
+        IsTrigger: 1
+        PhysicsMaterial:
+          Id:
+            Value: 0
+    - rid: 7580778974368759810
+      type: {class: PhysicsCallbacks2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        CallbackFlags:
+          Value: 0
+    - rid: 7580778974368759811
+      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        goalConfig:
+          Id:
+            Value: 337072248309995173
     - rid: 7782562688328007680
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
         Position:
           X:
-            RawValue: 2686
+            RawValue: 612827
           Y:
             RawValue: -482344
         Rotation:
@@ -1978,7 +1960,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -90243
+            RawValue: 519897
           Y:
             RawValue: 509870
         Rotation:
@@ -2035,7 +2017,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -100139
+            RawValue: 510001
           Y:
             RawValue: -482344
         Rotation:
@@ -2092,17 +2074,75 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 237174
+            RawValue: 847314
           Y:
             RawValue: -482344
         Rotation:
           RawValue: 0
+    - rid: 8911495939445751808
+      type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: -785121
+        Rotation:
+          RawValue: 0
+    - rid: 8911495939445751809
+      type: {class: PhysicsCollider2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        ShapeConfig:
+          ShapeType: 4
+          PolygonCollider:
+            Id:
+              Value: 0
+          CircleRadius:
+            RawValue: 0
+          CapsuleSize:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          EdgeExtent:
+            RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 294912
+            Y:
+              RawValue: 262144
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+          RotationOffset:
+            RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+        Layer: 0
+        IsTrigger: 1
+        PhysicsMaterial:
+          Id:
+            Value: 0
+    - rid: 8911495939445751810
+      type: {class: PhysicsCallbacks2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        CallbackFlags:
+          Value: 0
+    - rid: 8911495939445751811
+      type: {class: GoalPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        goalConfig:
+          Id:
+            Value: 269125312843482111
     - rid: 8914818115976560640
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
         Position:
           X:
-            RawValue: 248381
+            RawValue: 858521
           Y:
             RawValue: 481689
         Rotation:
@@ -2112,7 +2152,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: 235929
+            RawValue: 846069
           Y:
             RawValue: -482344
         Rotation:
@@ -2122,7 +2162,7 @@ MonoBehaviour:
       data:
         Position:
           X:
-            RawValue: -241303
+            RawValue: 368836
           Y:
             RawValue: -454164
         Rotation:

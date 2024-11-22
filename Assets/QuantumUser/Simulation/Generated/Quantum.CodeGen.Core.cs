@@ -6,6 +6,9 @@
 // fields or methods to them, please create partial
 // declarations in another file.
 // </auto-generated>
+
+using Quantum.QuantumUser.Simulation.Goal;
+
 #pragma warning disable 0109
 #pragma warning disable 1591
 
@@ -498,18 +501,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Goal : Quantum.IComponent {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
+    public AssetRef<GoalConfig> goalConfig;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16223;
+        hash = hash * 31 + goalConfig.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Goal*)ptr;
+        AssetRef.Serialize(&p->goalConfig, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

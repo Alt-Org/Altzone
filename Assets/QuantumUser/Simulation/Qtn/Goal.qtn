@@ -1,2 +1,4 @@
 component Goal
-{}
+{
+    AssetRef<GoalConfig> goalConfig;
+}
