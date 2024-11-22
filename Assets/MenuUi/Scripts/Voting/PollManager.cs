@@ -21,6 +21,7 @@ public static class PollManager
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
 
         PollData pollData = new EsinePollData(pollType, id, name, endTime, sprite, esinePollType, value);
+
         pollDataList.Add(pollData);
 
         PrintPollList();
@@ -79,7 +80,10 @@ public static class PollManager
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
         store.GetClanData(player.ClanId, data => clan = data);
 
-        pollDataList = clan.Polls;
+        if (clan.Polls != null)
+        {
+            pollDataList = clan.Polls;
+        }
     }
 
     public static void SavePollList()

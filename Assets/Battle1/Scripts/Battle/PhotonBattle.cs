@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Photon.Realtime;
 using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 using Player = Battle1.PhotonRealtime.Code.Player;
+using PhotonBattleRoom = Battle1.Scripts.Battle.Photon.PhotonBattleRoom;
 
 namespace Battle1.Scripts.Battle
 {

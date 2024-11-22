@@ -17,6 +17,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private Button _saveButton;
         [SerializeField]private TMP_InputField _nameInput;
         [SerializeField]private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
+        [SerializeField]private AvatarVisualDataScriptableObject _visualDataScriptableObject;
+        [SerializeField]private GameObject _avatarVisualsParent;
         private FeatureSlot _currentlySelectedCategory;
         
         
@@ -103,7 +105,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void LoadAvatarData()
         {
             _playerAvatar = new PlayerAvatar(PlayerPrefs.GetString("CharacterName"), LoadFeaturesFromPrefs(), LoadColorsFromPrefs(), LoadScaleFromPrefs());
-            _nameInput.text = _playerAvatar.Name;
+            // _nameInput.text = _playerAvatar.Name;
 
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClassID());
             _featurePicker.SetLoadedFeatures(_playerAvatar.Features);
@@ -159,20 +161,24 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SaveAvatarData()
         {
             SetSaveableData();
-            SaveName();
             SaveFeaturesToPrefs();
             SaveColorsToPrefs();
             SaveScaleToPrefs();
             PlayerPrefs.Save();
-        }
-        private void SaveName()
-        {
-            string characterName = _nameInput.text;
-            // Debug.Log("Character name saved: " + characterName);
 
-            _playerAvatar.Name = characterName;
-            PlayerPrefs.SetString("CharacterName", characterName);
+            SaveDataToScriptableObject();
         }
+
+        
+
+        // private void SaveName()
+        // {
+        //     string characterName = _nameInput.text;
+        //     // Debug.Log("Character name saved: " + characterName);
+
+        //     _playerAvatar.Name = characterName;
+        //     PlayerPrefs.SetString("CharacterName", characterName);
+        // }
         private void SaveFeaturesToPrefs()
         {
             List<FeatureID> features = _featurePicker.GetCurrentlySelectedFeatures();
@@ -193,6 +199,18 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             PlayerPrefs.SetFloat("ScaleX", _selectedScale.x);
             PlayerPrefs.SetFloat("ScaleY", _selectedScale.y);
+        }
+
+        private void SaveDataToScriptableObject()
+        {
+            _visualDataScriptableObject.sprites.Clear();
+            _visualDataScriptableObject.colors.Clear();
+            foreach(Image image in _avatarVisualsParent.GetComponentsInChildren<Image>())
+            {
+                _visualDataScriptableObject.sprites.Add(image.sprite);
+                _visualDataScriptableObject.colors.Add(image.color);
+            }
+            
         }
 
         #endregion

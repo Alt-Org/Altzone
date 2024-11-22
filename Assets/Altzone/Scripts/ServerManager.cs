@@ -133,7 +133,7 @@ public class ServerManager : MonoBehaviour
             {
                 if (player == null)
                 {
-                    OnLogInFailed();
+                    OnLogInFailed?.Invoke();
                     return;
                 }
                 bool gettingTasks = true;
@@ -143,13 +143,14 @@ public class ServerManager : MonoBehaviour
                     {
                         Debug.LogError("Failed to fetch task data.");
                         gettingTasks = false;
-                        return;
                     }
-
-                    Storefront.Get().SavePlayerTasks(tasks, tasks =>
+                    else
                     {
-                        gettingTasks = false;
-                    });
+                        Storefront.Get().SavePlayerTasks(tasks, tasks =>
+                        {
+                            gettingTasks = false;
+                        });
+                    }
                 }));
                 new WaitUntil(() => gettingTasks == false);
                 SetPlayerValues(player);
@@ -509,7 +510,11 @@ public class ServerManager : MonoBehaviour
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
 
         if (Player.clan_id == null)
+        {
+            if (callback != null)
+                callback(Clan);
             yield break;
+        }
 
 
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan/" + Player.clan_id, AccessToken, request =>

@@ -34,6 +34,9 @@ namespace Altzone.Scripts.Voting
         public long EndTime;
         public Sprite Sprite;
 
+        public List<string> YesVoters;
+        public List<string> NoVoters;
+
         public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite)
         {
             PollType = pollType;
@@ -41,6 +44,36 @@ namespace Altzone.Scripts.Voting
             Name = name;
             EndTime = endTime;
             Sprite = sprite;
+            YesVoters = new List<string>();
+            NoVoters = new List<string>();
+        }
+
+        public void AddVote(string playerId, bool answer)
+        {
+            bool isInYesVoters = YesVoters.Contains(playerId);
+            bool isInNoVoters = NoVoters.Contains(playerId);
+
+            if (!isInYesVoters && !isInNoVoters)
+            {
+                if (answer)
+                {
+                    YesVoters.Add(playerId);
+                }
+                else
+                {
+                    NoVoters.Add(playerId);
+                }
+            }
+            else if (isInYesVoters && !answer)
+            {
+                YesVoters.Remove(playerId);
+                NoVoters.Add(playerId);
+            }
+            else if (isInNoVoters && answer)
+            {
+                NoVoters.Remove(playerId);
+                YesVoters.Add(playerId);
+            }
         }
     }
 

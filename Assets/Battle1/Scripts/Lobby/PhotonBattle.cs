@@ -3,12 +3,11 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
-
-using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
 using Player = Battle1.PhotonRealtime.Code.Player;
+using Battle1.Scripts.Battle.Photon;
 
-namespace MenuUI.Scripts.Lobby
+namespace Battle1.Scripts.Lobby
 {
     /// <summary>
     ///  wrapper for PhotonBattleRoom

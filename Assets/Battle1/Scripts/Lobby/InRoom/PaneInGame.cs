@@ -1,9 +1,10 @@
-﻿using Prg.Scripts.Common.PubSub;
+﻿using Battle1.Scripts.Lobby;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
+//using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
-namespace MenuUI.Scripts.Lobby.InRoom
+namespace Battle1.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Top most pane in lobby while in room to manage player position in the game.
@@ -33,7 +34,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
-            this.Publish(new LobbyManager.PlayerPosEvent(PositionMap[positionIndex]));
+            this.Publish(new LobbyManagerOld.PlayerPosEvent(PositionMap[positionIndex]));
         }
     }
 }

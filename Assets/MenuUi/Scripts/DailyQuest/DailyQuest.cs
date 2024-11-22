@@ -66,7 +66,6 @@ public class DailyQuest : MonoBehaviour
 
     public void SetQuestActive()
     {
-       
         dailyTaskManager.CancelTask();
 
         unActiveTask.SetActive(false);
@@ -75,7 +74,13 @@ public class DailyQuest : MonoBehaviour
 
         dailyTaskManager.TakeTask(taskId);
 
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => p.dailyTaskId = taskId);
+        PlayerData playerData = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+        if (playerData != null)
+        {
+            playerData.dailyTaskId = taskId;
+            Debug.Log("Updated Player Data ID: " + playerData.dailyTaskId);
+        }
     }
 
 
@@ -85,12 +90,27 @@ public class DailyQuest : MonoBehaviour
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
         playerData.dailyTaskId = -1;
 
+        popUpScreen.GetComponent<PopupManager>().EnableCancelPopup(taskId, this);
+
+
+
+    }
+
+    public void CallCancel()
+    {
         unActiveTask.SetActive(true);
         activeTask.SetActive(false);
+        Debug.Log("Quest has been canceled");
+
+        PlayerData playerData = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+        if (playerData != null)
+        {
+            playerData.dailyTaskId = -1;
+            Debug.Log("Updated Player Data ID: " + playerData.dailyTaskId);
+        }
+
         dailyTaskManager.CancelTask();
-
-        Debug.Log("Quest has been Canceled");
-
     }
 
 }

@@ -6,11 +6,9 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using UnityEngine.UIElements;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using UnityEditor.UIElements;
 
 public class ProfileMenu : MonoBehaviour
 
@@ -51,7 +49,7 @@ public class ProfileMenu : MonoBehaviour
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
 
-    
+
 
     private ServerPlayer _player;
 
@@ -83,15 +81,15 @@ public class ProfileMenu : MonoBehaviour
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
-        if (carbonDisplay >= 1000f)                                                                                  
+        if (carbonDisplay >= 1000f)
         {
             carbonDisplay /= 1000f;
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
+        _CarbonText.text = $"HiilijalanjÃ¤lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // HiilijalanjÃ¤lki teksti
 
-        // Päivittää minuutin välein peliajan.
+        // PÃ¤ivittÃ¤Ã¤ minuutin vÃ¤lein peliajan.
         if (secondsCount >= 60f)
         {
             minuteCount++;

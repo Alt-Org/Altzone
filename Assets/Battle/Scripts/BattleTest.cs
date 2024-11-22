@@ -8,7 +8,7 @@ namespace Battle.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            Debug.Log($"Photon realtime {RealtimeClient.Version} for Quantum");
+            Debug.Log($"Photon realtime {RealtimeClient.Version} for Quantum.");
         }
     }
 }
