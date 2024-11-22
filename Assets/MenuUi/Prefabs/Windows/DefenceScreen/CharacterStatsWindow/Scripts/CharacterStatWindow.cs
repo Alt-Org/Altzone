@@ -49,6 +49,11 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI DiamondHPAmountNumber;
     public TextMeshProUGUI EraserAmountNumber;
 
+    [Header("Descriptions")]
+    public TextMeshProUGUI CharDescription;//hahmon kuvaus
+    public TextMeshProUGUI DefClassSpecial;//defenssiluokan erikoistaidon kuvaus
+
+
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
 
     private int CurrentlySelectedStat = -1;
@@ -559,6 +564,16 @@ public class CharacterStatWindow : MonoBehaviour
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
+
+
+        //haetaan timanttien määrät playerdatasta
+        int DiamondSpeedAmount = _playerData.DiamondSpeed;
+        int diamondAttackAmount = _playerData.DiamondAttack;
+        int diamondDefenceAmount = _playerData.DiamondDefence;
+        int diamondHPAmount = _playerData.DiamondHP;
+        //pyyhekumien määrä playerdatasta
+        int eraserAmount = _playerData.Eraser;
+
 
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
