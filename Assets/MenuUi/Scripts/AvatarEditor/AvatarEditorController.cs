@@ -17,6 +17,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private Button _saveButton;
         [SerializeField]private TMP_InputField _nameInput;
         [SerializeField]private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
+        [SerializeField]private AvatarVisualDataScriptableObject _visualDataScriptableObject;
+        [SerializeField]private GameObject _avatarVisualsParent;
         private FeatureSlot _currentlySelectedCategory;
         
         
@@ -163,7 +165,12 @@ namespace MenuUi.Scripts.AvatarEditor
             SaveColorsToPrefs();
             SaveScaleToPrefs();
             PlayerPrefs.Save();
+
+            SaveDataToScriptableObject();
         }
+
+        
+
         // private void SaveName()
         // {
         //     string characterName = _nameInput.text;
@@ -192,6 +199,18 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             PlayerPrefs.SetFloat("ScaleX", _selectedScale.x);
             PlayerPrefs.SetFloat("ScaleY", _selectedScale.y);
+        }
+
+        private void SaveDataToScriptableObject()
+        {
+            _visualDataScriptableObject.sprites.Clear();
+            _visualDataScriptableObject.colors.Clear();
+            foreach(Image image in _avatarVisualsParent.GetComponentsInChildren<Image>())
+            {
+                _visualDataScriptableObject.sprites.Add(image.sprite);
+                _visualDataScriptableObject.colors.Add(image.color);
+            }
+            
         }
 
         #endregion
