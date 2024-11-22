@@ -130,15 +130,7 @@ public class ClanCreateNew : MonoBehaviour
 
     private void SetValuesPanel()
     {
-        for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(_valuesContainer.transform.GetChild(i).gameObject);
-        }
-        foreach (string Text in _valuesList)
-        {
-            GameObject ValueObject = Instantiate(_valuePrefab, _valuesContainer.transform);
-            ValueObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = Text;
-        }
+        _valuesContainer.GetComponent<ValuePanelController>().CreateLabels();
     }
 
     public void PostClanToServer()

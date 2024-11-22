@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 public class BattlePopupCharacterSlotController : MonoBehaviour
 {
-    [SerializeField] private GridLayoutGroup _layout;
     [SerializeField] private Transform _horizontalContentPanel;
     //private CharacterSlot[] _curSelectedCharacterSlots;
     [SerializeField] private GameObject _characterSlotprefab;
@@ -25,8 +24,6 @@ public class BattlePopupCharacterSlotController : MonoBehaviour
     private void OnEnable()
     {
         float size = GetComponent<RectTransform>().rect.height - 20;
-        //Debug.LogWarning(size);
-        _layout.cellSize = new(size, size);
 
         /*for (int i = 0; i < _curSelectedCharacterSlots.Length; i++)
         {
