@@ -59,6 +59,18 @@ namespace MenuUI.Scripts.SoulHome {
             StartCoroutine(SpawnAvatar());
         }
 
+        private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
+        {
+            List<IMultipartFormSection> body = new();
+
+            body.Add(new MultipartFormFileSection("logFile","test", null,"test.log"));
+
+            ServerManager.Instance.SendDebugLogFile(body, "my_secret", "UploadTestNiko", callback =>
+             {
+                 Debug.LogWarning(callback.error+ "  :"+callback.downloadHandler.text);
+             });
+        }
+
         public IEnumerator HomeLoad()
         {
             string json;
@@ -184,7 +196,7 @@ namespace MenuUI.Scripts.SoulHome {
                     roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
                     roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
                 }
-                roomObject.GetComponent<RoomData>().InitializeRoom(room,_soulHomeController, _towerCamera);
+                roomObject.GetComponent<RoomData>().InitializeSoulHomeRoom(room,_soulHomeController, _towerCamera);
                 if (i == 0)
                 {
                     _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();

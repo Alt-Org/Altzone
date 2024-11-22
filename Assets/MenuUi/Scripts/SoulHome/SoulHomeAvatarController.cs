@@ -30,7 +30,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (transform.parent.CompareTag("Room"))
             {
-                _points = transform.parent.Find("FurniturePoints");
+                _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
                 SetAvatar(_points, _roomData);
             }
@@ -561,12 +561,8 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckPositionDepth()
         {
-            //Vector2 checkPoint;
-            //Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-
             Vector2 hitPoint = transform.position + new Vector3(0, -0.01f);
 
-            //checkPoint = hitPoint + new Vector2((transform.localScale.x / 2) * -1 + transform.localScale.x / (2 * size.x), 0);
             Vector3 origin = new(hitPoint.x, hitPoint.y, 1);
             Ray ray = new(origin, (Vector3)hitPoint - origin);
             RaycastHit2D[] hitArray;
@@ -575,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 3 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row-1) * 2;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 10;
                     return;
                 }
             }
@@ -587,7 +583,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 3 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row) * 2;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 10;
                 }
             }
         }

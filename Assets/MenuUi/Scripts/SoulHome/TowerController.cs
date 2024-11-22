@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -714,15 +715,21 @@ namespace MenuUI.Scripts.SoulHome
             if (!_changedFurnitureList.Contains(selectedFurniture))
             {
                 if(selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
-                    || (!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
+                    || !selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    || ((selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    || (selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.FloorNonblock
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.RotatedNonBlock != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)))
                     _changedFurnitureList.Add(selectedFurniture);
             }
             else
             {
                 if (selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
-                    || (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
+                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    && ((selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    || (selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.FloorNonblock
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.RotatedNonBlock != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)))
                     _changedFurnitureList.Remove(selectedFurniture);
             }
         }

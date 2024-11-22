@@ -31,6 +31,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         Floor,
         FloorByWall,
+        FloorNonblock,
         Ceiling,
         Wall
 
