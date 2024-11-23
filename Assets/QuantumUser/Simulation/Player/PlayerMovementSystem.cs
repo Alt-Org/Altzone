@@ -16,19 +16,16 @@ namespace Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
-            // gets the input for player 1
-            Input* input = f.GetPlayerInput(0);
-
+            Input* input = default;
+            if(f.Unsafe.TryGetPointer(filter.Entity, out PlayerData* playerData))
+            {
+                input = f.GetPlayerInput(playerData->Player);
+            }
             UpdatePlayerMovement(f, ref filter, input);
         }
 
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
-<<<<<<< Updated upstream
-            FPVector3 targetPos;
-            
-=======
->>>>>>> Stashed changes
             if (input->MouseClick)
             {
                 filter.PlayerData->TargetPos = input->MousePosition;

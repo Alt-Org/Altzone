@@ -14,7 +14,7 @@ namespace Quantum
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20});
+            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, CurrentPos = default, TargetPos = default, TargetPos2D = default, isAllowedToMove = false});
 
             //gets the right spawnpoint for player
             int spawnCount = f.ComponentCount<SpawnIdentifier>();
@@ -35,9 +35,12 @@ namespace Quantum
                 }
             }
 
-            //teleports player to spawnpoint's position
+            //teleports player to spawnpoint's position and updates current player position
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(playerEntity);
+
             playerTransform->Teleport(f, _spawnPos2D);
+            playerData->CurrentPos = playerTransform->Position;
         }
     }
 }
