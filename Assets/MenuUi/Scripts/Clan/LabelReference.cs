@@ -47,8 +47,8 @@ namespace MenuUi.Scripts.Clan
     [Serializable]
     public class LabelInfoObject
     {
-        public ClanValues values;
         public string Name;
+        public ClanValues values;
         public Sprite Image;
     }
 
