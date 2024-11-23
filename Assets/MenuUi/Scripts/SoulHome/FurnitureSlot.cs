@@ -21,6 +21,7 @@ namespace MenuUI.Scripts.SoulHome
         private Furniture _tempFurnitureNonBlock;
         private bool _tempRotated;
         private bool _tempRotatedNonBlock;
+        private bool _ladder = false;
 
         public Furniture Furniture { get => furniture;
             set
@@ -60,6 +61,7 @@ namespace MenuUI.Scripts.SoulHome
         public bool TempRotated { get => _tempRotated;}
         public bool RotatedNonBlock { get => _rotatedNonBlock; }
         public bool TempRotatedNonBlock { get => _tempRotatedNonBlock;}
+        public bool Ladder { get => _ladder; set => _ladder = value; }
 
         public void InitializeSlot(int row, int column, int id, float scale, float maxRow, float width, float height)
         {

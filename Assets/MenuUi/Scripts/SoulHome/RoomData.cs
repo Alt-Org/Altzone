@@ -42,6 +42,8 @@ namespace MenuUI.Scripts.SoulHome
         private SpriteRenderer _roomSprite;
         [SerializeField]
         private SpriteRenderer _wallPaper;
+        [SerializeField]
+        private Transform _ladder;
 
         private Room _roomInfo;
         private SoulHomeController _controller;
@@ -57,21 +59,21 @@ namespace MenuUI.Scripts.SoulHome
             //roomInfo = new Room();
             //_controller = GetComponentInParent<SoulHomeController>();
         }
-        public void InitializeSoulHomeRoom(Room roomInfo, SoulHomeController controller, Camera towerCamera)
+        public void InitializeSoulHomeRoom(Room roomInfo, SoulHomeController controller, Camera towerCamera, bool topRoom)
         {
             _roomInfo = roomInfo;
             _controller = controller;
             _towerCamera = towerCamera.transform;
-            InitializeRoom();
+            InitializeRoom(topRoom);
         }
 
         public void InitializeRaidRoom(Room roomInfo)
         {
             _roomInfo = roomInfo;
-            InitializeRoom();
+            InitializeRoom(true);
         }
 
-        private void InitializeRoom()
+        private void InitializeRoom(bool topRoom)
         {
             int row = 0;
             int col = 0;
@@ -138,6 +140,18 @@ namespace MenuUI.Scripts.SoulHome
 
             Destroy(furnitureRowObject);
 
+            if (!topRoom)
+            {
+                _ladder.gameObject.SetActive(true);
+                foreach(Transform rowTransform in _wallFurniturePoints)
+                {
+                    rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                    rowTransform.GetChild(2).GetComponent<FurnitureSlot>().Ladder = true;
+                }
+                _floorFurniturePoints.GetChild(0).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+                _floorFurniturePoints.GetChild(1).GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
+            }
+
             if (_roomInfo.Furnitures.Count > 0) InitialSetFurniture();
         }
 
@@ -195,18 +209,21 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall)
                     {
-                        if (_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
-                            && !_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture)) return false;
+                        if ((_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
+                            && !_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
+                            || _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
                     }
                     else if (furniture.Place is FurniturePlacement.FloorNonblock)
                     {
-                        if (_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurnitureNonBlock != null
-                            && !_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurnitureNonBlock.Equals(furniture)) return false;
+                        if ((_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurnitureNonBlock != null
+                            && !_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurnitureNonBlock.Equals(furniture))
+                            || _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
                     }
                     else if(furniture.Place is FurniturePlacement.Wall)
                     {
-                        if (_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
-                            && !_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture)) return false;
+                        if ((_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture != null
+                            && !_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().TempFurniture.Equals(furniture))
+                            || _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().Ladder) return false;
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
                     {

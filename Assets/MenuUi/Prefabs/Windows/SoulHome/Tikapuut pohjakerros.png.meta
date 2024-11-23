@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e6f914605acbb33429d7d66198d8e770
+guid: 095b9ba48bc7bd74c87ce7bd942b8009
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -46,8 +46,8 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 7
-  spritePivot: {x: 0.5, y: 0}
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 512
+    maxTextureSize: 256
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -162,12 +162,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tikapuut keskikerros_0
+      name: Tikapuut pohjakerros_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 26
-        width: 64
+        x: 34
+        y: 34
+        width: 66
         height: 141
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -176,8 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a40a8bd1b7607d34ca251ebf7ae017a9
-      internalID: 417705874
+      spriteID: c6e89d0869d06f84e9941f75c87a88f0
+      internalID: -1121849152
       vertices: []
       indices: 
       edges: []
@@ -193,7 +193,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Tikapuut keskikerros_0: 417705874
+      Tikapuut pohjakerros_0: -1121849152
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
