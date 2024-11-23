@@ -571,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
                     return;
                 }
             }
@@ -583,7 +583,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
                 }
             }
         }
