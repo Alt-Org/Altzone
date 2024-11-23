@@ -68,6 +68,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Goals = clan.goal;
             ClanHeartPieces = new();
             IsOpen = clan.isOpen;
+            if (clan.polls != null) Polls = clan.polls;
         }
 
         public void CallDataUpdate()

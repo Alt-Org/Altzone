@@ -55,10 +55,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 IsVisible = true, // Pit�� muokata varmaankin //
                 IsOpen = true,
-                MaxPlayers = 4//,
-                //Plugins = new string[] { "QuantumPlugin" }//,
-                //PlayerTtl = PhotonRealtimeClient.ServerSettings.PlayerTtlInSeconds * 1000,
-                //EmptyRoomTtl = PhotonRealtimeClient.ServerSettings.EmptyRoomTtlInSeconds * 1000
+                MaxPlayers = 4,
+                Plugins = new string[] { "QuantumPlugin" },
+                PlayerTtl = PhotonRealtimeClient.ServerSettings.PlayerTtlInSeconds * 1000,
+                EmptyRoomTtl = PhotonRealtimeClient.ServerSettings.EmptyRoomTtlInSeconds * 1000
             };
             Debug.Log($"{roomName}");
             PhotonRealtimeClient.CreateRoom(roomName, roomOptions);

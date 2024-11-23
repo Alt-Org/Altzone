@@ -14844,7 +14844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 6e04f143f7d154c4092dba163406cfca, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!114 &5173261116407756641
 MonoBehaviour:
@@ -14926,6 +14926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf38721bf9909f84aa3dea1d8bde8916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WindowDef: {fileID: 0}
   panelToBeSetInActive: {fileID: 5232204251837161986}
   esine: {fileID: 0}
 --- !u!1 &8729464021807859694
@@ -20881,6 +20882,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3855219591597786248}
     m_Modifications:
+    - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 10.000061
+      objectReference: {fileID: 0}
     - target: {fileID: 316185251139383194, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -21479,6 +21485,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3855219591597786248}
     m_Modifications:
+    - target: {fileID: 362043569392268121, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _bottomPanelRectTransfrom
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.x

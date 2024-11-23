@@ -410,8 +410,7 @@ public static class PhotonRealtimeClient
 
         if (appSettings.IsBestRegion)
         {
-            Debug.LogWarning("Check1");
-            return ConnectToBestCloudServer();
+            return ConnectToBestCloudServer(appSettings);
         }
 
         return ConnectToRegion(appSettings.FixedRegion);
@@ -453,7 +452,7 @@ public static class PhotonRealtimeClient
         return Client.ConnectUsingSettings(Client.AppSettings);
     }
 
-    public static bool ConnectToBestCloudServer()
+    public static bool ConnectToBestCloudServer(AppSettings appSettings)
     {
         if (Client.RealtimePeer.PeerState != PeerStateValue.Disconnected)
         {
@@ -470,7 +469,7 @@ public static class PhotonRealtimeClient
         //ConnectMethod = ConnectMethod.ConnectToBest;
 
         // Connecting to "Best Region" begins with connecting to the Name Server.
-        bool couldConnect = Client.ConnectUsingSettings(Client.AppSettings);
+        bool couldConnect = Client.ConnectUsingSettings(appSettings);
         return couldConnect;
     }
 
