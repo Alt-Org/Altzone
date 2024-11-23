@@ -10,16 +10,18 @@ using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
-    public class DraggableCharacter : MonoBehaviour, IGalleryCharacterData, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class ClickableCharacter : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _backgroundSpriteImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
-        
+
         private Button button;
         private ColorBlock originalColors;
+        private Color orange = new Color(1f, 0.64f, 0, 0);
+        private Color purple = new Color(0.5f, 0, 0.5f, 0);
 
         [HideInInspector] public Transform parentAfterDrag;
         private Transform previousParent;
@@ -51,6 +53,28 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        public Color GetCharacterClassColor(CharacterClassID id)
+        {
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    return Color.blue;
+                case CharacterClassID.Trickster:
+                    return Color.green;
+                case CharacterClassID.Obedient:
+                    return orange;
+                case CharacterClassID.Projector:
+                    return Color.yellow;
+                case CharacterClassID.Retroflector:
+                    return Color.red;
+                case CharacterClassID.Confluent:
+                    return purple;
+                case CharacterClassID.Intellectualizer:
+                    return Color.blue;
+                default:
+                    return Color.gray;
+            }
+        }
         public void OnBeginDrag(PointerEventData eventData)
         {
             parentAfterDrag = transform.parent;
@@ -66,6 +90,9 @@ namespace MenuUi.Scripts.CharacterGallery
             button.colors = transparentColors;
             //previousParent = transform.parent;
             _swipe.DragWithBlock(eventData, _blockType);
+
+            
+
             GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
@@ -80,7 +107,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (eventData.pointerEnter != null)
             {
-                DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
+                ClickableCharacter targetCharacter = eventData.pointerEnter.GetComponent<ClickableCharacter>();
                 if (targetCharacter != null)
                 {
                     // Check if targetCharacter's parent is tagged as "Topslot"
@@ -110,7 +137,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 // If droppedSlot is Topslot, find empty Topslot
                 if (droppedSlot.tag == "Topslot")
                 {
-                    DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
+                    ClickableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<ClickableCharacter>();
                     if (topSlotCharacter != null)
                     {
                         // Move topSlotCharacter to it's initialSlot
@@ -150,7 +177,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-            
         }
 
         private void HandleParentChange(Transform newParent)
@@ -164,16 +190,16 @@ namespace MenuUi.Scripts.CharacterGallery
                     OnParentChanged?.Invoke(newParent);
                 }
             }
-            
         }
 
 
-        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view)
+        public void SetInfo(Sprite sprite, string name, CharacterID id, ModelView view, Image backgroundimage)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
             _id = id;
             _modelView = view;
+            _backgroundSpriteImage = backgroundimage;
         }
     }
 }

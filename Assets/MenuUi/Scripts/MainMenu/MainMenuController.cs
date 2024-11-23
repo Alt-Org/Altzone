@@ -102,7 +102,7 @@ namespace MenuUi.Scripts.MainMenu
         /// <remarks>
         /// This might only be necessary on PC and Unity Editor
         /// </remarks>
-        private IEnumerator CheckWindowSize()
+        private IEnumerator CheckWindowSize() //Tällä saa ikkunan koon.
         {
             while (true)
             {
