@@ -38,6 +38,11 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Transform _wallFurniturePoints;
 
+        [SerializeField]
+        private SpriteRenderer _roomSprite;
+        [SerializeField]
+        private SpriteRenderer _wallPaper;
+
         private Room _roomInfo;
         private SoulHomeController _controller;
         private Transform _towerCamera;
@@ -70,6 +75,8 @@ namespace MenuUI.Scripts.SoulHome
         {
             int row = 0;
             int col = 0;
+            _roomSprite.sortingOrder = 1000 * _roomInfo.id;
+            _wallPaper.sortingOrder = 1000 * _roomInfo.id + 1;
             GameObject furnitureRowObject = new GameObject();
             float prevBottom = 0;
             for(int i = 0; i < _slotRows; i++)
