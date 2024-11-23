@@ -12,12 +12,10 @@ namespace Quantum
 
         public void PollInput(CallbackPollInput callback)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-
             Input i = new()
             {
                 MouseClick = UnityEngine.Input.GetMouseButton(0),
-                MousePosition = mousePos.ToFPVector3()
+                MousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition).ToFPVector3()
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
