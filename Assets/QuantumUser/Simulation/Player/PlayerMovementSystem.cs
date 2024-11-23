@@ -7,9 +7,6 @@ namespace Quantum
     [Preserve]
     public unsafe class PlayerMovementSystem : SystemMainThreadFilter<PlayerMovementSystem.Filter>
     {
-        private FPVector2 _targetPos2D;
-        private bool _startMovement = false;
-
         public struct Filter
         {
             public EntityRef Entity;
@@ -19,31 +16,32 @@ namespace Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
-            Input* input = default;
-            if(f.Unsafe.TryGetPointer(filter.Entity, out PlayerData* playerData))
-            {
-                input = f.GetPlayerInput(playerData->Player);
-            }
+            // gets the input for player 1
+            Input* input = f.GetPlayerInput(0);
 
             UpdatePlayerMovement(f, ref filter, input);
         }
 
         private void UpdatePlayerMovement(Frame f, ref Filter filter, Input* input)
         {
+<<<<<<< Updated upstream
             FPVector3 targetPos;
-
+            
+=======
+>>>>>>> Stashed changes
             if (input->MouseClick)
             {
-                targetPos = input->MousePosition;
-                _targetPos2D.X = targetPos.X;
-                _targetPos2D.Y = targetPos.Z;
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", _targetPos2D);
-                _startMovement = true;
+                filter.PlayerData->TargetPos = input->MousePosition;
+                filter.PlayerData->TargetPos2D.X = filter.PlayerData->TargetPos.X;
+                filter.PlayerData->TargetPos2D.Y = filter.PlayerData->TargetPos.Z;
+                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPos2D);
+                filter.PlayerData->isAllowedToMove = true;
             }
 
-            if(filter.Transform->Position != _targetPos2D && _startMovement)
+            if(filter.PlayerData->CurrentPos != filter.PlayerData->TargetPos2D && filter.PlayerData->isAllowedToMove)
             {
-                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, _targetPos2D, filter.PlayerData->Speed * f.DeltaTime);
+                filter.Transform->Position = FPVector2.MoveTowards(filter.PlayerData->CurrentPos, filter.PlayerData->TargetPos2D, filter.PlayerData->Speed * f.DeltaTime);
+                filter.PlayerData->CurrentPos = filter.Transform->Position;
             }
         }
     }

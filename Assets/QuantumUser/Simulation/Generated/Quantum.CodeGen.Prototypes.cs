@@ -66,6 +66,10 @@ namespace Quantum.Prototypes {
   public unsafe partial class PlayerDataPrototype : ComponentPrototype<Quantum.PlayerData> {
     public PlayerRef Player;
     public FP Speed;
+    public FPVector2 CurrentPos;
+    public FPVector3 TargetPos;
+    public FPVector2 TargetPos2D;
+    public QBoolean isAllowedToMove;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerData result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerData component = default;
@@ -75,6 +79,10 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.PlayerData result, in PrototypeMaterializationContext context = default) {
         result.Player = this.Player;
         result.Speed = this.Speed;
+        result.CurrentPos = this.CurrentPos;
+        result.TargetPos = this.TargetPos;
+        result.TargetPos2D = this.TargetPos2D;
+        result.isAllowedToMove = this.isAllowedToMove;
         MaterializeUser(frame, ref result, in context);
     }
   }

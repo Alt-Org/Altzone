@@ -2,4 +2,8 @@ component PlayerData
 {
     PlayerRef Player;
     FP Speed;
+    FPVector2 CurrentPos;
+    FPVector3 TargetPos;
+    FPVector2 TargetPos2D;
+    bool isAllowedToMove;
 }
