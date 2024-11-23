@@ -223,19 +223,27 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetScale()
         {
-            transform.localScale /= 1.0f + (_tempSlot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : (GetComponent<SpriteRenderer>().sortingOrder - 3)/10-1) / (_tempSlot.maxRow - 1f));
-
-            GetComponent<SpriteRenderer>().sortingOrder = 3 + (_tempSlot.row+1)*10;
-            transform.localScale *= 1.0f + (_tempSlot.maxDepthScale/100f) * (((float)_tempSlot.row)/(_tempSlot.maxRow-1f));
-            //Debug.Log("Scale 1: " + ((_tempSlot.maxDepthScale / 100f) * (((float)_tempSlot.row) / (_tempSlot.maxRow - 1f))));
+            SetScale(_tempSlot.row, _tempSlot);
         }
 
         public void SetScale(int row, FurnitureSlot slot)
         {
-            transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 3 ? 3 : (GetComponent<SpriteRenderer>().sortingOrder - 3) / 10 -1) / (slot.maxRow - 1f));
-
-            GetComponent<SpriteRenderer>().sortingOrder = 3 + (row+1)*10;
-            transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            if (Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 103 ? 1 : (GetComponent<SpriteRenderer>().sortingOrder - 3) / 100 - 1) / (slot.maxRow - 1f));
+                GetComponent<SpriteRenderer>().sortingOrder = 3 + (row + 1) * 100;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
+            else if (Furniture.Place is FurniturePlacement.FloorNonblock)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((GetComponent<SpriteRenderer>().sortingOrder < 12 ? 1 : (GetComponent<SpriteRenderer>().sortingOrder - 1) / 10 - 2) / (slot.maxRow - 1f));
+                GetComponent<SpriteRenderer>().sortingOrder = 1+ (row + 2) * 10;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
+            else if (Furniture.Place is FurniturePlacement.Wall)
+            {
+                GetComponent<SpriteRenderer>().sortingOrder = 10 - (row+1);
+            }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
         }
 
