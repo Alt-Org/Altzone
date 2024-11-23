@@ -102,7 +102,7 @@ namespace MenuUI.Scripts.SoulHome
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
-            Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
+            //Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             _camera.fieldOfView = 90f;
@@ -116,8 +116,8 @@ namespace MenuUI.Scripts.SoulHome
 
             SetScrollSpeed();
 
-            Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
-            Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
+            //Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
+            //Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
 
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
@@ -250,13 +250,13 @@ namespace MenuUI.Scripts.SoulHome
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }*/
                 //cameraMove = false;
-                Debug.Log(currentScrollSlideDirection);
+                //Debug.Log(currentScrollSlideDirection);
             }
             else if(!cameraMove)
             {
                 if (currentScrollSlideDirection != Vector2.zero)
                 {
-                    Debug.Log(currentScrollSlide);
+                    //Debug.Log(currentScrollSlide);
                     if (currentScrollSlide.x > 0)
                         currentScrollSlide.x = Mathf.Max(0, currentScrollSlide.x - startScrollSlide.x/20);
                     if (currentScrollSlide.y > 0)
@@ -363,7 +363,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
                     {
-                        Debug.Log("Furniture");
+                        //Debug.Log("Furniture");
                         //if(selectedRoom == null) continue;
                         //else
                         {
@@ -444,7 +444,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             if ((ClickStateHandler.GetClickType() is ClickType.Click) && (furnitureObject != null || _tempSelectedFurniture != null))
             {
-                Debug.Log(furnitureObject);
+                //Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
                 if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
@@ -519,7 +519,7 @@ namespace MenuUI.Scripts.SoulHome
             _pinched = true;
             if (scroll)
             {
-                Debug.Log("Pinch: " + pinchDistance / 100);
+                //Debug.Log("Pinch: " + pinchDistance / 100);
                 ClampCameraDistance(pinchDistance / 100);
             }
             else
@@ -530,7 +530,7 @@ namespace MenuUI.Scripts.SoulHome
                     float change = pinchDistance - _prevPinchDistance;
                     float scaledChange = change / Vector2.Distance(_displayScreen.GetComponent<RectTransform>().rect.max, _displayScreen.GetComponent<RectTransform>().rect.min);
 
-                    Debug.Log("Pinch: " + scaledChange);
+                    //Debug.Log("Pinch: " + scaledChange);
 
                     ClampCameraDistance(scaledChange*100);
 
@@ -842,7 +842,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckScreenRotationStatus()
         {
-            Debug.Log(Screen.orientation);
+            //Debug.Log(Screen.orientation);
             if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
             {
                 _rotated = true;
@@ -896,7 +896,7 @@ namespace MenuUI.Scripts.SoulHome
                 x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             else
                 x = (cameraMinX+cameraMaxX)/2;
-            Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
+            //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
             transform.position = new(x, y, transform.position.z);
 
         }

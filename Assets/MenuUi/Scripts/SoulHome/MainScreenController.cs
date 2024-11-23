@@ -144,8 +144,8 @@ namespace MenuUI.Scripts.SoulHome
 
         private void RayPoint(ClickState click)
         {
-            Debug.Log(click);
-            Debug.Log(Screen.orientation);
+            //Debug.Log(click);
+            //Debug.Log(Screen.orientation);
 
             Ray ray = _camera.ScreenPointToRay(ClickStateHandler.GetClickPosition());
 
@@ -155,7 +155,7 @@ namespace MenuUI.Scripts.SoulHome
             bool soulHomeHit = false;
             foreach (RaycastHit2D hit1 in hit)
             {
-                Debug.LogWarning(hit1.collider.gameObject.ToString());
+                //Debug.LogWarning(hit1.collider.gameObject.ToString());
                 if (hit1.collider.gameObject.CompareTag("Overlay")) overlayHit = true;
                 /*else if (!hit1.collider.gameObject.CompareTag("SoulHomeScreen"))
                 {
