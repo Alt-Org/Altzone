@@ -101,29 +101,31 @@ namespace MenuUI.Scripts.SoulHome
             prevBottom = 0;
             float wallWidth = transform.Find("Room").Find("BackWall").GetComponent<BoxCollider2D>().size.x;
             float wallHeight = transform.Find("Room").Find("BackWall").GetComponent<BoxCollider2D>().size.y;
+            int wallSlotRows = (int)Mathf.Floor(wallHeight / 2.5f);
+            int wallSlotColumns = (int)Mathf.Floor(wallWidth / 2.5f);
 
-            for (int i = 0; i < _slotRows; i++)
+            for (int i = 0; i < wallSlotRows; i++)
             {
                 GameObject furnitureRow = Instantiate(furnitureRowObject, _wallFurniturePoints);
                 if (_floorAnchorPosition is RectPosition.Center)
-                    furnitureRow.transform.localPosition = new Vector3(0, (wallHeight / 2) + -1 * (wallHeight / _slotRows * (0.5f + i)), 0);
+                    furnitureRow.transform.localPosition = new Vector3(0, (wallHeight / 2) + -1 * (wallHeight / wallSlotRows * (0.5f + i)), 0);
                 else if (_floorAnchorPosition is RectPosition.Top)
-                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((wallHeight / _slotRows + (wallHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i))) / 2), 0);
+                    furnitureRow.transform.localPosition = new Vector3(0, prevBottom + -1 * ((wallHeight / wallSlotRows + (wallHeight / wallSlotRows) * (0.05f * (wallSlotRows / -2 + 0.5f + i))) / 2), 0);
                 furnitureRow.name = (1 + i).ToString();
                 col = 0;
-                for (int j = 0; j < _slotColumns; j++)
+                for (int j = 0; j < wallSlotColumns; j++)
                 {
                     GameObject furnitureSlot = Instantiate(_furnitureSlotPrefab, furnitureRow.transform);
-                    furnitureSlot.transform.localPosition = new Vector3((-1 * wallWidth / 2) + wallWidth / _slotColumns * (0.5f + j), 0, 0);
-                    float slotDepth = wallHeight / _slotRows + (wallHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
-                    float slotWidth = (wallWidth / _slotColumns);
+                    furnitureSlot.transform.localPosition = new Vector3((-1 * wallWidth / 2) + wallWidth / wallSlotColumns * (0.5f + j), 0, 0);
+                    float slotDepth = wallHeight / wallSlotRows + (wallHeight / wallSlotRows) * (0.05f * (wallSlotRows / -2 + 0.5f + i));
+                    float slotWidth = (wallWidth / wallSlotColumns);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, _slotMaxGrowthPercentage, wallSlotRows, slotWidth, slotDepth);
                     furnitureSlot.tag = "WallFurnitureSlot";
                     col++;
                 }
-                prevBottom -= wallHeight / _slotRows + (wallHeight / _slotRows) * (0.05f * (_slotRows / -2 + 0.5f + i));
+                prevBottom -= wallHeight / wallSlotRows + (wallHeight / wallSlotRows) * (0.05f * (wallSlotRows / -2 + 0.5f + i));
                 row++;
             }
 
