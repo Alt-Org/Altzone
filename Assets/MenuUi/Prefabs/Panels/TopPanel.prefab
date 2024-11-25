@@ -960,6 +960,7 @@ GameObject:
   - component: {fileID: 124671689533697189}
   - component: {fileID: 2029361718019638718}
   - component: {fileID: 3467556909806299412}
+  - component: {fileID: 8738398879254187486}
   m_Layer: 5
   m_Name: ClanLeaderboardButton
   m_TagString: Untagged
@@ -1015,7 +1016,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a8a4fcdeaac583d45acdce1ad0cecfe2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1305e4ca5e1b0464cb546d1229c4ad46, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1107,6 +1108,20 @@ MonoBehaviour:
     ImageSprite: {fileID: 0}
   - ShowCondition: 7
     ImageSprite: {fileID: 0}
+--- !u!114 &8738398879254187486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264391340277126322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: dec6696e02e9d4744a8d905d598a48ce, type: 2}
+  _isCurrentPopOutWindow: 0
 --- !u!1 &6393869949846683486
 GameObject:
   m_ObjectHideFlags: 0
