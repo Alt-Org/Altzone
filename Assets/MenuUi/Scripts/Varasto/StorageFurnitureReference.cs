@@ -88,6 +88,7 @@ namespace MenuUi.Scripts.Storage
     public class FurnitureSetInfo
     {
         public string SetName;
+        public string DiagnoseNumber;
         public List<FurnitureInfoObject> list;
     }
 
