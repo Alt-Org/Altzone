@@ -304,8 +304,9 @@ MonoBehaviour:
   EraserAmountNumber: {fileID: 0}
   CharDescription: {fileID: 0}
   DefClassSpecial: {fileID: 0}
-  statImpactoforceIncreaseButton: {fileID: 0}
-  statImpactforceDecreaseButton: {fileID: 0}
+  increaseButton: {fileID: 0}
+  decreaseButton: {fileID: 0}
+  value: 0
   UpgradeCostAmountNumber: {fileID: 0}
   UpgradeDiamondImage: {fileID: 0}
   _galleryCharacterReference: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964,
@@ -875,7 +876,7 @@ PrefabInstance:
     - target: {fileID: 2781411990917839884, guid: 8aedec4793bde634d8937152616d193e,
         type: 3}
       propertyPath: m_fontSize
-      value: 34.1
+      value: 31.9
       objectReference: {fileID: 0}
     - target: {fileID: 3021336833702796250, guid: 8aedec4793bde634d8937152616d193e,
         type: 3}
@@ -1192,7 +1193,13 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8768252989778096479, guid: 8aedec4793bde634d8937152616d193e, type: 3}
+    - {fileID: 1294287291688037127, guid: 8aedec4793bde634d8937152616d193e, type: 3}
+    - {fileID: 887624115378083821, guid: 8aedec4793bde634d8937152616d193e, type: 3}
+    - {fileID: 4936277708520387858, guid: 8aedec4793bde634d8937152616d193e, type: 3}
+    - {fileID: 5111536694170307741, guid: 8aedec4793bde634d8937152616d193e, type: 3}
+    - {fileID: 4144063503705534909, guid: 8aedec4793bde634d8937152616d193e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1214,7 +1221,7 @@ PrefabInstance:
     - target: {fileID: 1647230655694026800, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
       propertyPath: m_fontSize
-      value: 24.9
+      value: 22.95
       objectReference: {fileID: 0}
     - target: {fileID: 2573375323253643748, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
@@ -1344,7 +1351,7 @@ PrefabInstance:
     - target: {fileID: 3480144400031178557, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
       propertyPath: m_fontSize
-      value: 43.85
+      value: 40.6
       objectReference: {fileID: 0}
     - target: {fileID: 4262262456360207438, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
@@ -1354,7 +1361,7 @@ PrefabInstance:
     - target: {fileID: 4307193934200877633, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
       propertyPath: m_fontSize
-      value: 43.85
+      value: 40.6
       objectReference: {fileID: 0}
     - target: {fileID: 4751403531129071923, guid: f119a69872f958740a9282124f2518e3,
         type: 3}
@@ -1723,7 +1730,7 @@ PrefabInstance:
     - target: {fileID: 1819825794623083909, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
       propertyPath: m_fontSize
-      value: 27.7
+      value: 24.45
       objectReference: {fileID: 0}
     - target: {fileID: 3033098208375120658, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
@@ -1733,7 +1740,7 @@ PrefabInstance:
     - target: {fileID: 4904080251471573330, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
       propertyPath: m_fontSize
-      value: 27.55
+      value: 24.3
       objectReference: {fileID: 0}
     - target: {fileID: 7371152293464073951, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
@@ -1743,7 +1750,7 @@ PrefabInstance:
     - target: {fileID: 7801117341591077631, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}
       propertyPath: m_fontSize
-      value: 27.55
+      value: 24.3
       objectReference: {fileID: 0}
     - target: {fileID: 8692682704375250434, guid: a9618da4aa794f0408a362084a7e2afa,
         type: 3}

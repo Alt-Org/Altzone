@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3420626740153607737}
   - component: {fileID: 8579350557537696612}
   - component: {fileID: 2850541588315073004}
+  - component: {fileID: 1800880768251438696}
   m_Layer: 5
   m_Name: CharacterStatsWindowCanvas
   m_TagString: ScrollRectCanvas
@@ -116,6 +117,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interval: 2
+--- !u!114 &1800880768251438696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4542716426750747876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d59fed49c00c8b04db14941b4c10cdda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterArtWork: []
+  CharacterArtWorkToShow: {fileID: 0}
+  CharacterName: {fileID: 0}
+  CustomCharacterName: {fileID: 0}
+  SpeedNumber: {fileID: 0}
+  ResistanceNumber: {fileID: 0}
+  AttackNumber: {fileID: 0}
+  DefenceNumber: {fileID: 0}
+  HPNumber: {fileID: 0}
+  DiamondSpeedAmountNumber: {fileID: 0}
+  DiamondResistanceAmountNumber: {fileID: 0}
+  DiamondAttackAmountNumber: {fileID: 0}
+  DiamondDefenceAmountNumber: {fileID: 0}
+  DiamondHPAmountNumber: {fileID: 0}
+  EraserAmountNumber: {fileID: 0}
+  CharDescription: {fileID: 0}
+  DefClassSpecial: {fileID: 0}
+  impactforceIncreaseButton: {fileID: 0}
+  impactforceDecreaseButton: {fileID: 0}
+  healthPointsIncreaseButton: {fileID: 0}
+  healthPointsDecreaseButton: {fileID: 0}
+  defenceIncreaseButton: {fileID: 0}
+  defenceDecreaseButton: {fileID: 0}
+  charSizeIncreaseButton: {fileID: 0}
+  charSizeDecreaseButton: {fileID: 0}
+  resistanceIncreaseButton: {fileID: 0}
+  resistanceDecreaseButton: {fileID: 0}
+  speedIncreaseButton: {fileID: 0}
+  speedDecreaseButton: {fileID: 0}
+  UpgradeCostAmountNumber: {fileID: 0}
+  UpgradeDiamondImage: {fileID: 0}
+  _galleryCharacterReference: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964,
+    type: 2}
 --- !u!1 &6971188513189118166
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 467.02704, y: 0}
+  m_AnchoredPosition: {x: 443.7149, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &641151530561109115
@@ -333,7 +379,7 @@ PrefabInstance:
     - target: {fileID: 124172254009378739, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 365017045737786065, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -373,7 +419,7 @@ PrefabInstance:
     - target: {fileID: 681324354086363391, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 28.35
+      value: 26.2
       objectReference: {fileID: 0}
     - target: {fileID: 824867222552979193, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -583,7 +629,7 @@ PrefabInstance:
     - target: {fileID: 3053678600437118888, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 3057268807720375956, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -623,7 +669,7 @@ PrefabInstance:
     - target: {fileID: 3176914390199377228, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 3259593304266057758, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -693,7 +739,7 @@ PrefabInstance:
     - target: {fileID: 4119098373259430349, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 4413302141831981647, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -888,7 +934,7 @@ PrefabInstance:
     - target: {fileID: 6576720608175306396, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 18
+      value: 16.15
       objectReference: {fileID: 0}
     - target: {fileID: 6616997848431323389, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -923,7 +969,7 @@ PrefabInstance:
     - target: {fileID: 7012354558956304779, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 7163508883968364081, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -1113,7 +1159,7 @@ PrefabInstance:
     - target: {fileID: 8897454634121971394, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
-      value: 57.05
+      value: 49.4
       objectReference: {fileID: 0}
     - target: {fileID: 8909854979996719003, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -1218,7 +1264,7 @@ PrefabInstance:
     - target: {fileID: 5121922535685081116, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Size
-      value: 0.43243244
+      value: 0.41084713
       objectReference: {fileID: 0}
     - target: {fileID: 5121922535685081116, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

@@ -59,19 +59,29 @@ public class CharacterStatWindow : MonoBehaviour
 
     private int CurrentlySelectedStat = -1;
     [Header("Increase and decrease buttons")]
-    [SerializeField] private Button increaseButton;
-    [SerializeField] private Button decreaseButton;
-    [SerializeField] private int value;
-
+    [SerializeField] private Button impactforceIncreaseButton;
+    [SerializeField] private Button impactforceDecreaseButton;
+    [SerializeField] private Button healthPointsIncreaseButton;
+    [SerializeField] private Button healthPointsDecreaseButton;
+    [SerializeField] private Button defenceIncreaseButton;
+    [SerializeField] private Button defenceDecreaseButton;
+    [SerializeField] private Button charSizeIncreaseButton;
+    [SerializeField] private Button charSizeDecreaseButton;
+    [SerializeField] private Button resistanceIncreaseButton;
+    [SerializeField] private Button resistanceDecreaseButton;
+    [SerializeField] private Button speedIncreaseButton;
+    [SerializeField] private Button speedDecreaseButton;
+    
     [Header("******************************")]
+
     [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-/*  [SerializeField] private Image _statSpeedSelectedBackground;
-    [SerializeField] private Image _statResistanceSelectedBackground;
-    [SerializeField] private Image _statAttackSelectedBackground;
-    [SerializeField] private Image _statDefenceSelectedBackground;
-    [SerializeField] private Image _statHPSelectedBackground; */
+    /*  [SerializeField] private Image _statSpeedSelectedBackground;
+        [SerializeField] private Image _statResistanceSelectedBackground;
+        [SerializeField] private Image _statAttackSelectedBackground;
+        [SerializeField] private Image _statDefenceSelectedBackground;
+        [SerializeField] private Image _statHPSelectedBackground; */
 
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
@@ -96,22 +106,19 @@ public class CharacterStatWindow : MonoBehaviour
 
     private void OnEnable()
     {
-    
-       
+
+
 
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled*************************************************");
 
         //Yritin saada plusnappulan aktiiviseksi, se ei toimi enkä tiedä miksi. Pitääkö se aktivoida jossain muualla
         //koodissa?
-        gameObject.SetActive(increaseButton);
-        increaseButton.interactable = true;
-        increaseButton.onClick.AddListener(UpgradeCharacterAttack);
 
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
-        
+
         DataStore dataStore = Storefront.Get();
         dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
 
@@ -155,7 +162,7 @@ public class CharacterStatWindow : MonoBehaviour
         Debug.Log("handled window change");
     }
 
-   
+
     //  upgrade
     private void UpgradeCharacterSpeed()
     {
@@ -172,7 +179,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
-            
+
 
                 if (customCharacter != null)
                 {
@@ -468,7 +475,7 @@ public class CharacterStatWindow : MonoBehaviour
         //var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         if (customCharacter == null)
-        {                                                          
+        {
             Debug.LogError($"CustomCharacter not found for index {_characterId}");  //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
@@ -479,7 +486,7 @@ public class CharacterStatWindow : MonoBehaviour
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
         if (galleryCharacter == null)
         {
-                                                                            
+
             Debug.LogError($"GalleryCharacterReference not found for index {_characterId}"); //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
@@ -487,7 +494,7 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
 
-        
+
         switch (_characterId) //index
         {
             //Kutsutaan metodia joka casessa
@@ -586,7 +593,7 @@ public class CharacterStatWindow : MonoBehaviour
     }
     private void SetCharacterInfo()
     {
-       //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
+        //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
 
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
