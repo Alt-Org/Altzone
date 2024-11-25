@@ -1010,6 +1010,7 @@ GameObject:
   - component: {fileID: 1025804129856757782}
   - component: {fileID: 4305267683606515093}
   - component: {fileID: 2349358302515118568}
+  - component: {fileID: 2086396879618192256}
   m_Layer: 5
   m_Name: CharacterImageAndName
   m_TagString: Untagged
@@ -1079,6 +1080,35 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2086396879618192256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033098208375120658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87cd542ff3d47ac4289b20e9e50039f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterArtWork:
+  - {fileID: 21300000, guid: 62536513ff41a774b944a9bad03052f0, type: 3}
+  - {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: c3ccef0c9c6027b46848eb4ad73c7a2d, type: 3}
+  - {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: cfee47f40c406b048980cbc48970234f, type: 3}
+  CharacterArtWorkToShow: {fileID: 5994689251702479908}
+  CharacterName: {fileID: 2116984171245454464}
+  CustomCharacterName: {fileID: 0}
+  CharDescription: {fileID: 0}
+  DefClassSpecial: {fileID: 0}
+  _galleryCharacterReference: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964,
+    type: 2}
 --- !u!1 &3200725875190235156
 GameObject:
   m_ObjectHideFlags: 0
