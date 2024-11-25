@@ -59,13 +59,15 @@ public class CharacterStatWindow : MonoBehaviour
 
     private int CurrentlySelectedStat = -1;
     [Header("Increase and decrease buttons")]
-    [SerializeField] public Button statImpactoforceIncreaseButton;
-    [SerializeField] public Button statImpactforceDecreaseButton;
-   
-    [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
+    [SerializeField] private Button increaseButton;
+    [SerializeField] private Button decreaseButton;
+    [SerializeField] private int value;
+
+    [Header("******************************")]
+    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-/*     [SerializeField] private Image _statSpeedSelectedBackground;
+/*  [SerializeField] private Image _statSpeedSelectedBackground;
     [SerializeField] private Image _statResistanceSelectedBackground;
     [SerializeField] private Image _statAttackSelectedBackground;
     [SerializeField] private Image _statDefenceSelectedBackground;
@@ -94,10 +96,17 @@ public class CharacterStatWindow : MonoBehaviour
 
     private void OnEnable()
     {
-        
+    
+       
 
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
-        Debug.Log("CharacterStatWindow enabled");
+        Debug.Log("CharacterStatWindow enabled*************************************************");
+
+        //Yritin saada plusnappulan aktiiviseksi, se ei toimi enkä tiedä miksi. Pitääkö se aktivoida jossain muualla
+        //koodissa?
+        gameObject.SetActive(increaseButton);
+        increaseButton.interactable = true;
+        increaseButton.onClick.AddListener(UpgradeCharacterAttack);
 
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
@@ -608,4 +617,12 @@ public class CharacterStatWindow : MonoBehaviour
         _demoCharacterWindowCharacter.CharacterName = CharacterName.text;
     }
     */
+    private void OnIncreaseButtonClicked()
+    {
+        Debug.Log("**************************Plusnappia painettu****************************************");
+    }
+    private void OnDecreseButtonClicked()
+    {
+        Debug.Log("**************************Miinusnappia painettu****************************************");
+    }
 }
