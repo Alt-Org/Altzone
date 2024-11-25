@@ -102,7 +102,7 @@ namespace MenuUi.Scripts.Login
             string body = "";
             if (guest)
             {
-                body = "{\"username\":\"guest_main\",\"password\":\"T%K@l0Fl_]idy7:twmoDf51_*Qw$)Qkx\"}";
+                body = "{\"username\":\"Angel42\",\"password\":\"PRIbXCI9d)Z0UoHP\"}";
             }
             else
             {
