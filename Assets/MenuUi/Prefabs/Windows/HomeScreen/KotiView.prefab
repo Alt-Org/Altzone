@@ -488,6 +488,7 @@ GameObject:
   - component: {fileID: 2799551885548214987}
   - component: {fileID: 1904895706154019554}
   - component: {fileID: 8931774430590575175}
+  - component: {fileID: 7300897821421342175}
   m_Layer: 5
   m_Name: SielunkotiButton
   m_TagString: Untagged
@@ -612,6 +613,23 @@ MonoBehaviour:
   _isCurrentPopOutWindow: 0
   _popup: {fileID: 0}
   _ignoreClanStatus: 1
+--- !u!114 &7300897821421342175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9174696609689856735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSelection: 0
+  _audioType: 2
+  _audioName: 
+  _audioId: 0
+  _playType: 0
 --- !u!1001 &1695485140809395139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1106,22 +1124,22 @@ PrefabInstance:
     - target: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.75
+      value: 0.755
       objectReference: {fileID: 0}
     - target: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.75
+      value: 0.755
       objectReference: {fileID: 0}
     - target: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.21
+      value: 0.215
       objectReference: {fileID: 0}
     - target: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.44
+      value: 0.445
       objectReference: {fileID: 0}
     - target: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
