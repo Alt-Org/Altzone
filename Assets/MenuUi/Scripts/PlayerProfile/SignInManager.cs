@@ -69,7 +69,7 @@ namespace MenuUi.Scripts.Login
             Reset();
             signInWindow.SetActive(true);
             registerWindow.SetActive(false);
-            if (SceneManager.GetActiveScene().buildIndex == 0)
+            if (SceneManager.GetActiveScene().buildIndex == 0 || ServerManager.Instance.Player == null)
             {
                 backButton.gameObject.SetActive(false);
                 backButton2.gameObject.SetActive(false);
