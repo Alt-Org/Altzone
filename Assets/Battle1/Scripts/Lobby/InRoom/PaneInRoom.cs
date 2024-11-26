@@ -27,25 +27,25 @@ namespace Battle1.Scripts.Lobby.InRoom
         private void SetPlayerAsGuest()
         {
             Debug.Log($"setPlayerAsGuest {PhotonBattle.PlayerPositionGuest}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
+            this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
         }
 
         private void SetPlayerAsSpectator()
         {
             Debug.Log($"setPlayerAsSpectator {PhotonBattle.PlayerPositionSpectator}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
+            this.Publish(new LobbyManagerOld.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
         }
 
         private void StartPlaying()
         {
             Debug.Log($"startPlaying");
-            this.Publish(new LobbyManager.StartPlayingEvent());
+            this.Publish(new LobbyManagerOld.StartPlayingEvent());
         }
 
         private void StartRaidTest()
         {
             Debug.Log($"startPlaying");
-            this.Publish(new LobbyManager.StartRaidTestEvent());
+            this.Publish(new LobbyManagerOld.StartRaidTestEvent());
         }
 
         /// <summary>

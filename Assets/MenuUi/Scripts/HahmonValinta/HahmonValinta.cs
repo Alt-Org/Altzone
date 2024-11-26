@@ -8,12 +8,14 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
 
 [System.Serializable]
 public class CharacterData
 {
     public CharacterID uniqueID;
     public string characterName;
+    public Button characterButton;
 
     public CharacterData(int id, string name)
     {
@@ -24,11 +26,11 @@ public class CharacterData
 
 public class HahmonValinta : MonoBehaviour
 {
-    [SerializeField] private Button[] characterButtons;
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
     [SerializeField] private TextMeshProUGUI characterNameText; // Reference to the Text component for character name
+    [SerializeField] private WindowNavigation _windowNavigation;
 
     private int selectedCharacterIndex = -1;
     private PlayerData _playerData;
@@ -40,14 +42,12 @@ public class HahmonValinta : MonoBehaviour
         popupWindow.SetActive(false);
 
         // Assign onClick events for character buttons
-        for (int i = 0; i < characterButtons.Length; i++)
+        for (int i = 0; i < characterData.Length; i++)
         {
             int characterIndex = i;
-            characterButtons[i].onClick.AddListener(() => CharacterSelected(characterIndex));
+            characterData[i].characterButton.onClick.AddListener(() => CharacterSelected(characterData[characterIndex]));
         }
 
-        // Assign onClick event for lock-in button
-        lockInButton.onClick.AddListener(LockInCharacter);
     }
 
     private void OnEnable()
@@ -69,33 +69,34 @@ public class HahmonValinta : MonoBehaviour
         });
     }
 
-    void CharacterSelected(int characterIndex)
+    void CharacterSelected(CharacterData data)
     {
-        // Update the selected character index
-        selectedCharacterIndex = characterIndex;
+        lockInButton.onClick.RemoveAllListeners();
+        // 
+        lockInButton.onClick.AddListener(()=>LockInCharacter(data.uniqueID));
 
         // Activate the pop-up window
         popupWindow.SetActive(true);
 
         // Update the character name text
-        characterNameText.text = characterData[characterIndex].characterName;
+        characterNameText.text = data.characterName;
 
         // Log the selected character's name
-        Debug.Log("Selected character: " + characterData[characterIndex].characterName);
+        Debug.Log("Selected character: " + data.characterName);
     }
 
-    public void LockInCharacter()
+    public void LockInCharacter(CharacterID id)
     {
         // Check if a character is selected
-        if (selectedCharacterIndex != -1)
+        if (id != CharacterID.None)
         {
             // Log the selected character's information
-            Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
+           // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
 
-            if ((int)characterData[selectedCharacterIndex].uniqueID != _playerData.SelectedCharacterId)
+            if ((int) id != _playerData.SelectedCharacterId)
             {
-                _playerData.SelectedCharacterId = (int)characterData[selectedCharacterIndex].uniqueID;
-                _playerData.SelectedCharacterIds[0] = (int)characterData[selectedCharacterIndex].uniqueID;
+                _playerData.SelectedCharacterId = (int) id;
+                _playerData.SelectedCharacterIds[0] = (int) id;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }
@@ -105,6 +106,9 @@ public class HahmonValinta : MonoBehaviour
 
             // Deactivate the pop-up window
             popupWindow.SetActive(false);
+
+
+            StartCoroutine(_windowNavigation.Navigate());
         }
         else
         {

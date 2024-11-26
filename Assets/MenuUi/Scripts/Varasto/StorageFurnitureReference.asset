@@ -80,6 +80,20 @@ MonoBehaviour:
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 902ef71f419bd2c468d14a61e89d4f1d,
         type: 3}
+    - Name: Mirror
+      Image: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4, type: 3}
+      VisibleName: Peili
+      FurnitureHandling: {fileID: -724820267442525664, guid: bcc206a4a71656c4db553eef735831af,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 75d4f485eb02ef340bbe25ff7f6f926c,
+        type: 3}
+    - Name: Carpet
+      Image: {fileID: -1025061042, guid: 46339bd67ae6f014f85f9a28b83074cf, type: 3}
+      VisibleName: Matto
+      FurnitureHandling: {fileID: -724820267442525664, guid: c7702a1e019ad3549bb0f74d430f1e14,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: f302b91e1f7d25c40bcd6fcfa0c57085,
+        type: 3}
   - SetName: Rakkaus
     list:
     - Name: Sofa
@@ -103,6 +117,41 @@ MonoBehaviour:
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 64cb07707a757bf4cbcd47df91c407a3,
         type: 3}
+    - Name: Carpet
+      Image: {fileID: -15601349, guid: baee2d721999a8f4990aea6c6b3536e4, type: 3}
+      VisibleName: Matto
+      FurnitureHandling: {fileID: -724820267442525664, guid: 6089bf1d09e9e9d46a55f496f9350afa,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 758c6016b1561e14cbf73abf3c112f47,
+        type: 3}
+    - Name: CoffeeTable
+      Image: {fileID: 21300000, guid: ea79889aaa2005d43ba89abe29dd04e0, type: 3}
+      VisibleName: "Kahvip\xF6yt\xE4"
+      FurnitureHandling: {fileID: -724820267442525664, guid: 0aad825d8df61de4db1b292092b3113d,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 91f539c27719f4d42888feed44f133a6,
+        type: 3}
+    - Name: DiningTable
+      Image: {fileID: -821679160, guid: 94e11a3a27dffa84587d44509f722e7b, type: 3}
+      VisibleName: "Ruokap\xF6yt\xE4"
+      FurnitureHandling: {fileID: -724820267442525664, guid: 8152432b1ee3d2544be03d684f92e949,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: b9aa993dbc3304f4bac753fc18a93428,
+        type: 3}
+    - Name: Bed
+      Image: {fileID: 815919883, guid: dc6580df46820ee429b7e7b5fff9d53e, type: 3}
+      VisibleName: "S\xE4nky"
+      FurnitureHandling: {fileID: -724820267442525664, guid: fb13900cd9b1d524899e0945d4bd3cc4,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 89518673889ca91459beb4deab710af5,
+        type: 3}
+    - Name: Mirror
+      Image: {fileID: -863245616, guid: b521e14e44bb106429a8bf1160035e01, type: 3}
+      VisibleName: Peili
+      FurnitureHandling: {fileID: -724820267442525664, guid: cec17e84dbf3ab547b7d98b90faccd44,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: d0c8c2bdfc6b8b24b90a330c43795037,
+        type: 3}
   - SetName: Neuro
     list:
     - Name: Chair
@@ -125,4 +174,20 @@ MonoBehaviour:
       FurnitureHandling: {fileID: -724820267442525664, guid: c7a53ae787dd80f43b14574b8f9faa4b,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 6530357a375bf4045ade13cca9d2a276,
+        type: 3}
+    - Name: Clock
+      Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
+      VisibleName: Kello
+      FurnitureHandling: {fileID: -724820267442525664, guid: 4ac1fc1cf793c494dabb885c78c26ea5,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 22d52e44e42f50446b1c4f03806b9537,
+        type: 3}
+  - SetName: Polarity
+    list:
+    - Name: Chair
+      Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
+      VisibleName: Tuoli
+      FurnitureHandling: {fileID: -724820267442525664, guid: f27d8049826b4434e9989c1a9f5b4dea,
+        type: 3}
+      TrayFurniture: {fileID: 9152013033603904840, guid: 89f536a14859d954a92bcf7d9e4201b4,
         type: 3}

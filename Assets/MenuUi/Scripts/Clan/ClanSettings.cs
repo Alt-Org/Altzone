@@ -15,9 +15,9 @@ public class ClanSettings : MonoBehaviour
     [Header("Text fields")]
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanMembers;
-    [SerializeField] private TextMeshProUGUI _clanCoins;
     [SerializeField] private TextMeshProUGUI _clanTrophies;
-    [SerializeField] private TextMeshProUGUI _clanGlobalRanking;
+    [SerializeField] private TextMeshProUGUI _clanWinsRanking;
+    [SerializeField] private TextMeshProUGUI _clanActivityRanking;
 
     [Header("Input fields")]
     [SerializeField] private TMP_InputField _clanPhraseField;
@@ -26,10 +26,6 @@ public class ClanSettings : MonoBehaviour
     [Header("Toggles and dropdowns")]
     [SerializeField] private Toggle _clanOpenToggle;
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
-    [SerializeField] private Toggle _ageToddlersToggle;
-    [SerializeField] private Toggle _ageTeensToggle;
-    [SerializeField] private Toggle _ageAdultsToggle;
-    [SerializeField] private Toggle _ageEveryoneToggle;
 
     [Header("Language")]
     [SerializeField] private LanguageFlagMap _languageFlagMap;
@@ -37,26 +33,20 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] Image _flagImage;
 
     [Header("Other settings fields")]
-    [SerializeField] private Transform _valueRowFirst;
-    [SerializeField] private Transform _valueRowSecond;
     [SerializeField] private ClanRightsPanel _clanRightsPanel;
+    [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanHeartColorChanger _clanHeartColorChanger;
     [SerializeField] private ClanHeartColorSetter _settingsHeartColorSetter;
 
     [Header("Buttons")]
     [SerializeField] private Button _closeClanLanguageSelect;
-    [SerializeField] private Button _openClanLanguageSelect;
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
     [SerializeField] private PopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
 
-    [Header("Prefabs")]
-    [SerializeField] private GameObject _valuePrefab;
-
     private List<HeartPieceData> _heartPieces;
-    private ClanAge _clanAgeRange = ClanAge.None;
 
     private void OnEnable()
     {
@@ -85,9 +75,8 @@ public class ClanSettings : MonoBehaviour
     {
         _clanName.text = clan.Name;
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
-        _clanCoins.text = clan.GameCoins.ToString();
         _clanTrophies.text = "-1";
-        _clanGlobalRanking.text = "-1";
+        _clanActivityRanking.text = _clanWinsRanking.text = "-1";
     }
 
     private void SetInitialSettingValues(ClanData clan)
@@ -100,52 +89,7 @@ public class ClanSettings : MonoBehaviour
         _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
         _clanGoalDropdown.RefreshShownValue();
 
-        ConfigureAgeToggle(_ageToddlersToggle, ClanAge.Toddlers);
-        ConfigureAgeToggle(_ageTeensToggle, ClanAge.Teenagers);
-        ConfigureAgeToggle(_ageAdultsToggle, ClanAge.Adults);
-        ConfigureAgeToggle(_ageEveryoneToggle, ClanAge.All);
-
-        switch (clan.ClanAge)
-        {
-            case ClanAge.Toddlers:
-                _ageToddlersToggle.isOn = true;
-                _clanAgeRange = ClanAge.Toddlers;
-                break;
-            case ClanAge.Teenagers:
-                _ageTeensToggle.isOn = true;
-                _clanAgeRange = ClanAge.Teenagers;
-                break;
-            case ClanAge.Adults:
-                _ageAdultsToggle.isOn = true;
-                _clanAgeRange = ClanAge.Adults;
-                break;
-            case ClanAge.All:
-                _ageEveryoneToggle.isOn = true;
-                _clanAgeRange = ClanAge.All;
-                break;
-        }
-    }
-
-    private void ConfigureAgeToggle(Toggle toggle, ClanAge clanAge)
-    {
-        SetToggleColor(toggle, Color.white);
-        toggle.onValueChanged.RemoveAllListeners();
-        toggle.onValueChanged.AddListener((value) =>
-        {
-            if (value)
-            {
-                SetClanAge(clanAge);
-                SetToggleColor(toggle, Color.yellow);
-            }
-            else SetToggleColor(toggle, Color.white);
-        });
-    }
-    private void SetClanAge(ClanAge age) => _clanAgeRange = age;
-    private void SetToggleColor(Toggle toggle, Color color)
-    {
-        ColorBlock colors = toggle.colors;
-        colors.normalColor = color;
-        toggle.colors = colors;
+        _ageSelection.Initialize(clan.ClanAge);
     }
 
     public void OpenClanHeartPanel() => _clanHeartColorChanger.gameObject.SetActive(true);
@@ -180,7 +124,7 @@ public class ClanSettings : MonoBehaviour
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
             clanData.Goals = DropdownToGoal(_clanGoalDropdown.value);
-            clanData.ClanAge = _clanAgeRange;
+            clanData.ClanAge = _ageSelection.ClanAgeRange;
 
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
@@ -211,7 +155,7 @@ public class ClanSettings : MonoBehaviour
                 || clanData.Phrase != _clanPhraseField.text
                 || clanData.Language != _languageList.SelectedLanguage
                 || clanData.Goals != DropdownToGoal(_clanGoalDropdown.value)
-                || clanData.ClanAge != _clanAgeRange
+                || clanData.ClanAge != _ageSelection.ClanAgeRange
                 || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights);
 
             if (hasMadeEdits)

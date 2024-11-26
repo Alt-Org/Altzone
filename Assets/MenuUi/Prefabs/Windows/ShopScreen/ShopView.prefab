@@ -15636,7 +15636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 6e04f143f7d154c4092dba163406cfca, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
   _isCurrentPopOutWindow: 0
 --- !u!114 &694644071476962541
 MonoBehaviour:
@@ -15718,7 +15718,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf38721bf9909f84aa3dea1d8bde8916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToBeSetInActive: {fileID: 7791361653659000238}
+  WindowDef: {fileID: 0}
+  panelToBeSetInActive: {fileID: 5232204251837161986}
   esine: {fileID: 0}
 --- !u!1 &8781557307441447020
 GameObject:
@@ -23643,15 +23644,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3855219591597786248}
     m_Modifications:
-    - target: {fileID: 62609683541585800, guid: e41290d0959bdfe47b62024b1a7a3c44,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 48
-      objectReference: {fileID: 0}
     - target: {fileID: 298253093124046692, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 10.000122
+      value: 10.000061
       objectReference: {fileID: 0}
     - target: {fileID: 316185251139383194, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -24314,7 +24310,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1720474167703658305}
     m_Modifications:
-    - target: {fileID: 6792537640820771846, guid: 49b3f048e27e04c4e9ff4d278605d60f,
+    - target: {fileID: 362043569392268121, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _bottomPanelRectTransfrom
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1604035660660387389, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: items
       value: 
