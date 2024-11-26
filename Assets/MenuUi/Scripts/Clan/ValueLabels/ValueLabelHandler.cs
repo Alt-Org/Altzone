@@ -2,7 +2,7 @@ using MenuUi.Scripts.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Altzone.Scripts.Model.Poco.Clan;
 
 public class ValueLabelHandler : MonoBehaviour
 {

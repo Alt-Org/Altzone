@@ -1,49 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Model.Poco.Clan;
 
-public enum ClanValues
-{
-    Elainrakkaat,
-    Maahanmuuttomyonteiset,
-    Lgbtq,
-    Raittiit,
-    Kohteliaat,
-    Kiusaamisenvastaiset,
-    Urheilevat,
-    Syvalliset,
-    Oikeudenmukaiset,
-    Kaikkienkaverit,
-    Itsenaiset,
-    Retkeilijat,
-    Suomenruotsalaiset,
-    Huumorintajuiset,
-    Rikkaat,
-    Ikiteinit,
-    Juoruilevat,
-    Rakastavat,
-    Oleilijat,
-    Nortit,
-    Musadiggarit,
-    Tunteelliset,
-    Gamerit,
-    Animefanit,
-    Sinkut,
-    Monikulttuuriset,
-    Kauniit,
-    Jarjestelmalliset,
-    Epajarjestelmalliset,
-    Tasaarvoiset,
-    Somepersoonat,
-    Kadentaitajat,
-    Muusikot,
-    Taiteilijat,
-    Spammaajat,
-    Kasvissyojat,
-    Tasapainoiset,
-}
-
-public class ValuePanelController : MonoBehaviour
+public class ValueSelectionController : MonoBehaviour
 {
     [Header("Prefabs")]
     [SerializeField] private GameObject _labelTogglePrefab;
@@ -58,6 +18,13 @@ public class ValuePanelController : MonoBehaviour
 
     void Start() => CreateLabels();
 
+    public void Initialize(List<ClanValues> initialSelected)
+    {
+        SelectedValues = initialSelected;
+        CreateLabels();
+        UpdateSelectedDisplay();
+    }
+
     public void CreateLabels()
     {
         _labelHandlers.Clear();
@@ -70,6 +37,11 @@ public class ValuePanelController : MonoBehaviour
             ValueLabelHandler labelHandler = labelPanel.GetComponent<ValueLabelHandler>();
             labelHandler.SetLabelInfo(value);
             _labelHandlers.Add(labelHandler);
+
+            if (SelectedValues.Contains(value))
+            {
+                labelHandler.Select();
+            }
 
             labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
         }
