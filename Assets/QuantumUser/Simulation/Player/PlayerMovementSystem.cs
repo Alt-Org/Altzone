@@ -28,17 +28,14 @@ namespace Quantum
         {
             if (input->MouseClick)
             {
-                filter.PlayerData->TargetPos = input->MousePosition;
-                filter.PlayerData->TargetPos2D.X = filter.PlayerData->TargetPos.X;
-                filter.PlayerData->TargetPos2D.Y = filter.PlayerData->TargetPos.Z;
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPos2D);
-                filter.PlayerData->isAllowedToMove = true;
+                filter.PlayerData->TargetPosition.X = input->MousePosition.X;
+                filter.PlayerData->TargetPosition.Y = input->MousePosition.Z;
+                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", filter.PlayerData->TargetPosition);
             }
 
-            if(filter.PlayerData->CurrentPos != filter.PlayerData->TargetPos2D && filter.PlayerData->isAllowedToMove)
+            if(filter.Transform->Position != filter.PlayerData->TargetPosition)
             {
-                filter.Transform->Position = FPVector2.MoveTowards(filter.PlayerData->CurrentPos, filter.PlayerData->TargetPos2D, filter.PlayerData->Speed * f.DeltaTime);
-                filter.PlayerData->CurrentPos = filter.Transform->Position;
+                filter.Transform->Position = FPVector2.MoveTowards(filter.Transform->Position, filter.PlayerData->TargetPosition, filter.PlayerData->Speed * f.DeltaTime);
             }
         }
     }

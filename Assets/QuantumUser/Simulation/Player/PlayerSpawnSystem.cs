@@ -14,9 +14,9 @@ namespace Quantum
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             EntityRef playerEntity = f.Create(entityPrototypeAsset);
-            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, CurrentPos = default, TargetPos = default, TargetPos2D = default, isAllowedToMove = false});
+            f.Add(playerEntity, new PlayerData{Player = player, Speed = 20, TargetPosition = default});
 
-            //gets the right spawnpoint for player
+            //gets the right spawnpoint for player, will be replaced with playerpositions from lobby
             int spawnCount = f.ComponentCount<SpawnIdentifier>();
             if (spawnCount != 0)
             {
@@ -31,16 +31,16 @@ namespace Quantum
                         break;
                     }
 
-                i++;
+                    i++;
                 }
             }
 
-            //teleports player to spawnpoint's position and updates current player position
+            //teleports player to spawnpoint's position
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             PlayerData* playerData = f.Unsafe.GetPointer<PlayerData>(playerEntity);
 
             playerTransform->Teleport(f, _spawnPos2D);
-            playerData->CurrentPos = playerTransform->Position;
+            playerData->TargetPosition = playerTransform->Position;
         }
     }
 }

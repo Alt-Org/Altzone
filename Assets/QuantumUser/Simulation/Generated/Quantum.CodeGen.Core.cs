@@ -507,40 +507,28 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerData : Quantum.IComponent {
-    public const Int32 SIZE = 72;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public PlayerRef Player;
     [FieldOffset(8)]
     public FP Speed;
     [FieldOffset(16)]
-    public FPVector2 CurrentPos;
-    [FieldOffset(48)]
-    public FPVector3 TargetPos;
-    [FieldOffset(32)]
-    public FPVector2 TargetPos2D;
-    [FieldOffset(4)]
-    public QBoolean isAllowedToMove;
+    public FPVector2 TargetPosition;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10271;
         hash = hash * 31 + Player.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
-        hash = hash * 31 + CurrentPos.GetHashCode();
-        hash = hash * 31 + TargetPos.GetHashCode();
-        hash = hash * 31 + TargetPos2D.GetHashCode();
-        hash = hash * 31 + isAllowedToMove.GetHashCode();
+        hash = hash * 31 + TargetPosition.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerData*)ptr;
         PlayerRef.Serialize(&p->Player, serializer);
-        QBoolean.Serialize(&p->isAllowedToMove, serializer);
         FP.Serialize(&p->Speed, serializer);
-        FPVector2.Serialize(&p->CurrentPos, serializer);
-        FPVector2.Serialize(&p->TargetPos2D, serializer);
-        FPVector3.Serialize(&p->TargetPos, serializer);
+        FPVector2.Serialize(&p->TargetPosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
