@@ -1,7 +1,7 @@
 using Photon.Deterministic;
 using UnityEngine;
 
-namespace Quantum.QuantumUser.Simulation.Goal
+namespace Quantum
 {
     public enum GoalType
     {

@@ -6,9 +6,6 @@
 // fields or methods to them, please create partial
 // declarations in another file.
 // </auto-generated>
-
-using Quantum.QuantumUser.Simulation.Goal;
-
 #pragma warning disable 0109
 #pragma warning disable 1591
 
@@ -52,6 +49,12 @@ namespace Quantum {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
+  public enum GameState : int {
+    ReadyToStart,
+    Countdown,
+    Playing,
+    GameOver,
+  }
   [System.FlagsAttribute()]
   public enum InputButtons : int {
   }
@@ -500,6 +503,28 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct GameSession : Quantum.IComponentSingleton {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public GameState state;
+    [FieldOffset(8)]
+    public FP TimeUntilStart;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 10163;
+        hash = hash * 31 + (Int32)state;
+        hash = hash * 31 + TimeUntilStart.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (GameSession*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->state);
+        FP.Serialize(&p->TimeUntilStart, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Goal : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 8;
@@ -540,6 +565,24 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct ProjectileSpawner : Quantum.IComponent {
+    public const Int32 SIZE = 4;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    public QBoolean HasSpawned;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 1693;
+        hash = hash * 31 + HasSpawned.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (ProjectileSpawner*)ptr;
+        QBoolean.Serialize(&p->HasSpawned, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SoulWall : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 8;
@@ -566,12 +609,20 @@ namespace Quantum {
   public unsafe partial interface ISignalOnCollisionProjectileHitSomething : ISignal {
     void OnCollisionProjectileHitSomething(Frame f, CollisionInfo2D info, Projectile* projectile);
   }
+  public unsafe partial interface ISignalOnTriggerTopGoal : ISignal {
+    void OnTriggerTopGoal(Frame f);
+  }
+  public unsafe partial interface ISignalOnTriggerBottomGoal : ISignal {
+    void OnTriggerBottomGoal(Frame f);
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
     private ISignalOnCollisionProjectileHitSoulWall[] _ISignalOnCollisionProjectileHitSoulWallSystems;
     private ISignalOnCollisionProjectileHitGoal[] _ISignalOnCollisionProjectileHitGoalSystems;
     private ISignalOnCollisionProjectileHitSomething[] _ISignalOnCollisionProjectileHitSomethingSystems;
+    private ISignalOnTriggerTopGoal[] _ISignalOnTriggerTopGoalSystems;
+    private ISignalOnTriggerBottomGoal[] _ISignalOnTriggerBottomGoalSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -586,12 +637,16 @@ namespace Quantum {
       _ISignalOnCollisionProjectileHitSoulWallSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitSoulWall>();
       _ISignalOnCollisionProjectileHitGoalSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitGoal>();
       _ISignalOnCollisionProjectileHitSomethingSystems = BuildSignalsArray<ISignalOnCollisionProjectileHitSomething>();
+      _ISignalOnTriggerTopGoalSystems = BuildSignalsArray<ISignalOnTriggerTopGoal>();
+      _ISignalOnTriggerBottomGoalSystems = BuildSignalsArray<ISignalOnTriggerBottomGoal>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<CharacterController2D>();
       BuildSignalsArrayOnComponentRemoved<CharacterController2D>();
       BuildSignalsArrayOnComponentAdded<CharacterController3D>();
       BuildSignalsArrayOnComponentRemoved<CharacterController3D>();
+      BuildSignalsArrayOnComponentAdded<Quantum.GameSession>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.GameSession>();
       BuildSignalsArrayOnComponentAdded<Quantum.Goal>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Goal>();
       BuildSignalsArrayOnComponentAdded<MapEntityLink>();
@@ -622,6 +677,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<PhysicsJoints3D>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Projectile>();
+      BuildSignalsArrayOnComponentAdded<Quantum.ProjectileSpawner>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.ProjectileSpawner>();
       BuildSignalsArrayOnComponentAdded<Quantum.SoulWall>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SoulWall>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
@@ -678,6 +735,24 @@ namespace Quantum {
           }
         }
       }
+      public void OnTriggerTopGoal() {
+        var array = _f._ISignalOnTriggerTopGoalSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnTriggerTopGoal(_f);
+          }
+        }
+      }
+      public void OnTriggerBottomGoal() {
+        var array = _f._ISignalOnTriggerBottomGoalSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnTriggerBottomGoal(_f);
+          }
+        }
+      }
     }
   }
   public unsafe partial class Statics {
@@ -717,6 +792,8 @@ namespace Quantum {
       typeRegistry.Register(typeof(FPVector3), FPVector3.SIZE);
       typeRegistry.Register(typeof(FrameMetaData), FrameMetaData.SIZE);
       typeRegistry.Register(typeof(FrameTimer), FrameTimer.SIZE);
+      typeRegistry.Register(typeof(Quantum.GameSession), Quantum.GameSession.SIZE);
+      typeRegistry.Register(typeof(Quantum.GameState), 4);
       typeRegistry.Register(typeof(Quantum.Goal), Quantum.Goal.SIZE);
       typeRegistry.Register(typeof(HingeJoint), HingeJoint.SIZE);
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
@@ -751,6 +828,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(PhysicsSceneSettings), PhysicsSceneSettings.SIZE);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
+      typeRegistry.Register(typeof(Quantum.ProjectileSpawner), Quantum.ProjectileSpawner.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
       typeRegistry.Register(typeof(Quantum.Ptr), Quantum.Ptr.SIZE);
@@ -768,10 +846,12 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 3)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 5)
         .AddBuiltInComponents()
+        .Add<Quantum.GameSession>(Quantum.GameSession.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.ProjectileSpawner>(Quantum.ProjectileSpawner.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SoulWall>(Quantum.SoulWall.Serialize, null, null, ComponentFlags.None)
         .Finish();
     }
@@ -779,6 +859,7 @@ namespace Quantum {
     public static void EnsureNotStrippedGen() {
       FramePrinter.EnsureNotStripped();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
     }

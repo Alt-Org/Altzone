@@ -1,8 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Quantum.QuantumUser.Simulation.Goal;
 using UnityEngine;
 using UnityEngine.Scripting;
+
+/***
+ * If the collision side grows larger, will split the trigger to its own system. But for now can be here
+ * despite somewhat misleading name. If Stays here, might rename this to something more accurate down the line
+ *
+ */
 
 namespace Quantum
 {
@@ -34,6 +39,7 @@ namespace Quantum
             }
         }
 
+        //Handles all triggers in the game; currently just the goals
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
             Debug.Log("Trigger detected");
@@ -48,13 +54,15 @@ namespace Quantum
 
                 if (goalConfig != null)
                 {
-                    if (goalConfig.goal == QuantumUser.Simulation.Goal.GoalType.TopGoal )
+                    if (goalConfig.goal == GoalType.TopGoal)
                     {
                         Debug.Log("Top Goal triggered");
+                        f.Signals.OnTriggerTopGoal();
                     }
-                    else if (goalConfig.goal == QuantumUser.Simulation.Goal.GoalType.BottomGoal)
+                    else if (goalConfig.goal == GoalType.BottomGoal)
                     {
                         Debug.Log("Bottom Goal triggered");
+                        f.Signals.OnTriggerBottomGoal();
                     }
                 }
                 else

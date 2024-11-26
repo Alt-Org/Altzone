@@ -6,9 +6,6 @@
 // fields or methods to them, please create partial
 // declarations in another file.
 // </auto-generated>
-
-using Quantum.QuantumUser.Simulation.Goal;
-
 #pragma warning disable 0109
 #pragma warning disable 1591
 
@@ -53,6 +50,23 @@ namespace Quantum.Prototypes {
   #endif //;
   
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.GameSession))]
+  public unsafe partial class GameSessionPrototype : ComponentPrototype<Quantum.GameSession> {
+    public Quantum.QEnum32<GameState> state;
+    public FP TimeUntilStart;
+    partial void MaterializeUser(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.GameSession component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context = default) {
+        result.state = this.state;
+        result.TimeUntilStart = this.TimeUntilStart;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Goal))]
   public unsafe partial class GoalPrototype : ComponentPrototype<Quantum.Goal> {
     public AssetRef<GoalConfig> goalConfig;
@@ -91,6 +105,21 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context = default) {
         result.ProjectileConfig = this.ProjectileConfig;
         result.IsLaunched = this.IsLaunched;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.ProjectileSpawner))]
+  public unsafe partial class ProjectileSpawnerPrototype : ComponentPrototype<Quantum.ProjectileSpawner> {
+    public QBoolean HasSpawned;
+    partial void MaterializeUser(Frame frame, ref Quantum.ProjectileSpawner result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.ProjectileSpawner component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.ProjectileSpawner result, in PrototypeMaterializationContext context = default) {
+        result.HasSpawned = this.HasSpawned;
         MaterializeUser(frame, ref result, in context);
     }
   }

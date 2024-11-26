@@ -7,8 +7,42 @@ namespace Quantum
 
 
     [Preserve]
-    public unsafe class ProjectileSpawnerSystem : SystemSignalsOnly
+    public unsafe class ProjectileSpawnerSystem :SystemMainThreadFilter<ProjectileSpawnerSystem.Filter>
     {
+        public struct Filter
+        {
+            public EntityRef Entity;
+            public ProjectileSpawner* Spawner;
+        }
+
+        public override void Update(Frame f, ref Filter filter)
+        {
+            GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
+            ProjectileSpawner* spawner = filter.Spawner;
+
+            Debug.Log("spawner "+gameSession->state );
+            if(gameSession==null) return;
+
+            if (gameSession->state != GameState.Playing)
+            {
+                Debug.Log("not playing");
+                return;
+            }
+
+            // Ensure the projectile is spawned only once
+            if (!spawner->HasSpawned) // Assuming a flag exists in GameSession
+            {
+                Debug.Log("projectile should spawn");
+                ProjectileGameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
+                SpawnProjectile(f, config.ProjectilePrototype);
+
+                // Mark projectile as spawned
+                spawner->HasSpawned = true;
+            }
+
+
+        }
+
         // Method to spawn a projectile in the simulation frame.
         public void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
@@ -52,12 +86,22 @@ namespace Quantum
             return FPVector2.Rotate(FPVector2.Up * radius, f.RNG->Next() * FP.PiTimes2);
         }
 
+        //Adding the SpawnerSystem.qnt component to ProjectileSpawnerSystem to ensure that the filter works
         public override void OnInit(Frame f)
         {
-            ProjectileGameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
-            SpawnProjectile(f,config.ProjectilePrototype);
+            Debug.Log("ProjectileSpawnerSystem initialized");
+
+            // Create a new entity
+            EntityRef entity = f.Create();
+
+            // Add the ProjectileSpawner component
+            f.Add<ProjectileSpawner>(entity);
+
+            // Initialize the ProjectileSpawner component
+            ProjectileSpawner* spawner = f.Unsafe.GetPointer<ProjectileSpawner>(entity);
+            spawner->HasSpawned = false; // Initialize fields as needed
+
+            Debug.Log($"Entity created with ProjectileSpawner component: {entity}");
         }
-
-
     }
 }
