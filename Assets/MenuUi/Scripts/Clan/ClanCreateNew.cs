@@ -24,7 +24,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_Dropdown _clanGoalDropdown;
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanLanguageList _languageSelection;
-    [SerializeField] private ValuePanelController _valueSelection;
+    [SerializeField] private ValueSelectionController _valueSelection;
 
     [Header("Language")]
     [SerializeField] private LanguageFlagMap _languageFlagMap;

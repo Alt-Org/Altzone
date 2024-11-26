@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
 
 namespace MenuUi.Scripts.Clan
 {

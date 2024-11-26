@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MenuUi.Scripts.Clan;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
 
 public class ValueImageHandle : MonoBehaviour
 {

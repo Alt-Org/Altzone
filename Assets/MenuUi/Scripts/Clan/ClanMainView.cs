@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using UnityEngine.UI;
 using MenuUi.Scripts.Window;
+using System.Collections.Generic;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -28,16 +29,14 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] GameObject _clanOpenObject;
     [SerializeField] GameObject _clanLockedObject;
     [SerializeField] Image _flagImage;
-    [SerializeField] Transform _valueRowFirst;
-    [SerializeField] Transform _valueRowSecond;
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
+    [SerializeField] ClanValuePanel _valuePanel;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
 
     [Header("Prefabs and scriptable objects")]
-    [SerializeField] GameObject _valuePrefab;
     [SerializeField] private LanguageFlagMap _languageFlagMap;
 
     private void OnEnable()
@@ -75,6 +74,8 @@ public class ClanMainView : MonoBehaviour
         _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
         _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
+
+        _valuePanel.SetValues(clan.Values);
 
         _clanOpenObject.SetActive(clan.IsOpen);
         _clanLockedObject.SetActive(!clan.IsOpen);
