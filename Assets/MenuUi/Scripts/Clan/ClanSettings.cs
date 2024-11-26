@@ -33,26 +33,23 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] Image _flagImage;
 
     [Header("Other settings fields")]
-    [SerializeField] private Transform _valueRowFirst;
-    [SerializeField] private Transform _valueRowSecond;
     [SerializeField] private ClanRightsPanel _clanRightsPanel;
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanHeartColorChanger _clanHeartColorChanger;
     [SerializeField] private ClanHeartColorSetter _settingsHeartColorSetter;
+    [SerializeField] private ValueSelectionController _valuePopup;
+    [SerializeField] private ClanValuePanel _valuePanel;
 
     [Header("Buttons")]
     [SerializeField] private Button _closeClanLanguageSelect;
-    [SerializeField] private Button _openClanLanguageSelect;
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
     [SerializeField] private PopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
 
-    [Header("Prefabs")]
-    [SerializeField] private GameObject _valuePrefab;
-
     private List<HeartPieceData> _heartPieces;
+    private List<ClanValues> _selectedValues;
 
     private void OnEnable()
     {
@@ -63,11 +60,29 @@ public class ClanSettings : MonoBehaviour
             _cancelConfirmationPopup.SetActive(false);
 
             SetPanelValues(clanData);
+            _clanPhraseField.text = clanData.Phrase;
+            // _clanPasswordField.text = ;
+            _clanOpenToggle.isOn = !clanData.IsOpen;
+
             _clanRightsPanel.InitializeRightsToggles(clanData.ClanRights);
+
             _languageList.Initialize(clanData.Language);
             SetFlag(clanData.Language);
             _closeClanLanguageSelect.onClick.AddListener(() => SetFlag(_languageList.SelectedLanguage));
-            SetInitialSettingValues(clanData);
+
+            InitGoalsDropDown();
+            _clanGoalDropdown.value = EnumToDropdown(clanData.Goals);
+            _clanGoalDropdown.RefreshShownValue();
+
+            _ageSelection.Initialize(clanData.ClanAge);
+
+            List<ClanValues> defaultVals = new List<ClanValues>() {
+                ClanValues.Huumorintajuiset,
+                ClanValues.Syvalliset,
+                ClanValues.Tasapainoiset
+            };
+            _valuePanel.SetValues(clanData.Values);
+            _valuePopup.Initialize(clanData.Values);
 
             clanData.ClanHeartPieces ??= new();
             _heartPieces = clanData.ClanHeartPieces;
@@ -76,6 +91,11 @@ public class ClanSettings : MonoBehaviour
     }
 
     private void SetFlag(Language language) => _flagImage.sprite = _languageFlagMap.GetFlag(language);
+    public void SetValuesFromValuePopup()
+    {
+        _selectedValues = _valuePopup.SelectedValues;
+        _valuePanel.SetValues(_selectedValues);
+    }
 
     private void SetPanelValues(ClanData clan)
     {
@@ -83,19 +103,6 @@ public class ClanSettings : MonoBehaviour
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
         _clanTrophies.text = "-1";
         _clanActivityRanking.text = _clanWinsRanking.text = "-1";
-    }
-
-    private void SetInitialSettingValues(ClanData clan)
-    {
-        _clanPhraseField.text = clan.Phrase;
-        // _clanPasswordField.text = ;
-        _clanOpenToggle.isOn = !clan.IsOpen;
-
-        InitGoalsDropDown();
-        _clanGoalDropdown.value = EnumToDropdown(clan.Goals);
-        _clanGoalDropdown.RefreshShownValue();
-
-        _ageSelection.Initialize(clan.ClanAge);
     }
 
     public void OpenClanHeartPanel() => _clanHeartColorChanger.gameObject.SetActive(true);
@@ -137,6 +144,7 @@ public class ClanSettings : MonoBehaviour
             string password = _clanPasswordField.text;
             clanData.ClanRights = _clanRightsPanel.ClanRights;
             clanData.ClanHeartPieces = _heartPieces;
+            clanData.Values = _selectedValues;
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {

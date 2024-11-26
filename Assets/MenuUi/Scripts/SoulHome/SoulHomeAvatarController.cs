@@ -30,7 +30,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (transform.parent.CompareTag("Room"))
             {
-                _points = transform.parent.Find("FurniturePoints");
+                _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
                 SetAvatar(_points, _roomData);
             }
@@ -41,12 +41,12 @@ namespace MenuUI.Scripts.SoulHome
         {
             if(_status == AvatarStatus.Idle && !_idleTimerStarted)
             {
-                Debug.Log("Character Idle");
+                //Debug.Log("Character Idle");
                 StartCoroutine("IdleTimer");
             }
             else if(_status == AvatarStatus.Wander)
             {
-                Debug.Log("Character Wander");
+                //Debug.Log("Character Wander");
 
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
@@ -177,7 +177,7 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 path = GetDirection(_currentCalculatedPosition);
             //if (Mathf.Abs(path.normalized.y) == 0) return true;
             Vector2 endPosition = GetEndPosition();
-            Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (endPosition));
+            //Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (endPosition));
             RaycastHit2D[] hits;
             if (path.y == 0) hits = Physics2D.RaycastAll(_currentCalculatedPosition + new Vector2(0, 0.01f) + path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f * path.normalized).magnitude);
             else hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
@@ -191,7 +191,7 @@ namespace MenuUI.Scripts.SoulHome
                     if(slot.Furniture != null && !slot.Furniture.Equals(prevFurniture))
                     {
                         prevFurniture = hit.collider.GetComponent<FurnitureSlot>().Furniture;
-                        Debug.Log(Time.time + " Furniture: " +hit.collider.GetComponent<FurnitureSlot>().Furniture);
+                        //Debug.Log(Time.time + " Furniture: " +hit.collider.GetComponent<FurnitureSlot>().Furniture);
 
                         if(Mathf.Approximately(path.y, 0))
                         {
@@ -234,7 +234,7 @@ namespace MenuUI.Scripts.SoulHome
         private Vector2 GetDirection(Vector2 startPosition)
         {
             Vector2 endPosition = GetEndPosition();
-            Debug.Log("StartPosition: " + startPosition + "EndPosition: " + endPosition);
+            //Debug.Log("StartPosition: " + startPosition + "EndPosition: " + endPosition);
             Vector2 direction = (endPosition - startPosition);
             return direction;
         }
@@ -561,12 +561,8 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckPositionDepth()
         {
-            //Vector2 checkPoint;
-            //Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
-
             Vector2 hitPoint = transform.position + new Vector3(0, -0.01f);
 
-            //checkPoint = hitPoint + new Vector2((transform.localScale.x / 2) * -1 + transform.localScale.x / (2 * size.x), 0);
             Vector3 origin = new(hitPoint.x, hitPoint.y, 1);
             Ray ray = new(origin, (Vector3)hitPoint - origin);
             RaycastHit2D[] hitArray;
@@ -575,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 3 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row-1) * 2;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
                     return;
                 }
             }
@@ -587,7 +583,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
                 {
-                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 3 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row) * 2;
+                    transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().roomId) * 1000;
                 }
             }
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +17,6 @@ public class ProfileMenuTabs : MonoBehaviour
     public GameObject basicObject;
     public GameObject statsObject;
     public GameObject roleplayObject;
-
 
     // Start is called before the first frame update
     void Start()

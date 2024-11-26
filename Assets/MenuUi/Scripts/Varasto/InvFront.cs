@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
+        [SerializeField] private TMP_Text _totalValueText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -42,6 +43,12 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+
+        [Header("Rarity Color")]
+        [SerializeField] private Color commonColor = Color.gray;
+        [SerializeField] private Color rareColor = Color.blue;
+        [SerializeField] private Color epicColor = Color.magenta;
+        [SerializeField] private Color antiqueColor = Color.yellow;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -129,6 +136,7 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
+            _totalValueText.text = $"Varaston arvo: {GetTotalInventoryValue()}";
             _updatingInventory = false;
         }
 
@@ -186,6 +194,17 @@ namespace MenuUi.Scripts.Storage
             {
                 GameObject newSlot = Instantiate(_invSlot, _content);
                 var capturedSlotVal = i;
+
+                // Default rarity to "common" since no rarity system is implemented yet
+                string rarity = "common";
+
+                // Set color based on rarity
+                var backgroundImage = newSlot.GetComponent<Image>();
+                if (backgroundImage != null)
+                {
+                    backgroundImage.color = GetColorByRarity(rarity);
+                }
+
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
                 // C# variable capture in the body of anonymous function!
@@ -218,7 +237,7 @@ namespace MenuUi.Scripts.Storage
                         toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Value.ToString();
+                        toSet.GetChild(2).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
                         toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
@@ -230,15 +249,21 @@ namespace MenuUi.Scripts.Storage
                 // Shape
                 toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
 
+                // SetName
+                string setName = GetSetNameForFurniture(_furn.Name);
+                toSet.GetChild(4).GetComponent<TMP_Text>().text = setName;
+
+                // Id
+
                 // Name
-                toSet.GetChild(4).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(6).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(4).gameObject.SetActive(false);
+                    toSet.GetChild(6).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(4).gameObject.SetActive(true);
+                    toSet.GetChild(6).gameObject.SetActive(true);
                 }
 
                 i++;
@@ -282,10 +307,11 @@ namespace MenuUi.Scripts.Storage
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            _name.text = _furn.VisibleName;
+            string setName = GetSetNameForFurniture(_furn.Name);
+            _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
 
             // Weight
-            _weight.text = _furn.Weight + " KG";
+            _weight.text = "Paino:" + _furn.Weight + " KG";
 
             // Material text
             _material.text = $"{_furn.Material}";
@@ -335,6 +361,41 @@ namespace MenuUi.Scripts.Storage
                 return _furnImagePlaceholder;
             }
             return returned;
+        }
+
+        private float GetTotalInventoryValue()
+        {
+            return _items.Sum(item => item.Value);
+        }
+
+        private Color GetColorByRarity(string rarity)
+        {
+            return rarity switch
+            {
+                "common" => commonColor,
+                "rare" => rareColor,
+                "epic" => epicColor,
+                "antique" => antiqueColor,
+                _ => commonColor, // Default to common color
+            };
+        }
+
+        private string GetSetNameForFurniture(string furnitureName)
+        {
+            if (string.IsNullOrWhiteSpace(furnitureName))
+                return "Unknown Set";
+
+            string[] parts = furnitureName.Split('_');
+            if (parts.Length != 2)
+                return "Unknown Set";
+
+            string setName = parts[1];
+            foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
+            {
+                if (setInfo.SetName == setName)
+                    return setInfo.SetName;
+            }
+            return "Unknown Set";
         }
     }
 }
