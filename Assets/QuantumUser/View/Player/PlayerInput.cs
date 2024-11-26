@@ -1,6 +1,8 @@
 using Photon.Deterministic;
 using UnityEngine;
 
+using Prg.Scripts.Common;
+
 namespace Quantum
 {
     public class PlayerInput : MonoBehaviour
@@ -12,10 +14,12 @@ namespace Quantum
 
         public void PollInput(CallbackPollInput callback)
         {
+            bool mouseClick = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
+
             Input i = new()
             {
-                MouseClick = UnityEngine.Input.GetMouseButton(0),
-                MousePosition = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition).ToFPVector3()
+                MouseClick = mouseClick,
+                MousePosition = mouseClick ? Camera.main.ScreenToWorldPoint(ClickStateHandler.GetClickPosition()).ToFPVector3() : FPVector3.Zero,
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
