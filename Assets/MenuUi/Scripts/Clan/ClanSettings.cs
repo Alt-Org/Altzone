@@ -33,8 +33,6 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] Image _flagImage;
 
     [Header("Other settings fields")]
-    [SerializeField] private Transform _valueRowFirst;
-    [SerializeField] private Transform _valueRowSecond;
     [SerializeField] private ClanRightsPanel _clanRightsPanel;
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanHeartColorChanger _clanHeartColorChanger;
@@ -42,15 +40,11 @@ public class ClanSettings : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button _closeClanLanguageSelect;
-    [SerializeField] private Button _openClanLanguageSelect;
     [SerializeField] private Button _saveButton;
 
     [Header("Popups")]
     [SerializeField] private PopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
-
-    [Header("Prefabs")]
-    [SerializeField] private GameObject _valuePrefab;
 
     private List<HeartPieceData> _heartPieces;
 

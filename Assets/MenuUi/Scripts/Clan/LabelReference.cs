@@ -27,17 +27,11 @@ namespace MenuUi.Scripts.Clan
 
         private LabelInfoObject GetLabelData(ClanValues value)
         {
-            //Debug.LogWarning($"Full name: {name}");
-            if (value==null)
-            {
-                return null;
-            }
-
             foreach (LabelInfoObject info in _info)
             {
                 if (info.values == value)
-                { 
-                        return info;
+                {
+                    return info;
                 }
             }
             return null;
@@ -51,7 +45,5 @@ namespace MenuUi.Scripts.Clan
         public ClanValues values;
         public Sprite Image;
     }
-
-
 }
 
