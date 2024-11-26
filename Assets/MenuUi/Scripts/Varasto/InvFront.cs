@@ -234,37 +234,41 @@ namespace MenuUi.Scripts.Storage
                 switch (_sortingBy)
                 {
                     case 0:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Material;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
                         break;
                 }
                 // Shape
-                toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
+                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
                 string setName = GetSetNameForFurniture(_furn.Name);
-                toSet.GetChild(4).GetComponent<TMP_Text>().text = setName;
+                toSet.GetChild(5).GetComponent<TMP_Text>().text = setName;
 
                 // Id
 
                 // Name
-                toSet.GetChild(6).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(6).gameObject.SetActive(false);
+                    toSet.GetChild(7).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(6).gameObject.SetActive(true);
+                    toSet.GetChild(7).gameObject.SetActive(true);
                 }
+
+                // Coin
+                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
+                else toSet.GetChild(8).gameObject.SetActive(false);
 
                 i++;
             }
