@@ -71,8 +71,69 @@ namespace Altzone.Scripts.Lobby
 
         public static LobbyManager Instance { get; private set; }
 
+        #region Delegates & Events
+
         public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target);
         public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
+
+        public delegate void LobbyConnected();
+        public static event LobbyConnected LobbyOnConnected;
+
+        public delegate void LobbyConnectedToMaster();
+        public static event LobbyConnectedToMaster LobbyOnConnectedToMaster;
+
+        public delegate void LobbyRegionListReceived();
+        public static event LobbyRegionListReceived LobbyOnRegionListReceived;
+
+        public delegate void LobbyDisconnected();
+        public static event LobbyDisconnected LobbyOnDisconnected;
+
+        public delegate void LobbyJoinedLobby();
+        public static event LobbyJoinedLobby LobbyOnJoinedLobby;
+
+        public delegate void LobbyLobbyStatisticsUpdate();
+        public static event LobbyLobbyStatisticsUpdate LobbyOnLobbyStatisticsUpdate;
+
+        public delegate void LobbyFriendListUpdate();
+        public static event LobbyFriendListUpdate LobbyOnFriendListUpdate;
+
+        public delegate void LobbyLeftLobby();
+        public static event LobbyLeftLobby LobbyOnLeftLobby;
+
+        public delegate void LobbyCreatedRoom();
+        public static event LobbyCreatedRoom LobbyOnCreatedRoom;
+
+        public delegate void LobbyCreateRoomFailed(short returnCode, string message);
+        public static event LobbyCreateRoomFailed LobbyOnCreateRoomFailed;
+
+        public delegate void LobbyRoomListUpdate(List<LobbyRoomInfo> roomList);
+        public static event LobbyRoomListUpdate LobbyOnRoomListUpdate;
+
+        public delegate void LobbyJoinedRoom();
+        public static event LobbyJoinedRoom LobbyOnJoinedRoom;
+
+        public delegate void LobbyJoinRoomFailed(short returnCode, string message);
+        public static event LobbyJoinRoomFailed LobbyOnJoinRoomFailed;
+
+        public delegate void LobbyJoinRandomFailed(short returnCode, string message);
+        public static event LobbyJoinRandomFailed LobbyOnJoinRandomFailed;
+
+        public delegate void LobbyLeftRoom();
+        public static event LobbyLeftRoom LobbyOnLeftRoom;
+
+        public delegate void LobbyPlayerLeftRoom();
+        public static event LobbyPlayerLeftRoom LobbyOnPlayerLeftRoom;
+
+        public delegate void LobbyEvent();
+        public static event LobbyEvent LobbyOnEvent;
+
+        public delegate void LobbyCustomAuthenticationResponse(Dictionary<string, object> data);
+        public static event LobbyCustomAuthenticationResponse LobbyOnCustomAuthenticationResponse;
+
+        public delegate void LobbyCustomAuthenticationFailed(string debugMessage);
+        public static event LobbyCustomAuthenticationFailed LobbyOnCustomAuthenticationFailed;
+
+        #endregion
 
 
         private void Awake()
@@ -394,23 +455,27 @@ namespace Altzone.Scripts.Lobby
             PlayerSettings playerSettings = gameConfig.PlayerSettings;
             string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            LobbyOnDisconnected?.Invoke();
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
+            LobbyOnPlayerLeftRoom?.Invoke();
         }
 
         public void OnJoinedRoom()
         {
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
+            LobbyOnJoinedRoom?.Invoke();
         }
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
             StartCoroutine(Service());
+            LobbyOnLeftRoom?.Invoke();
             // Goto lobby if we left (in)voluntarily any room
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             // - can not use GoBack() because we do not know the reason for player leaving the room.
@@ -418,16 +483,24 @@ namespace Altzone.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnCreatedRoom() { StartCoroutine(Service()); }
-        public void OnJoinedLobby() { StartCoroutine(Service()); }
+        public void OnCreatedRoom() { StartCoroutine(Service()); LobbyOnCreatedRoom?.Invoke(); }
+        public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
-        public void OnRoomListUpdate(List<RoomInfo> roomList) {}
-        public void OnLeftLobby() => throw new NotImplementedException();
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new NotImplementedException();
-        public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreateRoomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnJoinRoomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
+        public void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            List<LobbyRoomInfo> lobbyRoomList = new();
+            foreach (RoomInfo roomInfo in roomList)
+            {
+                lobbyRoomList.Add(new(roomInfo));
+            }
+            LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
+        }
+        public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
+        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
+        public void OnFriendListUpdate(List<FriendInfo> friendList) { LobbyOnFriendListUpdate?.Invoke(); }
+        public void OnCreateRoomFailed(short returnCode, string message) { LobbyOnCreateRoomFailed?.Invoke(returnCode, message); }
+        public void OnJoinRoomFailed(short returnCode, string message) { LobbyOnJoinRoomFailed?.Invoke(returnCode, message); }
+        public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 
         public void OnEvent(EventData photonEvent)
         {
@@ -439,13 +512,14 @@ namespace Altzone.Scripts.Lobby
                     StartCoroutine(StartQuantum());
                     break;
             }
+            LobbyOnEvent?.Invoke();
         }
 
-        public void OnConnected() { }
-        public void OnConnectedToMaster() { }
-        public void OnRegionListReceived(RegionHandler regionHandler) { }
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new NotImplementedException();
-        public void OnCustomAuthenticationFailed(string debugMessage) => throw new NotImplementedException();
+        public void OnConnected() { LobbyOnConnected?.Invoke(); }
+        public void OnConnectedToMaster() { LobbyOnConnectedToMaster?.Invoke(); }
+        public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived.Invoke(); }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse.Invoke(data); }
+        public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed.Invoke(debugMessage); }
 
         public class PlayerPosEvent
         {
