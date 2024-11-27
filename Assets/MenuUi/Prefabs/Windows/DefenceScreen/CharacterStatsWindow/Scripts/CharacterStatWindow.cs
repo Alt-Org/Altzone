@@ -18,30 +18,25 @@ public class CharacterStatWindow : MonoBehaviour
     public Image CharacterArtWorkToShow;
 
     private int UnusedStats;
-
     private int DiamondSpeedAmount = 100;
     private int DiamondResistanceAmount = 100;
     private int DiamondAttackAmount = 100;
     private int DiamondDefenceAmount = 100;
     private int DiamondHPAmount = 100;
     private int EraserAmount = 100;
-
     private int SpeedCostAmount = 5;
     private int ResistanceCostAmount = 5;
     private int AttackCostAmount = 5;
     private int DefenceCostAmount = 5;
     private int HPCostAmount = 5;
-
     public TextMeshProUGUI CharacterName;
     public TextMeshProUGUI CustomCharacterName;
-
     [Header("Current stat level?")]
     public TextMeshProUGUI SpeedNumber;
     public TextMeshProUGUI ResistanceNumber;
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
     public TextMeshProUGUI HPNumber;
-
     [Header("Amount of diamonds that can be used")]
     public TextMeshProUGUI DiamondSpeedAmountNumber;
     public TextMeshProUGUI DiamondResistanceAmountNumber;
@@ -49,16 +44,15 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI DiamondDefenceAmountNumber;
     public TextMeshProUGUI DiamondHPAmountNumber;
     public TextMeshProUGUI EraserAmountNumber;
-
     [Header("Descriptions")]
     public TextMeshProUGUI CharDescription;//hahmon kuvaus
     public TextMeshProUGUI DefClassSpecial;//defenssiluokan erikoistaidon kuvaus
-
-
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
-
     private int CurrentlySelectedStat = -1;
     [Header("Increase and decrease buttons")]
+
+    //En tiedä olisiko näille parempi olla jossain omassa scriptissä, mutta ne voi sitten siirtää,
+    // jos tullaan siihen tulokseen. Sama koskee edistymispalkkeja.
     [SerializeField] private Button impactforceIncreaseButton;
     [SerializeField] private Button impactforceDecreaseButton;
     [SerializeField] private Button healthPointsIncreaseButton;
@@ -71,9 +65,13 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Button resistanceDecreaseButton;
     [SerializeField] private Button speedIncreaseButton;
     [SerializeField] private Button speedDecreaseButton;
-    
-    [Header("******************************")]
-
+    [Header("Progress bars for levels")]
+    [SerializeField] private Slider impactforceProgressBar;
+    [SerializeField] private Slider healthPointsProgressBar;
+    [SerializeField] private Slider defenceProgressBar;
+    [SerializeField] private Slider charSizeProgressBar;
+    [SerializeField] private Slider resistanceProgressBar;
+    [SerializeField] private Slider speedProgressbar;
     [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
@@ -98,9 +96,11 @@ public class CharacterStatWindow : MonoBehaviour
     //Onko olemassa jo tieto käytetyistä tasopykälistä jossain?
     //Ei ole. Palataan myöhemmin.
 
-    //Virheilmoitus rivillä 86, mikä sen aiheuttaa? Onko meistä riippumaton asia?
+    //Virheilmoitus rivillä 86, mikä sen aiheuttaa? Onko meistä riippumaton asia? -toimii tällä hetkellä, mutta ei ServeManagerin kautta
     //Mitä tarkoittaa stat selected backround?
     //Pitääkö tähän lisätä jokaisen stattipaneelin plus ja miinusnapit. Onko helpompi tehdä niin?
+
+    //plus ja miinusnappulat ei jostain syystä toimi, pitää selvittää.
 
     //Luokan saa customcharacter get character id
 
@@ -112,8 +112,6 @@ public class CharacterStatWindow : MonoBehaviour
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled*************************************************");
 
-        //Yritin saada plusnappulan aktiiviseksi, se ei toimi enkä tiedä miksi. Pitääkö se aktivoida jossain muualla
-        //koodissa?
 
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
@@ -497,7 +495,6 @@ public class CharacterStatWindow : MonoBehaviour
 
         switch (_characterId) //index
         {
-            //Kutsutaan metodia joka casessa
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
@@ -528,6 +525,7 @@ public class CharacterStatWindow : MonoBehaviour
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+                CharDescription.text = "";
                 break;
         }
     }
@@ -593,28 +591,64 @@ public class CharacterStatWindow : MonoBehaviour
     }
     private void SetCharacterInfo()
     {
-        //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
+        //Tällä haetaan hahmon tiedot statti-ikkunaan.
 
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
-
-        //Timanttien määrän saa playerdatasta
-        int DiamondSpeedAmount = _playerData.DiamondSpeed;
-        int diamondAttackAmount = _playerData.DiamondAttack;
-        int diamondDefenceAmount = _playerData.DiamondDefence;
-        int diamondHPAmount = _playerData.DiamondHP;
-        //pyyhekumien määrän saa playerdatasta
-        int eraserAmount = _playerData.Eraser;
-
-
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                   customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
+                   customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
+                   customCharacter.Defence, customCharacter.Hp);
         CharacterArtWorkToShow.sprite = galleryCharacter.Image;
         Debug.Log($"loaded {galleryCharacter.Name}");
-    }
 
+
+        //Tällä asetetaan hahmon ja erikoistaidon kuvaustekstit paikalleen.
+        switch (_characterId) //index
+        {
+            case CharacterID.IntellectualizerResearcher:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.RetroflectorOvereater:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.TricksterComedian:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.TricksterConman:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.DesensitizerBodybuilder:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ObedientPreacher:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ProjectorGrafitiartist:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ConfluentBesties:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.RetroflectorAlcoholic:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            default:
+                CharDescription.text = "";
+                 DefClassSpecial.text = "";
+                break;
+        }
+    }
 
 
     // Character Name. DISABLED FOR THE SAKE OF TESTERS
@@ -624,12 +658,4 @@ public class CharacterStatWindow : MonoBehaviour
         _demoCharacterWindowCharacter.CharacterName = CharacterName.text;
     }
     */
-    private void OnIncreaseButtonClicked()
-    {
-        Debug.Log("**************************Plusnappia painettu****************************************");
-    }
-    private void OnDecreseButtonClicked()
-    {
-        Debug.Log("**************************Miinusnappia painettu****************************************");
-    }
 }
