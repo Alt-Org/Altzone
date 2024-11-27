@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 2046362020524589967}
   - component: {fileID: 6664350059716723457}
   - component: {fileID: 6743246612016105302}
-  - component: {fileID: 5111536694170307741}
   m_Layer: 5
   m_Name: Resistance
   m_TagString: Untagged
@@ -240,20 +239,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &5111536694170307741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 56564286804609787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 1401643671121253428}
-  decreaseButton: {fileID: 2195577942871538369}
 --- !u!1 &153033335850520206
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +327,6 @@ GameObject:
   - component: {fileID: 1936771619572417536}
   - component: {fileID: 1823613760399425104}
   - component: {fileID: 17850221960159917}
-  - component: {fileID: 4936277708520387858}
   m_Layer: 5
   m_Name: CharSize
   m_TagString: Untagged
@@ -433,20 +417,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &4936277708520387858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 171494565102295323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 2483963588627954406}
-  decreaseButton: {fileID: 3087606632985674848}
 --- !u!1 &326043854026033739
 GameObject:
   m_ObjectHideFlags: 0
@@ -2773,7 +2743,6 @@ GameObject:
   - component: {fileID: 319356565905488525}
   - component: {fileID: 3570296153810548558}
   - component: {fileID: 8567153584501051592}
-  - component: {fileID: 887624115378083821}
   m_Layer: 5
   m_Name: Defence
   m_TagString: Untagged
@@ -2864,20 +2833,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &887624115378083821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1685139550194246392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 1260994020612031706}
-  decreaseButton: {fileID: 189196342390469721}
 --- !u!1 &1774208995533746459
 GameObject:
   m_ObjectHideFlags: 0
@@ -6658,7 +6613,6 @@ GameObject:
   - component: {fileID: 4154960869618220548}
   - component: {fileID: 7428899503539085775}
   - component: {fileID: 9099827543922051299}
-  - component: {fileID: 1294287291688037127}
   m_Layer: 5
   m_Name: Healthpoints
   m_TagString: Untagged
@@ -6749,20 +6703,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1294287291688037127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4686826304513150787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 8620952140259171942}
-  decreaseButton: {fileID: 2731667769068298293}
 --- !u!1 &4696650947212573311
 GameObject:
   m_ObjectHideFlags: 0
@@ -7913,7 +7853,6 @@ GameObject:
   - component: {fileID: 2484268569174906806}
   - component: {fileID: 1409069751660101960}
   - component: {fileID: 6219112722368920650}
-  - component: {fileID: 8768252989778096479}
   m_Layer: 5
   m_Name: Impactforce
   m_TagString: Untagged
@@ -8004,20 +7943,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &8768252989778096479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5839468347974650867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 3931075935899909055}
-  decreaseButton: {fileID: 6707464399043291381}
 --- !u!1 &5905618211344432744
 GameObject:
   m_ObjectHideFlags: 0
@@ -11350,7 +11275,6 @@ GameObject:
   - component: {fileID: 4844634537781685134}
   - component: {fileID: 1232192433108009161}
   - component: {fileID: 5853598025188173137}
-  - component: {fileID: 4144063503705534909}
   m_Layer: 5
   m_Name: Speed
   m_TagString: Untagged
@@ -11441,20 +11365,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &4144063503705534909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8293265693408913721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3439e25263d2c47b35e036d3beacb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  increaseButton: {fileID: 7944947208172795634}
-  decreaseButton: {fileID: 8670097102813322228}
 --- !u!1 &8399097381679209184
 GameObject:
   m_ObjectHideFlags: 0
