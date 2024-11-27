@@ -48,11 +48,6 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.ProjectileSpawnerSystem, Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
       AssemblyQualifiedName: Quantum.CollisionsSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
@@ -65,6 +60,16 @@ MonoBehaviour:
     Children: []
   - SystemType:
       AssemblyQualifiedName: Quantum.GameSessionStateSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.ProjectileSpawnerSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Quantum.QuantumUser.Simulation.Goal.GoalSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

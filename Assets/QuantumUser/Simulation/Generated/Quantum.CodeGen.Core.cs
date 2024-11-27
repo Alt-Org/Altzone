@@ -510,17 +510,21 @@ namespace Quantum {
     public GameState state;
     [FieldOffset(8)]
     public FP TimeUntilStart;
+    [FieldOffset(4)]
+    public QBoolean CountDownStarted;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10163;
         hash = hash * 31 + (Int32)state;
         hash = hash * 31 + TimeUntilStart.GetHashCode();
+        hash = hash * 31 + CountDownStarted.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (GameSession*)ptr;
         serializer.Stream.Serialize((Int32*)&p->state);
+        QBoolean.Serialize(&p->CountDownStarted, serializer);
         FP.Serialize(&p->TimeUntilStart, serializer);
     }
   }

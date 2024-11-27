@@ -42,13 +42,9 @@ namespace Quantum
         //Handles all triggers in the game; currently just the goals
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
-            Debug.Log("Trigger detected");
-
             // Try to get the Goal component
             if (f.Unsafe.TryGetPointer<Goal>(info.Other, out var goal))
             {
-                Debug.Log("Goal component found");
-
                 // Resolve the GoalConfig asset using the AssetRef
                 var goalConfig = f.FindAsset<GoalConfig>(goal->goalConfig);
 
@@ -56,12 +52,10 @@ namespace Quantum
                 {
                     if (goalConfig.goal == GoalType.TopGoal)
                     {
-                        Debug.Log("Top Goal triggered");
                         f.Signals.OnTriggerTopGoal();
                     }
                     else if (goalConfig.goal == GoalType.BottomGoal)
                     {
-                        Debug.Log("Bottom Goal triggered");
                         f.Signals.OnTriggerBottomGoal();
                     }
                 }

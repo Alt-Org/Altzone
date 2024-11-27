@@ -305,7 +305,7 @@ MonoBehaviour:
     - rid: 7764774552990646274
     - rid: 7764774552990646275
   - Components:
-    - rid: 7030348032424017920
+    - rid: 4295853734300221440
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -1336,6 +1336,15 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
+    - rid: 4295853734300221440
+      type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        state:
+          Value: 1
+        TimeUntilStart:
+          RawValue: 196608
+        CountDownStarted:
+          Value: 1
     - rid: 4308124105825058816
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -1843,15 +1852,6 @@ MonoBehaviour:
       data:
         ChildEntity:
           SceneIndexPlusOne: 0
-    - rid: 7030348032424017920
-      type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
-      data:
-        state:
-          Value: 1
-        TimeUntilStart:
-          RawValue: 65536
-        ProjectileSpawned:
-          Value: 0
     - rid: 7291379364237672448
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:

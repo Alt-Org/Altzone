@@ -19,13 +19,10 @@ namespace Quantum
         {
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
             ProjectileSpawner* spawner = filter.Spawner;
-
-            Debug.Log("spawner "+gameSession->state );
             if(gameSession==null) return;
 
             if (gameSession->state != GameState.Playing)
             {
-                Debug.Log("not playing");
                 return;
             }
 

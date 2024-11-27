@@ -28,17 +28,17 @@ namespace Quantum
                 return;
 
             //Countdown state handling
-            if (gameSession->TimeUntilStart > 1 && gameSession->state == GameState.Countdown)
+            if (gameSession->CountDownStarted)
             {
                 gameSession->TimeUntilStart = gameSession->TimeUntilStart - f.DeltaTime;
 
             }
-            else if(gameSession->TimeUntilStart < 1 && gameSession->state == GameState.Countdown)
+
+            if(gameSession->TimeUntilStart < 1 && gameSession->state == GameState.Countdown)
             {
                 gameSession->state = GameState.Playing;
 
             }
-
         }
     }
 }

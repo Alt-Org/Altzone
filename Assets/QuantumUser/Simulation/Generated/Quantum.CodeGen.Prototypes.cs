@@ -54,6 +54,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class GameSessionPrototype : ComponentPrototype<Quantum.GameSession> {
     public Quantum.QEnum32<GameState> state;
     public FP TimeUntilStart;
+    public QBoolean CountDownStarted;
     partial void MaterializeUser(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.GameSession component = default;
@@ -63,6 +64,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context = default) {
         result.state = this.state;
         result.TimeUntilStart = this.TimeUntilStart;
+        result.CountDownStarted = this.CountDownStarted;
         MaterializeUser(frame, ref result, in context);
     }
   }
