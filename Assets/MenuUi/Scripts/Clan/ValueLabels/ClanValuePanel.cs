@@ -13,9 +13,11 @@ public class ClanValuePanel : MonoBehaviour
     {
         _values = clanValues;
 
+        /*
         RectTransform rectTransform = GetComponent<RectTransform>();
         Vector2 cellSize = new(rectTransform.rect.width / (_values.Count < 5 ? 2 : 3), rectTransform.rect.height / 2);
         _grid.cellSize = cellSize;
+        */
 
         foreach (Transform child in _grid.transform) Destroy(child.gameObject);
 

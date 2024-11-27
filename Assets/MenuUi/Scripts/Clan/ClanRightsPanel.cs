@@ -34,7 +34,6 @@ public class ClanRightsPanel : MonoBehaviour
             {
                 ClanRoleRights right = (ClanRoleRights)(1 << j);
 
-                allToggles[i][j].onValueChanged.RemoveAllListeners();
                 allToggles[i][j].isOn = ClanRights[role].Contains(right);
                 allToggles[i][j].onValueChanged.AddListener(isOn =>
                 {
