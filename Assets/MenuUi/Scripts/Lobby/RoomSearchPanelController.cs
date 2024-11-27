@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Realtime;
+using Altzone.Scripts.Lobby;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-//using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -14,10 +13,10 @@ namespace MenuUI.Scripts.Lobby.InLobby
         [SerializeField] private GameObject _slotPrefab;
         [SerializeField] private Transform _content;
         [SerializeField] private TextMeshProUGUI _noRoomText;
-        private List<RoomInfo> _roomsData;
+        private List<LobbyRoomInfo> _roomsData;
         private Action<string> _onJoinRoom;
 
-        public List<RoomInfo> RoomsData {
+        public List<LobbyRoomInfo> RoomsData {
             set
             {
                 _roomsData = value;
@@ -54,7 +53,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             if(_roomsData.Count == 0) _noRoomText.gameObject.SetActive(true);
             else _noRoomText.gameObject.SetActive(false);
 
-            foreach(RoomInfo roomInfo in _roomsData)
+            foreach(LobbyRoomInfo roomInfo in _roomsData)
             {
                 GameObject button = Instantiate(_slotPrefab, _content);
 
@@ -62,7 +61,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }
 
-        private void UpdateButton(GameObject slot, RoomInfo room, Action<string> onJoinRoom)
+        private void UpdateButton(GameObject slot, LobbyRoomInfo room, Action<string> onJoinRoom)
         {
             GameObject buttonObject = slot.transform.GetChild(0).gameObject;
             Button button;

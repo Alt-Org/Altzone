@@ -11,18 +11,24 @@ using Photon.Client;
 using Photon.Realtime;
 using Quantum;
 
-using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
 using Altzone.Scripts.Model.Poco.Player;
 using Prg.Scripts.Common.PubSub;
 
-using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
 using System.Threading.Tasks;
+using Altzone.Scripts.Battle.Photon;
 
-namespace MenuUI.Scripts.Lobby
+namespace Altzone.Scripts.Lobby
 {
+    public enum LobbyWindowTarget
+    {
+        MainMenu,
+        LobbyRoom,
+        Battle,
+        Raid
+    }
+
     /// <summary>
     /// Manages local player position and setup in a room.
     /// </summary>
@@ -31,22 +37,22 @@ namespace MenuUI.Scripts.Lobby
     /// </remarks>
     public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IConnectionCallbacks
     {
-        private const string BattleID = PhotonBattle.BattleID;
+        private const string BattleID = PhotonBattleRoom.BattleID;
 
-        private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-        private const string PlayerCountKey = PhotonBattle.PlayerCountKey;
-        private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
+        private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
+        private const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
+        private const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
 
-        private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
+        private const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        private const string TeamAlphaNameKey = PhotonBattle.TeamAlphaNameKey;
-        private const string TeamBetaNameKey = PhotonBattle.TeamBetaNameKey;
+        private const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
+        private const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
 
-        [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
+        /*[Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
-        [SerializeField] private WindowDef _gameWindow;
+        [SerializeField] private WindowDef _gameWindow;*/
         [SerializeField] private bool _isCloseRoomOnGameStart;
-        [SerializeField] private SceneDef _raidScene;
+        //[SerializeField] private SceneDef _raidScene;
 
         [Header("Team Names"), SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
@@ -64,6 +70,10 @@ namespace MenuUI.Scripts.Lobby
         private QuantumRunner _runner = null;
 
         public static LobbyManager Instance { get; private set; }
+
+        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target);
+        public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
+
 
         private void Awake()
         {
@@ -178,31 +188,32 @@ namespace MenuUI.Scripts.Lobby
                 yield break;
             }
             if(PhotonRealtimeClient.LocalPlayer.IsMasterClient) PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { BattleID, PhotonRealtimeClient.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
-            WindowManager.Get().ShowWindow(_roomWindow);
+            //WindowManager.Get().ShowWindow(_roomWindow);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
         }
 
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_gameWindow, _isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
         private void OnStartRaidTestEvent(StartRaidTestEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheRaidTestRoom(_raidScene));
+            StartCoroutine(StartTheRaidTestRoom());
         }
 
-        private IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
+        private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
-            Debug.Log($"startTheGameplay {gameWindow}");
+            //Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 throw new UnityException("only master client can start the game");
             }
             Player player = PhotonRealtimeClient.LocalPlayer;
             int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (!PhotonBattle.IsValidPlayerPos(masterPosition))
+            if (!PhotonBattleRoom.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
@@ -212,7 +223,7 @@ namespace MenuUI.Scripts.Lobby
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonBattle.IsValidPlayerPos(playerPos))
+                if (PhotonBattleRoom.IsValidPlayerPos(playerPos))
                 {
                     realPlayerCount += 1;
                     continue;
@@ -294,9 +305,10 @@ namespace MenuUI.Scripts.Lobby
                 }
             }*/
 
-            WindowManager.Get().ShowWindow(_gameWindow);
+            //WindowManager.Get().ShowWindow(_gameWindow);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _gameWindow.SceneName);
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
@@ -321,7 +333,8 @@ namespace MenuUI.Scripts.Lobby
             if(task.Result)
             _runner?.Game.AddPlayer(_player);
             else
-                WindowManager.Get().GoBack();
+                //WindowManager.Get().GoBack();
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -343,25 +356,26 @@ namespace MenuUI.Scripts.Lobby
             return true;
         }
 
-        private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
+        private static IEnumerator StartTheRaidTestRoom()
         {
-            Debug.Log($"RAID TEST {raidScene}");
+            //Debug.Log($"RAID TEST {raidScene}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 throw new UnityException("only master client can start this game");
             }
             yield return null;
-            if (!raidScene.IsNetworkScene)
+            /*if (!raidScene.IsNetworkScene)
             {
                 throw new UnityException($"scene {raidScene} IsNetworkScene = false");
-            }
-            PhotonRealtimeClient.LoadLevel(raidScene.SceneName);
+            }*/
+            //PhotonRealtimeClient.LoadLevel(raidScene.SceneName);
             //StartCoroutine(StartTheRaidTestRoom(_raidScene));
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Raid);
         }
 
         private void SetPlayer(Player player, int playerPosition)
         {
-            Assert.IsTrue(PhotonBattle.IsValidGameplayPosOrGuest(playerPosition));
+            Assert.IsTrue(PhotonBattleRoom.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");

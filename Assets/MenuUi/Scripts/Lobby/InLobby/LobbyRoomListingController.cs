@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common.Photon;
+using Altzone.Scripts.Lobby;
 //using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;

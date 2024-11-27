@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using Altzone.Scripts.Lobby;
 using ExitGames.Client.Photon;
 using Photon.Client;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 //using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
+//using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 

@@ -1,16 +1,12 @@
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Client;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
-//using Hashtable = ExitGames.Client.Photon.Hashtable;
-//using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
