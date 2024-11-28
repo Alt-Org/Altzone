@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-//using Battle1.PhotonUnityNetworking.Code;
-using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-//using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour, ILobbyCallbacks, IConnectionCallbacks
+    public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
 
@@ -107,7 +103,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _view.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
-        public void OnDisconnected(DisconnectCause cause)
+        /*public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
 
@@ -115,7 +111,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 OnEnable();
             }
-        }
+        }*/
 
         public void ToggleWindow()
         {
@@ -147,15 +143,5 @@ namespace MenuUI.Scripts.Lobby.InLobby
         {
             Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
         }
-
-        public void OnJoinedLobby() => throw new System.NotImplementedException();
-        public void OnLeftLobby() => throw new System.NotImplementedException();
-        public void OnRoomListUpdate(List<RoomInfo> roomList) => throw new System.NotImplementedException();
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new System.NotImplementedException();
-        public void OnConnected() => throw new System.NotImplementedException();
-        public void OnConnectedToMaster() => throw new System.NotImplementedException();
-        public void OnRegionListReceived(RegionHandler regionHandler) => throw new System.NotImplementedException();
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new System.NotImplementedException();
-        public void OnCustomAuthenticationFailed(string debugMessage) => throw new System.NotImplementedException();
     }
 }

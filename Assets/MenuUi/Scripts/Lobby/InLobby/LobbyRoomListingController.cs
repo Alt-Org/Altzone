@@ -15,7 +15,7 @@ using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class LobbyRoomListingController : MonoBehaviour, IMatchmakingCallbacks
+    public class LobbyRoomListingController : MonoBehaviour
     {
         private const string DefaultRoomNameName = "Battle ";
 
@@ -40,12 +40,14 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 UpdateStatus();
             }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
+            LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
         }
 
         public void OnDisable()
         {
             PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
+            LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             _view.Reset();
         }
 
@@ -63,16 +65,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
             };
             Debug.Log($"{roomName}");
             PhotonRealtimeClient.CreateRoom(roomName, roomOptions);
-        }
-
-        public void OnCreateRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"CreateRoomFailed {returnCode} {message}");
-        }
-
-        public void OnJoinRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
         }
 
 
@@ -115,17 +107,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
             _view.UpdateStatus(rooms, JoinRoom);
-        }
-
-        public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreatedRoom()
-        {
-            Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
-        }
-        public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnLeftRoom()
-        {
-            Debug.Log($"Left room");
         }
     }
 }

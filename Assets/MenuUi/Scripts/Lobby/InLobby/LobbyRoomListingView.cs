@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Lobby.Wrappers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
