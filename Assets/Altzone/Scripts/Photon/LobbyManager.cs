@@ -18,6 +18,7 @@ using Prg.Scripts.Common.PubSub;
 
 using System.Threading.Tasks;
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby.Wrappers;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -35,7 +36,7 @@ namespace Altzone.Scripts.Lobby
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IConnectionCallbacks
+    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IInRoomCallbacks, IConnectionCallbacks
     {
         private const string BattleID = PhotonBattleRoom.BattleID;
 
@@ -121,8 +122,20 @@ namespace Altzone.Scripts.Lobby
         public delegate void LobbyLeftRoom();
         public static event LobbyLeftRoom LobbyOnLeftRoom;
 
-        public delegate void LobbyPlayerLeftRoom();
+        public delegate void LobbyPlayerEnteredRoom(LobbyPlayer newPlayer);
+        public static event LobbyPlayerEnteredRoom LobbyOnPlayerEnteredRoom;
+
+        public delegate void LobbyPlayerLeftRoom(LobbyPlayer otherPlayer);
         public static event LobbyPlayerLeftRoom LobbyOnPlayerLeftRoom;
+
+        public delegate void LobbyMasterClientSwitched(LobbyPlayer newMasterClient);
+        public static event LobbyMasterClientSwitched LobbyOnMasterClientSwitched;
+
+        public delegate void LobbyRoomPropertiesUpdate(LobbyPhotonHashtable propertiesThatChanged);
+        public static event LobbyRoomPropertiesUpdate LobbyOnRoomPropertiesUpdate;
+
+        public delegate void LobbyPlayerPropertiesUpdate(LobbyPlayer targetPlayer, LobbyPhotonHashtable propertiesThatChanged);
+        public static event LobbyPlayerPropertiesUpdate LobbyOnPlayerPropertiesUpdate;
 
         public delegate void LobbyEvent();
         public static event LobbyEvent LobbyOnEvent;
@@ -451,17 +464,20 @@ namespace Altzone.Scripts.Lobby
         public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
-            GameConfig gameConfig = GameConfig.Get();
-            PlayerSettings playerSettings = gameConfig.PlayerSettings;
-            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
-            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
+            {
+                GameConfig gameConfig = GameConfig.Get();
+                PlayerSettings playerSettings = gameConfig.PlayerSettings;
+                string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+                StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            }
             LobbyOnDisconnected?.Invoke();
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
-            LobbyOnPlayerLeftRoom?.Invoke();
+            LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
 
         public void OnJoinedRoom()
@@ -483,7 +499,12 @@ namespace Altzone.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnCreatedRoom() { StartCoroutine(Service()); LobbyOnCreatedRoom?.Invoke(); }
+        public void OnCreatedRoom()
+        {
+            Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
+            StartCoroutine(Service());
+            LobbyOnCreatedRoom?.Invoke();
+        }
         public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -498,8 +519,16 @@ namespace Altzone.Scripts.Lobby
         public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
         public void OnFriendListUpdate(List<FriendInfo> friendList) { LobbyOnFriendListUpdate?.Invoke(); }
-        public void OnCreateRoomFailed(short returnCode, string message) { LobbyOnCreateRoomFailed?.Invoke(returnCode, message); }
-        public void OnJoinRoomFailed(short returnCode, string message) { LobbyOnJoinRoomFailed?.Invoke(returnCode, message); }
+        public void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"CreateRoomFailed {returnCode} {message}");
+            LobbyOnCreateRoomFailed?.Invoke(returnCode, message);
+        }
+        public void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
+            LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
+        }
         public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 
         public void OnEvent(EventData photonEvent)
@@ -520,6 +549,11 @@ namespace Altzone.Scripts.Lobby
         public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived.Invoke(); }
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse.Invoke(data); }
         public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed.Invoke(debugMessage); }
+
+        public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
+        public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke((LobbyPhotonHashtable)propertiesThatChanged); }
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),(LobbyPhotonHashtable)changedProps); }
+        public void OnMasterClientSwitched(Player newMasterClient) { LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient)); }
 
         public class PlayerPosEvent
         {
