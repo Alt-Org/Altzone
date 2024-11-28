@@ -120,6 +120,11 @@ namespace Altzone.Scripts.Lobby.Wrappers
             return new(_player.GetNextFor(currentPlayerId));
         }
 
+        public string GetDebugLabel(bool verbose = true) // Works for Room too!
+        {
+            return _player.GetDebugLabel(verbose);
+        }
+
         /// <summary>
         /// Brief summary string of the Player: ActorNumber and NickName
         /// </summary>
@@ -207,6 +212,16 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public bool SetCustomProperties(PhotonHashtable propertiesToSet, PhotonHashtable expectedValues = null)
         {
             return _player.SetCustomProperties(propertiesToSet, expectedValues);
+        }
+
+        public bool HasCustomProperty( string key)
+        {
+            return _player.HasCustomProperty(key);
+        }
+
+        public T GetCustomProperty<T>(string key, T defaultValue = default)
+        {
+            return _player.GetCustomProperty(key, defaultValue);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Lobby.Wrappers;
 using Photon.Client;
 using Photon.Realtime;
 using Prg.Scripts.Common.Util;
@@ -179,6 +180,20 @@ public static class PhotonRealtimeClient
             }
 
             return Client.LocalPlayer;
+        }
+    }
+
+    public static LobbyPlayer LocalLobbyPlayer
+    {
+        get
+        {
+            Player player = LocalPlayer;
+            if (player == null)
+            {
+                return null; // suppress ExitApplication errors
+            }
+
+            return new(player);
         }
     }
 
@@ -744,5 +759,25 @@ public static class PhotonRealtimeClient
     public static long GetPing()
     {
         return Client.RealtimePeer.Stats.RoundtripTime;
+    }
+
+    public static List<LobbyPlayer> GetCurrentRoomPlayers()
+    {
+        List<LobbyPlayer> lobbyPlayers = new();
+        foreach (Player player in CurrentRoom.Players.Values)
+        {
+            lobbyPlayers.Add(new(player));
+        }
+        return lobbyPlayers;
+    }
+
+    public static List<LobbyPlayer> GetCurrentRoomPlayersByNickName()
+    {
+        List<LobbyPlayer> lobbyPlayers = new();
+        foreach (Player player in Client.CurrentRoom.GetPlayersByNickName().ToList())
+        {
+            lobbyPlayers.Add(new(player));
+        }
+        return lobbyPlayers;
     }
 }

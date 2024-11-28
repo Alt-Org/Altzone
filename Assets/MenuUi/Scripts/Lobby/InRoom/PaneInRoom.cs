@@ -2,8 +2,6 @@
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
-//using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {

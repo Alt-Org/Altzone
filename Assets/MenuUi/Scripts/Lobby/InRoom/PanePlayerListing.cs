@@ -1,21 +1,15 @@
 ﻿using System.Linq;
 using Altzone.Scripts.Lobby;
-using ExitGames.Client.Photon;
-using Photon.Client;
-using Photon.Realtime;
+using Altzone.Scripts.Lobby.Wrappers;
 using UnityEngine;
 using UnityEngine.UI;
-//using IInRoomCallbacks = Battle1.PhotonRealtime.Code.IInRoomCallbacks;
-//using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using Player = Battle1.PhotonRealtime.Code.Player;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Lowest pane in lobby while in room to show current players list that have joined this room.
     /// </summary>
-    public class PanePlayerListing : MonoBehaviour, IInRoomCallbacks
+    public class PanePlayerListing : MonoBehaviour
     {
         private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
         private const string PlayerMainSkillKey = PhotonBattle.PlayerPrefabIdKey;
@@ -35,12 +29,24 @@ namespace MenuUI.Scripts.Lobby.InRoom
             {
                 UpdateStatus();
             }
+
+            LobbyManager.LobbyOnPlayerEnteredRoom += OnPlayerEnteredRoom;
+            LobbyManager.LobbyOnPlayerLeftRoom += OnPlayerLeftRoom;
+            LobbyManager.LobbyOnRoomPropertiesUpdate += OnRoomPropertiesUpdate;
+            LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
+            LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
+
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
         }
 
         private void OnDisable()
         {
             PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
+            LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
+            LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
+            LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
+            LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
             DeleteExtraLines(_contentRoot);
         }
 
@@ -52,7 +58,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 DeleteExtraLines(_contentRoot);
                 return;
             }
-            var players = PhotonRealtimeClient.Client.CurrentRoom.GetPlayersByNickName().ToList();
+            var players = PhotonRealtimeClient.GetCurrentRoomPlayersByNickName();
             Debug.Log($"updateStatus {PhotonRealtimeClient.Client.State} lines: {_contentRoot.childCount} players: {players.Count}");
             
             // Synchronize line count with player count.
@@ -90,7 +96,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
             instance.SetActive(true);
         }
 
-        private static void UpdatePlayerLine(Text line, Player player)
+        private static void UpdatePlayerLine(Text line, LobbyPlayer player)
         {
             var text = line.GetComponent<Text>();
             var nickName = player.IsLocal ? RichText.Blue(player.NickName) : player.NickName;
@@ -120,27 +126,27 @@ namespace MenuUI.Scripts.Lobby.InRoom
             }
         }
 
-        void IInRoomCallbacks.OnPlayerEnteredRoom(Player newPlayer)
+        void OnPlayerEnteredRoom(LobbyPlayer newPlayer)
         {
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnPlayerLeftRoom(Player otherPlayer)
+        void OnPlayerLeftRoom(LobbyPlayer otherPlayer)
         {
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged)
+        void OnRoomPropertiesUpdate(LobbyPhotonHashtable propertiesThatChanged)
         {
             // NOP
         }
 
-        void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
+        void OnPlayerPropertiesUpdate(LobbyPlayer targetPlayer, LobbyPhotonHashtable changedProps)
         {
             UpdateStatus();
         }
 
-        void IInRoomCallbacks.OnMasterClientSwitched(Player newMasterClient)
+        void OnMasterClientSwitched(LobbyPlayer newMasterClient)
         {
             // NOP
         }
