@@ -253,8 +253,8 @@ namespace MenuUi.Scripts.Storage
                 toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                string setName = GetSetNameForFurniture(_furn.Name);
-                toSet.GetChild(5).GetComponent<TMP_Text>().text = setName;
+                FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+                toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
 
                 // Id
 
@@ -309,19 +309,26 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
+                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+            if (furnitureInfoObject == null)
+            {
+                Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
+                return;
+            }
+
             // Icon
             _icon.sprite = _furn.Sprite;
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            string setName = GetSetNameForFurniture(_furn.Name);
-            _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
-
+            FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+            _name.text = furnitureInfoObject.DiagnoseNumber + setInfo.SetName + ": " + _furn.VisibleName;
+            
             //Artists name
-            FurnitureSetInfo setInfo = GetFurnitureSetInfoForFurniture(_furn.Name);
             _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
             
             //Artistic description
+            _artisticDescription.text = furnitureInfoObject.ArtisticDescription;
 
             // Weight
             _weight.text = "Paino:" + _furn.Weight + " KG";
@@ -393,25 +400,7 @@ namespace MenuUi.Scripts.Storage
             };
         }
 
-        private string GetSetNameForFurniture(string furnitureName)
-        {
-            if (string.IsNullOrWhiteSpace(furnitureName))
-                return "Unknown Set";
-
-            string[] parts = furnitureName.Split('_');
-            if (parts.Length != 2)
-                return "Unknown Set";
-
-            string setName = parts[1];
-            foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
-            {
-                if (setInfo.SetName == setName)
-                    return setInfo.SetName;
-            }
-            return "Unknown Set";
-        }
-
-        private FurnitureSetInfo GetFurnitureSetInfoForFurniture(string furnitureName)
+        private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)
         {
             if (string.IsNullOrWhiteSpace(furnitureName))
                 return null;
