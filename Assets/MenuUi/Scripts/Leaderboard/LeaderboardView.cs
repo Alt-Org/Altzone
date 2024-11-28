@@ -84,9 +84,9 @@ public class LeaderboardView : MonoBehaviour
     {
         _titleText.text = _currentLeaderboard switch
         {
-            Leaderboard.Global => _currentLeaderboardType == LeaderboardType.Wins ? "Globaalit voittosijat" : "Globaalit aktiivisuussijat",
-            Leaderboard.Clan => _currentLeaderboardType == LeaderboardType.Wins ? "Klaanin voittosijat" : "Klaanin aktiivisuussijat",
-            Leaderboard.Friends => "Kaverien voittosijat",
+            Leaderboard.Global => "Globaali tulostaulukko",
+            Leaderboard.Clan => "Klaanin tulostaulukko",
+            Leaderboard.Friends => "Kavereitten tulostaulukko",
             _ => ""
         };
     }
