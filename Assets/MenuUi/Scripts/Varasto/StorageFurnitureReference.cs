@@ -76,10 +76,11 @@ namespace MenuUi.Scripts.Storage
 
     [Serializable]
     public class FurnitureInfoObject
-    {
+    {        
         public string Name; 
         public Sprite Image;
         public string VisibleName;
+        public string ArtisticDescription;
         public FurnitureHandling FurnitureHandling;
         public TrayFurniture TrayFurniture;
     }
@@ -88,6 +89,7 @@ namespace MenuUi.Scripts.Storage
     public class FurnitureSetInfo
     {
         public string SetName;
+        public string ArtistName;
         public string DiagnoseNumber;
         public List<FurnitureInfoObject> list;
     }

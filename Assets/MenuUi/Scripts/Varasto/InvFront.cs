@@ -34,6 +34,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
         [SerializeField] private StorageFurnitureReference _furnitureReference;
 
+
         [Header("Information GameObject")]
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
@@ -43,6 +44,8 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+        [SerializeField] private TMP_Text _artist;
+        [SerializeField] private TMP_Text _artisticDescription;
 
         [Header("Rarity Color")]
         [SerializeField] private Color commonColor = Color.gray;
@@ -313,6 +316,10 @@ namespace MenuUi.Scripts.Storage
             // Name
             string setName = GetSetNameForFurniture(_furn.Name);
             _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
+
+            //Artists name
+
+            //Artistic description
 
             // Weight
             _weight.text = "Paino:" + _furn.Weight + " KG";
