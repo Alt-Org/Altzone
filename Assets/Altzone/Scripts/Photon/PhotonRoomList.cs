@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
-using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Lobby.Wrappers;
 //using ClientState = Battle1.PhotonRealtime.Code.ClientState;
 //using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;

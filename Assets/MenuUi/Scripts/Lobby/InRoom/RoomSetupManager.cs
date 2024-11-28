@@ -2,6 +2,7 @@ using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Client;
 using Photon.Realtime;

@@ -5,7 +5,7 @@ using Photon.Realtime;
 using UnityEngine;
 
 
-namespace Altzone.Scripts.Lobby
+namespace Altzone.Scripts.Lobby.Wrappers
 {
     public class LobbyRoomInfo
     {
