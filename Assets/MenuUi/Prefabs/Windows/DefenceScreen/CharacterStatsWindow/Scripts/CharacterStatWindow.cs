@@ -107,8 +107,6 @@ public class CharacterStatWindow : MonoBehaviour
     private void OnEnable()
     {
 
-
-
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled*************************************************");
 
@@ -645,7 +643,7 @@ public class CharacterStatWindow : MonoBehaviour
                 break;
             default:
                 CharDescription.text = "";
-                 DefClassSpecial.text = "";
+                DefClassSpecial.text = "";
                 break;
         }
     }
