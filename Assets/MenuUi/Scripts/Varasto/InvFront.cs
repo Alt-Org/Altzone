@@ -318,7 +318,9 @@ namespace MenuUi.Scripts.Storage
             _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
 
             //Artists name
-
+            FurnitureSetInfo setInfo = GetFurnitureSetInfoForFurniture(_furn.Name);
+            _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
+            
             //Artistic description
 
             // Weight
@@ -407,6 +409,25 @@ namespace MenuUi.Scripts.Storage
                     return setInfo.SetName;
             }
             return "Unknown Set";
+        }
+
+        private FurnitureSetInfo GetFurnitureSetInfoForFurniture(string furnitureName)
+        {
+            if (string.IsNullOrWhiteSpace(furnitureName))
+                return null;
+
+            string[] parts = furnitureName.Split('_');
+            if (parts.Length != 2)
+                return null;
+
+            string setName = parts[1];
+            foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
+            {
+                if (setInfo.SetName == setName)
+                    return setInfo;
+            }
+
+            return null;
         }
     }
 }

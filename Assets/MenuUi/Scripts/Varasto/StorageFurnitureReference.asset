@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _info:
   - SetName: Taakka
+    ArtistName: "Simo Ryh\xE4nen"
+    DiagnoseNumber: 
     list:
     - Name: Sofa
       Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
       VisibleName: Sohva
+      ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
+        huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
+        Atlas-titaanin patsasta."
       FurnitureHandling: {fileID: -724820267442525664, guid: e696ad26ec04e3944bb4bffd76155cae,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 4e82351aae20cc84899b237b1cb3093a,
@@ -25,6 +30,7 @@ MonoBehaviour:
     - Name: ArmChair
       Image: {fileID: -498378044, guid: 7767254924d389249bccb2b7a765a93a, type: 3}
       VisibleName: NojaTuoli
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: f1318433f3639df45946250e8b8a5cbe,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 1b28187fcb500d44994fdaf7a4ce0946,
@@ -32,6 +38,7 @@ MonoBehaviour:
     - Name: Mirror
       Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
       VisibleName: Peili
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 45f30829ef2b91f4f9affd300653f9ef,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: edb430c9068a61f478c392bb24b8494d,
@@ -39,6 +46,7 @@ MonoBehaviour:
     - Name: Floorlamp
       Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
       VisibleName: Lattialamppu
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 3f91368a7ccf0494ebfcc06aded8a7fa,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 9a69f4ef2d7504345bd286ab4ffdb68c,
@@ -46,6 +54,7 @@ MonoBehaviour:
     - Name: CoffeeTable
       Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
       VisibleName: "KahviP\xF6yt\xE4"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: eaac4359ab01a46419b8c4494c21ac18,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 51a482fa8b9398d41af78f689c11ef7c,
@@ -53,6 +62,7 @@ MonoBehaviour:
     - Name: SideTable
       Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
       VisibleName: "SivuP\xF6yt\xE4"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: e36ac87f90ad5824ea3d1ba18a770cc0,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 251b4e0b4357496408f090849a7f8225,
@@ -60,15 +70,19 @@ MonoBehaviour:
     - Name: Closet
       Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
       VisibleName: Kaappi
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 30c0269c42b77f44ca4ddb302f9fe64e,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: cd3a5d3df822a9443a5cad700d720fec,
         type: 3}
   - SetName: Schrodinger
+    ArtistName: SMKT
+    DiagnoseNumber: 
     list:
     - Name: Sink
       Image: {fileID: 21300000, guid: a521397346aa25e4cab9e4a0252a080c, type: 3}
       VisibleName: Lavuaari
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 760dca3b375b9984f85be7818b1a953d,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: be40531da96b3664a9e644b854857539,
@@ -76,6 +90,7 @@ MonoBehaviour:
     - Name: Toilet
       Image: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
       VisibleName: "Vessanp\xF6ntt\xF6"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 0caae0fa5fc083041a00d97dfdbbc3e3,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 902ef71f419bd2c468d14a61e89d4f1d,
@@ -83,6 +98,7 @@ MonoBehaviour:
     - Name: Mirror
       Image: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4, type: 3}
       VisibleName: Peili
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: bcc206a4a71656c4db553eef735831af,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 75d4f485eb02ef340bbe25ff7f6f926c,
@@ -90,15 +106,19 @@ MonoBehaviour:
     - Name: Carpet
       Image: {fileID: -1025061042, guid: 46339bd67ae6f014f85f9a28b83074cf, type: 3}
       VisibleName: Matto
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: c7702a1e019ad3549bb0f74d430f1e14,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: f302b91e1f7d25c40bcd6fcfa0c57085,
         type: 3}
   - SetName: Rakkaus
+    ArtistName: Ida Vesterinen
+    DiagnoseNumber: 
     list:
     - Name: Sofa
       Image: {fileID: 2111035950, guid: 1a72e77a6efdfd24db919d01d7a8dfb2, type: 3}
       VisibleName: Sohva
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: de0bfe9ca76f4cb48a39ebbc56207632,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: d541eb126bc215341a2834af265df930,
@@ -106,6 +126,7 @@ MonoBehaviour:
     - Name: ArmChair
       Image: {fileID: -1518666426, guid: 718483698bde05f4a9177b3766ec752c, type: 3}
       VisibleName: Nojatuoli
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 86f9641e0a09c6046b0886aedd4429da,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 1db324aa182baae4f9e89595cba18f53,
@@ -113,6 +134,7 @@ MonoBehaviour:
     - Name: Closet
       Image: {fileID: -714799274, guid: a6f74e5435710c74da29a170bdf69a3b, type: 3}
       VisibleName: Kaappi
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 06b59e30b7b379f4a8f3fe6a634d4663,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 64cb07707a757bf4cbcd47df91c407a3,
@@ -120,6 +142,7 @@ MonoBehaviour:
     - Name: Carpet
       Image: {fileID: -15601349, guid: baee2d721999a8f4990aea6c6b3536e4, type: 3}
       VisibleName: Matto
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 6089bf1d09e9e9d46a55f496f9350afa,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 758c6016b1561e14cbf73abf3c112f47,
@@ -127,6 +150,7 @@ MonoBehaviour:
     - Name: CoffeeTable
       Image: {fileID: 21300000, guid: ea79889aaa2005d43ba89abe29dd04e0, type: 3}
       VisibleName: "Kahvip\xF6yt\xE4"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 0aad825d8df61de4db1b292092b3113d,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 91f539c27719f4d42888feed44f133a6,
@@ -134,6 +158,7 @@ MonoBehaviour:
     - Name: DiningTable
       Image: {fileID: -821679160, guid: 94e11a3a27dffa84587d44509f722e7b, type: 3}
       VisibleName: "Ruokap\xF6yt\xE4"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 8152432b1ee3d2544be03d684f92e949,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: b9aa993dbc3304f4bac753fc18a93428,
@@ -141,6 +166,7 @@ MonoBehaviour:
     - Name: Bed
       Image: {fileID: 815919883, guid: dc6580df46820ee429b7e7b5fff9d53e, type: 3}
       VisibleName: "S\xE4nky"
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: fb13900cd9b1d524899e0945d4bd3cc4,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 89518673889ca91459beb4deab710af5,
@@ -148,15 +174,19 @@ MonoBehaviour:
     - Name: Mirror
       Image: {fileID: -863245616, guid: b521e14e44bb106429a8bf1160035e01, type: 3}
       VisibleName: Peili
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: cec17e84dbf3ab547b7d98b90faccd44,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: d0c8c2bdfc6b8b24b90a330c43795037,
         type: 3}
   - SetName: Neuro
+    ArtistName: "Simo Ryh\xE4nen"
+    DiagnoseNumber: 
     list:
     - Name: Chair
       Image: {fileID: -542428133, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
       VisibleName: Tuoli
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 2745658a8ef7f1e4585ee8bad0b866c8,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: dc3687940a636b34ebae0faff4e2da1f,
@@ -164,6 +194,7 @@ MonoBehaviour:
     - Name: Dresser
       Image: {fileID: -989629432, guid: c13a038f10db45540a32ec27e8fd8eb0, type: 3}
       VisibleName: Lipasto
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 398d095072dda4e4ab5880ab941114d2,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 337f0ab5f942f8b48852f636b7af3eac,
@@ -171,6 +202,7 @@ MonoBehaviour:
     - Name: Stool
       Image: {fileID: 21300000, guid: 2211fd783ba19f949850336199db229d, type: 3}
       VisibleName: Penkki
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: c7a53ae787dd80f43b14574b8f9faa4b,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 6530357a375bf4045ade13cca9d2a276,
@@ -178,15 +210,19 @@ MonoBehaviour:
     - Name: Clock
       Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
       VisibleName: Kello
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: 4ac1fc1cf793c494dabb885c78c26ea5,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 22d52e44e42f50446b1c4f03806b9537,
         type: 3}
   - SetName: Polarity
+    ArtistName: "Simo Ryh\xE4nen"
+    DiagnoseNumber: 
     list:
     - Name: Chair
       Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
       VisibleName: Tuoli
+      ArtisticDescription: 
       FurnitureHandling: {fileID: -724820267442525664, guid: f27d8049826b4434e9989c1a9f5b4dea,
         type: 3}
       TrayFurniture: {fileID: 9152013033603904840, guid: 89f536a14859d954a92bcf7d9e4201b4,
