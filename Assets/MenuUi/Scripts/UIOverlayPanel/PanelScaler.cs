@@ -15,8 +15,8 @@ namespace MenuUi.Scripts.UIOverlayPanel
         const double HighestAspectRatio = 22.0 / 9.0;
 
         // Percentage values for the bottom panel, lowest is for slim and tall phones and highest is for IPad aspect ratio.
-        const double LowestBottomPanelHeight = 0.15;
-        const double HighestBottomPanelHeight = 0.23;
+        const double LowestBottomPanelHeight = 0.18;
+        const double HighestBottomPanelHeight = 0.25;
 
         // Percentage values for the top panel, lowest is for slim and tall phones and highest is for IPad aspect ratio.
         const double LowestTopPanelHeight = 0.05;
@@ -44,8 +44,8 @@ namespace MenuUi.Scripts.UIOverlayPanel
 
         private void SetPanelResolutions()
         {
-            _bottomPanelRectTransfrom.sizeDelta = new Vector2(0, CalculateBottomPanelHeight());
-            _topPanelRectTransfrom.sizeDelta = new Vector2(0, CalculateTopPanelHeight());
+            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
+            _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - CalculateTopPanelHeight());
         }
 
         private double CalculateAspectRatioPercentage()
@@ -67,13 +67,13 @@ namespace MenuUi.Scripts.UIOverlayPanel
         private float CalculateBottomPanelHeight()
         {
             double bottomPanelHeightPercentage = (HighestBottomPanelHeight + (LowestBottomPanelHeight - HighestBottomPanelHeight) * CalculateAspectRatioPercentage());
-            return (float)(Screen.height * bottomPanelHeightPercentage);
+            return (float)bottomPanelHeightPercentage;
         }
 
         private float CalculateTopPanelHeight()
         {
             double topPanelHeightPercentage = (HighestTopPanelHeight + (LowestTopPanelHeight - HighestTopPanelHeight) * CalculateAspectRatioPercentage());
-            return (float)(Screen.height * topPanelHeightPercentage);
+            return (float)topPanelHeightPercentage;
         }
     }
 }
