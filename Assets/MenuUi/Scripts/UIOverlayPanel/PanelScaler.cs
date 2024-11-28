@@ -22,7 +22,27 @@ namespace MenuUi.Scripts.UIOverlayPanel
         const double LowestTopPanelHeight = 0.05;
         const double HighestTopPanelHeight = 0.07;
 
+        int _lastScreenWidth = 0;
+        int _lastScreenHeight = 0;
+
         private void Awake()
+        {
+            SetPanelResolutions();
+        }
+
+#if (UNITY_EDITOR)
+        void Update()
+        {
+            if (_lastScreenWidth != Screen.currentResolution.width || _lastScreenHeight != Screen.currentResolution.height)
+            {
+                _lastScreenWidth = Screen.currentResolution.width;
+                _lastScreenHeight = Screen.currentResolution.height;
+                SetPanelResolutions();
+            }
+        }
+#endif
+
+        private void SetPanelResolutions()
         {
             _bottomPanelRectTransfrom.sizeDelta = new Vector2(0, CalculateBottomPanelHeight());
             _topPanelRectTransfrom.sizeDelta = new Vector2(0, CalculateTopPanelHeight());
