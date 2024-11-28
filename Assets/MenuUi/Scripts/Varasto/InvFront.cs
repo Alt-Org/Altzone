@@ -257,7 +257,8 @@ namespace MenuUi.Scripts.Storage
                 toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
 
                 // Id
-
+                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+                toSet.GetChild(6).GetComponent<TMP_Text>().text = furnitureInfoObject.DiagnoseNumber;
                 // Name
                 toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
@@ -309,7 +310,7 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
-                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+            FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
             if (furnitureInfoObject == null)
             {
                 Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
