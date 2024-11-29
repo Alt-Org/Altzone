@@ -312,7 +312,10 @@ public static class PhotonRealtimeClient
 
     public static bool JoinLobbyWithWrapper(TypedLobbyWrapper typedLobby)
     {
-        return JoinLobby(typedLobby.GetOriginal());
+        if(typedLobby != null)
+            return JoinLobby(typedLobby.GetOriginal());
+        else
+            return JoinLobby(null);
     }
 
     public static bool JoinLobby(TypedLobby typedLobby)
