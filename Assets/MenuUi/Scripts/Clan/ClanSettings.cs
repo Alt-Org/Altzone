@@ -60,19 +60,21 @@ public class ClanSettings : MonoBehaviour
     {
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
+            // Show correct panel
             _mainSettingsPanel.SetActive(true);
             _editHeartPanel.SetActive(false);
             _selectLanguagePanel.SetActive(false);
             _editValuesPanel.SetActive(false);
             _cancelConfirmationPopup.SetActive(false);
-            _clanPassword.SetActive(!clan.IsOpen);
 
+            // Initialize settings
             _clanName.text = clan.Name;
             _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
             _clanActivityRanking.text = _clanWinsRanking.text = "-1";
 
             _clanPhraseField.text = clan.Phrase;
             _clanOpenToggle.isOn = !clan.IsOpen;
+            _clanPassword.SetActive(!clan.IsOpen);
 
             _goalDropdown.Initialize(clan.Goals);
             _ageSelection.Initialize(clan.ClanAge);

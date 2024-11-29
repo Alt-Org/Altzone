@@ -27,7 +27,7 @@ public class ClanMainView : MonoBehaviour
     [Header("Other settings fields")]
     [SerializeField] GameObject _clanOpenObject;
     [SerializeField] GameObject _clanLockedObject;
-    [SerializeField] Image _flagImage;
+    [SerializeField] LanguageFlagImage _flagImage;
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
     [SerializeField] ClanValuePanel _valuePanel;
@@ -35,19 +35,14 @@ public class ClanMainView : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
 
-    [Header("Prefabs and scriptable objects")]
-    [SerializeField] private LanguageFlagMap _languageFlagMap;
-
     private void OnEnable()
     {
         ToggleClanPanel(false);
+
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing);
         if (clan != null)
         {
             SetClanProfile(new ClanData(clan));
-
-            //ServerClan clan = DataCarrier.Instance.clanToView;
-            //DataCarrier.Instance.clanToView = null;
 
             _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { JoinClan(clan); });
@@ -62,15 +57,17 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(true);
 
+        // Show correct buttons
         bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
         _inClanButtons.SetActive(isInClan);
         _notInClanButtons.SetActive(!isInClan);
         _joinClanButton.interactable = clan.IsOpen;
 
+        // Show clan profile data
         _clanName.text = clan.Name;
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
         _clanPhrase.text = clan.Phrase;
-        _flagImage.sprite = _languageFlagMap.GetFlag(clan.Language);
+        _flagImage.SetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
         _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
 
@@ -91,7 +88,7 @@ public class ClanMainView : MonoBehaviour
         _clanPhrase.text = "Clan Phrase";
         _clanMembers.text = _clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = _clanGoal.text = _clanAge.text = "";
-        _flagImage.sprite = _languageFlagMap.GetFlag(Language.None);
+        _flagImage.SetFlag(Language.None);
     }
 
     private void ToggleClanPanel(bool isInClan)

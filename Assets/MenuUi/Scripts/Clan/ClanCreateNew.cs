@@ -63,6 +63,7 @@ public class ClanCreateNew : MonoBehaviour
         _languagePanel.SetActive(false);
 
         StopAllCoroutines();
+
         _clanNameField.text = "";
         _openClanToggle.isOn = false;
 

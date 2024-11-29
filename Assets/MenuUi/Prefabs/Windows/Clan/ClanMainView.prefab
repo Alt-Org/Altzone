@@ -921,6 +921,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8651546651258826231}
+  - component: {fileID: 2040481261901342025}
   m_Layer: 0
   m_Name: ClanLanguageSetting
   m_TagString: Untagged
@@ -948,6 +949,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2040481261901342025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932509717190561500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 931666b4e990d344b83f0ae2e64711d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _languageFlagMap: {fileID: 11400000, guid: 4bab82ab918d6de4ebd28a711ad7ce3f, type: 2}
+  _flagImage: {fileID: 1176188959486828923}
 --- !u!1 &3017319851307592449
 GameObject:
   m_ObjectHideFlags: 0
@@ -3267,12 +3282,11 @@ MonoBehaviour:
   _clanAge: {fileID: 621628879859460660}
   _clanOpenObject: {fileID: 8070524740455736334}
   _clanLockedObject: {fileID: 939314757566019399}
-  _flagImage: {fileID: 1176188959486828923}
+  _flagImage: {fileID: 2040481261901342025}
   _inClanButtons: {fileID: 8700772087763649843}
   _notInClanButtons: {fileID: 5106384675959983560}
   _valuePanel: {fileID: 1905121752485006173}
   _joinClanButton: {fileID: 7990530695742121514}
-  _languageFlagMap: {fileID: 11400000, guid: 4bab82ab918d6de4ebd28a711ad7ce3f, type: 2}
 --- !u!114 &8238024227090610554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6028,17 +6042,17 @@ PrefabInstance:
     - target: {fileID: 62609683541585800, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_fontSize
-      value: 43.75
+      value: 44.05
       objectReference: {fileID: 0}
     - target: {fileID: 534851206385820570, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_fontSize
-      value: 25.5
+      value: 25.7
       objectReference: {fileID: 0}
     - target: {fileID: 1595777600247209436, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_fontSize
-      value: 43.75
+      value: 44.05
       objectReference: {fileID: 0}
     - target: {fileID: 6221160951982613882, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
