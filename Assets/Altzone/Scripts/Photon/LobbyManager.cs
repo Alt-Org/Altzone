@@ -546,9 +546,9 @@ namespace Altzone.Scripts.Lobby
 
         public void OnConnected() { LobbyOnConnected?.Invoke(); }
         public void OnConnectedToMaster() { LobbyOnConnectedToMaster?.Invoke(); }
-        public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived.Invoke(); }
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse.Invoke(data); }
-        public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed.Invoke(debugMessage); }
+        public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived?.Invoke(); }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
+        public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }
 
         public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke((LobbyPhotonHashtable)propertiesThatChanged); }
