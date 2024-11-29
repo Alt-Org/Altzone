@@ -1,4 +1,5 @@
 ﻿using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby;
 using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,14 +25,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void SetPlayerAsGuest()
         {
-            Debug.Log($"setPlayerAsGuest {PhotonBattle.PlayerPositionGuest}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
+            Debug.Log($"setPlayerAsGuest {PhotonBattleLobbyRoom.PlayerPositionGuest}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattleLobbyRoom.PlayerPositionGuest));
         }
 
         private void SetPlayerAsSpectator()
         {
-            Debug.Log($"setPlayerAsSpectator {PhotonBattle.PlayerPositionSpectator}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
+            Debug.Log($"setPlayerAsSpectator {PhotonBattleLobbyRoom.PlayerPositionSpectator}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattleLobbyRoom.PlayerPositionSpectator));
         }
 
         private void StartPlaying()

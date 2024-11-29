@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using MenuUi.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,14 +12,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
     /// </summary>
     public class PanePlayerListing : MonoBehaviour
     {
-        private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-        private const string PlayerMainSkillKey = PhotonBattle.PlayerPrefabIdKey;
-        private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
+        private const string PlayerPositionKey = PhotonBattleLobbyRoom.PlayerPositionKey;
+        private const string PlayerMainSkillKey = PhotonBattleLobbyRoom.PlayerPrefabIdKey;
+        private const int PlayerPositionGuest = PhotonBattleLobbyRoom.PlayerPositionGuest;
 
-        private const int PlayerPosition1 = PhotonBattle.PlayerPosition1;
-        private const int PlayerPosition2 = PhotonBattle.PlayerPosition2;
-        private const int PlayerPosition3 = PhotonBattle.PlayerPosition3;
-        private const int PlayerPosition4 = PhotonBattle.PlayerPosition4;
+        private const int PlayerPosition1 = PhotonBattleLobbyRoom.PlayerPosition1;
+        private const int PlayerPosition2 = PhotonBattleLobbyRoom.PlayerPosition2;
+        private const int PlayerPosition3 = PhotonBattleLobbyRoom.PlayerPosition3;
+        private const int PlayerPosition4 = PhotonBattleLobbyRoom.PlayerPosition4;
 
         [SerializeField] private Text _textTemplate;
         [SerializeField] private Transform _contentRoot;
