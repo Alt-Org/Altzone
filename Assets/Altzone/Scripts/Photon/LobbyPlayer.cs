@@ -86,7 +86,17 @@ namespace Altzone.Scripts.Lobby.Wrappers
         /// </summary>
         /// <param name="id">ActorNumber of the a player in this room.</param>
         /// <returns>Player or null.</returns>
-        public LobbyPlayer Get(int id)
+        public Player GetPlayer(int id)
+        {
+            return _player.Get(id);
+        }
+
+        /// <summary>
+        /// Get a Player by ActorNumber (Player.ID).
+        /// </summary>
+        /// <param name="id">ActorNumber of the a player in this room.</param>
+        /// <returns>Player or null.</returns>
+        public LobbyPlayer GetLobbyPlayer(int id)
         {
             return new(_player.Get(id));
         }
