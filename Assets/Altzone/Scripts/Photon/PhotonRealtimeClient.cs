@@ -9,6 +9,7 @@ using Prg.Scripts.Common.Util;
 using Quantum;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 
 public static class PhotonRealtimeClient
 {
@@ -21,6 +22,8 @@ public static class PhotonRealtimeClient
                                          Client.State == ClientState.Disconnected;
 
     public static bool CanJoinLobby => Client.State == ClientState.ConnectedToMasterServer;
+
+    public static LobbyClientState State => (LobbyClientState)Client.State;
 
     public static PhotonServerSettings ServerSettings { get; private set; }
 
@@ -238,7 +241,28 @@ public static class PhotonRealtimeClient
                 return offlineModeRoom;
             }*/
 
-            return Client == null ? null : Client.CurrentRoom;
+            return Client?.CurrentRoom;
+        }
+    }
+
+    public static LobbyRoom LobbyCurrentRoom
+    {
+        get
+        {
+            /*if (offlineMode)
+            {
+                return offlineModeRoom;
+            }*/
+
+            return new(CurrentRoom);
+        }
+    }
+
+    public static bool InRoom
+    {
+        get
+        {
+            return Client.InRoom;
         }
     }
 
@@ -261,6 +285,14 @@ public static class PhotonRealtimeClient
         }
     }
 
+    public static LobbyClientState LobbyNetworkClientState
+    {
+        get
+        {
+            return (LobbyClientState)NetworkClientState;
+        }
+    }
+
     static PhotonRealtimeClient()
     {
         #if !UNITY_EDITOR
@@ -276,6 +308,11 @@ public static class PhotonRealtimeClient
         ServerSettings = PhotonServerSettings.Global;
         var protocol = ServerSettings.AppSettings.Protocol;
         Client = new RealtimeClient(protocol);
+    }
+
+    public static bool JoinLobbyWithWrapper(TypedLobbyWrapper typedLobby)
+    {
+        return JoinLobby(typedLobby.GetOriginal());
     }
 
     public static bool JoinLobby(TypedLobby typedLobby)
@@ -531,6 +568,58 @@ public static class PhotonRealtimeClient
         }
 
         Client.Disconnect();
+    }
+
+    /// <summary>
+    /// Registers an object for callbacks for the implemented callback-interfaces.
+    /// </summary>
+    /// <remarks>
+    /// Adding and removing callback targets is queued to not mess with callbacks in execution.
+    /// Internally, this means that the addition/removal is done before the RealtimeClient
+    /// calls the next callbacks. This detail should not affect a game's workflow.
+    ///
+    /// The covered callback interfaces are: IConnectionCallbacks, IMatchmakingCallbacks,
+    /// ILobbyCallbacks, IInRoomCallbacks and IOnEventCallback.
+    ///
+    /// See: <a href="https://doc.photonengine.com/en-us/realtime/current/reference/dotnet-callbacks" target="_blank">.Net Callbacks</a>
+    /// </remarks>
+    /// <param name="target">The object that registers to get callbacks from this client.</param>
+    public static void AddCallbackTarget(object target)
+    {
+        Client.AddCallbackTarget(target);
+    }
+
+    /// <summary>
+    /// Unregisters an object from callbacks for the implemented callback-interfaces.
+    /// </summary>
+    /// <remarks>
+    /// Adding and removing callback targets is queued to not mess with callbacks in execution.
+    /// Internally, this means that the addition/removal is done before the RealtimeClient
+    /// calls the next callbacks. This detail should not affect a game's workflow.
+    ///
+    /// The covered callback interfaces are: IConnectionCallbacks, IMatchmakingCallbacks,
+    /// ILobbyCallbacks, IInRoomCallbacks and IOnEventCallback.
+    ///
+    /// See: <a href="https://doc.photonengine.com/en-us/realtime/current/reference/dotnet-callbacks" target="_target">Callbacks</a>
+    /// </remarks>
+    /// <param name="target">The object that unregisters from getting callbacks.</param>
+    public static void RemoveCallbackTarget(object target)
+    {
+        Client.RemoveCallbackTarget(target);
+    }
+
+    public static bool CreateLobbyRoom(string roomName, string[] expectedUsers = null)
+    {
+        var roomOptions = new RoomOptions()
+        {
+            IsVisible = true, // Pit�� muokata varmaankin //
+            IsOpen = true,
+            MaxPlayers = 4,
+            Plugins = new string[] { "QuantumPlugin" },
+            PlayerTtl = ServerSettings.PlayerTtlInSeconds * 1000,
+            EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000
+        };
+        return CreateRoom(roomName, roomOptions, null, expectedUsers);
     }
 
     public static bool CreateRoom(string roomName, RoomOptions roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null)
