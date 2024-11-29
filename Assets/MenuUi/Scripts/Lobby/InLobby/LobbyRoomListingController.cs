@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
-//using Battle1.PhotonUnityNetworking.Code;
-using Photon.Realtime;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -32,8 +25,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnEnable()
         {
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
-            Debug.Log($"OnEnable {PhotonRealtimeClient.NetworkClientState}");
+            PhotonRealtimeClient.AddCallbackTarget(this);
+            Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
             _view.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
@@ -45,7 +38,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnDisable()
         {
-            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.RemoveCallbackTarget(this);
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
             _view.Reset();
@@ -54,17 +47,9 @@ namespace MenuUI.Scripts.Lobby.InLobby
         private void CreateRoomOnClick()
         {
             var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
-            var roomOptions = new RoomOptions()
-            {
-                IsVisible = true, // Pit�� muokata varmaankin //
-                IsOpen = true,
-                MaxPlayers = 4,
-                Plugins = new string[] { "QuantumPlugin" },
-                PlayerTtl = PhotonRealtimeClient.ServerSettings.PlayerTtlInSeconds * 1000,
-                EmptyRoomTtl = PhotonRealtimeClient.ServerSettings.EmptyRoomTtlInSeconds * 1000
-            };
+            
             Debug.Log($"{roomName}");
-            PhotonRealtimeClient.CreateRoom(roomName, roomOptions);
+            PhotonRealtimeClient.CreateLobbyRoom(roomName);
         }
 
 
@@ -84,8 +69,8 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnJoinedRoom()
         {
-            var room = PhotonRealtimeClient.CurrentRoom; // hakee pelaajan tiedot // 
-            var player = PhotonRealtimeClient.LocalPlayer;
+            var room = PhotonRealtimeClient.LobbyCurrentRoom; // hakee pelaajan tiedot // 
+            var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());

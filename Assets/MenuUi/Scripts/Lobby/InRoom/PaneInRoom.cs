@@ -51,8 +51,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            _battleID.text = PhotonRealtimeClient.Client.InRoom ? $"({PhotonRealtimeClient.Client.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            title.text = PhotonRealtimeClient.Client.InRoom ? PhotonRealtimeClient.Client.CurrentRoom.Name : "<color=red>Not in room</color>";
+            _battleID.text = PhotonRealtimeClient.InRoom ? $"({PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
+            title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
         }
     }
 }

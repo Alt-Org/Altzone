@@ -25,7 +25,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void OnEnable()
         {
-            if (PhotonRealtimeClient.Client.InRoom)
+            if (PhotonRealtimeClient.InRoom)
             {
                 UpdateStatus();
             }
@@ -36,12 +36,12 @@ namespace MenuUI.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
+            PhotonRealtimeClient.AddCallbackTarget(this);
         }
 
         private void OnDisable()
         {
-            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.RemoveCallbackTarget(this);
             LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
@@ -53,13 +53,13 @@ namespace MenuUI.Scripts.Lobby.InRoom
         private void UpdateStatus()
         {
             // Use PaneRoomListing.updateStatus() style to manage dynamic text lines - IMHO is has better implementation!
-            if (!PhotonRealtimeClient.Client.InRoom)
+            if (!PhotonRealtimeClient.InRoom)
             {
                 DeleteExtraLines(_contentRoot);
                 return;
             }
             var players = PhotonRealtimeClient.GetCurrentRoomPlayersByNickName();
-            Debug.Log($"updateStatus {PhotonRealtimeClient.Client.State} lines: {_contentRoot.childCount} players: {players.Count}");
+            Debug.Log($"updateStatus {PhotonRealtimeClient.State} lines: {_contentRoot.childCount} players: {players.Count}");
             
             // Synchronize line count with player count.
             while (_contentRoot.childCount < players.Count)

@@ -72,7 +72,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void OnEnable()
         {
-            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             _buttonPlayerP1.interactable = false;
             _buttonPlayerP2.interactable = false;
             _buttonPlayerP3.interactable = false;
@@ -88,34 +88,34 @@ namespace MenuUI.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
+            PhotonRealtimeClient.AddCallbackTarget(this);
             StartCoroutine(OnEnableInRoom());
         }
 
         private void OnDisable()
         {
-            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
             LobbyManager.LobbyOnPlayerEnteredRoom -= OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom -= OnPlayerLeftRoom;
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
-            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.RemoveCallbackTarget(this);
         }
 
         private IEnumerator OnEnableInRoom()
         {
-            yield return new WaitUntil(() => PhotonRealtimeClient.Client.InRoom);
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
             UpdatePhotonNickname();
-            var room = PhotonRealtimeClient.CurrentRoom;
-            var player = PhotonRealtimeClient.LocalPlayer;
+            var room = PhotonRealtimeClient.LobbyCurrentRoom;
+            var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"OnEnable InRoom '{room.Name}' as '{PhotonRealtimeClient.NickName}'");
 
             // Reset player custom properties for new game
             player.CustomProperties.Clear();
-            var playerPos = PhotonBattle.GetFirstFreePlayerPos(player);
+            var playerPos = PhotonLobbyRoom.GetFirstFreePlayerPos(player);
             var gameConfig = GameConfig.Get();
             var playerSettings = gameConfig.PlayerSettings;
             var playerGuid = playerSettings.PlayerGuid;
@@ -147,14 +147,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
                 });
-                Debug.Log($"{PhotonRealtimeClient.NetworkClientState} {enabled}");
+                Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
                 UpdateStatus();
             });
         }
 
         private void UpdateStatus()
         {
-            if (!enabled || !PhotonRealtimeClient.Client.InRoom)
+            if (!enabled || !PhotonRealtimeClient.InRoom)
             {
                 return;
             }
@@ -209,8 +209,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void SetTeamText()
         {
-            var room = PhotonRealtimeClient.CurrentRoom;
-            var masterTeam = GetTeam(_masterClientPosition);
+            LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
+            int masterTeam = GetTeam(_masterClientPosition);
             if (masterTeam == 0)
             {
                 _upperTeamText.text = $"Team {room.GetCustomProperty<string>(TeamRedNameKey)}";
@@ -238,7 +238,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void CheckMasterClient()
         {
-            var curValue = PhotonRealtimeClient.CurrentRoom.GetPlayer(PhotonRealtimeClient.CurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+            var curValue = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
             _masterClientPosition = curValue;
         }
 

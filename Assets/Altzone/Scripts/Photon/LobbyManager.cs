@@ -228,7 +228,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
                 {
-                    PhotonRealtimeClient.JoinLobby(null);
+                    PhotonRealtimeClient.JoinLobbyWithWrapper(null);
                 }
                 yield return delay;
             }
