@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Lobby.Wrappers
 {
-    public class LobbyRoom : MonoBehaviour
+    public class LobbyRoom
     {
         /// <summary>
         /// A reference to the RealtimeClient which is currently keeping the connection and state.

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Lobby.Wrappers
 {
-    public class LobbyPlayer : MonoBehaviour
+    public class LobbyPlayer
     {
         private Player _player;
         /// <summary>Identifier of this player in current room. Also known as: actorNumber or actorNumber. It's -1 outside of rooms.</summary>
