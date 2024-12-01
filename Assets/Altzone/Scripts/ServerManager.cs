@@ -27,6 +27,7 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
+    [SerializeField] private bool _skipServerFurniture = false;
     public static string ADDRESS = "https://altzone.fi/api/";
     public static string DEVADDRESS = "https://devapi.altzone.fi/";
 
@@ -325,15 +326,16 @@ public class ServerManager : MonoBehaviour
             {
                 ClanInventory inventory = new ClanInventory();
                 List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
-
-                /*foreach (ServerItem item in items)
+                if (!_skipServerFurniture)
                 {
-                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
-                    if (item._id == null || item.name == null) continue;
-                    clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
-                }*/
-
-                if (clanFurniture.Count == 0)
+                    foreach (ServerItem item in items)
+                    {
+                        //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                        if (item._id == null || item.name == null) continue;
+                        clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
+                    }
+                }
+                else
                 {
                     int i = 0;
                     while (i < 2)
@@ -495,7 +497,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                Debug.LogWarning(result);
+                //Debug.LogWarning(result);
                 ServerPlayerTasks tasks = result["data"]["PlayerTask"].ToObject<ServerPlayerTasks>();
                 //Clan = clan;
 
@@ -776,6 +778,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 Stock = result["data"]["Stock"][0].ToObject<ServerStock>();     // Clan can have multiple stock but for now we get only the first
 
                 if (callback != null)
@@ -795,15 +798,18 @@ public class ServerManager : MonoBehaviour
     public IEnumerator GetStockItemsFromServer(ServerStock stock, List<ServerItem> serverItems, PaginationData paginationData, int pageCount, Action<List<ServerItem>> callback)
     {
         if (stock == null)
+        {
+            Debug.LogWarning("Cannot get furniture form server: Cannot find stock");
             yield break;
+        }
 
         bool lastPage = true;
         string query = string.Empty;
 
         if (paginationData == null)
-            query = ADDRESS + "item?limit=10&search=stock_id=\"" + stock._id + "\"";
+            query = DEVADDRESS + "stock/" + stock._id + "?limit=10&with=Item";
         else
-            query = ADDRESS + "item?page=" + ++paginationData.currentPage + "&limit=10&search=stock_id=\"" + stock._id + "\"";
+            query = DEVADDRESS + "stock/" + stock._id + "?page=" + ++paginationData.currentPage + "&limit=10&with=Item";
 
         yield return StartCoroutine(WebRequests.Get(query, AccessToken, request =>
         {
@@ -811,15 +817,16 @@ public class ServerManager : MonoBehaviour
             {
                 List<ServerItem> requestItems = new List<ServerItem>();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
-                JArray array = (JArray)jObject["data"]["Item"];
+                Debug.LogWarning(jObject);
+                JArray array = (JArray)jObject["data"]["Stock"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
                 foreach (var item in requestItems)
                     serverItems.Add(item);
 
-                paginationData = jObject["paginationData"].ToObject<PaginationData>();
+                paginationData = jObject["paginationData"]?.ToObject<PaginationData>();
 
-                if (paginationData.pageCount != 0)
+                if (paginationData != null && paginationData.pageCount != 0)
                     pageCount = paginationData.pageCount;
 
                 if (paginationData != null && paginationData.currentPage < pageCount)
