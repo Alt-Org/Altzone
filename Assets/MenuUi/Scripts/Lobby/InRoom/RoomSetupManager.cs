@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
@@ -140,14 +141,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 //var prefabIndex = PhotonBattle.GetPrefabIndex(battleCharacter[0], 0);
                 var prefabIndex = (int)battleCharacter[0].Id;
                 Debug.Log($"playerPos {playerPos} prefabIndex {characterIds}");
-                player.SetCustomProperties(new LobbyPhotonHashtable
+                player.SetCustomProperties(new LobbyPhotonHashtable(new Dictionary<object, object>
                 {
                     { PlayerPositionKey, playerPos },
                     { PlayerMainSkillKey, prefabIndex },
                     { PlayerCharactersKey, characterIds },
                     { PlayerStatsKey, characterStats },
                     { "Role", (int)currentRole }
-                });
+                }));
                 Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState} {enabled}");
                 UpdateStatus();
             });

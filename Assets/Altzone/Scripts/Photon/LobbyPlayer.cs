@@ -60,11 +60,11 @@ namespace Altzone.Scripts.Lobby.Wrappers
         {
             get
             {
-                return (LobbyPhotonHashtable)_player.CustomProperties;
+                return new(_player.CustomProperties);
             }
             set
             {
-                _player.CustomProperties = (PhotonHashtable)value;
+                _player.CustomProperties = value.GetOriginal();
             }
         }
 
@@ -222,6 +222,11 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public bool SetCustomProperties(PhotonHashtable propertiesToSet, PhotonHashtable expectedValues = null)
         {
             return _player.SetCustomProperties(propertiesToSet, expectedValues);
+        }
+
+        public bool SetCustomProperties(LobbyPhotonHashtable propertiesToSet, LobbyPhotonHashtable expectedValues = null)
+        {
+            return _player.SetCustomProperties(propertiesToSet.GetOriginal(), expectedValues?.GetOriginal());
         }
 
         public bool HasCustomProperty( string key)

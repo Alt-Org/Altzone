@@ -187,7 +187,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         /// </returns>
         public virtual bool SetCustomProperties(LobbyPhotonHashtable propertiesToSet, LobbyPhotonHashtable expectedValues = null)
         {
-            return _room.SetCustomProperties(propertiesToSet, expectedValues);
+            return _room.SetCustomProperties(propertiesToSet.GetOriginal(), expectedValues.GetOriginal());
         }
 
         /// <summary>
