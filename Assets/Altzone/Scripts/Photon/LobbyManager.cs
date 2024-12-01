@@ -13,7 +13,7 @@ using Quantum;
 
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
-using Altzone.Scripts.Model.Poco.Player;
+using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
 using Prg.Scripts.Common.PubSub;
 
 using System.Threading.Tasks;

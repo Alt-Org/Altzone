@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using MenuUi.Scripts.Window;
 using Altzone.Scripts.Model.Poco.Player;
@@ -9,6 +10,7 @@ using Altzone.Scripts.Config;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEngine.InputSystem.HID;
 
 public class ProfileMenu : MonoBehaviour
 
@@ -18,16 +20,21 @@ public class ProfileMenu : MonoBehaviour
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string loggedOutTimeText;
-    [SerializeField] private string loggedOutLosesWinsText;
+    [SerializeField] private string loggedOutLosesText;
+    [SerializeField] private string loggedOutWinsText;
     [SerializeField] private string loggedOutCarbonText;
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
-    [SerializeField] private TextMeshProUGUI _LosesWinsText;
+    [SerializeField] private TextMeshProUGUI _LosesText;
+    [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
 
+
+    [Header("savebutton")]
+    [SerializeField] private Button _saveEditsButton;
 
 
     //[Header("Images")]
@@ -49,7 +56,7 @@ public class ProfileMenu : MonoBehaviour
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
 
-    
+
 
     private ServerPlayer _player;
 
@@ -81,15 +88,15 @@ public class ProfileMenu : MonoBehaviour
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
-        if (carbonDisplay >= 1000f)                                                                                  
+        if (carbonDisplay >= 1000f)
         {
             carbonDisplay /= 1000f;
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanj�lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanj�lki teksti
+        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
 
-        // P�ivitt�� minuutin v�lein peliajan.
+        // Päivittää minuutin välein peliajan.
         if (secondsCount >= 60f)
         {
             minuteCount++;
@@ -113,7 +120,8 @@ public class ProfileMenu : MonoBehaviour
     {
         _playerNameText.text = loggedOutPlayerText;
         _TimePlayedText.text = loggedOutTimeText;
-        _LosesWinsText.text = loggedOutLosesWinsText;
+        _LosesText.text = loggedOutLosesText;
+        _WinsText.text = loggedOutWinsText;
         _CarbonText.text = loggedOutCarbonText;
     }
 

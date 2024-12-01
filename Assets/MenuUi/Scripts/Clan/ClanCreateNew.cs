@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -11,89 +10,88 @@ using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanCreateNew : MonoBehaviour
 {
-    [SerializeField] private List<string> _valuesList;
-    [SerializeField] private GameObject _valuePrefab;
-    [SerializeField] private GameObject _valuesContainer;
+    [Header("Panels")]
+    [SerializeField] private GameObject _mainCreatePanel;
+    [SerializeField] private GameObject _languagePanel;
 
-    [Header("Input fields")]
+    [Header("Setting fields")]
     [SerializeField] private TMP_InputField _clanNameField;
-    [SerializeField] private TMP_InputField _clanPhraseField;
+    [SerializeField] private Toggle _openClanToggle;
     [SerializeField] private TMP_InputField _clanPasswordField;
+    [SerializeField] private TMP_Dropdown _clanGoalDropdown;
+    [SerializeField] private ClanAgeSelection _ageSelection;
+    [SerializeField] private ClanLanguageList _languageSelection;
+    [SerializeField] private ValueSelectionController _valueSelection;
+    [SerializeField] private LanguageFlagImage _flagImage;
 
-    [Header("Toggles")]
-    [SerializeField] private Toggle _ageToddlersToggle;
-    [SerializeField] private Toggle _ageTeensToggle;
-    [SerializeField] private Toggle _ageAdultsToggle;
-    [SerializeField] private Toggle _ageEveryoneToggle;
-    [SerializeField] private Toggle _openClanButton;
+    [Header("Clan Heart")]
+    [SerializeField] private ClanHeartColorSetter _heartColorSetter;
+    [SerializeField] private ColorButton[] _colorButtons;
 
     [Header("Warnings")]
-    [SerializeField] private GameObject _clanNameWarningOutline;
-    [SerializeField] private GameObject _clanPasswordWarningOutline;
-    [SerializeField] private GameObject _clanLanguageWarningOutline;
-    [SerializeField] private GameObject _clanGoalWarningOutline;
-    [SerializeField] private GameObject _clanAgeWarningOutline;
+    [SerializeField] private GameObject _nameWarningOutline;
+    [SerializeField] private GameObject _passwordWarningOutline;
+    [SerializeField] private GameObject _goalWarningOutline;
+    [SerializeField] private GameObject _languageWarningOutline;
     [SerializeField] private PopupController _warningPopup;
 
     [Header("Buttons")]
-    [SerializeField] private Button _returnToMainClanViewButton;
-    [SerializeField] private Button _clanValues;
-    [SerializeField] private Button _buttonLogo;
-
-    [Header("Dropdowns")]
-    [SerializeField] private TMP_Dropdown _clanLanguageDropdown;
-    [SerializeField] private TMP_Dropdown _clanGoalDropdown;
-
-    [Header("Other Inputs")]
-    [SerializeField] private ClanRightsPanel _clanRightsPanel;
+    [SerializeField] private Button _closeLanguageSelect;
+    [SerializeField] private Button _createClanOK;
 
     [Header("Navigation")]
     [SerializeField] protected WindowDef _naviTarget;
 
-    private ClanAge _clanAgeRange = ClanAge.None;
-    private ClanRoleRights[] _defaultRights = new ClanRoleRights[3]  {
+    private Color _selectedHeartColor;
+    private readonly ClanRoleRights[] _defaultRights = new ClanRoleRights[3]  {
         ClanRoleRights.None,
         ClanRoleRights.EditSoulHome,
         ClanRoleRights.EditClanSettings | ClanRoleRights.EditSoulHome | ClanRoleRights.EditMemberRights
     };
 
+    private void Start()
+    {
+        _createClanOK.onClick.RemoveAllListeners();
+        _createClanOK.onClick.AddListener(PostClanToServer);
+    }
+
+    private void OnEnable() => Reset();
+
     private void Reset()
     {
+        _mainCreatePanel.SetActive(true);
+        _languagePanel.SetActive(false);
+
         StopAllCoroutines();
+
         _clanNameField.text = "";
-        _openClanButton.isOn = false;
+        _openClanToggle.isOn = false;
 
-        _clanNameWarningOutline.SetActive(false);
-        _clanPasswordWarningOutline.SetActive(false);
-        _clanLanguageWarningOutline.SetActive(false);
-        _clanGoalWarningOutline.SetActive(false);
-        _clanAgeWarningOutline.SetActive(false);
+        _nameWarningOutline.SetActive(false);
+        _passwordWarningOutline.SetActive(false);
+        _goalWarningOutline.SetActive(false);
+        _passwordWarningOutline.SetActive(false);
+        _languageWarningOutline.SetActive(false);
 
-        SetLanguageDropdown();
-        SetValuesPanel();
+        _ageSelection.Initialize(ClanAge.All);
         SetGoalsDropDown();
 
-        ConfigureAgeToggle(_ageToddlersToggle, ClanAge.Toddlers);
-        ConfigureAgeToggle(_ageTeensToggle, ClanAge.Teenagers);
-        ConfigureAgeToggle(_ageAdultsToggle, ClanAge.Adults);
-        ConfigureAgeToggle(_ageEveryoneToggle, ClanAge.All);
+        _flagImage.SetFlag(Language.None);
+        _languageSelection.Initialize(Language.None);
+        _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
 
-        _clanRightsPanel.InitializeRightsToggles(_defaultRights);
-    }
-
-    private void OnEnable()
-    {
-        Reset();
-    }
-
-    private void SetLanguageDropdown()
-    {
-        _clanLanguageDropdown.options.Clear();
-        foreach (Language language in Enum.GetValues(typeof(Language)))
+        SetHeartColor(_colorButtons[0].color);
+        foreach (ColorButton colorButton in _colorButtons)
         {
-            string text = ClanDataTypeConverter.GetLanguageText(language);
-            _clanLanguageDropdown.options.Add(new TMP_Dropdown.OptionData(text));
+            Color color = colorButton.color;
+            colorButton.button.onClick.AddListener(() => SetHeartColor(color));
         }
+    }
+
+    private void SetHeartColor(Color color)
+    {
+        _selectedHeartColor = color;
+        _heartColorSetter.SetHeartColor(_selectedHeartColor);
     }
 
     private void SetGoalsDropDown()
@@ -106,53 +104,23 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
-    private void ConfigureAgeToggle(Toggle toggle, ClanAge clanAge)
-    {
-        SetToggleColor(toggle, Color.white);
-        toggle.onValueChanged.RemoveAllListeners();
-        toggle.onValueChanged.AddListener((value) =>
-        {
-            if (value)
-            {
-                SetClanAge(clanAge);
-                SetToggleColor(toggle, Color.yellow);
-            }
-            else SetToggleColor(toggle, Color.white);
-        });
-    }
-    private void SetClanAge(ClanAge age) => _clanAgeRange = age;
-    private void SetToggleColor(Toggle toggle, Color color)
-    {
-        ColorBlock colors = toggle.colors;
-        colors.normalColor = color;
-        toggle.colors = colors;
-    }
-
-    private void SetValuesPanel()
-    {
-        for (int i = _valuesContainer.transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(_valuesContainer.transform.GetChild(i).gameObject);
-        }
-        foreach (string Text in _valuesList)
-        {
-            GameObject ValueObject = Instantiate(_valuePrefab, _valuesContainer.transform);
-            ValueObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = Text;
-        }
-    }
-
     public void PostClanToServer()
     {
         string clanName = _clanNameField.text;
-        string phrase = _clanPhraseField.text;
-        bool isOpen = !_openClanButton.isOn;
+        string phrase = " ";
+        bool isOpen = !_openClanToggle.isOn;
         string password = _clanPasswordField.text;
-        Language language = (Language)_clanLanguageDropdown.value;
+        Language language = _languageSelection.SelectedLanguage;
         Goals goal = (Goals)_clanGoalDropdown.value;
-        ClanAge age = _clanAgeRange;
-        ClanRoleRights[] clanRights = _clanRightsPanel.ClanRights;
+        ClanAge age = _ageSelection.ClanAgeRange;
+        ClanRoleRights[] clanRights = _defaultRights;
 
-        if (!CheckClanValuesValidity(clanName, phrase, isOpen, password, language, goal, age))
+        // Not yet saved
+        ClanValues[] values = _valueSelection.SelectedValues.ToArray();
+        List<HeartPieceData> clanHeartPieces = new();
+        for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
+
+        if (!CheckClanValuesValidity(clanName, isOpen, password, language, goal))
         {
             return;
         }
@@ -165,11 +133,11 @@ public class ClanCreateNew : MonoBehaviour
             }
 
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {true}", _naviTarget);
-            var windowManager = WindowManager.Get();
+            IWindowManager windowManager = WindowManager.Get();
             //windowManager.PopCurrentWindow();
 
             // Check if navigation target window is already in window stack and we area actually going back to it via button.
-            var windowCount = windowManager.WindowCount;
+            int windowCount = windowManager.WindowCount;
             if (windowCount > 1)
             {
                 var targetIndex = windowManager.FindIndex(_naviTarget);
@@ -189,49 +157,41 @@ public class ClanCreateNew : MonoBehaviour
         }));
     }
 
-    private bool CheckClanValuesValidity(string clanName, string phrase, bool isOpen, string password, Language language, Goals goal, ClanAge age)
+    private bool CheckClanValuesValidity(string clanName, bool isOpen, string password, Language language, Goals goal)
     {
         bool validInputs = true;
 
         if (clanName == string.Empty)
         {
-            _clanNameWarningOutline.SetActive(true);
+            _nameWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Lisää klaanin nimi");
             validInputs = false;
         }
-        else _clanNameWarningOutline.SetActive(false);
+        else _nameWarningOutline.SetActive(false);
 
         if (!isOpen && password == string.Empty)
         {
-            _clanPasswordWarningOutline.SetActive(true);
+            _passwordWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Lukituilla klaaneilla tulee olla salasana");
             validInputs = false;
         }
-        else _clanPasswordWarningOutline.SetActive(false);
+        else _passwordWarningOutline.SetActive(false);
 
         if (language == Language.None)
         {
-            _clanLanguageWarningOutline.SetActive(true);
-            validInputs = false;
+            _languageWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Valitse klaanin kieli");
+            validInputs = false;
         }
-        else _clanLanguageWarningOutline.SetActive(false);
+        else _languageWarningOutline.SetActive(false);
 
         if (goal == Goals.None)
         {
-            _clanGoalWarningOutline.SetActive(true);
-            validInputs = false;
+            _goalWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Valitse klaanin tavoite");
-        }
-        else _clanGoalWarningOutline.SetActive(false);
-
-        if (age == ClanAge.None)
-        {
-            _clanAgeWarningOutline.SetActive(true);
             validInputs = false;
-            _warningPopup.ActivatePopUp("Valitse klaanin ikäryhmä");
         }
-        else _clanAgeWarningOutline.SetActive(false);
+        else _goalWarningOutline.SetActive(false);
 
         return validInputs;
     }

@@ -1,9 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
+    public enum ClanValues
+    {
+        Elainrakkaat,
+        Maahanmuuttomyonteiset,
+        Lgbtq,
+        Raittiit,
+        Kohteliaat,
+        Kiusaamisenvastaiset,
+        Urheilevat,
+        Syvalliset,
+        Oikeudenmukaiset,
+        Kaikkienkaverit,
+        Itsenaiset,
+        Retkeilijat,
+        Suomenruotsalaiset,
+        Huumorintajuiset,
+        Rikkaat,
+        Ikiteinit,
+        Juoruilevat,
+        Rakastavat,
+        Oleilijat,
+        Nortit,
+        Musadiggarit,
+        Tunteelliset,
+        Gamerit,
+        Animefanit,
+        Sinkut,
+        Monikulttuuriset,
+        Kauniit,
+        Jarjestelmalliset,
+        Epajarjestelmalliset,
+        Tasaarvoiset,
+        Somepersoonat,
+        Kadentaitajat,
+        Muusikot,
+        Taiteilijat,
+        Spammaajat,
+        Kasvissyojat,
+        Tasapainoiset,
+    }
+
     public class HeartPieceData
     {
         public int pieceNumber;

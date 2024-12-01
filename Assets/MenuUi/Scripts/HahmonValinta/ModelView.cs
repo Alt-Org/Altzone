@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using System.Collections.ObjectModel;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,8 +30,12 @@ namespace MenuUi.Scripts.CharacterGallery
         public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
+        public int characterTextCounter;
 
         private CharacterID _currentCharacterId;
+
+        public ColorBlock _colorBlock = new();
+
 
         private void Awake()
         {
@@ -66,27 +71,133 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
+            //Poistaa myös valitut hahmot!!!
             foreach (var button in _buttons)
             {
-                button.gameObject.SetActive(false);
+                Destroy(button.gameObject);
             }
-            // Deactivate all character slots
+            // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                characterSlot.gameObject.SetActive(false);
+                Destroy(characterSlot.gameObject);
             }
+            _buttons.Clear();
+            _characterSlot.Clear();
+        }
+        public Color GetCharacterClassColor(CharacterClassID id)
+        {
+            switch (id)
+            {
+                case CharacterClassID.Desensitizer:
+                    return new Color(0.68f, 0.84f, 0.9f, 1);
+                case CharacterClassID.Trickster:
+                    return Color.green;
+                case CharacterClassID.Obedient:
+                    return new Color(1f, 0.64f, 0, 1);
+                case CharacterClassID.Projector:
+                    return Color.yellow;
+                case CharacterClassID.Retroflector:
+                    return Color.red;
+                case CharacterClassID.Confluent:
+                    return new Color(0.5f, 0, 0.5f, 1);
+                case CharacterClassID.Intellectualizer:
+                    return Color.blue;
+                default:
+                    return Color.gray;
+            }
+        }
+        public void CheckSelectedCharacterSlotText(bool isAdditive)
+        {
+            //TODO: tee näistä SerializeField
+            //Ois myös kiva jos tämä ylipäätään toimis.
+            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
+            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
+            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
+
+            if (isAdditive == true)
+            {
+                characterTextCounter++;
+            }
+            else
+            {
+                characterTextCounter--;
+            }
+            if (characterTextCounter < 0) characterTextCounter = 0;
+            if (characterTextCounter > 3) characterTextCounter = 3;
+            
+            /*if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (_CurSelectedCharacterSlot[1].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else if (_CurSelectedCharacterSlot[0].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }*/
+
+            if (characterTextCounter > 2)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (characterTextCounter > 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }     
+            else if (characterTextCounter > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }     
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+        }
+        public Transform GetContent()
+        {
+            Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
+                VerticalContentPanel.transform;
+            
+            return content;
         }
 
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
-            CurrentCharacterId = (CharacterID)currentCharacterId[0];
-            Transform content = transform.Find("Content");
-            foreach (var character in characters)
+            foreach (var id in currentCharacterId)
             {
+                CurrentCharacterId = (CharacterID)id;
+            }
 
+            var store = Storefront.Get();
 
+            ReadOnlyCollection<BaseCharacter> allItems = null;
+            store.GetAllBaseCharacterYield(result => allItems = result);
 
-                GameObject slot = Instantiate(_characterSlotprefab, content);
+            foreach (var character in allItems)
+            {
+                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
 
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
 
@@ -98,6 +209,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
             }
 
+            /*foreach (var character in characters)
+            {
+            }*/
+
             for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
             {
                 var button = _buttons[i];
@@ -106,12 +221,16 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (i < characters.Count)
                 {
                     var character = characters[i];
+
                     button.gameObject.SetActive(true);
                     button.interactable = true;
+                    _colorBlock.normalColor = GetCharacterClassColor(character.CharacterClassID);
+                    button.colors = _colorBlock;
                     //button.SetCaption(character.Name); // Set button caption to character name
 
                     characterSlot.gameObject.SetActive(true);
 
+                    //***************
                     // Check if the character is currently selected
                     if ((CharacterID)currentCharacterId[0] == character.Id)
                     {
@@ -122,6 +241,7 @@ namespace MenuUi.Scripts.CharacterGallery
                         }
                     }
 
+                    //Tekstin vaihto tähän /characterSlot
                     // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>

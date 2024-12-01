@@ -1,18 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Voting;
+using UnityEngine.UIElements;
+using TMPro;
+using UnityEngine.UI;
 
 public class PollObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private bool selected;
+
+    private string pollId;
+    [SerializeField] private UnityEngine.UI.Image Image;
+    [SerializeField] private TextMeshProUGUI YesVotesText;
+    [SerializeField] private TextMeshProUGUI NoVotesText;
+
+    public void SetPollId(string newPollId)
     {
-        
+        pollId = newPollId;
+        SetValues();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SetValues()
     {
-        
+        PollData pollData = PollManager.GetPollData(pollId);
+
+        Image.sprite = pollData.Sprite;
+        YesVotesText.text = pollData.YesVotes.Count.ToString();
+        NoVotesText.text = pollData.NoVotes.Count.ToString();
+    }
+
+    public void SelectPollObject()
+    {
+        selected = true;
+        VotingActions.PollPopupReady += PassPollId;
+    }
+
+    public void PassPollId()
+    {
+        if (selected)
+        {
+            VotingActions.PassPollId?.Invoke(pollId);
+            selected = false;
+            VotingActions.PollPopupReady -= PassPollId;
+        }
     }
 }

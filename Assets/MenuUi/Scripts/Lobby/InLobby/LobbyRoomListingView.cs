@@ -135,20 +135,22 @@ namespace MenuUI.Scripts.Lobby.InLobby
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=blue>{playerCountText}</color>";
                     Debug.LogWarning(button.gameObject.name);
-                    button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
+                    //button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Liity Huoneeseen";
                 }
                 else
                 {
                     playerCountText = $"Pelaajia {room.PlayerCount}/4";
                     playerCountText = $"<color=brown>{playerCountText}</color>";
-                    button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
+                    //button.transform.Find("Button").GetComponentInChildren<TextMeshProUGUI>().text = $"Peli käynnissä";
                 }
+                /*
                 var roomNameText = buttonObject.transform.Find("InfoPanel").Find("Room name").GetComponent<TextMeshProUGUI>();
                 Debug.Log($"update '{roomNameText.text}' -> '{roomText}' for {room.GetDebugLabel()}");
                 roomNameText.text = roomText;
                 var playerCountLabel = buttonObject.transform.Find("InfoPanel").Find("Player count").GetComponent<TextMeshProUGUI>();
                 Debug.Log($"update '{playerCountLabel.text}' -> '{playerCountText}' for {room.GetDebugLabel()}");
                 playerCountLabel.text = playerCountText;
+                */
             }
 
             button.onClick.RemoveAllListeners();
