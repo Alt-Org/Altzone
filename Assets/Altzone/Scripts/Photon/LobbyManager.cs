@@ -11,42 +11,49 @@ using Photon.Client;
 using Photon.Realtime;
 using Quantum;
 
-using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
 using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
 using Prg.Scripts.Common.PubSub;
 
-using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
 using System.Threading.Tasks;
+using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby.Wrappers;
 
-namespace MenuUI.Scripts.Lobby
+namespace Altzone.Scripts.Lobby
 {
+    public enum LobbyWindowTarget
+    {
+        MainMenu,
+        LobbyRoom,
+        Battle,
+        Raid
+    }
+
     /// <summary>
     /// Manages local player position and setup in a room.
     /// </summary>
     /// <remarks>
     /// Game settings are saved in player custom properties for each participating player.
     /// </remarks>
-    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IConnectionCallbacks
+    public class LobbyManager : MonoBehaviour, ILobbyCallbacks, IMatchmakingCallbacks, IOnEventCallback, IInRoomCallbacks, IConnectionCallbacks
     {
-        private const string BattleID = PhotonBattle.BattleID;
+        private const string BattleID = PhotonBattleRoom.BattleID;
 
-        private const string PlayerPositionKey = PhotonBattle.PlayerPositionKey;
-        private const string PlayerCountKey = PhotonBattle.PlayerCountKey;
-        private const int PlayerPositionGuest = PhotonBattle.PlayerPositionGuest;
+        private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
+        private const string PlayerCountKey = PhotonBattleRoom.PlayerCountKey;
+        private const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
 
-        private const int PlayerPositionSpectator = PhotonBattle.PlayerPositionSpectator;
+        private const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        private const string TeamAlphaNameKey = PhotonBattle.TeamAlphaNameKey;
-        private const string TeamBetaNameKey = PhotonBattle.TeamBetaNameKey;
+        private const string TeamAlphaNameKey = PhotonBattleRoom.TeamAlphaNameKey;
+        private const string TeamBetaNameKey = PhotonBattleRoom.TeamBetaNameKey;
 
-        [Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
+        /*[Header("Settings"), SerializeField] private WindowDef _mainMenuWindow;
         [SerializeField] private WindowDef _roomWindow;
-        [SerializeField] private WindowDef _gameWindow;
+        [SerializeField] private WindowDef _gameWindow;*/
         [SerializeField] private bool _isCloseRoomOnGameStart;
-        [SerializeField] private SceneDef _raidScene;
+        //[SerializeField] private SceneDef _raidScene;
 
         [Header("Team Names"), SerializeField] private string _blueTeamName;
         [SerializeField] private string _redTeamName;
@@ -64,6 +71,83 @@ namespace MenuUI.Scripts.Lobby
         private QuantumRunner _runner = null;
 
         public static LobbyManager Instance { get; private set; }
+
+        #region Delegates & Events
+
+        public delegate void LobbyWindowChangeRequest(LobbyWindowTarget target);
+        public static event LobbyWindowChangeRequest OnLobbyWindowChangeRequest;
+
+        public delegate void LobbyConnected();
+        public static event LobbyConnected LobbyOnConnected;
+
+        public delegate void LobbyConnectedToMaster();
+        public static event LobbyConnectedToMaster LobbyOnConnectedToMaster;
+
+        public delegate void LobbyRegionListReceived();
+        public static event LobbyRegionListReceived LobbyOnRegionListReceived;
+
+        public delegate void LobbyDisconnected();
+        public static event LobbyDisconnected LobbyOnDisconnected;
+
+        public delegate void LobbyJoinedLobby();
+        public static event LobbyJoinedLobby LobbyOnJoinedLobby;
+
+        public delegate void LobbyLobbyStatisticsUpdate();
+        public static event LobbyLobbyStatisticsUpdate LobbyOnLobbyStatisticsUpdate;
+
+        public delegate void LobbyFriendListUpdate();
+        public static event LobbyFriendListUpdate LobbyOnFriendListUpdate;
+
+        public delegate void LobbyLeftLobby();
+        public static event LobbyLeftLobby LobbyOnLeftLobby;
+
+        public delegate void LobbyCreatedRoom();
+        public static event LobbyCreatedRoom LobbyOnCreatedRoom;
+
+        public delegate void LobbyCreateRoomFailed(short returnCode, string message);
+        public static event LobbyCreateRoomFailed LobbyOnCreateRoomFailed;
+
+        public delegate void LobbyRoomListUpdate(List<LobbyRoomInfo> roomList);
+        public static event LobbyRoomListUpdate LobbyOnRoomListUpdate;
+
+        public delegate void LobbyJoinedRoom();
+        public static event LobbyJoinedRoom LobbyOnJoinedRoom;
+
+        public delegate void LobbyJoinRoomFailed(short returnCode, string message);
+        public static event LobbyJoinRoomFailed LobbyOnJoinRoomFailed;
+
+        public delegate void LobbyJoinRandomFailed(short returnCode, string message);
+        public static event LobbyJoinRandomFailed LobbyOnJoinRandomFailed;
+
+        public delegate void LobbyLeftRoom();
+        public static event LobbyLeftRoom LobbyOnLeftRoom;
+
+        public delegate void LobbyPlayerEnteredRoom(LobbyPlayer newPlayer);
+        public static event LobbyPlayerEnteredRoom LobbyOnPlayerEnteredRoom;
+
+        public delegate void LobbyPlayerLeftRoom(LobbyPlayer otherPlayer);
+        public static event LobbyPlayerLeftRoom LobbyOnPlayerLeftRoom;
+
+        public delegate void LobbyMasterClientSwitched(LobbyPlayer newMasterClient);
+        public static event LobbyMasterClientSwitched LobbyOnMasterClientSwitched;
+
+        public delegate void LobbyRoomPropertiesUpdate(LobbyPhotonHashtable propertiesThatChanged);
+        public static event LobbyRoomPropertiesUpdate LobbyOnRoomPropertiesUpdate;
+
+        public delegate void LobbyPlayerPropertiesUpdate(LobbyPlayer targetPlayer, LobbyPhotonHashtable propertiesThatChanged);
+        public static event LobbyPlayerPropertiesUpdate LobbyOnPlayerPropertiesUpdate;
+
+        public delegate void LobbyEvent();
+        public static event LobbyEvent LobbyOnEvent;
+
+        public delegate void LobbyCustomAuthenticationResponse(Dictionary<string, object> data);
+        public static event LobbyCustomAuthenticationResponse LobbyOnCustomAuthenticationResponse;
+
+        public delegate void LobbyCustomAuthenticationFailed(string debugMessage);
+        public static event LobbyCustomAuthenticationFailed LobbyOnCustomAuthenticationFailed;
+
+        #endregion
+
 
         private void Awake()
         {
@@ -144,7 +228,7 @@ namespace MenuUI.Scripts.Lobby
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
                 {
-                    PhotonRealtimeClient.JoinLobby(null);
+                    PhotonRealtimeClient.JoinLobbyWithWrapper(null);
                 }
                 yield return delay;
             }
@@ -178,31 +262,32 @@ namespace MenuUI.Scripts.Lobby
                 yield break;
             }
             if(PhotonRealtimeClient.LocalPlayer.IsMasterClient) PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { BattleID, PhotonRealtimeClient.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
-            WindowManager.Get().ShowWindow(_roomWindow);
+            //WindowManager.Get().ShowWindow(_roomWindow);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
         }
 
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_gameWindow, _isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
         private void OnStartRaidTestEvent(StartRaidTestEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheRaidTestRoom(_raidScene));
+            StartCoroutine(StartTheRaidTestRoom());
         }
 
-        private IEnumerator StartTheGameplay(WindowDef gameWindow, bool isCloseRoom, string blueTeamName, string redTeamName)
+        private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
-            Debug.Log($"startTheGameplay {gameWindow}");
+            //Debug.Log($"startTheGameplay {gameWindow}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 throw new UnityException("only master client can start the game");
             }
             Player player = PhotonRealtimeClient.LocalPlayer;
             int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (!PhotonBattle.IsValidPlayerPos(masterPosition))
+            if (!PhotonBattleRoom.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
@@ -212,7 +297,7 @@ namespace MenuUI.Scripts.Lobby
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonBattle.IsValidPlayerPos(playerPos))
+                if (PhotonBattleRoom.IsValidPlayerPos(playerPos))
                 {
                     realPlayerCount += 1;
                     continue;
@@ -294,9 +379,10 @@ namespace MenuUI.Scripts.Lobby
                 }
             }*/
 
-            WindowManager.Get().ShowWindow(_gameWindow);
+            //WindowManager.Get().ShowWindow(_gameWindow);
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _gameWindow.SceneName);
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _map.Scene);
 
             Task<bool> task = StartRunner(sessionRunnerArguments);
 
@@ -321,7 +407,8 @@ namespace MenuUI.Scripts.Lobby
             if(task.Result)
             _runner?.Game.AddPlayer(_player);
             else
-                WindowManager.Get().GoBack();
+                //WindowManager.Get().GoBack();
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -343,25 +430,26 @@ namespace MenuUI.Scripts.Lobby
             return true;
         }
 
-        private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
+        private static IEnumerator StartTheRaidTestRoom()
         {
-            Debug.Log($"RAID TEST {raidScene}");
+            //Debug.Log($"RAID TEST {raidScene}");
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 throw new UnityException("only master client can start this game");
             }
             yield return null;
-            if (!raidScene.IsNetworkScene)
+            /*if (!raidScene.IsNetworkScene)
             {
                 throw new UnityException($"scene {raidScene} IsNetworkScene = false");
-            }
-            PhotonRealtimeClient.LoadLevel(raidScene.SceneName);
+            }*/
+            //PhotonRealtimeClient.LoadLevel(raidScene.SceneName);
             //StartCoroutine(StartTheRaidTestRoom(_raidScene));
+            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Raid);
         }
 
         private void SetPlayer(Player player, int playerPosition)
         {
-            Assert.IsTrue(PhotonBattle.IsValidGameplayPosOrGuest(playerPosition));
+            Assert.IsTrue(PhotonBattleRoom.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");
@@ -376,27 +464,34 @@ namespace MenuUI.Scripts.Lobby
         public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
-            GameConfig gameConfig = GameConfig.Get();
-            PlayerSettings playerSettings = gameConfig.PlayerSettings;
-            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
-            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
+            {
+                GameConfig gameConfig = GameConfig.Get();
+                PlayerSettings playerSettings = gameConfig.PlayerSettings;
+                string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+                StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            }
+            LobbyOnDisconnected?.Invoke();
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
+            LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
 
         public void OnJoinedRoom()
         {
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
+            LobbyOnJoinedRoom?.Invoke();
         }
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
             StartCoroutine(Service());
+            LobbyOnLeftRoom?.Invoke();
             // Goto lobby if we left (in)voluntarily any room
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
             // - can not use GoBack() because we do not know the reason for player leaving the room.
@@ -404,16 +499,37 @@ namespace MenuUI.Scripts.Lobby
             //WindowManager.Get().ShowWindow(_mainMenuWindow);
         }
 
-        public void OnCreatedRoom() { StartCoroutine(Service()); }
-        public void OnJoinedLobby() { StartCoroutine(Service()); }
+        public void OnCreatedRoom()
+        {
+            Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
+            StartCoroutine(Service());
+            LobbyOnCreatedRoom?.Invoke();
+        }
+        public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
-        public void OnRoomListUpdate(List<RoomInfo> roomList) {}
-        public void OnLeftLobby() => throw new NotImplementedException();
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new NotImplementedException();
-        public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreateRoomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnJoinRoomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
+        public void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            List<LobbyRoomInfo> lobbyRoomList = new();
+            foreach (RoomInfo roomInfo in roomList)
+            {
+                lobbyRoomList.Add(new(roomInfo));
+            }
+            LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
+        }
+        public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
+        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
+        public void OnFriendListUpdate(List<FriendInfo> friendList) { LobbyOnFriendListUpdate?.Invoke(); }
+        public void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"CreateRoomFailed {returnCode} {message}");
+            LobbyOnCreateRoomFailed?.Invoke(returnCode, message);
+        }
+        public void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
+            LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
+        }
+        public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 
         public void OnEvent(EventData photonEvent)
         {
@@ -425,13 +541,19 @@ namespace MenuUI.Scripts.Lobby
                     StartCoroutine(StartQuantum());
                     break;
             }
+            LobbyOnEvent?.Invoke();
         }
 
-        public void OnConnected() { }
-        public void OnConnectedToMaster() { }
-        public void OnRegionListReceived(RegionHandler regionHandler) { }
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new NotImplementedException();
-        public void OnCustomAuthenticationFailed(string debugMessage) => throw new NotImplementedException();
+        public void OnConnected() { LobbyOnConnected?.Invoke(); }
+        public void OnConnectedToMaster() { LobbyOnConnectedToMaster?.Invoke(); }
+        public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived?.Invoke(); }
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
+        public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }
+
+        public void OnPlayerEnteredRoom(Player newPlayer) { LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer)); }
+        public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
+        public void OnMasterClientSwitched(Player newMasterClient) { LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient)); }
 
         public class PlayerPosEvent
         {

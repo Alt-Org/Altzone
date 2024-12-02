@@ -2,18 +2,17 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 
-namespace MenuUI.Scripts.Lobby
+namespace Altzone.Scripts.Lobby.Wrappers
 {
     /// <summary>
     ///  wrapper for PhotonBattleRoom
     /// </summary>
-    internal static class PhotonBattle
+    public static class PhotonLobbyRoom
     {
         public const string BattleID = PhotonBattleRoom.BattleID;
         public const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
@@ -53,27 +52,27 @@ namespace MenuUI.Scripts.Lobby
         public const int TeamAlphaValue = PhotonBattleRoom.TeamAlphaValue;
         public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(Player player) => s_photonBattleRoom.GetPlayerPos(player);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(Player player) => s_photonBattleRoom.IsPlayerPosAvailable(player);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(Player player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player, wantedPlayerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(LobbyPlayer player) => s_photonBattleRoom.GetPlayerPos(player.GetPlayer(player.ActorNumber));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => PhotonBattleRoom.IsValidPlayerPos(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(LobbyPlayer player) => s_photonBattleRoom.IsPlayerPosAvailable(player.GetPlayer(player.ActorNumber));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(LobbyPlayer player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player.GetPlayer(player.ActorNumber), wantedPlayerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(Player player) => s_photonBattleRoom.IsRealPlayer(player);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsRealPlayer(LobbyPlayer player) => s_photonBattleRoom.IsRealPlayer(player.GetPlayer(player.ActorNumber));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(Player player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => s_photonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(LobbyPlayer player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player.GetPlayer(player.ActorNumber));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => PhotonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue) => s_photonBattleRoom.GetPrefabIndex(battleCharacter, defaultValue);
 
         #region Debug and test utilities
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetDebugPlayer(Player player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player, wantedPlayerPos, playerPrefabId);
+        public static void SetDebugPlayer(LobbyPlayer player, int wantedPlayerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayer(player.GetPlayer(player.ActorNumber), wantedPlayerPos, playerPrefabId);
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void SetDebugPlayerProps(Player player, int playerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayerProps(player, playerPos, playerPrefabId);
+        private static void SetDebugPlayerProps(LobbyPlayer player, int playerPos, int playerPrefabId) => s_photonBattleRoom.SetDebugPlayerProps(player.GetPlayer(player.ActorNumber), playerPos, playerPrefabId);
 
         #endregion Debug and test utilities
 
