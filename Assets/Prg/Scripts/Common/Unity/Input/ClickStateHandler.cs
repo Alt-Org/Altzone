@@ -53,19 +53,19 @@ namespace Prg.Scripts.Common
             if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
 
 
-            if (Mouse.current != null ? Mouse.current.leftButton.wasPressedThisFrame : false || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
+            if ((Mouse.current != null ? Mouse.current.leftButton.wasPressedThisFrame : false) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Began))
             {
                 return ClickState.Start;
             }
-            else if (Mouse.current != null ? Mouse.current.leftButton.wasReleasedThisFrame : false || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled)))
+            else if ((Mouse.current != null ? Mouse.current.leftButton.wasReleasedThisFrame : false) || (Touch.activeFingers.Count > 0 && (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended || touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled)))
             {
                 return ClickState.End;
             }
-            else if ((Mouse.current != null ? Mouse.current.leftButton.isPressed : false && !Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved))
+            else if (((Mouse.current != null ? Mouse.current.leftButton.isPressed : false) && !Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Moved))
             {
                 return ClickState.Move;
             }
-            else if ((Mouse.current != null ? Mouse.current.leftButton.isPressed : false && Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
+            else if (((Mouse.current != null ? Mouse.current.leftButton.isPressed : false) && Mouse.current.position.ReadValue().Equals(Mouse.current.position.ReadValueFromPreviousFrame())) || (Touch.activeFingers.Count > 0 && touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
             {
                 return ClickState.Hold;
             }
