@@ -463,8 +463,6 @@ public class CharacterStatWindow : MonoBehaviour
     // doing this at awake                                     
     private void _decideWhatCharacterToShow(CharacterID _characterId) //index
     {
-        // Etsi CustomCharacter -tiedot valitulle hahmolle
-
         //Metodia muutettu niin, että nyt se käyttää valmiiksi asetettua _characterId -muuttujaa. Vanhat koodit kommentoitu pois.
         //Aikaisemmin käytetty muuttujaa "index".
 
