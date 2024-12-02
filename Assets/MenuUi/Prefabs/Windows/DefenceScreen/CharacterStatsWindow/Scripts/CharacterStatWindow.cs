@@ -37,13 +37,19 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
     public TextMeshProUGUI HPNumber;
-    [Header("Amount of diamonds that can be used")]
+    public TextMeshProUGUI CharSizeNumber;
+    [Header("Amount of diamonds and erasers that can be used")]
+    public TextMeshProUGUI DiamondsAmountNumber;
+    public TextMeshProUGUI EraserAmountNumber;
+
+    [Header("Not in use anymore?")]
     public TextMeshProUGUI DiamondSpeedAmountNumber;
     public TextMeshProUGUI DiamondResistanceAmountNumber;
     public TextMeshProUGUI DiamondAttackAmountNumber;
     public TextMeshProUGUI DiamondDefenceAmountNumber;
     public TextMeshProUGUI DiamondHPAmountNumber;
-    public TextMeshProUGUI EraserAmountNumber;
+
+    [Header("*********************")]
     [Header("Descriptions")]
     public TextMeshProUGUI CharDescription;//hahmon kuvaus
     public TextMeshProUGUI DefClassSpecial;//defenssiluokan erikoistaidon kuvaus
@@ -74,6 +80,24 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Slider speedProgressbar;
     [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
+
+    [Header("Stat window tabs")]
+    [SerializeField] private GameObject impactforceTab;
+    [SerializeField] private GameObject healthPointsTab;
+    [SerializeField] private GameObject defenceTab;
+    [SerializeField] private GameObject resistanceTab;
+    [SerializeField] private GameObject charSizeTab;
+    [SerializeField] private GameObject speedTab;
+
+
+    [Header("Buttons for opening tabs")]
+    [SerializeField] private Button impactforce;
+    [SerializeField] private Button healthPoints;
+    [SerializeField] private Button defence;
+    [SerializeField] private Button resistance;
+    [SerializeField] private Button charSize;
+    [SerializeField] private Button speed;
+
 
     /*  [SerializeField] private Image _statSpeedSelectedBackground;
         [SerializeField] private Image _statResistanceSelectedBackground;
@@ -110,7 +134,12 @@ public class CharacterStatWindow : MonoBehaviour
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled*************************************************");
 
-
+        impactforce.onClick.AddListener(() => SwitchToTab(impactforceTab));
+        healthPoints.onClick.AddListener(() => SwitchToTab(healthPointsTab));
+        defence.onClick.AddListener(() => SwitchToTab(defenceTab));
+        resistance.onClick.AddListener(() => SwitchToTab(resistanceTab));
+        charSize.onClick.AddListener(() => SwitchToTab(charSizeTab));
+        speed.onClick.AddListener(() => SwitchToTab(speedTab));
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
@@ -644,6 +673,23 @@ public class CharacterStatWindow : MonoBehaviour
                 DefClassSpecial.text = "";
                 break;
         }
+    }
+
+    private void SwitchToTab(GameObject tab) //Tällä hoidetaan välilehden vaihto.
+    {
+        Debug.Log($"Välilehtinappia painettu*******************************************************************");
+        //HideAll(); //Aluksi piilotetaan kaikki ikkunat.
+        //tab.SetActive(true); //Asetetaan haluttu välilheti aktiiviseksi.
+        //tab.transform.SetAsLastSibling(); //Vaihdetaan haluttu välilehti päällimäiseksi.
+    }
+    private void HideAll()
+    {
+        impactforceTab.SetActive(false);
+        healthPointsTab.SetActive(false);
+        defenceTab.SetActive(false);
+        resistanceTab.SetActive(false);
+        charSizeTab.SetActive(false);
+        speedTab.SetActive(false);
     }
 
 
