@@ -132,17 +132,17 @@ namespace Altzone.Scripts.Battle.Photon
             return PhotonRealtimeClient.CurrentRoom.Players.Values.Sum(x => IsRealPlayer(x) ? 1 : 0);
         }
 
-        public static bool IsValidGameplayPos(int playerPos)
+        public bool IsValidGameplayPos(int playerPos)
         {
             return IsValidPlayerPos(playerPos) || playerPos == PlayerPositionSpectator;
         }
 
-        public static bool IsValidGameplayPosOrGuest(int playerPos)
+        public bool IsValidGameplayPosOrGuest(int playerPos)
         {
             return IsValidGameplayPos(playerPos) || playerPos == PlayerPositionGuest;
         }
 
-        public static bool IsValidPlayerPos(int playerPos)
+        public bool IsValidPlayerPos(int playerPos)
         {
             return playerPos is >= PlayerPosition1 and <= PlayerPosition4;
         }

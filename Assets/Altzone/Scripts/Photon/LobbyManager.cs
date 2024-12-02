@@ -287,7 +287,7 @@ namespace Altzone.Scripts.Lobby
             }
             Player player = PhotonRealtimeClient.LocalPlayer;
             int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (!PhotonBattleRoom.IsValidPlayerPos(masterPosition))
+            if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
             {
                 throw new UnityException($"master client does not have valid player position: {masterPosition}");
             }
@@ -297,7 +297,7 @@ namespace Altzone.Scripts.Lobby
             foreach (Player roomPlayer in players)
             {
                 int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (PhotonBattleRoom.IsValidPlayerPos(playerPos))
+                if (PhotonLobbyRoom.IsValidPlayerPos(playerPos))
                 {
                     realPlayerCount += 1;
                     continue;
@@ -449,7 +449,7 @@ namespace Altzone.Scripts.Lobby
 
         private void SetPlayer(Player player, int playerPosition)
         {
-            Assert.IsTrue(PhotonBattleRoom.IsValidGameplayPosOrGuest(playerPosition));
+            Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
             if (!player.HasCustomProperty(PlayerPositionKey))
             {
                 Debug.Log($"setPlayer {PlayerPositionKey}={playerPosition}");

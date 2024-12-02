@@ -53,7 +53,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public const int TeamBetaValue = PhotonBattleRoom.TeamBetaValue;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPos(LobbyPlayer player) => s_photonBattleRoom.GetPlayerPos(player.GetPlayer(player.ActorNumber));
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => PhotonBattleRoom.IsValidPlayerPos(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidPlayerPos(int playerPos) => s_photonBattleRoom.IsValidPlayerPos(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsPlayerPosAvailable(LobbyPlayer player) => s_photonBattleRoom.IsPlayerPosAvailable(player.GetPlayer(player.ActorNumber));
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetFirstFreePlayerPos(LobbyPlayer player, int wantedPlayerPos = PhotonBattleRoom.PlayerPosition1) => s_photonBattleRoom.GetFirstFreePlayerPos(player.GetPlayer(player.ActorNumber), wantedPlayerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetTeamNumber(int playerPos) => s_photonBattleRoom.GetTeamNumber(playerPos);
@@ -61,7 +61,7 @@ namespace Altzone.Scripts.Lobby.Wrappers
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerCountForRoom() => s_photonBattleRoom.GetPlayerCountForRoom();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int CountRealPlayers() => s_photonBattleRoom.CountRealPlayers();
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPlayerPrefabId(LobbyPlayer player) => (int)s_photonBattleRoom.GetPlayerCharacterID(player.GetPlayer(player.ActorNumber));
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => PhotonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool IsValidGameplayPosOrGuest(int playerPos) => s_photonBattleRoom.IsValidGameplayPosOrGuest(playerPos);
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static int GetPrefabIndex(BattleCharacter battleCharacter, int defaultValue) => s_photonBattleRoom.GetPrefabIndex(battleCharacter, defaultValue);
 
         #region Debug and test utilities
