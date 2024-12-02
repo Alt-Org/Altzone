@@ -1,17 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
 public class PlayStyle : MonoBehaviour
 {
-    public TextMeshProUGUI styleText; // TMP tekstikenttä
+    public TextMeshProUGUI styleText; // TMP tekstikenttï¿½
     public Button leftButton; // Vasen nappi
     public Button rightButton; // Oikea nappi
     public string[] styles; // Tyylivalikoima
 
-    private int currentIndex = 0; // Seuraa valittua tyyliä
+    private int currentIndex = 0; // Seuraa valittua tyyliï¿½
+
+    public int CurrentIndex
+    {
+        get => currentIndex;
+        set => currentIndex = value;
+    }
 
     void Start()
     {
@@ -28,26 +36,33 @@ public class PlayStyle : MonoBehaviour
         UpdateStyleText();
     }
 
-    // Päivittää tyylitekstin
+    // Pï¿½ivittï¿½ï¿½ tyylitekstin
     private void UpdateStyleText()
     {
-        if (styles.Length > 0)
+        if (Enum.GetNames(typeof(PlayStyles)).Length > 0)
         {
-            styleText.text = styles[currentIndex];
+            if (styles.Length > currentIndex)
+            {
+                styleText.text = styles[currentIndex];
+            }
+            else
+            {
+                styleText.text = ((PlayStyles)currentIndex).ToString();
+            }
         }
     }
 
-    // Menee taaksepäin listassa
+    // Menee taaksepï¿½in listassa
     private void SelectPreviousStyle()
     {
-        currentIndex = (currentIndex - 1 + styles.Length) % styles.Length;
+        currentIndex = (currentIndex - 1 + Enum.GetNames(typeof(PlayStyles)).Length) % Enum.GetNames(typeof(PlayStyles)).Length;
         UpdateStyleText();
     }
 
-    // Menee eteenpäin listassa
+    // Menee eteenpï¿½in listassa
     private void SelectNextStyle()
     {
-        currentIndex = (currentIndex + 1) % styles.Length;
+        currentIndex = (currentIndex + 1) % Enum.GetNames(typeof(PlayStyles)).Length;
         UpdateStyleText();
     }
 }

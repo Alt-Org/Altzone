@@ -10,6 +10,7 @@ using Altzone.Scripts.Config;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.InputSystem.HID;
 
 public class ProfileMenu : MonoBehaviour
@@ -19,6 +20,7 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
+    [SerializeField] private string _loggedOutplayerClanNameText;
     [SerializeField] private string loggedOutTimeText;
     [SerializeField] private string loggedOutLosesText;
     [SerializeField] private string loggedOutWinsText;
@@ -26,6 +28,7 @@ public class ProfileMenu : MonoBehaviour
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerNameText;
+    [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _MottoText;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
     [SerializeField] private TextMeshProUGUI _LosesText;
@@ -36,6 +39,8 @@ public class ProfileMenu : MonoBehaviour
     [Header("savebutton")]
     [SerializeField] private Button _saveEditsButton;
 
+
+    [SerializeField] private PlayStyle _playStyle;
 
     //[Header("Images")]
     // [SerializeField] private GameObject _BattleCharacter = new GameObject();
@@ -55,6 +60,14 @@ public class ProfileMenu : MonoBehaviour
 
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
+
+    private PlayerData _playerData = null;
+    private ClanData _clanData = null;
+
+
+    private const string _DarkOrange = "#FF6A00";
+    private const string _Orange = "#FFA100";
+
 
 
 
@@ -119,10 +132,12 @@ public class ProfileMenu : MonoBehaviour
     private void Reset()
     {
         _playerNameText.text = loggedOutPlayerText;
+        _playerClanNameText.text = _loggedOutplayerClanNameText;
         _TimePlayedText.text = loggedOutTimeText;
         _LosesText.text = loggedOutLosesText;
         _WinsText.text = loggedOutWinsText;
         _CarbonText.text = loggedOutCarbonText;
+
     }
 
     /// <summary>
@@ -135,9 +150,11 @@ public class ProfileMenu : MonoBehaviour
         {
             // Gets the player name from DataStorage
             var store = Storefront.Get();
-            PlayerData playerData = null;
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            _playerNameText.text = playerData.Name;
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerData = p);
+            store.GetClanData(_playerData.ClanId, p => _clanData = p);
+            _playerNameText.text = _playerData.Name;
+            _playerClanNameText.text = _clanData.Name;
+
             //_BattleCharacter.AddComponent(typeof(Image));
             //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
             //_BattleCharacter.GetComponent<Image>().sprite = Img;
