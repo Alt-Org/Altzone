@@ -21,7 +21,6 @@ namespace Quantum.QuantumUser.Simulation.SoulWall
         public void OnCollisionProjectileHitSoulWall(Frame f, CollisionInfo2D info, Quantum.Projectile* projectile, Quantum.SoulWall* soulWall)
         {
             Debug.Log("Soul wall hit");
-
             // Get the entity reference of the SoulWall involved in the collision
             var soulWallEntity = info.Other;
 
