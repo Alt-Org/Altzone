@@ -9,6 +9,7 @@ using System.Linq;
 using MenuUi.Scripts.CharacterGallery;
 using System;
 using Altzone.Scripts.Config;
+using System.Threading;
 
 
 public class CharacterStatWindow : MonoBehaviour
@@ -58,39 +59,20 @@ public class CharacterStatWindow : MonoBehaviour
     [Header("Increase and decrease buttons")]
 
     //En tiedä olisiko näille parempi olla jossain omassa scriptissä, mutta ne voi sitten siirtää,
-    // jos tullaan siihen tulokseen. Sama koskee edistymispalkkeja.
-    [SerializeField] private Button impactforceIncreaseButton;
-    [SerializeField] private Button impactforceDecreaseButton;
-    [SerializeField] private Button healthPointsIncreaseButton;
-    [SerializeField] private Button healthPointsDecreaseButton;
-    [SerializeField] private Button defenceIncreaseButton;
-    [SerializeField] private Button defenceDecreaseButton;
-    [SerializeField] private Button charSizeIncreaseButton;
-    [SerializeField] private Button charSizeDecreaseButton;
-    [SerializeField] private Button resistanceIncreaseButton;
-    [SerializeField] private Button resistanceDecreaseButton;
-    [SerializeField] private Button speedIncreaseButton;
-    [SerializeField] private Button speedDecreaseButton;
-    [Header("Progress bars for levels")]
-    [SerializeField] private Slider impactforceProgressBar;
-    [SerializeField] private Slider healthPointsProgressBar;
-    [SerializeField] private Slider defenceProgressBar;
-    [SerializeField] private Slider charSizeProgressBar;
-    [SerializeField] private Slider resistanceProgressBar;
-    [SerializeField] private Slider speedProgressbar;
+    // jos tullaan siihen tulokseen.
+ 
     [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-    [Header("Stat window tabs")]
-    [SerializeField] private GameObject impactforceTab;
-    [SerializeField] private GameObject healthPointsTab;
-    [SerializeField] private GameObject defenceTab;
-    [SerializeField] private GameObject resistanceTab;
-    [SerializeField] private GameObject charSizeTab;
-    [SerializeField] private GameObject speedTab;
+    [Header("Stat editing tab")]
+    [SerializeField] private Button increaseButton;
+    [SerializeField] private Button decreaseButton;
+    [SerializeField] private GameObject statEditTab;
+    [SerializeField] private Button closeTabButton;
+    [SerializeField] private TextMeshProUGUI statIncreasePriceText;
+    [SerializeField] private TextMeshProUGUI statDecreasePriceText;
 
-
-    [Header("Buttons for opening tabs")]
+    [Header("Buttons for opening stat editing tab")]
     [SerializeField] private Button impactforce;
     [SerializeField] private Button healthPoints;
     [SerializeField] private Button defence;
@@ -98,7 +80,7 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Button charSize;
     [SerializeField] private Button speed;
 
-
+    //[SerializeField] private Button[] statButtons;
     /*  [SerializeField] private Image _statSpeedSelectedBackground;
         [SerializeField] private Image _statResistanceSelectedBackground;
         [SerializeField] private Image _statAttackSelectedBackground;
@@ -134,12 +116,7 @@ public class CharacterStatWindow : MonoBehaviour
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow enabled*************************************************");
 
-        impactforce.onClick.AddListener(() => SwitchToTab(impactforceTab));
-        healthPoints.onClick.AddListener(() => SwitchToTab(healthPointsTab));
-        defence.onClick.AddListener(() => SwitchToTab(defenceTab));
-        resistance.onClick.AddListener(() => SwitchToTab(resistanceTab));
-        charSize.onClick.AddListener(() => SwitchToTab(charSizeTab));
-        speed.onClick.AddListener(() => SwitchToTab(speedTab));
+        ActivateStatButtons();
         // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
@@ -172,12 +149,12 @@ public class CharacterStatWindow : MonoBehaviour
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
 
     }
-
-
+   
     private void OnDisable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange -= HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow disabled");
+       // DisableStatButtons();
     }
 
     private void HandleCharacterGalleryCharacterStatWindowToShowChange(CharacterID newValue)
@@ -673,24 +650,39 @@ public class CharacterStatWindow : MonoBehaviour
                 DefClassSpecial.text = "";
                 break;
         }
+        
+    }
+     //********************************************
+    //Joka nappulalle pitää tehdä oma metodin kutsu, kyseessä oleva nappula annetaan
+    //metodille parametrina. Tässä vaiheessa ajatuksena, että statti -välilehti suljetaan ruksi -napista.
+     private void ActivateStatButtons()
+    {
+        statEditTab.SetActive(false);
+        impactforce.onClick.AddListener(() => OpenStatEditTab());
+       /*  healthPoints.onClick.AddListener(() => OpenStatEditTab());
+        defence.onClick.AddListener(() => OpenStatEditTab());
+        resistance.onClick.AddListener(() => OpenStatEditTab());
+        charSize.onClick.AddListener(() => OpenStatEditTab());
+        speed.onClick.AddListener(() => OpenStatEditTab()); */
+
     }
 
-    private void SwitchToTab(GameObject tab) //Tällä hoidetaan välilehden vaihto.
+    private void OpenStatEditTab()
     {
+        closeTabButton.onClick.AddListener(() => HideStatEditTab());
         Debug.Log($"Välilehtinappia painettu*******************************************************************");
-        //HideAll(); //Aluksi piilotetaan kaikki ikkunat.
-        //tab.SetActive(true); //Asetetaan haluttu välilheti aktiiviseksi.
-        //tab.transform.SetAsLastSibling(); //Vaihdetaan haluttu välilehti päällimäiseksi.
+
+        statEditTab.SetActive(true);
+        statEditTab.transform.SetAsLastSibling();
+
     }
-    private void HideAll()
+
+    private void HideStatEditTab()
     {
-        impactforceTab.SetActive(false);
-        healthPointsTab.SetActive(false);
-        defenceTab.SetActive(false);
-        resistanceTab.SetActive(false);
-        charSizeTab.SetActive(false);
-        speedTab.SetActive(false);
+        statEditTab.SetActive(false);
     }
+    //****************************************************
+
 
 
     // Character Name. DISABLED FOR THE SAKE OF TESTERS

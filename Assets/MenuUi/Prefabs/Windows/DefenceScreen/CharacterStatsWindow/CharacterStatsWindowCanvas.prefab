@@ -148,32 +148,14 @@ MonoBehaviour:
   DiamondHPAmountNumber: {fileID: 0}
   CharDescription: {fileID: 0}
   DefClassSpecial: {fileID: 0}
-  impactforceIncreaseButton: {fileID: 0}
-  impactforceDecreaseButton: {fileID: 0}
-  healthPointsIncreaseButton: {fileID: 0}
-  healthPointsDecreaseButton: {fileID: 0}
-  defenceIncreaseButton: {fileID: 0}
-  defenceDecreaseButton: {fileID: 0}
-  charSizeIncreaseButton: {fileID: 0}
-  charSizeDecreaseButton: {fileID: 0}
-  resistanceIncreaseButton: {fileID: 0}
-  resistanceDecreaseButton: {fileID: 0}
-  speedIncreaseButton: {fileID: 0}
-  speedDecreaseButton: {fileID: 0}
-  impactforceProgressBar: {fileID: 0}
-  healthPointsProgressBar: {fileID: 0}
-  defenceProgressBar: {fileID: 0}
-  charSizeProgressBar: {fileID: 0}
-  resistanceProgressBar: {fileID: 0}
-  speedProgressbar: {fileID: 0}
   UpgradeCostAmountNumber: {fileID: 0}
   UpgradeDiamondImage: {fileID: 0}
-  impactforceTab: {fileID: 0}
-  healthPointsTab: {fileID: 0}
-  defenceTab: {fileID: 0}
-  resistanceTab: {fileID: 0}
-  charSizeTab: {fileID: 0}
-  speedTab: {fileID: 0}
+  increaseButton: {fileID: 0}
+  decreaseButton: {fileID: 0}
+  statEditTab: {fileID: 0}
+  closeTabButton: {fileID: 0}
+  statIncreasePriceText: {fileID: 0}
+  statDecreasePriceText: {fileID: 0}
   impactforce: {fileID: 0}
   healthPoints: {fileID: 0}
   defence: {fileID: 0}
@@ -411,6 +393,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1076489372349164349, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 37.9
+      objectReference: {fileID: 0}
     - target: {fileID: 1098893262069760416, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_fontSize
@@ -491,6 +478,11 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 33.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2235818027366868872, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 43.9
+      objectReference: {fileID: 0}
     - target: {fileID: 2483658678907994294, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_Name
@@ -558,6 +550,11 @@ PrefabInstance:
       objectReference: {fileID: 8480743673003715892}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: statEditTab
+      value: 
+      objectReference: {fileID: 1391757752965278290}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: AttackNumber
       value: 
       objectReference: {fileID: 678221507079748641}
@@ -588,6 +585,11 @@ PrefabInstance:
       objectReference: {fileID: 623802695241217280}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: closeTabButton
+      value: 
+      objectReference: {fileID: 5769746972348941810}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: CharDescription
       value: 
       objectReference: {fileID: 791499895240211964}
@@ -616,10 +618,75 @@ PrefabInstance:
       propertyPath: CharacterArtWorkToShow
       value: 
       objectReference: {fileID: 7585432496203288890}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[0]
+      value: 
+      objectReference: {fileID: 8480743673003715892}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[1]
+      value: 
+      objectReference: {fileID: 6956253360426361788}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[2]
+      value: 
+      objectReference: {fileID: 5522719723835836050}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[3]
+      value: 
+      objectReference: {fileID: 3563971951654920084}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[4]
+      value: 
+      objectReference: {fileID: 2970392874845982565}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: statButtons.Array.data[5]
+      value: 
+      objectReference: {fileID: 3597060346901080376}
+    - target: {fileID: 3056663819718497210, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056663819718497210, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056663819718497210, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056663819718497210, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3165963080405093693, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 39.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3250763758936337268, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_Name
       value: CharSize
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022120381348077925, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: statdecresePrice
       objectReference: {fileID: 0}
     - target: {fileID: 4753015286306839373, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -645,6 +712,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5212450093746414331, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: statIncreasePrice
       objectReference: {fileID: 0}
     - target: {fileID: 5548839723091782530, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -776,6 +848,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Resistance
       objectReference: {fileID: 0}
+    - target: {fileID: 8865605313707431662, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 43.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -817,6 +894,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1391757752965278290 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1493146599798447858, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+    type: 3}
+  m_PrefabInstance: {fileID: 569772038814020768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2970392874845982565 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3373416240071474117, guid: 4ab03391b3dcfa54496511f4e4eb6183,
@@ -892,6 +975,18 @@ MonoBehaviour:
 --- !u!114 &5522719723835836050 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5425879818593038898, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+    type: 3}
+  m_PrefabInstance: {fileID: 569772038814020768}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5769746972348941810 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6339518976527905106, guid: 4ab03391b3dcfa54496511f4e4eb6183,
     type: 3}
   m_PrefabInstance: {fileID: 569772038814020768}
   m_PrefabAsset: {fileID: 0}
