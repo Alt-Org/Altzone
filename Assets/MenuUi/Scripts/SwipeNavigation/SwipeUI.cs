@@ -119,7 +119,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             _endTouch = Vector2.zero;
             CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
-            isSwipeMode = false;
+            _firstFrame = true;
         }
         private void Update()
         {
@@ -132,6 +132,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage]*(1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
                 _firstFrame = false;
+                isSwipeMode = false;
             }
         }
 
