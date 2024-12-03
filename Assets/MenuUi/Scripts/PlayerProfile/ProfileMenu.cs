@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.InputSystem.HID;
+using System.IO;
 
 public class ProfileMenu : MonoBehaviour
 
@@ -34,6 +35,9 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _LosesText;
     [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
+    [SerializeField] private TMP_InputField _LifeQuoteInputField;
+    [SerializeField] private TMP_InputField _LoreInputField;
+
 
 
     [Header("savebutton")]
@@ -119,6 +123,9 @@ public class ProfileMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
+        LoadInputFromFile();
+
         //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
@@ -127,6 +134,9 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
+
+
+
     }
 
     private void Reset()
@@ -139,6 +149,73 @@ public class ProfileMenu : MonoBehaviour
         _CarbonText.text = loggedOutCarbonText;
 
     }
+
+
+    public void SaveInputToFile()
+    {
+        if (_LifeQuoteInputField != null)
+        {
+            string lifeQuote = _LifeQuoteInputField.text;
+            string path = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
+            File.WriteAllText(path, lifeQuote);
+            Debug.Log($"Saved Life Quote: {lifeQuote} at {path}");
+        }
+
+        if (_LoreInputField != null)
+        {
+            string lore = _LoreInputField.text;
+            string path = Path.Combine(Application.persistentDataPath, "Lore.txt");
+            File.WriteAllText(path, lore);
+            Debug.Log($"Saved Lore: {lore} at {path}");
+        }
+    }
+
+    public void LoadInputFromFile()
+    {
+        string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
+        string lorePath = Path.Combine(Application.persistentDataPath, "Lore.txt");
+        if (File.Exists(quotePath))
+        {
+            string loadedQuote = File.ReadAllText(quotePath);
+            Debug.Log($"Loaded Life Quote: {loadedQuote} from {quotePath}");
+            if (_LifeQuoteInputField != null)
+            {
+                _LifeQuoteInputField.text = loadedQuote;
+            }
+        }
+        else
+        {
+            Debug.Log("No LifeQuote file found.");
+        }
+
+        if (File.Exists(lorePath))
+        {
+            string loadedLore = File.ReadAllText(lorePath);
+            Debug.Log($"Loaded Life Quote: {loadedLore} from {lorePath}");
+            if (_LoreInputField != null)
+            {
+                _LoreInputField.text = loadedLore;
+            }
+        }
+    }
+
+
+
+
+    private void Start()
+    {
+        _saveEditsButton.onClick.AddListener(() =>
+        {
+            Debug.Log("Save button clicked!");
+            SaveInputToFile();
+        });
+
+        LoadInputFromFile();
+    }
+
+
+
+
 
     /// <summary>
     /// Sets the name of the Player and stats when log in status changes

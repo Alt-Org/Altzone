@@ -57,6 +57,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
+
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
         public ServerGameStatistics stats = null;
