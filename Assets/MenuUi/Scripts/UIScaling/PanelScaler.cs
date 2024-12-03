@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace MenuUi.Scripts.UIOverlayPanel
+namespace MenuUi.Scripts.UIScaling
 {
     public class PanelScaler : MonoBehaviour
     {
@@ -27,7 +24,7 @@ namespace MenuUi.Scripts.UIOverlayPanel
 
         private void Awake()
         {
-            SetPanelResolutions();
+            SetPanelAnchors();
         }
 
 #if (UNITY_EDITOR)
@@ -37,18 +34,18 @@ namespace MenuUi.Scripts.UIOverlayPanel
             {
                 _lastScreenWidth = Screen.currentResolution.width;
                 _lastScreenHeight = Screen.currentResolution.height;
-                SetPanelResolutions();
+                SetPanelAnchors();
             }
         }
 #endif
 
-        private void SetPanelResolutions()
+        private void SetPanelAnchors()
         {
             _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - CalculateTopPanelHeight());
         }
 
-        private double CalculateAspectRatioPercentage()
+        private static double CalculateAspectRatioPercentage()
         {
             double aspectRatio = (double)Screen.currentResolution.height / Screen.currentResolution.width;
 
@@ -64,13 +61,21 @@ namespace MenuUi.Scripts.UIOverlayPanel
             return (aspectRatio - LowestAspectRatio) / (HighestAspectRatio - LowestAspectRatio);
         }
 
-        private float CalculateBottomPanelHeight()
+        /// <summary>
+        /// Calculate UI bottom panel height depending on the phone's aspect ratio.
+        /// </summary>
+        /// <returns>Bottom panel height percentage in decimal format.</returns>
+        public static float CalculateBottomPanelHeight()
         {
             double bottomPanelHeightPercentage = (HighestBottomPanelHeight + (LowestBottomPanelHeight - HighestBottomPanelHeight) * CalculateAspectRatioPercentage());
             return (float)bottomPanelHeightPercentage;
         }
 
-        private float CalculateTopPanelHeight()
+        /// <summary>
+        /// Calculate UI top panel height depending on the phone's aspect ratio.
+        /// </summary>
+        /// <returns>Top panel height percentage in decimal format.</returns>
+        public static float CalculateTopPanelHeight()
         {
             double topPanelHeightPercentage = (HighestTopPanelHeight + (LowestTopPanelHeight - HighestTopPanelHeight) * CalculateAspectRatioPercentage());
             return (float)topPanelHeightPercentage;
