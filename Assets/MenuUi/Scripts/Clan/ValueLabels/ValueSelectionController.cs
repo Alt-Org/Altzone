@@ -18,14 +18,14 @@ public class ValueSelectionController : MonoBehaviour
 
     void Start() => CreateLabels();
 
-    public void Initialize(List<ClanValues> initialSelected)
+    public void SetSelected(List<ClanValues> selected)
     {
-        SelectedValues = initialSelected;
+        SelectedValues = new(selected);
         CreateLabels();
         UpdateSelectedDisplay();
     }
 
-    public void CreateLabels()
+    private void CreateLabels()
     {
         _labelHandlers.Clear();
 
@@ -38,10 +38,7 @@ public class ValueSelectionController : MonoBehaviour
             labelHandler.SetLabelInfo(value);
             _labelHandlers.Add(labelHandler);
 
-            if (SelectedValues.Contains(value))
-            {
-                labelHandler.Select();
-            }
+            if (SelectedValues.Contains(value)) labelHandler.Select();
 
             labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
         }
@@ -79,6 +76,7 @@ public class ValueSelectionController : MonoBehaviour
 
         foreach (ClanValues selectedValue in SelectedValues)
         {
+            Debug.Log(selectedValue);
             GameObject label = Instantiate(_labelImagePrefab, _selectedValuesParent);
             ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
             imageHandler.SetLabelInfo(selectedValue);

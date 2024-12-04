@@ -33,6 +33,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         protected int _defaultHp;
         protected ValueStrength _hpStrength = ValueStrength.None;
         protected int _speed;
+        protected int _defaultSpeed;
+        protected ValueStrength _speedStrength = ValueStrength.None;
         protected int _resistance;
         protected int _defaultResistance;
         protected ValueStrength _resistanceStrength = ValueStrength.None;
@@ -221,13 +223,34 @@ namespace Altzone.Scripts.Model.Poco.Game
             switch (type)
             {
                 case StatType.Attack:
-                    return GetStrengthMulti(character._attackStrength) * GetSegmentPrice(character._defaultAttack - nextLevel);
+                    return GetSegmentAmount(nextLevel - character._defaultAttack) * GetStatSegmentPrice(character, type, nextLevel - character._defaultAttack);
                 case StatType.Defence:
-                    return GetStrengthMulti(character._defenceStrength) * GetSegmentPrice(character._defaultDefence - nextLevel);
+                    return GetSegmentAmount(nextLevel - character._defaultDefence) * GetStatSegmentPrice(character, type, nextLevel - character._defaultDefence);
                 case StatType.Resistance:
-                    return GetStrengthMulti(character._resistanceStrength) * GetSegmentPrice(character._defaultResistance - nextLevel);
+                    return GetSegmentAmount(nextLevel - character._defaultResistance) * GetStatSegmentPrice(character, type, nextLevel - character._defaultResistance);
                 case StatType.Hp:
-                    return GetStrengthMulti(character._hpStrength) * GetSegmentPrice(character._defaultHp - nextLevel);
+                    return GetSegmentAmount(nextLevel - character._defaultHp) * GetStatSegmentPrice(character, type, nextLevel - character._defaultHp);
+                case StatType.Speed:
+                    return GetSegmentAmount(nextLevel - character._defaultSpeed) * GetStatSegmentPrice(character, type, nextLevel - character._defaultSpeed);
+                default:
+                    return -1;
+            }
+        }
+
+        public static int GetStatSegmentPrice(BaseCharacter character, StatType type, int nextLevel)
+        {
+            switch (type)
+            {
+                case StatType.Attack:
+                    return GetStrengthMulti(character._attackStrength) * GetSegmentPrice(nextLevel - character._defaultAttack);
+                case StatType.Defence:
+                    return GetStrengthMulti(character._defenceStrength) * GetSegmentPrice(nextLevel - character._defaultDefence);
+                case StatType.Resistance:
+                    return GetStrengthMulti(character._resistanceStrength) * GetSegmentPrice(nextLevel - character._defaultResistance);
+                case StatType.Hp:
+                    return GetStrengthMulti(character._hpStrength) * GetSegmentPrice(nextLevel - character._defaultHp);
+                case StatType.Speed:
+                    return GetStrengthMulti(character._speedStrength) * GetSegmentPrice(nextLevel - character._defaultSpeed);
                 default:
                     return -1;
             }
@@ -285,28 +308,34 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return 0;
             }
         }
-
         public static int GetSegmentAmount(BaseCharacter character, StatType type, int nextLevel)
         {
 
             switch (type)
             {
                 case StatType.Attack:
-                    nextLevel = GetSegmentPrice(character._defaultAttack - nextLevel);
+                    nextLevel = GetSegmentPrice(nextLevel - character._defaultAttack);
                     break;
                 case StatType.Defence:
-                    nextLevel = GetSegmentPrice(character._defaultDefence - nextLevel);
+                    nextLevel = GetSegmentPrice(nextLevel - character._defaultDefence);
                     break;
                 case StatType.Resistance:
-                    nextLevel = GetSegmentPrice(character._defaultResistance - nextLevel);
+                    nextLevel = GetSegmentPrice(nextLevel - character._defaultResistance);
                     break;
                 case StatType.Hp:
-                    nextLevel = GetSegmentPrice(character._defaultHp - nextLevel);
+                    nextLevel = GetSegmentPrice(nextLevel - character._defaultHp);
+                    break;
+                case StatType.Speed:
+                    nextLevel = GetSegmentPrice(nextLevel - character._defaultSpeed);
                     break;
                 default:
                     return -1;
             }
+            return GetSegmentAmount(nextLevel);
+        }
 
+        private static int GetSegmentAmount(int nextLevel)
+        {
             switch (nextLevel)
             {
                 case 1:
@@ -322,16 +351,30 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case 6:
                     return 10;
                 case 7:
-                    return 10;
+                    return 15;
                 case 8:
                     return 15;
                 case 9:
-                    return 15;
-                case 10:
                     return 25;
+                case 10:
+                    return 35;
                 default:
                     return -1;
             }
+        }
+
+        public int GetNextLevel(int segmentCount)
+        {
+            int i = 1;
+            while (true)
+            {
+                int segmentForNext = GetSegmentAmount(i);
+                if (segmentForNext > segmentCount) break;
+                segmentCount -= segmentForNext;
+                i++;
+                if(i == 10) break;
+            }
+            return i;
         }
 
         #endregion

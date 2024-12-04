@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Photon.Realtime;
+using Altzone.Scripts.Lobby.Wrappers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using RoomInfo = Battle1.PhotonRealtime.Code.RoomInfo;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
@@ -28,7 +26,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             DeleteExtraButtons(_buttonParent);
         }
 
-        public void UpdateStatus(List<RoomInfo> rooms, Action<string> onJoinRoom)
+        public void UpdateStatus(List<LobbyRoomInfo> rooms, Action<string> onJoinRoom)
         {
             _searchPanelController.SetOnJoinRoom(onJoinRoom);
             int lastPos = CheckListPosition(rooms);
@@ -91,7 +89,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             return instance;
         }
 
-        private void UpdateButton(GameObject buttonObject, RoomInfo room, Action<string> onJoinRoom)
+        private void UpdateButton(GameObject buttonObject, LobbyRoomInfo room, Action<string> onJoinRoom)
         {
             Button button;
             if (_oldDesign)
@@ -178,7 +176,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             }
         }
 
-        private int CheckListPosition(List<RoomInfo> rooms)
+        private int CheckListPosition(List<LobbyRoomInfo> rooms)
         {
             int lastPos;
             if (_listPos + 4 <= rooms.Count)

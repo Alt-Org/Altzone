@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Altzone.Scripts.Voting
@@ -34,46 +38,50 @@ namespace Altzone.Scripts.Voting
         public long EndTime;
         public Sprite Sprite;
 
-        public List<string> YesVoters;
-        public List<string> NoVoters;
+        public List<string> NotVoted;
+        public List<PollVoteData> YesVotes;
+        public List<PollVoteData> NoVotes;
 
-        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite)
+        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers)
         {
             PollType = pollType;
             Id = id;
             Name = name;
             EndTime = endTime;
             Sprite = sprite;
-            YesVoters = new List<string>();
-            NoVoters = new List<string>();
+            NotVoted = new List<string>();
+            YesVotes = new List<PollVoteData>();
+            NoVotes = new List<PollVoteData>();
         }
 
-        public void AddVote(string playerId, bool answer)
+        public void AddVote(bool answer)
         {
-            bool isInYesVoters = YesVoters.Contains(playerId);
-            bool isInNoVoters = NoVoters.Contains(playerId);
+            DataStore store = Storefront.Get();
+            PlayerData player = null;
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-            if (!isInYesVoters && !isInNoVoters)
+            string playerId = null;
+            string playerName = null;
+            if (player != null) playerId = player.Id;
+            if (player != null) playerName = player.Name;
+
+            if (NotVoted.Contains(playerId) || true) //temporarily true for testing
             {
                 if (answer)
                 {
-                    YesVoters.Add(playerId);
+                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
+                    YesVotes.Add(newPollVote);
                 }
                 else
                 {
-                    NoVoters.Add(playerId);
+                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
+                    NoVotes.Add(newPollVote);
                 }
             }
-            else if (isInYesVoters && !answer)
-            {
-                YesVoters.Remove(playerId);
-                NoVoters.Add(playerId);
-            }
-            else if (isInNoVoters && answer)
-            {
-                NoVoters.Remove(playerId);
-                YesVoters.Add(playerId);
-            }
+
+            //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
+            //player.playerVotes.Add(newPlayerVote);
+            //store.SavePlayerData(player, data => player = data);
         }
     }
 
@@ -85,8 +93,8 @@ namespace Altzone.Scripts.Voting
         public double Weight;
         public float Value;
 
-        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-        : base(pollType, id, name, endTime, sprite)
+        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+        : base(pollType, id, name, endTime, sprite, clanMembers)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
@@ -100,8 +108,8 @@ namespace Altzone.Scripts.Voting
         public EsinePollType EsinePollType;
         public float Value;
 
-        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, EsinePollType esinePollType, float value)
-        : base(pollType, id, name, endTime, sprite)
+        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
+        : base(pollType, id, name, endTime, sprite, clanMembers)
         {
             EsinePollType = esinePollType;
             Value = value;

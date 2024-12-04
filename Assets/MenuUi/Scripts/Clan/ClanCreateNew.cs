@@ -8,15 +8,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 
-[Serializable]
-public struct ColorButton
-{
-    public Button button;
-    public Color color;
-}
-
 public class ClanCreateNew : MonoBehaviour
 {
+    [Header("Panels")]
+    [SerializeField] private GameObject _mainCreatePanel;
+    [SerializeField] private GameObject _languagePanel;
+
     [Header("Setting fields")]
     [SerializeField] private TMP_InputField _clanNameField;
     [SerializeField] private Toggle _openClanToggle;
@@ -25,10 +22,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private ClanAgeSelection _ageSelection;
     [SerializeField] private ClanLanguageList _languageSelection;
     [SerializeField] private ValueSelectionController _valueSelection;
-
-    [Header("Language")]
-    [SerializeField] private LanguageFlagMap _languageFlagMap;
-    [SerializeField] Image _flagImage;
+    [SerializeField] private LanguageFlagImage _flagImage;
 
     [Header("Clan Heart")]
     [SerializeField] private ClanHeartColorSetter _heartColorSetter;
@@ -65,7 +59,11 @@ public class ClanCreateNew : MonoBehaviour
 
     private void Reset()
     {
+        _mainCreatePanel.SetActive(true);
+        _languagePanel.SetActive(false);
+
         StopAllCoroutines();
+
         _clanNameField.text = "";
         _openClanToggle.isOn = false;
 
@@ -78,12 +76,11 @@ public class ClanCreateNew : MonoBehaviour
         _ageSelection.Initialize(ClanAge.All);
         SetGoalsDropDown();
 
-        SetFlag(Language.None);
+        _flagImage.SetFlag(Language.None);
         _languageSelection.Initialize(Language.None);
-        _closeLanguageSelect.onClick.AddListener(() => SetFlag(_languageSelection.SelectedLanguage));
+        _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
 
-        _selectedHeartColor = _colorButtons[0].color;
-        _heartColorSetter.SetHeartColor(_selectedHeartColor);
+        SetHeartColor(_colorButtons[0].color);
         foreach (ColorButton colorButton in _colorButtons)
         {
             Color color = colorButton.color;
@@ -91,7 +88,6 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
-    private void SetFlag(Language language) => _flagImage.sprite = _languageFlagMap.GetFlag(language);
     private void SetHeartColor(Color color)
     {
         _selectedHeartColor = color;
