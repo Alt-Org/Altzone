@@ -283,48 +283,46 @@ namespace Altzone.Scripts.AzDebug
         {
             StringBuilder stringBuilder = new();
 
-            bool repeat = true;
+            bool endOfString;
             int startIndex;
-            string replacementString;
 
-            for (;;)
+            stringBuilder.AppendFormat("<{0}>\n", type);
+
+            for (int part = 0; part < 2; part++)
             {
-                startIndex = 0;
-
-                for (int i = 0; ;)
+                switch (part)
                 {
-                    if (i >= logString.Length)
-                    {
-                        if (startIndex < i) stringBuilder.Append(logString, startIndex, i - startIndex);
+                    case 0:
+                        stringBuilder.Append("<Msg>\n");
                         break;
-                    }
 
-                    switch (logString[i])
-                    {
-                        case '\\': replacementString = "\\\\"; goto Replace;
-                        case '\n': replacementString = "\\n";  goto Replace;
-                    }
-
-                    i++;
-                    continue;
-
-                Replace:
-                    if (startIndex < i) stringBuilder.Append(logString, startIndex, i - startIndex);
-                    stringBuilder.Append(replacementString);
-                    i++;
-                    startIndex = i;
+                    case 1:
+                        stringBuilder.Append("<Trace>\n");
+#if !DEVELOPMENT_BUILD && !UNITY_EDITOR
+                        if (type is LogType.Log) continue;
+#endif
+                        logString = stackTrace;
+                        break;
                 }
 
-                if (!repeat) break;
+                startIndex = 0;
 
-                stringBuilder.Append("\\,");
-                stringBuilder.Append(type.ToString());
-                stringBuilder.Append("\\,");
-#if !DEVELOPMENT_BUILD || !UNITY_EDITOR
-                if (type is LogType.Log) break;
-#endif
-                logString = stackTrace;
-                repeat = false;
+                for (int i = 0;;)
+                {
+                    endOfString = i >= logString.Length;
+
+                    if (endOfString || (logString[i] is '\n' or '\r'))
+                    {
+                        if (startIndex < i) stringBuilder.Append(logString, startIndex, i - startIndex);
+                        stringBuilder.Append("\\\n");
+                        if (endOfString) break;
+                        i++;
+                        startIndex = i;
+                        continue;
+                    }
+
+                    i++;
+                }
             }
 
             if (s_contextCurrent.Public.FileOpen) s_contextCurrent.File.Writer.WriteLine(stringBuilder.ToString());
