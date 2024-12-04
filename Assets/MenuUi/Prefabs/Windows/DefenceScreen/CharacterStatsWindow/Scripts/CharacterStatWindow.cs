@@ -60,11 +60,11 @@ public class CharacterStatWindow : MonoBehaviour
 
     //En tiedä olisiko näille parempi olla jossain omassa scriptissä, mutta ne voi sitten siirtää,
     // jos tullaan siihen tulokseen.
- 
+
     [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-    [Header("Stat editing tab")]
+    [Header("Stat editing popup")]
     [SerializeField] private Button increaseButton;
     [SerializeField] private Button decreaseButton;
     [SerializeField] private GameObject statEditTab;
@@ -72,7 +72,7 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI statIncreasePriceText;
     [SerializeField] private TextMeshProUGUI statDecreasePriceText;
 
-    [Header("Buttons for opening stat editing tab")]
+    [Header("Buttons for opening stat editing popup")]
     [SerializeField] private Button impactforce;
     [SerializeField] private Button healthPoints;
     [SerializeField] private Button defence;
@@ -80,35 +80,21 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private Button charSize;
     [SerializeField] private Button speed;
 
-    //[SerializeField] private Button[] statButtons;
-    /*  [SerializeField] private Image _statSpeedSelectedBackground;
-        [SerializeField] private Image _statResistanceSelectedBackground;
-        [SerializeField] private Image _statAttackSelectedBackground;
-        [SerializeField] private Image _statDefenceSelectedBackground;
-        [SerializeField] private Image _statHPSelectedBackground; */
-
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
     //private BaseCharacter _currentCharacter;
     private PlayerData _playerData;
     private CharacterID _characterId;
 
-    //Nouseeko progressbarin arvo siinä tilanteessa kun ostetaan timanteilla uusi taso?
-    //Kun ostetaan uusi taso palkki nousee ja kun se menee täyteen niin tulee uusi leveli.
 
-    //Mistä löytyy hahmonkuvaus? -saatavilla, jahka valmistuu
+    //Mistä löytyy hahmonkuvaus? -Löytyy SetCharacterInfo -metodista
     //Mistä löytyy defenssiluokan kuvaus? -saatavilla, jahka valmistuu
 
     //Onko olemassa jo tieto käytetyistä tasopykälistä jossain?
     //Ei ole. Palataan myöhemmin.
 
-    //Virheilmoitus rivillä 86, mikä sen aiheuttaa? Onko meistä riippumaton asia? -toimii tällä hetkellä, mutta ei ServeManagerin kautta
     //Mitä tarkoittaa stat selected backround?
-    //Pitääkö tähän lisätä jokaisen stattipaneelin plus ja miinusnapit. Onko helpompi tehdä niin?
 
-    //plus ja miinusnappulat ei jostain syystä toimi, pitää selvittää.
-
-    //Luokan saa customcharacter get character id
 
     private void OnEnable()
     {
@@ -121,9 +107,11 @@ public class CharacterStatWindow : MonoBehaviour
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
 
+        //Tällä hetkellä käyttää tätä
         DataStore dataStore = Storefront.Get();
         dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
 
+        //Alunperin käytti tätä
         //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
         {
             if (playerData == null)
@@ -149,12 +137,12 @@ public class CharacterStatWindow : MonoBehaviour
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
 
     }
-   
+
     private void OnDisable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange -= HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow disabled");
-       // DisableStatButtons();
+        DisableStatButtons();
     }
 
     private void HandleCharacterGalleryCharacterStatWindowToShowChange(CharacterID newValue)
@@ -599,6 +587,7 @@ public class CharacterStatWindow : MonoBehaviour
 
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
+
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
                    customCharacter.Defence, customCharacter.Hp);
@@ -607,7 +596,8 @@ public class CharacterStatWindow : MonoBehaviour
 
 
         //Tällä asetetaan hahmon ja erikoistaidon kuvaustekstit paikalleen.
-        switch (_characterId) //index
+        //Toistaiseksi asia tehdään tässä, haaveena laittaa nämä suoraan hahmon perustietoihin
+        switch (_characterId)
         {
             case CharacterID.IntellectualizerResearcher:
                 CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
@@ -650,36 +640,78 @@ public class CharacterStatWindow : MonoBehaviour
                 DefClassSpecial.text = "";
                 break;
         }
-        
+
     }
-     //********************************************
-    //Joka nappulalle pitää tehdä oma metodin kutsu, kyseessä oleva nappula annetaan
-    //metodille parametrina. Tässä vaiheessa ajatuksena, että statti -välilehti suljetaan ruksi -napista.
-     private void ActivateStatButtons()
+
+    //Statin muokkaus popupin toiminta, ajatuksena sellainen, että painetun napin nimen perusteella
+    //haetaan statin lisäämiseen ja vähentämiseen tarvittava timanttien määrä switchcasella
+    private void ActivateStatButtons()
     {
         statEditTab.SetActive(false);
-        impactforce.onClick.AddListener(() => OpenStatEditTab());
-       /*  healthPoints.onClick.AddListener(() => OpenStatEditTab());
-        defence.onClick.AddListener(() => OpenStatEditTab());
-        resistance.onClick.AddListener(() => OpenStatEditTab());
-        charSize.onClick.AddListener(() => OpenStatEditTab());
-        speed.onClick.AddListener(() => OpenStatEditTab()); */
-
+        impactforce.onClick.AddListener(() => OpenStatEditPopUp(impactforce.gameObject.name));
+        healthPoints.onClick.AddListener(() => OpenStatEditPopUp(healthPoints.gameObject.name));
+        defence.onClick.AddListener(() => OpenStatEditPopUp(defence.gameObject.name));
+        resistance.onClick.AddListener(() => OpenStatEditPopUp(resistance.gameObject.name));
+        charSize.onClick.AddListener(() => OpenStatEditPopUp(charSize.gameObject.name));
+        speed.onClick.AddListener(() => OpenStatEditPopUp(speed.gameObject.name));
     }
-
-    private void OpenStatEditTab()
+    private void OpenStatEditPopUp(string buttonName)
     {
         closeTabButton.onClick.AddListener(() => HideStatEditTab());
-        Debug.Log($"Välilehtinappia painettu*******************************************************************");
 
         statEditTab.SetActive(true);
+        OpenPopUpWithCorrectInfo(buttonName);
+
+        increaseButton.onClick.AddListener(() => PlusOrMinusPressed());
+        decreaseButton.onClick.AddListener(() => PlusOrMinusPressed());
+
         statEditTab.transform.SetAsLastSibling();
-
     }
-
+    private void OpenPopUpWithCorrectInfo(string buttonName)
+    {
+        //Etsitään nappulan nimellä statti, jonka tiedot pitää asettaa popuppiin. 
+        //Tähän pitää vielä tehdä metodi, jolla asetetaan statin muokkaamisen hinnat.
+        switch (buttonName)
+        {
+            case "Impactforce":
+                Debug.Log("Iskuvoima");
+                break;
+            case "HealthPoints":
+                Debug.Log("Elinvoima");
+                break;
+            case "Defence":
+                Debug.Log("Puolustus");
+                break;
+            case "Resistance":
+                Debug.Log("Kestävyys");
+                break;
+            case "CharSize":
+                Debug.Log("Hahmon koko");
+                break;
+            case "Speed":
+                Debug.Log("Nopeus");
+                break;
+            default:
+                Debug.Log("Nappulaa ei painettu");
+                break;
+        }
+    }
     private void HideStatEditTab()
     {
         statEditTab.SetActive(false);
+    }
+    private void PlusOrMinusPressed() //testausta varten
+    {
+        Debug.Log("painoit plussaa tai miinusta");
+    }
+    private void DisableStatButtons()
+    {
+        impactforce.onClick.RemoveAllListeners();
+        healthPoints.onClick.RemoveAllListeners();
+        defence.onClick.RemoveAllListeners();
+        resistance.onClick.RemoveAllListeners();
+        charSize.onClick.RemoveAllListeners();
+        speed.onClick.RemoveAllListeners();
     }
     //****************************************************
 
