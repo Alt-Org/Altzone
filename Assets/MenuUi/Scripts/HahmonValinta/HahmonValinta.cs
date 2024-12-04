@@ -45,7 +45,7 @@ public class HahmonValinta : MonoBehaviour
         for (int i = 0; i < characterData.Length; i++)
         {
             int characterIndex = i;
-            characterData[i].characterButton.onClick.AddListener(() => CharacterSelected(characterData[i]));
+            characterData[i].characterButton.onClick.AddListener(() => CharacterSelected(characterData[characterIndex]));
         }
 
     }
@@ -108,7 +108,7 @@ public class HahmonValinta : MonoBehaviour
             popupWindow.SetActive(false);
 
 
-            _windowNavigation.Navigate();
+            StartCoroutine(_windowNavigation.Navigate());
         }
         else
         {

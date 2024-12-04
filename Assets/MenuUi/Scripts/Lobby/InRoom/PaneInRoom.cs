@@ -1,8 +1,8 @@
-﻿using Prg.Scripts.Common.PubSub;
+﻿using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
@@ -25,14 +25,14 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private void SetPlayerAsGuest()
         {
-            Debug.Log($"setPlayerAsGuest {PhotonBattle.PlayerPositionGuest}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
+            Debug.Log($"setPlayerAsGuest {PhotonBattleLobbyRoom.PlayerPositionGuest}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattleLobbyRoom.PlayerPositionGuest));
         }
 
         private void SetPlayerAsSpectator()
         {
-            Debug.Log($"setPlayerAsSpectator {PhotonBattle.PlayerPositionSpectator}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
+            Debug.Log($"setPlayerAsSpectator {PhotonBattleLobbyRoom.PlayerPositionSpectator}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattleLobbyRoom.PlayerPositionSpectator));
         }
 
         private void StartPlaying()
@@ -52,8 +52,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            _battleID.text = PhotonRealtimeClient.Client.InRoom ? $"({PhotonRealtimeClient.Client.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            title.text = PhotonRealtimeClient.Client.InRoom ? PhotonRealtimeClient.Client.CurrentRoom.Name : "<color=red>Not in room</color>";
+            _battleID.text = PhotonRealtimeClient.InRoom ? $"({PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
+            title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
         }
     }
 }

@@ -20,6 +20,7 @@ public class VoteManager : MonoBehaviour
 
     public void InstantiatePolls()
     {
+        PollManager.LoadClanData();
         // Clear existing polls
         for (int i = 0; i < Polls.Count; i++)
         {
@@ -32,7 +33,7 @@ public class VoteManager : MonoBehaviour
         foreach (var pollData in PollManager.GetPollList())
         {
             GameObject obj = Instantiate(PollObjectPrefab, Content.transform);
-            obj.GetComponent<PollObject>().SetPollData(pollData);
+            obj.GetComponent<PollObject>().SetPollId(pollData.Id);
             Polls.Add(obj);
         }
     }

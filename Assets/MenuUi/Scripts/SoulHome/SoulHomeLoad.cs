@@ -212,7 +212,7 @@ namespace MenuUI.Scripts.SoulHome {
             int roomNumber = _soulHomeRooms.Room.Count;
             Transform soulhomeBase = transform.Find("Square").transform;
             float roomHeight = _roomPrefab.GetComponent<BoxCollider2D>().size.y;
-            soulhomeBase.localScale = new Vector2(150, roomHeight * roomNumber + 20);
+            soulhomeBase.localScale = new Vector2(150, roomNumber < 2? roomHeight * roomNumber + 40 : roomHeight * roomNumber + 20);
             soulhomeBase.localPosition = new Vector2(0, soulhomeBase.localScale.y/2 -10);
             _towerController.SetCameraBounds();
         }
