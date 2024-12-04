@@ -13,5 +13,6 @@ namespace Quantum
         [Header("Goal Tags")]
         [Tooltip("Select the goal type")]
         public GoalType goal;
+        public bool hasTriggered;
     }
 }

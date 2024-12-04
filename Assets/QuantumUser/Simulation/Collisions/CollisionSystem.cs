@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -19,37 +20,61 @@ namespace Quantum
             // Projectile is colliding with something
             if (f.Unsafe.TryGetPointer<Projectile>(info.Entity, out var projectile))
             {
+                var projectileConfig = f.FindAsset<ProjectileConfig>(projectile->ProjectileConfig);
+
+                // Check if the projectile is on cooldown
+                if (projectileConfig.Cooldown > 0)
+                {
+                    return; // Skip processing if cooldown is active
+                } else
+                {
+                    // Apply a cooldown to the projectile
+                    projectileConfig.Cooldown= FP.FromFloat_UNSAFE(0.05f); // 0.1 seconds
+                }
+
                 if (f.Unsafe.TryGetPointer<SoulWall>(info.Other, out var soulWall))
                 {
                     // Projectile Hit SoulWall
                     Debug.Log("SoulWall hit - CollisionSystem");
+                    f.Events.PlaySoundEvent(SoundEffect.WallBroken);
                     f.Signals.OnCollisionProjectileHitSoulWall(info, projectile, soulWall);
-                }
-                else if (f.Unsafe.TryGetPointer<Goal>(info.Other, out var asteroid))
-                {
-                    // projectile Hit Goal
-                    Debug.Log("Goal hit - CollisionSystem");
+
                 }
                 else
                 {
                     //projectile hit a side wall
                     //Debug.Log("Something hit, side wall probably - CollisionSystem");
+                    f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
                     f.Signals.OnCollisionProjectileHitSomething(info, projectile);
                 }
+
+
             }
         }
 
         //Handles all triggers in the game; currently just the goals
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
+
             // Try to get the Goal component
             if (f.Unsafe.TryGetPointer<Goal>(info.Other, out var goal))
             {
                 // Resolve the GoalConfig asset using the AssetRef
                 var goalConfig = f.FindAsset<GoalConfig>(goal->goalConfig);
 
+                // Check if the sound has already been played
+                if (goalConfig.hasTriggered)
+                {
+                    return; // Exit if the sound was already played
+                }
+
+                // Mark the sound as played
+                goalConfig.hasTriggered = true;
+
                 if (goalConfig != null)
                 {
+                    f.Events.PlaySoundEvent(SoundEffect.GoalHit);
+
                     if (goalConfig.goal == GoalType.TopGoal)
                     {
                         f.Signals.OnTriggerTopGoal();
@@ -58,6 +83,7 @@ namespace Quantum
                     {
                         f.Signals.OnTriggerBottomGoal();
                     }
+
                 }
                 else
                 {

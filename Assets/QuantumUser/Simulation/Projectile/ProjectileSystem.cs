@@ -47,10 +47,11 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
         public override void Update(Frame f, ref Filter filter)
         {
+            // Retrieve the projectile speed from the config
+            var config = f.FindAsset(filter.Projectile->ProjectileConfig);
+
             if (!filter.Projectile->IsLaunched) // Access the IsLaunched property from the regenerated component
             {
-                // Retrieve the projectile speed from the config
-                var config = f.FindAsset(filter.Projectile->ProjectileConfig);
                 defaultProjectileSpeed = config.ProjectileSpeed;
 
                 Debug.Log("Projectile Launched");
@@ -60,6 +61,12 @@ namespace Quantum.QuantumUser.Simulation.Projectile
 
                 // Set the IsLaunched field to true to ensure it's launched only once
                 filter.Projectile->IsLaunched = true;
+            }
+
+
+            if (config.Cooldown > 0)
+            {
+                config.Cooldown -= f.DeltaTime; // Decrease the cooldown based on frame time
             }
         }
         // Function to adjust the speed of the projectile
