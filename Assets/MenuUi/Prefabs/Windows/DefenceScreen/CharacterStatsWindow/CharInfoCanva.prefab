@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7736032297885868866}
   - component: {fileID: 2820279078912427212}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DefencelvlText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 4630650290997047103}
   - component: {fileID: 4455851570672127697}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ResistancelvlText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2041,7 +2041,7 @@ GameObject:
   - component: {fileID: 2995139006230885689}
   - component: {fileID: 4949149326821985332}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ImpactlvlText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2391,7 +2391,7 @@ GameObject:
   - component: {fileID: 2484152121777632208}
   - component: {fileID: 2509822803027277394}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: CharsizelvlText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2565,7 +2565,7 @@ GameObject:
   - component: {fileID: 5329110008018989148}
   - component: {fileID: 9199329244920593962}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: HPlvlText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4717,8 +4717,8 @@ RectTransform:
   - {fileID: 6897867189256747831}
   - {fileID: 1644911173499348909}
   - {fileID: 3114951832532108650}
-  - {fileID: 6391706822875640152}
   - {fileID: 4980530695269737018}
+  - {fileID: 6391706822875640152}
   m_Father: {fileID: 3143259459169166328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7066,7 +7066,7 @@ GameObject:
   - component: {fileID: 4971720353074420953}
   - component: {fileID: 7687552214963275149}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Speedlvltext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7444,7 +7444,7 @@ PrefabInstance:
         type: 3}
       propertyPath: speedText
       value: 
-      objectReference: {fileID: 2509822803027277394}
+      objectReference: {fileID: 7687552214963275149}
     - target: {fileID: 1223989280308727926, guid: 622b86ff5faaee947a3673516f15d8dc,
         type: 3}
       propertyPath: defenceText
@@ -7484,7 +7484,7 @@ PrefabInstance:
         type: 3}
       propertyPath: characterSizeText
       value: 
-      objectReference: {fileID: 7687552214963275149}
+      objectReference: {fileID: 2509822803027277394}
     - target: {fileID: 4663721464709291427, guid: 622b86ff5faaee947a3673516f15d8dc,
         type: 3}
       propertyPath: m_Name
