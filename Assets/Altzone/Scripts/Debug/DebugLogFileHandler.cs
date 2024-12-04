@@ -22,8 +22,8 @@ namespace Altzone.Scripts.AzDebug
         private static readonly ContextTemplate[] s_contextTemplateArray = new ContextTemplate[]
         {
             // ID, LogName, LogDetailsFormat, SingleFile
-            new(ContextID.MenuUI, "MenuUiLog", "",           false),
-            new(ContextID.Battle, "BattleLog", "{0}-{1:d2}", true)
+            new(ContextID.MenuUI, "MenuUiLog", "",           true ),
+            new(ContextID.Battle, "BattleLog", "{0}-{1:d2}", false)
         };
 
         // } Context
