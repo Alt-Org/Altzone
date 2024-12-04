@@ -5,7 +5,7 @@ using System.Text;
 
 using UnityEngine;
 
-namespace Altzone.Scripts.Debug
+namespace Altzone.Scripts.AzDebug
 {
     public static class DebugLogFileHandler
     {
