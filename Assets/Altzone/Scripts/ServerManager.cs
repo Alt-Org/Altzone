@@ -364,6 +364,8 @@ public class ServerManager : MonoBehaviour
                         clanFurniture.Add(new ClanFurniture((10000 + 2200 + i).ToString(), "DiningTable_Rakkaus"));
                         clanFurniture.Add(new ClanFurniture((10000 + 2300 + i).ToString(), "Mirror_Rakkaus"));
                         clanFurniture.Add(new ClanFurniture((10000 + 2400 + i).ToString(), "Chair_Polarity"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2500 + i).ToString(), "Commode_Muistoja"));
+                        clanFurniture.Add(new ClanFurniture((10000 + 2600 + i).ToString(), "Pictures_Muistoja"));
 
                         i++;
                     }
