@@ -1,111 +1,89 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-public class PieChart : MonoBehaviour
+public class PieChartManager : MonoBehaviour
 {
-    [Header("Settings")]
-    public int totalSlices = 30; // Yhteensä 30 osaa
-    public Color[] statColors; // Värit: Iskuvoima, elinvoima jne.
-    public int[] baseStats; // Perusstatit (esim. [5, 3, 3, 4, 3, 4])
-    public int[] playerChoices; // Pelaajan valinnat
+    [SerializeField] private List<Image> slices;
+    [SerializeField] private TMP_Text impactForceText;
+    [SerializeField] private TMP_Text healthPointsText;
+    [SerializeField] private TMP_Text defenceText;
+    [SerializeField] private TMP_Text resistanceText;
+    [SerializeField] private TMP_Text characterSizeText;
+    [SerializeField] private TMP_Text speedText;
 
-    [Header("References")]
-    public GameObject slicePrefab; // Prefab yksittäiselle "osalle"
-    public Transform pieChartParent; // Parent PieChartille
+    [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
+    [SerializeField] private Color healthPointsColor = Color.green;
+    [SerializeField] private Color defenceColor = Color.yellow;
+    [SerializeField] private Color resistanceColor = new Color(0.5f, 0f, 0.5f);
+    [SerializeField] private Color characterSizeColor = Color.blue;
+    [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
+    [SerializeField] private Color defaultColor = Color.black;
 
-    private List<Image> slices = new List<Image>(); // Tallennetaan kaikki osat
-
-    void Start()
+    private void OnEnable()
     {
-
+        // Päivitetään pie chart, kun paneeli/sivu avataan uudelleen
+        Debug.Log("Pie Chart Manager: Paneeli avattu, päivitetään pie chart...");
+        UpdateChart();
     }
-    void OnEnable()
+
+    public void UpdateChart()
     {
-        Debug.Log("OnEnable method is called.");
-        GeneratePieChart();
-        UpdatePieChart();
-    }
+        Debug.Log("Updating Pie Chart...");
 
-    void GeneratePieChart()
-    {
-        Debug.Log("GeneratePieChart method is called.");
+        // Hae arvot tekstikentistä (TMP_Text)
+        int impactForce = ParseText(impactForceText.text);
+        int healthPoints = ParseText(healthPointsText.text);
+        int defence = ParseText(defenceText.text);
+        int resistance = ParseText(resistanceText.text);
+        int characterSize = ParseText(characterSizeText.text);
+        int speed = ParseText(speedText.text);
 
-        foreach (Transform child in pieChartParent)
+        Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Defence: {defence}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
+
+        // Järjestä statit
+        var stats = new List<(int level, Color color)>
         {
-            Destroy(child.gameObject);
-        }
-        slices.Clear();
+            (impactForce, impactForceColor),
+            (healthPoints, healthPointsColor),
+            (defence, defenceColor),
+            (resistance, resistanceColor),
+            (characterSize, characterSizeColor),
+            (speed, speedColor)
+        };
 
-        float rotationStep = 360f / totalSlices;
-        for (int i = 0; i < totalSlices; i++)
+        // Alustetaan kaikki slicet
+        foreach (var slice in slices)
         {
-            GameObject sliceObj = Instantiate(slicePrefab, pieChartParent);
-            if (sliceObj == null)
-            {
-                Debug.LogError($"Slice prefab instantiation failed at index {i}");
-                continue;
-            }
-
-            Debug.Log($"Slice {i} instantiated.");
-
-            Image sliceImage = sliceObj.GetComponent<Image>();
-            if (sliceImage == null)
-            {
-                Debug.LogError($"Slice prefab is missing an Image component at index {i}");
-                continue;
-            }
-
-            sliceImage.fillAmount = 1f / totalSlices;
-            sliceObj.transform.localRotation = Quaternion.Euler(0, 0, -rotationStep * i);
-            slices.Add(sliceImage);
-
-            Debug.Log($"Slice {i} fillAmount set to {sliceImage.fillAmount} and rotation to {-rotationStep * i}");
+            slice.fillAmount = 1f / slices.Count;
+            slice.color = defaultColor;
         }
 
-        Debug.Log("All slices have been generated.");
-    }
+        // Täytetään slicet järjestyksessä
+        int currentSlice = 0;
 
-
-
-    void UpdatePieChart()
-    {
-        int sliceIndex = 0;
-
-        // Käy läpi jokainen stat
-        for (int statIndex = 0; statIndex < baseStats.Length; statIndex++)
+        foreach (var stat in stats)
         {
-            int totalStatSlices = baseStats[statIndex] + playerChoices[statIndex];
+            int level = stat.level;
+            Color color = stat.color;
 
-            Debug.Log($"StatIndex: {statIndex}, TotalStatSlices: {totalStatSlices}");
-
-            for (int j = 0; j < totalStatSlices; j++)
+            for (int i = 0; i < level; i++)
             {
-                if (sliceIndex < slices.Count)
+                if (currentSlice < slices.Count)
                 {
-                    slices[sliceIndex].color = statColors[statIndex]; // Asetetaan oikea väri
-                    Debug.Log($"Slice {sliceIndex} assigned color for stat {statIndex}");
-                    sliceIndex++;
+                    Debug.Log($"Setting Slice {currentSlice} to Color {color}");
+                    slices[currentSlice].color = color;
+                    currentSlice++;
                 }
             }
         }
 
-        // Täytetään loput valkoisilla osilla
-        for (int i = sliceIndex; i < slices.Count; i++)
-        {
-            slices[i].color = Color.white; // Valkoiset osat
-            Debug.Log($"Slice {i} color set to white");
-        }
+        Debug.Log("Pie Chart updated!");
     }
 
-
-    public void AddStatPoint(int statIndex)
+    private int ParseText(string text)
     {
-        // Lisää yksi piste pelaajan valitsemalle statille
-        if (playerChoices[statIndex] < totalSlices)
-        {
-            playerChoices[statIndex]++;
-            UpdatePieChart();
-        }
+        return int.TryParse(text, out int result) ? result : 0;
     }
 }
