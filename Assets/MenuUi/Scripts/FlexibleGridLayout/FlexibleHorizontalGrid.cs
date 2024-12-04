@@ -50,8 +50,8 @@ public class FlexibleHorizontalGrid : LayoutGroup
             if (rows != _previousRowCount)
             {
                 _previousRowCount = rows;
-                float availableHeight = (cellSize.y * (float)rows) + (float)padding.top + (float)padding.bottom + (spacing.y * ((float)rows - 1));  //((spacing.y / rows) * (rows - 1));
-                //Debug.Log("Available Height: " + availableHeight);
+                float availableHeight = (cellWidth * (float)rows) + (float)padding.top + (float)padding.bottom + (spacing.y * ((float)rows - 1));  //((spacing.y / rows) * (rows - 1));
+                Debug.Log("cellHeight: " + cellHeight + "availableHeight: " + availableHeight);
                 rectTransform.sizeDelta = new Vector2(rectTransform.rect.width, availableHeight);
             }
         }
