@@ -302,6 +302,7 @@ GameObject:
   - component: {fileID: 7695168990374541662}
   - component: {fileID: 7695168990374541656}
   - component: {fileID: 7695168990374541663}
+  - component: {fileID: 6649403788596313716}
   m_Layer: 5
   m_Name: UICanvas
   m_TagString: Untagged
@@ -394,6 +395,19 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &6649403788596313716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695168990374541657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a142fdf00068c4f949ae385efab999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _overlayObject: {fileID: 8247631838125921094}
 --- !u!1 &8932584937008570899
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,6 +579,12 @@ PrefabInstance:
 --- !u!224 &5872830137075860331 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8476621660179101015, guid: e41290d0959bdfe47b62024b1a7a3c44,
+    type: 3}
+  m_PrefabInstance: {fileID: 2604058710888609340}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8247631838125921094 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6221160951982613882, guid: e41290d0959bdfe47b62024b1a7a3c44,
     type: 3}
   m_PrefabInstance: {fileID: 2604058710888609340}
   m_PrefabAsset: {fileID: 0}
