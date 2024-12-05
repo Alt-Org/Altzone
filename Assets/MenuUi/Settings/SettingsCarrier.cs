@@ -30,6 +30,7 @@ public class SettingsCarrier : MonoBehaviour
         mainMenuWindowIndex = 0;
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 2);
+        _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
     }
 
     public float masterVolume;
@@ -93,4 +94,20 @@ public class SettingsCarrier : MonoBehaviour
 
     public event Action<CharacterID> OnCharacterGalleryCharacterStatWindowToShowChange;
 
+    private bool _showButtonLabels;
+    public bool ShowButtonLabels
+    {
+        get
+        {
+            return _showButtonLabels;
+        }
+
+        set
+        {
+            _showButtonLabels = value;
+            OnButtonLabelVisibilityChange?.Invoke();
+        }
+    }
+
+    public event Action OnButtonLabelVisibilityChange;
 }
