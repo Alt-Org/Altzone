@@ -7,15 +7,11 @@ namespace MenuUi.Scripts.Settings
 {
     public class LabelVisibilityHandler : MonoBehaviour
     {
-        private SettingsCarrier _carrier = SettingsCarrier.Instance;
+        private readonly SettingsCarrier _carrier = SettingsCarrier.Instance;
 
         private void Start()
         {
             _carrier.OnButtonLabelVisibilityChange += SetVisibility;
-        }
-
-        void OnEnable()
-        {
             SetVisibility();
         }
 
