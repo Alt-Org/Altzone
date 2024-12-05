@@ -4,8 +4,8 @@ namespace MenuUi.Scripts.UIScaling
 {
     public class PanelScaler : MonoBehaviour
     {
-        [SerializeField] private RectTransform _bottomPanelRectTransfrom;
-        [SerializeField] private RectTransform _topPanelRectTransfrom;
+        [SerializeField] protected RectTransform _bottomPanelRectTransfrom;
+        [SerializeField] protected RectTransform _topPanelRectTransfrom;
 
         // IPad aspect ratio and a tall and slim phone aspect ratio, used in math calculations.
         const double LowestAspectRatio = 4.0 / 3.0;
@@ -39,7 +39,7 @@ namespace MenuUi.Scripts.UIScaling
         }
 #endif
 
-        private void SetPanelAnchors()
+        protected virtual void SetPanelAnchors()
         {
             _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - CalculateTopPanelHeight());
