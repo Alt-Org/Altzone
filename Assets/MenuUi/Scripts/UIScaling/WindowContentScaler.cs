@@ -68,6 +68,8 @@ namespace MenuUi.Scripts.UIScaling
             float topMargin = 0f;
             if (_isHeaderActive) topMargin -= _headerHeight;
             if (_isTablineActive) topMargin -= _tablineHeight;
+            _contentPanelRectTransfrom.anchorMax = Vector2.one;
+            _contentPanelRectTransfrom.anchorMin = Vector2.zero;
             _contentPanelRectTransfrom.offsetMax = new(0,topMargin);
         }
 
