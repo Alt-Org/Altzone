@@ -10,6 +10,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts
 {
+#if false
     internal static class BootLoader
     {
         /// <summary>
@@ -104,4 +105,5 @@ namespace Altzone.Scripts
             Thread.CurrentThread.CurrentUICulture = ci;
         }
     }
+#endif
 }
