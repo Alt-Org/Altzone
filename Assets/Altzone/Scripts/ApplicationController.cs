@@ -1,12 +1,12 @@
-using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Threading;
-using Altzone.Scripts.Config.ScriptableObjects;
-using Altzone.Scripts.AzDebug;
-using Prg.Scripts.Common.Util;
+
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.AzDebug;
 
 namespace Altzone.Scripts
 {
@@ -21,17 +21,19 @@ namespace Altzone.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnApplicationStart()
         {
-            Debug.Log("[ApplicationController] OnApplicationStart");
-
             UnitySingleton.CreateStaticSingleton<ApplicationController>();
+
+            // Setup loggin and testing first before proceeding to load the game.
+            LoggingSetup();
+            Debug.Log("[ApplicationController] OnApplicationStart");
+#if UNITY_EDITOR
+            PrepareLocalTesting();
+#endif
 
             // Set last compiled bundle version for Photon to keep all clients connected with different platforms.
             //PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
 
-            // Setup testing first before proceeding to load the game.
-            PrepareLocalTesting();
-
-            var startupMessage = new StringBuilder()
+            string startupMessage = new StringBuilder()
                 .Append(" Game ").Append(Application.productName)
                 .Append(" Version ").Append(Application.version)
                 //.Append(" Photon ").Append(PhotonLobby.GameVersion)
@@ -49,73 +51,50 @@ namespace Altzone.Scripts
         private void OnApplicationQuit()
         {
             Debug.Log("[ApplicationController] OnApplicationQuit");
+
+            LoggingEnd();
         }
 
-        private static void PrepareLocalTesting()
-        {
-            SetEditorStatus();
-            var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
-            SetupLogging();
-            SetupLoggingOld(localDevConfig);
-            SetupLocalTesting(localDevConfig);
-        }
-
-        private static void SetupLoggingOld(LocalDevConfig localDevConfig)
-        {
-            LoggerConfig loggerConfig = null;
-            if (localDevConfig != null && localDevConfig._loggerConfig != null)
-            {
-                // Local override.
-                loggerConfig = localDevConfig._loggerConfig;
-            }
-            if (loggerConfig == null)
-            {
-                // Default settings.
-                loggerConfig = Resources.Load<LoggerConfig>(nameof(LoggerConfig));
-            }
-            if (loggerConfig != null)
-            {
-                LoggerConfig.CreateLoggerFilterConfig(loggerConfig, localDevConfig != null ? localDevConfig.SetLoggedDebugTypes : null);
-            }
-        }
-
-        private static void SetupLogging()
+        private static void LoggingSetup()
         {
             DebugLogFileHandler.Init(DebugLogFileHandler.ContextID.MenuUI);
             DebugLogFileHandler.FileOpen();
         }
 
-        private static void SetupLocalTesting(LocalDevConfig localDevConfig)
+        private static void LoggingEnd()
         {
-            if (localDevConfig == null)
-            {
-                return;
-            }
+            DebugLogFileHandler.Exit();
+        }
+
+#if UNITY_EDITOR
+        private static void PrepareLocalTesting()
+        {
+            LocalTestingSetEditorStatus();
+            LocalTestingSetup();
+        }
+
+        private static void LocalTestingSetup()
+        {
+            LocalDevConfig localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
+            if (localDevConfig == null) return;
+
             /*if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
             {
                 var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
                 PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
             }*/
-#if UNITY_EDITOR
-            if (localDevConfig != null && localDevConfig._targetFrameRateOverride != -1)
-            {
-                Application.targetFrameRate = localDevConfig._targetFrameRateOverride;
-            }
-            else
-            {
-                Application.targetFrameRate = -1;
-            }
-#endif
+
+            Application.targetFrameRate = localDevConfig._targetFrameRateOverride;
         }
 
-        [Conditional("UNITY_EDITOR")]
-        private static void SetEditorStatus()
+        private static void LocalTestingSetEditorStatus()
         {
             // This is just for debugging to get strings (numbers) formatted consistently
             // - everything that goes to UI should go through Localizer using player's locale preferences
-            var ci = CultureInfo.InvariantCulture;
+            CultureInfo ci = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentCulture = ci;
             Thread.CurrentThread.CurrentUICulture = ci;
         }
+#endif
     }
 }
