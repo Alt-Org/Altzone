@@ -19,8 +19,12 @@ namespace Altzone.Scripts
         /// Test and production functionality is not quite there yet, this needs more works to separate test things from production.
         /// </remarks>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void BeforeSceneLoad()
+        private static void OnApplicationStart()
         {
+            Debug.Log("[ApplicationController] OnApplicationStart");
+
+            UnitySingleton.CreateStaticSingleton<ApplicationController>();
+
             // Set last compiled bundle version for Photon to keep all clients connected with different platforms.
             //PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
 
@@ -35,6 +39,16 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            Debug.LogFormat("[ApplicationController] OnApplicationPause ({0})", pause);
+        }
+
+        private void OnApplicationQuit()
+        {
+            Debug.Log("[ApplicationController] OnApplicationQuit");
         }
 
         private static void PrepareLocalTesting()
