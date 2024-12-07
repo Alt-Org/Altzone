@@ -264,12 +264,16 @@ namespace MenuUI.Scripts.SoulHome {
                 if (playerData == null || !playerData.HasClanId)
                 {
                     clanFurnitureList = new List<ClanFurniture>();
-                    return;
+                    store.GetDefaultFurniture(p => clanFurnitureList = p);
+                    //return;
                 }
-                store.GetClanData(playerData.ClanId, clanData =>
+                else
                 {
-                    clanFurnitureList = clanData?.Inventory.Furniture ?? new List<ClanFurniture>();
-                });
+                    store.GetClanData(playerData.ClanId, clanData =>
+                    {
+                        clanFurnitureList = clanData?.Inventory.Furniture ?? new List<ClanFurniture>();
+                    });
+                }
             });
             yield return new WaitUntil(() => clanFurnitureList != null);
 

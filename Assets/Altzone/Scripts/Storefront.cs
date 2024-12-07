@@ -183,5 +183,11 @@ namespace Altzone.Scripts
                 localModels.GetAllBaseCharacters(SafeCallbackWrapperCharacters);
             }
         }
+        public void GetDefaultFurniture(Action<List<ClanFurniture>> callback)
+        {
+            List <ClanFurniture> defaultFurniture= new();
+            defaultFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(new());
+            callback(defaultFurniture);
+        }
     }
 }
