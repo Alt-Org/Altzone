@@ -10,6 +10,7 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Button[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
+    [SerializeField] private Toggle _showButtonLabelsToggle;
 
     private void OnEnable()
     {
@@ -23,6 +24,7 @@ public class SettingEditor : MonoBehaviour
 
         SetFPSButtons();
         SetIntroSkipToggle();
+        SetShowButtonLabelsToggle();
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -76,5 +78,16 @@ public class SettingEditor : MonoBehaviour
     {
         if(_introSkipToggle.isOn) PlayerPrefs.SetInt("skipIntroVideo", 1);
         else PlayerPrefs.SetInt("skipIntroVideo", 0);
+    }
+
+    public void SetShowButtonLabelsToggle()
+    {
+        _showButtonLabelsToggle.isOn = carrier.ShowButtonLabels;
+    }
+
+    public void SetShowButtonLabels()
+    {
+        PlayerPrefs.SetInt("showButtonLabels", _showButtonLabelsToggle.isOn ? 1 : 0);
+        carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
     }
 }

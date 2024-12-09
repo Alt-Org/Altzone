@@ -58,6 +58,7 @@ namespace MenuUI.Scripts.SoulHome
                 _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
             }
             EditModeTrayResize();
+            _audioManager = AudioManager.Instance;
         }
 
         public void OnEnable()
@@ -69,9 +70,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (rootObject.name == "AudioManager")
                     rootObject.GetComponent<MainMenuAudioManager>()?.StopMusic();
             }
-            AudioManager.Instance?.PlayMusic();
-            //if(name != null)
-            _editTray.transform.Find("MusicField").Find("CurrentMusic").GetComponent<TextMeshProUGUI>().text = name;
+            _musicName.text = AudioManager.Instance?.PlayMusic();
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
         }
