@@ -151,6 +151,9 @@ public class ProfileMenu : MonoBehaviour
     }
 
 
+
+
+    //  Saves lifequote and lore inputfields. (Playstyle saving is in its own file, doesn't require clicking the save button
     public void SaveInputToFile()
     {
         if (_LifeQuoteInputField != null)
@@ -170,6 +173,7 @@ public class ProfileMenu : MonoBehaviour
         }
     }
 
+    // Loads saved files.
     public void LoadInputFromFile()
     {
         string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");

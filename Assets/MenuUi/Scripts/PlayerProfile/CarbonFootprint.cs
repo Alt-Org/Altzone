@@ -66,7 +66,7 @@ public class CarbonFootprint : MonoBehaviour
         }
     }
 
-    private void SaveCarbonHistory()
+    void SaveCarbonHistory()
     {
         // Päivittää minuutin välein hiilijalanjäljen.
         if (DateTime.Now - lastSaveTime >= TimeSpan.FromMinutes(1))

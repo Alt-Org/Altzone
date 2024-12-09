@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 public class PlayStyle : MonoBehaviour
 {
-    public TextMeshProUGUI styleText; // TMP tekstikentt�
-    public Button leftButton; // Vasen nappi
-    public Button rightButton; // Oikea nappi
-    public string[] styles; // Tyylivalikoima
+    public TextMeshProUGUI styleText; // TMP text field
+    public Button leftButton; // Left button
+    public Button rightButton; // Right button
+    public string[] styles; // Style selection
 
-    private int currentIndex = 0; // Seuraa valittua tyyli�
+    private int currentIndex = 0; // Tracks the selected style
 
     public int CurrentIndex
     {
@@ -23,20 +23,21 @@ public class PlayStyle : MonoBehaviour
 
     void Start()
     {
-
         if (styleText != null)
         {
             styleText.raycastTarget = false;
         }
 
-
         leftButton.onClick.AddListener(SelectPreviousStyle);
         rightButton.onClick.AddListener(SelectNextStyle);
+
+        // Load saved index or default to 0
+        currentIndex = PlayerPrefs.GetInt("CurrentPlayStyleIndex", 0);
 
         UpdateStyleText();
     }
 
-    // P�ivitt�� tyylitekstin
+    // Updates the style text
     private void UpdateStyleText()
     {
         if (Enum.GetNames(typeof(PlayStyles)).Length > 0)
@@ -52,17 +53,25 @@ public class PlayStyle : MonoBehaviour
         }
     }
 
-    // Menee taaksep�in listassa
     private void SelectPreviousStyle()
     {
         currentIndex = (currentIndex - 1 + Enum.GetNames(typeof(PlayStyles)).Length) % Enum.GetNames(typeof(PlayStyles)).Length;
         UpdateStyleText();
+        SaveCurrentIndex();
     }
 
-    // Menee eteenp�in listassa
+
     private void SelectNextStyle()
     {
         currentIndex = (currentIndex + 1) % Enum.GetNames(typeof(PlayStyles)).Length;
         UpdateStyleText();
+        SaveCurrentIndex();
+    }
+
+    // Saves the currentindex as a playerpref.
+    private void SaveCurrentIndex()
+    {
+        PlayerPrefs.SetInt("CurrentPlayStyleIndex", currentIndex);
+        PlayerPrefs.Save();
     }
 }
