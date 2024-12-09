@@ -49,6 +49,8 @@ namespace MenuUI.Scripts.SoulHome
         private SoulHomeController _controller;
         private Transform _towerCamera;
 
+        private List<FurnitureSlot> _currentSlotValidity;
+
         public Room RoomInfo { get => _roomInfo;}
         public int SlotRows { get => _slotRows;}
         public int SlotColumns { get => _slotColumns;}
@@ -64,6 +66,7 @@ namespace MenuUI.Scripts.SoulHome
             _roomInfo = roomInfo;
             _controller = controller;
             _towerCamera = towerCamera.transform;
+            _currentSlotValidity = new();
             InitializeRoom(topRoom);
         }
 
@@ -298,7 +301,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             bool check = CheckFurniturePosition(row, column, furniture.Furniture);
-
+            SetSlotValidity(row, column, furniture.Furniture, check);
             return check;
         }
 
@@ -484,6 +487,14 @@ namespace MenuUI.Scripts.SoulHome
                                 return true;
                             }
                         }
+                        else
+                        {
+                            ClearValidity();
+                        }
+                    }
+                    else
+                    {
+                        ClearValidity();
                     }
                 }
             }
@@ -542,6 +553,61 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
 
+        }
+
+        private void SetSlotValidity(int row, int column, Furniture furniture, bool check)
+        {
+            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+
+            int startRow;
+            int endColumn;
+
+            if (furnitureSize.x == 0) return;
+
+            if (_currentSlotValidity.Count > 0) ClearValidity();
+
+            startRow = row - (furnitureSize.y - 1);
+            endColumn = column + (furnitureSize.x - 1);
+
+            for (int i = startRow; i <= row; i++)
+            {
+                if (i < 0 || i >= _slotRows)
+                {
+                    continue;
+                }
+
+                for (int j = column; j <= endColumn; j++)
+                {
+                    if (j < 0 || j >= _slotColumns)
+                    {
+                        continue;
+                    }
+
+                    if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
+                    {
+                        _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                        _currentSlotValidity.Add(_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                    }
+                    else if (furniture.Place is FurniturePlacement.Wall)
+                    {
+                        _wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                        _currentSlotValidity.Add(_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                    }
+                    else if (furniture.Place is FurniturePlacement.Ceiling)
+                    {
+                        /*if (_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check)*/
+                    }
+                }
+            }
+        }
+
+        public void ClearValidity()
+        {
+            foreach (FurnitureSlot slot in _currentSlotValidity)
+            {
+                slot.ClearValidity();
+            }
+            _currentSlotValidity.Clear();
         }
 
         public void SetFurnitureSlots(FurnitureHandling furniture)
