@@ -89,6 +89,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return $"{nameof(Id)}: {Id}" +
                    $", {nameof(Name)}: {Name}" +
+                   $", {nameof(CharacterBase)}: {CharacterBase}" +
                    $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
