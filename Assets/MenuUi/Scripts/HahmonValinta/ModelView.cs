@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -71,15 +72,16 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void Reset()
         {
-            //Poistaa myös valitut hahmot!!!
             foreach (var button in _buttons)
             {
-                Destroy(button.gameObject);
+                if (!button.transform.IsChildOf(HorizontalContentPanel))
+                    Destroy(button.gameObject);
             }
             // remove all character slots
             foreach (var characterSlot in _characterSlot)
             {
-                Destroy(characterSlot.gameObject);
+                if (!characterSlot.transform.IsChildOf(HorizontalContentPanel))
+                    Destroy(characterSlot.gameObject);
             }
             _buttons.Clear();
             _characterSlot.Clear();
@@ -106,86 +108,18 @@ namespace MenuUi.Scripts.CharacterGallery
                     return Color.gray;
             }
         }
-        public void CheckSelectedCharacterSlotText(bool isAdditive)
-        {
-            //TODO: tee näistä SerializeField
-            //Ois myös kiva jos tämä ylipäätään toimis.
-            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
-            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
-            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
 
-            if (isAdditive == true)
-            {
-                characterTextCounter++;
-            }
-            else
-            {
-                characterTextCounter--;
-            }
-            if (characterTextCounter < 0) characterTextCounter = 0;
-            if (characterTextCounter > 3) characterTextCounter = 3;
-            
-            /*if (_CurSelectedCharacterSlot[2].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (_CurSelectedCharacterSlot[1].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }     
-            else if (_CurSelectedCharacterSlot[0].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }     
-            else
-            {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }*/
-
-            if (characterTextCounter > 2)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (characterTextCounter > 1)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }     
-            else if (characterTextCounter > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }     
-            else
-            {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }
-        }
         public Transform GetContent()
         {
             Transform content = (VerticalContentPanel == null) ? transform.Find("Content") :
                 VerticalContentPanel.transform;
-            
+
             return content;
         }
-
+       
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
-            foreach (var id in currentCharacterId)
+            foreach (int id in currentCharacterId)
             {
                 CurrentCharacterId = (CharacterID)id;
             }
@@ -197,51 +131,71 @@ namespace MenuUi.Scripts.CharacterGallery
 
             foreach (var character in allItems)
             {
-                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
-
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
-
                 if (info == null) continue;
 
+                GameObject slot = Instantiate(_characterSlotprefab, GetContent());
                 slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
 
+                Button button = slot.transform.Find("Button").GetComponent<Button>();
+
+                Outline outline = button.GetComponent<Outline>();
+
+                if (outline == null) outline = button.gameObject.AddComponent<Outline>();
+
+                outline.effectDistance = new Vector2(3, 3);
+                outline.effectColor = GetCharacterClassColor(character.ClassID);
+                button.enabled = false;
+
+                _buttons.Add(button);
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
-                _buttons.Add(slot.transform.Find("Button").GetComponent<Button>());
             }
 
-            /*foreach (var character in characters)
+            int idx = 0;
+            for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; i++)
             {
-            }*/
+                Button button = _buttons[i];
+                CharacterSlot characterSlot = _characterSlot[i];
 
-            for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; ++i)
-            {
-                var button = _buttons[i];
-                var characterSlot = _characterSlot[i];
-
-                if (i < characters.Count)
+                bool skip = false;
+                if (_CurSelectedCharacterSlot[0].Id == characterSlot.Id
+                    || _CurSelectedCharacterSlot[1].Id == characterSlot.Id
+                    || _CurSelectedCharacterSlot[2].Id == characterSlot.Id)
                 {
-                    var character = characters[i];
+                    skip = true;
+                }
+                if (skip == true) continue;
 
-                    button.gameObject.SetActive(true);
-                    button.interactable = true;
-                    _colorBlock.normalColor = GetCharacterClassColor(character.CharacterClassID);
-                    button.colors = _colorBlock;
-                    //button.SetCaption(character.Name); // Set button caption to character name
-
-                    characterSlot.gameObject.SetActive(true);
-
-                    //***************
-                    // Check if the character is currently selected
-                    if ((CharacterID)currentCharacterId[0] == character.Id)
+                foreach (CustomCharacter customCharacter in characters)
+                {
+                    if (characterSlot.Id != customCharacter.Id)
                     {
-                        // Set the character in the first slot of the horizontal character slot
-                        if (_CurSelectedCharacterSlot.Length > 0)
+                        _colorBlock.normalColor = GetCharacterClassColor(default);
+                        button.colors = _colorBlock;
+                        skip = true;
+                    }
+                    if (skip == true) continue;
+
+                    else
+                    {
+                        _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
+                        button.colors = _colorBlock;
+                        button.enabled = true;
+                    }
+                    foreach (CharacterID curCharacter in currentCharacterId)
+                    {
+                        if (curCharacter == customCharacter.Id && idx < _CurSelectedCharacterSlot.Length)
                         {
-                            button.transform.SetParent(_CurSelectedCharacterSlot[0].transform, false);
+                            // Set the character in the horizontal character slot
+                            if (_CurSelectedCharacterSlot.Length > 0)
+                            {
+                                button.transform.SetParent(_CurSelectedCharacterSlot[idx].transform, false);
+                                idx++;
+                                
+                            }
                         }
                     }
-
-                    //Tekstin vaihto tähän /characterSlot
+                    // Check if the character is currently selected
                     // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>
@@ -252,17 +206,11 @@ namespace MenuUi.Scripts.CharacterGallery
                             // Check if newParent is one of the topslots
                             if (newParent == curSlot.transform)
                             {
-                                // Set characterID, because it has been moved to the topslot 
-                                CurrentCharacterId = character.Id;
+                                // Set characterID, because it has been moved to the topslot
+                                CurrentCharacterId = customCharacter.Id;
                             }
                         }
                     };
-                }
-                else
-                {
-                    // Hide unused buttons and slots
-                    button.gameObject.SetActive(false);
-                    characterSlot.gameObject.SetActive(false);
                 }
             }
         }
