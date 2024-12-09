@@ -314,19 +314,19 @@ namespace Altzone.Scripts.Model.Poco.Game
             switch (type)
             {
                 case StatType.Attack:
-                    nextLevel = GetSegmentPrice(nextLevel - character._defaultAttack);
+                    nextLevel = nextLevel - character._defaultAttack;
                     break;
                 case StatType.Defence:
-                    nextLevel = GetSegmentPrice(nextLevel - character._defaultDefence);
+                    nextLevel = nextLevel - character._defaultDefence;
                     break;
                 case StatType.Resistance:
-                    nextLevel = GetSegmentPrice(nextLevel - character._defaultResistance);
+                    nextLevel = nextLevel - character._defaultResistance;
                     break;
                 case StatType.Hp:
-                    nextLevel = GetSegmentPrice(nextLevel - character._defaultHp);
+                    nextLevel = nextLevel - character._defaultHp;
                     break;
                 case StatType.Speed:
-                    nextLevel = GetSegmentPrice(nextLevel - character._defaultSpeed);
+                    nextLevel = nextLevel - character._defaultSpeed;
                     break;
                 default:
                     return -1;
