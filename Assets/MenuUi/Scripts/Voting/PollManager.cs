@@ -25,18 +25,20 @@ public static class PollManager
 
         string id = GetFirstAvailableId();
         string name = "joku";
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
+        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 60;
+        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
         //if (clan != null ) clanMembers = clan.Members.Select(member => member.Id).ToList();
         if (player != null) clanMembers.Add(player.Id);
 
-        PollData pollData = new EsinePollData(pollType, id, name, endTime, sprite, clanMembers, esinePollType, value);
+        PollData pollData = new EsinePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, esinePollType, value);
 
         pollDataList.Add(pollData);
 
-        PrintPollList();
+        //PrintPollList();
         SaveClanData();
+        VotingActions.ReloadPollList?.Invoke();
     }
 
     public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
@@ -46,15 +48,16 @@ public static class PollManager
         string id = GetFirstAvailableId();
         string name = "joku";
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
+        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         List<string> clanMembers = new List<string>();
         //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
         if (player != null) clanMembers.Add(player.Id);
 
-        PollData pollData = new FurniturePollData(pollType, id, name, endTime, sprite, clanMembers, furniturePollType, furniture, weight, value);    
+        PollData pollData = new FurniturePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, furniturePollType, furniture, weight, value);    
         pollDataList.Add(pollData);
 
-        PrintPollList();
+        //PrintPollList();
         SaveClanData();
     }
 
