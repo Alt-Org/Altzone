@@ -4,22 +4,25 @@ using UnityEngine.UI;
 using TMPro;
 
 public class PieChartManager : MonoBehaviour
-{
+{   
+    // listataan palaset, montako niitä on
     [SerializeField] private List<Image> slices;
+
+    // Hakee Unity:n UI:n tekstikentän josta tietoa halutaan hakea.
     [SerializeField] private TMP_Text impactForceText;
     [SerializeField] private TMP_Text healthPointsText;
-    [SerializeField] private TMP_Text defenceText;
     [SerializeField] private TMP_Text resistanceText;
     [SerializeField] private TMP_Text characterSizeText;
     [SerializeField] private TMP_Text speedText;
 
+    // Asetetaan väri, minkälaiseksi palanen tulee muuttua tietyn statin mukaan. 
+    // Näitä voidaan muuttaa suoraan unityn sisällä.
     [SerializeField] private Color impactForceColor = new Color(1f, 0.5f, 0f);
     [SerializeField] private Color healthPointsColor = Color.green;
-    [SerializeField] private Color defenceColor = Color.yellow;
     [SerializeField] private Color resistanceColor = new Color(0.5f, 0f, 0.5f);
     [SerializeField] private Color characterSizeColor = Color.blue;
     [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
-    [SerializeField] private Color defaultColor = Color.black;
+    [SerializeField] private Color defaultColor = Color.white;
 
     private void OnEnable()
     {
@@ -32,35 +35,33 @@ public class PieChartManager : MonoBehaviour
     {
         Debug.Log("Updating Pie Chart...");
 
-        // Hae arvot tekstikentistä (TMP_Text)
+        // Haetaan arvot tekstikentistä (TMP_Text) ja muutetaan ne numero (int) luvuiksi
         int impactForce = ParseText(impactForceText.text);
         int healthPoints = ParseText(healthPointsText.text);
-        int defence = ParseText(defenceText.text);
         int resistance = ParseText(resistanceText.text);
         int characterSize = ParseText(characterSizeText.text);
         int speed = ParseText(speedText.text);
 
-        Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Defence: {defence}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
+        Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
 
-        // Järjestä statit
+        // Järjestää statit
         var stats = new List<(int level, Color color)>
         {
             (impactForce, impactForceColor),
             (healthPoints, healthPointsColor),
-            (defence, defenceColor),
             (resistance, resistanceColor),
             (characterSize, characterSizeColor),
             (speed, speedColor)
         };
 
-        // Alustetaan kaikki slicet
+        // Alustaa kaikki slicet
         foreach (var slice in slices)
         {
             slice.fillAmount = 1f / slices.Count;
             slice.color = defaultColor;
         }
 
-        // Täytetään slicet järjestyksessä
+        // Täytetään Palaset (slice) järjestyksessä PieChartiin.
         int currentSlice = 0;
 
         foreach (var stat in stats)
@@ -82,6 +83,7 @@ public class PieChartManager : MonoBehaviour
         Debug.Log("Pie Chart updated!");
     }
 
+    //Parsettaa tekstin, onko se mahdollista muuttaa int luvuksi.
     private int ParseText(string text)
     {
         return int.TryParse(text, out int result) ? result : 0;
