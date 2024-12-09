@@ -16,6 +16,12 @@ public class VoteManager : MonoBehaviour
     private void OnEnable()
     {
         InstantiatePolls();
+        VotingActions.ReloadPollList += InstantiatePolls;
+    }
+
+    private void OnDisable()
+    {
+        VotingActions.ReloadPollList -= InstantiatePolls;
     }
 
     public void InstantiatePolls()

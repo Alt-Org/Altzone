@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Voting;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class PollPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI noVotesText;
     [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private TextMeshProUGUI votesLeftText;
+    [SerializeField] private UnityEngine.UI.Image greenFillAmount;
 
     void OnEnable()
     {
@@ -45,6 +47,12 @@ public class PollPopup : MonoBehaviour
                                                         + "/" +
                                                         (pollData.YesVotes.Count + pollData.NoVotes.Count + pollData.NotVoted.Count).ToString();
 
+        if (greenFillAmount != null)
+        {
+            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0) greenFillAmount.fillAmount = 0.5f;
+            else greenFillAmount.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
+        }
+
         if (pollData is FurniturePollData)
         {
             FurniturePollData furniturePollData = (FurniturePollData)pollData;
@@ -65,5 +73,6 @@ public class PollPopup : MonoBehaviour
         PollData pollData = PollManager.GetPollData(pollId);
         pollData.AddVote(answer);
         SetValues();
+        VotingActions.ReloadPollList?.Invoke();
     }
 }
