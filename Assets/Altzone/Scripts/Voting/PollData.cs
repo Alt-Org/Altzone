@@ -4,6 +4,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json.Linq;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -28,6 +29,20 @@ namespace Altzone.Scripts.Voting
     {
         Buying,
         Selling
+    }
+
+    public enum RolePollType
+    {
+        Create,
+        Delete,
+        Modify,
+        Give,
+    }
+
+    public enum MemberPollType
+    {
+        Accept,
+        Kick
     }
 
     public class PollData
@@ -118,8 +133,31 @@ namespace Altzone.Scripts.Voting
         }
     }
 
-    //public class GiveRolePollData : PollData
-    //{
-    //    
-    //}
+    public class RolePollData : PollData
+    {
+        public RolePollType RolePollType;
+        public string RoleId;
+        public string PlayerId;
+
+        public RolePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            RolePollType = rolePollType;
+            RoleId = roleId;
+            PlayerId = playerId;
+        }
+    }
+
+    public class MemberPollData : PollData
+    {
+        public MemberPollType MemberPollType;
+        public string PlayerId;
+
+        public MemberPollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            MemberPollType = memberPollType;
+            PlayerId = playerId;
+        }
+    }
 }
