@@ -35,6 +35,7 @@ namespace Altzone.Scripts.Voting
         public PollType PollType;
         public string Id;
         public string Name;
+        public long StartTime;
         public long EndTime;
         public Sprite Sprite;
 
@@ -42,11 +43,12 @@ namespace Altzone.Scripts.Voting
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
 
-        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers)
+        public PollData(PollType pollType, string id, string name,long startTime, long endTime, Sprite sprite, List<string> clanMembers)
         {
             PollType = pollType;
             Id = id;
             Name = name;
+            StartTime = startTime;
             EndTime = endTime;
             Sprite = sprite;
             NotVoted = new List<string>();
@@ -93,8 +95,8 @@ namespace Altzone.Scripts.Voting
         public double Weight;
         public float Value;
 
-        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-        : base(pollType, id, name, endTime, sprite, clanMembers)
+        public FurniturePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
@@ -108,11 +110,16 @@ namespace Altzone.Scripts.Voting
         public EsinePollType EsinePollType;
         public float Value;
 
-        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
-        : base(pollType, id, name, endTime, sprite, clanMembers)
+        public EsinePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             EsinePollType = esinePollType;
             Value = value;
         }
     }
+
+    //public class GiveRolePollData : PollData
+    //{
+    //    
+    //}
 }
