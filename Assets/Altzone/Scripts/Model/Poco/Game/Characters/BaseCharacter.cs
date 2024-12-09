@@ -71,6 +71,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _attack = _defaultAttack;
             _defence = _defaultDefence;
             _resistance = _defaultResistance;
+            _speed = _defaultSpeed;
         }
 
         #region Stat value getters
