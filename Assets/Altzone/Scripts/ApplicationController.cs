@@ -30,9 +30,6 @@ namespace Altzone.Scripts
             PrepareLocalTesting();
 #endif
 
-            // Set last compiled bundle version for Photon to keep all clients connected with different platforms.
-            //PhotonLobby.SetBundleVersion(BuildProperties.BundleVersionCode);
-
             string startupMessage = new StringBuilder()
                 .Append(" Game ").Append(Application.productName)
                 .Append(" Version ").Append(Application.version)
@@ -77,12 +74,6 @@ namespace Altzone.Scripts
         {
             LocalDevConfig localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
             if (localDevConfig == null) return;
-
-            /*if (!string.IsNullOrWhiteSpace(localDevConfig._photonVersionOverride))
-            {
-                var capturedPhotonVersionOverride = localDevConfig._photonVersionOverride;
-                PhotonLobby.GetGameVersion = () => capturedPhotonVersionOverride;
-            }*/
 
             Application.targetFrameRate = localDevConfig._targetFrameRateOverride;
         }
