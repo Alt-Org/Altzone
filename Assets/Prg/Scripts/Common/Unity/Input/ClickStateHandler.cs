@@ -22,6 +22,7 @@ namespace Prg.Scripts.Common
     {
         Click,
         Pinch,
+        Rotation,
         None
     }
 
@@ -29,6 +30,12 @@ namespace Prg.Scripts.Common
     {
         Touch,
         Mouse,
+        None
+    }
+     public enum RotationDirection
+    {
+        Clockwise,
+        Counterclockwise,
         None
     }
 
@@ -39,7 +46,7 @@ namespace Prg.Scripts.Common
     {
         /// <summary>
         /// <para>Returns a <c>ClickState</c> enum according to the either the current <c>Touch</c> phase or the current <c>Mouse</c> clickstate.</para>
-        /// 
+        ///
         /// <para>If you're starting to touch or press down the mouse button on this frame, returns ClickState.Start.<br/>
         /// If you're end the touch or release the mouse button on this frame, returns ClickState.End.<br/>
         /// If you're touching the screen or holding down mouse button on this frame, that was already going on before, and the position of the touch/click is same as previous frame, returns ClickState.Hold.<br/>
@@ -110,6 +117,34 @@ namespace Prg.Scripts.Common
                 distance = Mouse.current.scroll.ReadValue().y;
             }
             return distance;
+        }
+
+         public static RotationDirection GetRotationDirection(ClickInputDevice inputDevice = ClickInputDevice.None)
+        {
+            /*
+            if (Touch.activeTouches.Count >= 2 && (inputDevice is ClickInputDevice.Touch || inputDevice is ClickInputDevice.None))
+            {
+            }
+            */
+
+            if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse || inputDevice is ClickInputDevice.None))
+            {
+                Vector2 mouseScroll = Mouse.current.scroll.ReadValue();
+                Debug.LogFormat("[PlayerRotating] Player is rotating scrollwheel");
+                if(mouseScroll.y > 0)
+                {
+                    Debug.LogFormat("[PlayerRotating] Player is rotating scrollwheel up");
+                    return RotationDirection.Clockwise;
+                }
+                else if(mouseScroll.y < 0)
+                {
+                    Debug.LogFormat("[PlayerRotating] Player is rotating scrollwheel down");
+                    return RotationDirection.Counterclockwise;
+                }
+            }
+
+            Debug.LogFormat("[PlayerRotating] Rotation direction not working");
+            return RotationDirection.None;
         }
     }
 }
