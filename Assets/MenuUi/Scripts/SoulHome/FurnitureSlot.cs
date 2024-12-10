@@ -23,6 +23,8 @@ namespace MenuUI.Scripts.SoulHome
         private bool _tempRotatedNonBlock;
         private bool _ladder = false;
 
+        [SerializeField] private SpriteRenderer _slotValidityIndicator;
+
         public Furniture Furniture { get => furniture;
             set
             {
@@ -73,7 +75,25 @@ namespace MenuUI.Scripts.SoulHome
             this.width = width;
             this.height = height;
             //GetComponent<PolygonCollider2D>().points;
+            _slotValidityIndicator.transform.localScale = new Vector2(width, height);
+            _slotValidityIndicator.sortingOrder = id*1000 + 901;
         }
 
+        public void SetValidity(bool validity)
+        {
+            if (validity)
+            {
+                _slotValidityIndicator.color = new Color(0,1,0, 0.3f);
+            }
+            else
+            {
+                _slotValidityIndicator.color = new Color(1, 0, 0, 0.3f);
+            }
+            _slotValidityIndicator.gameObject.SetActive(true);
+        }
+        public void ClearValidity()
+        {
+            _slotValidityIndicator.gameObject.SetActive(false);
+        }
     }
 }

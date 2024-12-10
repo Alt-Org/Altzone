@@ -7,5 +7,7 @@ using UnityEngine;
 public static class VotingActions
 {
     public static Action<EsineDisplay> PassKauppaItem;
-    public static Action<PollData> CreatePollPopup;
+    public static Action PollPopupReady;
+    public static Action<string> PassPollId;
+    public static Action ReloadPollList;
 }

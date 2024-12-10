@@ -4,15 +4,28 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Voting
 {
-    public class VoteData
+
+    public class PollVoteData
     {
         public string PlayerId;
+        public string PlayerName;
+        public bool Answer;
+
+        public PollVoteData(string playerId, string playerName, bool answer)
+        {
+            PlayerId = playerId;
+            PlayerName = playerName;
+            Answer = answer;
+        }
+    }
+
+    public class PlayerVoteData
+    {
         public string PollId;
         public bool Answer;
 
-        public VoteData(string playerId, string pollId, bool answer)
+        public PlayerVoteData(string pollId, bool answer)
         {
-            PlayerId = playerId;
             PollId = pollId;
             Answer = answer;
         }

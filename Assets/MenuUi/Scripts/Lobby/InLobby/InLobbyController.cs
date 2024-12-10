@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-//using Battle1.PhotonUnityNetworking.Code;
-using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-//using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class InLobbyController : MonoBehaviour, ILobbyCallbacks, IConnectionCallbacks
+    public class InLobbyController : MonoBehaviour
     {
         [SerializeField] private InLobbyView _view;
 
@@ -61,18 +57,18 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private IEnumerator StartLobby(string playerGuid, string photonRegion)
         {
-            var networkClientState = PhotonRealtimeClient.NetworkClientState;
+            var networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
             Debug.Log($"{networkClientState}");
             var delay = new WaitForSeconds(0.1f);
-            while (!PhotonRealtimeClient.Client.InLobby)
+            while (!PhotonRealtimeClient.InLobby)
             {
-                if (networkClientState != PhotonRealtimeClient.NetworkClientState)
+                if (networkClientState != PhotonRealtimeClient.LobbyNetworkClientState)
                 {
                     // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
-                    networkClientState = PhotonRealtimeClient.NetworkClientState;
+                    networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
                     Debug.Log($"{networkClientState}");
                 }
-                if (PhotonRealtimeClient.Client.InRoom)
+                if (PhotonRealtimeClient.InRoom)
                 {
                     PhotonRealtimeClient.LeaveRoom();
                 }
@@ -86,7 +82,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
                 {
-                    PhotonRealtimeClient.JoinLobby(null);
+                    PhotonRealtimeClient.JoinLobbyWithWrapper(null);
                 }
                 yield return delay;
             }
@@ -96,7 +92,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void Update()
         {
-            if (!PhotonRealtimeClient.Client.InLobby)
+            if (!PhotonRealtimeClient.InLobby)
             {
                 _view.LobbyText = "Wait";
                 return;
@@ -108,7 +104,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             _view.PlayerCountText = $"Pelaajia online: {playerCount}";
         }
 
-        public void OnDisconnected(DisconnectCause cause)
+        /*public void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"OnDisconnected {cause}");
 
@@ -116,7 +112,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
             {
                 OnEnable();
             }
-        }
+        }*/
 
         public void ToggleWindow()
         {
@@ -131,12 +127,12 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void CharacterButtonOnClick()
         {
-            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
         }
 
         private void RoomButtonOnClick()
         {
-            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
         }
 
         private void RaidButtonOnClick()
@@ -146,17 +142,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void QuickGameButtonOnClick()
         {
-            Debug.Log($"{PhotonRealtimeClient.NetworkClientState}");
+            Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
         }
-
-        public void OnJoinedLobby() => throw new System.NotImplementedException();
-        public void OnLeftLobby() => throw new System.NotImplementedException();
-        public void OnRoomListUpdate(List<RoomInfo> roomList) => throw new System.NotImplementedException();
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) => throw new System.NotImplementedException();
-        public void OnConnected() => throw new System.NotImplementedException();
-        public void OnConnectedToMaster() => throw new System.NotImplementedException();
-        public void OnRegionListReceived(RegionHandler regionHandler) => throw new System.NotImplementedException();
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data) => throw new System.NotImplementedException();
-        public void OnCustomAuthenticationFailed(string debugMessage) => throw new System.NotImplementedException();
     }
 }

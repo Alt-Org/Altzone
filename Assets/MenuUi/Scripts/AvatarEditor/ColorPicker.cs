@@ -25,7 +25,6 @@ namespace MenuUi.Scripts.AvatarEditor
             FeatureColor.White,
             FeatureColor.White,
             FeatureColor.White,
-            FeatureColor.White,
             FeatureColor.White,     
         };
         private FeatureSlot _currentlySelectedCategory;

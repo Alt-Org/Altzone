@@ -37,7 +37,7 @@ public class CarbonFootprint : MonoBehaviour
 
     private void Start()
     {
-        // Jakaa CO2/min 60f:ll‰
+        // Jakaa CO2/min 60f:ll√§
         carbonTargetPerSecond = carbonTargetPerMinute / 60f;
     }
 
@@ -47,18 +47,18 @@ public class CarbonFootprint : MonoBehaviour
     }
 
     /// <summary>
-    /// Laskee ja p‰ivitt‰‰ hiilijalanj‰ljen per sekunti
+    /// Laskee ja p√§ivitt√§√§ hiilijalanj√§ljen per sekunti
     /// </summary>
     private void UpdateCarbon()
     {
         sessionTime += Time.deltaTime;
 
-        // Hiilijalanj‰lki nousee ajanmyˆt‰
+        // Hiilijalanj√§lki nousee ajanmy√∂t√§
         carbonCount += carbonTargetPerSecond * Time.deltaTime;
 
         SaveCarbonHistory();
 
-        // Tulostaa konsoliin CO2 m‰‰r‰n ja per minuutti
+        // Tulostaa konsoliin CO2 m√§√§r√§n ja per minuutti
         if (sessionTime - lastCheckTime >= 1f)
         {
             //Debug.Log($"Current total: {carbonCount} g CO2");
@@ -66,9 +66,9 @@ public class CarbonFootprint : MonoBehaviour
         }
     }
 
-    private void SaveCarbonHistory()
+    void SaveCarbonHistory()
     {
-        // P‰ivitt‰‰ minuutin v‰lein hiilijalanj‰ljen.
+        // P√§ivitt√§√§ minuutin v√§lein hiilijalanj√§ljen.
         if (DateTime.Now - lastSaveTime >= TimeSpan.FromMinutes(1))
         {
             carbonHistory.Add(carbonCount);

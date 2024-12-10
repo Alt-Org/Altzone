@@ -3,12 +3,14 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.AzDebug;
 using Prg.Scripts.Common.Util;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts
 {
+#if false
     internal static class BootLoader
     {
         /// <summary>
@@ -40,11 +42,12 @@ namespace Altzone.Scripts
         {
             SetEditorStatus();
             var localDevConfig = Resources.Load<LocalDevConfig>(nameof(LocalDevConfig));
-            SetupLogging(localDevConfig);
+            SetupLogging();
+            SetupLoggingOld(localDevConfig);
             SetupLocalTesting(localDevConfig);
         }
 
-        private static void SetupLogging(LocalDevConfig localDevConfig)
+        private static void SetupLoggingOld(LocalDevConfig localDevConfig)
         {
             LoggerConfig loggerConfig = null;
             if (localDevConfig != null && localDevConfig._loggerConfig != null)
@@ -61,6 +64,12 @@ namespace Altzone.Scripts
             {
                 LoggerConfig.CreateLoggerFilterConfig(loggerConfig, localDevConfig != null ? localDevConfig.SetLoggedDebugTypes : null);
             }
+        }
+
+        private static void SetupLogging()
+        {
+            DebugLogFileHandler.Init(DebugLogFileHandler.ContextID.MenuUI);
+            DebugLogFileHandler.FileOpen();
         }
 
         private static void SetupLocalTesting(LocalDevConfig localDevConfig)
@@ -96,4 +105,5 @@ namespace Altzone.Scripts
             Thread.CurrentThread.CurrentUICulture = ci;
         }
     }
+#endif
 }

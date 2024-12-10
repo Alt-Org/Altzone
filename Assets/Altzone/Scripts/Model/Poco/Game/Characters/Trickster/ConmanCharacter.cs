@@ -9,11 +9,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ConmanCharacter()
         {
             _id = CharacterID.TricksterConman;
-            _defaultAttack = 2;
-            _defaultDefence = 4;
+            _defaultAttack = 7;
+            _defaultDefence = 5;
             _defaultHp = 2;
-            _defaultResistance = 1;
-            _speed = 4;
+            _defaultResistance = 6;
+            _defaultSpeed = 10;
             InitilizeValues();
         }
     }

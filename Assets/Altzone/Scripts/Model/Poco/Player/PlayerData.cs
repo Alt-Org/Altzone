@@ -6,11 +6,30 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
+
+    public enum PlayStyles
+    {
+        Harjoittelja,
+        Intohimoinen,
+        Sisustaja,
+        Kilpapelaaja,
+        Kasuaalipelaaja,
+        Sosiaalinen,
+        Taukopelaaja,
+        Grindaaja,
+        Saavutusten_Metsastaja,
+        Tarkka_Strategikko,
+        Fiilistelija,
+        Ongelmanratkaisija,
+        Huono_Haviaja
+    };
+
     [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
@@ -35,6 +54,12 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int dailyTaskId = 0;
 
         public int points = 0;
+
+        public PlayStyles playStyles;
+
+
+        public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
+
         public ServerGameStatistics stats = null;
         /// <summary>
         /// Unique string to identify this player across devices and systems.

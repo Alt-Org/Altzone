@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 public class KylläButtonÄänestyst : MonoBehaviour
 {
-    public WindowDef WindowDef;
     public GameObject panelToBeSetInActive;
     public EsineDisplay esine;
 
@@ -33,7 +32,7 @@ public class KylläButtonÄänestyst : MonoBehaviour
     {
         Invoke("SetInactiveAfterTime", 2f);
 
-        PollManager.CreatePoll(PollType.Kauppa, esine.name, 2, esine.items.esine, EsinePollType.Buying, esine.items.value);
+        PollManager.CreatePoll(PollType.Kauppa, 1, esine.items.esine, EsinePollType.Buying, esine.items.value);
 
         FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
     }
