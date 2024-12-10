@@ -365,6 +365,8 @@ namespace Altzone.Scripts.Model
             else
             {
                 storageData.Characters = new CharacterStorage().CharacterList;
+                storageData.CustomCharacters = new();
+                storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
                 storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
             }
