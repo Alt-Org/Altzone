@@ -10,13 +10,14 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public override CharacterClassID ClassID => CharacterClassID.Intellectualizer;
 
-        //Enums should equal 16.
+        //Enums should equal about 20.
         protected IntellectualizerClassCharacter()
         {
-            _attackStrength = ValueStrength.Weak;
-            _resistanceStrength = ValueStrength.SemiStrong;
-            _hpStrength = ValueStrength.Weak;
-            _defenceStrength = ValueStrength.VeryStrong;
+            _attackStrength = ValueStrength.Medium;
+            _resistanceStrength = ValueStrength.Weak;
+            _hpStrength = ValueStrength.Medium;
+            _defenceStrength = ValueStrength.SemiWeak;
+            _speedStrength = ValueStrength.SemiWeak;
             InitilizeValues();
         }
     }

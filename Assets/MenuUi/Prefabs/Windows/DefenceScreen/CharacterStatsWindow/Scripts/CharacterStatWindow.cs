@@ -17,6 +17,7 @@ public class CharacterStatWindow : MonoBehaviour
 
     public Sprite[] CharacterArtWork;
     public Image CharacterArtWorkToShow;
+    public Image CharacterArtWorkForInfoCanva;
 
     private int UnusedStats;
     private int DiamondSpeedAmount = 100;
@@ -49,16 +50,16 @@ public class CharacterStatWindow : MonoBehaviour
     public TextMeshProUGUI DiamondResistanceAmountNumber;
     public TextMeshProUGUI DiamondAttackAmountNumber;
     public TextMeshProUGUI DiamondDefenceAmountNumber;
-    public TextMeshProUGUI DiamondHPAmountNumber;
-
+    public TextMeshProUGUI DiamondHPAmountNumber; 
+ 
     [Header("*********************")]
     [Header("Descriptions")]
-    public TextMeshProUGUI CharDescription;//hahmon kuvaus
-    public TextMeshProUGUI DefClassSpecial;//defenssiluokan erikoistaidon kuvaus
+    public TextMeshProUGUI CharDescription;//character description
+    public TextMeshProUGUI DefClassSpecial;//defence class description
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
     private CustomCharacter _customCharacter;
     private int CurrentlySelectedStat = -1;
-    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
+    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber; //This has to be replaced 
     [SerializeField] private Image UpgradeDiamondImage;
 
     [Header("Stat editing popup")]
@@ -67,7 +68,6 @@ public class CharacterStatWindow : MonoBehaviour
     [SerializeField] private GameObject statEditTab;
     [SerializeField] private Button closeTabButton;
     [SerializeField] private TextMeshProUGUI statIncreasePriceText;
-    [SerializeField] private TextMeshProUGUI statDecreasePriceText;
 
     [Header("Buttons for opening stat editing popup")]
     [SerializeField] private Button impactforce;
@@ -79,32 +79,22 @@ public class CharacterStatWindow : MonoBehaviour
 
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
-    //private BaseCharacter _currentCharacter;
     private PlayerData _playerData;
     private CharacterID _characterId;
 
+    //What is stat selected background? not needen anymore?
 
-    //Mistä löytyy hahmonkuvaus? -Löytyy SetCharacterInfo -metodista
-    //Mistä löytyy defenssiluokan kuvaus? -saatavilla, jahka valmistuu
-
-    //Onko olemassa jo tieto käytetyistä tasopykälistä jossain?
-    //Ei ole. Palataan myöhemmin.
-
-    //Mitä tarkoittaa stat selected backround?
-
+    //Increasing and decreasing stat level is not in working state
 
     private void OnEnable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
 
-
-
-        // Hae CustomCharacter tiedot PlayerDatasta
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
         //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>  //Alunperin käytti tätä
 
-        //Tällä hetkellä käyttää tätä
+        //Uses this now
         DataStore dataStore = Storefront.Get();
         dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
         {
@@ -448,9 +438,7 @@ public class CharacterStatWindow : MonoBehaviour
             }
         }
     }
-
-
-    // doing this at awake                                     
+                                    
     private void _decideWhatCharacterToShow(CharacterID _characterId) //index
     {
         //Method has been changed to use varaible _characterId.
@@ -585,9 +573,12 @@ public class CharacterStatWindow : MonoBehaviour
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
                    customCharacter.Defence, customCharacter.Hp);
         CharacterArtWorkToShow.sprite = galleryCharacter.Image;
+        CharacterArtWorkForInfoCanva.sprite = galleryCharacter.Image;
+
+
         Debug.Log($"loaded {galleryCharacter.Name}");
 
-        //Setting stat increasing prices
+        //Getting stat increasing prices
         AttackIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Attack);
         SpeedIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Speed);
         ResistanceIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Resistance);
@@ -641,9 +632,10 @@ public class CharacterStatWindow : MonoBehaviour
                 break;
         }
     }
+
+    //Button finctionality for stat editing popup
     private void ActivateStatButtons()
     {
-
         HideStatEditTab();
         impactforce.onClick.AddListener(() => OnStatButtonClicked(AttackIncreasePrice));
         healthPoints.onClick.AddListener(() => OnStatButtonClicked(HPIncreasePrice));
@@ -657,7 +649,7 @@ public class CharacterStatWindow : MonoBehaviour
         increaseButton.onClick.AddListener(() => PlusOrMinusPressed());
         decreaseButton.onClick.AddListener(() => PlusOrMinusPressed());
         closeTabButton.onClick.AddListener(() => HideStatEditTab());
-        statIncreasePriceText.text = statIncreasePriceToShow.ToString();
+        statIncreasePriceText.text = $"{statIncreasePriceToShow}";
 
         Debug.Log($"Stat price {statIncreasePriceToShow}");
         statEditTab.SetActive(true);
