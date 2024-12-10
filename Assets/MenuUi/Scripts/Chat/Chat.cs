@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using NUnit.Framework;
 using System.Collections.Generic;
-using System.IO;
 
 public class Chat : MonoBehaviour
 {
-    [Header("Chat")]
-    public TMP_InputField inputField;  // Поле ввода для отправки сообщений
-    public GameObject languageChat;  // Контейнер, в котором будут отображаться сообщения
+    [Header("Chat")] 
+    public GameObject languageChat; 
     public GameObject globalChat;
     public GameObject clanChat;
     private GameObject currentContent;
+
+    [Header("InputField")]
+    public TMP_InputField inputField;
 
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
@@ -21,19 +21,31 @@ public class Chat : MonoBehaviour
     public GameObject messagePrefabOrange;
     public GameObject messagePrefabPink;
 
+    [Header("Scroll Rects")]
+    public ScrollRect languageChatScrollRect;
+    public ScrollRect globalChatScrollRect;
+    public ScrollRect clanChatScrollRect;
+
+    private ScrollRect currentScrollRect;
+
     private GameObject currentPrefab;
 
+    private bool shouldScroll = false;
+
     [Header("Commands")]
-    [SerializeField]
-    private string delete = "/deleteMessage";
-    [SerializeField]
-    private string deleteAllMessages = "/delete";
+    public string delete = "/deleteMessage";
+    public string deleteAllMessages = "/clear";
+    public string deleteById = "/deleteId";
+
+    private int messageIDCounter = 0;
+    private Dictionary<int, GameObject> messageByID = new Dictionary<int, GameObject>();
+
 
     private  Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
 
     private void Start()
     {
-        currentContent = languageChat;  // Default to language chat
+        currentContent = languageChat;
         Debug.Log("Активен язык чат");
 
         messagesByChat[languageChat] = new List<GameObject>();
@@ -46,34 +58,43 @@ public class Chat : MonoBehaviour
     {
         if (currentContent == null)
         {
-            Debug.LogWarning("Не выбран активный чат");
+            Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
         
         if (inputField != null && !string.IsNullOrEmpty(inputField.text) && inputField.text.Trim().Length >= 2)
         {
-            if(inputField.text == delete)
-            {
-                DeleteMessage();
-                inputField.text = "";
-                return; // Выходим из метода, чтобы не отправлять команду в чат
-            }
+            string inputText = inputField.text.Trim();
 
-            if(inputField.text == deleteAllMessages)
+            if(inputText == delete)
             {
+                Debug.Log("Deleting last message...");
+                DeleteLastMessage();
+                inputField.text = "";
+                return;
+            }
+            else if(inputText == deleteAllMessages)
+            {
+                Debug.Log("Deleting last message...");
                 DeleteAllMessages();
                 inputField.text = "";
                 return;
             }
+            else if(inputText.StartsWith(deleteById))
+            {
+                string[] parts = inputText.Split(" ");
+                if (parts.Length == 2 && int.TryParse(parts[1], out int messageId))
+                {
+                    Debug.Log("Deleting message with ID");
+                }
+            }
 
             Debug.Log("Current Prefab: " + currentPrefab.name);
-
             DisplayMessage(inputField.text);
-
             inputField.text = "";
         }
         else
         {
-            Debug.LogWarning("Нельзя отправить пустое сообщение.");
+            Debug.LogWarning("Tyhjää viestiä ei voi lähettää..");
         }
     }
 
@@ -87,101 +108,132 @@ public class Chat : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Ошибка: компонент TMP_Text не найден на кнопке.");
+            Debug.LogError("Virhe: TMP_Text ei löydy painikkeesta.");
         }
     }
 
-    public void DeleteMessage()
-    {
-       if(messagesByChat.Count > 0)
-       {
-            Debug.Log("удаление последнео сообщения");
-            GameObject lastMessage = messagesByChat[currentContent][messagesByChat[currentContent].Count - 1];
-            Destroy(lastMessage);
-            messagesByChat[currentContent].RemoveAt(messagesByChat[currentContent].Count - 1);
-       }
-       else
-        {
-            Debug.LogWarning("нет сообщения для удаления");
-        }
-    }
-
-    public void DeleteAllMessages()
-    {
-        Debug.Log("удаление всех сообщений");
-        foreach (GameObject message in messagesByChat[currentContent]) //Проходит по каждому объекту message в списке messages
-        {
-            Destroy(message);
-        }
-
-        messagesByChat[currentContent].Clear(); // Очищаем список после удаления всех сообщений
-    }
 
     public void DisplayMessage(string messageText)
     {
         if (currentPrefab != null)
         {
-            // Создаём новый префаб
             GameObject newMessage = Instantiate(currentPrefab, currentContent.transform);
 
-            // Ищем компонент TMP_Text внутри дочерних объектов префаба
             TMP_Text messageUI = newMessage.GetComponentInChildren<TMP_Text>();
             if (messageUI != null)
             {
-                messageUI.text = messageText;  // Устанавливаем текст сообщения
+                messageUI.text = messageText;  
             }
             else
             {
-                Debug.LogError("Компонент TMP_Text не найден в префабе!");
+                Debug.LogError("TMP_Text-komponenttia ei löytynyt prefabista!");
             }
 
-            messagesByChat[currentContent].Add(newMessage);
+            //ID
+            int currentMessageID = messageIDCounter++;
+            newMessage.name = "Message_" + currentMessageID;
+            messageByID[currentMessageID] = newMessage;
 
-            // Прокручиваем окно чата вниз, если используется ScrollView
-            ScrollRect scrollRect = currentContent.GetComponentInParent<ScrollRect>();
-            if (scrollRect != null)
+            messagesByChat[currentContent].Add(newMessage);
+            shouldScroll = true;
+
+            if (shouldScroll)
             {
-                scrollRect.verticalNormalizedPosition = 0;
+                if (currentContent != null)
+                {
+                    Canvas.ForceUpdateCanvases();
+                    currentScrollRect.verticalNormalizedPosition = 0f;
+
+                    shouldScroll = false;
+                }
+                else
+                {
+                    Debug.LogWarning("Scroll rect not found!!");
+                }
             }
         }
         else
         {
-            Debug.LogError("Префаб не назначен.");
+            Debug.LogError("Prefab ei ole määritetty.");
+        }
+    }
+
+    public void DeleteLastMessage()
+    {
+        if (messagesByChat[currentContent].Count > 0)
+        {
+            Debug.Log("viimeisimmän viestin poistaminen");
+            GameObject lastMessage = messagesByChat[currentContent][messagesByChat[currentContent].Count - 1];
+            Destroy(lastMessage);
+            messagesByChat[currentContent].RemoveAt(messagesByChat[currentContent].Count - 1);
+        }
+        else
+        {
+            Debug.LogWarning("ei viestiä poistettavaksi");
+        }
+    }
+
+    public void DeleteAllMessages()
+    {
+        Debug.Log("poistaa kaikki viestit");
+        foreach (GameObject message in messagesByChat[currentContent])
+        {
+            Destroy(message);
+        }
+
+        messagesByChat[currentContent].Clear();
+    }
+
+    public void DeleteMessageByID(int messageId)
+    {
+        if(messageByID.ContainsKey(messageId))
+        {
+            Debug.Log("Deleting message with ID");
+            GameObject messageToDelete = messageByID[messageId];
+            Destroy(messageToDelete);
+            messagesByChat[currentContent].Remove(messageToDelete);
+            messageByID.Remove(messageId);
+        }
+        else
+        {
+            Debug.LogWarning("Message with ID not found.");
         }
     }
 
     public void GlobalCahtActive()
     {
         currentContent = globalChat;
+        currentScrollRect = globalChatScrollRect;
 
         globalChat.SetActive(true);
         languageChat.SetActive(false);
         clanChat.SetActive(false);
 
-        Debug.Log("Активирован глобальный чат");
+        Debug.Log("Global Chat aktivoitu");
     }
     public void ClanCahtActive()
     {
         currentContent = clanChat;
+        currentScrollRect = clanChatScrollRect;
 
         clanChat.SetActive(true);
         languageChat.SetActive(false);
         globalChat.SetActive(false);
        
-        Debug.Log("Активирован клановый чат");
+        Debug.Log("Klaani Chat aktivoitu");
     }
     public void LanguageCahtActive()
     {
         currentContent = languageChat;
+        currentScrollRect = languageChatScrollRect;
 
         languageChat.SetActive(true);
         globalChat.SetActive(false);
         clanChat.SetActive(false);
 
-        Debug.Log("Активирован языковой чат");
+        Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
-    // Методы для установки нужного префаба и отправки сообщения
     public void SetBluePrefab() { currentPrefab = messagePrefabBlue; SendChatMessage(); }
     public void SetRedPrefab() { currentPrefab = messagePrefabRed; SendChatMessage(); }
     public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; SendChatMessage(); }
