@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         TwoXTwo,
         TwoXThree,
         TwoXFour,
+        TwoXFive,
         TwoXSix,
         TwoXSeven,
         TwoXEight,
@@ -29,6 +30,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FourXThree,
         FourXFour,
         FiveXFive,
+        FiveXEight,
         SevenXThree
     }
 

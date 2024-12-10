@@ -139,6 +139,19 @@ namespace Altzone.Scripts.Model
                 clanFurniture.Add(new ClanFurniture((10000 + 2400 + i).ToString(), "Chair_Polarity"));
                 clanFurniture.Add(new ClanFurniture((10000 + 2500 + i).ToString(), "Commode_Muistoja"));
                 clanFurniture.Add(new ClanFurniture((10000 + 2600 + i).ToString(), "Pictures_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 2700 + i).ToString(), "Sofa_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 2800 + i).ToString(), "Armchair_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 2900 + i).ToString(), "Ficus_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3000 + i).ToString(), "Flowers_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3100 + i).ToString(), "Coffeetable_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3200 + i).ToString(), "NewCarpet_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3300 + i).ToString(), "OldCarpet_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3400 + i).ToString(), "Drawings_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3500 + i).ToString(), "Painting_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3600 + i).ToString(), "NewWindow_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3700 + i).ToString(), "OldWindow_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3800 + i).ToString(), "ToyFox_Muistoja"));
+                clanFurniture.Add(new ClanFurniture((10000 + 3900 + i).ToString(), "Bookshelf_Polarity"));
 
                 i++;
             }
@@ -255,6 +268,19 @@ namespace Altzone.Scripts.Model
             gameFurniture.Add(new GameFurniture(24.ToString(), "Chair_Polarity", FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 5f, 100f));
             gameFurniture.Add(new GameFurniture(25.ToString(), "Commode_Muistoja", FurnitureSize.TwoXThree, FurnitureSize.ThreeXTwo, FurniturePlacement.Floor, 17f, 100f));
             gameFurniture.Add(new GameFurniture(26.ToString(), "Pictures_Muistoja", FurnitureSize.ThreeXFour, FurnitureSize.ThreeXFour, FurniturePlacement.Wall, 2f, 60f));
+            gameFurniture.Add(new GameFurniture(27.ToString(), "Sofa_Muistoja", FurnitureSize.TwoXSix, FurnitureSize.FourXThree, FurniturePlacement.Floor, 20f, 100f));
+            gameFurniture.Add(new GameFurniture(28.ToString(), "Armchair_Muistoja", FurnitureSize.TwoXFive, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 5f, 60f));
+            gameFurniture.Add(new GameFurniture(29.ToString(), "Ficus_Muistoja", FurnitureSize.TwoXFour, FurnitureSize.TwoXFour, FurniturePlacement.Floor, 3f, 120f));
+            gameFurniture.Add(new GameFurniture(30.ToString(), "Flowers_Muistoja", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 1f, 50f));
+            gameFurniture.Add(new GameFurniture(31.ToString(), "Coffeetable_Muistoja", FurnitureSize.TwoXFour, FurnitureSize.TwoXFour, FurniturePlacement.Floor, 20f, 60f));
+            gameFurniture.Add(new GameFurniture(32.ToString(), "NewCarpet_Muistoja", FurnitureSize.FiveXEight, FurnitureSize.FiveXEight, FurniturePlacement.FloorNonblock, 7f, 150f));
+            gameFurniture.Add(new GameFurniture(33.ToString(), "OldCarpet_Muistoja", FurnitureSize.FiveXEight, FurnitureSize.FiveXEight, FurniturePlacement.FloorNonblock, 7f, 150f));
+            gameFurniture.Add(new GameFurniture(34.ToString(), "Drawings_Muistoja", FurnitureSize.TwoXThree, FurnitureSize.TwoXThree, FurniturePlacement.Wall, 1f, 60f));
+            gameFurniture.Add(new GameFurniture(35.ToString(), "Painting_Muistoja", FurnitureSize.FourXThree, FurnitureSize.FourXThree, FurniturePlacement.Wall, 2f, 40f));
+            gameFurniture.Add(new GameFurniture(36.ToString(), "NewWindow_Muistoja", FurnitureSize.FourXThree, FurnitureSize.FourXThree, FurniturePlacement.Wall, 1f, 50f));
+            gameFurniture.Add(new GameFurniture(37.ToString(), "OldWindow_Muistoja", FurnitureSize.FourXThree, FurnitureSize.FourXThree, FurniturePlacement.Wall, 1f, 50f));
+            gameFurniture.Add(new GameFurniture(38.ToString(), "ToyFox_Muistoja", FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 1f, 70f));
+            gameFurniture.Add(new GameFurniture(39.ToString(), "Bookshelf_Polarity", FurnitureSize.OneXThree, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 40f, 120f));
             //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));

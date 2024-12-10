@@ -591,7 +591,7 @@ namespace MenuUI.Scripts.SoulHome
                     else if (furniture.Place is FurniturePlacement.Wall)
                     {
                         _wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                        _currentSlotValidity.Add(_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        _currentSlotValidity.Add(_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
                     {

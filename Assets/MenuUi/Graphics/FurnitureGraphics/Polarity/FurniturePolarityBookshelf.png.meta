@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FurniturePolarityBookshelf_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1025
+        height: 1979
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57ebee7bd5f84b04285248b5c201caa5
+      internalID: 294977418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurniturePolarityBookshelf_1
+      rect:
+        serializedVersion: 2
+        x: 1069
+        y: 0
+        width: 654
+        height: 1988
+      alignment: 9
+      pivot: {x: 0.73, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eee1b8a0d4fe4ae49a63d700516d8722
+      internalID: 1703094059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FurniturePolarityBookshelf_0: 294977418
+      FurniturePolarityBookshelf_1: 1703094059
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

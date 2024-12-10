@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FurnitureMuistojaArmchair_1
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 1084
+        width: 1089
+        height: 805
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 151b067ff9c869049bf80bd22e4d6fef
+      internalID: 1667950117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureMuistojaArmchair_13
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 41
+        width: 836
+        height: 967
+      alignment: 9
+      pivot: {x: 0.65, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e49cc95d4d40a946a3969d627a8a88d
+      internalID: 534638176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FurnitureMuistojaArmchair_0: 714067831
+      FurnitureMuistojaArmchair_1: 1667950117
+      FurnitureMuistojaArmchair_10: 1422376236
+      FurnitureMuistojaArmchair_11: -1943798787
+      FurnitureMuistojaArmchair_12: -354596697
+      FurnitureMuistojaArmchair_13: 534638176
+      FurnitureMuistojaArmchair_14: -692379251
+      FurnitureMuistojaArmchair_15: -845250854
+      FurnitureMuistojaArmchair_16: -280276612
+      FurnitureMuistojaArmchair_17: -1957640885
+      FurnitureMuistojaArmchair_2: 1731319182
+      FurnitureMuistojaArmchair_3: -2005418596
+      FurnitureMuistojaArmchair_4: 537080215
+      FurnitureMuistojaArmchair_5: 984739688
+      FurnitureMuistojaArmchair_6: -872596025
+      FurnitureMuistojaArmchair_7: 232127172
+      FurnitureMuistojaArmchair_8: -979134679
+      FurnitureMuistojaArmchair_9: 660096104
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

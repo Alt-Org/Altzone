@@ -120,6 +120,8 @@ namespace MenuUI.Scripts.SoulHome
                     return new Vector2Int(3, 2);
                 case FurnitureSize.TwoXFour:
                     return new Vector2Int(4, 2);
+                case FurnitureSize.TwoXFive:
+                    return new Vector2Int(5, 2);
                 case FurnitureSize.TwoXSix:
                     return new Vector2Int(6, 2);
                 case FurnitureSize.TwoXSeven:
@@ -146,6 +148,8 @@ namespace MenuUI.Scripts.SoulHome
                     return new Vector2Int(4, 4);
                 case FurnitureSize.FiveXFive:
                     return new Vector2Int(5, 5);
+                case FurnitureSize.FiveXEight:
+                    return new Vector2Int(8, 5);
                 case FurnitureSize.SevenXThree:
                     return new Vector2Int(3, 7);
                 default:
