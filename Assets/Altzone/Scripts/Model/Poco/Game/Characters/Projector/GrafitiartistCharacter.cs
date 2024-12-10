@@ -9,11 +9,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public GraffitiartistCharacter() : base()
         {
             _id = CharacterID.ProjectorGrafitiartist;
-            _defaultAttack = 2;
-            _defaultDefence = 4;
-            _defaultHp = 2;
-            _defaultResistance = 1;
-            _speed = 3;
+            _defaultAttack = 7;
+            _defaultDefence = 10;
+            _defaultHp = 3;
+            _defaultResistance = 8;
+            _defaultSpeed = 4;
             InitilizeValues();
         }
     }

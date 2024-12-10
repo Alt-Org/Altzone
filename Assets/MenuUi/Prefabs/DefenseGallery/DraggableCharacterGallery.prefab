@@ -596,6 +596,7 @@ MonoBehaviour:
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
   _nameText: {fileID: 0}
+  characterTextCounter: 0
 --- !u!1 &2119086382482863961
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,6 +850,7 @@ MonoBehaviour:
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
   _nameText: {fileID: 0}
+  characterTextCounter: 0
 --- !u!1 &2388269479839593268
 GameObject:
   m_ObjectHideFlags: 0
@@ -883,7 +885,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 170, y: 0}
+  m_AnchoredPosition: {x: 190, y: 0}
   m_SizeDelta: {x: 160, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2532976300398973061
@@ -1864,7 +1866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -170, y: 0}
+  m_AnchoredPosition: {x: -190, y: 0}
   m_SizeDelta: {x: 160, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &139062558545381588
@@ -1923,8 +1925,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2220,6 +2222,7 @@ MonoBehaviour:
   _character: {fileID: 0}
   _spriteImage: {fileID: 0}
   _nameText: {fileID: 0}
+  characterTextCounter: 0
 --- !u!1 &7388681695668014661
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,6 +2367,8 @@ MonoBehaviour:
     type: 3}
   _referenceSheet: {fileID: 11400000, guid: f4525f3fc93f2b848a97c16f4bf77964, type: 2}
   _isReady: 0
+  characterTextCounter: 0
+  _characterClassID: 
   _colorBlock:
     m_NormalColor: {r: 0, g: 0, b: 0, a: 0}
     m_HighlightedColor: {r: 0, g: 0, b: 0, a: 0}
