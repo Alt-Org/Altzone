@@ -608,6 +608,11 @@ PrefabInstance:
       objectReference: {fileID: 6904072391406267510}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: statEditPopUp
+      value: 
+      objectReference: {fileID: 1391757752965278290}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: CharSizeNumber
       value: 
       objectReference: {fileID: 3093987055784333071}
@@ -648,6 +653,11 @@ PrefabInstance:
       objectReference: {fileID: 3818218968069921202}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: speedCurrentLevel
+      value: 
+      objectReference: {fileID: 1320541512511688346}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: EraserAmountNumber
       value: 
       objectReference: {fileID: 6666506531425861475}
@@ -658,9 +668,19 @@ PrefabInstance:
       objectReference: {fileID: 221229854373242224}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: defenceCurrentLevel
+      value: 
+      objectReference: {fileID: 6904072391406267510}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: DiamondsAmountNumber
       value: 
       objectReference: {fileID: 623802695241217280}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: charSizeCurrentLevel
+      value: 
+      objectReference: {fileID: 3093987055784333071}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: statDecreasePriceText
@@ -678,6 +698,11 @@ PrefabInstance:
       objectReference: {fileID: 7585432496203288890}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
+      propertyPath: resistanceCurrentLevel
+      value: 
+      objectReference: {fileID: 3818218968069921202}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
       propertyPath: statButtons.Array.size
       value: 6
       objectReference: {fileID: 0}
@@ -686,6 +711,16 @@ PrefabInstance:
       propertyPath: UpgradeCostAmountNumber
       value: 
       objectReference: {fileID: 3172783752484600221}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: impactforceCurrentLevel
+      value: 
+      objectReference: {fileID: 678221507079748641}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: healthPointsCurrentLevel
+      value: 
+      objectReference: {fileID: 5152688970190664228}
     - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: statButtons.Array.data[0]
@@ -726,6 +761,11 @@ PrefabInstance:
       propertyPath: CharacterArtWorkForInfoCanva
       value: 
       objectReference: {fileID: 6709466706046791562}
+    - target: {fileID: 2780273235755361131, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: erasersNeededForDecreasingText
+      value: 
+      objectReference: {fileID: 655354869043912605}
     - target: {fileID: 2818674350394559290, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -820,6 +860,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: HealthPointsTab
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656877052860385799, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: eraserAmountText
       objectReference: {fileID: 0}
     - target: {fileID: 5961996630473185368, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -950,6 +995,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 31.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793800944829758731, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_Name
+      value: diamondAmountText
       objectReference: {fileID: 0}
     - target: {fileID: 8827590388094702633, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -2030,6 +2080,11 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 51.55
       objectReference: {fileID: 0}
+    - target: {fileID: 2553794801575126125, guid: 6518d8aaf4a34de4897d176df7531b31,
+        type: 3}
+      propertyPath: m_Name
+      value: customCharNameTxt
+      objectReference: {fileID: 0}
     - target: {fileID: 2563921564976196043, guid: 6518d8aaf4a34de4897d176df7531b31,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -2194,6 +2249,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3940928578606186815, guid: 6518d8aaf4a34de4897d176df7531b31,
+        type: 3}
+      propertyPath: m_Name
+      value: CharDescriptionText
       objectReference: {fileID: 0}
     - target: {fileID: 4121181203593612142, guid: 6518d8aaf4a34de4897d176df7531b31,
         type: 3}
@@ -2439,6 +2499,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 51.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202349973722066506, guid: 6518d8aaf4a34de4897d176df7531b31,
+        type: 3}
+      propertyPath: m_Name
+      value: DefClassDescriptionText
       objectReference: {fileID: 0}
     - target: {fileID: 8629429924112052103, guid: 6518d8aaf4a34de4897d176df7531b31,
         type: 3}

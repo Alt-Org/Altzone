@@ -31,43 +31,45 @@ public class CharacterStatWindow : MonoBehaviour
     private int AttackIncreasePrice;
     private int DefenceIncreasePrice;
     private int HPIncreasePrice;
-    private int CharSizeIncreasePrice = 0;
+    private int CharSizeIncreasePrice;
     public TextMeshProUGUI CharacterName;
     public TextMeshProUGUI CustomCharacterName;
-    [Header("Current stat level?")]
+    [Header("Current stat level for statpage")]
     public TextMeshProUGUI SpeedNumber;
     public TextMeshProUGUI ResistanceNumber;
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
     public TextMeshProUGUI HPNumber;
     public TextMeshProUGUI CharSizeNumber;
+
     [Header("Amount of diamonds and erasers that can be used")]
     public TextMeshProUGUI DiamondsAmountNumber;
     public TextMeshProUGUI EraserAmountNumber;
 
-    [Header("Not in use anymore?")]
-    public TextMeshProUGUI DiamondSpeedAmountNumber;
-    public TextMeshProUGUI DiamondResistanceAmountNumber;
-    public TextMeshProUGUI DiamondAttackAmountNumber;
-    public TextMeshProUGUI DiamondDefenceAmountNumber;
-    public TextMeshProUGUI DiamondHPAmountNumber; 
- 
-    [Header("*********************")]
+    [Header("Stat info for infopage")]
+    public TextMeshProUGUI impactforceCurrentLevel;
+    public TextMeshProUGUI healthPointsCurrentLevel;
+    public TextMeshProUGUI resistanceCurrentLevel;
+    public TextMeshProUGUI defenceCurrentLevel;
+    public TextMeshProUGUI charSizeCurrentLevel;
+    public TextMeshProUGUI speedCurrentLevel;
+
     [Header("Descriptions")]
     public TextMeshProUGUI CharDescription;//character description
     public TextMeshProUGUI DefClassSpecial;//defence class description
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
     private CustomCharacter _customCharacter;
     private int CurrentlySelectedStat = -1;
-    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber; //This has to be replaced 
+    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
     [Header("Stat editing popup")]
     [SerializeField] private Button increaseButton;
     [SerializeField] private Button decreaseButton;
-    [SerializeField] private GameObject statEditTab;
+    [SerializeField] private GameObject statEditPopUp;
     [SerializeField] private Button closeTabButton;
     [SerializeField] private TextMeshProUGUI statIncreasePriceText;
+    [SerializeField] private TextMeshProUGUI erasersNeededForDecreasingText;
 
     [Header("Buttons for opening stat editing popup")]
     [SerializeField] private Button impactforce;
@@ -82,14 +84,20 @@ public class CharacterStatWindow : MonoBehaviour
     private PlayerData _playerData;
     private CharacterID _characterId;
 
-    //What is stat selected background? not needen anymore?
+    //What is stat selected background? Not needed anymore?
 
     //Increasing and decreasing stat level is not in working state
+    //Diamonds for each stat not in use anymore. Now there's only one amount of diamonds that is used
+    //to buy new statpoints. Not implemented yet. Old codes are commented out.
+    //Serializefields must be check over to see if there's something not needed anymore.
+    //Amounts for victories and losses needs to be implemented.
+    //character size stat needs to be implemented.
+
 
     private void OnEnable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
-
+        ActivateStatButtons();
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
         //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>  //Alunperin käytti tätä
@@ -118,7 +126,7 @@ public class CharacterStatWindow : MonoBehaviour
             Debug.Log("Timanttiarvot asetettu onnistuneesti");
 
         });
-        ActivateStatButtons();
+        
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
 
     }
@@ -148,7 +156,7 @@ public class CharacterStatWindow : MonoBehaviour
             {
                 DiamondSpeedAmount -= SpeedIncreasePrice;
                 _playerData.DiamondSpeed = DiamondSpeedAmount;
-                DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
+                //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed += 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
@@ -182,7 +190,7 @@ public class CharacterStatWindow : MonoBehaviour
             {
                 DiamondResistanceAmount -= ResistanceIncreasePrice;
                 _playerData.DiamondResistance = DiamondResistanceAmount;
-                DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
+                //DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance += 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
@@ -206,6 +214,7 @@ public class CharacterStatWindow : MonoBehaviour
     }
     private void UpgradeCharacterAttack()
     {
+        Debug.Log("*******************increase button pressed****************************");
         if (CheckMaxLevel() == true)
         {
 
@@ -213,7 +222,7 @@ public class CharacterStatWindow : MonoBehaviour
             {
                 DiamondAttackAmount -= AttackIncreasePrice;
                 _playerData.DiamondAttack = DiamondAttackAmount;
-                DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
+                // DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack += 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
@@ -243,7 +252,7 @@ public class CharacterStatWindow : MonoBehaviour
             {
                 DiamondDefenceAmount -= DefenceIncreasePrice;
                 _playerData.DiamondDefence = DiamondDefenceAmount;
-                DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
+                //DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence += 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
@@ -273,7 +282,7 @@ public class CharacterStatWindow : MonoBehaviour
             {
                 DiamondHPAmount -= HPIncreasePrice;
                 _playerData.DiamondHP = DiamondHPAmount;
-                DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
+                // DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
                 UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterHP += 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
@@ -356,6 +365,7 @@ public class CharacterStatWindow : MonoBehaviour
 
     private void DegradeCharacterAttack()
     {
+        Debug.Log("*******************decrease button pressed****************************");
         if (EraserAmount >= 1)
         {
             if (_demoCharacterWindowCharacter.CharacterAttack > 0)
@@ -438,7 +448,7 @@ public class CharacterStatWindow : MonoBehaviour
             }
         }
     }
-                                    
+
     private void _decideWhatCharacterToShow(CharacterID _characterId) //index
     {
         //Method has been changed to use varaible _characterId.
@@ -516,16 +526,15 @@ public class CharacterStatWindow : MonoBehaviour
             DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
             HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
+            //Not using these anymore
             //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-            DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-            DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-            DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-            DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
+            // DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
+            //DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
+            // DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
+            // DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
             //EraserAmountNumber.text = EraserAmount.ToString();
 
             UpdatePieChart();
-            //UpdateUpgradeButtons();
-            //DisableAllStatSelectedBackground();
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
         else
@@ -584,7 +593,7 @@ public class CharacterStatWindow : MonoBehaviour
         ResistanceIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Resistance);
         DefenceIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Defence);
         HPIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Hp);
-        //CharSizeIncreasePrice = customCharacter.GetPriceToNextLevel()
+        //CharSizeIncreasePrice = customCharacter.GetPriceToNextLevel();
 
         //This set the character description and special ability texts.
         //For now these are here.
@@ -634,33 +643,79 @@ public class CharacterStatWindow : MonoBehaviour
     }
 
     //Button finctionality for stat editing popup
+    //For every stat a method has to be made for increasing its level. Simpelst way?
+
     private void ActivateStatButtons()
     {
-        HideStatEditTab();
-        impactforce.onClick.AddListener(() => OnStatButtonClicked(AttackIncreasePrice));
-        healthPoints.onClick.AddListener(() => OnStatButtonClicked(HPIncreasePrice));
-        defence.onClick.AddListener(() => OnStatButtonClicked(DefenceIncreasePrice));
-        resistance.onClick.AddListener(() => OnStatButtonClicked(ResistanceIncreasePrice));
-        //charSize.onClick.AddListener(() => OnStatButtonClicked(CharSizeIncreasePrice));
-        speed.onClick.AddListener(() => OnStatButtonClicked(SpeedIncreasePrice));
+        HidestatEditPopUp();
+        impactforce.onClick.AddListener(() => EditStatImpactforce());
+        healthPoints.onClick.AddListener(() => EditStatHealthPoints());
+        defence.onClick.AddListener(() => EditStatDefence());
+        resistance.onClick.AddListener(() => EditStatResistance());
+        //charSize.onClick.AddListener(() => EditStatCharSize();
+        speed.onClick.AddListener(() => EditStatSpeed());
     }
-    private void OnStatButtonClicked(int statIncreasePriceToShow)
+    private void EditStatImpactforce()
     {
-        increaseButton.onClick.AddListener(() => PlusOrMinusPressed());
-        decreaseButton.onClick.AddListener(() => PlusOrMinusPressed());
-        closeTabButton.onClick.AddListener(() => HideStatEditTab());
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(AttackIncreasePrice);
+        increaseButton.onClick.AddListener(UpgradeCharacterAttack);
+        decreaseButton.onClick.AddListener(DegradeCharacterAttack);
+    }
+    private void EditStatHealthPoints()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(HPIncreasePrice);
+        increaseButton.onClick.AddListener(UpgradeCharacterHP);
+        decreaseButton.onClick.AddListener(DegradeCharacterHP);
+    }
+    private void EditStatResistance()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(ResistanceIncreasePrice);
+        increaseButton.onClick.AddListener(UpgradeCharacterResistance);
+        decreaseButton.onClick.AddListener(DegradeCharacterResistance);
+    }
+   /*  private void EditStatCharSize()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(CharSizeIncreasePrice);
+        increaseButton.onClick.AddListener();
+    } */
+    private void EditStatDefence()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(DefenceIncreasePrice);
+        increaseButton.onClick.AddListener(UpgradeCharacterDefence);
+        decreaseButton.onClick.AddListener(DegradeCharacterDefence);
+    }
+    private void EditStatSpeed()
+    {
+        ResetPlusAndMinus();
+        HidestatEditPopUp();
+        SetCorrectStatPrice(SpeedIncreasePrice);
+        increaseButton.onClick.AddListener(UpgradeCharacterSpeed);
+        decreaseButton.onClick.AddListener(DegradeCharacterSpeed);
+    }
+    private void SetCorrectStatPrice(int statIncreasePriceToShow)
+    {
         statIncreasePriceText.text = $"{statIncreasePriceToShow}";
-
         Debug.Log($"Stat price {statIncreasePriceToShow}");
-        statEditTab.SetActive(true);
+        statEditPopUp.SetActive(true);
     }
-    private void HideStatEditTab()
+    private void HidestatEditPopUp()
     {
-        statEditTab.SetActive(false);
+        statEditPopUp.SetActive(false);
     }
-    private void PlusOrMinusPressed() //testausta varten
+    private void ResetPlusAndMinus() //Only for testing
     {
-        Debug.Log("painoit plussaa tai miinusta");
+        increaseButton.onClick.RemoveAllListeners();
+        decreaseButton.onClick.RemoveAllListeners();
     }
     private void DisableStatButtons()
     {
