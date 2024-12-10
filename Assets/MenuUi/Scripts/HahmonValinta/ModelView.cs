@@ -133,19 +133,16 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
                 if (info == null) continue;
-
+                
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
                 slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
 
                 Button button = slot.transform.Find("Button").GetComponent<Button>();
 
-                Outline outline = button.GetComponent<Outline>();
-
-                if (outline == null) outline = button.gameObject.AddComponent<Outline>();
+                Outline outline = button.gameObject.GetComponent<Outline>();
 
                 outline.effectDistance = new Vector2(3, 3);
                 outline.effectColor = GetCharacterClassColor(character.ClassID);
-                button.enabled = false;
 
                 _buttons.Add(button);
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
@@ -158,9 +155,9 @@ namespace MenuUi.Scripts.CharacterGallery
                 CharacterSlot characterSlot = _characterSlot[i];
 
                 bool skip = false;
-                if (_CurSelectedCharacterSlot[0].Id == characterSlot.Id
-                    || _CurSelectedCharacterSlot[1].Id == characterSlot.Id
-                    || _CurSelectedCharacterSlot[2].Id == characterSlot.Id)
+                if (_CurSelectedCharacterSlot[0].Id == characterSlot.Id ||
+                    _CurSelectedCharacterSlot[1].Id == characterSlot.Id ||
+                    _CurSelectedCharacterSlot[2].Id == characterSlot.Id)
                 {
                     skip = true;
                 }
@@ -180,7 +177,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     {
                         _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
                         button.colors = _colorBlock;
-                        button.enabled = true;
+                        button.GetComponent<DraggableCharacter>().enabled = true;
                     }
                     foreach (CharacterID curCharacter in currentCharacterId)
                     {
@@ -191,7 +188,6 @@ namespace MenuUi.Scripts.CharacterGallery
                             {
                                 button.transform.SetParent(_CurSelectedCharacterSlot[idx].transform, false);
                                 idx++;
-                                
                             }
                         }
                     }

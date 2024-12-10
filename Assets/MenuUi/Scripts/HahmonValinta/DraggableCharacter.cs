@@ -54,28 +54,24 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (button.enabled == true)
-            {
-                parentAfterDrag = transform.parent;
-                previousParent = transform.parent.parent.parent;
-                transform.SetParent(transform.parent.parent.parent.parent);
-                transform.SetAsLastSibling();
-                _backgroundSpriteImage.raycastTarget = false;
+            parentAfterDrag = transform.parent;
+            previousParent = transform.parent.parent.parent;
+            transform.SetParent(transform.parent.parent.parent.parent);
+            transform.SetAsLastSibling();
+            _backgroundSpriteImage.raycastTarget = false;
 
-                // Set the button colors to make the background transparent during dragging
-                ColorBlock transparentColors = originalColors;
-                transparentColors.disabledColor = new Color(0, 0, 0, 0);
-                button.colors = transparentColors;
-                //previousParent = transform.parent;
-                _swipe.DragWithBlock(eventData, _blockType);
-                GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
-            }
+            // Set the button colors to make the background transparent during dragging
+            ColorBlock transparentColors = originalColors;
+            transparentColors.disabledColor = new Color(0, 0, 0, 0);
+            button.colors = transparentColors;
+            //previousParent = transform.parent;
+            _swipe.DragWithBlock(eventData, _blockType);
+            GameObject.Find("EventSystem").GetComponent<EventSystem>().SetSelectedGameObject(null);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (button.enabled == true)
-                transform.position = eventData.position;
+            transform.position = eventData.position;
         }
         public void CheckSelectedCharacterSlotText()
         {
@@ -102,13 +98,13 @@ namespace MenuUi.Scripts.CharacterGallery
                 text1.SetActive(false);
                 text2.SetActive(false);
                 text3.SetActive(true);
-            }     
+            }
             else if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
             {
                 text1.SetActive(false);
                 text2.SetActive(true);
                 text3.SetActive(true);
-            }     
+            }
             else
             {
                 text1.SetActive(true);
@@ -145,83 +141,80 @@ namespace MenuUi.Scripts.CharacterGallery
         public void OnEndDrag(PointerEventData eventData)
         {
             Transform droppedSlot = null;
-            if (button.enabled == true)
+
+            if (eventData.pointerEnter != null)
             {
-                if (eventData.pointerEnter != null)
+                DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
+                if (targetCharacter != null)
                 {
-                    DraggableCharacter targetCharacter = eventData.pointerEnter.GetComponent<DraggableCharacter>();
-                    if (targetCharacter != null)
+                    // Check if targetCharacter's parent is tagged as "Topslot"
+                    if (targetCharacter.transform.parent.CompareTag("Topslot"))
                     {
-                        // Check if targetCharacter's parent is tagged as "Topslot"
-                        if (targetCharacter.transform.parent.CompareTag("Topslot"))
-                        {
-                            droppedSlot = targetCharacter.transform.parent;
-                            droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
-                        }
+                        droppedSlot = targetCharacter.transform.parent;
+                        droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
                     }
-                    else
-                    {
-                        CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
-                        if (characterSlot != null)
-                        {
-                            droppedSlot = characterSlot.transform;
-                        }
-                    }
-                }
-                
-                if (droppedSlot == null || (droppedSlot != allowedSlot && droppedSlot.tag != "Topslot"))
-                {
-                    transform.SetParent(initialSlot);
-                    transform.position = initialSlot.position;
-                    CheckSelectedCharacterSlotText();
-                    //button.interactable = true;
                 }
                 else
                 {
-                    // If droppedSlot is Topslot, find empty Topslot
-                    if (droppedSlot.tag == "Topslot")
+                    CharacterSlot characterSlot = eventData.pointerEnter.GetComponent<CharacterSlot>();
+                    if (characterSlot != null)
                     {
-                        DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
-                        if (topSlotCharacter != null)
-                        {
-                            // Move topSlotCharacter to it's initialSlot
-                            Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
-                            topSlotCharacter.transform.SetParent(topSlotInitialSlot);
-                            topSlotCharacter.transform.position = topSlotInitialSlot.position;
-                        }
-
-                        // Find the first empty topslot
-                        Transform targetSlot = null;
-                        foreach (var slot in _modelView._CurSelectedCharacterSlot)
-                        {
-                            if (slot.transform.childCount == 0)
-                            {
-                                targetSlot = slot.transform;
-                                break;
-                            }
-                        }
-
-                        // If an empty topslot is found, use it as the parent
-                        if (targetSlot != null)
-                        {
-                            droppedSlot = targetSlot;
-                        }
+                        droppedSlot = characterSlot.transform;
                     }
-                    transform.SetParent(droppedSlot);
-                    transform.position = droppedSlot.position;
-                    CheckSelectedCharacterSlotText();
-                }
-
-                _backgroundSpriteImage.raycastTarget = true;
-                //button.interactable = true;
-                button.colors = originalColors;
-
-                if (transform.parent != previousParent)
-                {
-                    previousParent = transform.parent;
-                    HandleParentChange(previousParent);
                 }
             }
+
+            if (droppedSlot == null || (droppedSlot != allowedSlot && droppedSlot.tag != "Topslot"))
+            {
+                transform.SetParent(initialSlot);
+                transform.position = initialSlot.position;
+                CheckSelectedCharacterSlotText();
+            }
+            else
+            {
+                // If droppedSlot is Topslot, find empty Topslot
+                if (droppedSlot.tag == "Topslot")
+                {
+                    DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
+                    if (topSlotCharacter != null)
+                    {
+                        // Move topSlotCharacter to it's initialSlot
+                        Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
+                        topSlotCharacter.transform.SetParent(topSlotInitialSlot);
+                        topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                    }
+
+                    // Find the first empty topslot
+                    Transform targetSlot = null;
+                    foreach (var slot in _modelView._CurSelectedCharacterSlot)
+                    {
+                        if (slot.transform.childCount == 0)
+                        {
+                            targetSlot = slot.transform;
+                            break;
+                        }
+                    }
+
+                    // If an empty topslot is found, use it as the parent
+                    if (targetSlot != null)
+                    {
+                        droppedSlot = targetSlot;
+                    }
+                }
+                transform.SetParent(droppedSlot);
+                transform.position = droppedSlot.position;
+                CheckSelectedCharacterSlotText();
+            }
+
+            _backgroundSpriteImage.raycastTarget = true;
+            button.colors = originalColors;
+
+            if (transform.parent != previousParent)
+            {
+                previousParent = transform.parent;
+                HandleParentChange(previousParent);
+            }
+
         }
 
         private void HandleParentChange(Transform newParent)
