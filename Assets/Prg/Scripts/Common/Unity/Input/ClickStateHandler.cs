@@ -50,7 +50,7 @@ namespace Prg.Scripts.Common
         public static ClickState GetClickState()
         {
             // Mouse
-            if (AppPlatform.IsDesktop && !AppPlatform.IsSimulator)
+            if (Mouse.current != null)
             {
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                     return ClickState.Start;
