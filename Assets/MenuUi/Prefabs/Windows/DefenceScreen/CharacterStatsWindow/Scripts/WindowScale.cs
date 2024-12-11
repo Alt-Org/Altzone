@@ -66,7 +66,7 @@ public class WindowScale : MonoBehaviour
         _swipe.UpdateSwipeAreaValues();
     }
 
-    // Korutiini, joka tarkistaa ikkunan koon muutokset säännöllisin väliajoin
+    // Tarkistaa ikkunan koon muutokset säännöllisin väliajoin
     private IEnumerator CheckWindowSize()
     {
         while (true)
