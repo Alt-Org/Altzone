@@ -15,6 +15,7 @@ public class PollPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private TextMeshProUGUI votesLeftText;
     [SerializeField] private UnityEngine.UI.Image greenFillAmount;
+    [SerializeField] private AddPlayerHeads playerHeads;
 
     void OnEnable()
     {
@@ -66,6 +67,8 @@ public class PollPopup : MonoBehaviour
 
             if (valueText != null) valueText.text = "Value: " + furniturePollData.Value.ToString();
         }
+
+        playerHeads.InstantiateHeads(pollId);
     }
 
     public void AddVote(bool answer)
