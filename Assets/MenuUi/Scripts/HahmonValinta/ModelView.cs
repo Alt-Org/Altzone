@@ -116,7 +116,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             return content;
         }
-       
+
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
             foreach (int id in currentCharacterId)
@@ -133,7 +133,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 GalleryCharacterInfo info = _referenceSheet.GetCharacterPrefabInfoFast((int)character.Id);
                 if (info == null) continue;
-                
+
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
                 slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
 
@@ -143,6 +143,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 outline.effectDistance = new Vector2(3, 3);
                 outline.effectColor = GetCharacterClassColor(character.ClassID);
+                button.GetComponent<DraggableCharacter>().enabled = false;
 
                 _buttons.Add(button);
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
@@ -154,14 +155,12 @@ namespace MenuUi.Scripts.CharacterGallery
                 Button button = _buttons[i];
                 CharacterSlot characterSlot = _characterSlot[i];
 
-                bool skip = false;
                 if (_CurSelectedCharacterSlot[0].Id == characterSlot.Id ||
                     _CurSelectedCharacterSlot[1].Id == characterSlot.Id ||
                     _CurSelectedCharacterSlot[2].Id == characterSlot.Id)
                 {
-                    skip = true;
+                    continue;
                 }
-                if (skip == true) continue;
 
                 foreach (CustomCharacter customCharacter in characters)
                 {
@@ -169,9 +168,8 @@ namespace MenuUi.Scripts.CharacterGallery
                     {
                         _colorBlock.normalColor = GetCharacterClassColor(default);
                         button.colors = _colorBlock;
-                        skip = true;
+                        continue;
                     }
-                    if (skip == true) continue;
 
                     else
                     {
@@ -179,6 +177,7 @@ namespace MenuUi.Scripts.CharacterGallery
                         button.colors = _colorBlock;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
+
                     foreach (CharacterID curCharacter in currentCharacterId)
                     {
                         if (curCharacter == customCharacter.Id && idx < _CurSelectedCharacterSlot.Length)
