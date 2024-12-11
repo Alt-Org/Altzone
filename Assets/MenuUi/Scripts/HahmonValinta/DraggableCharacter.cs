@@ -50,6 +50,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 initialSlot = transform.parent;
             }
+            CheckSelectedCharacterSlotText();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -190,7 +191,6 @@ namespace MenuUi.Scripts.CharacterGallery
                         if (slot.transform.childCount == 0)
                         {
                             targetSlot = slot.transform;
-                            CheckSelectedCharacterSlotText();
                             break;
                         }
                     }

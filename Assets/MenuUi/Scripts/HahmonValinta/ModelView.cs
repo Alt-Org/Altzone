@@ -119,11 +119,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void SetCharacters(List<CustomCharacter> characters, int[] currentCharacterId)
         {
-            foreach (int id in currentCharacterId)
-            {
-                CurrentCharacterId = (CharacterID)id;
-            }
-
             var store = Storefront.Get();
 
             ReadOnlyCollection<BaseCharacter> allItems = null;
@@ -143,7 +138,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 outline.effectDistance = new Vector2(3, 3);
                 outline.effectColor = GetCharacterClassColor(character.ClassID);
-                button.GetComponent<DraggableCharacter>().enabled = false;
+                button.enabled = false;
+                _colorBlock.normalColor = GetCharacterClassColor(default);
+                button.colors = _colorBlock;
 
                 _buttons.Add(button);
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
@@ -164,17 +161,13 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 foreach (CustomCharacter customCharacter in characters)
                 {
-                    if (characterSlot.Id != customCharacter.Id)
-                    {
-                        _colorBlock.normalColor = GetCharacterClassColor(default);
-                        button.colors = _colorBlock;
-                        continue;
-                    }
-
+                    if (characterSlot.Id != customCharacter.Id) continue;
+                    
                     else
                     {
                         _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
                         button.colors = _colorBlock;
+                        button.enabled = true;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
 
