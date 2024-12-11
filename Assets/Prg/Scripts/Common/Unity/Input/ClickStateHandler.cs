@@ -102,7 +102,7 @@ namespace Prg.Scripts.Common
 
             if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
             {
-                if (Mouse.current.scroll.ReadValue() != Vector2.zero) return ClickType.Click;
+                if (Mouse.current.scroll.ReadValue() == Vector2.zero) return ClickType.Click;
                 else return ClickType.Pinch;
             }
 
