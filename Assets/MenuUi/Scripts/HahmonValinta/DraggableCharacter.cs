@@ -168,7 +168,6 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 transform.SetParent(initialSlot);
                 transform.position = initialSlot.position;
-                CheckSelectedCharacterSlotText();
             }
             else
             {
@@ -191,6 +190,7 @@ namespace MenuUi.Scripts.CharacterGallery
                         if (slot.transform.childCount == 0)
                         {
                             targetSlot = slot.transform;
+                            CheckSelectedCharacterSlotText();
                             break;
                         }
                     }
@@ -203,7 +203,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 transform.SetParent(droppedSlot);
                 transform.position = droppedSlot.position;
-                CheckSelectedCharacterSlotText();
+
             }
 
             _backgroundSpriteImage.raycastTarget = true;
@@ -214,7 +214,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-
+            CheckSelectedCharacterSlotText();
         }
 
         private void HandleParentChange(Transform newParent)
