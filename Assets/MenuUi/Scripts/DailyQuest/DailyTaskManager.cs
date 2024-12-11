@@ -1,32 +1,31 @@
-using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using static Altzone.Scripts.Model.Poco.Game.PlayerTasks;
 
 public class DailyTaskManager : MonoBehaviour
 {
-    private GameObject[] _dailyQuestSlots = new GameObject[31];
-    private GameObject[] _weeklyQuestSlots = new GameObject[31];
-    private GameObject[] _monthlyQuestSlots = new GameObject[31];
+    //Variables
+    private const int _questSlots = 100;
+    private GameObject[] _dailyQuestSlots = new GameObject[_questSlots];
+    private GameObject[] _weeklyQuestSlots = new GameObject[_questSlots];
+    private GameObject[] _monthlyQuestSlots = new GameObject[_questSlots];
 
-    private int _dailyQuestAmount = 31;
-    private int _weeklyQuestAmount = 30;
-    private int _monthlyQuestAmount = 30;
-
-    private string _taskTitle;
-    private int _taskPoints;
-    private int _taskgoal;
-
-    public int currentTaskIndex = 1;
-
-    public Leaderboard leaderboard;
-    public GameObject popupScreenPrefab;
     public GameObject dailyTaskPrefab;
     public GameObject weeklyTaskPrefab;
     public GameObject monthlyTaskPrefab;
 
-    private enum SelectedTab
+    public Transform dailyCategory500;
+    public Transform dailyCategory1000;
+    public Transform dailyCategory1500;
+    public Transform ActiveQuestWindow;
+    public GameObject clanRewards;
+
+    public Popup popup;
+
+    public enum SelectedTab
     {
         Daily,
         Weekly,
@@ -34,192 +33,190 @@ public class DailyTaskManager : MonoBehaviour
     }
 
     private SelectedTab _selectedTab = SelectedTab.Daily;
-    private SelectedTab? _activeTab = null; 
-    private int _activeTaskIndex = -1;      
+    private SelectedTab? _activeTab = null;
+    private int _activeTaskIndex = -1;
 
+    [Header("Tab Panels")]
+    public GameObject[] tabPanels; // Drag your panels here in the Inspector
 
-    private void Start()
+    // Start of Code
+    // First 3 functions are for quest slot population and fetching them from server
+    void Start()
     {
         QuestGenerator();
-        RestoreActiveQuest();
     }
-
     public void QuestGenerator()
     {
-        PopulateQuests(SelectedTab.Daily, _dailyQuestSlots, _dailyQuestAmount, dailyTaskPrefab);
-        PopulateQuests(SelectedTab.Weekly, _weeklyQuestSlots, _weeklyQuestAmount, weeklyTaskPrefab);
-        PopulateQuests(SelectedTab.Monthly, _monthlyQuestSlots, _monthlyQuestAmount, monthlyTaskPrefab);
+        StartCoroutine(PopulateQuests(SelectedTab.Daily, _dailyQuestSlots, _questSlots, dailyTaskPrefab));
+        StartCoroutine(PopulateQuests(SelectedTab.Weekly, _weeklyQuestSlots, _questSlots, weeklyTaskPrefab));
+        StartCoroutine(PopulateQuests(SelectedTab.Monthly, _monthlyQuestSlots, _questSlots, monthlyTaskPrefab));
         Debug.Log("Task Slots populated!");
     }
-
-    private void PopulateQuests(SelectedTab tab, GameObject[] questSlots, int questAmount, GameObject questPrefab)
+    private IEnumerator PopulateQuests(SelectedTab tab, GameObject[] questSlots, int questAmount, GameObject questPrefab)
     {
-        for (int i = 1; i <= questAmount; i++)
+        PlayerTasks tasks = null;
+        Storefront.Get().GetPlayerTasks(content => tasks = content);
+        List<PlayerTask> tasklist = null;
+        Debug.Log(tasks);
+        if (tasks == null)
+            StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
+            {
+                if (content != null)
+                    tasks = content;
+                else
+                {
+                    //offline testing random generator with id generator
+                    Debug.LogError("Could not connect to server and receive quests");
+                }
+            }));
+        yield return new WaitUntil(() => tasks != null);
+        switch (tab)
         {
+            case SelectedTab.Daily:
+                tasklist = tasks.Daily;
+                break;
+            case SelectedTab.Weekly:
+                tasklist = tasks.Week;
+                break;
+            case SelectedTab.Monthly:
+                tasklist = tasks.Month;
+                break;
+        }
+        for (int i = 0; i < tasklist.Count; i++)
+        {
+
+
             GameObject taskObject = Instantiate(questPrefab, gameObject.transform);
-            questSlots[i - 1] = taskObject;
-            (string title, int points, int goals) = QuestRandomizer();
+            questSlots[i] = taskObject;
 
             DailyQuest quest = taskObject.GetComponent<DailyQuest>();
-            quest.taskId = i;
-            quest.getMissionData(title, points, goals);
-            quest.popUpScreen = popupScreenPrefab;
+            quest.GetQuestData(tasklist[i].Id, tasklist[i].Amount, tasklist[i].Coins, tasklist[i].Points, tasklist[i].Title, tasklist[i].Content);
+
+            Transform parentCategory = GetParentCategory(tab, tasklist[i].Points);
+            taskObject.transform.SetParent(parentCategory, false);
+
             quest.dailyTaskManager = this;
 
-            taskObject.SetActive(tab == _selectedTab); 
+            taskObject.SetActive(tab == _selectedTab);
+            Debug.Log("Created Quest: " +  tasklist[i].Id);
+
         }
     }
-
-    public void SwitchTab(int tabIndex)
+    private Transform GetParentCategory(SelectedTab tab, int points)
     {
-        if (_activeTab.HasValue)
+        return tab switch
         {
-            Debug.Log("Cannot switch tabs while a quest is active.");
-            return; 
-        }
-
-        _selectedTab = (SelectedTab)tabIndex;
-        UpdateTabDisplay();
-    }
-
-
-
-    private void UpdateTabDisplay()
-    {
-        foreach (GameObject taskObject in _dailyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Daily);
-        foreach (GameObject taskObject in _weeklyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Weekly);
-        foreach (GameObject taskObject in _monthlyQuestSlots) taskObject?.SetActive(_selectedTab == SelectedTab.Monthly);
-
-        
-        if (_activeTab == _selectedTab && _activeTaskIndex >= 0)
-        {
-            GetQuestSlot(_selectedTab, _activeTaskIndex)?.SetActive(true);
-        }
-    }
-
-    public (string _taskTitle, int _taskGoal, int _taskPoints) QuestRandomizer()
-    {
-        Debug.Log("taskInit Runned");
-        int rnd = UnityEngine.Random.Range(1, 11);
-
-        switch (rnd)
-        {
-            case 1:
-                _taskTitle = "Pelaa 3 taistelua";
-                _taskgoal = 3;
-                _taskPoints = 70;
-                return( _taskTitle, _taskPoints, _taskgoal ) ;
-            case 2:
-                _taskTitle = "Pelaa 10 taistelua";
-                _taskgoal = 10;
-                _taskPoints = 500;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 3:
-                _taskTitle = "Kerää timantteja Taistelussa";
-                _taskgoal = 50;
-                _taskPoints = 50;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 4:
-                _taskTitle = "Kerää timantteja Taistelussa";
-                _taskgoal = 100;
-                _taskPoints = 120;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 5:
-                _taskTitle = "Kehitä pelihahmoa";
-                _taskgoal = 2;
-                _taskPoints = 100;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 6:
-                _taskTitle = "Voita 3 taistelu";
-                _taskgoal = 3;
-                _taskPoints = 100;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 7:
-                _taskTitle = "Voita 5 taistelu";
-                _taskgoal = 5;
-                _taskPoints = 200;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 8:
-                _taskTitle = "Muokkaa avatarisi ulkonäköä";
-                _taskgoal = 2;
-                _taskPoints = 500;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 9:
-                _taskTitle = "Moikkaa avatareja";
-                _taskgoal = 5;
-                _taskPoints = 250;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 10:
-                _taskTitle = "Kirjoita viesti chattiin";
-                _taskgoal = 10;
-                _taskPoints = 100;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            case 11:
-                _taskTitle = "Sijoita pommi sielunkotiin";
-                _taskgoal = 3;
-                _taskPoints = 30;
-                return (_taskTitle, _taskPoints, _taskgoal);
-            default:
-                _taskTitle = "Unknown Task";
-                _taskgoal = 100;
-                _taskPoints = 1;
-                Debug.Log("Jokin Meni pieleen DailyTaskissä");
-                return (_taskTitle, _taskPoints, _taskgoal);
-        }
-    }
-
-    
-    public void TakeTask(int taskIndex)
-    {
-        _activeTab = _selectedTab;
-        _activeTaskIndex = taskIndex -1;
-        HideAllOtherTasks();
-    }
-
-    private void HideAllOtherTasks()
-    {
-        if (!_activeTab.HasValue) return;
-
-       
-        GameObject[] questSlots = GetQuestSlots(_activeTab.Value);
-        for (int i = 0; i < questSlots.Length; i++)
-        {
-            questSlots[i]?.SetActive(i == _activeTaskIndex);
-        }
-    }
-    private void RestoreActiveQuest()
-    {
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-
-        if (playerData != null && playerData.dailyTaskId >= 1)
-        {
-            _activeTab = SelectedTab.Daily; 
-            _activeTaskIndex = playerData.dailyTaskId - 1;
-            HideAllOtherTasks();
-        }
-        else
-        {
-            CancelTask();
-        }
-    }
-
-    public void CancelTask()
-    {
-        currentTaskIndex = -1;
-        _activeTab = null;
-        UpdateTabDisplay();
-    }
-
-    private GameObject GetQuestSlot(SelectedTab tab, int index) =>
-    GetQuestSlots(tab)[index];
-
-    private GameObject[] GetQuestSlots(SelectedTab tab) =>
-        tab switch
-        {
-            SelectedTab.Daily => _dailyQuestSlots,
-            SelectedTab.Weekly => _weeklyQuestSlots,
-            SelectedTab.Monthly => _monthlyQuestSlots,
+            SelectedTab.Daily => points switch
+            {
+                <= 500 => dailyCategory500,
+                <= 1000 => dailyCategory1000,
+                _ => dailyCategory1500,
+            },
+            SelectedTab.Weekly => points switch
+            {
+                <= 500 => dailyCategory500,
+                <= 1000 => dailyCategory1000,
+                _ => dailyCategory1500,
+            },
+            SelectedTab.Monthly => points switch
+            {
+                <= 500 => dailyCategory500,
+                <= 1000 => dailyCategory1000,
+                _ => dailyCategory1500,
+            },
             _ => null
         };
+    }
+
+    // Function for popup calling
+    public IEnumerator ShowPopupAndHandleResponse(string Message, int popupId)
+    {
+        yield return Popup.RequestPopup(Message, result =>
+        {
+            if (result == true)
+            {
+                Debug.Log("Confirmed!");
+                switch(popupId)
+                {
+                    case 1:
+                        Debug.Log("Accept case happened " + popupId);
+                        HideCategories();
+                        clanRewards.SetActive(false);
+                        ActiveQuestWindow.gameObject.SetActive(true);
+                        break;
+                    case 2:
+                        Debug.Log("Cancel case happened " + popupId);
+                        ShowCategories();
+                        clanRewards.SetActive(true);
+                        ActiveQuestWindow.gameObject.SetActive(false);
+                        break;
+                }
+            }
+            else
+            {
+                Debug.Log("Cancelled Popup!");
+                // Perform actions for cancellation
+            }
+        });
+    }
+    // calling popup for canceling quest
+    public void CancelActiveQuest()
+    {
+        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Teht�v�n?", 2));
+    }
+    // show/hide works for quest selection to hide and show quest selection
+    private void ShowCategories()
+    {
+        dailyCategory500.transform.parent.gameObject.SetActive(true);
+        dailyCategory1000.transform.parent.gameObject.SetActive(true);
+        dailyCategory1500.transform.parent.gameObject.SetActive(true);
+        Debug.Log("Categories shown.");
+    }
+    private void HideCategories()
+    {
+        dailyCategory500.transform.parent.gameObject.SetActive(false);
+        dailyCategory1000.transform.parent.gameObject.SetActive(false);
+        dailyCategory1500.transform.parent.gameObject.SetActive(false);
+        Debug.Log("Categories' parents hidden.");
+    }
+    // next functions are for tab switching system
+    public void SwitchTab(SelectedTab tab)
+    {
+        // Update the selected tab
+        _selectedTab = tab;
+
+        // Toggle visibility for each category based on the selected tab
+        ToggleQuestVisibility(_dailyQuestSlots, _selectedTab == SelectedTab.Daily);
+        ToggleQuestVisibility(_weeklyQuestSlots, _selectedTab == SelectedTab.Weekly);
+        ToggleQuestVisibility(_monthlyQuestSlots, _selectedTab == SelectedTab.Monthly);
+
+        Debug.Log($"Switched to {_selectedTab} tasks.");
+    }
+
+    private void ToggleQuestVisibility(GameObject[] questSlots, bool isVisible)
+    {
+        foreach (GameObject quest in questSlots)
+        {
+            if (quest != null)
+            {
+                quest.SetActive(isVisible);
+            }
+        }
+    }
+
+    public void OnDailyTabSelected()
+    {
+        SwitchTab(SelectedTab.Daily);
+    }
+
+    public void OnWeeklyTabSelected()
+    {
+        SwitchTab(SelectedTab.Weekly);
+    }
+
+    public void OnMonthlyTabSelected()
+    {
+        SwitchTab(SelectedTab.Monthly);
+    }
+
 }

@@ -243,7 +243,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         public void UpdateSwipe()
         {
-            if (isSwipeMode)
+            if (isSwipeMode || !IsEnabled)
                 return;
             //Debug.Log("Value: " + Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  " + ((1f / scrollPageValues.Length) * (20f / 100f)));
             // Checks that the swipe was long enough
