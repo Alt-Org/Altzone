@@ -219,6 +219,5 @@ namespace Altzone.Scripts.Model.Poco.Game
             int characterId = (int)id & 0b0000_0000__1111_1111;
             return characterId;
         }
-
     }
 }
