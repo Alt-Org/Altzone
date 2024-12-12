@@ -138,7 +138,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 outline.effectDistance = new Vector2(3, 3);
                 outline.effectColor = GetCharacterClassColor(character.ClassID);
-                button.enabled = false;
                 _colorBlock.normalColor = GetCharacterClassColor(default);
                 button.colors = _colorBlock;
 
@@ -167,7 +166,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     {
                         _colorBlock.normalColor = GetCharacterClassColor(customCharacter.CharacterClassID);
                         button.colors = _colorBlock;
-                        button.enabled = true;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
 
