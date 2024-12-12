@@ -161,6 +161,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed += 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+                speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -194,6 +195,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance += 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+                resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -223,8 +225,8 @@ public class CharacterStatWindow : MonoBehaviour
 
                 UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack += 1;
-
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -254,6 +256,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence += 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+                defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -283,6 +286,7 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterHP += 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+                healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -313,6 +317,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed -= 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -340,6 +345,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance -= 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+                resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -368,6 +374,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack -= 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -395,6 +402,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence -= 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+                defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -422,6 +430,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP -= 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+                healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -516,21 +525,8 @@ public class CharacterStatWindow : MonoBehaviour
             DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
             HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
-            //For the right side window. CharSize not impelemented yet.
-            //These are not working for some reason.
-            CustomCharacterName.text = CharacterName.text;
-            impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-            resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-            speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-            defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-            healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
-            //Not using these anymore
-            //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-            // DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-            //DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-            // DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-            // DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
-            //EraserAmountNumber.text = EraserAmount.ToString();
+
+
 
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
@@ -577,6 +573,15 @@ public class CharacterStatWindow : MonoBehaviour
 
 
         Debug.Log($"loaded {galleryCharacter.Name}");
+
+        //For the right side window. CharSize not impelemented yet.
+        //These are not working for some reason.
+        CustomCharacterName.text = CharacterName.text;
+        impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+        resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+        speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+        defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+        healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
         //Getting stat increasing prices
         AttackIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Attack);
