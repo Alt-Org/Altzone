@@ -161,7 +161,6 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed += 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -195,7 +194,6 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance += 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -227,7 +225,6 @@ public class CharacterStatWindow : MonoBehaviour
                 _demoCharacterWindowCharacter.CharacterAttack += 1;
 
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -257,7 +254,6 @@ public class CharacterStatWindow : MonoBehaviour
                 UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence += 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -283,11 +279,10 @@ public class CharacterStatWindow : MonoBehaviour
             {
 
                 HandleDiamondAmountChange(HPIncreasePrice);
-                
+
                 UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterHP += 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -318,7 +313,6 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed -= 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -346,7 +340,6 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance -= 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -375,7 +368,6 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack -= 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -403,7 +395,6 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence -= 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -431,7 +422,6 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP -= 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
-                UpdatePieChart();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -534,7 +524,6 @@ public class CharacterStatWindow : MonoBehaviour
             // DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
             //EraserAmountNumber.text = EraserAmount.ToString();
 
-            UpdatePieChart();
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
         else
@@ -558,12 +547,6 @@ public class CharacterStatWindow : MonoBehaviour
     {
         UnusedStats = 100 - (_demoCharacterWindowCharacter.CharacterSpeed + _demoCharacterWindowCharacter.CharacterResistance + _demoCharacterWindowCharacter.CharacterAttack + _demoCharacterWindowCharacter.CharacterDefence + _demoCharacterWindowCharacter.CharacterHP);
         return UnusedStats;
-    }
-
-    // update pie chart
-    private void UpdatePieChart()
-    {
-        FindObjectOfType<CharacterStatsPieChart>().SetPieChartValues(CharacterStatsIntValuesToFloatValues(_demoCharacterWindowCharacter.CharacterSpeed, _demoCharacterWindowCharacter.CharacterResistance, _demoCharacterWindowCharacter.CharacterAttack, _demoCharacterWindowCharacter.CharacterDefence, _demoCharacterWindowCharacter.CharacterHP, CheckUnusedStatsAmount()));
     }
 
     private float[] CharacterStatsIntValuesToFloatValues(int characterSpeed, int characterResistance, int characterAttack, int characterDefence, int characterHP, int unusedStats)
@@ -744,3 +727,4 @@ public class CharacterStatWindow : MonoBehaviour
 
     }
 }
+
