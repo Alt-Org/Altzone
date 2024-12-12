@@ -516,6 +516,14 @@ public class CharacterStatWindow : MonoBehaviour
             DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
             HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
+            //For the right side window. CharSize not impelemented yet.
+            //These are not working for some reason.
+            CustomCharacterName.text = CharacterName.text;
+            impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+            resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+            speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+            defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+            healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
             //Not using these anymore
             //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
             // DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
