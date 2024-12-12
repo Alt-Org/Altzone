@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,9 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }*/
-            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(clanData.Inventory.Furniture);
+            ReadOnlyCollection<GameFurniture> baseFurniture = null;
+            Storefront.Get().GetAllGameFurnitureYield(result => baseFurniture = result);
+            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(baseFurniture);
             /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
@@ -108,50 +111,18 @@ namespace Altzone.Scripts.Model
             return clanData;
         }
 
-        public static List<ClanFurniture> CreateDefaultDebugFurniture(List<ClanFurniture> clanFurniture)
+        public static List<ClanFurniture> CreateDefaultDebugFurniture(ReadOnlyCollection<GameFurniture> baseFurniture)
         {
+            List<ClanFurniture> clanFurniture = new();
             int i = 0;
+            int j = 0;
             while (i < 2)
             {
-                clanFurniture.Add(new ClanFurniture((10000 + 100 + i).ToString(), "Sofa_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 200 + i).ToString(), "Mirror_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 300 + i).ToString(), "Floorlamp_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 400 + i).ToString(), "Toilet_Schrodinger"));
-                clanFurniture.Add(new ClanFurniture((10000 + 500 + i).ToString(), "Sink_Schrodinger"));
-                clanFurniture.Add(new ClanFurniture((10000 + 600 + i).ToString(), "Closet_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 700 + i).ToString(), "CoffeeTable_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 800 + i).ToString(), "SideTable_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 900 + i).ToString(), "ArmChair_Taakka"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1000 + i).ToString(), "Sofa_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1100 + i).ToString(), "ArmChair_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1200 + i).ToString(), "Closet_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1300 + i).ToString(), "Chair_Neuro"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1400 + i).ToString(), "Dresser_Neuro"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1500 + i).ToString(), "Stool_Neuro"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1600 + i).ToString(), "Mirror_Schrodinger"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1700 + i).ToString(), "Carpet_Schrodinger"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1800 + i).ToString(), "Clock_Neuro"));
-                clanFurniture.Add(new ClanFurniture((10000 + 1900 + i).ToString(), "Carpet_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2000 + i).ToString(), "Bed_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2100 + i).ToString(), "CoffeeTable_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2200 + i).ToString(), "DiningTable_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2300 + i).ToString(), "Mirror_Rakkaus"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2400 + i).ToString(), "Chair_Polarity"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2500 + i).ToString(), "Commode_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2600 + i).ToString(), "Pictures_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2700 + i).ToString(), "Sofa_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2800 + i).ToString(), "Armchair_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 2900 + i).ToString(), "Ficus_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3000 + i).ToString(), "Flowers_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3100 + i).ToString(), "Coffeetable_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3200 + i).ToString(), "NewCarpet_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3300 + i).ToString(), "OldCarpet_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3400 + i).ToString(), "Drawings_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3500 + i).ToString(), "Painting_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3600 + i).ToString(), "NewWindow_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3700 + i).ToString(), "OldWindow_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3800 + i).ToString(), "ToyFox_Muistoja"));
-                clanFurniture.Add(new ClanFurniture((10000 + 3900 + i).ToString(), "Bookshelf_Polarity"));
+                foreach(var furniture in baseFurniture)
+                {
+                    j++;
+                    clanFurniture.Add(new ClanFurniture((10000 + j * 100 + i).ToString(), furniture.Name));
+                }
 
                 i++;
             }
