@@ -47,7 +47,6 @@ public class SettingsCarrier : MonoBehaviour
     }
     public enum TextSize
     {
-        None,
         Small,
         Medium,
         Large
