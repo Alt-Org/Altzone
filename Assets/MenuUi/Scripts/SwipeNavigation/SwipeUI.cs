@@ -51,6 +51,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         public bool isEnabled;
         private Rect swipeRect;
 
+        [SerializeField] private bool _isInMainMenu;
+
         public bool IsEnabled
         {
             get { return isEnabled; }
@@ -90,7 +92,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
 
             maxPage = buttons.Length;
-            CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+
+            if (_isInMainMenu)
+            {
+                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+            }
+            else
+            {
+                CurrentPage = 0;
+            }
+
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
@@ -117,7 +128,16 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
-            CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+
+            if (_isInMainMenu)
+            {
+                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+            }
+            else
+            {
+                CurrentPage = 0;
+            }
+
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
             _firstFrame = true;
         }
