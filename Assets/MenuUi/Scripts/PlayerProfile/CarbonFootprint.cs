@@ -66,6 +66,8 @@ public class CarbonFootprint : MonoBehaviour
         }
     }
 
+
+    // Tämän kuuluisi tallentaa sen minuutin välein. Ei toimi as of now.
     void SaveCarbonHistory()
     {
         // Päivittää minuutin välein hiilijalanjäljen.
