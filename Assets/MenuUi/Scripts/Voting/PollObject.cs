@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Altzone.Scripts.Voting;
 
 public class PollObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private PollData pollData;
+
+    public void SetPollData(PollData newPollData)
     {
-        
+        pollData = newPollData;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CreatePollPopup()
     {
-        
+        VotingActions.CreatePollPopup?.Invoke(pollData);
     }
 }

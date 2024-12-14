@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.IO;
 
 public class Chat : MonoBehaviour
 {
@@ -32,12 +33,14 @@ public class Chat : MonoBehaviour
 
     private void Start()
     {
-        currentContent = languageChat;
+        currentContent = languageChat;  // Default to language chat
         Debug.Log("Активен язык чат");
 
         messagesByChat[languageChat] = new List<GameObject>();
         messagesByChat[globalChat] = new List<GameObject>();
         messagesByChat[clanChat] = new List<GameObject>();
+
+        LanguageCahtActive();
     }
     public void SendChatMessage()
     {
@@ -135,7 +138,6 @@ public class Chat : MonoBehaviour
             messagesByChat[currentContent].Add(newMessage);
 
             // Прокручиваем окно чата вниз, если используется ScrollView
-            Canvas.ForceUpdateCanvases();
             ScrollRect scrollRect = currentContent.GetComponentInParent<ScrollRect>();
             if (scrollRect != null)
             {
@@ -151,16 +153,31 @@ public class Chat : MonoBehaviour
     public void GlobalCahtActive()
     {
         currentContent = globalChat;
+
+        globalChat.SetActive(true);
+        languageChat.SetActive(false);
+        clanChat.SetActive(false);
+
         Debug.Log("Активирован глобальный чат");
     }
     public void ClanCahtActive()
     {
         currentContent = clanChat;
+
+        clanChat.SetActive(true);
+        languageChat.SetActive(false);
+        globalChat.SetActive(false);
+       
         Debug.Log("Активирован клановый чат");
     }
     public void LanguageCahtActive()
     {
         currentContent = languageChat;
+
+        languageChat.SetActive(true);
+        globalChat.SetActive(false);
+        clanChat.SetActive(false);
+
         Debug.Log("Активирован языковой чат");
     }
 

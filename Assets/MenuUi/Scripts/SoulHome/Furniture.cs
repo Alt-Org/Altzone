@@ -98,84 +98,59 @@ namespace MenuUI.Scripts.SoulHome
 
         private Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
         {
-            Debug.Log(furnitureSize);
+            //Debug.Log(furnitureSize);
 
-            if (furnitureSize == FurnitureSize.OneXOne)
+            switch (furnitureSize)
             {
-                return new Vector2Int(1, 1);
-            }
-            else if (furnitureSize == FurnitureSize.OneXTwo)
-            {
-                return new Vector2Int(2, 1);
-            }
-            else if (furnitureSize == FurnitureSize.OneXThree)
-            {
-                return new Vector2Int(3, 1);
-            }
-            else if (furnitureSize == FurnitureSize.OneXFour)
-            {
-                return new Vector2Int(4, 1);
-            }
-            else if (furnitureSize == FurnitureSize.OneXSix)
-            {
-                return new Vector2Int(6, 1);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXOne)
-            {
-                return new Vector2Int(1, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXTwo)
-            {
-                return new Vector2Int(2, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXThree)
-            {
-                return new Vector2Int(3, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXFour)
-            {
-                return new Vector2Int(4, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXSix)
-            {
-                return new Vector2Int(6, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXSeven)
-            {
-                return new Vector2Int(7, 2);
-            }
-            else if (furnitureSize == FurnitureSize.TwoXEight)
-            {
-                return new Vector2Int(8, 2);
-            }
-            else if (furnitureSize == FurnitureSize.ThreeXTwo)
-            {
-                return new Vector2Int(2, 3);
-            }
-            else if (furnitureSize == FurnitureSize.ThreeXThree)
-            {
-                return new Vector2Int(3, 3);
-            }
-            else if (furnitureSize == FurnitureSize.ThreeXSeven)
-            {
-                return new Vector2Int(7, 3);
-            }
-            else if (furnitureSize == FurnitureSize.ThreeXEight)
-            {
-                return new Vector2Int(8, 3);
-            }
-            else if (furnitureSize == FurnitureSize.FourXTwo)
-            {
-                return new Vector2Int(2, 4);
-            }
-            else if (furnitureSize == FurnitureSize.SevenXThree)
-            {
-                return new Vector2Int(3, 7);
-            }
-            else
-            {
-                Debug.LogError("Error: Invalid furniture size");
-                return new Vector2Int(0, 0);
+                case FurnitureSize.OneXOne:
+                    return new Vector2Int(1, 1);
+                case FurnitureSize.OneXTwo:
+                    return new Vector2Int(2, 1);
+                case FurnitureSize.OneXThree:
+                    return new Vector2Int(3, 1);
+                case FurnitureSize.OneXFour:
+                    return new Vector2Int(4, 1);
+                case FurnitureSize.OneXSix:
+                    return new Vector2Int(6, 1);
+                case FurnitureSize.TwoXOne:
+                    return new Vector2Int(1, 2);
+                case FurnitureSize.TwoXTwo:
+                    return new Vector2Int(2, 2);
+                case FurnitureSize.TwoXThree:
+                    return new Vector2Int(3, 2);
+                case FurnitureSize.TwoXFour:
+                    return new Vector2Int(4, 2);
+                case FurnitureSize.TwoXSix:
+                    return new Vector2Int(6, 2);
+                case FurnitureSize.TwoXSeven:
+                    return new Vector2Int(7, 2);
+                case FurnitureSize.TwoXEight:
+                    return new Vector2Int(8, 2);
+                case FurnitureSize.ThreeXTwo:
+                    return new Vector2Int(2, 3);
+                case FurnitureSize.ThreeXThree:
+                    return new Vector2Int(3, 3);
+                case FurnitureSize.ThreeXFour:
+                    return new Vector2Int(4, 3);
+                case FurnitureSize.ThreeXSix:
+                    return new Vector2Int(6, 3);
+                case FurnitureSize.ThreeXSeven:
+                    return new Vector2Int(7, 3);
+                case FurnitureSize.ThreeXEight:
+                    return new Vector2Int(8, 3);
+                case FurnitureSize.FourXTwo:
+                    return new Vector2Int(2, 4);
+                case FurnitureSize.FourXThree:
+                    return new Vector2Int(3, 4);
+                case FurnitureSize.FourXFour:
+                    return new Vector2Int(4, 4);
+                case FurnitureSize.FiveXFive:
+                    return new Vector2Int(5, 5);
+                case FurnitureSize.SevenXThree:
+                    return new Vector2Int(3, 7);
+                default:
+                    Debug.LogError("Error: Invalid furniture size");
+                    return new Vector2Int(0, 0);
             }
         }
 

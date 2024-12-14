@@ -37,4 +37,16 @@ public class ClanHeartColorSetter : MonoBehaviour
             i++;
         }
     }
+
+    public void SetHeartColor(Color color)
+    {
+        _heartPieceHandlers = _heartContainer.GetComponentsInChildren<HeartPieceColorHandler>();
+
+        int i = 0;
+        foreach (HeartPieceColorHandler colorhandler in _heartPieceHandlers)
+        {
+            colorhandler.Initialize(i, color);
+            i++;
+        }
+    }
 }

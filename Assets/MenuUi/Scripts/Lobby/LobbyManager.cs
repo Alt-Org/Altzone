@@ -14,11 +14,12 @@ using Quantum;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Settings;
-using Altzone.Scripts.Model.Poco.Player;
+using PlayerData = Altzone.Scripts.Model.Poco.Player.PlayerData;
 using Prg.Scripts.Common.PubSub;
 
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using System.Threading.Tasks;
 
 namespace MenuUI.Scripts.Lobby
 {
@@ -59,6 +60,8 @@ namespace MenuUI.Scripts.Lobby
         private SystemsConfig _systemsConfig;
         [SerializeField]
         private Map _map;
+
+        private QuantumRunner _runner = null;
 
         public static LobbyManager Instance { get; private set; }
 
@@ -253,12 +256,12 @@ namespace MenuUI.Scripts.Lobby
             //WindowManager.Get().ShowWindow(gameWindow);
         }
 
-        private async void StartQuantum()
+        private IEnumerator StartQuantum()
         {
             if (QuantumRunner.Default != null)
             {
                 Debug.Log($"QuantumRunner is already running: {QuantumRunner.Default.Id}");
-                return;
+                yield break;
             }
 
             RuntimeConfig config = new()
@@ -281,10 +284,7 @@ namespace MenuUI.Scripts.Lobby
                 Communicator = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
             };
 
-            string pluginDisconnectReason = null;
-            IDisposable pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
-
-            Transform currentRoot = null;
+            /*Transform currentRoot = null;
             GameObject[] roots = SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject root in roots)
             {
@@ -292,9 +292,15 @@ namespace MenuUI.Scripts.Lobby
                 {
                     currentRoot = root.transform;
                 }
-            }
+            }*/
 
-            QuantumRunner runner = null;
+            WindowManager.Get().ShowWindow(_gameWindow);
+
+            yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _gameWindow.SceneName);
+
+            Task<bool> task = StartRunner(sessionRunnerArguments);
+
+            /*QuantumRunner runner = null;
             try
             {
                 runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
@@ -310,8 +316,31 @@ namespace MenuUI.Scripts.Lobby
                 {
                     window.gameObject.SetActive(false);
                 }
+            }*/
+            yield return new WaitUntil(() => task.IsCompleted);
+            if(task.Result)
+            _runner?.Game.AddPlayer(_player);
+            else
+                WindowManager.Get().GoBack();
+        }
+
+        private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
+        {
+            string pluginDisconnectReason = null;
+            IDisposable pluginDisconnectListener = QuantumCallback.SubscribeManual<CallbackPluginDisconnect>(m => pluginDisconnectReason = m.Reason);
+
+            _runner = null;
+            try
+            {
+                _runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
             }
-            runner?.Game.AddPlayer(_player);
+            catch (Exception ex)
+            {
+                pluginDisconnectListener.Dispose();
+                Debug.LogException(ex);
+                return false;
+            }
+            return true;
         }
 
         private static IEnumerator StartTheRaidTestRoom(SceneDef raidScene)
@@ -393,7 +422,7 @@ namespace MenuUI.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    StartQuantum();
+                    StartCoroutine(StartQuantum());
                     break;
             }
         }

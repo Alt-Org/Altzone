@@ -12,6 +12,8 @@ namespace MenuUi.Scripts.Storage
     {
         [SerializeField] private List<FurnitureSetInfo> _info;
 
+        public List<FurnitureSetInfo> Info => _info; // Public accessor for _info
+
 
         public FurnitureInfo GetFurnitureInfo(string name)
         {
@@ -86,6 +88,7 @@ namespace MenuUi.Scripts.Storage
     public class FurnitureSetInfo
     {
         public string SetName;
+        public string DiagnoseNumber;
         public List<FurnitureInfoObject> list;
     }
 

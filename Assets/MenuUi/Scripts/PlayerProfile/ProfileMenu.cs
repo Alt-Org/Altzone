@@ -49,7 +49,7 @@ public class ProfileMenu : MonoBehaviour
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
 
-    
+
 
     private ServerPlayer _player;
 
@@ -81,15 +81,15 @@ public class ProfileMenu : MonoBehaviour
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
-        if (carbonDisplay >= 1000f)                                                                                  
+        if (carbonDisplay >= 1000f)
         {
             carbonDisplay /= 1000f;
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanj�lki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanj�lki teksti
+        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
 
-        // P�ivitt�� minuutin v�lein peliajan.
+        // Päivittää minuutin välein peliajan.
         if (secondsCount >= 60f)
         {
             minuteCount++;

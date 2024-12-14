@@ -21,9 +21,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         TwoXEight,
         ThreeXTwo,
         ThreeXThree,
+        ThreeXFour,
+        ThreeXSix,
         ThreeXSeven,
         ThreeXEight,
         FourXTwo,
+        FourXThree,
+        FourXFour,
+        FiveXFive,
         SevenXThree
     }
 
@@ -31,6 +36,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         Floor,
         FloorByWall,
+        FloorNonblock,
         Ceiling,
         Wall
 

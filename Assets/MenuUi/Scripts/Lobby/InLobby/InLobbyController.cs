@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Player;
 //using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 //using DisconnectCause = Battle1.PhotonRealtime.Code.DisconnectCause;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
