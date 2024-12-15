@@ -1,3 +1,4 @@
+using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -24,20 +25,34 @@ namespace Quantum
         public override void Update(Frame f, ref Filter filter)
         {
             GameSession* gameSession = f.Unsafe.GetPointerSingleton<GameSession>();
-            if(gameSession == null)
+            if (gameSession == null)
                 return;
+
+            // Debug the current state
+            //Debug.Log($"Current State: {gameSession->state}, TimeUntilStart: {gameSession->TimeUntilStart}");
 
             //Countdown state handling
             if (gameSession->CountDownStarted)
             {
-                gameSession->TimeUntilStart = gameSession->TimeUntilStart - f.DeltaTime;
-
+                gameSession->TimeUntilStart -= f.DeltaTime;
             }
 
-            if(gameSession->TimeUntilStart < 1 && gameSession->state == GameState.Countdown)
+            // Transition from Countdown to GetReadyToPlay
+            if (gameSession->TimeUntilStart < 1 && gameSession->state == GameState.Countdown)
             {
-                gameSession->state = GameState.Playing;
+                gameSession->state = GameState.GetReadyToPlay;
+                gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
+            }
 
+            // Transition from GetReadyToPlay to Playing
+            if (gameSession->state == GameState.GetReadyToPlay)
+            {
+                gameSession->TimeUntilStart -= f.DeltaTime;
+
+                if (gameSession->TimeUntilStart <= 0)
+                {
+                    gameSession->state = GameState.Playing;
+                }
             }
         }
     }

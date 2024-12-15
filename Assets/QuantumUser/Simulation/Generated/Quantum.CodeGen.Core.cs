@@ -50,10 +50,13 @@ namespace Quantum {
   #endif //;
   
   public enum GameState : int {
+    PreGame,
     ReadyToStart,
     Countdown,
+    GetReadyToPlay,
     Playing,
     GameOver,
+    PostGame,
   }
   public enum SoundEffect : int {
     SoulWallHit,
