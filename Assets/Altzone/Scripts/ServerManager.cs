@@ -12,6 +12,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.GA;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model;
+using System.Collections.ObjectModel;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -338,7 +339,9 @@ public class ServerManager : MonoBehaviour
                 }
                 else
                 {
-                    clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(clanFurniture);
+                    ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                    store.GetAllGameFurnitureYield(result => baseFurniture = result);
+                    clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
                 }
 
                 inventory.Furniture = clanFurniture;

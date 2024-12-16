@@ -186,7 +186,10 @@ namespace Altzone.Scripts
         public void GetDefaultFurniture(Action<List<ClanFurniture>> callback)
         {
             List <ClanFurniture> defaultFurniture= new();
-            defaultFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(new());
+            ReadOnlyCollection<GameFurniture> baseFurniture = null;
+            GetAllGameFurnitureYield(result => baseFurniture = result);
+            if (baseFurniture == null) return;
+            defaultFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
             callback(defaultFurniture);
         }
     }

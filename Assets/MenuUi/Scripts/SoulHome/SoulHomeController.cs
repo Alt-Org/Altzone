@@ -102,7 +102,7 @@ namespace MenuUI.Scripts.SoulHome
             if (furniture == null) return;
             else
             {
-                if (furniture.Id < 0) return;
+                if (furniture.Id == "-1") return;
                 if (string.IsNullOrWhiteSpace(furniture.Name)) return;
             }
 

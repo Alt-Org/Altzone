@@ -92,6 +92,8 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         }
 
+
+
         public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {
             Assert.IsTrue(id.IsPrimaryKey());

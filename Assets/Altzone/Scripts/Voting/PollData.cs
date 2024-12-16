@@ -4,6 +4,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json.Linq;
 using Photon.Realtime;
 using UnityEngine;
 
@@ -30,11 +31,26 @@ namespace Altzone.Scripts.Voting
         Selling
     }
 
+    public enum RolePollType
+    {
+        Create,
+        Delete,
+        Modify,
+        Give,
+    }
+
+    public enum MemberPollType
+    {
+        Accept,
+        Kick
+    }
+
     public class PollData
     {
         public PollType PollType;
         public string Id;
         public string Name;
+        public long StartTime;
         public long EndTime;
         public Sprite Sprite;
 
@@ -42,11 +58,12 @@ namespace Altzone.Scripts.Voting
         public List<PollVoteData> YesVotes;
         public List<PollVoteData> NoVotes;
 
-        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers)
+        public PollData(PollType pollType, string id, string name,long startTime, long endTime, Sprite sprite, List<string> clanMembers)
         {
             PollType = pollType;
             Id = id;
             Name = name;
+            StartTime = startTime;
             EndTime = endTime;
             Sprite = sprite;
             NotVoted = new List<string>();
@@ -93,8 +110,8 @@ namespace Altzone.Scripts.Voting
         public double Weight;
         public float Value;
 
-        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-        : base(pollType, id, name, endTime, sprite, clanMembers)
+        public FurniturePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
@@ -108,11 +125,39 @@ namespace Altzone.Scripts.Voting
         public EsinePollType EsinePollType;
         public float Value;
 
-        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
-        : base(pollType, id, name, endTime, sprite, clanMembers)
+        public EsinePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             EsinePollType = esinePollType;
             Value = value;
+        }
+    }
+
+    public class RolePollData : PollData
+    {
+        public RolePollType RolePollType;
+        public string RoleId;
+        public string PlayerId;
+
+        public RolePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            RolePollType = rolePollType;
+            RoleId = roleId;
+            PlayerId = playerId;
+        }
+    }
+
+    public class MemberPollData : PollData
+    {
+        public MemberPollType MemberPollType;
+        public string PlayerId;
+
+        public MemberPollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            MemberPollType = memberPollType;
+            PlayerId = playerId;
         }
     }
 }
