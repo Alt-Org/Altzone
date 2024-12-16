@@ -37,6 +37,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float musicVolume;
     public float soundVolume;
 
+    public int TextSizeSmall = 22;
+    public int TextSizeMedium = 26;
+    public int TextSizeLarge = 30;
+
     private TextSize _textSize;
     public TextSize Textsize { get => _textSize; }
     
@@ -90,7 +94,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", Screen.currentResolution.refreshRate);
         mainMenuWindowIndex = 0;
 
-        _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 2);
+        _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);
     }
 
@@ -111,7 +115,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public void SetTextSize(TextSize size)
     {
         _textSize = size;
-        PlayerPrefs.SetInt("Textsize", (int)size);
+        PlayerPrefs.SetInt("TextSize", (int)size);
         OnTextSizeChange?.Invoke();
     }
 }
