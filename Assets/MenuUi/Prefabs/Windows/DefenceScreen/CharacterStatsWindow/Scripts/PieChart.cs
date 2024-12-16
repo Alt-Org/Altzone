@@ -36,7 +36,7 @@ public class PieChartManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // Päivitetään PieChart, kun paneeli/sivu avataan uudelleen.
+        // Päivittää PieChart:n, kun paneeli/sivu avataan uudelleen.
         // Updates PieChart when panel/page is opened.
         Debug.Log("Pie Chart Manager: Paneeli avattu, päivitetään pie chart...");
         UpdateChart();
@@ -45,7 +45,7 @@ public class PieChartManager : MonoBehaviour
     private void Update()
     {
         // Tarkistaa, ovatko arvot muuttuneet.
-        // Checks are values changed.
+        // Checks if values have changed.
         int currentImpactForce = ParseText(impactForceText.text);
         int currentHealthPoints = ParseText(healthPointsText.text);
         int currentResistance = ParseText(resistanceText.text);
@@ -86,7 +86,7 @@ public class PieChartManager : MonoBehaviour
 
         Debug.Log($"Impact Force: {impactForce}, Health Points: {healthPoints}, Resistance: {resistance}, Character Size: {characterSize}, Speed: {speed}");
 
-        // Järjestää statit.
+        // Järjestää statsit.
         // Arrange stats.
         var stats = new List<(int level, Color color)>
         {
@@ -129,7 +129,7 @@ public class PieChartManager : MonoBehaviour
     }
 
     // Parsettaa tekstin, onko se mahdollista muuttaa int luvuksi.
-    // Parsing text are they possible to change from string -> int.
+    // Parsing text if they are possible to change from string -> int.
     private int ParseText(string text)
     {
         return int.TryParse(text, out int result) ? result : 0;
