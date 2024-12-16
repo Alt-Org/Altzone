@@ -102,10 +102,11 @@ public class ProfileMenu : MonoBehaviour
 
         _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
 
-        // Päivittää minuutit
+        // Päivittää peliajan
         if (secondsCount >= 60f)
         {
             minuteCount++;
+            SaveMinutes();
             secondsCount = 0;
         }
     }
@@ -115,6 +116,7 @@ public class ProfileMenu : MonoBehaviour
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
         Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
         LoadInputFromFile();
+        LoadMinutes();
 
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
@@ -153,6 +155,7 @@ public class ProfileMenu : MonoBehaviour
             File.WriteAllText(path, lore);
             Debug.Log($"Saved Lore: {lore} at {path}");
         }
+
     }
 
     // Lataa tallennetut tiedostot
@@ -201,6 +204,7 @@ public class ProfileMenu : MonoBehaviour
         _ClanURLButton.onClick.AddListener(OpenClanURL);
 
         LoadInputFromFile();
+        LoadMinutes();
     }
 
     // Avaa klaanin URL
@@ -272,4 +276,26 @@ public class ProfileMenu : MonoBehaviour
             Reset();
         }
     }
+
+
+    private void SaveMinutes()
+    {
+        PlayerPrefs.SetInt("Minutes", minuteCount);
+        PlayerPrefs.Save();
+        Debug.Log("Minutes saved.");
+    }
+
+    private void LoadMinutes()
+    {
+        if (PlayerPrefs.HasKey("Minutes"))
+        {
+            minuteCount = PlayerPrefs.GetInt("Minutes");
+            Debug.Log($"Minutes successfully loaded: {minuteCount}");
+        }
+        else
+        {
+            Debug.Log("No saved minutes found.");
+        }
+    }
+
 }
