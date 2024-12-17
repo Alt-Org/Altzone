@@ -214,6 +214,8 @@ MonoBehaviour:
       MutableMode: 0
   StaticColliders3D: []
   MapEntities:
+  - Components:
+    - rid: 5490577773346947072
   - Components: []
   - Components:
     - rid: 4440574540682100736
@@ -245,6 +247,13 @@ MonoBehaviour:
       type: {class: SpawnIdentifierPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         _empty_prototype_dummy_field_: 0
+    - rid: 5490577773346947072
+      type: {class: GameSessionPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        state:
+          Value: 2
+        TimeUntilStart:
+          RawValue: 262144
     - rid: 6659529850396606464
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
