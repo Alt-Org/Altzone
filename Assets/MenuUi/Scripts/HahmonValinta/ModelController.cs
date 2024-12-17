@@ -7,6 +7,11 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
+//TODO: muokkaa HandleCurrentCharacterIdChanged metodia ottamaan parametrinä sisään sen paikan id johon
+// hahmo juuri laitettiin ja sitten sen perusteella tarkistaa ja tallentaa tieto.
+// Myöskin pitäisi olla mahdollista poistaa valittu hahmo listasta
+// niin kauan kunhan ainakin yksi hahmo on vielä listassa.
+
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelController : MonoBehaviour
