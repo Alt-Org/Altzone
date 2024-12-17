@@ -37,6 +37,8 @@ namespace Prg.Scripts.Common
     /// </summary>
     public static class ClickStateHandler
     {
+        private static Vector2 s_rotationStartVector = Vector2.zero;
+
         /// <summary>
         /// <para>Returns a <c>ClickState</c> enum according to the either the current <c>Touch</c> phase or the current <c>Mouse</c> clickstate.</para>
         ///
@@ -143,19 +145,42 @@ namespace Prg.Scripts.Common
 
         public static float GetRotationDirection(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            /*
+
             if (Touch.activeTouches.Count >= 2 && (inputDevice is ClickInputDevice.Touch or ClickInputDevice.None))
             {
+                Touch touch1 = Touch.activeTouches[0];
+                Touch touch2 = Touch.activeTouches[1];
+                Vector2 touch1Position = Touch.activeTouches[0].screenPosition;
+                Vector2 touch2Position = Touch.activeTouches[1].screenPosition;
+
+                if (touch1.began && touch2.began)
+                {
+                    s_rotationStartVector = touch2Position - touch1Position;
+                    return 0;
+                }
+
+                if (touch1.isInProgress && touch2.isInProgress)
+                {
+                    Vector2 currentVector = touch2Position - touch1Position;
+                    float crossProduct = s_rotationStartVector.x * currentVector.y - s_rotationStartVector.y * currentVector.x;
+                    s_rotationStartVector = currentVector;
+
+                    return crossProduct;
+                }
+
+                if (touch1.ended || touch2.ended)
+                {
+                    s_rotationStartVector = Vector2.zero;
+                    return 0;
+                }
+
             }
-            */
 
             if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
             {
-                Debug.LogFormat("[PlayerRotating] Player is rotating scrollwheel");
                 return Mouse.current.scroll.ReadValue().y;
             }
 
-            Debug.LogFormat("[PlayerRotating] Rotation direction not working");
             return 0;
         }
     }
