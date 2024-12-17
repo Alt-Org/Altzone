@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class Chat : MonoBehaviour
 {
@@ -10,6 +11,13 @@ public class Chat : MonoBehaviour
     public GameObject globalChat;
     public GameObject clanChat;
     private GameObject currentContent;
+
+    private GameObject selectedMessage;
+    public GameObject deletedMessage;
+
+    [Header("Delete Ui")]
+    public Button deleteButton;
+    public GameObject deleteThisMessage;
 
     [Header("InputField")]
     public TMP_InputField inputField;
@@ -35,7 +43,6 @@ public class Chat : MonoBehaviour
     [Header("Commands")]
     public string delete = "/deleteMessage";
     public string deleteAllMessages = "/clear";
-    public string deleteById = "/deleteId";
 
     private int messageIDCounter = 0;
     private Dictionary<int, GameObject> messageByID = new Dictionary<int, GameObject>();
@@ -79,14 +86,6 @@ public class Chat : MonoBehaviour
                 inputField.text = "";
                 return;
             }
-            else if(inputText.StartsWith(deleteById))
-            {
-                string[] parts = inputText.Split(" ");
-                if (parts.Length == 2 && int.TryParse(parts[1], out int messageId))
-                {
-                    Debug.Log("Deleting message with ID");
-                }
-            }
 
             Debug.Log("Current Prefab: " + currentPrefab.name);
             DisplayMessage(inputField.text);
@@ -129,10 +128,16 @@ public class Chat : MonoBehaviour
                 Debug.LogError("TMP_Text-komponenttia ei löytynyt prefabista!");
             }
 
-            //ID
-            int currentMessageID = messageIDCounter++;
-            newMessage.name = "Message_" + currentMessageID;
-            messageByID[currentMessageID] = newMessage;
+            Button button = newMessage.GetComponent<Button>();
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners(); 
+                button.onClick.AddListener(() => SelectMessage(newMessage));
+            }
+            else
+            {
+                Debug.LogWarning("Button component not found on the message prefab!");
+            }
 
             messagesByChat[currentContent].Add(newMessage);
             shouldScroll = true;
@@ -173,6 +178,13 @@ public class Chat : MonoBehaviour
         }
     }
 
+
+    private void SelectMessage(GameObject message)
+    {
+        selectedMessage = message;
+        Debug.Log("Valittu viesti: " + message.name);
+    }
+
     public void DeleteAllMessages()
     {
         Debug.Log("poistaa kaikki viestit");
@@ -184,24 +196,31 @@ public class Chat : MonoBehaviour
         messagesByChat[currentContent].Clear();
     }
 
-    public void DeleteMessageByID(int messageId)
+    public void DeleteChoseMessage()
     {
-        if(messageByID.ContainsKey(messageId))
+        if(selectedMessage != null && deletedMessage != null)
         {
-            Debug.Log("Deleting message with ID");
-            GameObject messageToDelete = messageByID[messageId];
-            Destroy(messageToDelete);
-            messagesByChat[currentContent].Remove(messageToDelete);
-            messageByID.Remove(messageId);
+            Debug.Log("Message " + selectedMessage.name + " has been choised");
+
+   
+            Transform parent = selectedMessage.transform.parent;
+            int siblingIndex = selectedMessage.transform.GetSiblingIndex();
+
+            GameObject newMessage = Instantiate(deletedMessage);
+
+            newMessage.transform.SetSiblingIndex(siblingIndex);
+
+            messagesByChat[currentContent].Add(newMessage);
+
+            selectedMessage = null;
+
+            Debug.Log("The message has been replaced successfully.");
         }
-        else
-        {
-            Debug.LogWarning("Message with ID not found.");
-        }
+
     }
 
     public void GlobalCahtActive()
-    {
+    { 
         currentContent = globalChat;
         currentScrollRect = globalChatScrollRect;
 
