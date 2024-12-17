@@ -1997,7 +1997,7 @@ PrefabInstance:
     - target: {fileID: 5733162098178526203, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_Name
-      value: ViewComponents
+      value: GameUiController
       objectReference: {fileID: 0}
     - target: {fileID: 8847665615427807107, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
@@ -2016,7 +2016,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5733162098178526203, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 681321435}
+      addedObject: {fileID: 681321441}
     - targetCorrespondingSourceObject: {fileID: 5733162098178526203, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       insertIndex: -1
@@ -2024,7 +2024,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5733162098178526203, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 681321436}
+      addedObject: {fileID: 681321442}
   m_SourcePrefab: {fileID: 100100000, guid: 97e8f0ca20408d042a38f07b90b44946, type: 3}
 --- !u!1 &313643940 stripped
 GameObject:
@@ -2078,9 +2078,6 @@ MonoBehaviour:
     SystemsConfig:
       Id:
         Value: 289946063136722323
-    GameConfig:
-      Id:
-        Value: 307689559872502493
   SessionConfig: {fileID: 0}
   LocalPlayers: []
   MaxPlayerCount: 0
@@ -2310,10 +2307,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e0b7a6cf96d1a469c8e6e8ac4007a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prototype:
-    goalConfig:
-      Id:
-        Value: 337072248309995173
 --- !u!1 &368801153
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,11 +2572,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe6c0ccac828df4396f16b76c5a528c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 1771424186}
-  soulWallHitClip: {fileID: 8300000, guid: 7617e63a56cc17b49944b73bc614aff0, type: 3}
-  goalHitClip: {fileID: 8300000, guid: a49df0fafb838bb4bb12d1db861d2180, type: 3}
-  sideWallHitClip: {fileID: 8300000, guid: 9ee533f3735a9234a9990c730eb654fc, type: 3}
-  wallBroken: {fileID: 8300000, guid: 95bda2344d4425241b2cbebfe061b59e, type: 3}
+  _audioSource: {fileID: 1771424186}
+  _soulWallHitClip: {fileID: 0}
+  _goalHitClip: {fileID: 0}
+  _sideWallHitClip: {fileID: 0}
+  _wallBroken: {fileID: 0}
 --- !u!4 &551886349
 Transform:
   m_ObjectHideFlags: 0
@@ -2856,34 +2849,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 258855989}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &681321435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650078743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfb4c9f35e07d2546801ffb7e0e673ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameOverView: {fileID: 313643940}
-  AnnouncerView: {fileID: 2059615966}
-  uiGameAnnouncementHandler: {fileID: 681321437}
-  uiGameOverHandler: {fileID: 681321436}
---- !u!114 &681321436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650078743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc2e69ab773282644a796c22c0cd9e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &681321437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2896,7 +2861,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c8eddeab7aa994fb16d41f6142af4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  announcerText: {fileID: 2059615968}
+  _view: {fileID: 0}
+  _announcerText: {fileID: 2059615968}
+--- !u!114 &681321441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650078743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78c55f742a01c5f4a9b48671f97cbf88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnnouncementHandler: {fileID: 681321437}
+  GameOverHandler: {fileID: 681321442}
+--- !u!114 &681321442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650078743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89eaccad8729ac64ca9fdbf2270dd439, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _view: {fileID: 313643940}
 --- !u!1 &936181443
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,10 +3261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e0b7a6cf96d1a469c8e6e8ac4007a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prototype:
-    goalConfig:
-      Id:
-        Value: 269125312843482111
 --- !u!114 &1694106371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3604,20 +3593,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd477ed8b32d32b4b8c791d81de403c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameViewController: {fileID: 681321435}
---- !u!1 &2059615966 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8847665615427807107, guid: 97e8f0ca20408d042a38f07b90b44946,
-    type: 3}
-  m_PrefabInstance: {fileID: 258855989}
-  m_PrefabAsset: {fileID: 0}
+  _gameUiController: {fileID: 681321441}
 --- !u!114 &2059615968 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1560703308592050577, guid: 97e8f0ca20408d042a38f07b90b44946,
     type: 3}
   m_PrefabInstance: {fileID: 258855989}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2059615966}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
