@@ -26,8 +26,8 @@ public class PieChartManager : MonoBehaviour
     [SerializeField] private Color speedColor = new Color(0f, 0.5f, 0f);
     [SerializeField] private Color defaultColor = Color.white;
 
-    // Väliaikainen muuttuja arvoille.
-    // Temporary variable for values.
+    // Väliaikainen muuttuja arvoille, jotta reaaliaikainen päivitys onnistuu.
+    // Temporary variable for values, so that the real-time update is successful.
     private int lastImpactForce;
     private int lastHealthPoints;
     private int lastResistance;
@@ -52,6 +52,8 @@ public class PieChartManager : MonoBehaviour
         int currentCharacterSize = ParseText(characterSizeText.text);
         int currentSpeed = ParseText(speedText.text);
 
+        // Tarkistaa alkuperäisen ja uuden arvon välillä, ovatko ne samat.
+        // Checks between the original and the new value to see if they are the same.
         if (currentImpactForce != lastImpactForce ||
             currentHealthPoints != lastHealthPoints ||
             currentResistance != lastResistance ||
