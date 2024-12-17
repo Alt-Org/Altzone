@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 5959194620232671052}
   - component: {fileID: 1813859720648059125}
   - component: {fileID: 4364493774601017373}
+  - component: {fileID: 1263005138304352113}
   m_Layer: 5
-  m_Name: Button
+  m_Name: GalleryCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,6 +146,7 @@ MonoBehaviour:
   _modelView: {fileID: 0}
   _blockType: 0
   _swipe: {fileID: 0}
+  characterTextCounter: 0
 --- !u!114 &4364493774601017373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +161,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: d47e6ecceba2f8a46a80909ef0ecdc0e, type: 2}
   _isCurrentPopOutWindow: 0
+--- !u!114 &1263005138304352113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775543799907187927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2076896918164513980
 GameObject:
   m_ObjectHideFlags: 0

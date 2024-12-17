@@ -132,7 +132,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 GameObject slot = Instantiate(_characterSlotprefab, GetContent());
                 slot.GetComponent<CharacterSlot>().SetInfo(info.Image, info.Name, character.Id, this);
 
-                Button button = slot.transform.Find("Button").GetComponent<Button>();
+                Button button = slot.transform.Find("GalleryCharacter").GetComponent<Button>();
 
                 Outline outline = button.gameObject.GetComponent<Outline>();
 
