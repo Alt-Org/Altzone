@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine;
-using Input = UnityEngine.Input;
+using UnityEngine.InputSystem;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using UnityEngine.UIElements;
 
 namespace Prg.Scripts.Common
 {
@@ -49,10 +44,10 @@ namespace Prg.Scripts.Common
         /// If somehow none of these apply, the returns <c>ClickState.None.</c></para>
         /// </summary>
         /// <returns> ClickState </returns>
-        public static ClickState GetClickState()
+        public static ClickState GetClickState(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
             // Mouse
-            if (Mouse.current != null)
+            if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                     return ClickState.Start;
@@ -70,24 +65,20 @@ namespace Prg.Scripts.Common
             }
 
             // Touch
+            if (Touch.activeFingers.Count > 0 && inputDevice is not ClickInputDevice.Mouse)
             {
-                Touch touch = new();
-                if (Touch.activeFingers.Count > 0) touch = Touch.activeTouches[0];
+                Touch touch = Touch.activeTouches[0];
 
-                if (Touch.activeFingers.Count > 0 &&
-                    touch.phase is UnityEngine.InputSystem.TouchPhase.Began)
+                if (touch.phase is UnityEngine.InputSystem.TouchPhase.Began)
                     return ClickState.Start;
 
-                if (Touch.activeFingers.Count > 0 &&
-                    (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled))
+                if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
                     return ClickState.End;
 
-                if (Touch.activeFingers.Count > 0 &&
-                    touch.phase is UnityEngine.InputSystem.TouchPhase.Moved)
+                if (touch.phase is UnityEngine.InputSystem.TouchPhase.Moved)
                     return ClickState.Move;
 
-                if (Touch.activeFingers.Count > 0 &&
-                    touch.phase is UnityEngine.InputSystem.TouchPhase.Stationary)
+                if (touch.phase is UnityEngine.InputSystem.TouchPhase.Stationary)
                     return ClickState.Hold;
             }
 
@@ -96,13 +87,13 @@ namespace Prg.Scripts.Common
 
         public static ClickType GetClickType(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (inputDevice is ClickInputDevice.Touch or ClickInputDevice.None)
+            if (inputDevice is not ClickInputDevice.Mouse)
             {
                 if (Touch.activeTouches.Count == 1) return ClickType.Click;
                 if (Touch.activeTouches.Count == 2) return ClickType.Pinch;
             }
 
-            if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
+            if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
                 if (Mouse.current.scroll.ReadValue() == Vector2.zero) return ClickType.Click;
                 else return ClickType.Pinch;
@@ -115,10 +106,10 @@ namespace Prg.Scripts.Common
         {
             if (GetClickState() is not ClickState.None)
             {
-                if (Touch.activeFingers.Count >= 1 && (inputDevice is ClickInputDevice.Touch or ClickInputDevice.None))
+                if (Touch.activeFingers.Count >= 1 && inputDevice is not ClickInputDevice.Mouse)
                     return Touch.activeTouches[0].screenPosition;
 
-                if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
+                if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
                     return Mouse.current.position.ReadValue();
             }
 
@@ -127,7 +118,7 @@ namespace Prg.Scripts.Common
 
         public static float GetPinchDistance(ClickInputDevice inputDevice = ClickInputDevice.None)
         {
-            if (Touch.activeTouches.Count >= 2 && (inputDevice is ClickInputDevice.Touch or ClickInputDevice.None))
+            if (Touch.activeTouches.Count >= 2 && inputDevice is not ClickInputDevice.Mouse)
             {
                 Vector2 touch1 = Touch.activeFingers[0].screenPosition;
                 Vector2 touch2 = Touch.activeFingers[1].screenPosition;
@@ -135,7 +126,7 @@ namespace Prg.Scripts.Common
                 return Vector2.Distance(touch1, touch2);
             }
 
-            if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
+            if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
                 return Mouse.current.scroll.ReadValue().y;
             }
@@ -176,7 +167,7 @@ namespace Prg.Scripts.Common
 
             }
 
-            if (Mouse.current != null && (inputDevice is ClickInputDevice.Mouse or ClickInputDevice.None))
+            if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
                 return Mouse.current.scroll.ReadValue().y;
             }
