@@ -35,32 +35,23 @@ namespace QuantumUser.Scripts
 
         private void OnPlaySoundEvent(EventPlaySoundEvent e)
         {
-            AudioClip clip = null;
-
             // Map SoundEffect enum to the correct AudioClip
-            switch (e.SoundEffect)
+            AudioClip clip = e.SoundEffect switch
             {
-                case SoundEffect.SoulWallHit:
-                    clip = _soulWallHitClip;
-                    break;
-                case SoundEffect.GoalHit:
-                    clip = _goalHitClip;
-                    break;
-                case SoundEffect.SideWallHit:
-                    clip = _sideWallHitClip;
-                    break;
-                case SoundEffect.WallBroken:
-                    clip = _wallBroken;
-                    break;
-                default:
-                    Debug.LogWarning("Unhandled sound effect: " + e.SoundEffect);
-                    return;
+                SoundEffect.SoulWallHit => _soulWallHitClip,
+                SoundEffect.GoalHit     => _goalHitClip,
+                SoundEffect.SideWallHit => _sideWallHitClip,
+                SoundEffect.WallBroken  => _wallBroken,
+                _ => null,
+            };
+
+            if (clip == null)
+            {
+                Debug.LogWarning("Unhandled sound effect: " + e.SoundEffect);
+                return;
             }
 
-            if (clip != null)
-            {
-                PlaySoundFXclip(clip);
-            }
+            PlaySoundFXclip(clip);
         }
 
         private void PlaySoundFXclip(AudioClip clip)
