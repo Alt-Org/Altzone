@@ -9,16 +9,9 @@ namespace QuantumUser.Scripts.UI
      */
     public class GameUiController : MonoBehaviour
     {
-
-        // Views - DISABLED in scene by default
-        public GameObject GameOverView;
-        public GameObject AnnouncerView;
-
-
         //View Scripts
-        public UIGameAnnouncementHandler uiGameAnnouncementHandler;
-        public UIGameOverHandler uiGameOverHandler;
-
+        public GameUiAnnouncementHandler AnnouncementHandler;
+        public GameUiGameOverHandler GameOverHandler;
     }
 }
 
