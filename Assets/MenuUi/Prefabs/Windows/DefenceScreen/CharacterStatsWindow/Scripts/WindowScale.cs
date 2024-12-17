@@ -10,7 +10,7 @@ public class WindowScale : MonoBehaviour
     // How often window size checks are performed (in seconds).
     public float _interval = 2f; 
     // Viittaus SwipeUI-komponenttiin. // Reference to the SwipeUI component.
-    private SwipeUI _swipe; 
+    [SerializeField] private SwipeUI _swipe; 
     // Kaikki skaalautuvat käyttöliittymän elementit, joissa on tag "ScaleWindow". // All scalable UI elements tagged with "ScaleWindow".
     private GameObject[] _layoutElementsGameObjects;
     // Viittaus ScrollRectCanvasin RectTransformiin. // Reference to the RectTransform of the ScrollRectCanvas.
@@ -36,7 +36,7 @@ public class WindowScale : MonoBehaviour
     {
         // Haetaan SwipeUI-komponentti tämän objektin vanhemmasta (parent). 
         // Retrieve the SwipeUI component from this object's parent.
-        _swipe = GetComponentInParent<SwipeUI>(); 
+        if(_swipe == null) _swipe = GetComponentInParent<SwipeUI>(); 
         // Tarkistaa ikkunan koon muutokset. 
         // Start checking for window size changes.
         StartCoroutine(CheckWindowSize()); 
