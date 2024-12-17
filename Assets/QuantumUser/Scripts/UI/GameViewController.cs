@@ -1,32 +1,22 @@
-using GameAnalyticsSDK.Setup;
 using Quantum;
 using QuantumUser.Scripts.UI;
-using QuantumUser.Scripts.UI.Views;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace QuantumUser.Scripts
 {
     public class GameViewController : MonoBehaviour
     {
-        // Reference to the TextMeshProUGUI component that displays the countdown text
-
-
         // References to UIviews
-        public GameUiController gameUiController;
-
-
+        [SerializeField] private GameUiController _gameUiController;
 
         // Start is called before the first frame update
         // Currently not used but can be used for initialization if needed
-        void Start()
+        private void Start()
         {
         }
 
-
         // Handles UI updates based on the game's state and countdown
-        void Update()
+        private void Update()
         {
             // Try to get the current Quantum frame
             if (Utils.TryGetQuantumFrame(out Frame frame))
@@ -50,24 +40,24 @@ namespace QuantumUser.Scripts
                 {
                     case GameState.Countdown:
                         // If the game is in the countdown state, display the countdown timer
-                        gameUiController.uiGameAnnouncementHandler.SetCountDownNumber(countDown);
+                        _gameUiController.AnnouncementHandler.SetCountDownNumber(countDown);
                         break;
 
                     case GameState.Playing:
 
                         // Clear the countdown text when the countdown is negative
-                        gameUiController.uiGameAnnouncementHandler.ClearAnnouncerTextField();
+                        _gameUiController.AnnouncementHandler.ClearAnnouncerTextField();
 
 
                         break;
                     case GameState.GetReadyToPlay:
                         // Display "GO!" when the countdown reaches zero
-                        gameUiController.uiGameAnnouncementHandler.ShowEndOfCountDownText();
+                        _gameUiController.AnnouncementHandler.ShowEndOfCountDownText();
                         break;
 
                     case GameState.GameOver:
                         // If the game is over, display "Game Over!" and show the Game Over UI
-                        gameUiController.GameOverView.SetActive(true);
+                        _gameUiController.GameOverHandler.SetShow(true);
                         break;
                 }
             }
