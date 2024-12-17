@@ -9,12 +9,12 @@ namespace QuantumUser.Scripts
     {
         public static SoundFXManager instance;
 
-        [SerializeField] private AudioSource audioSource; // Reference to a preconfigured AudioSource
+        [SerializeField] private AudioSource _audioSource; // Reference to a preconfigured AudioSource
 
-        [SerializeField] private AudioClip soulWallHitClip;
-        [SerializeField] private AudioClip goalHitClip;
-        [SerializeField] private AudioClip sideWallHitClip;
-        [SerializeField] private AudioClip wallBroken;
+        [SerializeField] private AudioClip _soulWallHitClip;
+        [SerializeField] private AudioClip _goalHitClip;
+        [SerializeField] private AudioClip _sideWallHitClip;
+        [SerializeField] private AudioClip _wallBroken;
         private void Awake()
         {
             if (instance == null)
@@ -41,16 +41,16 @@ namespace QuantumUser.Scripts
             switch (e.SoundEffect)
             {
                 case SoundEffect.SoulWallHit:
-                    clip = soulWallHitClip;
+                    clip = _soulWallHitClip;
                     break;
                 case SoundEffect.GoalHit:
-                    clip = goalHitClip;
+                    clip = _goalHitClip;
                     break;
                 case SoundEffect.SideWallHit:
-                    clip = sideWallHitClip;
+                    clip = _sideWallHitClip;
                     break;
                 case SoundEffect.WallBroken:
-                    clip = wallBroken;
+                    clip = _wallBroken;
                     break;
                 default:
                     Debug.LogWarning("Unhandled sound effect: " + e.SoundEffect);
@@ -65,9 +65,9 @@ namespace QuantumUser.Scripts
 
         private void PlaySoundFXclip(AudioClip clip)
         {
-            if (audioSource != null)
+            if (_audioSource != null)
             {
-                audioSource.PlayOneShot(clip); // Play the sound without affecting other sounds
+                _audioSource.PlayOneShot(clip); // Play the sound without affecting other sounds
             }
             else
             {
