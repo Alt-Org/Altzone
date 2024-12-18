@@ -43,6 +43,11 @@ public class ProfileMenu : MonoBehaviour
     [Header("Save Button")]
     [SerializeField] private Button _saveEditsButton;
 
+    [Header("Add Friend Button")]
+    [SerializeField] private Button _addFriendButton;
+
+    [Header("Others")]
+
     [SerializeField] private PlayStyle _playStyle;
 
     public TextMeshProUGUI textMeshPro;
@@ -260,7 +265,7 @@ public class ProfileMenu : MonoBehaviour
                     {
                         _clanID = _playerData.ClanId;
                         _url = "https://altzone.fi/clans/" + _playerData.ClanId;
-                        _ClanButtonText.text = "Klaanisivu"; // Asetetaan painikkeen teksti
+                        _ClanButtonText.text = _playerClanNameText.text; // Asetetaan painikkeen teksti
                     }
                     else
                     {
@@ -297,5 +302,7 @@ public class ProfileMenu : MonoBehaviour
             Debug.Log("No saved minutes found.");
         }
     }
+
+
 
 }
