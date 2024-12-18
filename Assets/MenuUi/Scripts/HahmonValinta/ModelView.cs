@@ -28,12 +28,13 @@ namespace MenuUi.Scripts.CharacterGallery
         // array of character slots in verticalpanel
         private List<CharacterSlot> _characterSlot = new();
 
-        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId);
+        public delegate void CurrentCharacterIdChangedHandler(CharacterID newCharacterId, int slot);
         public event CurrentCharacterIdChangedHandler OnCurrentCharacterIdChanged;
         public bool IsReady => _isReady;
         public int characterTextCounter;
 
         private CharacterID _currentCharacterId;
+        private int _slotToSet = 0;
 
         public ColorBlock _colorBlock = new();
 
@@ -65,7 +66,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (_currentCharacterId != value)
                 {
                     _currentCharacterId = value;
-                    OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId);
+                    Debug.LogWarning("Slot to set: "+_slotToSet);
+                    OnCurrentCharacterIdChanged?.Invoke(_currentCharacterId, _slotToSet);
                 }
             }
         }
@@ -145,7 +147,6 @@ namespace MenuUi.Scripts.CharacterGallery
                 _characterSlot.Add(slot.GetComponent<CharacterSlot>());
             }
 
-            int idx = 0;
             for (int i = 0; i < _buttons.Count && i < _characterSlot.Count; i++)
             {
                 Button button = _buttons[i];
@@ -168,35 +169,44 @@ namespace MenuUi.Scripts.CharacterGallery
                         button.colors = _colorBlock;
                         button.GetComponent<DraggableCharacter>().enabled = true;
                     }
-
-                    foreach (CharacterID curCharacter in currentCharacterId)
-                    {
-                        if (curCharacter == customCharacter.Id && idx < _CurSelectedCharacterSlot.Length)
-                        {
-                            // Set the character in the horizontal character slot
-                            if (_CurSelectedCharacterSlot.Length > 0)
-                            {
-                                button.transform.SetParent(_CurSelectedCharacterSlot[idx].transform, false);
-                                idx++;
-                            }
-                        }
-                    }
                     // Check if the character is currently selected
                     // Subscribe to the event of parent change for the button 
                     var parentChangeMonitor = button.GetComponent<DraggableCharacter>();
                     parentChangeMonitor.OnParentChanged += newParent =>
                     {
+                        int i = 0;
                         // Go through each topslot
                         foreach (var curSlot in _CurSelectedCharacterSlot)
                         {
                             // Check if newParent is one of the topslots
                             if (newParent == curSlot.transform)
                             {
+                                _slotToSet = i;
                                 // Set characterID, because it has been moved to the topslot
                                 CurrentCharacterId = customCharacter.Id;
                             }
+                            i++;
                         }
                     };
+                }
+            }
+            int idx = 0;
+            foreach (CharacterID curCharacter in currentCharacterId)
+            {
+                if (curCharacter == 0) continue;
+                foreach (Button button in _buttons)
+                {
+                    CharacterID id = button.GetComponent<DraggableCharacter>().Id;
+                    if (curCharacter == id && idx < _CurSelectedCharacterSlot.Length)
+                    {
+                        // Set the character in the horizontal character slot
+                        if (_CurSelectedCharacterSlot.Length > 0)
+                        {
+                            button.transform.SetParent(_CurSelectedCharacterSlot[idx].transform, false);
+                            idx++;
+                            break;
+                        }
+                    }
                 }
             }
         }
