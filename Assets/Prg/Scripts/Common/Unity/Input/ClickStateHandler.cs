@@ -16,7 +16,7 @@ namespace Prg.Scripts.Common
     public enum ClickType
     {
         Click,
-        Pinch,
+        TwoFingerOrScroll,
         None
     }
 
@@ -90,13 +90,13 @@ namespace Prg.Scripts.Common
             if (inputDevice is not ClickInputDevice.Mouse)
             {
                 if (Touch.activeTouches.Count == 1) return ClickType.Click;
-                if (Touch.activeTouches.Count == 2) return ClickType.Pinch;
+                if (Touch.activeTouches.Count == 2) return ClickType.TwoFingerOrScroll;
             }
 
             if (Mouse.current != null && inputDevice is not ClickInputDevice.Touch)
             {
                 if (Mouse.current.scroll.ReadValue() == Vector2.zero) return ClickType.Click;
-                else return ClickType.Pinch;
+                else return ClickType.TwoFingerOrScroll;
             }
 
             return ClickType.None;

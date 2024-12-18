@@ -101,12 +101,12 @@ namespace MenuUI.Scripts.SoulHome
                 //Debug.Log(Touch.activeFingers[0].screenPosition);
                 if (ClickStateHandler.GetClickType() is ClickType.Click)
                 RayPoint(clickState);
-                else if(ClickStateHandler.GetClickType() is ClickType.Pinch)
+                else if(ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll)
                 {
                     Debug.LogWarning("Scroll Test");
                     Debug.LogWarning(Mouse.current.scroll.ReadValue());
                     float distance = ClickStateHandler.GetPinchDistance();
-                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Pinch)
+                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.TwoFingerOrScroll)
                     {
                         _soulHomeTower.PinchZoom(distance, false);
                     }
