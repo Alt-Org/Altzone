@@ -12,13 +12,6 @@ public class Chat : MonoBehaviour
     public GameObject clanChat;
     private GameObject currentContent;
 
-    private GameObject selectedMessage;
-    public GameObject deletedMessage;
-
-    [Header("Delete Ui")]
-    public Button deleteButton;
-    public GameObject deleteThisMessage;
-
     [Header("InputField")]
     public TMP_InputField inputField;
 
@@ -40,15 +33,14 @@ public class Chat : MonoBehaviour
 
     private bool shouldScroll = false;
 
+    private GameObject selectedMessage;
+
     [Header("Commands")]
     public string delete = "/deleteMessage";
     public string deleteAllMessages = "/clear";
 
-    private int messageIDCounter = 0;
-    private Dictionary<int, GameObject> messageByID = new Dictionary<int, GameObject>();
-
-
     private  Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
+
 
     private void Start()
     {
@@ -59,8 +51,25 @@ public class Chat : MonoBehaviour
         messagesByChat[globalChat] = new List<GameObject>();
         messagesByChat[clanChat] = new List<GameObject>();
 
-        LanguageCahtActive();
+        LanguageChatActive();
     }
+
+    private void Update()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            {
+                GameObject touchedObject = EventSystem.current.currentSelectedGameObject;
+
+                if (touchedObject != null && touchedObject.CompareTag("ChatMessage"))  // Замените "YourTag" на нужный тег
+                {
+                    Debug.Log("Touched UI object with the specified tag ChatMessage");
+                }
+            }
+        }
+    }
+
     public void SendChatMessage()
     {
         if (currentContent == null)
@@ -128,27 +137,17 @@ public class Chat : MonoBehaviour
                 Debug.LogError("TMP_Text-komponenttia ei löytynyt prefabista!");
             }
 
-            Button button = newMessage.GetComponent<Button>();
-            if (button != null)
-            {
-                button.onClick.RemoveAllListeners(); 
-                button.onClick.AddListener(() => SelectMessage(newMessage));
-            }
-            else
-            {
-                Debug.LogWarning("Button component not found on the message prefab!");
-            }
+            AddMessageInteraction(newMessage);
 
             messagesByChat[currentContent].Add(newMessage);
-            shouldScroll = true;
 
+            shouldScroll = true;
             if (shouldScroll)
             {
                 if (currentContent != null)
                 {
                     Canvas.ForceUpdateCanvases();
                     currentScrollRect.verticalNormalizedPosition = 0f;
-
                     shouldScroll = false;
                 }
                 else
@@ -160,6 +159,59 @@ public class Chat : MonoBehaviour
         else
         {
             Debug.LogError("Prefab ei ole määritetty.");
+        }
+    }
+
+    public void AddMessageInteraction(GameObject message)
+    {
+        Button button = message.GetComponent<Button>();
+        if (button == null)
+        {
+            button = message.AddComponent<Button>();
+        }
+
+        button.onClick.AddListener(() => SelectMessage(message)); // Обработка выбора сообщения
+    }
+
+    public void SelectMessage(GameObject message)
+    {
+        if (selectedMessage != null)
+        {
+            DeselectMessage(selectedMessage);
+        }
+
+        selectedMessage = message;
+        HighlightMessage(selectedMessage);
+    }
+
+    private void DeselectMessage(GameObject message)
+    {
+        if (message.GetComponent<Image>() != null)
+        {
+            message.GetComponent<Image>().color = Color.white;
+        }
+    }
+
+    private void HighlightMessage(GameObject message)
+    {
+        if (message.GetComponent<Image>() != null)
+        {
+            message.GetComponent<Image>().color = Color.gray;
+        }
+    }
+
+    public void DeleteChoseMessage()
+    {
+        if (selectedMessage != null)
+        {
+            Debug.Log("Удаляем выбранное сообщение");
+            messagesByChat[currentContent].Remove(selectedMessage);
+            Destroy(selectedMessage);
+            selectedMessage = null; // Сбрасываем выбор
+        }
+        else
+        {
+            Debug.LogWarning("Сообщение для удаления не выбрано");
         }
     }
 
@@ -178,13 +230,6 @@ public class Chat : MonoBehaviour
         }
     }
 
-
-    private void SelectMessage(GameObject message)
-    {
-        selectedMessage = message;
-        Debug.Log("Valittu viesti: " + message.name);
-    }
-
     public void DeleteAllMessages()
     {
         Debug.Log("poistaa kaikki viestit");
@@ -196,28 +241,6 @@ public class Chat : MonoBehaviour
         messagesByChat[currentContent].Clear();
     }
 
-    public void DeleteChoseMessage()
-    {
-        if(selectedMessage != null && deletedMessage != null)
-        {
-            Debug.Log("Message " + selectedMessage.name + " has been choised");
-
-   
-            Transform parent = selectedMessage.transform.parent;
-            int siblingIndex = selectedMessage.transform.GetSiblingIndex();
-
-            GameObject newMessage = Instantiate(deletedMessage);
-
-            newMessage.transform.SetSiblingIndex(siblingIndex);
-
-            messagesByChat[currentContent].Add(newMessage);
-
-            selectedMessage = null;
-
-            Debug.Log("The message has been replaced successfully.");
-        }
-
-    }
 
     public void GlobalCahtActive()
     { 
@@ -241,9 +264,9 @@ public class Chat : MonoBehaviour
        
         Debug.Log("Klaani Chat aktivoitu");
     }
-    public void LanguageCahtActive()
+    public void LanguageChatActive()
     {
-        currentContent = languageChat;
+        currentContent = languageChat; 
         currentScrollRect = languageChatScrollRect;
 
         languageChat.SetActive(true);
