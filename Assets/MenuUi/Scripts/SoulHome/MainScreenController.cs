@@ -28,6 +28,12 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _changeHandleButtonTray;
         [SerializeField]
         private GameObject _overlayBar;
+        [SerializeField]
+        private GameObject _verticalItemTray;
+        [SerializeField]
+        private GameObject _horizontalItemTray;
+        [SerializeField]
+        private GameObject _furnitureButtons;
 
         private bool _rotated = false;
 
@@ -97,6 +103,8 @@ namespace MenuUI.Scripts.SoulHome
                 RayPoint(clickState);
                 else if(ClickStateHandler.GetClickType() is ClickType.Pinch)
                 {
+                    Debug.LogWarning("Scroll Test");
+                    Debug.LogWarning(Mouse.current.scroll.ReadValue());
                     float distance = ClickStateHandler.GetPinchDistance();
                     if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Pinch)
                     {
@@ -441,11 +449,11 @@ namespace MenuUI.Scripts.SoulHome
 
         private GameObject GetVerticalTray()
         {
-            return transform.Find("ItemtrayVertical").gameObject;
+            return _verticalItemTray.gameObject;
         }
         private GameObject GetHorizontalTray()
         {
-            return transform.Find("ItemtrayHorizontal").gameObject;
+            return _horizontalItemTray.gameObject;
         }
 
         private void SetFurnitureButtons()
@@ -527,7 +535,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.4f);
+                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.1f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else
@@ -672,13 +680,13 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_soulHomeTower.SelectedFurniture != null)
             {
-                transform.Find("FurnitureButtons").Find("RotateFurniture").GetComponent<Button>().interactable = true;
-                transform.Find("FurnitureButtons").Find("SetFurniture").GetComponent<Button>().interactable = true;
+                _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = true;
+                _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = true;
             }
             else
             {
-                transform.Find("FurnitureButtons").Find("RotateFurniture").GetComponent<Button>().interactable = false;
-                transform.Find("FurnitureButtons").Find("SetFurniture").GetComponent<Button>().interactable = false;
+                _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = false;
+                _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = false;
             }
         }
         public void SetHoverButtons(Vector3 relPos)
