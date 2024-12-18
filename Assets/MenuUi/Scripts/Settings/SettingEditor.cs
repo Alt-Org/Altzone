@@ -7,7 +7,7 @@ public class SettingEditor : MonoBehaviour
     private SettingsCarrier carrier = SettingsCarrier.Instance;
     private MainMenuController mainMenuController = null;
 
-    [SerializeField] private Button[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
+    [SerializeField] private Toggle[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
     [SerializeField] private Toggle _showButtonLabelsToggle;
@@ -56,11 +56,11 @@ public class SettingEditor : MonoBehaviour
     public void SetFPSButtons()
     {
         if (Application.targetFrameRate == Screen.currentResolution.refreshRate)
-            fpsButtons[0].onClick.Invoke();
+            fpsButtons[0].isOn = true;
         else if (Application.targetFrameRate == 60)
-            fpsButtons[1].onClick.Invoke();
+            fpsButtons[1].isOn = true;
         else if (Application.targetFrameRate == 30)
-            fpsButtons[2].onClick.Invoke();
+            fpsButtons[2].isOn = true;
     }
 
     private float RoundToTwoDecimals(float toRound)

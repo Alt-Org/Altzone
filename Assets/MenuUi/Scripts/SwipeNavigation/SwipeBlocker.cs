@@ -16,7 +16,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         void Start()
         {
             if (_swipe == null)
-                _swipe = transform.root.Find("MainMenuViewSwipe")?.Find("Scroll View").GetComponent<SwipeUI>();
+                _swipe = FindObjectOfType<SwipeUI>(true);
         }
 
         // Update is called once per frame

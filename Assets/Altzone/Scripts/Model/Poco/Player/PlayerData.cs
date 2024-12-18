@@ -36,7 +36,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         [PrimaryKey] public string Id;
         [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
         [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[5];
+        [ForeignKey(nameof(CustomCharacter)), Optional] public int[] SelectedCharacterIds = new int[3];
         [Unique] public string Name;
 
         private List<CustomCharacter> _characterList;
@@ -83,7 +83,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                     if (id == 0) continue;
                     list.Add(CustomCharacters.FirstOrDefault(x => x.Id == (CharacterID)id));
                 }
-                while(list.Count < 5)
+                while(list.Count < 3)
                 {
                     list.Add(CustomCharacter.CreateEmpty());
                 }
@@ -91,6 +91,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
         }
+
+
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, int[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier)
         {

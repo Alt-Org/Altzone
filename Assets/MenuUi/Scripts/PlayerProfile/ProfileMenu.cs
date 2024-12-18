@@ -13,12 +13,10 @@ using System.Runtime.CompilerServices;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.InputSystem.HID;
 using System.IO;
+using UnityEngine.EventSystems;
 
 public class ProfileMenu : MonoBehaviour
-
 {
-
-
     [Header("Text")]
     [SerializeField] private string loggedOutPlayerText;
     [SerializeField] private string _loggedOutplayerClanNameText;
@@ -38,42 +36,42 @@ public class ProfileMenu : MonoBehaviour
     [SerializeField] private TMP_InputField _LifeQuoteInputField;
     [SerializeField] private TMP_InputField _LoreInputField;
 
+    [Header("Clan Button")]
+    [SerializeField] private Button _ClanURLButton;
+    [SerializeField] private TextMeshProUGUI _ClanButtonText;
 
-
-    [Header("savebutton")]
+    [Header("Save Button")]
     [SerializeField] private Button _saveEditsButton;
 
+    [Header("Add Friend Button")]
+    [SerializeField] private Button _addFriendButton;
+
+    [Header("Others")]
 
     [SerializeField] private PlayStyle _playStyle;
 
-    //[Header("Images")]
-    // [SerializeField] private GameObject _BattleCharacter = new GameObject();
-
-    // private Sprite Img;
+    public TextMeshProUGUI textMeshPro;
 
     private int tempLocalSaveTime;
     private float tempLocalSaveSecondsTime;
     private float tempLocalSaveToCarbon;
     private float tempLocalSaveCarbon;
 
-
     private int minuteCount;
     private float secondsCount;
     private float countToCarbon;
     private float carbonCount;
 
+    private static string _clanID = string.Empty;
+    private string _url = "https://altzone.fi/clans/" + _clanID;
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
 
     private PlayerData _playerData = null;
     private ClanData _clanData = null;
 
-
     private const string _DarkOrange = "#FF6A00";
     private const string _Orange = "#FFA100";
-
-
-
 
     private ServerPlayer _player;
 
@@ -81,7 +79,6 @@ public class ProfileMenu : MonoBehaviour
     {
         updateTime();
     }
-
 
     private void updateTime()
     {
@@ -93,15 +90,12 @@ public class ProfileMenu : MonoBehaviour
         {
             _TimePlayedText.text = $"Alle 1 min";
         }
-
         else
         {
             _TimePlayedText.text = $"{minuteCount} min";
         }
 
-
-
-        // Tarkistaa onko kg vai g
+        // Hiilijalanjäljen näyttäminen g tai kg
         float carbonDisplay = CarbonFootprint.CarbonCount;
         string carbonUnit = "g";
 
@@ -113,20 +107,22 @@ public class ProfileMenu : MonoBehaviour
 
         _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
 
-        // Päivittää minuutin välein peliajan.
+        // Päivittää peliajan
         if (secondsCount >= 60f)
         {
             minuteCount++;
+            SaveMinutes();
             secondsCount = 0;
         }
     }
 
     private void OnEnable()
     {
+        Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
         Debug.Log($"Initial LifeQuote text: {_LifeQuoteInputField.text}");
         LoadInputFromFile();
+        LoadMinutes();
 
-        //tempLocalSaveTime
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
         _player = ServerManager.Instance.Player;
 
@@ -134,9 +130,6 @@ public class ProfileMenu : MonoBehaviour
             SetPlayerProfileValues(false);
         else
             SetPlayerProfileValues(true);
-
-
-
     }
 
     private void Reset()
@@ -147,13 +140,9 @@ public class ProfileMenu : MonoBehaviour
         _LosesText.text = loggedOutLosesText;
         _WinsText.text = loggedOutWinsText;
         _CarbonText.text = loggedOutCarbonText;
-
     }
 
-
-
-
-    //  Saves lifequote and lore inputfields. (Playstyle saving is in its own file, doesn't require clicking the save button
+    // Tallentaa lifequote ja lore inputkentät
     public void SaveInputToFile()
     {
         if (_LifeQuoteInputField != null)
@@ -171,9 +160,10 @@ public class ProfileMenu : MonoBehaviour
             File.WriteAllText(path, lore);
             Debug.Log($"Saved Lore: {lore} at {path}");
         }
+
     }
 
-    // Loads saved files.
+    // Lataa tallennetut tiedostot
     public void LoadInputFromFile()
     {
         string quotePath = Path.Combine(Application.persistentDataPath, "LifeQuote.txt");
@@ -189,22 +179,23 @@ public class ProfileMenu : MonoBehaviour
         }
         else
         {
-            Debug.Log("No LifeQuote file found.");
+            Debug.Log("No quote found.");
         }
 
         if (File.Exists(lorePath))
         {
             string loadedLore = File.ReadAllText(lorePath);
-            Debug.Log($"Loaded Life Quote: {loadedLore} from {lorePath}");
+            Debug.Log($"Loaded Lore: {loadedLore} from {lorePath}");
             if (_LoreInputField != null)
             {
                 _LoreInputField.text = loadedLore;
             }
         }
+        else
+        {
+            Debug.Log("No lore found.");
+        }
     }
-
-
-
 
     private void Start()
     {
@@ -214,33 +205,76 @@ public class ProfileMenu : MonoBehaviour
             SaveInputToFile();
         });
 
+        // Asetetaan URL-painikkeen teksti
+        _ClanURLButton.onClick.AddListener(OpenClanURL);
+
         LoadInputFromFile();
+        LoadMinutes();
     }
 
-
-
-
+    // Avaa klaanin URL
+    private void OpenClanURL()
+    {
+        if (_clanData != null && !string.IsNullOrEmpty(_clanID))
+        {
+            string url = "https://altzone.fi/clans/" + _clanID;
+            Application.OpenURL(url);
+            Debug.Log($"Avaa URL: {url}");
+        }
+        else
+        {
+            Debug.LogError("Klaanitiedot puuttuvat.");
+        }
+    }
 
     /// <summary>
     /// Sets the name of the Player and stats when log in status changes
     /// </summary>
-    /// <param name="isLoggedIn">Logged in status</param>
     private void SetPlayerProfileValues(bool isLoggedIn)
     {
         if (isLoggedIn)
         {
-            // Gets the player name from DataStorage
-            var store = Storefront.Get();
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerData = p);
-            store.GetClanData(_playerData.ClanId, p => _clanData = p);
-            _playerNameText.text = _playerData.Name;
-            _playerClanNameText.text = _clanData.Name;
 
             //_BattleCharacter.AddComponent(typeof(Image));
             //Img = Resources.Load<Sprite>(playerData.BattleCharacter.Name);
             //_BattleCharacter.GetComponent<Image>().sprite = Img;
+            var store = Storefront.Get();
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
+            {
+                if (p == null)
+                {
+                    Debug.LogError("Pelaajatietojen haku epäonnistui.");
+                    return;
+                }
+
+                _playerData = p;
+                _playerNameText.text = _playerData.Name;
+
+                store.GetClanData(_playerData.ClanId, clan =>
+                {
+                    if (clan == null)
+                    {
+                        Debug.LogError("Klaanitietojen haku epäonnistui.");
+                        return;
+                    }
+
+                    _clanData = clan;
+                    _playerClanNameText.text = _clanData.Name;
+
+                    if (_ClanButtonText != null)
+                    {
+                        _clanID = _playerData.ClanId;
+                        _url = "https://altzone.fi/clans/" + _playerData.ClanId;
+                        _ClanButtonText.text = _playerClanNameText.text; // Asetetaan painikkeen teksti
+                    }
+                    else
+                    {
+                        Debug.LogError("Klaanin URL-tekstiobjekti ei ole asetettu.");
+                    }
+                });
+            });
+
             updateTime();
-            //_LosesWinsText.text = ;
         }
         else
         {
@@ -249,5 +283,26 @@ public class ProfileMenu : MonoBehaviour
     }
 
 
-}
+    private void SaveMinutes()
+    {
+        PlayerPrefs.SetInt("Minutes", minuteCount);
+        PlayerPrefs.Save();
+        Debug.Log("Minutes saved.");
+    }
 
+    private void LoadMinutes()
+    {
+        if (PlayerPrefs.HasKey("Minutes"))
+        {
+            minuteCount = PlayerPrefs.GetInt("Minutes");
+            Debug.Log($"Minutes successfully loaded: {minuteCount}");
+        }
+        else
+        {
+            Debug.Log("No saved minutes found.");
+        }
+    }
+
+
+
+}

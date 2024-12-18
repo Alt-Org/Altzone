@@ -27,20 +27,16 @@ namespace MenuUi.Scripts.Settings
             TextSize size = _settingsCarrier.Textsize;
             switch (size)
             {
-                case TextSize.None:
-                    if (nextSize) _settingsCarrier.SetTextSize(TextSize.Small);
-                    else _settingsCarrier.SetTextSize(TextSize.Large);
-                    break;
                 case TextSize.Small:
                     if (nextSize) _settingsCarrier.SetTextSize(TextSize.Medium);
-                    else _settingsCarrier.SetTextSize(TextSize.None);
+                    else _settingsCarrier.SetTextSize(TextSize.Large);
                     break;
                 case TextSize.Medium:
                     if (nextSize) _settingsCarrier.SetTextSize(TextSize.Large);
                     else _settingsCarrier.SetTextSize(TextSize.Small);
                     break;
                 case TextSize.Large:
-                    if (nextSize) _settingsCarrier.SetTextSize(TextSize.None);
+                    if (nextSize) _settingsCarrier.SetTextSize(TextSize.Small);
                     else _settingsCarrier.SetTextSize(TextSize.Medium);
                     break;
             }
@@ -53,9 +49,6 @@ namespace MenuUi.Scripts.Settings
         {
             switch (_settingsCarrier.Textsize)
             {
-                case TextSize.None:
-                    _currentSize.text = "Pois p��lt�";
-                    break;
                 case TextSize.Small:
                     _currentSize.text = "Pieni";
                     break;

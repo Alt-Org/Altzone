@@ -17,7 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TextMeshProUGUI _characterNameText;
 
         private CharacterID _id;
-        
+
         private Button button;
         private ColorBlock originalColors;
 
@@ -36,6 +36,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private SwipeBlockType _blockType = SwipeBlockType.All;
         [SerializeField]
         private SwipeUI _swipe;
+        public int characterTextCounter;
 
         public CharacterID Id { get => _id; }
 
@@ -49,6 +50,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 initialSlot = transform.parent;
             }
+            CheckSelectedCharacterSlotText();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -58,7 +60,6 @@ namespace MenuUi.Scripts.CharacterGallery
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
             _backgroundSpriteImage.raycastTarget = false;
-            button.interactable = false;
 
             // Set the button colors to make the background transparent during dragging
             ColorBlock transparentColors = originalColors;
@@ -72,6 +73,70 @@ namespace MenuUi.Scripts.CharacterGallery
         public void OnDrag(PointerEventData eventData)
         {
             transform.position = eventData.position;
+        }
+        public void CheckSelectedCharacterSlotText()
+        {
+            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
+            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
+            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
+
+            /*characterTextCounter = (isAdditive) ? characterTextCounter + 1 : characterTextCounter - 1;
+            
+            if (characterTextCounter < 0)
+                characterTextCounter = 0;
+
+            if (characterTextCounter > 3)
+                characterTextCounter = 3;*/
+
+            if (_modelView._CurSelectedCharacterSlot[2].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (_modelView._CurSelectedCharacterSlot[1].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }
+            else if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+
+            /*if (characterTextCounter > 2)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(false);
+            }
+            else if (characterTextCounter > 1)
+            {
+                text1.SetActive(false);
+                text2.SetActive(false);
+                text3.SetActive(true);
+            }
+            else if (characterTextCounter > 0)
+            {
+                text1.SetActive(false);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }
+            else
+            {
+                text1.SetActive(true);
+                text2.SetActive(true);
+                text3.SetActive(true);
+            }*/
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -142,7 +207,6 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             _backgroundSpriteImage.raycastTarget = true;
-            button.interactable = true;
             button.colors = originalColors;
 
             if (transform.parent != previousParent)
@@ -150,7 +214,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 previousParent = transform.parent;
                 HandleParentChange(previousParent);
             }
-            
+            CheckSelectedCharacterSlotText();
         }
 
         private void HandleParentChange(Transform newParent)
@@ -164,7 +228,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     OnParentChanged?.Invoke(newParent);
                 }
             }
-            
+
         }
 
 
