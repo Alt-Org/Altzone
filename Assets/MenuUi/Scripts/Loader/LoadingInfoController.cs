@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public enum InfoType
+public enum LogInStatus
 {
+    None,
     LogIn,
     CheckSettingsData,
     FetchPlayerData,
     FetchClanData,
-    Finished
+    Finished,
+    MovingToMain
 }
 
 namespace MenuUi.Scripts.Loader
@@ -20,6 +23,23 @@ namespace MenuUi.Scripts.Loader
         private TextMeshProUGUI _loadingText;
         [SerializeField]
         private TextMeshProUGUI _infoText;
+        [SerializeField]
+        private Button _moveToMainButton;
+
+        private LogInStatus _status = LogInStatus.None;
+
+        public LogInStatus Status { get => _status;
+            set
+            {
+                _status = value;
+                if (_status == LogInStatus.Finished) _moveToMainButton.interactable = true;
+                else _moveToMainButton.interactable = false;
+                SetInfoText(_status);
+            }
+        }
+
+        public delegate void MoveToMainEvent();
+        public event MoveToMainEvent OnMoveToMain;
 
         // Start is called before the first frame update
         void Start()
@@ -29,26 +49,37 @@ namespace MenuUi.Scripts.Loader
 
         private void OnEnable()
         {
+            _moveToMainButton.onClick.AddListener(MoveToMain);
             StartCoroutine(LoadingProgress());
         }
 
-        public void SetInfoText(InfoType type)
+        public void LogIn()
+        {
+            gameObject.SetActive(true);
+            if (!_loadingText.gameObject.activeSelf) StartCoroutine(LoadingProgress());
+            Status = LogInStatus.LogIn;
+        }
+
+        public void SetInfoText(LogInStatus type)
         {
             switch (type)
             {
-                case InfoType.LogIn:
+                case LogInStatus.LogIn:
                     _infoText.text = "Kirjaudutaan sisään";
                     break;
-                case InfoType.FetchPlayerData:
+                case LogInStatus.FetchPlayerData:
                     _infoText.text = "Haetaan pelaajan tietoja";
                     break;
-                case InfoType.FetchClanData:
+                case LogInStatus.FetchClanData:
                     _infoText.text = "Haetaan klaanin tietoja";
                     break;
-                case InfoType.Finished:
+                case LogInStatus.Finished:
+                    _infoText.text = "Paina tästä siirtyäksesi pääikkunaan.";
+                    break;
+                case LogInStatus.MovingToMain:
                     _infoText.text = "Siirrytään pääikkunaan";
                     break;
-                case InfoType.CheckSettingsData:
+                case LogInStatus.CheckSettingsData:
                     _infoText.text = "Tarkistetaan asetuksia";
                     break;
                 default:
@@ -59,6 +90,20 @@ namespace MenuUi.Scripts.Loader
 
         }
 
+        public void LoadReady()
+        {
+            Status = LogInStatus.Finished;
+            StopCoroutine(LoadingProgress());
+            _loadingText.gameObject.SetActive(false);
+        }
+
+        public void MoveToMain()
+        {
+            if (Status != LogInStatus.Finished) return;
+            Status = LogInStatus.MovingToMain;
+            OnMoveToMain?.Invoke();
+        }
+
         public void DisableInfo()
         {
             gameObject.SetActive(false);
@@ -66,6 +111,7 @@ namespace MenuUi.Scripts.Loader
 
         private IEnumerator LoadingProgress()
         {
+            _loadingText.gameObject.SetActive(true);
             int i=0;
             while (true)
             {
