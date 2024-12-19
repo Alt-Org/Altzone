@@ -92,7 +92,7 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         private void Update()
         {
-            if (!PhotonRealtimeClient.InLobby)
+            if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
             {
                 _view.LobbyText = "Wait";
                 return;

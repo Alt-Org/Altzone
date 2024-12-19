@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,25 +18,25 @@ namespace MenuUI.Scripts.Lobby.InRoom
     /// </summary>
     public class RoomSetupManager : MonoBehaviour
     {
-        private const string PlayerPositionKey = PhotonBattleLobbyRoom.PlayerPositionKey;
-        private const string PlayerMainSkillKey = PhotonBattleLobbyRoom.PlayerPrefabIdKey;
-        private const string PlayerCharactersKey = PhotonBattleLobbyRoom.PlayerPrefabIdsKey;
-        private const string PlayerStatsKey = PhotonBattleLobbyRoom.PlayerStatsKey;
+        private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
+        private const string PlayerMainSkillKey = PhotonLobbyRoom.PlayerPrefabIdKey;
+        private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
+        private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
 
-        private const int PlayerPositionGuest = PhotonBattleLobbyRoom.PlayerPositionGuest;
-        private const int PlayerPosition1 = PhotonBattleLobbyRoom.PlayerPosition1;
-        private const int PlayerPosition2 = PhotonBattleLobbyRoom.PlayerPosition2;
-        private const int PlayerPosition3 = PhotonBattleLobbyRoom.PlayerPosition3;
-        private const int PlayerPosition4 = PhotonBattleLobbyRoom.PlayerPosition4;
-        private const int PlayerPositionSpectator = PhotonBattleLobbyRoom.PlayerPositionSpectator;
+        private const int PlayerPositionGuest = PhotonBattleRoom.PlayerPositionGuest;
+        private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
+        private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
+        private const int PlayerPosition3 = PhotonBattleRoom.PlayerPosition3;
+        private const int PlayerPosition4 = PhotonBattleRoom.PlayerPosition4;
+        private const int PlayerPositionSpectator = PhotonBattleRoom.PlayerPositionSpectator;
 
-        private const string TeamBlueNameKey = PhotonBattleLobbyRoom.TeamAlphaNameKey;
-        private const string TeamRedNameKey = PhotonBattleLobbyRoom.TeamBetaNameKey;
-        private const int TeamBlueValue = PhotonBattleLobbyRoom.TeamAlphaValue;
-        private const int TeamRedValue = PhotonBattleLobbyRoom.TeamBetaValue;
+        private const string TeamBlueNameKey = PhotonBattleRoom.TeamAlphaNameKey;
+        private const string TeamRedNameKey = PhotonBattleRoom.TeamBetaNameKey;
+        private const int TeamBlueValue = PhotonBattleRoom.TeamAlphaValue;
+        private const int TeamRedValue = PhotonBattleRoom.TeamBetaValue;
 
-        [Header("Settings"), SerializeField] private Text _upperTeamText;
-        [SerializeField] private Text _lowerTeamText;
+        [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
+        [SerializeField] private TextMeshProUGUI _lowerTeamText;
         [SerializeField] private Button _buttonPlayerP1;
         [SerializeField] private Button _buttonPlayerP2;
         [SerializeField] private Button _buttonPlayerP3;
@@ -79,10 +81,10 @@ namespace MenuUI.Scripts.Lobby.InRoom
             _buttonPlayerP2.interactable = false;
             _buttonPlayerP3.interactable = false;
             _buttonPlayerP4.interactable = false;
-            _buttonGuest.interactable = false;
-            _buttonSpectator.interactable = false;
+            //_buttonGuest.interactable = false;
+            //_buttonSpectator.interactable = false;
             _buttonStartPlay.interactable = false;
-            _buttonRaidTest.interactable = false;
+            //_buttonRaidTest.interactable = false;
 
             LobbyManager.LobbyOnPlayerEnteredRoom += OnPlayerEnteredRoom;
             LobbyManager.LobbyOnPlayerLeftRoom += OnPlayerLeftRoom;
@@ -128,7 +130,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
                 Debug.Log($"{battleCharacter[0]}");
                 int[] characterIds = new int[5];
                 int[] characterStats = new int[25];
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     characterIds[i] = (int)battleCharacter[i].Id;
                     characterStats[i * 5] = battleCharacter[i].Hp;
@@ -364,10 +366,11 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private static void SetButton(Selectable selectable, bool interactable, string caption)
         {
+            if (selectable == null) return;
             selectable.interactable = interactable;
             if (!string.IsNullOrEmpty(caption))
             {
-                selectable.GetComponentInChildren<Text>().text = caption;
+                selectable.GetComponentInChildren<TextMeshProUGUI>().text = caption;
             }
         }
 

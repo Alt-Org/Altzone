@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby.Wrappers;

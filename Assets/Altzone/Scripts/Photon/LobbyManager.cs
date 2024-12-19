@@ -545,7 +545,13 @@ namespace Altzone.Scripts.Lobby
         }
 
         public void OnConnected() { LobbyOnConnected?.Invoke(); }
-        public void OnConnectedToMaster() { LobbyOnConnectedToMaster?.Invoke(); }
+        public void OnConnectedToMaster() {
+            LobbyOnConnectedToMaster?.Invoke();
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+        }
         public void OnRegionListReceived(RegionHandler regionHandler) { LobbyOnRegionListReceived?.Invoke(); }
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { LobbyOnCustomAuthenticationResponse?.Invoke(data); }
         public void OnCustomAuthenticationFailed(string debugMessage) { LobbyOnCustomAuthenticationFailed?.Invoke(debugMessage); }
