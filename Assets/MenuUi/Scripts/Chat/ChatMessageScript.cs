@@ -11,14 +11,16 @@ public class ChatMessageScript : MonoBehaviour
     public TextMeshProUGUI messageText;
     public RectTransform panel; 
 
-    public float heightStep = 30f;
+    public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lis‰rivin myˆt‰.
 
-    private int lastLineCount = 0;
-    private float initialHeight;
+    private int lastLineCount = 0; // Tallentaa viimeksi lasketun rivim‰‰r‰n.
+    private float initialHeight; // Alkuper‰inen taustan korkeus, joka asetetaan alussa.
+
 
     private void Start()
     {
-        if(textBackground != null && panel != null)
+        // Alustetaan alkuper‰inen taustan korkeus ja paneelin koko.
+        if (textBackground != null && panel != null)
         {
             initialHeight = textBackground.sizeDelta.y;
 
@@ -33,11 +35,12 @@ public class ChatMessageScript : MonoBehaviour
 
     public void MessageSetHeight()
     {
+        // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivim‰‰r‰n mukaan.
         if (textBackground != null && messageText != null)
         {
-            int lineCount = messageText.textInfo.lineCount;
+            int lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivim‰‰r‰ tekstist‰.
 
-            if(lineCount != lastLineCount)
+            if (lineCount != lastLineCount)
             {
                 float newHeight = initialHeight + (lineCount - 1) * heightStep;
 

@@ -10,10 +10,13 @@ public class Chat : MonoBehaviour
     public GameObject languageChat; 
     public GameObject globalChat;
     public GameObject clanChat;
-    private GameObject currentContent;
+    private GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("InputField")]
     public TMP_InputField inputField;
+
+    [Header("Delete Ui")]
+    public GameObject deleteButtons;
 
     [Header("Prefab")]
     public GameObject messagePrefabBlue;
@@ -27,25 +30,27 @@ public class Chat : MonoBehaviour
     public ScrollRect globalChatScrollRect;
     public ScrollRect clanChatScrollRect;
 
-    private ScrollRect currentScrollRect;
+    private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
-    private GameObject currentPrefab;
+    private GameObject currentPrefab; // Tällä hetkellä valittu message Prefab
 
     private bool shouldScroll = false;
 
-    private GameObject selectedMessage;
+    private GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
     [Header("Commands")]
     public string delete = "/deleteMessage";
     public string deleteAllMessages = "/clear";
 
-    private  Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
+    // Sanakirja (List), jossa viestit järjestetään chat-tyypin mukaan
+    private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
 
 
     private void Start()
     {
+        // Alustaa chatit ja asettaa kielichatin oletukseksi
         currentContent = languageChat;
-        Debug.Log("Активен язык чат");
+        Debug.Log("Language Chat is Active");
 
         messagesByChat[languageChat] = new List<GameObject>();
         messagesByChat[globalChat] = new List<GameObject>();
@@ -56,13 +61,14 @@ public class Chat : MonoBehaviour
 
     private void Update()
     {
+        // Tarkistaa kosketuksen ja valitsee viestin, jos sitä klikataan
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             {
                 GameObject touchedObject = EventSystem.current.currentSelectedGameObject;
 
-                if (touchedObject != null && touchedObject.CompareTag("ChatMessage"))  // Замените "YourTag" на нужный тег
+                if (touchedObject != null && touchedObject.CompareTag("ChatMessage")) 
                 {
                     Debug.Log("Touched UI object with the specified tag ChatMessage");
                 }
@@ -72,16 +78,18 @@ public class Chat : MonoBehaviour
 
     public void SendChatMessage()
     {
+        // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
         if (currentContent == null)
         {
             Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
         
-        if (inputField != null && !string.IsNullOrEmpty(inputField.text) && inputField.text.Trim().Length >= 2)
+        if (inputField != null && !string.IsNullOrEmpty(inputField.text) && inputField.text.Trim().Length >= 3)
         {
             string inputText = inputField.text.Trim();
 
-            if(inputText == delete)
+            // Tarkistaa, onko syöte komento
+            if (inputText == delete)
             {
                 Debug.Log("Deleting last message...");
                 DeleteLastMessage();
@@ -106,6 +114,7 @@ public class Chat : MonoBehaviour
         }
     }
 
+    // Asettaa pikaviestin tekstikenttään quickMessage text => InputField text
     public void SendQuickMessage(Button button)
     {
         TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>();
@@ -120,7 +129,7 @@ public class Chat : MonoBehaviour
         }
     }
 
-
+    // Näyttää viestin aktiivisessa chatti-ikkunassa
     public void DisplayMessage(string messageText)
     {
         if (currentPrefab != null)
@@ -141,6 +150,7 @@ public class Chat : MonoBehaviour
 
             messagesByChat[currentContent].Add(newMessage);
 
+            // Vierittää viestinäkymän alas
             shouldScroll = true;
             if (shouldScroll)
             {
@@ -162,6 +172,7 @@ public class Chat : MonoBehaviour
         }
     }
 
+    // Lisää vuorovaikutuksen viestiin (klikkauksen)
     public void AddMessageInteraction(GameObject message)
     {
         Button button = message.GetComponent<Button>();
@@ -170,9 +181,10 @@ public class Chat : MonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message)); // Обработка выбора сообщения
+        button.onClick.AddListener(() => SelectMessage(message)); 
     }
 
+    // Valitsee viestin
     public void SelectMessage(GameObject message)
     {
         if (selectedMessage != null)
@@ -182,16 +194,12 @@ public class Chat : MonoBehaviour
 
         selectedMessage = message;
         HighlightMessage(selectedMessage);
+
+        deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
     }
 
-    private void DeselectMessage(GameObject message)
-    {
-        if (message.GetComponent<Image>() != null)
-        {
-            message.GetComponent<Image>().color = Color.white;
-        }
-    }
 
+    // Korostaa valitun viestin
     private void HighlightMessage(GameObject message)
     {
         if (message.GetComponent<Image>() != null)
@@ -200,6 +208,18 @@ public class Chat : MonoBehaviour
         }
     }
 
+    // Poistaa valinnan viestistä
+    private void DeselectMessage(GameObject message)
+    {
+        if (message.GetComponent<Image>() != null)
+        {
+            message.GetComponent<Image>().color = Color.white;
+        }
+
+        deleteButtons.SetActive(false);
+    }
+
+    // Poistaa valitun viestin
     public void DeleteChoseMessage()
     {
         if (selectedMessage != null)
@@ -207,7 +227,10 @@ public class Chat : MonoBehaviour
             Debug.Log("Удаляем выбранное сообщение");
             messagesByChat[currentContent].Remove(selectedMessage);
             Destroy(selectedMessage);
-            selectedMessage = null; // Сбрасываем выбор
+            selectedMessage = null;
+
+            //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
+            deleteButtons.SetActive(false);
         }
         else
         {
@@ -215,6 +238,7 @@ public class Chat : MonoBehaviour
         }
     }
 
+    // Poistaa viimeisen viestin
     public void DeleteLastMessage()
     {
         if (messagesByChat[currentContent].Count > 0)
@@ -230,6 +254,7 @@ public class Chat : MonoBehaviour
         }
     }
 
+    // Poistaa kaikki viestit aktiivisessa chatissa
     public void DeleteAllMessages()
     {
         Debug.Log("poistaa kaikki viestit");
@@ -241,7 +266,7 @@ public class Chat : MonoBehaviour
         messagesByChat[currentContent].Clear();
     }
 
-
+    // Aktivoi globaalin chatin
     public void GlobalCahtActive()
     { 
         currentContent = globalChat;
@@ -253,6 +278,8 @@ public class Chat : MonoBehaviour
 
         Debug.Log("Global Chat aktivoitu");
     }
+
+    // Aktivoi klaanichatin
     public void ClanCahtActive()
     {
         currentContent = clanChat;
@@ -264,6 +291,8 @@ public class Chat : MonoBehaviour
        
         Debug.Log("Klaani Chat aktivoitu");
     }
+
+    // Aktivoi kielichatin
     public void LanguageChatActive()
     {
         currentContent = languageChat; 
@@ -276,9 +305,14 @@ public class Chat : MonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
+    // Asettaa sinisen viestipohjan ja lähettää viestin
     public void SetBluePrefab() { currentPrefab = messagePrefabBlue; SendChatMessage(); }
+    // Asettaa punaisen viestipohjan ja lähettää viestin
     public void SetRedPrefab() { currentPrefab = messagePrefabRed; SendChatMessage(); }
+    // Asettaa keltaisen viestipohjan ja lähettää viestin
     public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; SendChatMessage(); }
+    // Asettaa oranssin viestipohjan ja lähettää viestin
     public void SetOrangePrefab() { currentPrefab = messagePrefabOrange; SendChatMessage(); }
+    // Asettaa vaaleanpunaisen viestipohjan ja lähettää viestin
     public void SetPinkPrefab() { currentPrefab = messagePrefabPink; SendChatMessage(); }
 }
