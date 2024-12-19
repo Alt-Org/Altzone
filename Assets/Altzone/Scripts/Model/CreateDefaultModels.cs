@@ -47,9 +47,7 @@ namespace Altzone.Scripts.Model
                 }
                 clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
             }*/
-            ReadOnlyCollection<GameFurniture> baseFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => baseFurniture = result);
-            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(baseFurniture);
+            clanData.Inventory.Furniture = CreateDefaultDebugFurniture(new ReadOnlyCollection<GameFurniture>(furniture));
             /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
             var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
             var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
