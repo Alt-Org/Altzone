@@ -84,16 +84,6 @@ public class CharacterStatWindow : MonoBehaviour
     private PlayerData _playerData;
     private CharacterID _characterId;
 
-
-    //Working methods for increasing and decreasing stat level
-    //Diamonds for each stat not in use anymore. Now there's only one amount of diamonds that is used
-    //to buy new statpoints. Not implemented yet. Old codes are commented out.
-    //Serializefields must be check over to see if there's something not needed anymore.
-    //Amounts for victories and losses needs to be implemented.
-    //character size stat needs to be implemented.
-
-
-
     private void OnEnable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
@@ -564,18 +554,15 @@ public class CharacterStatWindow : MonoBehaviour
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
-        //Should this be CustomCharacter?
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
                    customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
                    customCharacter.Defence, customCharacter.Hp);
         CharacterArtWorkToShow.sprite = galleryCharacter.Image;
         CharacterArtWorkForInfoCanva.sprite = galleryCharacter.Image;
 
-
         Debug.Log($"loaded {galleryCharacter.Name}");
 
-        //For the right side window. CharSize not impelemented yet.
-        //These are not working for some reason.
+        //For the right side window. CharSize not impelemented yet.s
         CustomCharacterName.text = CharacterName.text;
         impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
         resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
@@ -637,7 +624,7 @@ public class CharacterStatWindow : MonoBehaviour
         }
     }
 
-    //Button finctionality for stat editing popup
+    //Button functionality for stat editing popup
     private void ActivateStatButtons()
     {
         HidestatEditPopUp();
@@ -645,7 +632,6 @@ public class CharacterStatWindow : MonoBehaviour
         healthPoints.onClick.AddListener(() => EditStatHealthPoints());
         defence.onClick.AddListener(() => EditStatDefence());
         resistance.onClick.AddListener(() => EditStatResistance());
-        //charSize.onClick.AddListener(() => EditStatCharSize();
         speed.onClick.AddListener(() => EditStatSpeed());
     }
     private void EditStatImpactforce()
