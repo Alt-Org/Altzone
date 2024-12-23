@@ -931,6 +931,12 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
+--- !u!1 &110878589 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8847665615427807107, guid: 97e8f0ca20408d042a38f07b90b44946,
+    type: 3}
+  m_PrefabInstance: {fileID: 2118663603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &120694984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3516,7 +3522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &321734677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11116,7 +11122,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2118663603}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 110878589}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -11167,7 +11173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c8eddeab7aa994fb16d41f6142af4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _view: {fileID: 0}
+  _view: {fileID: 110878589}
   _announcerText: {fileID: 2118663606}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
