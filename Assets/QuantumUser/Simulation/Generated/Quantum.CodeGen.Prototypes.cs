@@ -54,7 +54,6 @@ namespace Quantum.Prototypes {
   public unsafe partial class GameSessionPrototype : ComponentPrototype<Quantum.GameSession> {
     public Quantum.QEnum32<GameState> state;
     public FP TimeUntilStart;
-    public QBoolean CountDownStarted;
     partial void MaterializeUser(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.GameSession component = default;
@@ -64,22 +63,6 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.GameSession result, in PrototypeMaterializationContext context = default) {
         result.state = this.state;
         result.TimeUntilStart = this.TimeUntilStart;
-        result.CountDownStarted = this.CountDownStarted;
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.Goal))]
-  public unsafe partial class GoalPrototype : ComponentPrototype<Quantum.Goal> {
-    public AssetRef<GoalConfig> goalConfig;
-    partial void MaterializeUser(Frame frame, ref Quantum.Goal result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.Goal component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.Goal result, in PrototypeMaterializationContext context = default) {
-        result.goalConfig = this.goalConfig;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -88,10 +71,14 @@ namespace Quantum.Prototypes {
   public unsafe partial class InputPrototype : StructPrototype {
     public Button MouseClick;
     public FPVector3 MousePosition;
+    public Button RotateMotion;
+    public FP RotationDirection;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MouseClick = this.MouseClick;
         result.MousePosition = this.MousePosition;
+        result.RotateMotion = this.RotateMotion;
+        result.RotationDirection = this.RotationDirection;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -112,51 +99,6 @@ namespace Quantum.Prototypes {
         result.Speed = this.Speed;
         result.TargetPosition = this.TargetPosition;
         MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.Projectile))]
-  public unsafe partial class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
-    public AssetRef<ProjectileConfig> ProjectileConfig;
-    public QBoolean IsLaunched;
-    partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.Projectile component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context = default) {
-        result.ProjectileConfig = this.ProjectileConfig;
-        result.IsLaunched = this.IsLaunched;
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.ProjectileSpawner))]
-  public unsafe partial class ProjectileSpawnerPrototype : ComponentPrototype<Quantum.ProjectileSpawner> {
-    public QBoolean HasSpawned;
-    partial void MaterializeUser(Frame frame, ref Quantum.ProjectileSpawner result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.ProjectileSpawner component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.ProjectileSpawner result, in PrototypeMaterializationContext context = default) {
-        result.HasSpawned = this.HasSpawned;
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.SoulWall))]
-  public unsafe class SoulWallPrototype : ComponentPrototype<Quantum.SoulWall> {
-    public MapEntityId ChildEntity;
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.SoulWall component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.SoulWall result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.ChildEntity, in context, out result.ChildEntity);
     }
   }
   [System.SerializableAttribute()]

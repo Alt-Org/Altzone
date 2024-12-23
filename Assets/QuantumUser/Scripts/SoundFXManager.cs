@@ -9,12 +9,12 @@ namespace QuantumUser.Scripts
     {
         public static SoundFXManager instance;
 
-        [SerializeField] private AudioSource audioSource; // Reference to a preconfigured AudioSource
+        [SerializeField] private AudioSource _audioSource; // Reference to a preconfigured AudioSource
 
-        [SerializeField] private AudioClip soulWallHitClip;
-        [SerializeField] private AudioClip goalHitClip;
-        [SerializeField] private AudioClip sideWallHitClip;
-        [SerializeField] private AudioClip wallBroken;
+        [SerializeField] private AudioClip _soulWallHitClip;
+        [SerializeField] private AudioClip _goalHitClip;
+        [SerializeField] private AudioClip _sideWallHitClip;
+        [SerializeField] private AudioClip _wallBroken;
         private void Awake()
         {
             if (instance == null)
@@ -35,39 +35,30 @@ namespace QuantumUser.Scripts
 
         private void OnPlaySoundEvent(EventPlaySoundEvent e)
         {
-            AudioClip clip = null;
-
             // Map SoundEffect enum to the correct AudioClip
-            switch (e.SoundEffect)
+            AudioClip clip = e.SoundEffect switch
             {
-                case SoundEffect.SoulWallHit:
-                    clip = soulWallHitClip;
-                    break;
-                case SoundEffect.GoalHit:
-                    clip = goalHitClip;
-                    break;
-                case SoundEffect.SideWallHit:
-                    clip = sideWallHitClip;
-                    break;
-                case SoundEffect.WallBroken:
-                    clip = wallBroken;
-                    break;
-                default:
-                    Debug.LogWarning("Unhandled sound effect: " + e.SoundEffect);
-                    return;
+                SoundEffect.SoulWallHit => _soulWallHitClip,
+                SoundEffect.GoalHit     => _goalHitClip,
+                SoundEffect.SideWallHit => _sideWallHitClip,
+                SoundEffect.WallBroken  => _wallBroken,
+                _ => null,
+            };
+
+            if (clip == null)
+            {
+                Debug.LogWarning("Unhandled sound effect: " + e.SoundEffect);
+                return;
             }
 
-            if (clip != null)
-            {
-                PlaySoundFXclip(clip);
-            }
+            PlaySoundFXclip(clip);
         }
 
         private void PlaySoundFXclip(AudioClip clip)
         {
-            if (audioSource != null)
+            if (_audioSource != null)
             {
-                audioSource.PlayOneShot(clip); // Play the sound without affecting other sounds
+                _audioSource.PlayOneShot(clip); // Play the sound without affecting other sounds
             }
             else
             {
