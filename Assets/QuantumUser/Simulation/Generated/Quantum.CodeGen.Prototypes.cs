@@ -71,10 +71,14 @@ namespace Quantum.Prototypes {
   public unsafe partial class InputPrototype : StructPrototype {
     public Button MouseClick;
     public FPVector3 MousePosition;
+    public Button RotateMotion;
+    public FP RotationDirection;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MouseClick = this.MouseClick;
         result.MousePosition = this.MousePosition;
+        result.RotateMotion = this.RotateMotion;
+        result.RotationDirection = this.RotationDirection;
         MaterializeUser(frame, ref result, in context);
     }
   }
