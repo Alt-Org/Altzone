@@ -58,6 +58,8 @@ namespace MenuUI.Scripts.Lobby
         private SimulationConfig _simulationConfig;
         [SerializeField]
         private SystemsConfig _systemsConfig;
+
+        [SerializeField] private ProjectileGameConfig _projectileGameConfig;
         [SerializeField]
         private Map _map;
 
@@ -268,7 +270,8 @@ namespace MenuUI.Scripts.Lobby
             {
                 Map = _map,
                 SimulationConfig = _simulationConfig,
-                SystemsConfig = _systemsConfig
+                SystemsConfig = _systemsConfig,
+                GameConfig = _projectileGameConfig
             };
 
             SessionRunner.Arguments sessionRunnerArguments = new()
