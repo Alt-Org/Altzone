@@ -19,7 +19,6 @@ namespace MenuUi.Scripts.Loader
         // Start is called before the first frame update
         void Start()
         {
-            _player.loopPointReached += CheckOver;
             EnhancedTouchSupport.Enable();
         }
 
@@ -36,12 +35,14 @@ namespace MenuUi.Scripts.Loader
 
         private void OnEnable()
         {
+            _player.loopPointReached += CheckOver;
             PlayIntroVideo();
         }
 
         private void OnDisable()
         {
             if (_videoPlaying) EndIntroVideo();
+            _player.loopPointReached -= CheckOver;
         }
 
         public void PlayIntroVideo()
@@ -67,10 +68,14 @@ namespace MenuUi.Scripts.Loader
 
         void CheckOver(VideoPlayer vp)
         {
-            _videoPlaying = false;
-            Debug.Log($"End video");
-            gameObject.SetActive(false);
-            SignalBus.OnVideoEndSignal();
+            if (_videoPlaying)
+            {
+                _player.Stop();
+                _videoPlaying = false;
+                Debug.Log($"End video");
+                gameObject.SetActive(false);
+                SignalBus.OnVideoEndSignal();
+            }
         }
 
     }

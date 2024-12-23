@@ -8,13 +8,12 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         WholeHead = 0,
         Hair = 1,
-        Eyebrows = 2,
-        Eyes = 3,
-        Nose = 4,
-        Mouth = 5,
-        FacialHair = 6,
-        Body = 7,
-        Hands = 8,
-        Feet = 9,
+        Eyes = 2,
+        Nose = 3,
+        Mouth = 4,
+        FacialHair = 5,
+        Body = 6,
+        Hands = 7,
+        Feet = 8,
     }
 }

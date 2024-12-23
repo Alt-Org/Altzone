@@ -1,116 +1,46 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Player;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class DailyQuest : MonoBehaviour
 {
+    //Variables
+    public int id;
+    private int _amount;
+    private int _coins;
+    private int _points;
 
-    public int taskId = 0;
+    private string _title;
+    private string _content;
 
-    public GameObject unActiveTask;
-    public GameObject activeTask;
+    [Header("DailyQuest Texts")]
+    public TMP_Text questTitle;
+    public TMP_Text questDebugID;
+    public TMP_Text questCoins;
 
     public DailyTaskManager dailyTaskManager;
 
-    public GameObject popUpScreen;
-
-   
-    public TMP_Text titleText;
-    public TMP_Text pointText;
-    public TMP_Text playerNameText;
-    public TMP_Text idText;
-    // active texts
-    public TMP_Text titleActiveText;
-    public TMP_Text pointActiveText;
-    public TMP_Text idActiveText;
-
-    public Button questSelectButton;
-    public Slider taskGoalSlider;
-
-    public void Start()
+    public void GetQuestData(int ids, int amount, int coins, int points, string title, string content)
     {
-
-        questSelectButton.onClick.AddListener(() =>
-        {
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-            if (playerData.dailyTaskId < 1)
-            {
-                popUpScreen.GetComponent<PopupManager>().EnableDailyPopup(taskId, this);
-            }
-            else
-            {
-                Debug.Log("You have already chosen a Mission! " + playerData.dailyTaskId);
-            }
-
-        });
+        id = ids;
+        _amount = amount;
+        _coins = coins;
+        _points = points;
+        _title = title;
+        _content = content;
+        PopulateData();
     }
 
-    public void getMissionData(string taskTitle, int taskPoints, int taskGoal)
+    public void QuestAccept()
     {
-        titleText.text = taskTitle;
-        pointText.text = taskPoints.ToString();
-        idText.text = taskId.ToString();
-        taskGoalSlider.maxValue = taskGoal;
-
-        titleActiveText.text = taskTitle;
-        pointActiveText.text = taskPoints.ToString();
-        idActiveText.text = taskId.ToString();
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + id.ToString(),1));
     }
 
-    public void SetQuestActive()
+    public void PopulateData()
     {
-        dailyTaskManager.CancelTask();
-
-        unActiveTask.SetActive(false);
-        activeTask.SetActive(true);
-        Debug.Log("Quest " + taskId + " is now active.");
-
-        dailyTaskManager.TakeTask(taskId);
-
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-        if (playerData != null)
-        {
-            playerData.dailyTaskId = taskId;
-            Debug.Log("Updated Player Data ID: " + playerData.dailyTaskId);
-        }
+        questTitle.text = _title;
+        questDebugID.text = id.ToString();
+        questCoins.text = _coins.ToString();
     }
-
-
-    public void CancelQuest()
-    {
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-        playerData.dailyTaskId = -1;
-
-        popUpScreen.GetComponent<PopupManager>().EnableCancelPopup(taskId, this);
-
-
-
-    }
-
-    public void CallCancel()
-    {
-        unActiveTask.SetActive(true);
-        activeTask.SetActive(false);
-        Debug.Log("Quest has been canceled");
-
-        PlayerData playerData = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-        if (playerData != null)
-        {
-            playerData.dailyTaskId = -1;
-            Debug.Log("Updated Player Data ID: " + playerData.dailyTaskId);
-        }
-
-        dailyTaskManager.CancelTask();
-    }
-
 }

@@ -15,8 +15,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             _attackStrength = ValueStrength.SemiStrong;
             _resistanceStrength = ValueStrength.Weak;
-            _hpStrength = ValueStrength.Medium;
-            _defenceStrength = ValueStrength.Strong;
+            _hpStrength = ValueStrength.SemiWeak;
+            _defenceStrength = ValueStrength.Medium;
+            _speedStrength = ValueStrength.Medium;
             InitilizeValues();
         }
     }

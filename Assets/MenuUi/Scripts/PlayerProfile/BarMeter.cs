@@ -13,6 +13,7 @@ public class BarMeter : MonoBehaviour
 
     float carbonBarDisplay;
 
+    //this script makes the carbonfootprint meter to work. it is a singleton that updates every frame.
     private void Awake()
     {
         slider = GetComponent<Slider>();

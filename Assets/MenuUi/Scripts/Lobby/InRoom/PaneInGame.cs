@@ -1,7 +1,9 @@
-﻿using Prg.Scripts.Common.PubSub;
+﻿using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby;
+using Prg.Scripts.Common.PubSub;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
@@ -14,7 +16,7 @@ namespace MenuUI.Scripts.Lobby.InRoom
 
         private static readonly int[] PositionMap =
         {
-            PhotonBattle.PlayerPosition1, PhotonBattle.PlayerPosition2, PhotonBattle.PlayerPosition3, PhotonBattle.PlayerPosition4,
+            PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2, PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4,
         };
 
         private void Start()

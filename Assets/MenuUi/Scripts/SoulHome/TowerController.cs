@@ -638,6 +638,7 @@ namespace MenuUI.Scripts.SoulHome
                 hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
             }
             bool check = false;
+            int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             foreach (RaycastHit2D hit2 in hitArray)
             {
                 if (hit2.collider.gameObject.CompareTag("Room"))
@@ -648,6 +649,8 @@ namespace MenuUI.Scripts.SoulHome
             if (hover)
             {
                 if (!check) _selectedFurniture.transform.position = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
+                if(prevRoomId >= 0 && prevRoomId != _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId)
+                    _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
             }
             else
             {
@@ -658,6 +661,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else
                 {
+                    _rooms.transform.GetChild(_selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
                     if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                     {
                         int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
@@ -745,6 +749,8 @@ namespace MenuUI.Scripts.SoulHome
             _mainScreen.DeselectTrayFurniture();
             if (_selectedFurniture != null)
             {
+                int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+                if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
                 if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) RemoveFurniture();
                 else
                 {
@@ -765,6 +771,7 @@ namespace MenuUI.Scripts.SoulHome
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
+                
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }
@@ -791,6 +798,8 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             ChangedFurnitureList.Clear();
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
             SelectedFurniture = null;
         }
 
@@ -813,6 +822,8 @@ namespace MenuUI.Scripts.SoulHome
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
             }
             ChangedFurnitureList.Clear();
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
         }
 
         public void ToggleEdit()
@@ -827,7 +838,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (!editingMode)
             {
-                //DeselectFurniture();
+                DeselectFurniture();
                 _mainScreen.EnableTray(false);
                 _soulHomeController.EditModeTrayHandle(false);
             }

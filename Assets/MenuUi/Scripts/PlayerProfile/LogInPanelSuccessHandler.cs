@@ -12,20 +12,28 @@ namespace MenuUi.Scripts.Login
         [SerializeField]
         private WindowNavigation _navigation;
 
-        public delegate void LogInPanelSuccess();
+        public delegate void LogInPanelSuccess(bool useSetToken);
         public event LogInPanelSuccess OnLogInPanelSuccess;
+
+        public delegate void LogInPanelReturn(bool useSetToken);
+        public event LogInPanelReturn OnLogInPanelReturn;
 
         public void LogInSuccess()
         {
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
-                OnLogInPanelSuccess?.Invoke();
+                OnLogInPanelSuccess?.Invoke(false);
             }
             else if (SceneManager.GetActiveScene().buildIndex == 2)
             {
                 StartCoroutine(ServerManager.Instance.LogIn());
                 StartCoroutine(_navigation.Navigate());
             }
+        }
+
+        public void LogInReturn()
+        {
+            OnLogInPanelReturn?.Invoke(true);
         }
     }
 }

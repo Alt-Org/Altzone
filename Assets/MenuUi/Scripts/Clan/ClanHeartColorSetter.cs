@@ -7,11 +7,12 @@ using UnityEngine;
 public class ClanHeartColorSetter : MonoBehaviour
 {
     [SerializeField] private Transform _heartContainer;
+    [SerializeField] private bool _setOwnClanHeart = true;
     private HeartPieceColorHandler[] _heartPieceHandlers = { };
 
     private void OnEnable()
     {
-        if (ServerManager.Instance.Clan == null) return;
+        if (!_setOwnClanHeart || ServerManager.Instance.Clan == null) return;
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {

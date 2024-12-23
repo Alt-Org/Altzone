@@ -7,6 +7,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Clan;
+using System;
 
 public class ClanHeartColorChanger : MonoBehaviour
 {
@@ -15,14 +16,18 @@ public class ClanHeartColorChanger : MonoBehaviour
     private EventSystem _eventSystem;
 
     [SerializeField] private Transform _heartContainer;
+    [SerializeField] private ColorButton[] _colorButtons;
     private List<HeartPieceColorHandler> _heartPieceHandlers = new();
 
-    public void InitializeClanHeart(List<HeartPieceData> heartPieces)
+    private void Awake()
     {
         EnhancedTouchSupport.Enable();
         if (_raycaster == null) _raycaster = FindObjectOfType<GraphicRaycaster>();
         if (_eventSystem == null) _eventSystem = FindObjectOfType<EventSystem>();
+    }
 
+    public void InitializeClanHeart(List<HeartPieceData> heartPieces)
+    {
         if (heartPieces.Count == 0)
         {
             for (int j = 0; j < 50; j++) heartPieces.Add(new HeartPieceData(j, Color.white));
@@ -38,7 +43,17 @@ public class ClanHeartColorChanger : MonoBehaviour
                 i++;
             }
         }
+
+        _selectedColor = _colorButtons[0].color;
+        foreach (ColorButton colorButton in _colorButtons)
+        {
+            Color color = colorButton.color;
+            colorButton.button.onClick.RemoveAllListeners();
+            colorButton.button.onClick.AddListener(() => SetSelectedColor(color));
+        }
     }
+
+    private void SetSelectedColor(Color color) => _selectedColor = color;
 
     public List<HeartPieceData> GetHeartPieceDatas()
     {
@@ -84,13 +99,5 @@ public class ClanHeartColorChanger : MonoBehaviour
             }
         }
     }
-
-    public void SetColorGreen() { _selectedColor = Color.green; }
-    public void SetColorRed() { _selectedColor = Color.red; }
-    public void SetColorWhite() { _selectedColor = Color.white; }
-    public void SetColorMagenta() { _selectedColor = Color.magenta; }
-    public void SetColorBlue() { _selectedColor = Color.blue; }
-    public void SetColorYellow() { _selectedColor = Color.yellow; }
-    public void SetColorCyan() { _selectedColor = Color.cyan; }
 }
 

@@ -1,6 +1,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Attributes;
+using Altzone.Scripts.Model.Poco.Player;
+using Prg;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Game
@@ -27,10 +30,15 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         [Mandatory] public string Name;
         public int Hp;
+        public int HpSegmentCount;
         public int Speed;
+        public int SpeedSegmentCount;
         public int Resistance;
+        public int ResistanceSegmentCount;
         public int Attack;
+        public int AttackSegmentCount;
         public int Defence;
+        public int DefenceSegmentCount;
 
         public CustomCharacter(CharacterID id, int hp, int speed, int resistance, int attack, int defence)
         {
@@ -40,6 +48,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             Name = GetCharacterName(id);
             Hp = hp;
+            HpSegmentCount = 0;
             Speed = speed;
             Resistance = resistance;
             Attack = attack;
@@ -53,10 +62,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = character.Id;
             Name = GetCharacterName(character.Id);
             Hp = character.Hp;
+            HpSegmentCount = 0;
             Speed = character.Speed;
+            SpeedSegmentCount = 0;
             Resistance = character.Resistance;
+            ResistanceSegmentCount = 0;
             Attack = character.Attack;
+            AttackSegmentCount = 0;
             Defence = character.Defence;
+            DefenceSegmentCount = 0;
         }
 
         internal static CustomCharacter CreateEmpty()
@@ -75,6 +89,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return $"{nameof(Id)}: {Id}" +
                    $", {nameof(Name)}: {Name}" +
+                   $", {nameof(CharacterBase)}: {CharacterBase}" +
                    $", {nameof(Hp)}: {Hp}, {nameof(Speed)}: {Speed}, {nameof(Resistance)}: {Resistance}, {nameof(Attack)}: {Attack}, {nameof(Defence)}: {Defence}";
         }
 
@@ -105,6 +120,85 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
+        public bool IncreaseStat(StatType statType, int count)
+        {
+            if (count < 1) { Debug.LogError("Invalid upgrade count."); return false; }
+            PlayerData playerData = null;
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+            bool increase = false;
+            switch (statType)
+            {
+                case StatType.Attack:
+                    while (true)
+                    {
+                        if (playerData.DiamondAttack >= BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack + 1))
+                        {
+                            increase = true;
+                            AttackSegmentCount++;
+                            count--;
+                        }
+                        else break;
+                        int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                        if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                        if (count < 1) break;
+                    }
+                    break;
+                case StatType.Defence:
+                    break;
+                case StatType.Resistance:
+                    break;
+                case StatType.Hp:
+                    break;
+                case StatType.Speed:
+                    break;
+                default:
+                    Debug.LogError("Invalid stat type. Provide proper stat type.");
+                    return false;
+            }
+            if (increase) return true;
+            else return false;
+        }
+
+        public int GetPriceToNextLevel(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Attack:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1)- AttackSegmentCount);
+                case StatType.Defence:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Defence + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Defence + 1) - DefenceSegmentCount);
+                case StatType.Resistance:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Resistance + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Resistance + 1) - ResistanceSegmentCount);
+                case StatType.Hp:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Hp + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Hp + 1) - HpSegmentCount);
+                case StatType.Speed:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Speed + 1) * (BaseCharacter.GetSegmentAmount(_characterBase, statType, Speed + 1) - SpeedSegmentCount);
+                default:
+                    Debug.LogError("StatType not provided. Please give a valid StatType.");
+                    return -1;
+            }
+        }
+
+        public int GetNextSegmentPrice(StatType statType)
+        {
+            switch (statType)
+            {
+                case StatType.Attack:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Attack+1);
+                case StatType.Defence:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Defence+1);
+                case StatType.Resistance:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Resistance+1);
+                case StatType.Hp:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Hp+1);
+                case StatType.Speed:
+                    return BaseCharacter.GetStatSegmentPrice(_characterBase, statType, Speed+1);
+                default:
+                    Debug.LogError("StatType not provided. Please give a valid StatType.");
+                    return -1;
+            }
+        }
+
         public static string GetCharacterClassAndName(CharacterID id)
         {
             CharacterClassID classId = GetClassID(id);
@@ -125,6 +219,5 @@ namespace Altzone.Scripts.Model.Poco.Game
             int characterId = (int)id & 0b0000_0000__1111_1111;
             return characterId;
         }
-
     }
 }

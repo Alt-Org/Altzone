@@ -24,7 +24,7 @@ using ExitGames.Client.Photon;
 #endif
 
 #if UNITY_WEBGL
-#define PING_VIA_COROUTINE
+//#define PING_VIA_COROUTINE
 #endif
 
 namespace Battle1.PhotonRealtime.Code

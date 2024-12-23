@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1485701050104962541}
   - component: {fileID: 6320645220594056533}
   - component: {fileID: 8655163248595062648}
-  - component: {fileID: 7098930845861007552}
+  - component: {fileID: 160425047651907551}
   m_Layer: 5
   m_Name: BronzeItem
   m_TagString: Untagged
@@ -152,7 +152,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7098930845861007552
+--- !u!114 &160425047651907551
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,12 +161,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 436845431913420909}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 555db4787863c1f4f8d6213b6b6f4750, type: 3}
+  m_Script: {fileID: 11500000, guid: f6a6d4ea936a31844849d416e2a64dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: {fileID: 11400000, guid: cecb0ece863eed949813a62605dd88b4, type: 2}
-  price: {fileID: 5584033660437562197}
-  contentImage: {fileID: 2320875804608866310}
+  _productText: {fileID: 6218051804466658904}
+  _priceText: {fileID: 5584033660437562197}
 --- !u!1 &2582442863878075617
 GameObject:
   m_ObjectHideFlags: 0

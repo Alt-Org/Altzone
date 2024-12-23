@@ -73,18 +73,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         _removeLockedToggle.onValueChanged.RemoveAllListeners();
         _removeLockedToggle.onValueChanged.AddListener((isOn) =>
         {
-            if (isOn)
-            {
-                ColorBlock colors = _removeLockedToggle.colors;
-                colors.normalColor = Color.yellow;
-                _removeLockedToggle.colors = colors;
-            }
-            else
-            {
-                ColorBlock colors = _removeLockedToggle.colors;
-                colors.normalColor = Color.white;
-                _removeLockedToggle.colors = colors;
-            }
+            _removeLockedToggle.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = isOn ? "Näytä lukitut" : "Poista lukitut";
             UpdateFilters();
         });
     }

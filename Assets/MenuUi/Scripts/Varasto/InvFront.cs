@@ -34,6 +34,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
         [SerializeField] private StorageFurnitureReference _furnitureReference;
 
+
         [Header("Information GameObject")]
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
@@ -43,6 +44,8 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+        [SerializeField] private TMP_Text _artist;
+        [SerializeField] private TMP_Text _artisticDescription;
 
         [Header("Rarity Color")]
         [SerializeField] private Color commonColor = Color.gray;
@@ -234,37 +237,42 @@ namespace MenuUi.Scripts.Storage
                 switch (_sortingBy)
                 {
                     case 0:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Material;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
                         break;
                 }
                 // Shape
-                toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
+                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
 
                 // SetName
-                string setName = GetSetNameForFurniture(_furn.Name);
-                toSet.GetChild(4).GetComponent<TMP_Text>().text = setName;
+                FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+                toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
 
                 // Id
-
+                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+                toSet.GetChild(6).GetComponent<TMP_Text>().text = furnitureInfoObject.DiagnoseNumber;
                 // Name
-                toSet.GetChild(6).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(6).gameObject.SetActive(false);
+                    toSet.GetChild(7).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(6).gameObject.SetActive(true);
+                    toSet.GetChild(7).gameObject.SetActive(true);
                 }
+
+                // Coin
+                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
+                else toSet.GetChild(8).gameObject.SetActive(false);
 
                 i++;
             }
@@ -302,13 +310,26 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
+            FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+            if (furnitureInfoObject == null)
+            {
+                Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
+                return;
+            }
+
             // Icon
             _icon.sprite = _furn.Sprite;
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            string setName = GetSetNameForFurniture(_furn.Name);
-            _name.text = ("Id ") + setName + (": ") + _furn.VisibleName;
+            FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+            _name.text = furnitureInfoObject.DiagnoseNumber + setInfo.SetName + ": " + _furn.VisibleName;
+            
+            //Artists name
+            _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
+            
+            //Artistic description
+            _artisticDescription.text = furnitureInfoObject.ArtisticDescription;
 
             // Weight
             _weight.text = "Paino:" + _furn.Weight + " KG";
@@ -380,22 +401,23 @@ namespace MenuUi.Scripts.Storage
             };
         }
 
-        private string GetSetNameForFurniture(string furnitureName)
+        private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)
         {
             if (string.IsNullOrWhiteSpace(furnitureName))
-                return "Unknown Set";
+                return null;
 
             string[] parts = furnitureName.Split('_');
             if (parts.Length != 2)
-                return "Unknown Set";
+                return null;
 
             string setName = parts[1];
             foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
             {
                 if (setInfo.SetName == setName)
-                    return setInfo.SetName;
+                    return setInfo;
             }
-            return "Unknown Set";
+
+            return null;
         }
     }
 }

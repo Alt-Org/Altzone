@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _automaticallyLogIn: 0
   isLoggedIn: 0
+  _skipServerFurniture: 1
 --- !u!4 &202654814
 Transform:
   m_ObjectHideFlags: 0
@@ -682,10 +683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0117ab3b2661f1242b46bf60d9d253b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataUsedPerSecond: 0.5
-  baselineConsumption: 2
-  networkMultiplier: 1.5
-  enableDetailedTracking: 1
 --- !u!4 &1405451729
 Transform:
   m_ObjectHideFlags: 0

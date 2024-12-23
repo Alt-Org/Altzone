@@ -1,8 +1,9 @@
-﻿using Prg.Scripts.Common.PubSub;
+﻿using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Lobby.Wrappers;
+using Prg.Scripts.Common.PubSub;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 
 namespace MenuUI.Scripts.Lobby.InRoom
 {
@@ -11,34 +12,44 @@ namespace MenuUI.Scripts.Lobby.InRoom
     /// </summary>
     public class PaneInRoom : MonoBehaviour
     {
-        [SerializeField] private Text title;
-        [SerializeField] private Text _battleID;
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _battleID;
+        [SerializeField] private Button _startGameButton;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
         private void Start()
         {
-            buttons[0].onClick.AddListener(SetPlayerAsGuest);
-            buttons[1].onClick.AddListener(SetPlayerAsSpectator);
-            buttons[2].onClick.AddListener(StartPlaying);
-            buttons[3].onClick.AddListener(StartRaidTest);
+            //buttons[0].onClick.AddListener(SetPlayerAsGuest);
+            //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
+            _startGameButton.onClick.AddListener(StartPlaying);
+            _backButton.onClick.AddListener(GoBack);
+            //buttons[3].onClick.AddListener(StartRaidTest);
         }
 
         private void SetPlayerAsGuest()
         {
-            Debug.Log($"setPlayerAsGuest {PhotonBattle.PlayerPositionGuest}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionGuest));
+            Debug.Log($"setPlayerAsGuest {PhotonLobbyRoom.PlayerPositionGuest}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonLobbyRoom.PlayerPositionGuest));
         }
 
         private void SetPlayerAsSpectator()
         {
-            Debug.Log($"setPlayerAsSpectator {PhotonBattle.PlayerPositionSpectator}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonBattle.PlayerPositionSpectator));
+            Debug.Log($"setPlayerAsSpectator {PhotonLobbyRoom.PlayerPositionSpectator}");
+            this.Publish(new LobbyManager.PlayerPosEvent(PhotonLobbyRoom.PlayerPositionSpectator));
         }
 
         private void StartPlaying()
         {
             Debug.Log($"startPlaying");
             this.Publish(new LobbyManager.StartPlayingEvent());
+        }
+        private void GoBack()
+        {
+            Debug.Log($"leavingRoom");
+            PhotonRealtimeClient.LeaveRoom();
+            _roomSwitcher.ReturnToMain();
+            //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
         private void StartRaidTest()
@@ -52,8 +63,8 @@ namespace MenuUI.Scripts.Lobby.InRoom
         /// </summary>
         private void Update()
         {
-            _battleID.text = PhotonRealtimeClient.Client.InRoom ? $"({PhotonRealtimeClient.Client.CurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
-            title.text = PhotonRealtimeClient.Client.InRoom ? PhotonRealtimeClient.Client.CurrentRoom.Name : "<color=red>Not in room</color>";
+            //_battleID.text = PhotonRealtimeClient.InRoom ? $"({PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>("bid")})" : "<color=red>Not in room</color>";
+            _title.text = PhotonRealtimeClient.InRoom ? PhotonRealtimeClient.LobbyCurrentRoom.Name : "<color=red>Not in room</color>";
         }
     }
 }
