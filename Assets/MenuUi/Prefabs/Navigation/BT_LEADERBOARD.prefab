@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4693426634750762557}
   - component: {fileID: 7674694479343094957}
   - component: {fileID: 3071650929751825824}
+  - component: {fileID: 4539188087545961617}
   m_Layer: 5
   m_Name: T_LEADERBOARD
   m_TagString: Untagged
@@ -139,6 +140,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4539188087545961617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4148804115081861776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4d91f56dd35e04e9011fe041609ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7195143674239219267
 GameObject:
   m_ObjectHideFlags: 0

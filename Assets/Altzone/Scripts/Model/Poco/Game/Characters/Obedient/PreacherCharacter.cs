@@ -9,11 +9,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public PreacherCharacter() : base()
         {
             _id = CharacterID.ObedientPreacher;
-            _defaultAttack = 3;
-            _defaultDefence = 3;
-            _defaultHp = 3;
-            _defaultResistance = 3;
-            _speed = 3;
+            _defaultAttack = 10;
+            _defaultDefence = 10;
+            _defaultHp = 10;
+            _defaultResistance = 10;
+            _defaultSpeed = 10;
             InitilizeValues();
         }
     }

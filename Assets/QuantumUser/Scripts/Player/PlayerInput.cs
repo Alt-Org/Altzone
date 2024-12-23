@@ -15,7 +15,7 @@ namespace Quantum
         public void PollInput(CallbackPollInput callback)
         {
             bool mouseClick = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
-            bool twoFingers = ClickStateHandler.GetClickType() is ClickType.Pinch;
+            bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
 
             Input i = new()
             {
