@@ -1,0 +1,5 @@
+component Projectile
+{
+    AssetRef<ProjectileConfig> ProjectileConfig;
+    bool IsLaunched;
+}
