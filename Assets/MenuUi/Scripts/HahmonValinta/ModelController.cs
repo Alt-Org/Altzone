@@ -7,6 +7,11 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
+//TODO: muokkaa HandleCurrentCharacterIdChanged metodia ottamaan parametrinä sisään sen paikan id johon
+// hahmo juuri laitettiin ja sitten sen perusteella tarkistaa ja tallentaa tieto.
+// Myöskin pitäisi olla mahdollista poistaa valittu hahmo listasta
+// niin kauan kunhan ainakin yksi hahmo on vielä listassa.
+
 namespace MenuUi.Scripts.CharacterGallery
 {
     public class ModelController : MonoBehaviour
@@ -40,11 +45,12 @@ namespace MenuUi.Scripts.CharacterGallery
                 _view.SetCharacters(characters, currentCharacterId);
             });
         }
-        private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId)
+        private void HandleCurrentCharacterIdChanged(CharacterID newCharacterId, int slot)
         {
-            if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[0])
+            if (slot < 0 || slot >= 3) return;
+            if (newCharacterId != (CharacterID)_playerData.SelectedCharacterIds[slot])
             {
-                _playerData.SelectedCharacterIds[0] = (int)newCharacterId;
+                _playerData.SelectedCharacterIds[slot] = (int)newCharacterId;
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }

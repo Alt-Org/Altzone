@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
+using Altzone.Scripts.Lobby.Wrappers;
 //using ClientState = Battle1.PhotonRealtime.Code.ClientState;
 //using ILobbyCallbacks = Battle1.PhotonRealtime.Code.ILobbyCallbacks;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
@@ -23,13 +24,13 @@ namespace Altzone.Scripts.Common.Photon
     {
         [SerializeField] private int _debugRoomListCount;
 
-        private List<RoomInfo> _currentRoomList = new();
+        private List<LobbyRoomInfo> _currentRoomList = new();
 
         public Action OnRoomsUpdated;
 
-        public ReadOnlyCollection<RoomInfo> CurrentRooms => GetCurrentRooms();
+        public ReadOnlyCollection<LobbyRoomInfo> CurrentRooms => GetCurrentRooms();
 
-        public ReadOnlyCollection<RoomInfo> GetCurrentRooms()
+        public ReadOnlyCollection<LobbyRoomInfo> GetCurrentRooms()
         {
             if (PhotonRealtimeClient.InLobby)
             {
@@ -56,7 +57,7 @@ namespace Altzone.Scripts.Common.Photon
             PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
         }
 
-        private void UpdateRoomListing(List<RoomInfo> roomList)
+        private void UpdateRoomListing(List<LobbyRoomInfo> roomList)
         {
             // We always remove and add entries to keep cached data up-to-date.
             foreach (var newRoomInfo in roomList)
@@ -81,8 +82,8 @@ namespace Altzone.Scripts.Common.Photon
 
         void ILobbyCallbacks.OnJoinedLobby()
         {
-            _currentRoomList.Clear();
-            _debugRoomListCount = 0;
+            //_currentRoomList.Clear();
+            //_debugRoomListCount = 0;
             Debug.Log($"roomsUpdated: {_debugRoomListCount} CloudRegion={PhotonRealtimeClient.CloudRegion}");
             OnRoomsUpdated?.Invoke();
         }
@@ -97,9 +98,16 @@ namespace Altzone.Scripts.Common.Photon
 
         void ILobbyCallbacks.OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            UpdateRoomListing(roomList);
-            _debugRoomListCount = roomList.Count;
-            Debug.Log($"roomsUpdated: {_debugRoomListCount}");
+            _currentRoomList.Clear();
+            List<LobbyRoomInfo> lobbyRoomList = new();
+            foreach (RoomInfo roomInfo in roomList)
+            {
+                lobbyRoomList.Add(new(roomInfo));
+            }
+
+            UpdateRoomListing(lobbyRoomList);
+            _debugRoomListCount = lobbyRoomList.Count;
+            Debug.Log($"Lobby Update: roomsUpdated: {_debugRoomListCount}");
             OnRoomsUpdated?.Invoke();
         }
 

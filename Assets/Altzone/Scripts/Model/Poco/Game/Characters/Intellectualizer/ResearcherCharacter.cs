@@ -9,11 +9,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ResearcherCharacter() : base()
         {
             _id = CharacterID.IntellectualizerResearcher;
-            _defaultAttack = 2;
-            _defaultDefence = 2;
-            _defaultHp = 1;
-            _defaultResistance = 3;
-            _speed = 4;
+            _defaultAttack = 10;
+            _defaultDefence = 3;
+            _defaultHp = 8;
+            _defaultResistance = 8;
+            _defaultSpeed = 6;
             InitilizeValues();
         }
     }

@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         TwoXTwo,
         TwoXThree,
         TwoXFour,
+        TwoXFive,
         TwoXSix,
         TwoXSeven,
         TwoXEight,
@@ -29,6 +30,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FourXThree,
         FourXFour,
         FiveXFive,
+        FiveXEight,
         SevenXThree
     }
 
@@ -40,6 +42,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         Ceiling,
         Wall
 
+    }
+
+    public enum FurnitureRarity
+    {
+        Common,
+        Rare,
+        Epic,
+        Antique
     }
 
     /// <summary>
@@ -55,6 +65,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [PrimaryKey] public string Id;
         [Unique] public string Name;
         [Mandatory] public string Shape;
+        public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
         public FurniturePlacement Placement;
@@ -70,7 +81,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public string Filename;
 
-        public GameFurniture(string id, string name, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
+        public GameFurniture(string id, string name, FurnitureRarity rarity, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(name.IsMandatory());
@@ -83,6 +94,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             Name = name;
             Shape = shape;
+            Rarity = rarity;
             Size = size;
             RotatedSize = rotatedSize;
             Placement = placementType;

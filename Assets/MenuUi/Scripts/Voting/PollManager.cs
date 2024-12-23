@@ -8,38 +8,57 @@ using UnityEngine;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using UnityEditor;
+using System.Linq;
 
 public static class PollManager
 {
     private static List<PollData> pollDataList = new List<PollData>();
 
-    public static void CreatePoll(PollType pollType, string id, int durationInHours, Sprite sprite, EsinePollType esinePollType, float value)
+    private static DataStore store = Storefront.Get();
+    private static PlayerData player = null;
+    private static ClanData clan = null;
+
+    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, EsinePollType esinePollType, float value)
     {
-        LoadPollList();
+        LoadClanData();
+
+        string id = GetFirstAvailableId();
         string name = "joku";
+        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 60;
+        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
+        List<string> clanMembers = new List<string>();
+        //if (clan != null ) clanMembers = clan.Members.Select(member => member.Id).ToList();
+        if (player != null) clanMembers.Add(player.Id);
 
-        PollData pollData = new EsinePollData(pollType, id, name, endTime, sprite, esinePollType, value);
+        PollData pollData = new EsinePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, esinePollType, value);
 
         pollDataList.Add(pollData);
 
-        PrintPollList();
-        SavePollList();
+        //PrintPollList();
+        SaveClanData();
+        VotingActions.ReloadPollList?.Invoke();
     }
 
-    public static void CreatePoll(PollType pollType, string id, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+    public static void CreatePoll(PollType pollType, int durationInHours, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
     {
-        LoadPollList();
+        LoadClanData();
+
+        string id = GetFirstAvailableId();
         string name = "joku";
-
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + durationInHours * 3600;
+        long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        PollData pollData = new FurniturePollData(pollType, id, name, endTime, sprite, furniturePollType, furniture, weight, value);
+        List<string> clanMembers = new List<string>();
+        //if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+        if (player != null) clanMembers.Add(player.Id);
+
+        PollData pollData = new FurniturePollData(pollType, id, name, startTime, endTime, sprite, clanMembers, furniturePollType, furniture, weight, value);    
         pollDataList.Add(pollData);
 
-        PrintPollList();
-        SavePollList();
+        //PrintPollList();
+        SaveClanData();
     }
 
     private static void PrintPollList()
@@ -67,34 +86,58 @@ public static class PollManager
         }
     }
 
+    private static string GetFirstAvailableId()
+    {
+        string newId;
+        do
+        {
+            newId = Guid.NewGuid().ToString();
+        } while (pollDataList.Any(poll => poll.Id == newId));
+
+        return newId;
+    }
+
     public static List<PollData> GetPollList()
     {
         return pollDataList;
     }
 
-    public static void LoadPollList()
+    public static PollData GetPollData(string id)
     {
-        DataStore store = Storefront.Get();
-        PlayerData player = null;
-        ClanData clan = null;
-        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
-        store.GetClanData(player.ClanId, data => clan = data);
+        return pollDataList.First(x => x.Id == id);
+    }
 
-        if (clan.Polls != null)
+    public static void LoadClanData()
+    {
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null)
         {
-            pollDataList = clan.Polls;
+            if (player.ClanId != null)
+            {
+                store.GetClanData(player.ClanId, data => clan = data);
+                
+                if (clan.Polls != null)
+                {
+                    pollDataList = clan.Polls;
+                }
+            }
         }
     }
 
-    public static void SavePollList()
+    public static void SaveClanData()
     {
-        DataStore store = Storefront.Get();
-        PlayerData player = null;
-        ClanData clan = null;
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
-        store.GetClanData(player.ClanId, data => clan = data);
 
-        clan.Polls = pollDataList;
-        store.SaveClanData(clan, data => clan = data);
+        if (player != null)
+        {
+            if (player.ClanId != null)
+            {
+                store.GetClanData(player.ClanId, data => clan = data);
+
+                clan.Polls = pollDataList;
+                store.SaveClanData(clan, data => clan = data);
+            }
+        }
     }
 }

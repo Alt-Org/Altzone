@@ -9,6 +9,7 @@ using System.Linq;
 using MenuUi.Scripts.CharacterGallery;
 using System;
 using Altzone.Scripts.Config;
+using System.Threading;
 
 
 public class CharacterStatWindow : MonoBehaviour
@@ -16,97 +17,95 @@ public class CharacterStatWindow : MonoBehaviour
 
     public Sprite[] CharacterArtWork;
     public Image CharacterArtWorkToShow;
+    public Image CharacterArtWorkForInfoCanva;
 
     private int UnusedStats;
-
     private int DiamondSpeedAmount = 100;
     private int DiamondResistanceAmount = 100;
     private int DiamondAttackAmount = 100;
     private int DiamondDefenceAmount = 100;
     private int DiamondHPAmount = 100;
     private int EraserAmount = 100;
-
-    private int SpeedCostAmount = 5;
-    private int ResistanceCostAmount = 5;
-    private int AttackCostAmount = 5;
-    private int DefenceCostAmount = 5;
-    private int HPCostAmount = 5;
-
+    private int diamondsAmount = 1000;
+    private int SpeedIncreasePrice;
+    private int ResistanceIncreasePrice;
+    private int AttackIncreasePrice;
+    private int DefenceIncreasePrice;
+    private int HPIncreasePrice;
+    private int CharSizeIncreasePrice;
     public TextMeshProUGUI CharacterName;
     public TextMeshProUGUI CustomCharacterName;
-
-    [Header("Current stat level?")]
+    [Header("Current stat level for statpage")]
     public TextMeshProUGUI SpeedNumber;
     public TextMeshProUGUI ResistanceNumber;
     public TextMeshProUGUI AttackNumber;
     public TextMeshProUGUI DefenceNumber;
     public TextMeshProUGUI HPNumber;
+    public TextMeshProUGUI CharSizeNumber;
 
-    [Header("Amount of diamonds that can be used")]
-    public TextMeshProUGUI DiamondSpeedAmountNumber;
-    public TextMeshProUGUI DiamondResistanceAmountNumber;
-    public TextMeshProUGUI DiamondAttackAmountNumber;
-    public TextMeshProUGUI DiamondDefenceAmountNumber;
-    public TextMeshProUGUI DiamondHPAmountNumber;
+    [Header("Amount of diamonds and erasers that can be used")]
+    public TextMeshProUGUI DiamondsAmountNumberText;
     public TextMeshProUGUI EraserAmountNumber;
 
+    [Header("Stat info for infopage")]
+    public TextMeshProUGUI impactforceCurrentLevel;
+    public TextMeshProUGUI healthPointsCurrentLevel;
+    public TextMeshProUGUI resistanceCurrentLevel;
+    public TextMeshProUGUI defenceCurrentLevel;
+    public TextMeshProUGUI charSizeCurrentLevel;
+    public TextMeshProUGUI speedCurrentLevel;
+
     [Header("Descriptions")]
-    public TextMeshProUGUI CharDescription;//hahmon kuvaus
-    public TextMeshProUGUI DefClassSpecial;//defenssiluokan erikoistaidon kuvaus
-
-
+    public TextMeshProUGUI CharDescription;//character description
+    public TextMeshProUGUI DefClassSpecial;//defence class description
     private DemoCharacterForStatWindow _demoCharacterWindowCharacter;
-
     private int CurrentlySelectedStat = -1;
-    [Header("Increase and decrease buttons")]
-    [SerializeField] public Button statImpactoforceIncreaseButton;
-    [SerializeField] public Button statImpactforceDecreaseButton;
-   
-    [SerializeField] public TextMeshProUGUI UpgradeCostAmountNumber;
+    [SerializeField] private TextMeshProUGUI UpgradeCostAmountNumber;
     [SerializeField] private Image UpgradeDiamondImage;
 
-/*     [SerializeField] private Image _statSpeedSelectedBackground;
-    [SerializeField] private Image _statResistanceSelectedBackground;
-    [SerializeField] private Image _statAttackSelectedBackground;
-    [SerializeField] private Image _statDefenceSelectedBackground;
-    [SerializeField] private Image _statHPSelectedBackground; */
+    [Header("Stat editing popup")]
+    [SerializeField] private Button increaseButton;
+    [SerializeField] private Button decreaseButton;
+    [SerializeField] private GameObject statEditPopUp;
+    [SerializeField] private Button closePopUpButton;
+
+    [SerializeField] private TextMeshProUGUI statIncreasePriceText;
+
+    [Header("Buttons for opening stat editing popup")]
+    [SerializeField] private Button impactforce;
+    [SerializeField] private Button healthPoints;
+    [SerializeField] private Button defence;
+    [SerializeField] private Button resistance;
+    [SerializeField] private Button charSize;
+    [SerializeField] private Button speed;
 
     [SerializeField] private GalleryCharacterReference _galleryCharacterReference;
 
-    //private BaseCharacter _currentCharacter;
     private PlayerData _playerData;
     private CharacterID _characterId;
 
-    //Nouseeko progressbarin arvo siinä tilanteessa kun ostetaan timanteilla uusi taso?
-    //Kun ostetaan uusi taso palkki nousee ja kun se menee täyteen niin tulee uusi leveli.
 
-    //Mistä löytyy hahmonkuvaus? -saatavilla, jahka valmistuu
-    //Mistä löytyy defenssiluokan kuvaus? -saatavilla, jahka valmistuu
+    //Working methods for increasing and decreasing stat level
+    //Diamonds for each stat not in use anymore. Now there's only one amount of diamonds that is used
+    //to buy new statpoints. Not implemented yet. Old codes are commented out.
+    //Serializefields must be check over to see if there's something not needed anymore.
+    //Amounts for victories and losses needs to be implemented.
+    //character size stat needs to be implemented.
 
-    //Onko olemassa jo tieto käytetyistä tasopykälistä jossain?
-    //Ei ole. Palataan myöhemmin.
 
-    //Virheilmoitus rivillä 86, mikä sen aiheuttaa? Onko meistä riippumaton asia?
-    //Mitä tarkoittaa stat selected backround?
-    //Pitääkö tähän lisätä jokaisen stattipaneelin plus ja miinusnapit. Onko helpompi tehdä niin?
-
-    //Luokan saa customcharacter get character id
 
     private void OnEnable()
     {
-        
-
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange += HandleCharacterGalleryCharacterStatWindowToShowChange;
-        Debug.Log("CharacterStatWindow enabled");
-
-        // Hae CustomCharacter tiedot PlayerDatasta
+        ActivateStatButtons();
         _characterId = (CharacterID)SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow;
         Debug.Log($"Searching for character with ID: {_characterId}");
-        
+
+        //Used this before
+        //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>  //Alunperin käytti tätä
+        //Uses this now
         DataStore dataStore = Storefront.Get();
         dataStore.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
-
-        //Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, playerData =>
         {
             if (playerData == null)
             {
@@ -128,42 +127,44 @@ public class CharacterStatWindow : MonoBehaviour
             Debug.Log("Timanttiarvot asetettu onnistuneesti");
 
         });
+
         HandleCharacterGalleryCharacterStatWindowToShowChange(SettingsCarrier.Instance.CharacterGalleryCharacterStatWindowToShow);
 
     }
-
 
     private void OnDisable()
     {
         SettingsCarrier.Instance.OnCharacterGalleryCharacterStatWindowToShowChange -= HandleCharacterGalleryCharacterStatWindowToShowChange;
         Debug.Log("CharacterStatWindow disabled");
+        DisableStatButtons();
     }
 
     private void HandleCharacterGalleryCharacterStatWindowToShowChange(CharacterID newValue)
     {
         _decideWhatCharacterToShow(newValue);
         SetCharacterStats();
+
         Debug.Log("handled window change");
     }
 
-   
+
     //  upgrade
     private void UpgradeCharacterSpeed()
     {
         if (CheckMaxLevel() == true)
         {
-            if (DiamondSpeedAmount >= SpeedCostAmount)
+            if (diamondsAmount >= SpeedIncreasePrice)
             {
-                DiamondSpeedAmount -= SpeedCostAmount;
-                _playerData.DiamondSpeed = DiamondSpeedAmount;
-                DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-                UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedCostAmount.ToString();
+
+                HandleDiamondAmountChange(SpeedIncreasePrice);
+
+                UpgradeCostAmountNumber.text = DiamondSpeedAmount.ToString() + "/" + SpeedIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed += 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-                UpdatePieChart();
+                speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
-            
+
 
                 if (customCharacter != null)
                 {
@@ -186,15 +187,15 @@ public class CharacterStatWindow : MonoBehaviour
     {
         if (CheckMaxLevel() == true)
         {
-            if (DiamondResistanceAmount >= ResistanceCostAmount)
+            if (diamondsAmount >= ResistanceIncreasePrice)
             {
-                DiamondResistanceAmount -= ResistanceCostAmount;
-                _playerData.DiamondResistance = DiamondResistanceAmount;
-                DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-                UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceCostAmount.ToString();
+
+                HandleDiamondAmountChange(ResistanceIncreasePrice);
+
+                UpgradeCostAmountNumber.text = DiamondResistanceAmount.ToString() + "/" + ResistanceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance += 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-                UpdatePieChart();
+                resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -217,15 +218,15 @@ public class CharacterStatWindow : MonoBehaviour
         if (CheckMaxLevel() == true)
         {
 
-            if (DiamondAttackAmount >= AttackCostAmount)
+            if (diamondsAmount >= AttackIncreasePrice)
             {
-                DiamondAttackAmount -= AttackCostAmount;
-                _playerData.DiamondAttack = DiamondAttackAmount;
-                DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-                UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackCostAmount.ToString();
+
+                HandleDiamondAmountChange(AttackIncreasePrice);
+
+                UpgradeCostAmountNumber.text = DiamondAttackAmount.ToString() + "/" + AttackIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack += 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-                UpdatePieChart();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -247,15 +248,15 @@ public class CharacterStatWindow : MonoBehaviour
     {
         if (CheckMaxLevel() == true)
         {
-            if (DiamondDefenceAmount >= DefenceCostAmount)
+            if (diamondsAmount >= DefenceIncreasePrice)
             {
-                DiamondDefenceAmount -= DefenceCostAmount;
-                _playerData.DiamondDefence = DiamondDefenceAmount;
-                DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-                UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceCostAmount.ToString();
+
+                HandleDiamondAmountChange(DefenceIncreasePrice);
+
+                UpgradeCostAmountNumber.text = DiamondDefenceAmount.ToString() + "/" + DefenceIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence += 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-                UpdatePieChart();
+                defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -277,15 +278,15 @@ public class CharacterStatWindow : MonoBehaviour
     {
         if (CheckMaxLevel() == true)
         {
-            if (DiamondHPAmount >= HPCostAmount)
+            if (diamondsAmount >= HPIncreasePrice)
             {
-                DiamondHPAmount -= HPCostAmount;
-                _playerData.DiamondHP = DiamondHPAmount;
-                DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
-                UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPCostAmount.ToString();
+
+                HandleDiamondAmountChange(HPIncreasePrice);
+
+                UpgradeCostAmountNumber.text = DiamondHPAmount.ToString() + "/" + HPIncreasePrice.ToString();
                 _demoCharacterWindowCharacter.CharacterHP += 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
-                UpdatePieChart();
+                healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
 
@@ -316,7 +317,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterSpeed -= 1;
                 SpeedNumber.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
-                UpdatePieChart();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -344,7 +345,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterResistance -= 1;
                 ResistanceNumber.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
-                UpdatePieChart();
+                resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -373,7 +374,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterAttack -= 1;
                 AttackNumber.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
-                UpdatePieChart();
+                impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -401,7 +402,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterDefence -= 1;
                 DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
-                UpdatePieChart();
+                defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -429,7 +430,7 @@ public class CharacterStatWindow : MonoBehaviour
                 EraserAmountNumber.text = EraserAmount.ToString();
                 _demoCharacterWindowCharacter.CharacterHP -= 1;
                 HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
-                UpdatePieChart();
+                healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
                 var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
                 if (customCharacter != null)
@@ -447,19 +448,15 @@ public class CharacterStatWindow : MonoBehaviour
         }
     }
 
-
-    // doing this at awake                                     
     private void _decideWhatCharacterToShow(CharacterID _characterId) //index
     {
-        // Etsi CustomCharacter -tiedot valitulle hahmolle
-
-        //Metodia muutettu niin, että nyt se käyttää valmiiksi asetettua _characterId -muuttujaa. Vanhat koodit kommentoitu pois.
-        //Aikaisemmin käytetty muuttujaa "index".
+        //Method has been changed to use varaible _characterId.
+        //Earlier this method used variable "index".
 
         //var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == index);
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
         if (customCharacter == null)
-        {                                                          
+        {
             Debug.LogError($"CustomCharacter not found for index {_characterId}");  //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
@@ -470,7 +467,7 @@ public class CharacterStatWindow : MonoBehaviour
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
         if (galleryCharacter == null)
         {
-                                                                            
+
             Debug.LogError($"GalleryCharacterReference not found for index {_characterId}"); //index
             _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
             CharacterArtWorkToShow.sprite = CharacterArtWork[0];
@@ -478,10 +475,9 @@ public class CharacterStatWindow : MonoBehaviour
         }
 
 
-        
+
         switch (_characterId) //index
         {
-            //Kutsutaan metodia joka casessa
             case CharacterID.IntellectualizerResearcher:
                 SetCharacterInfo();
                 break;
@@ -512,6 +508,7 @@ public class CharacterStatWindow : MonoBehaviour
             default:
                 _demoCharacterWindowCharacter = new DemoCharacterForStatWindow("NotACharacter", false, 10, 10, 10, 10, 10);
                 CharacterArtWorkToShow.sprite = CharacterArtWork[0];
+                CharDescription.text = "";
                 break;
         }
     }
@@ -528,16 +525,9 @@ public class CharacterStatWindow : MonoBehaviour
             DefenceNumber.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
             HPNumber.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
 
-            //DiamondSpeedAmountNumber.text = DiamondSpeedAmount.ToString();
-            DiamondResistanceAmountNumber.text = DiamondResistanceAmount.ToString();
-            DiamondAttackAmountNumber.text = DiamondAttackAmount.ToString();
-            DiamondDefenceAmountNumber.text = DiamondDefenceAmount.ToString();
-            DiamondHPAmountNumber.text = DiamondHPAmount.ToString();
-            //EraserAmountNumber.text = EraserAmount.ToString();
 
-            UpdatePieChart();
-            //UpdateUpgradeButtons();
-            //DisableAllStatSelectedBackground();
+
+
             Debug.Log("CharacterGallery SetCharacterStats ran");
         }
         else
@@ -563,12 +553,6 @@ public class CharacterStatWindow : MonoBehaviour
         return UnusedStats;
     }
 
-    // update pie chart
-    private void UpdatePieChart()
-    {
-        FindObjectOfType<CharacterStatsPieChart>().SetPieChartValues(CharacterStatsIntValuesToFloatValues(_demoCharacterWindowCharacter.CharacterSpeed, _demoCharacterWindowCharacter.CharacterResistance, _demoCharacterWindowCharacter.CharacterAttack, _demoCharacterWindowCharacter.CharacterDefence, _demoCharacterWindowCharacter.CharacterHP, CheckUnusedStatsAmount()));
-    }
-
     private float[] CharacterStatsIntValuesToFloatValues(int characterSpeed, int characterResistance, int characterAttack, int characterDefence, int characterHP, int unusedStats)
     {
         // pie chart works with the floats being in reverse order compared to the image array which holds the pie chart circles, atleast for now 
@@ -577,35 +561,183 @@ public class CharacterStatWindow : MonoBehaviour
     }
     private void SetCharacterInfo()
     {
-       //Tällä haetaan hahmon tiedot statti-ikkunaan. Toimivuudesta ei vielä ole varmuutta.
-
         var customCharacter = _playerData.CustomCharacters.FirstOrDefault(c => c.Id == _characterId);
-
         var galleryCharacter = _galleryCharacterReference.GetCharacterPrefabInfoFast((int)_characterId);
 
-
-        //Timanttien määrän saa playerdatasta
-        int DiamondSpeedAmount = _playerData.DiamondSpeed;
-        int diamondAttackAmount = _playerData.DiamondAttack;
-        int diamondDefenceAmount = _playerData.DiamondDefence;
-        int diamondHPAmount = _playerData.DiamondHP;
-        //pyyhekumien määrän saa playerdatasta
-        int eraserAmount = _playerData.Eraser;
-
-
+        //Should this be CustomCharacter?
         _demoCharacterWindowCharacter = new DemoCharacterForStatWindow(galleryCharacter.Name, false,
-                   customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack, customCharacter.Defence, customCharacter.Hp);
+                   customCharacter.Speed, customCharacter.Resistance, customCharacter.Attack,
+                   customCharacter.Defence, customCharacter.Hp);
         CharacterArtWorkToShow.sprite = galleryCharacter.Image;
+        CharacterArtWorkForInfoCanva.sprite = galleryCharacter.Image;
+
+
         Debug.Log($"loaded {galleryCharacter.Name}");
+
+        //For the right side window. CharSize not impelemented yet.
+        //These are not working for some reason.
+        CustomCharacterName.text = CharacterName.text;
+        impactforceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterAttack.ToString();
+        resistanceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterResistance.ToString();
+        speedCurrentLevel.text = _demoCharacterWindowCharacter.CharacterSpeed.ToString();
+        defenceCurrentLevel.text = _demoCharacterWindowCharacter.CharacterDefence.ToString();
+        healthPointsCurrentLevel.text = _demoCharacterWindowCharacter.CharacterHP.ToString();
+
+        //Getting stat increasing prices
+        AttackIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Attack);
+        SpeedIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Speed);
+        ResistanceIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Resistance);
+        DefenceIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Defence);
+        HPIncreasePrice = customCharacter.GetPriceToNextLevel(StatType.Hp);
+        //CharSizeIncreasePrice = customCharacter.GetPriceToNextLevel();
+
+        //This set the character description and special ability texts.
+        switch (_characterId)
+        {
+            case CharacterID.IntellectualizerResearcher:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.RetroflectorOvereater:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.TricksterComedian:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.TricksterConman:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.DesensitizerBodybuilder:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ObedientPreacher:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ProjectorGrafitiartist:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.ConfluentBesties:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            case CharacterID.RetroflectorAlcoholic:
+                CharDescription.text = "Hahmon kuvausteksti tulee tähän, kun tiedetään mitä tähän pitää kirjoittaa.";
+                DefClassSpecial.text = "Erikoistaidon kuvausteksti tulee tähän, sitten aikanaan.";
+                break;
+            default:
+                CharDescription.text = "";
+                DefClassSpecial.text = "";
+                break;
+        }
     }
 
-
-
-    // Character Name. DISABLED FOR THE SAKE OF TESTERS
-    /*
-    public void CharacterNameChange()
+    //Button finctionality for stat editing popup
+    private void ActivateStatButtons()
     {
-        _demoCharacterWindowCharacter.CharacterName = CharacterName.text;
+        HidestatEditPopUp();
+        impactforce.onClick.AddListener(() => EditStatImpactforce());
+        healthPoints.onClick.AddListener(() => EditStatHealthPoints());
+        defence.onClick.AddListener(() => EditStatDefence());
+        resistance.onClick.AddListener(() => EditStatResistance());
+        //charSize.onClick.AddListener(() => EditStatCharSize();
+        speed.onClick.AddListener(() => EditStatSpeed());
     }
-    */
+    private void EditStatImpactforce()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(AttackIncreasePrice);
+        closePopUpButton.onClick.AddListener(HidestatEditPopUp);
+        increaseButton.onClick.AddListener(UpgradeCharacterAttack);
+        decreaseButton.onClick.AddListener(DegradeCharacterAttack);
+    }
+    private void EditStatHealthPoints()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(HPIncreasePrice);
+        closePopUpButton.onClick.AddListener(HidestatEditPopUp);
+        increaseButton.onClick.AddListener(UpgradeCharacterHP);
+        decreaseButton.onClick.AddListener(DegradeCharacterHP);
+    }
+    private void EditStatResistance()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(ResistanceIncreasePrice);
+        closePopUpButton.onClick.AddListener(HidestatEditPopUp);
+        increaseButton.onClick.AddListener(UpgradeCharacterResistance);
+        decreaseButton.onClick.AddListener(DegradeCharacterResistance);
+    }
+    /*  private void EditStatCharSize()
+     {
+         HidestatEditPopUp();
+         ResetPlusAndMinus();
+         SetCorrectStatPrice(CharSizeIncreasePrice);
+         increaseButton.onClick.AddListener();
+     } */
+    private void EditStatDefence()
+    {
+        HidestatEditPopUp();
+        ResetPlusAndMinus();
+        SetCorrectStatPrice(DefenceIncreasePrice);
+        closePopUpButton.onClick.AddListener(HidestatEditPopUp);
+        increaseButton.onClick.AddListener(UpgradeCharacterDefence);
+        decreaseButton.onClick.AddListener(DegradeCharacterDefence);
+    }
+    private void EditStatSpeed()
+    {
+        ResetPlusAndMinus();
+        HidestatEditPopUp();
+        SetCorrectStatPrice(SpeedIncreasePrice);
+        closePopUpButton.onClick.AddListener(HidestatEditPopUp);
+        increaseButton.onClick.AddListener(UpgradeCharacterSpeed);
+        decreaseButton.onClick.AddListener(DegradeCharacterSpeed);
+    }
+    private void SetCorrectStatPrice(int statIncreasePriceToShow)
+    {
+        statIncreasePriceText.text = $"{statIncreasePriceToShow}";
+        Debug.Log($"Stat price {statIncreasePriceToShow}");
+        statEditPopUp.SetActive(true);
+    }
+    private void HidestatEditPopUp()
+    {
+        ResetPlusAndMinus();
+        statEditPopUp.SetActive(false);
+    }
+    private void ResetPlusAndMinus()
+    {
+        increaseButton.onClick.RemoveAllListeners();
+        decreaseButton.onClick.RemoveAllListeners();
+    }
+    private void DisableStatButtons()
+    {
+        ResetPlusAndMinus();
+        impactforce.onClick.RemoveAllListeners();
+        healthPoints.onClick.RemoveAllListeners();
+        defence.onClick.RemoveAllListeners();
+        resistance.onClick.RemoveAllListeners();
+        charSize.onClick.RemoveAllListeners();
+        speed.onClick.RemoveAllListeners();
+    }
+    private void HandleDiamondAmountChange(int statIncreasePrice)
+    {
+        if (diamondsAmount >= statIncreasePrice)
+        {
+            diamondsAmount -= statIncreasePrice;
+        }
+        else
+        {
+            Debug.Log("Not enough diamonds");
+        }
+        DiamondsAmountNumberText.text = diamondsAmount.ToString();
+
+    }
 }
+

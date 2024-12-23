@@ -28,7 +28,7 @@ namespace MenuUI.Scripts.SoulHome
         private float _value;*/
 
         public string Name;
-        public int Id = -1;
+        public string Id = "-1";
         public Vector2Int Position = new(-1,-1);
         public int Room = -1;
         public bool IsRotated;
@@ -40,7 +40,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
-            this.Id = Id;
+            this.Id = Id.ToString();
             this.Name = Name;
             this.Position = Position;
             this.Room = Room;
@@ -55,7 +55,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public Furniture(ClanFurniture clanFurniture, GameFurniture gameFurniture/*, FurnitureInfo info*/)
         {
-            Id = int.Parse(clanFurniture.Id);
+            Id = clanFurniture.Id;
             Name = clanFurniture.GameFurnitureName;
             Position = clanFurniture.Position;
             Room = clanFurniture.Room;
@@ -120,6 +120,8 @@ namespace MenuUI.Scripts.SoulHome
                     return new Vector2Int(3, 2);
                 case FurnitureSize.TwoXFour:
                     return new Vector2Int(4, 2);
+                case FurnitureSize.TwoXFive:
+                    return new Vector2Int(5, 2);
                 case FurnitureSize.TwoXSix:
                     return new Vector2Int(6, 2);
                 case FurnitureSize.TwoXSeven:
@@ -146,6 +148,8 @@ namespace MenuUI.Scripts.SoulHome
                     return new Vector2Int(4, 4);
                 case FurnitureSize.FiveXFive:
                     return new Vector2Int(5, 5);
+                case FurnitureSize.FiveXEight:
+                    return new Vector2Int(8, 5);
                 case FurnitureSize.SevenXThree:
                     return new Vector2Int(3, 7);
                 default:

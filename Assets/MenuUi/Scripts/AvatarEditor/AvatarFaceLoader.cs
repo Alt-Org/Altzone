@@ -24,8 +24,13 @@ namespace MenuUi.Scripts.AvatarEditor{
             UpdateVisuals();
         }
 
-        private void UpdateVisuals(){
-            for(int i = 0; i < _faceImages.Count; i++)
+        private void UpdateVisuals()
+        {
+            // added null checks to avoid errors while testing
+            if (avatarVisuals.sprites != null) return;
+            if (avatarVisuals.colors != null) return;
+
+            for (int i = 0; i < _faceImages.Count; i++)
             {
                 _faceImages[i].sprite = avatarVisuals.sprites[i];
                 _faceImages[i].color = avatarVisuals.colors[i];

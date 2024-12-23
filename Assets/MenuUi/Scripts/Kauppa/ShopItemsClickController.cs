@@ -18,8 +18,8 @@ public class ShopItemsClickController : MonoBehaviour
 
         foreach (var item in _shopItems)
         {
-            item.onClick.AddListener(delegate () { item.GetComponent<EsineDisplay>().PassItemToVoting(); });
             item.onClick.AddListener(OpenPopUp);
+            item.onClick.AddListener(delegate () { item.GetComponent<EsineDisplay>().PassItemToVoting(); });
         }
     }
     private void OpenPopUp() => _confirmationPopUp.SetActive(true);

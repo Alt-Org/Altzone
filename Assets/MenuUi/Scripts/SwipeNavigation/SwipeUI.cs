@@ -51,6 +51,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         public bool isEnabled;
         private Rect swipeRect;
 
+        [SerializeField] private bool _isInMainMenu;
+
         public bool IsEnabled
         {
             get { return isEnabled; }
@@ -90,7 +92,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
 
             maxPage = buttons.Length;
-            CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+
+            if (_isInMainMenu)
+            {
+                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+            }
+            else
+            {
+                CurrentPage = 0;
+            }
+
             scrollRect = GetComponent<ScrollRect>();
             UpdateSwipeAreaValues();
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
@@ -117,9 +128,18 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
-            CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+
+            if (_isInMainMenu)
+            {
+                CurrentPage = SettingsCarrier.Instance.mainMenuWindowIndex;
+            }
+            else
+            {
+                CurrentPage = 0;
+            }
+
             StartCoroutine(SetScrollBarValue(CurrentPage, true));
-            isSwipeMode = false;
+            _firstFrame = true;
         }
         private void Update()
         {
@@ -132,6 +152,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 _scrollTransform.localPosition = new(-1 * (_scrollTransform.rect.width * scrollPageValues[CurrentPage]*(1 - 1f / scrollPageValues.Length)), _scrollTransform.localPosition.y, 0);
                 _firstFrame = false;
+                isSwipeMode = false;
             }
         }
 
@@ -242,7 +263,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         public void UpdateSwipe()
         {
-            if (isSwipeMode)
+            if (isSwipeMode || !IsEnabled)
                 return;
             //Debug.Log("Value: " + Mathf.Abs(_startScrollvalue - scrollBar.value) + ", Marginal:  " + ((1f / scrollPageValues.Length) * (20f / 100f)));
             // Checks that the swipe was long enough

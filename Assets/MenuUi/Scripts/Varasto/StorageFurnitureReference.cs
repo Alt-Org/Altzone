@@ -35,7 +35,7 @@ namespace MenuUi.Scripts.Storage
         }
 
 
-        private FurnitureInfoObject GetFurnitureData(string name)
+        public FurnitureInfoObject GetFurnitureData(string name)
         {
             //Debug.LogWarning($"Full name: {name}");
             if (string.IsNullOrWhiteSpace(name))
@@ -76,10 +76,12 @@ namespace MenuUi.Scripts.Storage
 
     [Serializable]
     public class FurnitureInfoObject
-    {
+    {        
         public string Name; 
         public Sprite Image;
         public string VisibleName;
+        public string ArtisticDescription;
+        public string DiagnoseNumber;
         public FurnitureHandling FurnitureHandling;
         public TrayFurniture TrayFurniture;
     }
@@ -88,7 +90,8 @@ namespace MenuUi.Scripts.Storage
     public class FurnitureSetInfo
     {
         public string SetName;
-        public string DiagnoseNumber;
+        public string ArtistName;
+        
         public List<FurnitureInfoObject> list;
     }
 

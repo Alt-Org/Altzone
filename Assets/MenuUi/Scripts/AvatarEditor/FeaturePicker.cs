@@ -19,7 +19,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [Header("feature data placeholder lists")]
         [SerializeField]private List<FeatureData> _blankHeadDataPlaceholder;
         [SerializeField]private List<FeatureData> _hairDataPlaceholder;
-        [SerializeField]private List<FeatureData> _eyebrowsDataPlaceholder;
+        // [SerializeField]private List<FeatureData> _eyebrowsDataPlaceholder;
         [SerializeField]private List<FeatureData> _eyesDataPlaceholder;
         [SerializeField]private List<FeatureData> _noseDataPlaceholder;
         [SerializeField]private List<FeatureData> _mouthDataPlaceholder;
@@ -44,7 +44,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadTwo,
             FeatureID.ConfluenceGirlsOneHair,
-            FeatureID.ConfluenceGirlsOneEyebrows,
             FeatureID.ConfluenceGirlsOneEyes,
             FeatureID.ConfluenceGirlsOneNose,
             FeatureID.ConfluenceGirlsOneMouth,
@@ -57,7 +56,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadTwo,
             FeatureID.ConfluenceGirlsTwoHair,
-            FeatureID.ConfluenceGirlsTwoEyebrows,
             FeatureID.ConfluenceGirlsTwoEyes,
             FeatureID.ConfluenceGirlsTwoNose,
             FeatureID.ConfluenceGirlsTwoMouth,
@@ -70,7 +68,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadOne,
             FeatureID.ResearcherHair,
-            FeatureID.ResearcherEyebrows,
             FeatureID.ResearcherEyes,
             FeatureID.ResearcherNose,
             FeatureID.ResearcherMouth,
@@ -83,7 +80,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadOne,
             FeatureID.ResearcherHair,
-            FeatureID.ResearcherEyebrows,
             FeatureID.ResearcherEyes,
             FeatureID.ResearcherNose,
             FeatureID.ResearcherMouth,
@@ -96,7 +92,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadOne,
             FeatureID.ResearcherHair,
-            FeatureID.ResearcherEyebrows,
             FeatureID.ResearcherEyes,
             FeatureID.ResearcherNose,
             FeatureID.ResearcherMouth,
@@ -109,7 +104,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadThree,
             FeatureID.GrafitiArtistHair,
-            FeatureID.GrafitiArtistEyebrows,
             FeatureID.GrafitiArtistEyes,
             FeatureID.GrafitiArtistNose,
             FeatureID.GrafitiArtistMouth,
@@ -122,7 +116,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadTwo,
             FeatureID.OvereaterHair,
-            FeatureID.OvereaterEyebrows,
             FeatureID.OvereaterEyes,
             FeatureID.OvereaterNose,
             FeatureID.OvereaterMouth,
@@ -135,7 +128,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
             FeatureID.BlankHeadTwo,
             FeatureID.PreacherHair,
-            FeatureID.PreacherEyebrows,
             FeatureID.PreacherEyes,
             FeatureID.PreacherNose,
             FeatureID.PreacherMouth,
@@ -166,7 +158,6 @@ namespace MenuUi.Scripts.AvatarEditor
             FeatureID.Default,
             FeatureID.Default,
             FeatureID.Default,
-            FeatureID.Default,
         };
         private List<FeatureData> _currentCategoryFeatureDataPlaceholder = new();
 
@@ -184,8 +175,6 @@ namespace MenuUi.Scripts.AvatarEditor
         public void Start()
         {
             _swipeArea = GetComponent<RectTransform>();
-            // GetComponent<AvatarEditorSwipe>().SetSwipeActions(swipeRight: LoadNextPage, swipeLeft: LoadPreviousPage, swipeUp: LoadPreviousCategory, swipeDown: LoadNextCategory);
-            
             _categoryButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextCategory);
             _categoryButtons[1].GetComponent<Button>().onClick.AddListener(LoadPreviousCategory);
             _pageButtons[0].GetComponent<Button>().onClick.AddListener(LoadNextPage);
@@ -204,6 +193,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 swipeStartPoint, Vector2 swipeEndPoint)
         {
+            Debug.Log("swipe detected!");
             if(RectTransformUtility.RectangleContainsScreenPoint(_swipeArea, swipeStartPoint))
             {
                 switch(direction){
@@ -346,7 +336,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void SetFeature(FeatureData featureToChange, int slot)
         {
-            
+            Debug.Log("_selectedFeatures[slot] is" + _selectedFeatures[slot] );
             _selectedFeatures[slot] = featureToChange.id;
             _characterImage = _characterImageParent.GetChild(0);
             _characterImage.GetChild(slot).GetComponent<Image>().sprite = featureToChange.sprite;
@@ -409,7 +399,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 FeatureSlot.WholeHead => "Pää",
                 FeatureSlot.Hair => "Hiukset",
-                FeatureSlot.Eyebrows => "Kulmakarvat",
                 FeatureSlot.Eyes => "Silmät",
                 FeatureSlot.Nose => "Nenä",
                 FeatureSlot.Mouth => "Suu",
@@ -430,7 +419,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 FeatureSlot.WholeHead => _blankHeadDataPlaceholder,        
                 FeatureSlot.Hair => _hairDataPlaceholder,
-                FeatureSlot.Eyebrows => _eyebrowsDataPlaceholder,
                 FeatureSlot.Eyes => _eyesDataPlaceholder,
                 FeatureSlot.Nose => _noseDataPlaceholder,
                 FeatureSlot.Mouth => _mouthDataPlaceholder,
