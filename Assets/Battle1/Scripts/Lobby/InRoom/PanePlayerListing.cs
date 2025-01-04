@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#if false
+using System.Linq;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using UnityEngine;
@@ -144,3 +145,4 @@ namespace Battle1.Scripts.Lobby.InRoom
         }
     }
 }
+#endif

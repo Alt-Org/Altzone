@@ -10,7 +10,7 @@ using Prg.Scripts.Common.PubSub;
 using UnityConstants;
 using UnityEngine;
 using UnityEngine.Assertions;
-using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
+/*using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;*/
 
 namespace Battle1.Scripts.Battle.Players
 {
@@ -201,7 +201,7 @@ namespace Battle1.Scripts.Battle.Players
             });
 
             // GA info
-            if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.MoveCommand(targetPosition);
+         /*   if (PhotonNetwork.IsMasterClient) GameAnalyticsManager.Instance.MoveCommand(targetPosition);*/
         }
 
         #endregion Public - Methods

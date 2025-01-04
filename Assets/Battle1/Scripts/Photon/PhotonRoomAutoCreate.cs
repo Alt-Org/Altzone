@@ -1,3 +1,4 @@
+#if false
 using System.Collections;
 using Battle1.PhotonUnityNetworking.Code;
 using Photon.Realtime;
@@ -73,3 +74,4 @@ namespace Prg.Scripts.Common.Photon
         }
     }
 }
+#endif
