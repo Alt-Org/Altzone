@@ -4,7 +4,7 @@ using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WindowScale : MonoBehaviour
+public class SwipeWindowWidthScaler : MonoBehaviour
 {   
     // Kuinka usein ikkunan koon tarkistuksia suoritetaan (sekunteina).
     // How often window size checks are performed (in seconds).
