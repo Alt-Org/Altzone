@@ -56,22 +56,6 @@ namespace MenuUI.Scripts.SoulHome
             return null;
         }
 
-        public List<GameFurniture> GetGameFurniture()
-        {
-            List<GameFurniture> furnitures = new();
-            int i = 1;
-            foreach (SoulhomeFurnitureSetInfo info in _info)
-            {
-                foreach (SoulhomeFurnitureInfoObject info2 in info.list)
-                {
-                    BaseFurniture baseFurniture = info2.BaseFurniture;
-                    baseFurniture.Name = info2.Name + "_" + info.SetName;
-                    furnitures.Add(new(i.ToString(), baseFurniture));
-                }
-            }
-            return furnitures;
-        }
-
         public void UpdateSheet()
         {
             List<FurnitureSetInfo> furnitureList = _sheet.Info;

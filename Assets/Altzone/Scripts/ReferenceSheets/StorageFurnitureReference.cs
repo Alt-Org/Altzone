@@ -13,7 +13,6 @@ namespace AltZone.Scripts.ReferenceSheets
 
         public List<FurnitureSetInfo> Info => _info; // Public accessor for _info
 
-
         public FurnitureInfo GetFurnitureInfo(string name)
         {
             FurnitureInfoObject data = GetFurnitureData(name);
@@ -45,6 +44,22 @@ namespace AltZone.Scripts.ReferenceSheets
                 }
             }
             return null;
+        }
+
+        public List<GameFurniture> GetGameFurniture()
+        {
+            List<GameFurniture> furnitures = new();
+            int i = 1;
+            foreach (FurnitureSetInfo info in _info)
+            {
+                foreach (FurnitureInfoObject info2 in info.list)
+                {
+                    BaseFurniture baseFurniture = info2.BaseFurniture;
+                    baseFurniture.Name = info2.Name + "_" + info.SetName;
+                    furnitures.Add(new(i.ToString(), baseFurniture));
+                }
+            }
+            return furnitures;
         }
     }
 
