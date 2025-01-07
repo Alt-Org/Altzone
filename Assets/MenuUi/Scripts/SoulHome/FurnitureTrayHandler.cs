@@ -12,7 +12,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _traySlotObject;
         [SerializeField]
-        private StorageFurnitureReference _furnitureRefrence;
+        private SoulHomeFurnitureReference _furnitureRefrence;
         [SerializeField]
         private GameObject _trayContent;
         private List<GameObject> _changedTrayItemList = new();

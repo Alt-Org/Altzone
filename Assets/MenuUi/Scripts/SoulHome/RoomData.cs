@@ -32,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _furnitureSlotPrefab;
         [SerializeField]
-        private StorageFurnitureReference _furnitureRefrence;
+        private SoulHomeFurnitureReference _furnitureRefrence;
         [SerializeField]
         private Transform _floorFurniturePoints;
         [SerializeField]

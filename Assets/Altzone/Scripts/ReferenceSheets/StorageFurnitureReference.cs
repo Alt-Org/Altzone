@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 
-namespace MenuUi.Scripts.Storage
+namespace AltZone.Scripts.ReferenceSheets
 {
     //[CreateAssetMenu(menuName = "ALT-Zone/StorageFurnitureReference", fileName = "StorageFurnitureReference")]
     public class StorageFurnitureReference : ScriptableObject
@@ -21,19 +20,6 @@ namespace MenuUi.Scripts.Storage
             if (data == null) return null;
             return new(data);
         }
-
-        public GameObject GetSoulHomeFurnitureObject(string name)
-        {
-            FurnitureInfoObject data = GetFurnitureData(name);
-            return data.FurnitureHandling.gameObject;
-        }
-
-        public GameObject GetSoulHomeTrayFurnitureObject(string name)
-        {
-            FurnitureInfoObject data = GetFurnitureData(name);
-            return data.TrayFurniture.gameObject;
-        }
-
 
         public FurnitureInfoObject GetFurnitureData(string name)
         {
@@ -77,13 +63,12 @@ namespace MenuUi.Scripts.Storage
     [Serializable]
     public class FurnitureInfoObject
     {        
-        public string Name; 
+        public string Name;
         public Sprite Image;
         public string VisibleName;
         public string ArtisticDescription;
         public string DiagnoseNumber;
-        public FurnitureHandling FurnitureHandling;
-        public TrayFurniture TrayFurniture;
+        public BaseFurniture BaseFurniture;
     }
 
     [Serializable]
