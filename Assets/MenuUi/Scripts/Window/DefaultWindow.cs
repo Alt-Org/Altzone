@@ -25,10 +25,13 @@ namespace MenuUi.Scripts.Window
 
         private void Awake()
         {
-            ReadOnlyCollection<GameFurniture> baseFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(callback => baseFurniture = callback);
-            if(baseFurniture == null || baseFurniture.Count < 1)
-            Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture());
+            if (_furnitureReference != null)
+            { 
+                ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                Storefront.Get().GetAllGameFurnitureYield(callback => baseFurniture = callback);
+                if (baseFurniture == null || baseFurniture.Count < 1)
+                    Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture());
+            }
         }
 
         private void OnEnable()
