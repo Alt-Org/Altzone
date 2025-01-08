@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -101,7 +102,7 @@ namespace MenuUI.Scripts.SoulHome
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
-            Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
+            //Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
             //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             _camera.fieldOfView = 90f;
@@ -115,8 +116,8 @@ namespace MenuUI.Scripts.SoulHome
 
             SetScrollSpeed();
 
-            Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
-            Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
+            //Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
+            //Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
 
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
@@ -249,13 +250,13 @@ namespace MenuUI.Scripts.SoulHome
                     transform.position = new(x, transform.position.y, transform.position.z);
                 }*/
                 //cameraMove = false;
-                Debug.Log(currentScrollSlideDirection);
+                //Debug.Log(currentScrollSlideDirection);
             }
             else if(!cameraMove)
             {
                 if (currentScrollSlideDirection != Vector2.zero)
                 {
-                    Debug.Log(currentScrollSlide);
+                    //Debug.Log(currentScrollSlide);
                     if (currentScrollSlide.x > 0)
                         currentScrollSlide.x = Mathf.Max(0, currentScrollSlide.x - startScrollSlide.x/20);
                     if (currentScrollSlide.y > 0)
@@ -362,7 +363,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
                     {
-                        Debug.Log("Furniture");
+                        //Debug.Log("Furniture");
                         //if(selectedRoom == null) continue;
                         //else
                         {
@@ -443,7 +444,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             if ((ClickStateHandler.GetClickType() is ClickType.Click) && (furnitureObject != null || _tempSelectedFurniture != null))
             {
-                Debug.Log(furnitureObject);
+                //Debug.Log(furnitureObject);
                 //Touch touch = Input.GetTouch(0);
                 if (click == ClickState.Start && (selectedRoom != null || editingMode))
                 {
@@ -518,7 +519,7 @@ namespace MenuUI.Scripts.SoulHome
             _pinched = true;
             if (scroll)
             {
-                Debug.Log("Pinch: " + pinchDistance / 100);
+                //Debug.Log("Pinch: " + pinchDistance / 100);
                 ClampCameraDistance(pinchDistance / 100);
             }
             else
@@ -529,7 +530,7 @@ namespace MenuUI.Scripts.SoulHome
                     float change = pinchDistance - _prevPinchDistance;
                     float scaledChange = change / Vector2.Distance(_displayScreen.GetComponent<RectTransform>().rect.max, _displayScreen.GetComponent<RectTransform>().rect.min);
 
-                    Debug.Log("Pinch: " + scaledChange);
+                    //Debug.Log("Pinch: " + scaledChange);
 
                     ClampCameraDistance(scaledChange*100);
 
@@ -637,6 +638,7 @@ namespace MenuUI.Scripts.SoulHome
                 hitArray = Physics2D.GetRayIntersectionAll(ray2, 1000);
             }
             bool check = false;
+            int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             foreach (RaycastHit2D hit2 in hitArray)
             {
                 if (hit2.collider.gameObject.CompareTag("Room"))
@@ -647,6 +649,8 @@ namespace MenuUI.Scripts.SoulHome
             if (hover)
             {
                 if (!check) _selectedFurniture.transform.position = hitPoint + new Vector2(0, (_selectedFurniture.transform.localScale.y / 2) * -1);
+                if(prevRoomId >= 0 && prevRoomId != _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId)
+                    _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
             }
             else
             {
@@ -657,6 +661,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else
                 {
+                    _rooms.transform.GetChild(_selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
                     if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
                     {
                         int id = _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
@@ -714,15 +719,21 @@ namespace MenuUI.Scripts.SoulHome
             if (!_changedFurnitureList.Contains(selectedFurniture))
             {
                 if(selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
-                    || (!selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
+                    || !selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    || ((selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    || (selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.FloorNonblock
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.RotatedNonBlock != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)))
                     _changedFurnitureList.Add(selectedFurniture);
             }
             else
             {
                 if (selectedFurniture.GetComponent<FurnitureHandling>().Slot == null
-                    || (selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
-                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated == selectedFurniture.GetComponent<FurnitureHandling>().IsRotated))
+                    || selectedFurniture.GetComponent<FurnitureHandling>().Slot.Equals(selectedFurniture.GetComponent<FurnitureHandling>().TempSlot)
+                    && ((selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.Rotated != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)
+                    || (selectedFurniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.FloorNonblock
+                    && selectedFurniture.GetComponent<FurnitureHandling>().Slot.RotatedNonBlock != selectedFurniture.GetComponent<FurnitureHandling>().IsRotated)))
                     _changedFurnitureList.Remove(selectedFurniture);
             }
         }
@@ -738,6 +749,8 @@ namespace MenuUI.Scripts.SoulHome
             _mainScreen.DeselectTrayFurniture();
             if (_selectedFurniture != null)
             {
+                int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+                if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
                 if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) RemoveFurniture();
                 else
                 {
@@ -758,6 +771,7 @@ namespace MenuUI.Scripts.SoulHome
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
+                
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }
@@ -784,6 +798,8 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             ChangedFurnitureList.Clear();
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
             SelectedFurniture = null;
         }
 
@@ -806,6 +822,8 @@ namespace MenuUI.Scripts.SoulHome
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
             }
             ChangedFurnitureList.Clear();
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
         }
 
         public void ToggleEdit()
@@ -820,7 +838,7 @@ namespace MenuUI.Scripts.SoulHome
             }
             else if (!editingMode)
             {
-                //DeselectFurniture();
+                DeselectFurniture();
                 _mainScreen.EnableTray(false);
                 _soulHomeController.EditModeTrayHandle(false);
             }
@@ -835,7 +853,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void CheckScreenRotationStatus()
         {
-            Debug.Log(Screen.orientation);
+            //Debug.Log(Screen.orientation);
             if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
             {
                 _rotated = true;
@@ -889,7 +907,7 @@ namespace MenuUI.Scripts.SoulHome
                 x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             else
                 x = (cameraMinX+cameraMaxX)/2;
-            Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
+            //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
             transform.position = new(x, y, transform.position.z);
 
         }

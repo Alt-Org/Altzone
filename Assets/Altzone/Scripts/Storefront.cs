@@ -109,6 +109,13 @@ namespace Altzone.Scripts
             _localModels.SavePlayerTasks(tasks, callback);
         }
 
+        public bool SetFurniture(List<GameFurniture> gameFurnitures)
+        {
+            bool finished = false;
+            _localModels.SetFurniture(gameFurnitures, callback => finished = callback);
+            return finished;
+        }
+
         /// <summary>
         /// Get all read-only <c>GameFurniture</c> entities.
         /// </summary>
@@ -182,6 +189,15 @@ namespace Altzone.Scripts
 
                 localModels.GetAllBaseCharacters(SafeCallbackWrapperCharacters);
             }
+        }
+        public void GetDefaultFurniture(Action<List<ClanFurniture>> callback)
+        {
+            List <ClanFurniture> defaultFurniture= new();
+            ReadOnlyCollection<GameFurniture> baseFurniture = null;
+            GetAllGameFurnitureYield(result => baseFurniture = result);
+            if (baseFurniture == null) return;
+            defaultFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
+            callback(defaultFurniture);
         }
     }
 }

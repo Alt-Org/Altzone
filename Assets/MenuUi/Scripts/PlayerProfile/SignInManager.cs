@@ -49,8 +49,9 @@ namespace MenuUi.Scripts.Login
 
 
         [Header("Navigation Buttons")]
+        [SerializeField] private Button returnToLogIn;
         [SerializeField] private Button returnToMainMenuButton;
-        [SerializeField] private Button returnToLogInScreenButton;
+        [SerializeField] private Button returnToSignInScreenButton;
 
         private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
         private const string ERROR_DEFAULT = "Jotain meni pieleen!";
@@ -69,7 +70,7 @@ namespace MenuUi.Scripts.Login
             Reset();
             signInWindow.SetActive(true);
             registerWindow.SetActive(false);
-            if (SceneManager.GetActiveScene().buildIndex == 0)
+            if (ServerManager.Instance.Player == null)
             {
                 backButton.gameObject.SetActive(false);
                 backButton2.gameObject.SetActive(false);
@@ -78,6 +79,11 @@ namespace MenuUi.Scripts.Login
             {
                 backButton.gameObject.SetActive(true);
                 backButton2.gameObject.SetActive(true);
+            }
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                backButton.onClick.RemoveAllListeners();
+                backButton.onClick.AddListener(ReturnToLogIn);
             }
         }
 
@@ -102,7 +108,7 @@ namespace MenuUi.Scripts.Login
             string body = "";
             if (guest)
             {
-                body = "{\"username\":\"guest_main\",\"password\":\"T%K@l0Fl_]idy7:twmoDf51_*Qw$)Qkx\"}";
+                body = "{\"username\":\"Angel42\",\"password\":\"PRIbXCI9d)Z0UoHP\"}";
             }
             else
             {
@@ -151,6 +157,7 @@ namespace MenuUi.Scripts.Login
                 Debug.Log("Log in successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     Debug.Log(request.downloadHandler.text);
+                    if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
                     returnToMainMenuButton.onClick.Invoke();
                 }
@@ -231,7 +238,7 @@ namespace MenuUi.Scripts.Login
                 else
                 {
                     Debug.Log("Registering successful!");
-                    returnToLogInScreenButton.onClick.Invoke();
+                    returnToSignInScreenButton.onClick.Invoke();
                     ShowMessage(REGISTERING_SUCCESS, Color.green);
                 }
 
@@ -270,6 +277,10 @@ namespace MenuUi.Scripts.Login
                 ageAuthButton.interactable = false;
                 _registerAgeVerificationCheckToggle.isOn = false;
             }
+        }
+        private void ReturnToLogIn()
+        {
+            returnToLogIn.onClick?.Invoke();
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool IsOpen;
 
         public List<string> Labels = new();
+        public List<ClanValues> Values = new();
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
@@ -68,6 +69,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Goals = clan.goal;
             ClanHeartPieces = new();
             IsOpen = clan.isOpen;
+            if (clan.polls != null) Polls = clan.polls;
         }
 
         public void CallDataUpdate()

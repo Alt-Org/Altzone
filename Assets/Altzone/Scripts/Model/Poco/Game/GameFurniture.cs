@@ -16,14 +16,21 @@ namespace Altzone.Scripts.Model.Poco.Game
         TwoXTwo,
         TwoXThree,
         TwoXFour,
+        TwoXFive,
         TwoXSix,
         TwoXSeven,
         TwoXEight,
         ThreeXTwo,
         ThreeXThree,
+        ThreeXFour,
+        ThreeXSix,
         ThreeXSeven,
         ThreeXEight,
         FourXTwo,
+        FourXThree,
+        FourXFour,
+        FiveXFive,
+        FiveXEight,
         SevenXThree
     }
 
@@ -31,9 +38,18 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         Floor,
         FloorByWall,
+        FloorNonblock,
         Ceiling,
         Wall
 
+    }
+
+    public enum FurnitureRarity
+    {
+        Common,
+        Rare,
+        Epic,
+        Antique
     }
 
     /// <summary>
@@ -49,6 +65,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [PrimaryKey] public string Id;
         [Unique] public string Name;
         [Mandatory] public string Shape;
+        public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
         public FurniturePlacement Placement;
@@ -64,7 +81,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public string Filename;
 
-        public GameFurniture(string id, string name, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
+        public GameFurniture(string id, string name, FurnitureRarity rarity, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsPrimaryKey());
             Assert.IsTrue(name.IsMandatory());
@@ -77,6 +94,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             Name = name;
             Shape = shape;
+            Rarity = rarity;
             Size = size;
             RotatedSize = rotatedSize;
             Placement = placementType;
@@ -88,11 +106,56 @@ namespace Altzone.Scripts.Model.Poco.Game
             Filename = filename ?? string.Empty;
         }
 
+        public GameFurniture(string id, BaseFurniture baseFurniture, string unityKey = "", string filename = "")
+        {
+            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(baseFurniture.Name.IsMandatory());
+            //Assert.IsTrue(shape.IsMandatory());
+            Assert.IsTrue(baseFurniture.Weight >= 0);
+            //Assert.IsTrue(material.IsMandatory());
+            //Assert.IsTrue(recycling.IsMandatory());
+            Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
+            Assert.IsTrue(filename.IsNullOEmptyOrNonWhiteSpace());
+            Id = id;
+            Name = baseFurniture.Name;
+            Shape = string.Empty;
+            Rarity = baseFurniture.Rarity;
+            Size = baseFurniture.Size;
+            RotatedSize = baseFurniture.RotatedSize;
+            Placement = baseFurniture.Placement;
+            Weight = baseFurniture.Weight;
+            Value = baseFurniture.Value;
+            Material = baseFurniture.Material;
+            Recycling = baseFurniture.Recycling;
+            UnityKey = unityKey ?? string.Empty;
+            Filename = filename ?? string.Empty;
+        }
+
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Shape)}: {Shape}, {nameof(Weight)}: {Weight}" +
                    $", {nameof(Material)}: {Material}, {nameof(Recycling)}: {Recycling}" +
                    $", {nameof(UnityKey)}: {UnityKey}, {nameof(Filename)}: {Filename}";
+        }
+    }
+
+    [Serializable]
+    public class BaseFurniture
+    {
+        [Unique] public string Name;
+        public FurnitureRarity Rarity;
+        public FurnitureSize Size;
+        public FurnitureSize RotatedSize;
+        public FurniturePlacement Placement;
+        public double Weight;
+        public float Value;
+        [Mandatory] public string Material;
+        [Mandatory] public string Recycling;
+
+        public override string ToString()
+        {
+            return $" {nameof(Name)}: {Name}, {nameof(Weight)}: {Weight}" +
+                   $", {nameof(Material)}: {Material}, {nameof(Recycling)}: {Recycling}";
         }
     }
 }

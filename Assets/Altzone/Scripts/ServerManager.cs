@@ -12,6 +12,8 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.GA;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine.Assertions;
+using Altzone.Scripts.Model;
+using System.Collections.ObjectModel;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -28,6 +30,7 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     public bool isLoggedIn = false;
+    [SerializeField] private bool _skipServerFurniture = false;
     public static string ADDRESS = "https://altzone.fi/api/";
     public static string DEVADDRESS = "https://devapi.altzone.fi/";
 
@@ -334,59 +337,20 @@ public class ServerManager : MonoBehaviour
             {
                 ClanInventory inventory = new ClanInventory();
                 List<ClanFurniture> clanFurniture = new List<ClanFurniture>();
-
-                /*foreach (ServerItem item in items)
+                if (!_skipServerFurniture)
                 {
-                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
-                    if (item._id == null || item.name == null) continue;
-                    clanFurniture.Add(new ClanFurniture(item._id, item.name.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")));
-                }*/
-
-                if (clanFurniture.Count == 0)
+                    foreach (ServerItem item in items)
+                    {
+                        //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                        if (item._id == null || item.name == null) continue;
+                        clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
+                    }
+                }
+                else
                 {
-                    int i = 0;
-                    while (i < 2)
-                    {
-                        clanFurniture.Add(new ClanFurniture((10000 + 100 + i).ToString(), "Sofa_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 200 + i).ToString(), "Mirror_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 300 + i).ToString(), "Floorlamp_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 400 + i).ToString(), "Toilet_Schrodinger"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 500 + i).ToString(), "Sink_Schrodinger"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 600 + i).ToString(), "Closet_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 700 + i).ToString(), "CoffeeTable_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 800 + i).ToString(), "SideTable_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 900 + i).ToString(), "ArmChair_Taakka"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1000 + i).ToString(), "Sofa_Rakkaus"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1100 + i).ToString(), "ArmChair_Rakkaus"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1200 + i).ToString(), "Closet_Rakkaus"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1300 + i).ToString(), "Chair_Neuro"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1400 + i).ToString(), "Dresser_Neuro"));
-                        clanFurniture.Add(new ClanFurniture((10000 + 1500 + i).ToString(), "Stool_Neuro"));
-
-                        i++;
-                    }
-
-                    for (i = 0; i < Clan.playerCount; i++)
-                    {
-                        int slotRows = 8;
-                        int slotColumn = 20;
-
-                        int furniture1X = UnityEngine.Random.Range(1, slotColumn - 1);
-                        int furniture1Y = UnityEngine.Random.Range(1, slotRows);
-                        int furniture2X;
-                        int furniture2Y;
-                        while (true)
-                        {
-                            furniture2X = UnityEngine.Random.Range(0, slotColumn - 7);
-                            furniture2Y = UnityEngine.Random.Range(2, slotRows);
-                            if ((furniture2X >= furniture1X - 7 && furniture2X <= furniture1X + 1 && furniture2Y >= furniture1Y - 1 && furniture2Y <= furniture1Y + 2)) continue;
-                            else break;
-                        }
-
-                        clanFurniture.Add(new ClanFurniture((10000 + 300 + 3 + i).ToString(), "Floorlamp_Taakka", furniture1X, furniture1Y, i, false));
-                        clanFurniture.Add(new ClanFurniture((10000 + 100 + 3 + i).ToString(), "Sofa_Taakka", furniture2X, furniture2Y, i, false));
-
-                    }
+                    ReadOnlyCollection<GameFurniture> baseFurniture = null;
+                    store.GetAllGameFurnitureYield(result => baseFurniture = result);
+                    clanFurniture = CreateDefaultModels.CreateDefaultDebugFurniture(baseFurniture);
                 }
 
                 inventory.Furniture = clanFurniture;
@@ -495,7 +459,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                Debug.LogWarning(result);
+                //Debug.LogWarning(result);
                 ServerPlayerTasks tasks = result["data"]["PlayerTask"].ToObject<ServerPlayerTasks>();
                 //Clan = clan;
 
@@ -776,6 +740,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 Stock = result["data"]["Stock"][0].ToObject<ServerStock>();     // Clan can have multiple stock but for now we get only the first
 
                 if (callback != null)
@@ -795,15 +760,18 @@ public class ServerManager : MonoBehaviour
     public IEnumerator GetStockItemsFromServer(ServerStock stock, List<ServerItem> serverItems, PaginationData paginationData, int pageCount, Action<List<ServerItem>> callback)
     {
         if (stock == null)
+        {
+            Debug.LogWarning("Cannot get furniture form server: Cannot find stock");
             yield break;
+        }
 
         bool lastPage = true;
         string query = string.Empty;
 
         if (paginationData == null)
-            query = ADDRESS + "item?limit=10&search=stock_id=\"" + stock._id + "\"";
+            query = DEVADDRESS + "stock/" + stock._id + "?limit=10&with=Item";
         else
-            query = ADDRESS + "item?page=" + ++paginationData.currentPage + "&limit=10&search=stock_id=\"" + stock._id + "\"";
+            query = DEVADDRESS + "stock/" + stock._id + "?page=" + ++paginationData.currentPage + "&limit=10&with=Item";
 
         yield return StartCoroutine(WebRequests.Get(query, AccessToken, request =>
         {
@@ -811,15 +779,16 @@ public class ServerManager : MonoBehaviour
             {
                 List<ServerItem> requestItems = new List<ServerItem>();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
-                JArray array = (JArray)jObject["data"]["Item"];
+                Debug.LogWarning(jObject);
+                JArray array = (JArray)jObject["data"]["Stock"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
                 foreach (var item in requestItems)
                     serverItems.Add(item);
 
-                paginationData = jObject["paginationData"].ToObject<PaginationData>();
+                paginationData = jObject["paginationData"]?.ToObject<PaginationData>();
 
-                if (paginationData.pageCount != 0)
+                if (paginationData != null && paginationData.pageCount != 0)
                     pageCount = paginationData.pageCount;
 
                 if (paginationData != null && paginationData.currentPage < pageCount)

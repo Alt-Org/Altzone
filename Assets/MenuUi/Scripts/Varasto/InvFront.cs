@@ -10,7 +10,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using UnityEngine.UI;
 using static ServerManager;
-
+using AltZone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.Storage
 {
@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private GameObject _infoSlot;
         [SerializeField] private GameObject _loadingText;
         [SerializeField] private GameObject _topButtons;
+        [SerializeField] private TMP_Text _totalValueText;
 
         [Header("Placeholders")] // These should not remain to the finalized game
         [SerializeField] private Sprite _furnImagePlaceholder;
@@ -33,6 +34,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
         [SerializeField] private StorageFurnitureReference _furnitureReference;
 
+
         [Header("Information GameObject")]
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
@@ -42,6 +44,14 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private Image _type;
         [SerializeField] private TMP_Text _typeText;
         [SerializeField] private GameObject _inSoulHome;
+        [SerializeField] private TMP_Text _artist;
+        [SerializeField] private TMP_Text _artisticDescription;
+
+        [Header("Rarity Color")]
+        [SerializeField] private Color commonColor = Color.gray;
+        [SerializeField] private Color rareColor = Color.blue;
+        [SerializeField] private Color epicColor = Color.magenta;
+        [SerializeField] private Color antiqueColor = Color.yellow;
 
         private List<StorageFurniture> _items;
         private List<GameObject> _slotsList = new();
@@ -129,6 +139,7 @@ namespace MenuUi.Scripts.Storage
             }
 
             yield return StartCoroutine(Begin());
+            _totalValueText.text = $"Varaston arvo: {GetTotalInventoryValue()}";
             _updatingInventory = false;
         }
 
@@ -186,6 +197,17 @@ namespace MenuUi.Scripts.Storage
             {
                 GameObject newSlot = Instantiate(_invSlot, _content);
                 var capturedSlotVal = i;
+
+                // Default rarity to "common" since no rarity system is implemented yet
+                string rarity = "common";
+
+                // Set color based on rarity
+                var backgroundImage = newSlot.GetComponent<Image>();
+                if (backgroundImage != null)
+                {
+                    backgroundImage.color = GetColorByRarity(rarity);
+                }
+
                 newSlot.GetComponent<Button>().onClick.AddListener(() =>
                 {
                 // C# variable capture in the body of anonymous function!
@@ -215,31 +237,42 @@ namespace MenuUi.Scripts.Storage
                 switch (_sortingBy)
                 {
                     case 0:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.VisibleName;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.VisibleName;
                         break;
                     case 1:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Value.ToString();
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = "Arvo " + _furn.Value.ToString();
                         break;
                     case 2:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Weight + " KG";
                         break;
                     case 3:
-                        toSet.GetChild(2).GetComponent<TMP_Text>().text = _furn.Material;
+                        toSet.GetChild(3).GetComponent<TMP_Text>().text = _furn.Material;
                         break;
                 }
                 // Shape
-                toSet.GetChild(3).GetComponent<Image>().sprite = GetIcon("");
+                toSet.GetChild(4).GetComponent<Image>().sprite = GetIcon("");
 
+                // SetName
+                FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+                toSet.GetChild(5).GetComponent<TMP_Text>().text = setInfo.SetName;
+
+                // Id
+                FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+                toSet.GetChild(6).GetComponent<TMP_Text>().text = furnitureInfoObject.DiagnoseNumber;
                 // Name
-                toSet.GetChild(4).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
+                toSet.GetChild(7).GetChild(0).GetComponent<TMP_Text>().text = "Sielunkodissa";
                 if (_furn.Position == new Vector2Int(-1, -1))
                 {
-                    toSet.GetChild(4).gameObject.SetActive(false);
+                    toSet.GetChild(7).gameObject.SetActive(false);
                 }
                 else
                 {
-                    toSet.GetChild(4).gameObject.SetActive(true);
+                    toSet.GetChild(7).gameObject.SetActive(true);
                 }
+
+                // Coin
+                if(_sortingBy == 1) toSet.GetChild(8).gameObject.SetActive(true);
+                else toSet.GetChild(8).gameObject.SetActive(false);
 
                 i++;
             }
@@ -277,15 +310,29 @@ namespace MenuUi.Scripts.Storage
             Transform parentSlot = _infoSlot.transform;
             StorageFurniture _furn = _items[slotVal];
 
+            FurnitureInfoObject furnitureInfoObject = _furnitureReference.GetFurnitureData(_furn.Name);
+            if (furnitureInfoObject == null)
+            {
+                Debug.LogWarning("FurnitureInfoObject not found for: " + _furn.Name);
+                return;
+            }
+
             // Icon
             _icon.sprite = _furn.Sprite;
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            _name.text = _furn.VisibleName;
+            FurnitureSetInfo setInfo = GetFurnitureSetInfo(_furn.Name);
+            _name.text = furnitureInfoObject.DiagnoseNumber + setInfo.SetName + ": " + _furn.VisibleName;
+            
+            //Artists name
+            _artist.text = setInfo != null ? "Suunnittelu: " + setInfo.ArtistName : "Unknown Artist";
+            
+            //Artistic description
+            _artisticDescription.text = furnitureInfoObject.ArtisticDescription;
 
             // Weight
-            _weight.text = _furn.Weight + " KG";
+            _weight.text = "Paino:" + _furn.Weight + " KG";
 
             // Material text
             _material.text = $"{_furn.Material}";
@@ -335,6 +382,42 @@ namespace MenuUi.Scripts.Storage
                 return _furnImagePlaceholder;
             }
             return returned;
+        }
+
+        private float GetTotalInventoryValue()
+        {
+            return _items.Sum(item => item.Value);
+        }
+
+        private Color GetColorByRarity(string rarity)
+        {
+            return rarity switch
+            {
+                "common" => commonColor,
+                "rare" => rareColor,
+                "epic" => epicColor,
+                "antique" => antiqueColor,
+                _ => commonColor, // Default to common color
+            };
+        }
+
+        private FurnitureSetInfo GetFurnitureSetInfo(string furnitureName)
+        {
+            if (string.IsNullOrWhiteSpace(furnitureName))
+                return null;
+
+            string[] parts = furnitureName.Split('_');
+            if (parts.Length != 2)
+                return null;
+
+            string setName = parts[1];
+            foreach (FurnitureSetInfo setInfo in _furnitureReference.Info)
+            {
+                if (setInfo.SetName == setName)
+                    return setInfo;
+            }
+
+            return null;
         }
     }
 }

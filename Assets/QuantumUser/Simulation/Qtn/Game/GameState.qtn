@@ -1,0 +1,10 @@
+enum GameState
+{
+  PreGame,
+  ReadyToStart,
+  Countdown,
+  GetReadyToPlay,
+  Playing,
+  GameOver,
+  PostGame
+}

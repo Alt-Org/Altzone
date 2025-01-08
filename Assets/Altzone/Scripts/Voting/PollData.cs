@@ -1,6 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json.Linq;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Altzone.Scripts.Voting
@@ -26,21 +31,74 @@ namespace Altzone.Scripts.Voting
         Selling
     }
 
+    public enum RolePollType
+    {
+        Create,
+        Delete,
+        Modify,
+        Give,
+    }
+
+    public enum MemberPollType
+    {
+        Accept,
+        Kick
+    }
+
     public class PollData
     {
         public PollType PollType;
         public string Id;
         public string Name;
+        public long StartTime;
         public long EndTime;
         public Sprite Sprite;
 
-        public PollData(PollType pollType, string id, string name, long endTime, Sprite sprite)
+        public List<string> NotVoted;
+        public List<PollVoteData> YesVotes;
+        public List<PollVoteData> NoVotes;
+
+        public PollData(PollType pollType, string id, string name,long startTime, long endTime, Sprite sprite, List<string> clanMembers)
         {
             PollType = pollType;
             Id = id;
             Name = name;
+            StartTime = startTime;
             EndTime = endTime;
             Sprite = sprite;
+            NotVoted = new List<string>();
+            YesVotes = new List<PollVoteData>();
+            NoVotes = new List<PollVoteData>();
+        }
+
+        public void AddVote(bool answer)
+        {
+            DataStore store = Storefront.Get();
+            PlayerData player = null;
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+            string playerId = null;
+            string playerName = null;
+            if (player != null) playerId = player.Id;
+            if (player != null) playerName = player.Name;
+
+            if (NotVoted.Contains(playerId) || true) //temporarily true for testing
+            {
+                if (answer)
+                {
+                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
+                    YesVotes.Add(newPollVote);
+                }
+                else
+                {
+                    PollVoteData newPollVote = new PollVoteData(playerId, playerName, answer);
+                    NoVotes.Add(newPollVote);
+                }
+            }
+
+            //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
+            //player.playerVotes.Add(newPlayerVote);
+            //store.SavePlayerData(player, data => player = data);
         }
     }
 
@@ -52,8 +110,8 @@ namespace Altzone.Scripts.Voting
         public double Weight;
         public float Value;
 
-        public FurniturePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
-        : base(pollType, id, name, endTime, sprite)
+        public FurniturePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, double weight, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             FurniturePollType = furniturePollType;
             Furniture = furniture;
@@ -67,11 +125,39 @@ namespace Altzone.Scripts.Voting
         public EsinePollType EsinePollType;
         public float Value;
 
-        public EsinePollData(PollType pollType, string id, string name, long endTime, Sprite sprite, EsinePollType esinePollType, float value)
-        : base(pollType, id, name, endTime, sprite)
+        public EsinePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, EsinePollType esinePollType, float value)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
         {
             EsinePollType = esinePollType;
             Value = value;
+        }
+    }
+
+    public class RolePollData : PollData
+    {
+        public RolePollType RolePollType;
+        public string RoleId;
+        public string PlayerId;
+
+        public RolePollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, RolePollType rolePollType, string roleId, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            RolePollType = rolePollType;
+            RoleId = roleId;
+            PlayerId = playerId;
+        }
+    }
+
+    public class MemberPollData : PollData
+    {
+        public MemberPollType MemberPollType;
+        public string PlayerId;
+
+        public MemberPollData(PollType pollType, string id, string name, long startTime, long endTime, Sprite sprite, List<string> clanMembers, MemberPollType memberPollType, string playerId)
+        : base(pollType, id, name, startTime, endTime, sprite, clanMembers)
+        {
+            MemberPollType = memberPollType;
+            PlayerId = playerId;
         }
     }
 }

@@ -1,25 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Common.Photon;
-//using Battle1.PhotonUnityNetworking.Code;
-using Photon.Realtime;
+using Altzone.Scripts.Lobby;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using PhotonBattle = Altzone.Scripts.Battle.Photon.PhotonBattleRoom;
-//using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
-//using RoomOptions = Battle1.PhotonRealtime.Code.RoomOptions;
 
 namespace MenuUI.Scripts.Lobby.InLobby
 {
-    public class LobbyRoomListingController : MonoBehaviour, IMatchmakingCallbacks
+    public class LobbyRoomListingController : MonoBehaviour
     {
         private const string DefaultRoomNameName = "Battle ";
 
         [SerializeField] private LobbyRoomListingView _view;
         [SerializeField] private TMP_InputField _roomName;
+        [SerializeField] private BattlePopupCreateCustomRoomPanel _roomSwitcher;
 
         private PhotonRoomList _photonRoomList;
 
@@ -31,47 +26,33 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnEnable()
         {
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
-            Debug.Log($"OnEnable {PhotonRealtimeClient.NetworkClientState}");
+            PhotonRealtimeClient.AddCallbackTarget(this);
+            Debug.Log($"OnEnable {PhotonRealtimeClient.LobbyNetworkClientState}");
             _view.Reset();
             if (PhotonRealtimeClient.InLobby)
             {
                 UpdateStatus();
             }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
+            LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
+            LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest += SwitchToRoom;
         }
 
         public void OnDisable()
         {
-            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            PhotonRealtimeClient.RemoveCallbackTarget(this);
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
+            LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
+            LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
             _view.Reset();
         }
 
         private void CreateRoomOnClick()
         {
             var roomName = string.IsNullOrWhiteSpace(_roomName.text) ? $"{DefaultRoomNameName}{DateTime.Now.Second:00}" : _roomName.text;
-            var roomOptions = new RoomOptions()
-            {
-                IsVisible = true, // Pit�� muokata varmaankin //
-                IsOpen = true,
-                MaxPlayers = 4//,
-                //Plugins = new string[] { "QuantumPlugin" }//,
-                //PlayerTtl = PhotonRealtimeClient.ServerSettings.PlayerTtlInSeconds * 1000,
-                //EmptyRoomTtl = PhotonRealtimeClient.ServerSettings.EmptyRoomTtlInSeconds * 1000
-            };
+            
             Debug.Log($"{roomName}");
-            PhotonRealtimeClient.CreateRoom(roomName, roomOptions);
-        }
-
-        public void OnCreateRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"CreateRoomFailed {returnCode} {message}");
-        }
-
-        public void OnJoinRoomFailed(short returnCode, string message)
-        {
-            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
+            PhotonRealtimeClient.CreateLobbyRoom(roomName);
         }
 
 
@@ -91,11 +72,16 @@ namespace MenuUI.Scripts.Lobby.InLobby
 
         public void OnJoinedRoom()
         {
-            var room = PhotonRealtimeClient.CurrentRoom; // hakee pelaajan tiedot // 
-            var player = PhotonRealtimeClient.LocalPlayer;
+            var room = PhotonRealtimeClient.LobbyCurrentRoom; // hakee pelaajan tiedot // 
+            var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        public void SwitchToRoom()
+        {
+            _roomSwitcher.SwitchRoom();
         }
 
         private void UpdateStatus()
@@ -114,17 +100,6 @@ namespace MenuUI.Scripts.Lobby.InLobby
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
             _view.UpdateStatus(rooms, JoinRoom);
-        }
-
-        public void OnFriendListUpdate(List<FriendInfo> friendList) => throw new NotImplementedException();
-        public void OnCreatedRoom()
-        {
-            Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
-        }
-        public void OnJoinRandomFailed(short returnCode, string message) => throw new NotImplementedException();
-        public void OnLeftRoom()
-        {
-            Debug.Log($"Left room");
         }
     }
 }

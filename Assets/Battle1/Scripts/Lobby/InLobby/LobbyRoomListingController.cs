@@ -91,7 +91,7 @@ namespace Battle1.Scripts.Lobby.InLobby
             var player = PhotonNetwork.LocalPlayer;
             PhotonNetwork.NickName = room.GetUniquePlayerNameForRoom(player, PhotonNetwork.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonNetwork.NickName}'");
-            this.Publish(new LobbyManager.StartRoomEvent());
+            this.Publish(new LobbyManagerOld.StartRoomEvent());
         }
         
         private void UpdateStatus()

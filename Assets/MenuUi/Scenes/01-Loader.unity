@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _automaticallyLogIn: 0
   isLoggedIn: 0
+  _skipServerFurniture: 1
 --- !u!4 &202654814
 Transform:
   m_ObjectHideFlags: 0
@@ -205,6 +206,8 @@ MonoBehaviour:
   _introVideo: {fileID: 501906753}
   _introSceneWindow: {fileID: 11400000, guid: c63e84b209f615742b1ac5aa16d448f7, type: 2}
   _introScene: 7
+  _furnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
+    type: 2}
 --- !u!4 &367799428
 Transform:
   m_ObjectHideFlags: 0
@@ -406,6 +409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _window: {fileID: 11400000, guid: 22e131911901f0744aaadab6b027a0a9, type: 2}
   _findWindowForEditor: 0
+  _furnitureReference: {fileID: 0}
 --- !u!4 &475503777
 Transform:
   m_ObjectHideFlags: 0
@@ -682,10 +686,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0117ab3b2661f1242b46bf60d9d253b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataUsedPerSecond: 0.5
-  baselineConsumption: 2
-  networkMultiplier: 1.5
-  enableDetailedTracking: 1
 --- !u!4 &1405451729
 Transform:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -18,6 +19,10 @@ namespace MenuUi.Scripts.Loader
         private LoadingInfoController _loadInfoController;
         [SerializeField]
         private AgeVerificationHandler _ageVerificationHandler;
+
+        [SerializeField]
+        private ChangeAccountHandler _changeAccountHandler;
+
         [SerializeField]
         private WindowNavigation _privacyNavigation;
         [SerializeField]
@@ -25,12 +30,17 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private WindowNavigation _introStoryNavigation;
 
+        private string _currentAccessToken = null;
+
         private void OnEnable()
         {
             ServerManager.OnLogInFailed += OpenLogInScreen;
             ServerManager.OnLogInStatusChanged += PlayerDataFetched;
-            ServerManager.OnClanFetchFinished += MoveToMain;
+            ServerManager.OnClanFetchFinished += LogInReady;
             _loginSuccess.OnLogInPanelSuccess += CloseLogInScreen;
+            _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
+            _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
+            _loadInfoController.OnMoveToMain += MoveToMain;
             CheckPrivacy();
         }
 
@@ -38,8 +48,11 @@ namespace MenuUi.Scripts.Loader
         {
             ServerManager.OnLogInFailed -= OpenLogInScreen;
             ServerManager.OnLogInStatusChanged -= PlayerDataFetched;
-            ServerManager.OnClanFetchFinished -= MoveToMain;
+            ServerManager.OnClanFetchFinished -= LogInReady;
             _loginSuccess.OnLogInPanelSuccess -= CloseLogInScreen;
+            _loginSuccess.OnLogInPanelReturn -= CloseLogInScreen;
+            _changeAccountHandler.OnChangeAccountEvent -= ChangeAccount;
+            _loadInfoController.OnMoveToMain -= MoveToMain;
         }
 
         private void CheckPrivacy()
@@ -54,7 +67,7 @@ namespace MenuUi.Scripts.Loader
 
         private void AttemptLogIn()
         {
-            _loadInfoController.SetInfoText(InfoType.LogIn);
+            _loadInfoController.LogIn();
             StartCoroutine(ServerManager.Instance.LogIn());
         }
 
@@ -64,15 +77,36 @@ namespace MenuUi.Scripts.Loader
             _signInManager.gameObject.SetActive(true);
         }
 
-        private void CloseLogInScreen()
+        private void CloseLogInScreen(bool useSavedToken = false)
         {
             _signInManager.gameObject.SetActive(false);
-            AttemptLogIn();
+            if (!ServerManager.Instance.isLoggedIn)
+            {
+                if (useSavedToken) ServerManager.Instance.AccessToken = _currentAccessToken;
+                AttemptLogIn();
+            }
+            else
+            {
+                LogInReady();
+            }
+        }
+
+        private void ChangeAccount()
+        {
+            _currentAccessToken = ServerManager.Instance.AccessToken;
+            _changeAccountHandler.gameObject.SetActive(false);
+            OpenLogInScreen();
         }
 
         private void PlayerDataFetched(bool value)
         {
-            _loadInfoController.SetInfoText(InfoType.FetchClanData);
+            _loadInfoController.Status = LogInStatus.FetchClanData;
+        }
+
+        private void LogInReady()
+        {
+            _loadInfoController.LoadReady();
+            _changeAccountHandler.gameObject.SetActive(true);
         }
 
         private void MoveToMain()
@@ -85,7 +119,7 @@ namespace MenuUi.Scripts.Loader
 
         private IEnumerator MoveToMainCoroutine()
         {
-            _loadInfoController.SetInfoText(InfoType.FetchPlayerData);
+            //_loadInfoController.SetInfoText(LogInStatus.FetchPlayerData);
             PlayerData playerData = null;
             Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p => playerData = p);
 
@@ -101,7 +135,7 @@ namespace MenuUi.Scripts.Loader
                 StartCoroutine(_introStoryNavigation.Navigate());
             else
             {
-                _loadInfoController.SetInfoText(InfoType.Finished);
+                _loadInfoController.Status = LogInStatus.MovingToMain;
                 StartCoroutine(_mainMenuNavigation.Navigate());
             }
         }

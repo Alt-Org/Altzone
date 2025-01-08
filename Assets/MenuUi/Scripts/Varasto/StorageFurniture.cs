@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using AltZone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Storage
@@ -9,7 +10,7 @@ namespace MenuUi.Scripts.Storage
     public class StorageFurniture
     {
         private string _name;
-        private int _id = -1;
+        private string _id = "-1";
         private Sprite _sprite;
         private string _visibleName;
         private Vector2Int _position = new(-1, -1);
@@ -26,7 +27,7 @@ namespace MenuUi.Scripts.Storage
 
         public StorageFurniture(ClanFurniture clanFurniture, GameFurniture gameFurniture, FurnitureInfo info)
         {
-            _id = int.Parse(clanFurniture.Id);
+            _id = clanFurniture.Id;
             _name = clanFurniture.GameFurnitureName;
             _sprite = info.Image;
             _visibleName = info.VisibleName;
@@ -45,7 +46,7 @@ namespace MenuUi.Scripts.Storage
         }
 
         public string Name { get => _name;}
-        public int Id { get => _id;}
+        public string Id { get => _id;}
         public Sprite Sprite { get => _sprite;}
         public string VisibleName { get => _visibleName;}
         public Vector2Int Position { get => _position; set => _position = value; }

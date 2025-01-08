@@ -11,6 +11,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Settings;
+using AltZone.Scripts.ReferenceSheets;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 #if UNITY_WEBGL
@@ -36,7 +37,7 @@ namespace Altzone.Scripts.Model
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
 
         private readonly string _storagePath;
-        private readonly StorageData _storageData;
+        private StorageData _storageData;
 
         private static List<BaseCharacter> _characters;
 
@@ -342,7 +343,6 @@ namespace Altzone.Scripts.Model
             storageData.Characters = new CharacterStorage().CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
-            storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
 
             var playerGuid = new PlayerSettings().PlayerGuid;
             var clanGuid = playerGuid;
@@ -365,7 +365,10 @@ namespace Altzone.Scripts.Model
             else
             {
                 storageData.Characters = new CharacterStorage().CharacterList;
-                storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
+                storageData.CustomCharacters = new();
+                storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+                storageData.GameFurniture = new();
+                //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
             }
 
@@ -377,6 +380,12 @@ namespace Altzone.Scripts.Model
             var jsonText = JsonUtility.ToJson(storageData);
             File.WriteAllText(storagePath, jsonText, Encoding);
             WebGlFsSyncFs();
+        }
+
+        public void SetFurniture(List<GameFurniture> gameFurnitures, Action<bool> callback)
+        {
+            _storageData.GameFurniture = gameFurnitures;
+            callback?.Invoke(true);
         }
     }
 

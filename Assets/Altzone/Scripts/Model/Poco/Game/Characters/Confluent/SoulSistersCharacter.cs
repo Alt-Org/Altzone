@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             _id = CharacterID.ConfluentBesties;
             _defaultAttack = 2;
-            _defaultDefence = 3;
+            _defaultDefence = 11;
             _defaultHp = 2;
-            _defaultResistance = 2;
-            _speed = 3;
+            _defaultResistance = 12;
+            _defaultSpeed = 2;
             InitilizeValues();
         }
     }
