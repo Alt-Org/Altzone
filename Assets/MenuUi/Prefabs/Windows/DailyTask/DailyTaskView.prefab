@@ -2067,22 +2067,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8aadec6fbdc2c045907d2ede62da3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dailyTaskPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+  _dailyTaskPrefab: {fileID: 2735320841348897930, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
     type: 3}
-  weeklyTaskPrefab: {fileID: 2735320841348897930, guid: f2865cd683e72834b8ea312c41bd079d,
+  _weeklyTaskPrefab: {fileID: 2735320841348897930, guid: f2865cd683e72834b8ea312c41bd079d,
     type: 3}
-  monthlyTaskPrefab: {fileID: 2735320841348897930, guid: 3b2cdd7d21041c348b578fd79996695c,
+  _monthlyTaskPrefab: {fileID: 2735320841348897930, guid: 3b2cdd7d21041c348b578fd79996695c,
     type: 3}
-  dailyCategory500: {fileID: 54677489327594252}
-  dailyCategory1000: {fileID: 5733757184925806204}
-  dailyCategory1500: {fileID: 7447090575030613325}
-  ActiveQuestWindow: {fileID: 7807893844174565255}
-  clanRewards: {fileID: 1155044806348590588}
-  popup: {fileID: 2216618271427480897}
-  tabPanels:
-  - {fileID: 4402130259993126768}
-  - {fileID: 8854939259451439899}
-  - {fileID: 3666774666976207798}
+  _dailyCategory500: {fileID: 54677489327594252}
+  _dailyCategory1000: {fileID: 5733757184925806204}
+  _dailyCategory1500: {fileID: 7447090575030613325}
+  _activeQuestWindow: {fileID: 7807893844174565255}
+  _clanRewards: {fileID: 2570869864382765926}
+  _tabPanels:
+  - {fileID: 228967547497403108}
+  - {fileID: 4874898613021720824}
+  - {fileID: 3057218451555374252}
+  - {fileID: 8195613312918040134}
+  - {fileID: 8354968504073903653}
 --- !u!1 &2570869864382765926
 GameObject:
   m_ObjectHideFlags: 0
@@ -8473,7 +8474,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.9643939
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 2853600601693954760, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -8498,12 +8499,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.8943939
+      value: 0.86688036
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.18
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 3919992647448817758, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -8724,7 +8725,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.18
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 8161244090198002808, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -8774,12 +8775,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.9643939
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.8943939
+      value: 0.86688036
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5868749976689406173, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
@@ -8836,7 +8837,7 @@ PrefabInstance:
     - target: {fileID: 62609683541585800, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_fontSize
-      value: 48
+      value: 44.5
       objectReference: {fileID: 0}
     - target: {fileID: 180840773445628589, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -8932,6 +8933,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6645719920315919770, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 44.5
       objectReference: {fileID: 0}
     - target: {fileID: 6853548187239314907, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

@@ -11,7 +11,6 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.GA;
 using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.Assertions;
 using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
 
@@ -203,26 +202,18 @@ public class ServerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets values related to player "Profile" received from server
+    /// Sets values related to "Profile" received from server
     /// </summary>
     /// <param name="profileJSON">JSON object containing Profile info from server</param>
     /// <remarks>
-    /// Profile and Player (<c>ServerPlayer</c>) are not the same as Profile might hold personal information!<br />
+    /// Profile and Player are not the same as Profile might hold personal information!
     /// Player contains exclusively data related to in game Player.
     /// </remarks>
     public void SetProfileValues(JObject profileJSON)
     {
-        var accessToken = profileJSON["accessToken"];
-        Assert.IsNotNull(accessToken);
-        AccessToken = (string)accessToken;
-
-        var tokenExpires = profileJSON["tokenExpires"];
-        Assert.IsNotNull(tokenExpires);
-        AccessTokenExpiration = tokenExpires.Value<int>();
-
-        var player = profileJSON["Player"];
-        Assert.IsNotNull(player);
-        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+        AccessToken = profileJSON["accessToken"].ToString();
+        AccessTokenExpiration = int.Parse(profileJSON["tokenExpires"].ToString());
+        PlayerPrefs.SetString("playerId", profileJSON["Player"]["_id"].ToString());
 
         //StartCoroutine(LogIn());
     }

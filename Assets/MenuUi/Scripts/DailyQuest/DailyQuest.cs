@@ -1,46 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Altzone.Scripts.Model.Poco.Game;
 
 public class DailyQuest : MonoBehaviour
 {
     //Variables
-    public int id;
-    private int _amount;
-    private int _coins;
-    private int _points;
-
-    private string _title;
-    private string _content;
+    private PlayerTasks.PlayerTask _taskData;
 
     [Header("DailyQuest Texts")]
-    public TMP_Text questTitle;
-    public TMP_Text questDebugID;
-    public TMP_Text questCoins;
+    [SerializeField] private TMP_Text questTitle;
+    [SerializeField] private TMP_Text questDebugID;
+    [SerializeField] private TMP_Text questCoins;
 
-    public DailyTaskManager dailyTaskManager;
+    [HideInInspector] public DailyTaskManager dailyTaskManager;
 
-    public void GetQuestData(int ids, int amount, int coins, int points, string title, string content)
+    public void GetQuestData(PlayerTasks.PlayerTask taskData)
     {
-        id = ids;
-        _amount = amount;
-        _coins = coins;
-        _points = points;
-        _title = title;
-        _content = content;
+        _taskData = taskData;
         PopulateData();
     }
 
     public void QuestAccept()
     {
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + id.ToString(),1));
+        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse("Haluatko Hyväksyä! quest id: " + _taskData.Id.ToString(),1));
     }
 
     public void PopulateData()
     {
-        questTitle.text = _title;
-        questDebugID.text = id.ToString();
-        questCoins.text = _coins.ToString();
+        questTitle.text = _taskData.Title;
+        questDebugID.text = _taskData.Id.ToString();
+        questCoins.text = _taskData.Coins.ToString();
     }
 }
