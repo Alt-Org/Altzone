@@ -40,6 +40,17 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public CharacterID Id { get => _id; }
 
+        private GameObject _text1;
+        private GameObject _text2;
+        private GameObject _text3;
+
+        private void Awake()
+        {
+            _text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
+            _text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
+            _text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
+        }
+
         private void Start()
         {
             button = GetComponent<Button>();
@@ -76,67 +87,32 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         public void CheckSelectedCharacterSlotText()
         {
-            var text1 = GameObject.FindGameObjectWithTag("TextSuoja1");
-            var text2 = GameObject.FindGameObjectWithTag("TextSuoja2");
-            var text3 = GameObject.FindGameObjectWithTag("TextSuoja3");
-
-            /*characterTextCounter = (isAdditive) ? characterTextCounter + 1 : characterTextCounter - 1;
-            
-            if (characterTextCounter < 0)
-                characterTextCounter = 0;
-
-            if (characterTextCounter > 3)
-                characterTextCounter = 3;*/
-
             if (_modelView._CurSelectedCharacterSlot[2].transform.childCount > 0)
             {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (_modelView._CurSelectedCharacterSlot[1].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }
-            else if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
+                _text3.SetActive(false);
             }
             else
             {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
+                _text3.SetActive(true);
             }
 
-            /*if (characterTextCounter > 2)
+            if (_modelView._CurSelectedCharacterSlot[1].transform.childCount > 0)
             {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(false);
-            }
-            else if (characterTextCounter > 1)
-            {
-                text1.SetActive(false);
-                text2.SetActive(false);
-                text3.SetActive(true);
-            }
-            else if (characterTextCounter > 0)
-            {
-                text1.SetActive(false);
-                text2.SetActive(true);
-                text3.SetActive(true);
+                _text2.SetActive(false);
             }
             else
             {
-                text1.SetActive(true);
-                text2.SetActive(true);
-                text3.SetActive(true);
-            }*/
+                _text2.SetActive(true);
+            }
+
+            if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
+            {
+                _text1.SetActive(false);
+            }
+            else
+            {
+                _text1.SetActive(true);
+            }
         }
 
         public void OnEndDrag(PointerEventData eventData)
