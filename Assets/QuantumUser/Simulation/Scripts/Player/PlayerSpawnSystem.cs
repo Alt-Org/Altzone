@@ -10,6 +10,9 @@ namespace Quantum
 
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
+            int? actorNumber = f.PlayerToActorId(player);
+            
+
             //creates player entity from prefab and gives it playerdata component
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
