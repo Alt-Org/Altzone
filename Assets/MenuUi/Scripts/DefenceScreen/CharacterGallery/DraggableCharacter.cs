@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
+using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -18,7 +19,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private Button button;
         private ColorBlock originalColors;
 
-        [HideInInspector] public Transform parentAfterDrag;
+        [HideInInspector] public Transform parentBeforeDrag;
         private Transform previousParent;
 
         public Transform allowedSlot;
@@ -28,6 +29,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public delegate void ParentChangedEventHandler(Transform newParent);
         public event ParentChangedEventHandler OnParentChanged;
+
+        public Action OnRemovedFromTopSlot;
 
         [SerializeField]
         private SwipeBlockType _blockType = SwipeBlockType.All;
@@ -63,7 +66,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            parentAfterDrag = transform.parent;
+            parentBeforeDrag = transform.parent;
             previousParent = transform.parent.parent.parent;
             transform.SetParent(transform.parent.parent.parent.parent);
             transform.SetAsLastSibling();
@@ -84,7 +87,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         public void CheckSelectedCharacterSlotText()
         {
-            if (_modelView._CurSelectedCharacterSlot[2].transform.childCount > 0)
+            if (_modelView._CurSelectedCharacterSlots[2].transform.childCount > 0)
             {
                 _text3.SetActive(false);
             }
@@ -93,7 +96,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _text3.SetActive(true);
             }
 
-            if (_modelView._CurSelectedCharacterSlot[1].transform.childCount > 0)
+            if (_modelView._CurSelectedCharacterSlots[1].transform.childCount > 0)
             {
                 _text2.SetActive(false);
             }
@@ -102,7 +105,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _text2.SetActive(true);
             }
 
-            if (_modelView._CurSelectedCharacterSlot[0].transform.childCount > 0)
+            if (_modelView._CurSelectedCharacterSlots[0].transform.childCount > 0)
             {
                 _text1.SetActive(false);
             }
@@ -139,6 +142,11 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (droppedSlot == null || (droppedSlot != allowedSlot && droppedSlot.tag != "Topslot"))
             {
+                if (parentBeforeDrag.CompareTag("Topslot")) // if this character is in topslot 
+                {
+                    OnRemovedFromTopSlot?.Invoke();
+                }
+
                 transform.SetParent(initialSlot);
                 transform.position = initialSlot.position;
             }
@@ -150,11 +158,11 @@ namespace MenuUi.Scripts.CharacterGallery
                     DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
                     if (topSlotCharacter != null) // if the droppedSlot has a character
                     {
-                        if (parentAfterDrag.CompareTag("Topslot")) // if this character was in topslot, swap characters
+                        if (parentBeforeDrag.CompareTag("Topslot")) // if this character was in topslot, swap characters
                         {
                             // set the other character to this character's slot
-                            topSlotCharacter.transform.SetParent(parentAfterDrag);
-                            topSlotCharacter.transform.position = parentAfterDrag.position;
+                            topSlotCharacter.transform.SetParent(parentBeforeDrag);
+                            topSlotCharacter.transform.position = parentBeforeDrag.position;
 
                             topSlotCharacter._backgroundSpriteImage.raycastTarget = true;
                             topSlotCharacter.button.colors = topSlotCharacter.originalColors;
@@ -185,7 +193,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                     // Find the first empty topslot
                     Transform targetSlot = null;
-                    foreach (var slot in _modelView._CurSelectedCharacterSlot)
+                    foreach (var slot in _modelView._CurSelectedCharacterSlots)
                     {
                         if (slot.transform.childCount == 0)
                         {
@@ -216,15 +224,17 @@ namespace MenuUi.Scripts.CharacterGallery
             CheckSelectedCharacterSlotText();
         }
 
+
         private void HandleParentChange(Transform newParent)
         {
             // Go through each topslot
-            foreach (var slot in _modelView._CurSelectedCharacterSlot)
+            foreach (var slot in _modelView._CurSelectedCharacterSlots)
             {
                 // Check if newParent is one of the topslots
                 if (newParent == slot.transform)
                 {
                     OnParentChanged?.Invoke(newParent);
+                    break;
                 }
             }
         }
