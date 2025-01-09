@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-//using ExitGames.Client.Photon;
 using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
@@ -151,12 +148,39 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (droppedSlot.tag == "Topslot")
                 {
                     DraggableCharacter topSlotCharacter = droppedSlot.GetComponentInChildren<DraggableCharacter>();
-                    if (topSlotCharacter != null)
+                    if (topSlotCharacter != null) // if the droppedSlot has a character
                     {
-                        // Move topSlotCharacter to it's initialSlot
-                        Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
-                        topSlotCharacter.transform.SetParent(topSlotInitialSlot);
-                        topSlotCharacter.transform.position = topSlotInitialSlot.position;
+                        if (parentAfterDrag.CompareTag("Topslot")) // if this character was in topslot, swap characters
+                        {
+                            // set the other character to this character's slot
+                            topSlotCharacter.transform.SetParent(parentAfterDrag);
+                            topSlotCharacter.transform.position = parentAfterDrag.position;
+
+                            topSlotCharacter._backgroundSpriteImage.raycastTarget = true;
+                            topSlotCharacter.button.colors = topSlotCharacter.originalColors;
+
+                            topSlotCharacter.previousParent = topSlotCharacter.transform.parent;
+                            topSlotCharacter.HandleParentChange(topSlotCharacter.previousParent);
+
+                            // set this character to the other character's slot
+                            transform.SetParent(droppedSlot);
+                            transform.position = droppedSlot.position;
+
+                            _backgroundSpriteImage.raycastTarget = true;
+                            button.colors = originalColors;
+
+                            previousParent = transform.parent;
+                            HandleParentChange(previousParent);
+
+                            return;
+                        }
+                        else // return the dropped topslotcharacter to its initialSlot
+                        {
+                            Transform topSlotInitialSlot = topSlotCharacter.initialSlot;
+                            topSlotCharacter.transform.SetParent(topSlotInitialSlot);
+                            topSlotCharacter.transform.position = topSlotInitialSlot.position;
+
+                        }
                     }
 
                     // Find the first empty topslot
@@ -203,7 +227,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     OnParentChanged?.Invoke(newParent);
                 }
             }
-
         }
 
 
