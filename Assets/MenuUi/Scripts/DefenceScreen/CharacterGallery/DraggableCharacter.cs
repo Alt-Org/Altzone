@@ -128,7 +128,6 @@ namespace MenuUi.Scripts.CharacterGallery
                     if (targetCharacter.transform.parent.CompareTag("Topslot"))
                     {
                         droppedSlot = targetCharacter.transform.parent;
-                        droppedSlot.GetComponent<CharacterSlot>()?.SetCharacterDown();
                     }
                 }
                 else
